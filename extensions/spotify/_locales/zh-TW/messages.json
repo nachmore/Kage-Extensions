@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "zh-TW",
+    "name": "繁體中文",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Spotify",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "c5a87869e821d302"
+  },
+  "manifest.description": {
+    "message": "在 Kage 中查看 Spotify 正在播放的內容、控制播放、加入或移除喜愛、管理佇列與播放清單。",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "74abec23ede6a157"
+  }
+}

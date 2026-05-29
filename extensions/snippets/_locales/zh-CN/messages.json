@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "zh-CN",
+    "name": "简体中文",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "片段",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "c81d69ea1fad46cc"
+  },
+  "manifest.description": {
+    "message": "保存的文本片段，可从启动器直接复制。非常适合常用回复、地址、Git 命令等任何你经常输入的内容。",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "667e7829308ceab3"
+  }
+}

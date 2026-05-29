@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "de",
+    "name": "Deutsch",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Timer & Stoppuhr",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "d7a220ea51ec86a9"
+  },
+  "manifest.description": {
+    "message": "Countdown-Timer und Stoppuhr mit Benachrichtigungstönen",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "5e3d3fcb6c65000a"
+  }
+}

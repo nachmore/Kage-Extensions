@@ -1,0 +1,62 @@
+{
+  "_meta": {
+    "language": "ur",
+    "name": "اردو",
+    "rtl": true,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "ہیلو ورلڈ",
+    "description": "Extension display name shown in Settings → Extensions and the store.",
+    "_machine_translated": true,
+    "_source_hash": "d8a58418c0d2baee"
+  },
+  "manifest.description": {
+    "message": "ایک نمونہ ایکسٹینشن جو 'test' کے جواب میں 'Hello World' دکھاتی ہے۔ اسے اپنی ایکسٹینشنز بنانے کے لیے ٹیمپلیٹ کے طور پر استعمال کریں۔",
+    "description": "Extension description shown in Settings → Extensions and the store.",
+    "_machine_translated": true,
+    "_source_hash": "0551c38ae1a5b963"
+  },
+  "result.description": {
+    "message": "کاپی کرنے کے لیے Enter دبائیں",
+    "description": "Subtitle on the Hello World search result",
+    "_machine_translated": true,
+    "_source_hash": "c5bfd4ed5e93c10c"
+  },
+  "settings.description": {
+    "message": "ایک نمونہ ایکسٹینشن۔ سلام دیکھنے کے لیے فلوٹنگ ونڈو میں \"test\" یا \"hello\" ٹائپ کریں۔",
+    "description": "Top-of-pane description in Settings → Extensions → Hello World",
+    "_machine_translated": true,
+    "_source_hash": "d134365fadc188ef"
+  },
+  "settings.greeting.label": {
+    "message": "سلام کا پیغام",
+    "description": "Settings label for the customisable greeting text",
+    "_machine_translated": true,
+    "_source_hash": "fdcc5c12ebe144c4"
+  },
+  "settings.greeting.description": {
+    "message": "وہ متن جو آپ کے \"test\" یا \"hello\" ٹائپ کرنے پر دکھایا جاتا ہے۔",
+    "description": "Helper text for the greeting setting",
+    "_machine_translated": true,
+    "_source_hash": "c7e40c7a2e1f36d7"
+  },
+  "settings.greeting.default": {
+    "message": "ہیلو ورلڈ",
+    "description": "Default value of the greeting text — also the fallback when config is empty. Translatable so a Japanese user gets a Japanese default.",
+    "_machine_translated": true,
+    "_source_hash": "afa5bdc31fb9a583"
+  },
+  "settings.show_timestamp.label": {
+    "message": "ٹائم اسٹیمپ دکھائیں",
+    "description": "Settings label for the timestamp checkbox",
+    "_machine_translated": true,
+    "_source_hash": "e248bf5053ca8322"
+  },
+  "settings.show_timestamp.description": {
+    "message": "موجودہ وقت کو سلام کے ساتھ شامل کریں۔",
+    "description": "Helper text for the timestamp checkbox",
+    "_machine_translated": true,
+    "_source_hash": "926be39685a2ac0e"
+  }
+}

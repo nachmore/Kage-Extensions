@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "vi",
+    "name": "Tiếng Việt",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Trình chuyển đổi tiền tệ",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "25912f062e097b1b"
+  },
+  "manifest.description": {
+    "message": "Chuyển đổi tiền tệ trực tiếp. Nhập \"100 usd to eur\" hoặc \"50 jpy in cad\". Tỷ giá từ frankfurter.dev (Ngân hàng Trung ương châu Âu).",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "72af6e5aebb257be"
+  }
+}

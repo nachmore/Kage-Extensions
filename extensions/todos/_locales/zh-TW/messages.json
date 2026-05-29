@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "zh-TW",
+    "name": "繁體中文",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "待辦事項與提醒",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "94ed77d143734eee"
+  },
+  "manifest.description": {
+    "message": "任務管理工具，支援到期日、分類、優先順序與進度追蹤。輸入 'todo' 可查看摘要，'todo+ <task>' 可新增任務，'todo+ <task> due:<date>' 可建立帶有到期日橫幅的提醒。",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "707ab313e0ae2676"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "de",
+    "name": "Deutsch",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Linkvorschau",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "71f62720d8c6e809"
+  },
+  "manifest.description": {
+    "message": "Umfangreiche Linkvorschaukarten für URLs in KI-Antworten – Open-Graph-Hero-Bilder, Beschreibungen und Favicons, mit offlinefreundlichem Festplatten-Caching.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "8715cca27a85ca14"
+  }
+}

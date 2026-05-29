@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "ur",
+    "name": "اردو",
+    "rtl": true,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "پاس ورڈ جنریٹر",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "9020186825c3a8a8"
+  },
+  "manifest.description": {
+    "message": "ایک کی اسٹروک سے مضبوط بے ترتیب پاس ورڈ بنائیں۔ ڈیفالٹ کے لیے \"pw\"، حسب ضرورت لمبائی کے لیے \"pw 32\"، اور پاس فریز کے لیے \"pw word\" لکھیں۔",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "0fa52e497866e221"
+  }
+}

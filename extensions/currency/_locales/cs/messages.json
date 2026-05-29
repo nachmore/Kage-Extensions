@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "cs",
+    "name": "Čeština",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Převodník měn",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "25912f062e097b1b"
+  },
+  "manifest.description": {
+    "message": "Živý převod měn. Zadejte „100 usd to eur“ nebo „50 jpy in cad“. Kurzy z frankfurter.dev (Evropská centrální banka).",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "72af6e5aebb257be"
+  }
+}

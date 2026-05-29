@@ -1,0 +1,16 @@
+{
+  "_meta": {
+    "language": "en",
+    "name": "English",
+    "rtl": false,
+    "machine_translated": false
+  },
+  "manifest.name": {
+    "message": "Dictionary",
+    "description": "Extension display name"
+  },
+  "manifest.description": {
+    "message": "Look up word definitions, spelling corrections, and pronunciation using FreeDictionaryAPI.com",
+    "description": "Extension description"
+  }
+}

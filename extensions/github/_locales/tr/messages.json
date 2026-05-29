@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "tr",
+    "name": "Türkçe",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "GitHub Arama",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "75b7a4faa91be805"
+  },
+  "manifest.description": {
+    "message": "Başlatıcıdan GitHub depolarını, kullanıcılarını ve sorunlarını arayın. Depolar için \"gh <sorgu>\", kullanıcılar için \"gh @<kullanıcı>\", sorunlar için \"gh #<sorgu>\" yazın.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "cf3213df81c4f097"
+  }
+}

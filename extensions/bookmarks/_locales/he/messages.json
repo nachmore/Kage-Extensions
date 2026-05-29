@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "he",
+    "name": "עברית",
+    "rtl": true,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "סימניות",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "eebbea3000371542"
+  },
+  "manifest.description": {
+    "message": "שמירה ופתיחה של כתובות URL מתוך המשגר של Kage. הקלידו \"bm <name>\" לפתיחה, \"bm+ <name> <url>\" לשמירה, \"bm- <name>\" למחיקה.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "a45fe2ba27938cb2"
+  }
+}

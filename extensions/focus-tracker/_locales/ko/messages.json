@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "ko",
+    "name": "한국어",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "포커스 트래커",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "3c9cc39fbdaff95a"
+  },
+  "manifest.description": {
+    "message": "앱 사용량, 컨텍스트 전환, 집중 연속 기록을 추적합니다. AI 인사이트가 포함된 일간/주간/월간 보고서를 받아보세요.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "249b504d57430c6f"
+  }
+}

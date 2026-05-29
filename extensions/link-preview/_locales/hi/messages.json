@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "hi",
+    "name": "हिन्दी",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "लिंक पूर्वावलोकन",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "71f62720d8c6e809"
+  },
+  "manifest.description": {
+    "message": "AI उत्तरों में URL के लिए समृद्ध लिंक पूर्वावलोकन कार्ड  Open Graph हीरो छवियाँ, विवरण और फ़ेविकॉन, ऑफ़लाइन-अनुकूल डिस्क कैशिंग के साथ।",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "8715cca27a85ca14"
+  }
+}

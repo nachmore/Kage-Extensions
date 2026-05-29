@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "cs",
+    "name": "Čeština",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Úkoly a připomínky",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "94ed77d143734eee"
+  },
+  "manifest.description": {
+    "message": "Správce úkolů s termíny, kategoriemi, prioritami a sledováním pokroku. Napište 'todo' pro souhrn, 'todo+ <úkol>' pro přidání, 'todo+ <úkol> due:<datum>' pro připomínku s banerem termínu.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "707ab313e0ae2676"
+  }
+}

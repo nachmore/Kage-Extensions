@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "da",
+    "name": "Dansk",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Vejr",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "daa0802921925a4d"
+  },
+  "manifest.description": {
+    "message": "Aktuelt vejr og vejrudsigt for enhver placering. Skriv \"weather\" for din hjemby, eller \"weather <by>\" for et andet sted. Drevet af open-meteo.com.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "6c710d2555644788"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "pt",
+    "name": "Português",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Tarefas e lembretes",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "94ed77d143734eee"
+  },
+  "manifest.description": {
+    "message": "Gestor de tarefas com prazos, categorias, prioridades e acompanhamento de progresso. Escreva 'todo' para um resumo, 'todo+ <tarefa>' para adicionar, 'todo+ <tarefa> due:<data>' para um lembrete com um aviso de prazo.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "707ab313e0ae2676"
+  }
+}

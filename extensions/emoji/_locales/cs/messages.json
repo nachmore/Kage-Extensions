@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "cs",
+    "name": "Čeština",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Výběr emoji",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "205c3e69ca030742"
+  },
+  "manifest.description": {
+    "message": "Hledejte a kopírujte emoji podle názvu. Napište „:fire“ nebo „emoji rocket“ a vybere se nejbližší shoda z ~1500 nejpoužívanějších emoji.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "59640ff70d49d4b7"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "th",
+    "name": "ไทย",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "สนิปเพ็ต",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "c81d69ea1fad46cc"
+  },
+  "manifest.description": {
+    "message": "ข้อความสนิปเพ็ตที่บันทึกไว้ คัดลอกได้จากตัวเรียกใช้งาน เหมาะสำหรับคำตอบสำเร็จรูป ที่อยู่ คำสั่ง GIT หรือสิ่งที่คุณพิมพ์บ่อย ๆ",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "667e7829308ceab3"
+  }
+}

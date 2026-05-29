@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "fi",
+    "name": "Suomi",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Salasanageneraattori",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "9020186825c3a8a8"
+  },
+  "manifest.description": {
+    "message": "Luo vahvoja satunnaisia salasanoja yhdellä näppäilyllä. Kirjoita ”pw” saadaksesi oletuksen, ”pw 32” mukautetulle pituudelle ja ”pw word” salasanalauseelle.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "0fa52e497866e221"
+  }
+}

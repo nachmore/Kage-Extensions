@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "fa",
+    "name": "فارسی",
+    "rtl": true,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "نشانک‌ها",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "eebbea3000371542"
+  },
+  "manifest.description": {
+    "message": "ذخیره و باز کردن URLها از راه‌انداز Kage. برای باز کردن «bm <name>»، برای ذخیره «bm+ <name> <url>»، و برای حذف «bm- <name>» را تایپ کنید.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "a45fe2ba27938cb2"
+  }
+}

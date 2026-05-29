@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "fr",
+    "name": "Français",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Recherche GitHub",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "75b7a4faa91be805"
+  },
+  "manifest.description": {
+    "message": "Recherchez des dépôts, utilisateurs et tickets GitHub depuis le lanceur. Tapez « gh <query> » pour les dépôts, « gh @<user> » pour les utilisateurs, « gh #<query> » pour les tickets.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "cf3213df81c4f097"
+  }
+}

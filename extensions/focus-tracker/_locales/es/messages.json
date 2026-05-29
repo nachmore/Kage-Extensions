@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "es",
+    "name": "Español",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Rastreador de concentración",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "3c9cc39fbdaff95a"
+  },
+  "manifest.description": {
+    "message": "Registra el uso de aplicaciones, los cambios de contexto y las rachas de concentración. Obtén informes diarios, semanales y mensuales con análisis de IA.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "249b504d57430c6f"
+  }
+}

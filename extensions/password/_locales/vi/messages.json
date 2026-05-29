@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "vi",
+    "name": "Tiếng Việt",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Trình tạo mật khẩu",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "9020186825c3a8a8"
+  },
+  "manifest.description": {
+    "message": "Tạo mật khẩu ngẫu nhiên mạnh chỉ với một thao tác phím. Gõ \"pw\" để dùng mặc định, \"pw 32\" để chọn độ dài tùy chỉnh, \"pw word\" để tạo cụm mật khẩu.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "0fa52e497866e221"
+  }
+}

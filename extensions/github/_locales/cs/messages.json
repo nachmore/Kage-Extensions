@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "cs",
+    "name": "Čeština",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Vyhledávání na GitHubu",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "75b7a4faa91be805"
+  },
+  "manifest.description": {
+    "message": "Hledejte repozitáře, uživatele a issues na GitHubu přímo ze spouštěče. Zadejte „gh <dotaz>“ pro repozitáře, „gh @<uživatel>“ pro uživatele, „gh #<dotaz>“ pro issues.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "cf3213df81c4f097"
+  }
+}

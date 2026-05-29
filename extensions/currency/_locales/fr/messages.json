@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "fr",
+    "name": "Français",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Convertisseur de devises",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "25912f062e097b1b"
+  },
+  "manifest.description": {
+    "message": "Conversion de devises en direct. Saisissez « 100 usd to eur » ou « 50 jpy in cad ». Taux fournis par frankfurter.dev (Banque centrale européenne).",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "72af6e5aebb257be"
+  }
+}

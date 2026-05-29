@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "el",
+    "name": "Ελληνικά",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Αποσπάσματα",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "c81d69ea1fad46cc"
+  },
+  "manifest.description": {
+    "message": "Αποθηκευμένα αποσπάσματα κειμένου, αντιγράψιμα από τον εκκινητή. Ιδανικά για έτοιμες απαντήσεις, διευθύνσεις, εντολές GIT, οτιδήποτε πληκτρολογείτε συχνά.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "667e7829308ceab3"
+  }
+}

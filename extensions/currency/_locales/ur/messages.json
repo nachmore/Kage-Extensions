@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "ur",
+    "name": "اردو",
+    "rtl": true,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "کرنسی کنورٹر",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "25912f062e097b1b"
+  },
+  "manifest.description": {
+    "message": "لائیو کرنسی کنورژن۔ \"100 usd to eur\" یا \"50 jpy in cad\" ٹائپ کریں۔ ریٹس frankfurter.dev (یورپین سینٹرل بینک) سے۔",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "72af6e5aebb257be"
+  }
+}

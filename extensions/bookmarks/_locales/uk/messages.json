@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "uk",
+    "name": "Українська",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Закладки",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "eebbea3000371542"
+  },
+  "manifest.description": {
+    "message": "Зберігайте та відкривайте URL із лаунчера Kage. Введіть «bm <name>», щоб відкрити, «bm+ <name> <url>», щоб зберегти, «bm- <name>», щоб видалити.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "a45fe2ba27938cb2"
+  }
+}

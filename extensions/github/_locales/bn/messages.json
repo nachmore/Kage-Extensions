@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "bn",
+    "name": "বাংলা",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "GitHub সার্চ",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "75b7a4faa91be805"
+  },
+  "manifest.description": {
+    "message": "লঞ্চার থেকে GitHub রিপো, ইউজার এবং ইস্যু সার্চ করুন। রিপোর জন্য \"gh <query>\", ইউজারের জন্য \"gh @<user>\", ইস্যুর জন্য \"gh #<query>\" টাইপ করুন।",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "cf3213df81c4f097"
+  }
+}

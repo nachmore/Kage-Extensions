@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "id",
+    "name": "Bahasa Indonesia",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Pembuat Kata Sandi",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "9020186825c3a8a8"
+  },
+  "manifest.description": {
+    "message": "Buat kata sandi acak yang kuat dengan satu ketukan. Ketik \"pw\" untuk default, \"pw 32\" untuk panjang khusus, \"pw word\" untuk frasa sandi.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "0fa52e497866e221"
+  }
+}

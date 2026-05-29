@@ -1,0 +1,16 @@
+{
+  "_meta": {
+    "language": "en",
+    "name": "English",
+    "rtl": false,
+    "machine_translated": false
+  },
+  "manifest.name": {
+    "message": "Developer Tools",
+    "description": "Extension display name"
+  },
+  "manifest.description": {
+    "message": "UUID generation, base64 encode/decode, hashing, epoch conversion, JSON formatting",
+    "description": "Extension description"
+  }
+}

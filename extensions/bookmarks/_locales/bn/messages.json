@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "bn",
+    "name": "বাংলা",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "বুকমার্ক",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "eebbea3000371542"
+  },
+  "manifest.description": {
+    "message": "Kage-এর লঞ্চার থেকে URL সংরক্ষণ ও খুলুন। খুলতে \"bm <name>\" লিখুন, সংরক্ষণ করতে \"bm+ <name> <url>\", মুছতে \"bm- <name>\" লিখুন।",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "a45fe2ba27938cb2"
+  }
+}

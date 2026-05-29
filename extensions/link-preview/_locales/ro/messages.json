@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "ro",
+    "name": "Română",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Previzualizare link",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "71f62720d8c6e809"
+  },
+  "manifest.description": {
+    "message": "Carduri bogate de previzualizare a linkurilor pentru URL-uri în răspunsurile AI  imagini hero Open Graph, descrieri și favicon-uri, cu memorare în cache pe disc compatibilă offline.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "8715cca27a85ca14"
+  }
+}

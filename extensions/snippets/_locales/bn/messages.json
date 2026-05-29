@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "bn",
+    "name": "বাংলা",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "স্নিপেট",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "c81d69ea1fad46cc"
+  },
+  "manifest.description": {
+    "message": "সংরক্ষিত টেক্সট স্নিপেট, লঞ্চার থেকে কপি করা যায়। প্রস্তুত উত্তর, ঠিকানা, GIT কমান্ড, বা যা কিছু আপনি প্রায়ই টাইপ করেন তার জন্য আদর্শ।",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "667e7829308ceab3"
+  }
+}

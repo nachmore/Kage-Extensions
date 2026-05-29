@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "el",
+    "name": "Ελληνικά",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Αναζήτηση GitHub",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "75b7a4faa91be805"
+  },
+  "manifest.description": {
+    "message": "Αναζήτηση αποθετηρίων, χρηστών και ζητημάτων του GitHub από τον εκκινητή. Πληκτρολογήστε «gh <query>» για αποθετήρια, «gh @<user>» για χρήστες, «gh #<query>» για ζητήματα.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "cf3213df81c4f097"
+  }
+}

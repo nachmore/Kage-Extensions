@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "ar",
+    "name": "العربية",
+    "rtl": true,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "منتقي الألوان",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "388558dded8f97ac"
+  },
+  "manifest.description": {
+    "message": "اكتشاف الألوان ومعاينتها (hex وrgb وhsl والأسماء) مع تحويل الصيغ",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "31c7e58200c59012"
+  }
+}

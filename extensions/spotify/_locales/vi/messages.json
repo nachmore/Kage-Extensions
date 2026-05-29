@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "vi",
+    "name": "Tiếng Việt",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Spotify",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "c5a87869e821d302"
+  },
+  "manifest.description": {
+    "message": "Xem nội dung đang phát trên Spotify, điều khiển phát lại, thích / bỏ thích, thêm vào hàng đợi và quản lý danh sách phát từ Kage.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "74abec23ede6a157"
+  }
+}

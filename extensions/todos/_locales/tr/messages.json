@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "tr",
+    "name": "Türkçe",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Yapılacaklar ve Hatırlatıcılar",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "94ed77d143734eee"
+  },
+  "manifest.description": {
+    "message": "Bitiş tarihleri, kategoriler, öncelikler ve ilerleme takibi içeren görev yöneticisi. Özet için 'todo', görev eklemek için 'todo+ <task>', bitiş tarihi başlığıyla hatırlatıcı için 'todo+ <task> due:<date>' yazın.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "707ab313e0ae2676"
+  }
+}

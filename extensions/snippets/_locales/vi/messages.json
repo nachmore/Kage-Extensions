@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "vi",
+    "name": "Tiếng Việt",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Đoạn văn bản",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "c81d69ea1fad46cc"
+  },
+  "manifest.description": {
+    "message": "Các đoạn văn bản đã lưu, có thể sao chép từ trình khởi chạy. Hoàn hảo cho phản hồi soạn sẵn, địa chỉ, lệnh GIT, bất cứ thứ gì bạn thường gõ.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "667e7829308ceab3"
+  }
+}

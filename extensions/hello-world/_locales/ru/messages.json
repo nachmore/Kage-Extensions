@@ -1,0 +1,62 @@
+{
+  "_meta": {
+    "language": "ru",
+    "name": "Русский",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Hello World",
+    "description": "Extension display name shown in Settings → Extensions and the store.",
+    "_machine_translated": true,
+    "_source_hash": "d8a58418c0d2baee"
+  },
+  "manifest.description": {
+    "message": "Пример расширения, которое отвечает «Hello World» на запрос «test». Используйте его как шаблон для создания собственных расширений.",
+    "description": "Extension description shown in Settings → Extensions and the store.",
+    "_machine_translated": true,
+    "_source_hash": "0551c38ae1a5b963"
+  },
+  "result.description": {
+    "message": "Нажмите Enter, чтобы скопировать",
+    "description": "Subtitle on the Hello World search result",
+    "_machine_translated": true,
+    "_source_hash": "c5bfd4ed5e93c10c"
+  },
+  "settings.description": {
+    "message": "Пример расширения. Введите «test» или «hello» в плавающем окне, чтобы увидеть приветствие.",
+    "description": "Top-of-pane description in Settings → Extensions → Hello World",
+    "_machine_translated": true,
+    "_source_hash": "d134365fadc188ef"
+  },
+  "settings.greeting.label": {
+    "message": "Текст приветствия",
+    "description": "Settings label for the customisable greeting text",
+    "_machine_translated": true,
+    "_source_hash": "fdcc5c12ebe144c4"
+  },
+  "settings.greeting.description": {
+    "message": "Текст, отображаемый при вводе «test» или «hello».",
+    "description": "Helper text for the greeting setting",
+    "_machine_translated": true,
+    "_source_hash": "c7e40c7a2e1f36d7"
+  },
+  "settings.greeting.default": {
+    "message": "Привет, мир",
+    "description": "Default value of the greeting text — also the fallback when config is empty. Translatable so a Japanese user gets a Japanese default.",
+    "_machine_translated": true,
+    "_source_hash": "afa5bdc31fb9a583"
+  },
+  "settings.show_timestamp.label": {
+    "message": "Показывать время",
+    "description": "Settings label for the timestamp checkbox",
+    "_machine_translated": true,
+    "_source_hash": "e248bf5053ca8322"
+  },
+  "settings.show_timestamp.description": {
+    "message": "Добавлять текущее время к приветствию.",
+    "description": "Helper text for the timestamp checkbox",
+    "_machine_translated": true,
+    "_source_hash": "926be39685a2ac0e"
+  }
+}

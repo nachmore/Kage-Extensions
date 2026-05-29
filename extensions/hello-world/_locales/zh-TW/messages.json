@@ -1,0 +1,62 @@
+{
+  "_meta": {
+    "language": "zh-TW",
+    "name": "繁體中文",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Hello World",
+    "description": "Extension display name shown in Settings → Extensions and the store.",
+    "_machine_translated": true,
+    "_source_hash": "d8a58418c0d2baee"
+  },
+  "manifest.description": {
+    "message": "範例擴充功能，當輸入「test」時會回覆「Hello World」。可作為建立自有擴充功能的範本。",
+    "description": "Extension description shown in Settings → Extensions and the store.",
+    "_machine_translated": true,
+    "_source_hash": "0551c38ae1a5b963"
+  },
+  "result.description": {
+    "message": "按 Enter 複製",
+    "description": "Subtitle on the Hello World search result",
+    "_machine_translated": true,
+    "_source_hash": "c5bfd4ed5e93c10c"
+  },
+  "settings.description": {
+    "message": "範例擴充功能。在浮動視窗中輸入「test」或「hello」即可看到問候語。",
+    "description": "Top-of-pane description in Settings → Extensions → Hello World",
+    "_machine_translated": true,
+    "_source_hash": "d134365fadc188ef"
+  },
+  "settings.greeting.label": {
+    "message": "問候訊息",
+    "description": "Settings label for the customisable greeting text",
+    "_machine_translated": true,
+    "_source_hash": "fdcc5c12ebe144c4"
+  },
+  "settings.greeting.description": {
+    "message": "輸入「test」或「hello」時顯示的文字。",
+    "description": "Helper text for the greeting setting",
+    "_machine_translated": true,
+    "_source_hash": "c7e40c7a2e1f36d7"
+  },
+  "settings.greeting.default": {
+    "message": "你好，世界",
+    "description": "Default value of the greeting text — also the fallback when config is empty. Translatable so a Japanese user gets a Japanese default.",
+    "_machine_translated": true,
+    "_source_hash": "afa5bdc31fb9a583"
+  },
+  "settings.show_timestamp.label": {
+    "message": "顯示時間戳記",
+    "description": "Settings label for the timestamp checkbox",
+    "_machine_translated": true,
+    "_source_hash": "e248bf5053ca8322"
+  },
+  "settings.show_timestamp.description": {
+    "message": "在問候語後附加目前時間。",
+    "description": "Helper text for the timestamp checkbox",
+    "_machine_translated": true,
+    "_source_hash": "926be39685a2ac0e"
+  }
+}

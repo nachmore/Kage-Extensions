@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "bn",
+    "name": "বাংলা",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "লিংক প্রিভিউ",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "71f62720d8c6e809"
+  },
+  "manifest.description": {
+    "message": "AI উত্তরে থাকা URL-এর জন্য সমৃদ্ধ লিংক প্রিভিউ কার্ড  Open Graph হিরো ছবি, বিবরণ এবং ফেভিকন, সাথে অফলাইন-বান্ধব ডিস্ক ক্যাশিং।",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "8715cca27a85ca14"
+  }
+}

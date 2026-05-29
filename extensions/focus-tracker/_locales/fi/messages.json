@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "fi",
+    "name": "Suomi",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Keskittymisen seuranta",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "3c9cc39fbdaff95a"
+  },
+  "manifest.description": {
+    "message": "Seuraa sovellusten käyttöä, kontekstinvaihtoja ja keskittymisputkia. Saa päivittäiset, viikoittaiset ja kuukausittaiset raportit tekoälyn oivalluksilla.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "249b504d57430c6f"
+  }
+}

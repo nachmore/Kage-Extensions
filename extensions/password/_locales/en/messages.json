@@ -1,0 +1,16 @@
+{
+  "_meta": {
+    "language": "en",
+    "name": "English",
+    "rtl": false,
+    "machine_translated": false
+  },
+  "manifest.name": {
+    "message": "Password Generator",
+    "description": "Extension display name"
+  },
+  "manifest.description": {
+    "message": "Generate strong random passwords with one keystroke. Type \"pw\" for the default, \"pw 32\" for a custom length, \"pw word\" for a passphrase.",
+    "description": "Extension description"
+  }
+}

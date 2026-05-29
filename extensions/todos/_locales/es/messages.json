@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "es",
+    "name": "Español",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Tareas y recordatorios",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "94ed77d143734eee"
+  },
+  "manifest.description": {
+    "message": "Gestor de tareas con fechas de vencimiento, categorías, prioridades y seguimiento del progreso. Escribe «todo» para ver un resumen, «todo+ <tarea>» para añadir y «todo+ <tarea> due:<fecha>» para un recordatorio con un aviso de fecha de vencimiento.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "707ab313e0ae2676"
+  }
+}

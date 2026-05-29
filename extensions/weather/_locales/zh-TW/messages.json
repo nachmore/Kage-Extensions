@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "zh-TW",
+    "name": "繁體中文",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "天氣",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "daa0802921925a4d"
+  },
+  "manifest.description": {
+    "message": "查看任何地點的目前天氣與預報。輸入「weather」查看所在地天氣，或輸入「weather <城市>」查看其他地點。由 open-meteo.com 提供。",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "6c710d2555644788"
+  }
+}

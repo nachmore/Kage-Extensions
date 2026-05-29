@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "zh-TW",
+    "name": "繁體中文",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "密碼產生器",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "9020186825c3a8a8"
+  },
+  "manifest.description": {
+    "message": "一鍵產生高強度隨機密碼。輸入「pw」取得預設密碼、「pw 32」自訂長度、「pw word」產生通行密語。",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "0fa52e497866e221"
+  }
+}

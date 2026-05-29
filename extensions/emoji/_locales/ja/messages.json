@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "ja",
+    "name": "日本語",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "絵文字ピッカー",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "205c3e69ca030742"
+  },
+  "manifest.description": {
+    "message": "絵文字を名前で検索してコピーします。「:fire」や「emoji rocket」と入力すると、よく使われる約1500種類の絵文字から最も近いものを選びます。",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "59640ff70d49d4b7"
+  }
+}

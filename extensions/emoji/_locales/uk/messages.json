@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "uk",
+    "name": "Українська",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Вибір емодзі",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "205c3e69ca030742"
+  },
+  "manifest.description": {
+    "message": "Шукайте та копіюйте емодзі за назвою. Введіть «:fire» або «emoji rocket» — знайдеться найближчий збіг серед ~1500 найпопулярніших емодзі.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "59640ff70d49d4b7"
+  }
+}

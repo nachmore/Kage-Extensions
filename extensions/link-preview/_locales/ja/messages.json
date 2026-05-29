@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "ja",
+    "name": "日本語",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "リンクプレビュー",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "71f62720d8c6e809"
+  },
+  "manifest.description": {
+    "message": "AIの応答に含まれるURLのリッチなリンクプレビューカード。Open Graphのヒーロー画像、説明、ファビコンを表示し、オフラインに対応したディスクキャッシュを備えています。",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "8715cca27a85ca14"
+  }
+}

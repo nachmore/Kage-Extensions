@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "id",
+    "name": "Bahasa Indonesia",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Pratinjau Tautan",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "71f62720d8c6e809"
+  },
+  "manifest.description": {
+    "message": "Kartu pratinjau tautan yang kaya untuk URL dalam respons AI  gambar utama Open Graph, deskripsi, dan favicon, dengan caching disk yang ramah offline.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "8715cca27a85ca14"
+  }
+}

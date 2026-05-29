@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "el",
+    "name": "Ελληνικά",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Καιρός",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "daa0802921925a4d"
+  },
+  "manifest.description": {
+    "message": "Τρέχων καιρός και πρόγνωση για οποιαδήποτε τοποθεσία. Πληκτρολογήστε \"weather\" για την περιοχή σας ή \"weather <πόλη>\" για κάπου αλλού. Με την υποστήριξη του open-meteo.com.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "6c710d2555644788"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "uk",
+    "name": "Українська",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Трекер фокусу",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "3c9cc39fbdaff95a"
+  },
+  "manifest.description": {
+    "message": "Відстежуйте використання застосунків, перемикання контексту та серії фокусу. Отримуйте щоденні, щотижневі та щомісячні звіти зі статистикою від AI.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "249b504d57430c6f"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "es",
+    "name": "Español",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Vista previa de enlaces",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "71f62720d8c6e809"
+  },
+  "manifest.description": {
+    "message": "Tarjetas enriquecidas de vista previa para URL en las respuestas de IA: imágenes principales de Open Graph, descripciones y favicons, con caché en disco compatible sin conexión.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "8715cca27a85ca14"
+  }
+}

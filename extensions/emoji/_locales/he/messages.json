@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "he",
+    "name": "עברית",
+    "rtl": true,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "בורר אימוג'י",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "205c3e69ca030742"
+  },
+  "manifest.description": {
+    "message": "חיפוש והעתקה של אימוג'ים לפי שם. הקלדת \":fire\" או \"emoji rocket\" בוחרת את ההתאמה הקרובה ביותר מתוך כ-1500 האימוג'ים הנפוצים ביותר.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "59640ff70d49d4b7"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "fa",
+    "name": "فارسی",
+    "rtl": true,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "کارها و یادآوری‌ها",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "94ed77d143734eee"
+  },
+  "manifest.description": {
+    "message": "مدیریت کارها با تاریخ سررسید، دسته‌بندی، اولویت و پیگیری پیشرفت. برای مشاهده خلاصه «todo»، برای افزودن «todo+ <task>» و برای یادآوری با بنر تاریخ سررسید «todo+ <task> due:<date>» را تایپ کنید.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "707ab313e0ae2676"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "bn",
+    "name": "বাংলা",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "ফোকাস ট্র্যাকার",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "3c9cc39fbdaff95a"
+  },
+  "manifest.description": {
+    "message": "অ্যাপ ব্যবহার, কনটেক্সট সুইচ এবং ফোকাস স্ট্রিক ট্র্যাক করুন। AI অন্তর্দৃষ্টি সহ দৈনিক/সাপ্তাহিক/মাসিক প্রতিবেদন পান।",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "249b504d57430c6f"
+  }
+}

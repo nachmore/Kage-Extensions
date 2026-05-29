@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "vi",
+    "name": "Tiếng Việt",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Hẹn giờ & bấm giờ",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "d7a220ea51ec86a9"
+  },
+  "manifest.description": {
+    "message": "Đồng hồ đếm ngược và bấm giờ kèm âm thanh thông báo",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "5e3d3fcb6c65000a"
+  }
+}

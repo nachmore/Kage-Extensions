@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "sv",
+    "name": "Svenska",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Att göra och påminnelser",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "94ed77d143734eee"
+  },
+  "manifest.description": {
+    "message": "Uppgiftshanterare med förfallodatum, kategorier, prioriteringar och förloppsspårning. Skriv 'todo' för en sammanfattning, 'todo+ <uppgift>' för att lägga till, 'todo+ <uppgift> due:<datum>' för en påminnelse med banner för förfallodatum.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "707ab313e0ae2676"
+  }
+}

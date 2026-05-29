@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "vi",
+    "name": "Tiếng Việt",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Dấu trang",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "eebbea3000371542"
+  },
+  "manifest.description": {
+    "message": "Lưu và mở URL từ trình khởi chạy của Kage. Nhập \"bm <tên>\" để mở, \"bm+ <tên> <url>\" để lưu, \"bm- <tên>\" để xóa.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "a45fe2ba27938cb2"
+  }
+}

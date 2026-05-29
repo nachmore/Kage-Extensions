@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "ko",
+    "name": "한국어",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "이모지 선택기",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "205c3e69ca030742"
+  },
+  "manifest.description": {
+    "message": "이름으로 이모지를 검색하고 복사합니다. \":fire\" 또는 \"emoji rocket\"을 입력하면 가장 많이 사용되는 이모지 약 1,500개 중 가장 가까운 항목을 선택합니다.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "59640ff70d49d4b7"
+  }
+}

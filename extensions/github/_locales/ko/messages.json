@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "ko",
+    "name": "한국어",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "GitHub 검색",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "75b7a4faa91be805"
+  },
+  "manifest.description": {
+    "message": "런처에서 GitHub 저장소, 사용자, 이슈를 검색합니다. 저장소는 \"gh <query>\", 사용자는 \"gh @<user>\", 이슈는 \"gh #<query>\"를 입력하세요.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "cf3213df81c4f097"
+  }
+}

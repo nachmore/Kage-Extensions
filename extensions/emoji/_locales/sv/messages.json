@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "sv",
+    "name": "Svenska",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Emoji-väljare",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "205c3e69ca030742"
+  },
+  "manifest.description": {
+    "message": "Sök och kopiera emojier efter namn. Skriv \":fire\" eller \"emoji rocket\" för att hitta närmaste matchning bland ~1500 av de mest använda emojierna.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "59640ff70d49d4b7"
+  }
+}

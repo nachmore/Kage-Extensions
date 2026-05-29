@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "zh-CN",
+    "name": "简体中文",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "表情符号选择器",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "205c3e69ca030742"
+  },
+  "manifest.description": {
+    "message": "按名称搜索并复制表情符号。输入 \":fire\" 或 \"emoji rocket\"，可在约 1500 个最常用的表情符号中匹配最接近的结果。",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "59640ff70d49d4b7"
+  }
+}

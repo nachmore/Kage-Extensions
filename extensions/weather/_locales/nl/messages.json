@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "nl",
+    "name": "Nederlands",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Weer",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "daa0802921925a4d"
+  },
+  "manifest.description": {
+    "message": "Actueel weer en weersverwachting voor elke locatie. Typ \"weather\" voor je thuislocatie, of \"weather <stad>\" voor ergens anders. Mogelijk gemaakt door open-meteo.com.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "6c710d2555644788"
+  }
+}

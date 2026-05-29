@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "nl",
+    "name": "Nederlands",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Bladwijzers",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "eebbea3000371542"
+  },
+  "manifest.description": {
+    "message": "URL's opslaan en openen vanuit de launcher van Kage. Typ \"bm <naam>\" om te openen, \"bm+ <naam> <url>\" om op te slaan, \"bm- <naam>\" om te verwijderen.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "a45fe2ba27938cb2"
+  }
+}

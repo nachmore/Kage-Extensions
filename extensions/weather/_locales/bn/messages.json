@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "bn",
+    "name": "বাংলা",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "আবহাওয়া",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "daa0802921925a4d"
+  },
+  "manifest.description": {
+    "message": "যেকোনো স্থানের বর্তমান আবহাওয়া ও পূর্বাভাস। নিজের এলাকার জন্য \"weather\" টাইপ করুন, অথবা অন্য কোথাও জানতে \"weather <city>\" লিখুন। open-meteo.com দ্বারা পরিচালিত।",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "6c710d2555644788"
+  }
+}

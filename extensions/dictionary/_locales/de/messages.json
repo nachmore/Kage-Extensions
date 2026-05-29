@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "de",
+    "name": "Deutsch",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Wörterbuch",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "3da7b02cf3ae6fb2"
+  },
+  "manifest.description": {
+    "message": "Wortdefinitionen, Rechtschreibkorrekturen und Aussprache über FreeDictionaryAPI.com nachschlagen",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "23f2411c0957401e"
+  }
+}

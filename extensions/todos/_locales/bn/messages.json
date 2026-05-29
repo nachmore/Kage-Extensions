@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "bn",
+    "name": "বাংলা",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "টু-ডু ও রিমাইন্ডার",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "94ed77d143734eee"
+  },
+  "manifest.description": {
+    "message": "নির্ধারিত তারিখ, বিভাগ, অগ্রাধিকার এবং অগ্রগতি ট্র্যাকিং সহ টাস্ক ম্যানেজার। সারাংশের জন্য 'todo' টাইপ করুন, যোগ করতে 'todo+ <task>', নির্ধারিত-তারিখের ব্যানার সহ রিমাইন্ডারের জন্য 'todo+ <task> due:<date>'।",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "707ab313e0ae2676"
+  }
+}

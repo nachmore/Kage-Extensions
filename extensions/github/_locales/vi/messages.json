@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "vi",
+    "name": "Tiếng Việt",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Tìm kiếm GitHub",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "75b7a4faa91be805"
+  },
+  "manifest.description": {
+    "message": "Tìm kiếm kho lưu trữ, người dùng và sự cố trên GitHub từ trình khởi chạy. Nhập \"gh <truy vấn>\" cho kho lưu trữ, \"gh @<người dùng>\" cho người dùng, \"gh #<truy vấn>\" cho sự cố.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "cf3213df81c4f097"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "pl",
+    "name": "Polski",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Przelicznik walut",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "25912f062e097b1b"
+  },
+  "manifest.description": {
+    "message": "Przeliczanie walut na żywo. Wpisz „100 usd to eur” lub „50 jpy in cad”. Kursy z frankfurter.dev (Europejski Bank Centralny).",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "72af6e5aebb257be"
+  }
+}

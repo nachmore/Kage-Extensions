@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "it",
+    "name": "Italiano",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Selettore emoji",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "205c3e69ca030742"
+  },
+  "manifest.description": {
+    "message": "Cerca e copia emoji per nome. Digita \":fire\" o \"emoji rocket\" per trovare la corrispondenza più simile tra circa 1500 delle emoji più usate.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "59640ff70d49d4b7"
+  }
+}

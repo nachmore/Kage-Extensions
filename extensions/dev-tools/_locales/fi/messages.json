@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "fi",
+    "name": "Suomi",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Kehittäjätyökalut",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "90446132953cfd8d"
+  },
+  "manifest.description": {
+    "message": "UUID-generointi, base64-koodaus/-dekoodaus, tiivistys, epoch-muunnos, JSON-muotoilu",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "49d4746132984668"
+  }
+}

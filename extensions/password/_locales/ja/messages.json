@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "ja",
+    "name": "日本語",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "パスワードジェネレーター",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "9020186825c3a8a8"
+  },
+  "manifest.description": {
+    "message": "キー入力ひとつで強力なランダムパスワードを生成します。デフォルトは「pw」、長さを指定する場合は「pw 32」、パスフレーズを生成する場合は「pw word」と入力してください。",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "0fa52e497866e221"
+  }
+}

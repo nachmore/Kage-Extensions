@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "nl",
+    "name": "Nederlands",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Focus Tracker",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "3c9cc39fbdaff95a"
+  },
+  "manifest.description": {
+    "message": "Volg app-gebruik, contextwisselingen en focusreeksen. Ontvang dagelijkse, wekelijkse en maandelijkse rapporten met AI-inzichten.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "249b504d57430c6f"
+  }
+}

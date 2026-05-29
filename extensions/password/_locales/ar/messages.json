@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "ar",
+    "name": "العربية",
+    "rtl": true,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "مولّد كلمات المرور",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "9020186825c3a8a8"
+  },
+  "manifest.description": {
+    "message": "أنشئ كلمات مرور عشوائية قوية بضغطة مفتاح واحدة. اكتب \"pw\" للإعداد الافتراضي، أو \"pw 32\" لطول مخصص، أو \"pw word\" لعبارة مرور.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "0fa52e497866e221"
+  }
+}

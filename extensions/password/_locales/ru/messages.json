@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "ru",
+    "name": "Русский",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Генератор паролей",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "9020186825c3a8a8"
+  },
+  "manifest.description": {
+    "message": "Создавайте надёжные случайные пароли одним нажатием. Введите «pw» для пароля по умолчанию, «pw 32» для произвольной длины, «pw word» для парольной фразы.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "0fa52e497866e221"
+  }
+}

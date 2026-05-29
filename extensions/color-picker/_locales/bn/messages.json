@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "bn",
+    "name": "বাংলা",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "কালার পিকার",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "388558dded8f97ac"
+  },
+  "manifest.description": {
+    "message": "ফরম্যাট রূপান্তর সহ রঙ (hex, rgb, hsl, নামযুক্ত) শনাক্ত ও প্রিভিউ করুন",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "31c7e58200c59012"
+  }
+}

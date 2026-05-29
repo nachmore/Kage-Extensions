@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "da",
+    "name": "Dansk",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "GitHub-søgning",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "75b7a4faa91be805"
+  },
+  "manifest.description": {
+    "message": "Søg i GitHub-repositories, -brugere og -issues fra launcheren. Skriv \"gh <forespørgsel>\" for repositories, \"gh @<bruger>\" for brugere, \"gh #<forespørgsel>\" for issues.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "cf3213df81c4f097"
+  }
+}

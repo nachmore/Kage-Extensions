@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "hi",
+    "name": "हिन्दी",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Spotify",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "c5a87869e821d302"
+  },
+  "manifest.description": {
+    "message": "देखें कि Spotify पर क्या चल रहा है, प्लेबैक नियंत्रित करें, पसंद / नापसंद करें, क्यू में जोड़ें, और Kage से प्लेलिस्ट प्रबंधित करें।",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "74abec23ede6a157"
+  }
+}

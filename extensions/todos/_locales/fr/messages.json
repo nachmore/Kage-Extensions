@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "fr",
+    "name": "Français",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Tâches et rappels",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "94ed77d143734eee"
+  },
+  "manifest.description": {
+    "message": "Gestionnaire de tâches avec échéances, catégories, priorités et suivi de la progression. Tapez « todo » pour un résumé, « todo+ <task> » pour ajouter, « todo+ <task> due:<date> » pour un rappel avec une bannière d'échéance.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "707ab313e0ae2676"
+  }
+}

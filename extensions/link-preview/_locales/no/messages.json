@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "no",
+    "name": "Norsk",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Lenkeforhåndsvisning",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "71f62720d8c6e809"
+  },
+  "manifest.description": {
+    "message": "Rike forhåndsvisningskort for URL-er i AI-svar – Open Graph-hovedbilder, beskrivelser og favorittikoner, med frakoblet disk-bufring.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "8715cca27a85ca14"
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "_meta": {
+    "language": "bn",
+    "name": "বাংলা",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "হ্যালো ওয়ার্ল্ড",
+    "description": "Extension display name shown in Settings → Extensions and the store.",
+    "_machine_translated": true,
+    "_source_hash": "d8a58418c0d2baee"
+  },
+  "manifest.description": {
+    "message": "একটি নমুনা এক্সটেনশন যা 'test' লিখলে 'Hello World' দিয়ে সাড়া দেয়। নিজের এক্সটেনশন তৈরির টেমপ্লেট হিসেবে এটি ব্যবহার করুন।",
+    "description": "Extension description shown in Settings → Extensions and the store.",
+    "_machine_translated": true,
+    "_source_hash": "0551c38ae1a5b963"
+  },
+  "result.description": {
+    "message": "কপি করতে Enter চাপুন",
+    "description": "Subtitle on the Hello World search result",
+    "_machine_translated": true,
+    "_source_hash": "c5bfd4ed5e93c10c"
+  },
+  "settings.description": {
+    "message": "একটি নমুনা এক্সটেনশন। অভিবাদন দেখতে ভাসমান উইন্ডোতে \"test\" বা \"hello\" টাইপ করুন।",
+    "description": "Top-of-pane description in Settings → Extensions → Hello World",
+    "_machine_translated": true,
+    "_source_hash": "d134365fadc188ef"
+  },
+  "settings.greeting.label": {
+    "message": "অভিবাদন বার্তা",
+    "description": "Settings label for the customisable greeting text",
+    "_machine_translated": true,
+    "_source_hash": "fdcc5c12ebe144c4"
+  },
+  "settings.greeting.description": {
+    "message": "আপনি \"test\" বা \"hello\" টাইপ করলে যে লেখা দেখানো হয়।",
+    "description": "Helper text for the greeting setting",
+    "_machine_translated": true,
+    "_source_hash": "c7e40c7a2e1f36d7"
+  },
+  "settings.greeting.default": {
+    "message": "হ্যালো ওয়ার্ল্ড",
+    "description": "Default value of the greeting text — also the fallback when config is empty. Translatable so a Japanese user gets a Japanese default.",
+    "_machine_translated": true,
+    "_source_hash": "afa5bdc31fb9a583"
+  },
+  "settings.show_timestamp.label": {
+    "message": "টাইমস্ট্যাম্প দেখান",
+    "description": "Settings label for the timestamp checkbox",
+    "_machine_translated": true,
+    "_source_hash": "e248bf5053ca8322"
+  },
+  "settings.show_timestamp.description": {
+    "message": "অভিবাদনের সাথে বর্তমান সময় যুক্ত করুন।",
+    "description": "Helper text for the timestamp checkbox",
+    "_machine_translated": true,
+    "_source_hash": "926be39685a2ac0e"
+  }
+}

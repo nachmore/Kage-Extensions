@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "cs",
+    "name": "Čeština",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Generátor hesel",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "9020186825c3a8a8"
+  },
+  "manifest.description": {
+    "message": "Vygenerujte silná náhodná hesla jedním stiskem klávesy. Zadejte „pw“ pro výchozí, „pw 32“ pro vlastní délku, „pw word“ pro přístupovou frázi.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "0fa52e497866e221"
+  }
+}

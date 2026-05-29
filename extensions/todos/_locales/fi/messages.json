@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "fi",
+    "name": "Suomi",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Tehtävät ja muistutukset",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "94ed77d143734eee"
+  },
+  "manifest.description": {
+    "message": "Tehtävienhallinta, jossa on eräpäivät, kategoriat, prioriteetit ja edistymisen seuranta. Kirjoita 'todo' nähdäksesi yhteenvedon, 'todo+ <tehtävä>' lisätäksesi tehtävän tai 'todo+ <tehtävä> due:<päivämäärä>' luodaksesi muistutuksen eräpäiväbannerilla.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "707ab313e0ae2676"
+  }
+}

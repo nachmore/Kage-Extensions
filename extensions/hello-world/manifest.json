@@ -1,9 +1,9 @@
 {
   "id": "hello-world",
-  "name": "Hello World",
-  "version": "1.0.0",
+  "name": "__MSG_manifest.name__",
+  "version": "1.1.0",
   "type": "extension",
-  "description": "A sample extension that responds to 'test' with 'Hello World'. Use this as a template for building your own extensions.",
+  "description": "__MSG_manifest.description__",
   "icon": "👋",
   "author": "kage",
   "permissions": [],

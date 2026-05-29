@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "zh-CN",
+    "name": "简体中文",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "书签",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "eebbea3000371542"
+  },
+  "manifest.description": {
+    "message": "在 Kage 启动器中保存和打开 URL。输入 \"bm <name>\" 打开，\"bm+ <name> <url>\" 保存，\"bm- <name>\" 删除。",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "a45fe2ba27938cb2"
+  }
+}

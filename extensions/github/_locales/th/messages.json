@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "th",
+    "name": "ไทย",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "ค้นหา GitHub",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "75b7a4faa91be805"
+  },
+  "manifest.description": {
+    "message": "ค้นหา repo ผู้ใช้ และ issue ของ GitHub จาก launcher พิมพ์ \"gh <query>\" สำหรับ repo, \"gh @<user>\" สำหรับผู้ใช้, \"gh #<query>\" สำหรับ issue",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "cf3213df81c4f097"
+  }
+}

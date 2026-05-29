@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "ar",
+    "name": "العربية",
+    "rtl": true,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "مؤقت وساعة إيقاف",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "d7a220ea51ec86a9"
+  },
+  "manifest.description": {
+    "message": "مؤقت تنازلي وساعة إيقاف مع أصوات تنبيه",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "5e3d3fcb6c65000a"
+  }
+}

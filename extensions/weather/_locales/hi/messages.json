@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "hi",
+    "name": "हिन्दी",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "मौसम",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "daa0802921925a4d"
+  },
+  "manifest.description": {
+    "message": "किसी भी स्थान के लिए वर्तमान मौसम और पूर्वानुमान। अपने घर के लिए \"weather\" टाइप करें, या किसी अन्य स्थान के लिए \"weather <city>\"। open-meteo.com द्वारा संचालित।",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "6c710d2555644788"
+  }
+}

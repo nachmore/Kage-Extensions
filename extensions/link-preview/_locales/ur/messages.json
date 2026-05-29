@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "ur",
+    "name": "اردو",
+    "rtl": true,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "لنک پیش منظر",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "71f62720d8c6e809"
+  },
+  "manifest.description": {
+    "message": "AI جوابات میں URLs کے لیے بھرپور لنک پیش منظر کارڈز  Open Graph ہیرو امیجز، تفصیلات، اور فیویکونز، آف لائن دوست ڈسک کیشنگ کے ساتھ۔",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "8715cca27a85ca14"
+  }
+}

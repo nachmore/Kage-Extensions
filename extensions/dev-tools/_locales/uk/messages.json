@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "uk",
+    "name": "Українська",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Інструменти розробника",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "90446132953cfd8d"
+  },
+  "manifest.description": {
+    "message": "Генерація UUID, кодування/декодування base64, хешування, конвертація epoch, форматування JSON",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "49d4746132984668"
+  }
+}

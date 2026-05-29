@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "bn",
+    "name": "বাংলা",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "পাসওয়ার্ড জেনারেটর",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "9020186825c3a8a8"
+  },
+  "manifest.description": {
+    "message": "একটি কীস্ট্রোকেই শক্তিশালী র‍্যান্ডম পাসওয়ার্ড তৈরি করুন। ডিফল্টের জন্য \"pw\", কাস্টম দৈর্ঘ্যের জন্য \"pw 32\", পাসফ্রেজের জন্য \"pw word\" টাইপ করুন।",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "0fa52e497866e221"
+  }
+}

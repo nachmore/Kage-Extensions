@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "ko",
+    "name": "한국어",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "스니펫",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "c81d69ea1fad46cc"
+  },
+  "manifest.description": {
+    "message": "런처에서 복사할 수 있는 저장된 텍스트 스니펫입니다. 정형화된 답변, 주소, GIT 명령어 등 자주 입력하는 내용에 적합합니다.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "667e7829308ceab3"
+  }
+}

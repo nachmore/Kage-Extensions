@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "tr",
+    "name": "Türkçe",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Bağlantı önizlemesi",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "71f62720d8c6e809"
+  },
+  "manifest.description": {
+    "message": "AI yanıtlarındaki URL'ler için zengin bağlantı önizleme kartları  Open Graph kapak görselleri, açıklamalar ve favicon'lar, çevrimdışı uyumlu disk önbelleğiyle.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "8715cca27a85ca14"
+  }
+}

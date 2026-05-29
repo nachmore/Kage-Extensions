@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "de",
+    "name": "Deutsch",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Spotify",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "c5a87869e821d302"
+  },
+  "manifest.description": {
+    "message": "Sehen Sie, was gerade auf Spotify läuft, steuern Sie die Wiedergabe, liken / entliken Sie Titel, verwalten Sie die Warteschlange und Ihre Playlists – direkt aus Kage.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "74abec23ede6a157"
+  }
+}

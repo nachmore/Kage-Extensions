@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "fr",
+    "name": "Français",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Spotify",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "c5a87869e821d302"
+  },
+  "manifest.description": {
+    "message": "Voyez ce qui joue sur Spotify, contrôlez la lecture, aimez / n'aimez plus, mettez en file d'attente et gérez les playlists depuis Kage.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "74abec23ede6a157"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "id",
+    "name": "Bahasa Indonesia",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Snippet",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "c81d69ea1fad46cc"
+  },
+  "manifest.description": {
+    "message": "Snippet teks tersimpan, dapat disalin dari launcher. Cocok untuk respons siap pakai, alamat, perintah GIT, apa pun yang sering Anda ketik.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "667e7829308ceab3"
+  }
+}

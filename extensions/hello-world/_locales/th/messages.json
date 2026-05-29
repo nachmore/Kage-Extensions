@@ -1,0 +1,62 @@
+{
+  "_meta": {
+    "language": "th",
+    "name": "ไทย",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "สวัสดีชาวโลก",
+    "description": "Extension display name shown in Settings → Extensions and the store.",
+    "_machine_translated": true,
+    "_source_hash": "d8a58418c0d2baee"
+  },
+  "manifest.description": {
+    "message": "ส่วนขยายตัวอย่างที่ตอบกลับ 'test' ด้วย 'Hello World' ใช้เป็นเทมเพลตสำหรับสร้างส่วนขยายของคุณเอง",
+    "description": "Extension description shown in Settings → Extensions and the store.",
+    "_machine_translated": true,
+    "_source_hash": "0551c38ae1a5b963"
+  },
+  "result.description": {
+    "message": "กด Enter เพื่อคัดลอก",
+    "description": "Subtitle on the Hello World search result",
+    "_machine_translated": true,
+    "_source_hash": "c5bfd4ed5e93c10c"
+  },
+  "settings.description": {
+    "message": "ส่วนขยายตัวอย่าง พิมพ์ \"test\" หรือ \"hello\" ในหน้าต่างลอยเพื่อดูข้อความทักทาย",
+    "description": "Top-of-pane description in Settings → Extensions → Hello World",
+    "_machine_translated": true,
+    "_source_hash": "d134365fadc188ef"
+  },
+  "settings.greeting.label": {
+    "message": "ข้อความทักทาย",
+    "description": "Settings label for the customisable greeting text",
+    "_machine_translated": true,
+    "_source_hash": "fdcc5c12ebe144c4"
+  },
+  "settings.greeting.description": {
+    "message": "ข้อความที่แสดงเมื่อคุณพิมพ์ \"test\" หรือ \"hello\"",
+    "description": "Helper text for the greeting setting",
+    "_machine_translated": true,
+    "_source_hash": "c7e40c7a2e1f36d7"
+  },
+  "settings.greeting.default": {
+    "message": "สวัสดีชาวโลก",
+    "description": "Default value of the greeting text — also the fallback when config is empty. Translatable so a Japanese user gets a Japanese default.",
+    "_machine_translated": true,
+    "_source_hash": "afa5bdc31fb9a583"
+  },
+  "settings.show_timestamp.label": {
+    "message": "แสดงเวลา",
+    "description": "Settings label for the timestamp checkbox",
+    "_machine_translated": true,
+    "_source_hash": "e248bf5053ca8322"
+  },
+  "settings.show_timestamp.description": {
+    "message": "เพิ่มเวลาปัจจุบันต่อท้ายข้อความทักทาย",
+    "description": "Helper text for the timestamp checkbox",
+    "_machine_translated": true,
+    "_source_hash": "926be39685a2ac0e"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "hi",
+    "name": "हिन्दी",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "स्निपेट्स",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "c81d69ea1fad46cc"
+  },
+  "manifest.description": {
+    "message": "सहेजे गए टेक्स्ट स्निपेट, लॉन्चर से कॉपी करने योग्य। तैयार उत्तरों, पतों, GIT कमांड्स, या जो भी आप अक्सर टाइप करते हैं, उसके लिए बेहतरीन।",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "667e7829308ceab3"
+  }
+}

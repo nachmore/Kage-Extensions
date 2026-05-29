@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "ur",
+    "name": "اردو",
+    "rtl": true,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "بُک مارکس",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "eebbea3000371542"
+  },
+  "manifest.description": {
+    "message": "Kage کے لانچر سے URLs محفوظ کریں اور کھولیں۔ کھولنے کے لیے \"bm <name>\"، محفوظ کرنے کے لیے \"bm+ <name> <url>\"، اور حذف کرنے کے لیے \"bm- <name>\" ٹائپ کریں۔",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "a45fe2ba27938cb2"
+  }
+}

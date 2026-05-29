@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "ja",
+    "name": "日本語",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "開発者ツール",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "90446132953cfd8d"
+  },
+  "manifest.description": {
+    "message": "UUID生成、base64エンコード/デコード、ハッシュ化、エポック変換、JSONフォーマット",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "49d4746132984668"
+  }
+}

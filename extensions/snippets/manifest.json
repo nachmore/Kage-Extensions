@@ -1,20 +1,31 @@
 {
   "id": "snippets",
-  "name": "Snippets",
+  "name": "__MSG_manifest.name__",
   "version": "1.0.0",
   "type": "extension",
-  "description": "Saved text snippets, copyable from the launcher. Perfect for canned responses, addresses, GIT commands, anything you type often.",
+  "description": "__MSG_manifest.description__",
   "icon": "📋",
   "author": "kage",
-  "tags": ["snippets", "clipboard", "templates", "canned-text", "productivity"],
-
-  "permissions": ["storage"],
-
+  "tags": [
+    "snippets",
+    "clipboard",
+    "templates",
+    "canned-text",
+    "productivity"
+  ],
+  "permissions": [
+    "storage"
+  ],
   "config": {
-    "enabled": { "type": "boolean", "default": true },
-    "trigger": { "type": "string", "default": "snip" }
+    "enabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "trigger": {
+      "type": "string",
+      "default": "snip"
+    }
   },
-
   "contributes": {
     "searchProvider": "./search.js",
     "settingsProvider": "./settings.js"

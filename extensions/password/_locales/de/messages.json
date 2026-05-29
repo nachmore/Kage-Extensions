@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "de",
+    "name": "Deutsch",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Passwortgenerator",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "9020186825c3a8a8"
+  },
+  "manifest.description": {
+    "message": "Erzeugen Sie starke Zufallspasswörter mit einem Tastendruck. Geben Sie „pw“ für den Standard ein, „pw 32“ für eine benutzerdefinierte Länge, „pw word“ für eine Passphrase.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "0fa52e497866e221"
+  }
+}

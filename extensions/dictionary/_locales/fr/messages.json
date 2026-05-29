@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "fr",
+    "name": "Français",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Dictionnaire",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "3da7b02cf3ae6fb2"
+  },
+  "manifest.description": {
+    "message": "Recherchez des définitions, des corrections orthographiques et la prononciation des mots à l'aide de FreeDictionaryAPI.com",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "23f2411c0957401e"
+  }
+}

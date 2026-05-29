@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "pl",
+    "name": "Polski",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Wybierak emoji",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "205c3e69ca030742"
+  },
+  "manifest.description": {
+    "message": "Wyszukuj i kopiuj emoji po nazwie. Wpisz „:fire” lub „emoji rakieta”, aby znaleźć najlepsze dopasowanie spośród ok. 1500 najczęściej używanych emoji.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "59640ff70d49d4b7"
+  }
+}

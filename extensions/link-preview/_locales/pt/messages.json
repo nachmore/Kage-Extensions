@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "pt",
+    "name": "Português",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Pré-visualização de link",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "71f62720d8c6e809"
+  },
+  "manifest.description": {
+    "message": "Cartões de pré-visualização de links para URLs em respostas de IA  imagens principais Open Graph, descrições e favicons, com cache em disco compatível com modo offline.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "8715cca27a85ca14"
+  }
+}

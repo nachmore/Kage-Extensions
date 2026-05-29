@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "ru",
+    "name": "Русский",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Предпросмотр ссылок",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "71f62720d8c6e809"
+  },
+  "manifest.description": {
+    "message": "Информативные карточки предпросмотра для URL в ответах ИИ — изображения Open Graph, описания и значки сайтов с кэшированием на диск для офлайн-доступа.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "8715cca27a85ca14"
+  }
+}

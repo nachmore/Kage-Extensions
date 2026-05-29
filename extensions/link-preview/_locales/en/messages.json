@@ -1,0 +1,16 @@
+{
+  "_meta": {
+    "language": "en",
+    "name": "English",
+    "rtl": false,
+    "machine_translated": false
+  },
+  "manifest.name": {
+    "message": "Link Preview",
+    "description": "Extension display name"
+  },
+  "manifest.description": {
+    "message": "Rich link preview cards for URLs in AI responses  Open Graph hero images, descriptions, and favicons, with offline-friendly disk caching.",
+    "description": "Extension description"
+  }
+}

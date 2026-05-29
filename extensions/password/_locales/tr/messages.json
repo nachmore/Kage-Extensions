@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "tr",
+    "name": "Türkçe",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Parola oluşturucu",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "9020186825c3a8a8"
+  },
+  "manifest.description": {
+    "message": "Tek tuşla güçlü rastgele parolalar oluşturun. Varsayılan için \"pw\", özel uzunluk için \"pw 32\", parola öbeği için \"pw word\" yazın.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "0fa52e497866e221"
+  }
+}

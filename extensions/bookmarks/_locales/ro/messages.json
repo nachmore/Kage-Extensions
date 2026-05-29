@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "ro",
+    "name": "Română",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Marcaje",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "eebbea3000371542"
+  },
+  "manifest.description": {
+    "message": "Salvează și deschide URL-uri din lansatorul Kage. Tastează „bm <name>” pentru a deschide, „bm+ <name> <url>” pentru a salva, „bm- <name>” pentru a șterge.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "a45fe2ba27938cb2"
+  }
+}

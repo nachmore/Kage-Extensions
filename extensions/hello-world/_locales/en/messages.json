@@ -1,0 +1,47 @@
+{
+  "_meta": {
+    "language": "en",
+    "name": "English",
+    "rtl": false,
+    "machine_translated": false
+  },
+
+  "manifest.name": {
+    "message": "Hello World",
+    "description": "Extension display name shown in Settings → Extensions and the store."
+  },
+  "manifest.description": {
+    "message": "A sample extension that responds to 'test' with 'Hello World'. Use this as a template for building your own extensions.",
+    "description": "Extension description shown in Settings → Extensions and the store."
+  },
+
+  "result.description": {
+    "message": "Press Enter to copy",
+    "description": "Subtitle on the Hello World search result"
+  },
+
+  "settings.description": {
+    "message": "A sample extension. Type \"test\" or \"hello\" in the floating window to see the greeting.",
+    "description": "Top-of-pane description in Settings → Extensions → Hello World"
+  },
+  "settings.greeting.label": {
+    "message": "Greeting Message",
+    "description": "Settings label for the customisable greeting text"
+  },
+  "settings.greeting.description": {
+    "message": "The text shown when you type \"test\" or \"hello\".",
+    "description": "Helper text for the greeting setting"
+  },
+  "settings.greeting.default": {
+    "message": "Hello World",
+    "description": "Default value of the greeting text — also the fallback when config is empty. Translatable so a Japanese user gets a Japanese default."
+  },
+  "settings.show_timestamp.label": {
+    "message": "Show Timestamp",
+    "description": "Settings label for the timestamp checkbox"
+  },
+  "settings.show_timestamp.description": {
+    "message": "Append the current time to the greeting.",
+    "description": "Helper text for the timestamp checkbox"
+  }
+}

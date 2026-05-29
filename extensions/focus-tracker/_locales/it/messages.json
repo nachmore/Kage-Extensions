@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "it",
+    "name": "Italiano",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Focus Tracker",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "3c9cc39fbdaff95a"
+  },
+  "manifest.description": {
+    "message": "Monitora l'utilizzo delle app, i cambi di contesto e le serie di concentrazione. Ottieni report giornalieri, settimanali e mensili con analisi AI.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "249b504d57430c6f"
+  }
+}

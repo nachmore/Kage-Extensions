@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "de",
+    "name": "Deutsch",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Aufgaben & Erinnerungen",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "94ed77d143734eee"
+  },
+  "manifest.description": {
+    "message": "Aufgabenverwaltung mit Fälligkeitsdaten, Kategorien, Prioritäten und Fortschrittsverfolgung. Geben Sie 'todo' für eine Übersicht ein, 'todo+ <Aufgabe>' zum Hinzufügen oder 'todo+ <Aufgabe> due:<Datum>' für eine Erinnerung mit Fälligkeitsbanner.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "707ab313e0ae2676"
+  }
+}

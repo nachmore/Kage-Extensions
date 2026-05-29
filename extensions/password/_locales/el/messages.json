@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "el",
+    "name": "Ελληνικά",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Γεννήτρια κωδικών πρόσβασης",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "9020186825c3a8a8"
+  },
+  "manifest.description": {
+    "message": "Δημιουργήστε ισχυρούς τυχαίους κωδικούς πρόσβασης με ένα πάτημα πλήκτρου. Πληκτρολογήστε «pw» για τον προεπιλεγμένο, «pw 32» για προσαρμοσμένο μήκος, «pw word» για συνθηματική φράση.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "0fa52e497866e221"
+  }
+}

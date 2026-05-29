@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "sv",
+    "name": "Svenska",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Lösenordsgenerator",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "9020186825c3a8a8"
+  },
+  "manifest.description": {
+    "message": "Generera starka slumpmässiga lösenord med ett tangenttryck. Skriv \"pw\" för standard, \"pw 32\" för en anpassad längd, \"pw word\" för en lösenfras.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "0fa52e497866e221"
+  }
+}

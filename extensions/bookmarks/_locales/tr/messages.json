@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "tr",
+    "name": "Türkçe",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Yer imleri",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "eebbea3000371542"
+  },
+  "manifest.description": {
+    "message": "Kage başlatıcısından URL'leri kaydedin ve açın. Açmak için \"bm <name>\", kaydetmek için \"bm+ <name> <url>\", silmek için \"bm- <name>\" yazın.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "a45fe2ba27938cb2"
+  }
+}

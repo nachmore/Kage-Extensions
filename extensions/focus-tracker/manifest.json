@@ -1,9 +1,9 @@
 {
   "id": "focus-tracker",
-  "name": "Focus Tracker",
+  "name": "__MSG_manifest.name__",
   "version": "1.3.2",
   "type": "extension",
-  "description": "Track app usage, context switches, and focus streaks. Get daily/weekly/monthly reports with AI insights.",
+  "description": "__MSG_manifest.description__",
   "icon": "📊",
   "author": "kage",
   "permissions": [

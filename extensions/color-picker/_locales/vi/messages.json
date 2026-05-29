@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "vi",
+    "name": "Tiếng Việt",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Bộ chọn màu",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "388558dded8f97ac"
+  },
+  "manifest.description": {
+    "message": "Phát hiện và xem trước màu sắc (hex, rgb, hsl, tên màu) kèm chuyển đổi định dạng",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "31c7e58200c59012"
+  }
+}

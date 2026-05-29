@@ -1,9 +1,9 @@
 {
   "id": "todos",
-  "name": "Todos & Reminders",
+  "name": "__MSG_manifest.name__",
   "version": "1.0.0",
   "type": "extension",
-  "description": "Task manager with due dates, categories, priorities, and progress tracking. Type 'todo' for a summary, 'todo+ <task>' to add, 'todo+ <task> due:<date>' for a reminder with a due-date banner.",
+  "description": "__MSG_manifest.description__",
   "icon": "✅",
   "author": "kage",
   "permissions": [

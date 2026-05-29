@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "zh-CN",
+    "name": "简体中文",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "计时器和秒表",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "d7a220ea51ec86a9"
+  },
+  "manifest.description": {
+    "message": "带提示音的倒计时器和秒表",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "5e3d3fcb6c65000a"
+  }
+}

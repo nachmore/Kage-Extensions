@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "uk",
+    "name": "Українська",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Завдання та нагадування",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "94ed77d143734eee"
+  },
+  "manifest.description": {
+    "message": "Менеджер завдань із термінами виконання, категоріями, пріоритетами та відстеженням прогресу. Введіть «todo», щоб переглянути зведення, «todo+ <завдання>» — щоб додати, «todo+ <завдання> due:<дата>» — щоб створити нагадування з банером терміну виконання.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "707ab313e0ae2676"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "ja",
+    "name": "日本語",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "GitHub 検索",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "75b7a4faa91be805"
+  },
+  "manifest.description": {
+    "message": "ランチャーから GitHub のリポジトリ、ユーザー、Issue を検索します。リポジトリは「gh <query>」、ユーザーは「gh @<user>」、Issue は「gh #<query>」と入力してください。",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "cf3213df81c4f097"
+  }
+}

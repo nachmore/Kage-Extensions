@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "nl",
+    "name": "Nederlands",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Wachtwoordgenerator",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "9020186825c3a8a8"
+  },
+  "manifest.description": {
+    "message": "Genereer sterke willekeurige wachtwoorden met één toetsaanslag. Typ \"pw\" voor de standaard, \"pw 32\" voor een aangepaste lengte, \"pw word\" voor een wachtwoordzin.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "0fa52e497866e221"
+  }
+}

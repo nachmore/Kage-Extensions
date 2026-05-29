@@ -1,0 +1,16 @@
+{
+  "_meta": {
+    "language": "en",
+    "name": "English",
+    "rtl": false,
+    "machine_translated": false
+  },
+  "manifest.name": {
+    "message": "Snippets",
+    "description": "Extension display name"
+  },
+  "manifest.description": {
+    "message": "Saved text snippets, copyable from the launcher. Perfect for canned responses, addresses, GIT commands, anything you type often.",
+    "description": "Extension description"
+  }
+}

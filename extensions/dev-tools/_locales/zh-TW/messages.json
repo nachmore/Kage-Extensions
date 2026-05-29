@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "zh-TW",
+    "name": "繁體中文",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "開發者工具",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "90446132953cfd8d"
+  },
+  "manifest.description": {
+    "message": "UUID 生成、base64 編碼／解碼、雜湊、epoch 轉換、JSON 格式化",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "49d4746132984668"
+  }
+}

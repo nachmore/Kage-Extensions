@@ -1,9 +1,9 @@
 {
   "id": "timer",
-  "name": "Timer & Stopwatch",
+  "name": "__MSG_manifest.name__",
   "version": "1.0.0",
   "type": "extension",
-  "description": "Countdown timer and stopwatch with notification sounds",
+  "description": "__MSG_manifest.description__",
   "icon": "⏱️",
   "author": "kage",
   "permissions": [],

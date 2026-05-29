@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "ur",
+    "name": "اردو",
+    "rtl": true,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "کام اور یاد دہانیاں",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "94ed77d143734eee"
+  },
+  "manifest.description": {
+    "message": "ٹاسک مینیجر جس میں ڈیو ڈیٹس، زمرے، ترجیحات، اور پیش رفت کی ٹریکنگ شامل ہیں۔ خلاصہ کے لیے 'todo' لکھیں، شامل کرنے کے لیے 'todo+ <task>'، اور ڈیو ڈیٹ بینر کے ساتھ یاد دہانی کے لیے 'todo+ <task> due:<date>' لکھیں۔",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "707ab313e0ae2676"
+  }
+}

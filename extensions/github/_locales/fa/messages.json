@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "fa",
+    "name": "فارسی",
+    "rtl": true,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "جست‌وجوی GitHub",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "75b7a4faa91be805"
+  },
+  "manifest.description": {
+    "message": "جست‌وجوی مخازن، کاربران و مسائل GitHub از طریق لانچر. برای مخازن «gh <query>»، برای کاربران «gh @<user>» و برای مسائل «gh #<query>» را تایپ کنید.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "cf3213df81c4f097"
+  }
+}

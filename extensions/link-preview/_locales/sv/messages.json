@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "sv",
+    "name": "Svenska",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Länkförhandsvisning",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "71f62720d8c6e809"
+  },
+  "manifest.description": {
+    "message": "Detaljerade förhandsvisningskort för URL:er i AI-svar – Open Graph-hjältebilder, beskrivningar och favikoner, med offlinevänlig diskcachning.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "8715cca27a85ca14"
+  }
+}

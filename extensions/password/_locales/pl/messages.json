@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "pl",
+    "name": "Polski",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Generator haseł",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "9020186825c3a8a8"
+  },
+  "manifest.description": {
+    "message": "Generuj silne losowe hasła jednym naciśnięciem klawisza. Wpisz „pw” dla domyślnego, „pw 32” dla niestandardowej długości, „pw word” dla frazy hasła.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "0fa52e497866e221"
+  }
+}

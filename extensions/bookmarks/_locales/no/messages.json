@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "no",
+    "name": "Norsk",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Bokmerker",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "eebbea3000371542"
+  },
+  "manifest.description": {
+    "message": "Lagre og åpne URL-er fra Kages launcher. Skriv «bm <name>» for å åpne, «bm+ <name> <url>» for å lagre, «bm- <name>» for å slette.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "a45fe2ba27938cb2"
+  }
+}

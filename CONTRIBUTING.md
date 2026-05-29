@@ -87,6 +87,109 @@ and is mirrored in [`docs/EXTENSIONS.md`](https://github.com/nachmore/Kage/blob/
 validator in this repo enforces a known-set check: unknown capability
 names fail CI before merge.
 
+## Internationalisation (i18n)
+
+Every extension MUST ship `_locales/en/messages.json`. The Kage host's
+i18n system loads it at sandbox start and exposes `context.i18n.t(key, vars)`
+to your provider code; the manifest's `name` and `description` are
+translated by referencing them as `__MSG_key__` tokens.
+
+The full contract is in Kage's
+[`docs/I18N.md`](https://github.com/nachmore/Kage/blob/main/docs/I18N.md);
+the short version follows.
+
+### Layout
+
+```
+extensions/<id>/
+  manifest.json
+  _locales/
+    en/messages.json     (required, canonical)
+    ja/messages.json     (optional, Kage's translate.py can seed these)
+    de/messages.json
+    ...
+  search.js              (optional)
+  settings.js            (optional)
+  ...
+```
+
+### Manifest
+
+Use `__MSG_key__` tokens for any user-visible field. The host resolves
+them against the active language (with EN fallback) before showing the
+manifest to the user.
+
+```json
+{
+  "id": "my-thing",
+  "name": "__MSG_manifest.name__",
+  "description": "__MSG_manifest.description__"
+}
+```
+
+### Catalog format
+
+Same shape as Kage's host catalog — a wrapper around the Chrome
+`_locales/<lang>/messages.json` convention with inline `{name}`
+placeholders instead of `$placeholder$` indirection:
+
+```json
+{
+  "_meta": {
+    "language": "en",
+    "name": "English",
+    "rtl": false,
+    "machine_translated": false
+  },
+  "manifest.name": {
+    "message": "My Thing",
+    "description": "Extension display name"
+  },
+  "result.no_data": {
+    "message": "No data yet — set a {field} first",
+    "description": "Shown when the user runs the command without configuring required field"
+  }
+}
+```
+
+### Provider code
+
+```js
+export default class MyProvider {
+  initialize(context) {
+    this.t = context.i18n.t;
+  }
+
+  match(query) {
+    return [{
+      label: this.t('result.label'),
+      description: this.t('result.no_data', { field: 'home location' }),
+    }];
+  }
+}
+```
+
+### Seeding more languages
+
+Kage ships `python scripts/translate.py` (in the main repo) which calls
+Claude to fill in `_locales/<lang>/messages.json` for each catalog under
+`extensions/`. It's idempotent: re-running it only retranslates entries
+whose source text has changed (tracked via `_source_hash`).
+
+### CI
+
+Kage's `python scripts/check_i18n.py` walks every extension under
+`extensions/` and fails the build when:
+
+- `_locales/en/messages.json` is missing.
+- A non-EN catalog has a different key set than EN.
+- A `__MSG_key__` token in the manifest references a key not in EN.
+- A `t("...")` call in extension JS references a key not in EN.
+
+CI in this repo doesn't run the host-side check directly, but Kage's
+release CI does — a published extension with drift will be rejected at
+ingest. Keep the catalogs in sync.
+
 ## Versioning
 
 The published zip path includes the version (`packages/<id>-<version>.zip`),

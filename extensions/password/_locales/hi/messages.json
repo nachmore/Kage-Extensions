@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "hi",
+    "name": "हिन्दी",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "पासवर्ड जनरेटर",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "9020186825c3a8a8"
+  },
+  "manifest.description": {
+    "message": "एक कीस्ट्रोक से मज़बूत रैंडम पासवर्ड बनाएँ। डिफ़ॉल्ट के लिए \"pw\" टाइप करें, कस्टम लंबाई के लिए \"pw 32\", पासफ़्रेज़ के लिए \"pw word\"।",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "0fa52e497866e221"
+  }
+}

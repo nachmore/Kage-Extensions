@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "hu",
+    "name": "Magyar",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Teendők és emlékeztetők",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "94ed77d143734eee"
+  },
+  "manifest.description": {
+    "message": "Feladatkezelő határidőkkel, kategóriákkal, prioritásokkal és előrehaladás-követéssel. Írd be a 'todo' parancsot az összegzéshez, a 'todo+ <feladat>' parancsot hozzáadáshoz, a 'todo+ <feladat> due:<dátum>' parancsot pedig határidőjelzős emlékeztetőhöz.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "707ab313e0ae2676"
+  }
+}

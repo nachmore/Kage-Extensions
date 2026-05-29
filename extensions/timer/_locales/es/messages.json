@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "es",
+    "name": "Español",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Temporizador y cronómetro",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "d7a220ea51ec86a9"
+  },
+  "manifest.description": {
+    "message": "Temporizador de cuenta atrás y cronómetro con sonidos de notificación",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "5e3d3fcb6c65000a"
+  }
+}

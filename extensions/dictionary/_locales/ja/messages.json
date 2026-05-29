@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "ja",
+    "name": "日本語",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "辞書",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "3da7b02cf3ae6fb2"
+  },
+  "manifest.description": {
+    "message": "FreeDictionaryAPI.com を使用して単語の定義、スペル修正、発音を調べます",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "23f2411c0957401e"
+  }
+}

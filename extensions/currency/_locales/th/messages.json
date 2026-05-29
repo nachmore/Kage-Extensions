@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "th",
+    "name": "ไทย",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "ตัวแปลงสกุลเงิน",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "25912f062e097b1b"
+  },
+  "manifest.description": {
+    "message": "แปลงสกุลเงินแบบเรียลไทม์ พิมพ์ \"100 usd to eur\" หรือ \"50 jpy in cad\" อัตราแลกเปลี่ยนจาก frankfurter.dev (ธนาคารกลางยุโรป)",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "72af6e5aebb257be"
+  }
+}

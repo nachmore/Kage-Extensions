@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "da",
+    "name": "Dansk",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Linkforhåndsvisning",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "71f62720d8c6e809"
+  },
+  "manifest.description": {
+    "message": "Detaljerede forhåndsvisningskort for URL'er i AI-svar – Open Graph-hovedbilleder, beskrivelser og favikoner med offline-venlig diskcaching.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "8715cca27a85ca14"
+  }
+}

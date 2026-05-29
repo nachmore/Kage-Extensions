@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "ar",
+    "name": "العربية",
+    "rtl": true,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "بحث GitHub",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "75b7a4faa91be805"
+  },
+  "manifest.description": {
+    "message": "ابحث في مستودعات GitHub والمستخدمين والمشكلات من المُشغِّل. اكتب \"gh <query>\" للمستودعات، و\"gh @<user>\" للمستخدمين، و\"gh #<query>\" للمشكلات.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "cf3213df81c4f097"
+  }
+}

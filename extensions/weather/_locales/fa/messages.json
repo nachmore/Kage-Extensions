@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "fa",
+    "name": "فارسی",
+    "rtl": true,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "آب‌وهوا",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "daa0802921925a4d"
+  },
+  "manifest.description": {
+    "message": "آب‌وهوای فعلی و پیش‌بینی برای هر مکان. برای محل سکونت خود «weather» و برای جایی دیگر «weather <city>» را تایپ کنید. ارائه‌شده توسط open-meteo.com.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "6c710d2555644788"
+  }
+}

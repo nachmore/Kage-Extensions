@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "hu",
+    "name": "Magyar",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Fejlesztői eszközök",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "90446132953cfd8d"
+  },
+  "manifest.description": {
+    "message": "UUID-generálás, base64 kódolás/dekódolás, hash-elés, epoch-átváltás, JSON-formázás",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "49d4746132984668"
+  }
+}

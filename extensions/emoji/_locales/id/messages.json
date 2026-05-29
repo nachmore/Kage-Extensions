@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "id",
+    "name": "Bahasa Indonesia",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Pemilih emoji",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "205c3e69ca030742"
+  },
+  "manifest.description": {
+    "message": "Cari dan salin emoji berdasarkan nama. Ketik \":fire\" atau \"emoji rocket\" untuk memilih yang paling cocok dari sekitar 1500 emoji yang paling sering digunakan.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "59640ff70d49d4b7"
+  }
+}

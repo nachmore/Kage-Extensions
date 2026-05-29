@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "hi",
+    "name": "हिन्दी",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "बुकमार्क",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "eebbea3000371542"
+  },
+  "manifest.description": {
+    "message": "Kage के लॉन्चर से URL सहेजें और खोलें। खोलने के लिए \"bm <name>\", सहेजने के लिए \"bm+ <name> <url>\", हटाने के लिए \"bm- <name>\" टाइप करें।",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "a45fe2ba27938cb2"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "_meta": {
+    "language": "en",
+    "name": "English",
+    "rtl": false,
+    "machine_translated": false
+  },
+  "manifest.name": {
+    "message": "Bookmarks",
+    "description": "Extension display name"
+  },
+  "manifest.description": {
+    "message": "Save and open URLs from Kage's launcher. Type \"bm <name>\" to open, \"bm+ <name> <url>\" to save, \"bm- <name>\" to delete.",
+    "description": "Extension description"
+  }
+}

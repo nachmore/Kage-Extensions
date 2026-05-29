@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "fa",
+    "name": "فارسی",
+    "rtl": true,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "تکه‌ها",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "c81d69ea1fad46cc"
+  },
+  "manifest.description": {
+    "message": "تکه‌های متنی ذخیره‌شده که از لانچر قابل کپی هستند. مناسب برای پاسخ‌های آماده، نشانی‌ها، دستورات GIT و هر چیزی که اغلب تایپ می‌کنید.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "667e7829308ceab3"
+  }
+}

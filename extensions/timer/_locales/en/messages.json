@@ -1,0 +1,16 @@
+{
+  "_meta": {
+    "language": "en",
+    "name": "English",
+    "rtl": false,
+    "machine_translated": false
+  },
+  "manifest.name": {
+    "message": "Timer & Stopwatch",
+    "description": "Extension display name"
+  },
+  "manifest.description": {
+    "message": "Countdown timer and stopwatch with notification sounds",
+    "description": "Extension description"
+  }
+}

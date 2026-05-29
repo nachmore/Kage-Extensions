@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "ro",
+    "name": "Română",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Sarcini și mementouri",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "94ed77d143734eee"
+  },
+  "manifest.description": {
+    "message": "Manager de sarcini cu termene limită, categorii, priorități și urmărirea progresului. Tastează „todo” pentru un rezumat, „todo+ <sarcină>” pentru a adăuga, „todo+ <sarcină> due:<dată>” pentru un memento cu banner de termen limită.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "707ab313e0ae2676"
+  }
+}

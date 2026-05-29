@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "pt",
+    "name": "Português",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Ferramentas de desenvolvimento",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "90446132953cfd8d"
+  },
+  "manifest.description": {
+    "message": "Geração de UUID, codificação/decodificação base64, hashing, conversão de epoch, formatação JSON",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "49d4746132984668"
+  }
+}

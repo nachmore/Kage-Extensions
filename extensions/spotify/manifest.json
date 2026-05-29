@@ -1,27 +1,49 @@
 {
   "id": "spotify",
-  "name": "Spotify",
+  "name": "__MSG_manifest.name__",
   "version": "0.1.0",
   "type": "extension",
-  "description": "See what's playing on Spotify, control playback, like / unlike, queue, and manage playlists from Kage.",
+  "description": "__MSG_manifest.description__",
   "icon": "🎧",
   "author": "kage",
-  "tags": ["music", "spotify", "playback", "audio", "now-playing", "playlist"],
-
-  "permissions": ["storage", "shell", "oauth"],
-
+  "tags": [
+    "music",
+    "spotify",
+    "playback",
+    "audio",
+    "now-playing",
+    "playlist"
+  ],
+  "permissions": [
+    "storage",
+    "shell",
+    "oauth"
+  ],
   "config": {
-    "enabled": { "type": "boolean", "default": true },
-    "show_now_playing_bar": { "type": "boolean", "default": true },
-    "refresh_seconds": { "type": "number", "default": 5 },
-    "trigger": { "type": "string", "default": "sp" }
+    "enabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "show_now_playing_bar": {
+      "type": "boolean",
+      "default": true
+    },
+    "refresh_seconds": {
+      "type": "number",
+      "default": 5
+    },
+    "trigger": {
+      "type": "string",
+      "default": "sp"
+    }
   },
-
   "contributes": {
     "searchProvider": "./search.js",
     "settingsProvider": "./settings.js",
     "toolProvider": "./tools.js",
-    "css": ["./styles.css"],
+    "css": [
+      "./styles.css"
+    ],
     "widgets": [
       {
         "id": "now-playing",

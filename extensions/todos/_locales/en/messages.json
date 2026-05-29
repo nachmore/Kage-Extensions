@@ -1,0 +1,16 @@
+{
+  "_meta": {
+    "language": "en",
+    "name": "English",
+    "rtl": false,
+    "machine_translated": false
+  },
+  "manifest.name": {
+    "message": "Todos & Reminders",
+    "description": "Extension display name"
+  },
+  "manifest.description": {
+    "message": "Task manager with due dates, categories, priorities, and progress tracking. Type 'todo' for a summary, 'todo+ <task>' to add, 'todo+ <task> due:<date>' for a reminder with a due-date banner.",
+    "description": "Extension description"
+  }
+}

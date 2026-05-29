@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "ko",
+    "name": "한국어",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "북마크",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "eebbea3000371542"
+  },
+  "manifest.description": {
+    "message": "Kage 런처에서 URL을 저장하고 엽니다. 열려면 \"bm <name>\", 저장하려면 \"bm+ <name> <url>\", 삭제하려면 \"bm- <name>\"을 입력하세요.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "a45fe2ba27938cb2"
+  }
+}

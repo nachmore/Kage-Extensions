@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "he",
+    "name": "עברית",
+    "rtl": true,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "מקטעים",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "c81d69ea1fad46cc"
+  },
+  "manifest.description": {
+    "message": "מקטעי טקסט שמורים, ניתנים להעתקה מהמשגר. מושלם לתשובות מוכנות, כתובות, פקודות GIT, וכל מה שאתה מקליד לעיתים קרובות.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "667e7829308ceab3"
+  }
+}

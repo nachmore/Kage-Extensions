@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "fa",
+    "name": "فارسی",
+    "rtl": true,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "ردیاب تمرکز",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "3c9cc39fbdaff95a"
+  },
+  "manifest.description": {
+    "message": "استفاده از برنامه‌ها، جابجایی‌های زمینه و دوره‌های تمرکز را پیگیری کنید. گزارش‌های روزانه/هفتگی/ماهانه را همراه با تحلیل‌های هوش مصنوعی دریافت کنید.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "249b504d57430c6f"
+  }
+}

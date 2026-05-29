@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "fi",
+    "name": "Suomi",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Tekstileikkeet",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "c81d69ea1fad46cc"
+  },
+  "manifest.description": {
+    "message": "Tallennetut tekstileikkeet, jotka voi kopioida käynnistimestä. Täydellinen valmiille vastauksille, osoitteille, GIT-komennoille ja kaikelle, mitä kirjoitat usein.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "667e7829308ceab3"
+  }
+}

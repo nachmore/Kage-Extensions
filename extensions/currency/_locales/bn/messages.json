@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "bn",
+    "name": "বাংলা",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "মুদ্রা রূপান্তরকারী",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "25912f062e097b1b"
+  },
+  "manifest.description": {
+    "message": "লাইভ মুদ্রা রূপান্তর। টাইপ করুন \"100 usd to eur\" বা \"50 jpy in cad\"। রেট frankfurter.dev (ইউরোপীয় কেন্দ্রীয় ব্যাংক) থেকে।",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "72af6e5aebb257be"
+  }
+}

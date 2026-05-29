@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "sv",
+    "name": "Svenska",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Bokmärken",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "eebbea3000371542"
+  },
+  "manifest.description": {
+    "message": "Spara och öppna URL:er från Kages startfönster. Skriv \"bm <namn>\" för att öppna, \"bm+ <namn> <url>\" för att spara, \"bm- <namn>\" för att radera.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "a45fe2ba27938cb2"
+  }
+}

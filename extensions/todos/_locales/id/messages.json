@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "id",
+    "name": "Bahasa Indonesia",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Tugas & Pengingat",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "94ed77d143734eee"
+  },
+  "manifest.description": {
+    "message": "Pengelola tugas dengan tanggal jatuh tempo, kategori, prioritas, dan pelacakan progres. Ketik 'todo' untuk ringkasan, 'todo+ <task>' untuk menambah, 'todo+ <task> due:<date>' untuk pengingat dengan banner tanggal jatuh tempo.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "707ab313e0ae2676"
+  }
+}

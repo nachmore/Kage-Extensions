@@ -1,9 +1,9 @@
 {
   "id": "dictionary",
-  "name": "Dictionary",
+  "name": "__MSG_manifest.name__",
   "version": "1.7.2",
   "type": "extension",
-  "description": "Look up word definitions, spelling corrections, and pronunciation using FreeDictionaryAPI.com",
+  "description": "__MSG_manifest.description__",
   "icon": "📖",
   "author": "kage",
   "permissions": [],

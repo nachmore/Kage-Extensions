@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "da",
+    "name": "Dansk",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Emoji-vælger",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "205c3e69ca030742"
+  },
+  "manifest.description": {
+    "message": "Søg og kopiér emojis efter navn. Skriv \":fire\" eller \"emoji rocket\" for at finde det nærmeste match blandt ~1500 af de mest brugte emojis.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "59640ff70d49d4b7"
+  }
+}

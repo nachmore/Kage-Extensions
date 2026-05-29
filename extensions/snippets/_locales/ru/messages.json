@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "ru",
+    "name": "Русский",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Сниппеты",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "c81d69ea1fad46cc"
+  },
+  "manifest.description": {
+    "message": "Сохранённые текстовые сниппеты, которые можно копировать из лаунчера. Идеально для шаблонных ответов, адресов, команд GIT — всего, что вы часто набираете.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "667e7829308ceab3"
+  }
+}

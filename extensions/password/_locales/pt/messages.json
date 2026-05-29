@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "pt",
+    "name": "Português",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Gerador de senhas",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "9020186825c3a8a8"
+  },
+  "manifest.description": {
+    "message": "Gere senhas aleatórias fortes com um único atalho. Digite \"pw\" para o padrão, \"pw 32\" para um comprimento personalizado, \"pw word\" para uma frase-senha.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "0fa52e497866e221"
+  }
+}

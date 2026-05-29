@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "pl",
+    "name": "Polski",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Słownik",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "3da7b02cf3ae6fb2"
+  },
+  "manifest.description": {
+    "message": "Sprawdzaj definicje słów, poprawność pisowni i wymowę za pomocą FreeDictionaryAPI.com",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "23f2411c0957401e"
+  }
+}

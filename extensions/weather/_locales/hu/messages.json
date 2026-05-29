@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "hu",
+    "name": "Magyar",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Időjárás",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "daa0802921925a4d"
+  },
+  "manifest.description": {
+    "message": "Aktuális időjárás és előrejelzés bármely helyszínre. Írja be: „weather” az otthonához, vagy „weather <város>” egy másik helyhez. Az open-meteo.com szolgáltatja.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "6c710d2555644788"
+  }
+}

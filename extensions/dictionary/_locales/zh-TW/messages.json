@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "zh-TW",
+    "name": "繁體中文",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "字典",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "3da7b02cf3ae6fb2"
+  },
+  "manifest.description": {
+    "message": "使用 FreeDictionaryAPI.com 查詢單字定義、拼字校正與發音",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "23f2411c0957401e"
+  }
+}

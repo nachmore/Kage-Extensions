@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "el",
+    "name": "Ελληνικά",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Παρακολούθηση εστίασης",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "3c9cc39fbdaff95a"
+  },
+  "manifest.description": {
+    "message": "Παρακολουθήστε τη χρήση εφαρμογών, τις εναλλαγές πλαισίου και τα σερί εστίασης. Λάβετε ημερήσιες/εβδομαδιαίες/μηνιαίες αναφορές με πληροφορίες AI.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "249b504d57430c6f"
+  }
+}

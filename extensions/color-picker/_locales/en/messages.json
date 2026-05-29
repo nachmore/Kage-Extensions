@@ -1,0 +1,16 @@
+{
+  "_meta": {
+    "language": "en",
+    "name": "English",
+    "rtl": false,
+    "machine_translated": false
+  },
+  "manifest.name": {
+    "message": "Color Picker",
+    "description": "Extension display name"
+  },
+  "manifest.description": {
+    "message": "Detect and preview colors (hex, rgb, hsl, named) with format conversion",
+    "description": "Extension description"
+  }
+}

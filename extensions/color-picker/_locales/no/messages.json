@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "no",
+    "name": "Norsk",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Fargevelger",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "388558dded8f97ac"
+  },
+  "manifest.description": {
+    "message": "Oppdag og forhåndsvis farger (hex, rgb, hsl, navngitte) med formatkonvertering",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "31c7e58200c59012"
+  }
+}

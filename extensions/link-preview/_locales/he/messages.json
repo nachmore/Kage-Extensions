@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "he",
+    "name": "עברית",
+    "rtl": true,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "תצוגה מקדימה של קישורים",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "71f62720d8c6e809"
+  },
+  "manifest.description": {
+    "message": "כרטיסי תצוגה מקדימה עשירים לכתובות URL בתשובות של AI — תמונות ראשיות של Open Graph, תיאורים ואייקוני אתר, עם שמירה במטמון בדיסק שמתאימה לעבודה לא מקוונת.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "8715cca27a85ca14"
+  }
+}

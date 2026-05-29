@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "el",
+    "name": "Ελληνικά",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Προεπισκόπηση συνδέσμου",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "71f62720d8c6e809"
+  },
+  "manifest.description": {
+    "message": "Εμπλουτισμένες κάρτες προεπισκόπησης συνδέσμων για URL στις απαντήσεις της AI  κεντρικές εικόνες Open Graph, περιγραφές και εικονίδια ιστότοπου, με φιλική προς εκτός σύνδεσης προσωρινή αποθήκευση στον δίσκο.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "8715cca27a85ca14"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "bn",
+    "name": "বাংলা",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "ইমোজি পিকার",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "205c3e69ca030742"
+  },
+  "manifest.description": {
+    "message": "নাম দিয়ে ইমোজি খুঁজুন ও কপি করুন। \":fire\" বা \"emoji rocket\" টাইপ করলে সবচেয়ে বেশি ব্যবহৃত প্রায় ১৫০০টি ইমোজির মধ্যে নিকটতম মিল বেছে নেওয়া হয়।",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "59640ff70d49d4b7"
+  }
+}

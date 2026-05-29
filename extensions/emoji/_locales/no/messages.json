@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "no",
+    "name": "Norsk",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Emoji-velger",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "205c3e69ca030742"
+  },
+  "manifest.description": {
+    "message": "Søk etter og kopier emojier med navn. Skriv «:fire» eller «emoji rocket» for å finne den nærmeste treffet blant ~1500 av de mest brukte emojiene.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "59640ff70d49d4b7"
+  }
+}

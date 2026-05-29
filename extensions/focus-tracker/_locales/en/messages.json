@@ -1,0 +1,16 @@
+{
+  "_meta": {
+    "language": "en",
+    "name": "English",
+    "rtl": false,
+    "machine_translated": false
+  },
+  "manifest.name": {
+    "message": "Focus Tracker",
+    "description": "Extension display name"
+  },
+  "manifest.description": {
+    "message": "Track app usage, context switches, and focus streaks. Get daily/weekly/monthly reports with AI insights.",
+    "description": "Extension description"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "he",
+    "name": "עברית",
+    "rtl": true,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "בורר צבעים",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "388558dded8f97ac"
+  },
+  "manifest.description": {
+    "message": "זיהוי ותצוגה מקדימה של צבעים (hex, rgb, hsl, בעלי שם) עם המרת פורמטים",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "31c7e58200c59012"
+  }
+}

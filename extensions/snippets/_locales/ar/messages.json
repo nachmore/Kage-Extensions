@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "ar",
+    "name": "العربية",
+    "rtl": true,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "المقتطفات",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "c81d69ea1fad46cc"
+  },
+  "manifest.description": {
+    "message": "مقتطفات نصية محفوظة، يمكن نسخها من المُشغِّل. مثالية للردود الجاهزة والعناوين وأوامر GIT، وأي شيء تكتبه كثيرًا.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "667e7829308ceab3"
+  }
+}

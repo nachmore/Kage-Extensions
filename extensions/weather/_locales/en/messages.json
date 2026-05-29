@@ -1,0 +1,16 @@
+{
+  "_meta": {
+    "language": "en",
+    "name": "English",
+    "rtl": false,
+    "machine_translated": false
+  },
+  "manifest.name": {
+    "message": "Weather",
+    "description": "Extension display name"
+  },
+  "manifest.description": {
+    "message": "Current weather and forecast for any location. Type \"weather\" for your home, or \"weather <city>\" for somewhere else. Powered by open-meteo.com.",
+    "description": "Extension description"
+  }
+}

@@ -1,9 +1,9 @@
 {
   "id": "link-preview",
-  "name": "Link Preview",
+  "name": "__MSG_manifest.name__",
   "version": "1.2.0",
   "type": "extension",
-  "description": "Rich link preview cards for URLs in AI responses — Open Graph hero images, descriptions, and favicons, with offline-friendly disk caching.",
+  "description": "__MSG_manifest.description__",
   "icon": "🔗",
   "author": "kage",
   "permissions": [

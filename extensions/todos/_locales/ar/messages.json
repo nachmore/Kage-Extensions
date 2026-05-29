@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "ar",
+    "name": "العربية",
+    "rtl": true,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "المهام والتذكيرات",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "94ed77d143734eee"
+  },
+  "manifest.description": {
+    "message": "مدير مهام يدعم تواريخ الاستحقاق والفئات والأولويات وتتبّع التقدّم. اكتب 'todo' للحصول على ملخّص، و'todo+ <task>' لإضافة مهمة، و'todo+ <task> due:<date>' لإنشاء تذكير مع شريط تاريخ الاستحقاق.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "707ab313e0ae2676"
+  }
+}

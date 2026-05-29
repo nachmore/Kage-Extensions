@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "vi",
+    "name": "Tiếng Việt",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Việc cần làm và lời nhắc",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "94ed77d143734eee"
+  },
+  "manifest.description": {
+    "message": "Trình quản lý công việc với hạn chót, danh mục, mức độ ưu tiên và theo dõi tiến độ. Nhập 'todo' để xem tóm tắt, 'todo+ <task>' để thêm, 'todo+ <task> due:<date>' để tạo lời nhắc có biểu ngữ hạn chót.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "707ab313e0ae2676"
+  }
+}

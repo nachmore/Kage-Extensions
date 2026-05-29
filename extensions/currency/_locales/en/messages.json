@@ -1,0 +1,16 @@
+{
+  "_meta": {
+    "language": "en",
+    "name": "English",
+    "rtl": false,
+    "machine_translated": false
+  },
+  "manifest.name": {
+    "message": "Currency Converter",
+    "description": "Extension display name"
+  },
+  "manifest.description": {
+    "message": "Live currency conversion. Type \"100 usd to eur\" or \"50 jpy in cad\". Rates from frankfurter.dev (European Central Bank).",
+    "description": "Extension description"
+  }
+}

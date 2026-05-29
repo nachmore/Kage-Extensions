@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "no",
+    "name": "Norsk",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Tekstutdrag",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "c81d69ea1fad46cc"
+  },
+  "manifest.description": {
+    "message": "Lagrede tekstutdrag som kan kopieres fra startpanelet. Perfekt for ferdige svar, adresser, GIT-kommandoer og alt du skriver ofte.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "667e7829308ceab3"
+  }
+}

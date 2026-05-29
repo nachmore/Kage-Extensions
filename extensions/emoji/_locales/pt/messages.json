@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "language": "pt",
+    "name": "Português",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Seletor de emojis",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "205c3e69ca030742"
+  },
+  "manifest.description": {
+    "message": "Pesquise e copie emojis pelo nome. Escreva \":fire\" ou \"emoji rocket\" para escolher a correspondência mais próxima entre cerca de 1500 dos emojis mais usados.",
+    "description": "Extension description",
+    "_machine_translated": true,
+    "_source_hash": "59640ff70d49d4b7"
+  }
+}
