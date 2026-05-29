@@ -12,6 +12,7 @@ export default class SpotifySettingsProvider {
         auth.init(context);
         this.invoke = context.invoke;
         this.config = context.config || {};
+        this.t = context.i18n?.t?.bind(context.i18n) || ((k) => k);
     }
 
     onConfigUpdate(config) {
@@ -19,98 +20,87 @@ export default class SpotifySettingsProvider {
     }
 
     async getSettings() {
+        const t = this.t;
         const connected = await auth.isConnected();
         const clientId = await auth.getClientId();
         const haveClient = !!clientId;
 
         return {
-            description:
-                'Show what\'s playing, control playback, and run shortcuts like ' +
-                '"sp like" or "sp play <track>". Uses Spotify\'s PKCE flow over a ' +
-                'one-shot localhost listener — no client secret leaves your machine.',
+            description: t('settings.description'),
             sections: [
                 {
-                    label: 'Display',
+                    label: t('settings.section.display'),
                     controls: [
                         {
                             type: 'checkbox',
                             id: 'enabled',
-                            label: 'Enable',
+                            label: t('settings.enabled.label'),
                             default: true,
                         },
                         {
                             type: 'checkbox',
                             id: 'show_now_playing_bar',
-                            label: 'Show now-playing bar in the floating window',
+                            label: t('settings.show_now_playing_bar.label'),
                             default: true,
                         },
                         {
                             type: 'number',
                             id: 'refresh_seconds',
-                            label: 'Refresh every (seconds)',
+                            label: t('settings.refresh_seconds.label'),
                             default: 5,
                             min: 2,
                             max: 60,
-                            description:
-                                'How often the now-playing bar polls Spotify. Lower means snappier ' +
-                                'updates and slightly more API calls.',
+                            description: t('settings.refresh_seconds.description'),
                         },
                         {
                             type: 'text',
                             id: 'trigger',
-                            label: 'Trigger word',
+                            label: t('settings.trigger.label'),
                             default: 'sp',
                             placeholder: 'sp',
                             maxWidth: 100,
-                            description:
-                                'What you type to invoke Spotify shortcuts in the floating window. ' +
-                                'For example, "sp like" or "sp play lofi beats".',
+                            description: t('settings.trigger.description'),
                         },
                     ],
                 },
                 {
-                    label: 'Spotify app',
+                    label: t('settings.section.app'),
                     controls: [
                         {
                             type: 'info',
-                            html:
-                                'Create a free <strong>Spotify Developer</strong> app at ' +
-                                '<a href="https://developer.spotify.com/dashboard">developer.spotify.com/dashboard</a>. ' +
-                                'Add <code>http://127.0.0.1/spotify/callback</code> as a Redirect URI ' +
-                                '(any port works — Kage adds the actual port at sign-in time, and Spotify ' +
-                                'matches the host + path). Copy the <strong>Client ID</strong> below.',
+                            html: t('settings.app.intro_html'),
                         },
                         {
                             type: 'text',
                             id: '__client_id_input',
-                            label: 'Client ID',
+                            label: t('settings.client_id.label'),
                             default: clientId || '',
-                            placeholder: 'Paste your Spotify client_id here',
-                            description: 'Stored locally; never sent anywhere except Spotify.',
+                            placeholder: t('settings.client_id.placeholder'),
+                            description: t('settings.client_id.description'),
                         },
                         {
                             type: 'action',
                             id: 'save_client_id',
-                            label: 'Save Client ID',
+                            label: t('settings.save_client_id.label'),
                             action: 'save_client_id',
                         },
                     ],
                 },
                 {
-                    label: 'Connection',
+                    label: t('settings.section.connection'),
                     controls: [
                         {
                             type: 'info',
                             html: connected
-                                ? '<strong>Connected</strong> — playback controls are ready.'
+                                ? t('settings.connection.connected')
                                 : haveClient
-                                  ? 'Not connected yet. Click <strong>Connect</strong> to authorize.'
-                                  : 'Save a Client ID first, then connect.',
+                                  ? t('settings.connection.not_connected')
+                                  : t('settings.connection.no_client_id'),
                         },
                         {
                             type: 'action',
                             id: 'connect',
-                            label: connected ? 'Reconnect…' : 'Connect…',
+                            label: connected ? t('settings.connect.label_reconnect') : t('settings.connect.label_connect'),
                             action: 'connect',
                             variant: 'primary',
                             showWhen: { id: '__client_id_input', oneOf: undefined },
@@ -118,10 +108,10 @@ export default class SpotifySettingsProvider {
                         {
                             type: 'action',
                             id: 'disconnect',
-                            label: 'Sign out',
+                            label: t('settings.disconnect.label'),
                             action: 'disconnect',
                             variant: 'danger',
-                            confirm: 'Sign out of Spotify? You\'ll need to re-authorize to use playback shortcuts.',
+                            confirm: t('settings.disconnect.confirm'),
                         },
                     ],
                 },
@@ -130,10 +120,11 @@ export default class SpotifySettingsProvider {
     }
 
     validate(values) {
-        const t = (values.trigger || '').trim();
-        if (!t) return { valid: false, error: 'Trigger word is required.' };
-        if (!/^[a-z0-9-]+$/i.test(t))
-            return { valid: false, error: 'Trigger must be letters, digits, or hyphens.' };
+        const t = this.t;
+        const trig = (values.trigger || '').trim();
+        if (!trig) return { valid: false, error: t('settings.validate.trigger_required') };
+        if (!/^[a-z0-9-]+$/i.test(trig))
+            return { valid: false, error: t('settings.validate.trigger_format') };
         return { valid: true };
     }
 
@@ -146,25 +137,26 @@ export default class SpotifySettingsProvider {
     }
 
     async runAction(action, values) {
+        const t = this.t;
         if (action === 'save_client_id') {
             const id = (values.__client_id_input || '').trim();
-            if (!id) return { status: '⚠️ Paste a Client ID first.' };
+            if (!id) return { status: t('action.save_client_id.empty') };
             if (!/^[a-z0-9]{16,}$/i.test(id))
-                return { status: '⚠️ That doesn\'t look like a valid Spotify Client ID.' };
+                return { status: t('action.save_client_id.invalid') };
             await auth.setClientId(id);
-            return { status: '✅ Client ID saved.' };
+            return { status: t('action.save_client_id.success') };
         }
         if (action === 'connect') {
             try {
                 await auth.startSignIn();
-                return { status: '✅ Connected. Now-playing bar will appear when something is playing.' };
+                return { status: t('action.connect.success') };
             } catch (e) {
-                return { status: `⚠️ ${e?.message || e}` };
+                return { status: t('action.connect.error', { message: e?.message || e }) };
             }
         }
         if (action === 'disconnect') {
             await auth.clearAll();
-            return { status: '✅ Signed out.' };
+            return { status: t('action.disconnect.success') };
         }
         return {};
     }

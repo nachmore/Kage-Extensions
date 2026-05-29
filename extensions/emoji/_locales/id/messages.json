@@ -12,9 +12,45 @@
     "_source_hash": "205c3e69ca030742"
   },
   "manifest.description": {
-    "message": "Cari dan salin emoji berdasarkan nama. Ketik \":fire\" atau \"emoji rocket\" untuk memilih yang paling cocok dari sekitar 1500 emoji yang paling sering digunakan.",
+    "message": "Cari dan salin emoji berdasarkan nama. Ketik \":fire\" atau \"emoji rocket\" untuk memilih kecocokan terdekat dari ~1500 emoji yang paling sering digunakan.",
     "description": "Extension description",
     "_machine_translated": true,
-    "_source_hash": "59640ff70d49d4b7"
+    "_source_hash": "b9390cfd94255409"
+  },
+  "result.hint.label": {
+    "message": "Emoji · ketik untuk mencari",
+    "description": "Hint label when only the trigger word is typed",
+    "_machine_translated": true,
+    "_source_hash": "a2471f31b8da42e8"
+  },
+  "result.hint.description": {
+    "message": "Coba \"{trigger} fire\" atau \":fire\"",
+    "description": "Hint description suggesting trigger usage",
+    "_machine_translated": true,
+    "_source_hash": "c66d707a23b3874e"
+  },
+  "settings.description": {
+    "message": "Cari ~250 emoji yang paling sering digunakan berdasarkan nama. Dua gaya pemicu tersedia: <code>emoji fire</code> atau cukup <code>:fire</code>. Pilih salah satu lalu tekan Enter untuk menyalinnya ke clipboard.",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "9d1fa3f643108b7e"
+  },
+  "settings.enabled.label": {
+    "message": "Aktifkan",
+    "description": "Settings: enable toggle label",
+    "_machine_translated": true,
+    "_source_hash": "efce5571f8dbd1e9"
+  },
+  "settings.trigger.label": {
+    "message": "Kata pemicu",
+    "description": "Settings: trigger word label",
+    "_machine_translated": true,
+    "_source_hash": "5ab4f2dc19af741d"
+  },
+  "settings.shortcode_trigger.label": {
+    "message": "Cocokkan juga shortcode (mis. \":fire\")",
+    "description": "Settings: shortcode trigger toggle label",
+    "_machine_translated": true,
+    "_source_hash": "a3ef5561dd4cf5f6"
   }
 }

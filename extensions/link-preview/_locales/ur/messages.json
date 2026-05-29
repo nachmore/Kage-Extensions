@@ -12,9 +12,99 @@
     "_source_hash": "71f62720d8c6e809"
   },
   "manifest.description": {
-    "message": "AI جوابات میں URLs کے لیے بھرپور لنک پیش منظر کارڈز  Open Graph ہیرو امیجز، تفصیلات، اور فیویکونز، آف لائن دوست ڈسک کیشنگ کے ساتھ۔",
+    "message": "AI جوابات میں موجود URLs کے لیے بھرپور لنک پیش منظر کارڈز  Open Graph ہیرو امیجز، تفصیلات، اور favicons، آف لائن دوست ڈسک کیشنگ کے ساتھ۔",
     "description": "Extension description",
     "_machine_translated": true,
-    "_source_hash": "8715cca27a85ca14"
+    "_source_hash": "1115a6d66a236b52"
+  },
+  "card.aria_label": {
+    "message": "لنک پیش منظر: {title}",
+    "description": "Aria label on a link-preview card",
+    "_machine_translated": true,
+    "_source_hash": "0d14ec57b9273822"
+  },
+  "settings.description": {
+    "message": "AI جوابات میں موجود URLs کے لیے ان لائن پیش منظر کارڈز دکھاتا ہے۔",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "8f8fad89bd661f18"
+  },
+  "settings.enabled.label": {
+    "message": "لنک پیش منظر فعال کریں",
+    "description": "Settings: enable toggle label",
+    "_machine_translated": true,
+    "_source_hash": "8d8bac295d1fb446"
+  },
+  "settings.enabled.description": {
+    "message": "اسسٹنٹ پیغامات میں ملنے والے URLs کے لیے پیش منظر کارڈز دکھائیں۔",
+    "description": "Settings: enable toggle description",
+    "_machine_translated": true,
+    "_source_hash": "a09c739f5e71639d"
+  },
+  "settings.show_images.label": {
+    "message": "ہیرو امیجز دکھائیں",
+    "description": "Settings: hero images toggle label",
+    "_machine_translated": true,
+    "_source_hash": "780bd9e8467dff8a"
+  },
+  "settings.show_images.description": {
+    "message": "دستیاب ہونے پر صفحے کی Open Graph یا Twitter Card امیج پیش کریں۔ کارڈز کو مختصر رکھنے کے لیے بند کریں (کوئی امیج نہیں)۔",
+    "description": "Settings: hero images toggle description",
+    "_machine_translated": true,
+    "_source_hash": "93de34f690c3ff82"
+  },
+  "settings.max_previews.label": {
+    "message": "فی پیغام زیادہ سے زیادہ پیش منظر",
+    "description": "Settings: max previews label",
+    "_machine_translated": true,
+    "_source_hash": "0b07938756b890da"
+  },
+  "settings.max_previews.description": {
+    "message": "بے ترتیبی سے بچنے کے لیے فی پیغام دکھائے جانے والے پیش منظر کارڈز کی تعداد محدود کریں۔",
+    "description": "Settings: max previews description",
+    "_machine_translated": true,
+    "_source_hash": "9210823b6078eb39"
+  },
+  "settings.section.cache": {
+    "message": "کیش",
+    "description": "Settings section: cache",
+    "_machine_translated": true,
+    "_source_hash": "eb6835b21d425ab6"
+  },
+  "settings.cache.info_html": {
+    "message": "حاصل کردہ میٹا ڈیٹا ڈسک پر 7 دن تک کیش کیا جاتا ہے تاکہ چیٹ دوبارہ کھولنے پر ہر URL دوبارہ حاصل نہ کیا جائے۔ ناکام حاصل کرنے کی کوششیں مختصر وقت کے لیے کیش کی جاتی ہیں تاکہ عارضی خرابیاں خود بخود حل ہو جائیں۔",
+    "description": "Settings: cache info text",
+    "_machine_translated": true,
+    "_source_hash": "3bdf171c7cecf3ef"
+  },
+  "settings.cache_stats.label": {
+    "message": "کیش سائز دکھائیں",
+    "description": "Settings: cache stats button label",
+    "_machine_translated": true,
+    "_source_hash": "c372374c660f33ba"
+  },
+  "settings.cache_stats.description": {
+    "message": "دیکھیں کہ لنک پیش منظر کیش کتنی ڈسک جگہ استعمال کر رہا ہے۔",
+    "description": "Settings: cache stats button description",
+    "_machine_translated": true,
+    "_source_hash": "9bdb5c472c2c9222"
+  },
+  "settings.cache_clear.label": {
+    "message": "کیش صاف کریں",
+    "description": "Settings: clear cache button label",
+    "_machine_translated": true,
+    "_source_hash": "a49f545073f8b034"
+  },
+  "settings.cache_clear.description": {
+    "message": "کیش مٹا دیں۔ اگر کوئی لنک پیش منظر پرانا یا غلط لگے تو اسے استعمال کریں۔",
+    "description": "Settings: clear cache button description",
+    "_machine_translated": true,
+    "_source_hash": "d70f570cfe2407d5"
+  },
+  "settings.cache_clear.confirm": {
+    "message": "تمام کیش شدہ لنک پیش منظر صاف کریں؟ اگلی بار ظاہر ہونے پر URLs دوبارہ حاصل کیے جائیں گے۔",
+    "description": "Confirmation prompt before clearing cache",
+    "_machine_translated": true,
+    "_source_hash": "f0b0851ffc83c81e"
   }
 }

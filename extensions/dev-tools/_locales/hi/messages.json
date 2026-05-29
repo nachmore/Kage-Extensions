@@ -16,5 +16,149 @@
     "description": "Extension description",
     "_machine_translated": true,
     "_source_hash": "49d4746132984668"
+  },
+  "result.uuid.label": {
+    "message": "UUID v4",
+    "description": "Result label for UUID generation",
+    "_machine_translated": true,
+    "_source_hash": "d3fe489b61b340eb"
+  },
+  "result.copy_hint": {
+    "message": "कॉपी करने के लिए Enter दबाएँ",
+    "description": "Description hint shown next to copyable results",
+    "_machine_translated": true,
+    "_source_hash": "b02c13cf1ffa5cd0"
+  },
+  "result.copy_hint_short": {
+    "message": "कॉपी के लिए Enter",
+    "description": "Shorter copy hint",
+    "_machine_translated": true,
+    "_source_hash": "6ca21eed070240ef"
+  },
+  "result.base64_encode.label": {
+    "message": "Base64 एनकोड",
+    "description": "Result label for base64 encoding",
+    "_machine_translated": true,
+    "_source_hash": "6073aa5da178f89b"
+  },
+  "result.base64_encode.description": {
+    "message": "\"{text}\" → कॉपी के लिए Enter",
+    "description": "Description for base64 encode result",
+    "_machine_translated": true,
+    "_source_hash": "466a20bfd2ecd1dc"
+  },
+  "result.base64_decode.label": {
+    "message": "Base64 डिकोड",
+    "description": "Result label for base64 decoding",
+    "_machine_translated": true,
+    "_source_hash": "414db3097f8ee0db"
+  },
+  "result.hash.label": {
+    "message": "{algo} हैश",
+    "description": "Result label for hash calculation",
+    "_machine_translated": true,
+    "_source_hash": "66480e8f9bdff6f1"
+  },
+  "result.hash.computing": {
+    "message": "गणना हो रही है...",
+    "description": "Hash computing description",
+    "_machine_translated": true,
+    "_source_hash": "285c7eb7307e4e0f"
+  },
+  "result.epoch.label": {
+    "message": "Epoch → तिथि",
+    "description": "Result label for epoch-to-date conversion",
+    "_machine_translated": true,
+    "_source_hash": "b7f91cf41909a0db"
+  },
+  "result.epoch_now.label": {
+    "message": "वर्तमान Epoch",
+    "description": "Result label for current epoch timestamp",
+    "_machine_translated": true,
+    "_source_hash": "575ea42947bc47f7"
+  },
+  "result.json_format.label": {
+    "message": "JSON फ़ॉर्मेट करें",
+    "description": "Result label for JSON formatting",
+    "_machine_translated": true,
+    "_source_hash": "5de3ec6192458850"
+  },
+  "result.json_format.description": {
+    "message": "{count} कुंजियाँ · कॉपी के लिए Enter",
+    "description": "Description for JSON format result",
+    "_machine_translated": true,
+    "_source_hash": "3917600f856833ae"
+  },
+  "settings.description": {
+    "message": "UUID जनरेशन, base64 एनकोड/डिकोड, हैशिंग, epoch रूपांतरण, JSON फ़ॉर्मेटिंग।",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "97722a102e9aa297"
+  },
+  "settings.section.individual_tools": {
+    "message": "व्यक्तिगत टूल",
+    "description": "Settings section label",
+    "_machine_translated": true,
+    "_source_hash": "9ae76124a4a4e933"
+  },
+  "settings.uuid.label": {
+    "message": "UUID जनरेटर",
+    "description": "Settings: UUID toggle label",
+    "_machine_translated": true,
+    "_source_hash": "879d62558ec3a6d1"
+  },
+  "settings.uuid.description": {
+    "message": "रैंडम UUID v4 जनरेट करने के लिए \"uuid\" टाइप करें।",
+    "description": "Settings: UUID toggle description",
+    "_machine_translated": true,
+    "_source_hash": "06b39caeb2f6ec17"
+  },
+  "settings.base64.label": {
+    "message": "Base64 एनकोड/डिकोड",
+    "description": "Settings: Base64 toggle label",
+    "_machine_translated": true,
+    "_source_hash": "c51aa045ef4ce6c8"
+  },
+  "settings.base64.description": {
+    "message": "एनकोड करने के लिए \"base64 text\" या डिकोड करने के लिए \"b64d encoded\" टाइप करें।",
+    "description": "Settings: Base64 toggle description",
+    "_machine_translated": true,
+    "_source_hash": "5442e1fb29755519"
+  },
+  "settings.hash.label": {
+    "message": "हैश कैलकुलेटर",
+    "description": "Settings: hash toggle label",
+    "_machine_translated": true,
+    "_source_hash": "7938519ccb1b9c7f"
+  },
+  "settings.hash.description": {
+    "message": "\"md5 text\", \"sha1 text\", \"sha256 text\", या \"sha512 text\" टाइप करें।",
+    "description": "Settings: hash toggle description",
+    "_machine_translated": true,
+    "_source_hash": "342e5f6a3cb93c29"
+  },
+  "settings.epoch.label": {
+    "message": "Epoch/तिथि कन्वर्टर",
+    "description": "Settings: epoch toggle label",
+    "_machine_translated": true,
+    "_source_hash": "b4d8c2df0372658b"
+  },
+  "settings.epoch.description": {
+    "message": "तिथि देखने के लिए Unix टाइमस्टैम्प टाइप करें, या वर्तमान epoch के लिए \"now\" टाइप करें।",
+    "description": "Settings: epoch toggle description",
+    "_machine_translated": true,
+    "_source_hash": "571a7a1b0bd2ac99"
+  },
+  "settings.json_format.label": {
+    "message": "JSON फ़ॉर्मेटर",
+    "description": "Settings: JSON toggle label",
+    "_machine_translated": true,
+    "_source_hash": "3e70429a5ca9e8ef"
+  },
+  "settings.json_format.description": {
+    "message": "मिनिफ़ाइड JSON पेस्ट करें ताकि वह सुंदर रूप में दिखे।",
+    "description": "Settings: JSON toggle description",
+    "_machine_translated": true,
+    "_source_hash": "462f3cecbc5fd99e"
   }
 }

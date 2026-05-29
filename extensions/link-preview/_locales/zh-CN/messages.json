@@ -12,9 +12,99 @@
     "_source_hash": "71f62720d8c6e809"
   },
   "manifest.description": {
-    "message": "为 AI 回复中的 URL 提供精美的链接预览卡片，包含 Open Graph 主图、描述和网站图标，并支持离线友好的本地磁盘缓存。",
+    "message": "为 AI 回复中的 URL 显示富链接预览卡片，包含 Open Graph 主图、描述和网站图标，并支持离线友好的磁盘缓存。",
     "description": "Extension description",
     "_machine_translated": true,
-    "_source_hash": "8715cca27a85ca14"
+    "_source_hash": "1115a6d66a236b52"
+  },
+  "card.aria_label": {
+    "message": "链接预览：{title}",
+    "description": "Aria label on a link-preview card",
+    "_machine_translated": true,
+    "_source_hash": "0d14ec57b9273822"
+  },
+  "settings.description": {
+    "message": "为 AI 回复中的 URL 显示内联预览卡片。",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "8f8fad89bd661f18"
+  },
+  "settings.enabled.label": {
+    "message": "启用链接预览",
+    "description": "Settings: enable toggle label",
+    "_machine_translated": true,
+    "_source_hash": "8d8bac295d1fb446"
+  },
+  "settings.enabled.description": {
+    "message": "为助手消息中出现的 URL 显示预览卡片。",
+    "description": "Settings: enable toggle description",
+    "_machine_translated": true,
+    "_source_hash": "a09c739f5e71639d"
+  },
+  "settings.show_images.label": {
+    "message": "显示主图",
+    "description": "Settings: hero images toggle label",
+    "_machine_translated": true,
+    "_source_hash": "780bd9e8467dff8a"
+  },
+  "settings.show_images.description": {
+    "message": "在可用时渲染页面的 Open Graph 或 Twitter Card 图片。关闭以保持卡片简洁（不显示任何图片）。",
+    "description": "Settings: hero images toggle description",
+    "_machine_translated": true,
+    "_source_hash": "93de34f690c3ff82"
+  },
+  "settings.max_previews.label": {
+    "message": "每条消息的最大预览数",
+    "description": "Settings: max previews label",
+    "_machine_translated": true,
+    "_source_hash": "0b07938756b890da"
+  },
+  "settings.max_previews.description": {
+    "message": "限制每条消息显示的预览卡片数量，以避免界面杂乱。",
+    "description": "Settings: max previews description",
+    "_machine_translated": true,
+    "_source_hash": "9210823b6078eb39"
+  },
+  "settings.section.cache": {
+    "message": "缓存",
+    "description": "Settings section: cache",
+    "_machine_translated": true,
+    "_source_hash": "eb6835b21d425ab6"
+  },
+  "settings.cache.info_html": {
+    "message": "已抓取的元数据会在磁盘上缓存最长 7 天，这样重新打开聊天时不会重新抓取每个 URL。失败的抓取会短暂缓存，以便瞬时错误能够自行恢复。",
+    "description": "Settings: cache info text",
+    "_machine_translated": true,
+    "_source_hash": "3bdf171c7cecf3ef"
+  },
+  "settings.cache_stats.label": {
+    "message": "显示缓存大小",
+    "description": "Settings: cache stats button label",
+    "_machine_translated": true,
+    "_source_hash": "c372374c660f33ba"
+  },
+  "settings.cache_stats.description": {
+    "message": "查看链接预览缓存占用了多少磁盘空间。",
+    "description": "Settings: cache stats button description",
+    "_machine_translated": true,
+    "_source_hash": "9bdb5c472c2c9222"
+  },
+  "settings.cache_clear.label": {
+    "message": "清除缓存",
+    "description": "Settings: clear cache button label",
+    "_machine_translated": true,
+    "_source_hash": "a49f545073f8b034"
+  },
+  "settings.cache_clear.description": {
+    "message": "清空缓存。如果链接预览看起来过时或错误，请使用此操作。",
+    "description": "Settings: clear cache button description",
+    "_machine_translated": true,
+    "_source_hash": "d70f570cfe2407d5"
+  },
+  "settings.cache_clear.confirm": {
+    "message": "要清除所有已缓存的链接预览吗？这些 URL 将在下次出现时重新抓取。",
+    "description": "Confirmation prompt before clearing cache",
+    "_machine_translated": true,
+    "_source_hash": "f0b0851ffc83c81e"
   }
 }

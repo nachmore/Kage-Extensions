@@ -12,5 +12,17 @@
   "manifest.description": {
     "message": "Live currency conversion. Type \"100 usd to eur\" or \"50 jpy in cad\". Rates from frankfurter.dev (European Central Bank).",
     "description": "Extension description"
+  },
+  "result.same_currency": {
+    "message": "Same currency",
+    "description": "Description shown when source and target currency are the same"
+  },
+  "result.looking_up": {
+    "message": "Looking up rate…",
+    "description": "Sync placeholder description while the rate is fetched"
+  },
+  "result.rate": {
+    "message": "Rate: 1 {from} = {rate} {to}",
+    "description": "Description showing the live FX rate"
   }
 }

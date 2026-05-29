@@ -26,6 +26,7 @@ export default class SnippetsSearchProvider {
     initialize(context) {
         this.invoke = context.invoke;
         this.config = context.config || {};
+        this.t = context.i18n?.t?.bind(context.i18n) || ((k) => k);
         this._cache = null;
     }
     onConfigUpdate(config) { this.config = config || {}; }
@@ -55,7 +56,7 @@ export default class SnippetsSearchProvider {
             const space = args.indexOf(' ');
             if (space < 0) return [{
                 id: 'snip:add-help', type: 'snippets',
-                label: 'Save snippet', description: 'Usage: snip+ <name> <body>',
+                label: this.t('result.add_help.label'), description: this.t('result.add_help.description'),
                 icon: '📋', score: 80, data: { help: true },
             }];
             const name = args.slice(0, space).trim();
@@ -64,7 +65,7 @@ export default class SnippetsSearchProvider {
             const preview = body.length > 60 ? body.slice(0, 60) + '…' : body;
             return [{
                 id: `snip:add:${name}`, type: 'snippets',
-                label: `Save snippet "${name}"`, description: preview,
+                label: this.t('result.add.label', { name }), description: preview,
                 icon: '➕', score: 95, data: { add: { name, body } },
             }];
         }
@@ -74,15 +75,16 @@ export default class SnippetsSearchProvider {
             if (!name) return [];
             return [{
                 id: `snip:del:${name}`, type: 'snippets',
-                label: `Delete snippet "${name}"`, description: '',
+                label: this.t('result.del.label', { name }), description: '',
                 icon: '🗑️', score: 90, data: { del: name },
             }];
         }
 
+        const q = rest.trim();
         return [{
             id: 'snip:loading', type: 'snippets',
-            label: rest.trim() ? `Snippets · "${rest.trim()}"` : 'Snippets',
-            description: 'Loading…',
+            label: q ? this.t('result.list.label_query', { query: q }) : this.t('result.list.label_all'),
+            description: this.t('result.list.loading'),
             icon: '📋', score: 50, data: { pending: true },
         }];
     }
@@ -109,8 +111,8 @@ export default class SnippetsSearchProvider {
         if (!q && scored.length === 0) {
             return [{
                 id: 'snip:empty', type: 'snippets',
-                label: 'No snippets yet',
-                description: 'Save one with `snip+ <name> <body>`',
+                label: this.t('result.empty.label'),
+                description: this.t('result.empty.description'),
                 icon: '📋', score: 60, data: { empty: true },
             }];
         }

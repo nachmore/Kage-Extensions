@@ -6,6 +6,7 @@
 export default class DevToolsSearchProvider {
     initialize(context) {
         this.config = context.config || {};
+        this.t = context.i18n?.t?.bind(context.i18n) || ((k) => k);
     }
 
     onConfigUpdate(config) {
@@ -13,7 +14,7 @@ export default class DevToolsSearchProvider {
     }
 
     match(query) {
-        const result = matchDevTool(query, this.config);
+        const result = matchDevTool(query, this.config, this.t);
         if (!result) return [];
         if (result.type === 'devtool_async') return []; // handled in matchAsync
         return [{
@@ -28,7 +29,7 @@ export default class DevToolsSearchProvider {
     }
 
     async matchAsync(query) {
-        const result = matchDevTool(query, this.config);
+        const result = matchDevTool(query, this.config, this.t);
         if (!result || result.type !== 'devtool_async') return [];
         try {
             const hash = await computeHash(result.algo, result.text);
@@ -37,7 +38,7 @@ export default class DevToolsSearchProvider {
                 id: 'devtool:' + result.algo,
                 type: 'devtool',
                 label: hash,
-                description: result.label + ' · Enter to copy',
+                description: result.label + ' · ' + this.t('result.copy_hint_short'),
                 icon: result.icon,
                 score: 92,
                 data: { value: hash },
@@ -56,19 +57,19 @@ export default class DevToolsSearchProvider {
 
 // --- Core matching logic (moved from floating-devtools.js) ---
 
-function matchDevTool(input, config) {
+function matchDevTool(input, config, t) {
     const lower = input.toLowerCase().trim();
 
     if (config.uuid && (lower === 'uuid' || lower === 'guid' || lower === 'uuid4')) {
         const uuid = crypto.randomUUID();
-        return { type: 'devtool', label: 'UUID v4', icon: '🔑', value: uuid, description: 'Press Enter to copy' };
+        return { type: 'devtool', label: t('result.uuid.label'), icon: '🔑', value: uuid, description: t('result.copy_hint') };
     }
 
     if (config.base64 && /^(base64|b64)\s+.+/i.test(lower)) {
         const text = input.replace(/^(base64|b64)\s+/i, '');
         try {
             const encoded = btoa(unescape(encodeURIComponent(text)));
-            return { type: 'devtool', label: 'Base64 Encode', icon: '📦', value: encoded, description: `"${text}" → Enter to copy` };
+            return { type: 'devtool', label: t('result.base64_encode.label'), icon: '📦', value: encoded, description: t('result.base64_encode.description', { text }) };
         } catch { return null; }
     }
 
@@ -76,7 +77,7 @@ function matchDevTool(input, config) {
         const text = input.replace(/^(base64d|b64d|decode)\s+/i, '').trim();
         try {
             const decoded = decodeURIComponent(escape(atob(text)));
-            return { type: 'devtool', label: 'Base64 Decode', icon: '📭', value: decoded, description: 'Enter to copy' };
+            return { type: 'devtool', label: t('result.base64_decode.label'), icon: '📭', value: decoded, description: t('result.copy_hint_short') };
         } catch { return null; }
     }
 
@@ -85,7 +86,7 @@ function matchDevTool(input, config) {
         if (match) {
             const algo = match[1].toLowerCase();
             const text = match[2];
-            return { type: 'devtool_async', algo, text, label: `${algo.toUpperCase()} Hash`, icon: '#️⃣', description: 'Computing...' };
+            return { type: 'devtool_async', algo, text, label: t('result.hash.label', { algo: algo.toUpperCase() }), icon: '#️⃣', description: t('result.hash.computing') };
         }
     }
 
@@ -95,7 +96,7 @@ function matchDevTool(input, config) {
         if (!isNaN(date.getTime())) {
             const local = date.toLocaleString();
             const iso = date.toISOString();
-            return { type: 'devtool', label: 'Epoch → Date', icon: '🕐', value: `${local}\n${iso}`, description: local };
+            return { type: 'devtool', label: t('result.epoch.label'), icon: '🕐', value: `${local}\n${iso}`, description: local };
         }
     }
 
@@ -103,7 +104,7 @@ function matchDevTool(input, config) {
         const now = Date.now();
         const secs = Math.floor(now / 1000);
         const local = new Date(now).toLocaleString();
-        return { type: 'devtool', label: 'Current Epoch', icon: '🕐', value: secs.toString(), description: `${secs} (${local})` };
+        return { type: 'devtool', label: t('result.epoch_now.label'), icon: '🕐', value: secs.toString(), description: `${secs} (${local})` };
     }
 
     if (config.json_format && (lower.startsWith('{') || lower.startsWith('['))) {
@@ -111,7 +112,7 @@ function matchDevTool(input, config) {
             const parsed = JSON.parse(input);
             const formatted = JSON.stringify(parsed, null, 2);
             if (!input.includes('\n') && formatted.includes('\n')) {
-                return { type: 'devtool', label: 'Format JSON', icon: '📐', value: formatted, description: `${Object.keys(parsed).length || '?'} keys · Enter to copy` };
+                return { type: 'devtool', label: t('result.json_format.label'), icon: '📐', value: formatted, description: t('result.json_format.description', { count: Object.keys(parsed).length || '?' }) };
             }
         } catch { /* not valid JSON */ }
     }

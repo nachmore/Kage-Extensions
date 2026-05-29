@@ -12,5 +12,273 @@
   "manifest.description": {
     "message": "See what's playing on Spotify, control playback, like / unlike, queue, and manage playlists from Kage.",
     "description": "Extension description"
+  },
+  "result.now.label": {
+    "message": "Spotify · Now playing",
+    "description": "Result label for the now-playing row"
+  },
+  "result.now.description": {
+    "message": "Show what's currently playing",
+    "description": "Result description for the now-playing row"
+  },
+  "result.help.label": {
+    "message": "Spotify · Commands",
+    "description": "Result label for the help row"
+  },
+  "result.help.description": {
+    "message": "play, queue, like, unlike, next, prev, vol, device, playlist",
+    "description": "Result description listing available commands"
+  },
+  "result.play_query.label": {
+    "message": "Spotify · Play \"{query}\"",
+    "description": "Result label when playing a search query"
+  },
+  "result.play_query.description": {
+    "message": "Search Spotify and play the top result",
+    "description": "Description for the play-query row"
+  },
+  "result.resume.label": {
+    "message": "Spotify · Resume",
+    "description": "Result label for resuming playback"
+  },
+  "result.resume.description": {
+    "message": "Resume playback on the active device",
+    "description": "Description for the resume row"
+  },
+  "result.pause.label": {
+    "message": "Spotify · Pause",
+    "description": "Result label for pause"
+  },
+  "result.pause.description": {
+    "message": "Pause the active device",
+    "description": "Description for pause row"
+  },
+  "result.queue.label": {
+    "message": "Spotify · Queue \"{query}\"",
+    "description": "Result label when queuing a search"
+  },
+  "result.queue.description": {
+    "message": "Add the top result to your queue",
+    "description": "Description for queue row"
+  },
+  "result.like.label": {
+    "message": "Spotify · Like current track",
+    "description": "Result label for like action"
+  },
+  "result.like.description": {
+    "message": "Add to your saved tracks",
+    "description": "Description for like row"
+  },
+  "result.unlike.label": {
+    "message": "Spotify · Unlike current track",
+    "description": "Result label for unlike action"
+  },
+  "result.unlike.description": {
+    "message": "Remove from your saved tracks",
+    "description": "Description for unlike row"
+  },
+  "result.next.label": {
+    "message": "Spotify · Next track",
+    "description": "Result label for next track"
+  },
+  "result.prev.label": {
+    "message": "Spotify · Previous track",
+    "description": "Result label for previous track"
+  },
+  "result.volume.label": {
+    "message": "Spotify · Set volume to {percent}%",
+    "description": "Result label for volume change"
+  },
+  "result.device.label": {
+    "message": "Spotify · Transfer to device \"{name}\"",
+    "description": "Result label for device transfer"
+  },
+  "result.playlist.label": {
+    "message": "Spotify · Play playlist \"{name}\"",
+    "description": "Result label for playlist playback"
+  },
+  "result.playlist.description": {
+    "message": "Match by name",
+    "description": "Description hint for playlist row"
+  },
+  "result.connect.label": {
+    "message": "Spotify · Connect…",
+    "description": "Result label for connect"
+  },
+  "result.connect.description": {
+    "message": "Sign in via the browser",
+    "description": "Description for connect"
+  },
+  "result.disconnect.label": {
+    "message": "Spotify · Sign out",
+    "description": "Result label for sign out"
+  },
+  "result.disconnect.description": {
+    "message": "Forget your tokens",
+    "description": "Description for sign out"
+  },
+  "error.not_signed_in": {
+    "message": "Not signed in to Spotify. Type \"sp connect\" to sign in.",
+    "description": "Error message when no Spotify session"
+  },
+  "error.nothing_playing": {
+    "message": "Nothing is playing right now.",
+    "description": "Error when like is invoked with no track"
+  },
+  "error.no_match": {
+    "message": "No Spotify match for \"{query}\".",
+    "description": "Error when search returns nothing"
+  },
+  "error.no_device": {
+    "message": "No Spotify device named \"{name}\".",
+    "description": "Error when device name not found"
+  },
+  "error.no_playlist": {
+    "message": "No playlist matching \"{name}\".",
+    "description": "Error when playlist name not found"
+  },
+  "widget.like.add_tooltip": {
+    "message": "Save to your library",
+    "description": "Tooltip on the like button when not liked"
+  },
+  "widget.like.remove_tooltip": {
+    "message": "Remove from your library",
+    "description": "Tooltip on the like button when already liked"
+  },
+  "widget.previous_tooltip": {
+    "message": "Previous track",
+    "description": "Tooltip on the previous-track button"
+  },
+  "widget.next_tooltip": {
+    "message": "Next track",
+    "description": "Tooltip on the next-track button"
+  },
+  "widget.pause_tooltip": {
+    "message": "Pause",
+    "description": "Tooltip on the play/pause button when playing"
+  },
+  "widget.resume_tooltip": {
+    "message": "Resume",
+    "description": "Tooltip on the play/pause button when paused"
+  },
+  "settings.description": {
+    "message": "Show what's playing, control playback, and run shortcuts like \"sp like\" or \"sp play <track>\". Uses Spotify's PKCE flow over a one-shot localhost listener — no client secret leaves your machine.",
+    "description": "Settings page description"
+  },
+  "settings.section.display": {
+    "message": "Display",
+    "description": "Settings section: display"
+  },
+  "settings.enabled.label": {
+    "message": "Enable",
+    "description": "Settings: enable toggle"
+  },
+  "settings.show_now_playing_bar.label": {
+    "message": "Show now-playing bar in the floating window",
+    "description": "Settings: show now-playing bar"
+  },
+  "settings.refresh_seconds.label": {
+    "message": "Refresh every (seconds)",
+    "description": "Settings: refresh seconds label"
+  },
+  "settings.refresh_seconds.description": {
+    "message": "How often the now-playing bar polls Spotify. Lower means snappier updates and slightly more API calls.",
+    "description": "Settings: refresh seconds description"
+  },
+  "settings.trigger.label": {
+    "message": "Trigger word",
+    "description": "Settings: trigger word label"
+  },
+  "settings.trigger.description": {
+    "message": "What you type to invoke Spotify shortcuts in the floating window. For example, \"sp like\" or \"sp play lofi beats\".",
+    "description": "Settings: trigger word description"
+  },
+  "settings.section.app": {
+    "message": "Spotify app",
+    "description": "Settings section: spotify app"
+  },
+  "settings.app.intro_html": {
+    "message": "Create a free <strong>Spotify Developer</strong> app at <a href=\"https://developer.spotify.com/dashboard\">developer.spotify.com/dashboard</a>. Add <code>http://127.0.0.1/spotify/callback</code> as a Redirect URI (any port works — Kage adds the actual port at sign-in time, and Spotify matches the host + path). Copy the <strong>Client ID</strong> below.",
+    "description": "Settings: app setup instructions"
+  },
+  "settings.client_id.label": {
+    "message": "Client ID",
+    "description": "Settings: Client ID input label"
+  },
+  "settings.client_id.placeholder": {
+    "message": "Paste your Spotify client_id here",
+    "description": "Settings: Client ID placeholder"
+  },
+  "settings.client_id.description": {
+    "message": "Stored locally; never sent anywhere except Spotify.",
+    "description": "Settings: Client ID description"
+  },
+  "settings.save_client_id.label": {
+    "message": "Save Client ID",
+    "description": "Settings: save client id button"
+  },
+  "settings.section.connection": {
+    "message": "Connection",
+    "description": "Settings section: connection"
+  },
+  "settings.connection.connected": {
+    "message": "<strong>Connected</strong> — playback controls are ready.",
+    "description": "Settings: connection ready text"
+  },
+  "settings.connection.not_connected": {
+    "message": "Not connected yet. Click <strong>Connect</strong> to authorize.",
+    "description": "Settings: not connected text"
+  },
+  "settings.connection.no_client_id": {
+    "message": "Save a Client ID first, then connect.",
+    "description": "Settings: needs client ID first"
+  },
+  "settings.connect.label_connect": {
+    "message": "Connect…",
+    "description": "Settings: connect button"
+  },
+  "settings.connect.label_reconnect": {
+    "message": "Reconnect…",
+    "description": "Settings: reconnect button"
+  },
+  "settings.disconnect.label": {
+    "message": "Sign out",
+    "description": "Settings: sign-out button"
+  },
+  "settings.disconnect.confirm": {
+    "message": "Sign out of Spotify? You'll need to re-authorize to use playback shortcuts.",
+    "description": "Confirmation prompt before signing out"
+  },
+  "settings.validate.trigger_required": {
+    "message": "Trigger word is required.",
+    "description": "Validation error when trigger is empty"
+  },
+  "settings.validate.trigger_format": {
+    "message": "Trigger must be letters, digits, or hyphens.",
+    "description": "Validation error for invalid trigger characters"
+  },
+  "action.save_client_id.empty": {
+    "message": "⚠️ Paste a Client ID first.",
+    "description": "Status when Client ID input is empty"
+  },
+  "action.save_client_id.invalid": {
+    "message": "⚠️ That doesn't look like a valid Spotify Client ID.",
+    "description": "Status when Client ID format invalid"
+  },
+  "action.save_client_id.success": {
+    "message": "✅ Client ID saved.",
+    "description": "Status when Client ID is saved"
+  },
+  "action.connect.success": {
+    "message": "✅ Connected. Now-playing bar will appear when something is playing.",
+    "description": "Status after a successful connect"
+  },
+  "action.connect.error": {
+    "message": "⚠️ {message}",
+    "description": "Status with error after a failed connect"
+  },
+  "action.disconnect.success": {
+    "message": "✅ Signed out.",
+    "description": "Status after a successful sign-out"
   }
 }

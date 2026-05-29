@@ -12,9 +12,45 @@
     "_source_hash": "205c3e69ca030742"
   },
   "manifest.description": {
-    "message": "Hledejte a kopírujte emoji podle názvu. Napište „:fire“ nebo „emoji rocket“ a vybere se nejbližší shoda z ~1500 nejpoužívanějších emoji.",
+    "message": "Vyhledávání a kopírování emoji podle názvu. Zadejte „:fire“ nebo „emoji rocket“ a vyberte se nejbližší shoda z ~1500 nejpoužívanějších emoji.",
     "description": "Extension description",
     "_machine_translated": true,
-    "_source_hash": "59640ff70d49d4b7"
+    "_source_hash": "b9390cfd94255409"
+  },
+  "result.hint.label": {
+    "message": "Emoji · pište pro vyhledávání",
+    "description": "Hint label when only the trigger word is typed",
+    "_machine_translated": true,
+    "_source_hash": "a2471f31b8da42e8"
+  },
+  "result.hint.description": {
+    "message": "Zkuste „{trigger} fire“ nebo „:fire“",
+    "description": "Hint description suggesting trigger usage",
+    "_machine_translated": true,
+    "_source_hash": "c66d707a23b3874e"
+  },
+  "settings.description": {
+    "message": "Vyhledávejte ~250 nejpoužívanějších emoji podle názvu. Fungují dva styly spouštění: <code>emoji fire</code> nebo jen <code>:fire</code>. Vyberte jedno a stiskněte Enter pro zkopírování do schránky.",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "9d1fa3f643108b7e"
+  },
+  "settings.enabled.label": {
+    "message": "Povolit",
+    "description": "Settings: enable toggle label",
+    "_machine_translated": true,
+    "_source_hash": "efce5571f8dbd1e9"
+  },
+  "settings.trigger.label": {
+    "message": "Spouštěcí slovo",
+    "description": "Settings: trigger word label",
+    "_machine_translated": true,
+    "_source_hash": "5ab4f2dc19af741d"
+  },
+  "settings.shortcode_trigger.label": {
+    "message": "Také rozpoznávat shortcody (např. „:fire“)",
+    "description": "Settings: shortcode trigger toggle label",
+    "_machine_translated": true,
+    "_source_hash": "a3ef5561dd4cf5f6"
   }
 }

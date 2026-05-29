@@ -12,9 +12,99 @@
     "_source_hash": "71f62720d8c6e809"
   },
   "manifest.description": {
-    "message": "AI উত্তরে থাকা URL-এর জন্য সমৃদ্ধ লিংক প্রিভিউ কার্ড  Open Graph হিরো ছবি, বিবরণ এবং ফেভিকন, সাথে অফলাইন-বান্ধব ডিস্ক ক্যাশিং।",
+    "message": "AI উত্তরে URL-এর জন্য সমৃদ্ধ লিঙ্ক প্রিভিউ কার্ড — Open Graph হিরো ছবি, বিবরণ ও ফেভিকন, অফলাইন-বান্ধব ডিস্ক ক্যাশিং সহ।",
     "description": "Extension description",
     "_machine_translated": true,
-    "_source_hash": "8715cca27a85ca14"
+    "_source_hash": "1115a6d66a236b52"
+  },
+  "card.aria_label": {
+    "message": "লিঙ্ক প্রিভিউ: {title}",
+    "description": "Aria label on a link-preview card",
+    "_machine_translated": true,
+    "_source_hash": "0d14ec57b9273822"
+  },
+  "settings.description": {
+    "message": "AI উত্তরে URL-এর জন্য ইনলাইন প্রিভিউ কার্ড দেখায়।",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "8f8fad89bd661f18"
+  },
+  "settings.enabled.label": {
+    "message": "লিঙ্ক প্রিভিউ সক্ষম করুন",
+    "description": "Settings: enable toggle label",
+    "_machine_translated": true,
+    "_source_hash": "8d8bac295d1fb446"
+  },
+  "settings.enabled.description": {
+    "message": "অ্যাসিস্ট্যান্ট বার্তায় পাওয়া URL-এর জন্য প্রিভিউ কার্ড দেখান।",
+    "description": "Settings: enable toggle description",
+    "_machine_translated": true,
+    "_source_hash": "a09c739f5e71639d"
+  },
+  "settings.show_images.label": {
+    "message": "হিরো ছবি দেখান",
+    "description": "Settings: hero images toggle label",
+    "_machine_translated": true,
+    "_source_hash": "780bd9e8467dff8a"
+  },
+  "settings.show_images.description": {
+    "message": "যখন উপলব্ধ থাকে, পৃষ্ঠার Open Graph বা Twitter Card ছবি রেন্ডার করুন। কার্ডগুলি কমপ্যাক্ট রাখতে (কোনো ছবি ছাড়া) বন্ধ করুন।",
+    "description": "Settings: hero images toggle description",
+    "_machine_translated": true,
+    "_source_hash": "93de34f690c3ff82"
+  },
+  "settings.max_previews.label": {
+    "message": "প্রতি বার্তায় সর্বাধিক প্রিভিউ",
+    "description": "Settings: max previews label",
+    "_machine_translated": true,
+    "_source_hash": "0b07938756b890da"
+  },
+  "settings.max_previews.description": {
+    "message": "বিশৃঙ্খলা এড়াতে প্রতি বার্তায় দেখানো প্রিভিউ কার্ডের সংখ্যা সীমিত করুন।",
+    "description": "Settings: max previews description",
+    "_machine_translated": true,
+    "_source_hash": "9210823b6078eb39"
+  },
+  "settings.section.cache": {
+    "message": "ক্যাশ",
+    "description": "Settings section: cache",
+    "_machine_translated": true,
+    "_source_hash": "eb6835b21d425ab6"
+  },
+  "settings.cache.info_html": {
+    "message": "প্রাপ্ত মেটাডেটা ৭ দিন পর্যন্ত ডিস্কে ক্যাশ করা হয়, যাতে চ্যাট পুনরায় খুললে প্রতিটি URL আবার আনতে না হয়। ব্যর্থ প্রচেষ্টা সংক্ষিপ্তভাবে ক্যাশ করা হয়, যাতে ক্ষণস্থায়ী ত্রুটিগুলি নিজেই ঠিক হয়ে যায়।",
+    "description": "Settings: cache info text",
+    "_machine_translated": true,
+    "_source_hash": "3bdf171c7cecf3ef"
+  },
+  "settings.cache_stats.label": {
+    "message": "ক্যাশের আকার দেখান",
+    "description": "Settings: cache stats button label",
+    "_machine_translated": true,
+    "_source_hash": "c372374c660f33ba"
+  },
+  "settings.cache_stats.description": {
+    "message": "লিঙ্ক-প্রিভিউ ক্যাশ কতটুকু ডিস্ক স্পেস ব্যবহার করছে তা দেখুন।",
+    "description": "Settings: cache stats button description",
+    "_machine_translated": true,
+    "_source_hash": "9bdb5c472c2c9222"
+  },
+  "settings.cache_clear.label": {
+    "message": "ক্যাশ সাফ করুন",
+    "description": "Settings: clear cache button label",
+    "_machine_translated": true,
+    "_source_hash": "a49f545073f8b034"
+  },
+  "settings.cache_clear.description": {
+    "message": "ক্যাশ মুছে ফেলুন। কোনো লিঙ্ক প্রিভিউ পুরনো বা ভুল মনে হলে এটি ব্যবহার করুন।",
+    "description": "Settings: clear cache button description",
+    "_machine_translated": true,
+    "_source_hash": "d70f570cfe2407d5"
+  },
+  "settings.cache_clear.confirm": {
+    "message": "সমস্ত ক্যাশ করা লিঙ্ক প্রিভিউ সাফ করবেন? URL-গুলি পরবর্তী বার দেখা দিলে আবার আনা হবে।",
+    "description": "Confirmation prompt before clearing cache",
+    "_machine_translated": true,
+    "_source_hash": "f0b0851ffc83c81e"
   }
 }

@@ -12,9 +12,99 @@
     "_source_hash": "71f62720d8c6e809"
   },
   "manifest.description": {
-    "message": "AI 응답의 URL을 위한 리치 링크 미리 보기 카드. Open Graph 대표 이미지, 설명, 파비콘을 제공하며, 오프라인 친화적인 디스크 캐싱을 지원합니다.",
+    "message": "AI 응답의 URL에 대한 풍부한 링크 미리보기 카드 — Open Graph 대표 이미지, 설명, 파비콘을 오프라인 친화적인 디스크 캐싱과 함께 제공합니다.",
     "description": "Extension description",
     "_machine_translated": true,
-    "_source_hash": "8715cca27a85ca14"
+    "_source_hash": "1115a6d66a236b52"
+  },
+  "card.aria_label": {
+    "message": "링크 미리보기: {title}",
+    "description": "Aria label on a link-preview card",
+    "_machine_translated": true,
+    "_source_hash": "0d14ec57b9273822"
+  },
+  "settings.description": {
+    "message": "AI 응답의 URL에 대한 인라인 미리보기 카드를 표시합니다.",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "8f8fad89bd661f18"
+  },
+  "settings.enabled.label": {
+    "message": "링크 미리보기 활성화",
+    "description": "Settings: enable toggle label",
+    "_machine_translated": true,
+    "_source_hash": "8d8bac295d1fb446"
+  },
+  "settings.enabled.description": {
+    "message": "어시스턴트 메시지에서 발견된 URL의 미리보기 카드를 표시합니다.",
+    "description": "Settings: enable toggle description",
+    "_machine_translated": true,
+    "_source_hash": "a09c739f5e71639d"
+  },
+  "settings.show_images.label": {
+    "message": "대표 이미지 표시",
+    "description": "Settings: hero images toggle label",
+    "_machine_translated": true,
+    "_source_hash": "780bd9e8467dff8a"
+  },
+  "settings.show_images.description": {
+    "message": "사용 가능한 경우 페이지의 Open Graph 또는 Twitter Card 이미지를 렌더링합니다. 카드를 간결하게 유지하려면 끄세요(이미지 표시 안 함).",
+    "description": "Settings: hero images toggle description",
+    "_machine_translated": true,
+    "_source_hash": "93de34f690c3ff82"
+  },
+  "settings.max_previews.label": {
+    "message": "메시지당 최대 미리보기 수",
+    "description": "Settings: max previews label",
+    "_machine_translated": true,
+    "_source_hash": "0b07938756b890da"
+  },
+  "settings.max_previews.description": {
+    "message": "혼잡을 피하기 위해 메시지당 표시되는 미리보기 카드 수를 제한합니다.",
+    "description": "Settings: max previews description",
+    "_machine_translated": true,
+    "_source_hash": "9210823b6078eb39"
+  },
+  "settings.section.cache": {
+    "message": "캐시",
+    "description": "Settings section: cache",
+    "_machine_translated": true,
+    "_source_hash": "eb6835b21d425ab6"
+  },
+  "settings.cache.info_html": {
+    "message": "가져온 메타데이터는 최대 7일 동안 디스크에 캐시되어 채팅을 다시 열 때 모든 URL을 다시 가져오지 않습니다. 실패한 가져오기는 잠시 캐시되어 일시적인 오류가 자동으로 복구됩니다.",
+    "description": "Settings: cache info text",
+    "_machine_translated": true,
+    "_source_hash": "3bdf171c7cecf3ef"
+  },
+  "settings.cache_stats.label": {
+    "message": "캐시 크기 표시",
+    "description": "Settings: cache stats button label",
+    "_machine_translated": true,
+    "_source_hash": "c372374c660f33ba"
+  },
+  "settings.cache_stats.description": {
+    "message": "링크 미리보기 캐시가 사용 중인 디스크 공간을 확인합니다.",
+    "description": "Settings: cache stats button description",
+    "_machine_translated": true,
+    "_source_hash": "9bdb5c472c2c9222"
+  },
+  "settings.cache_clear.label": {
+    "message": "캐시 지우기",
+    "description": "Settings: clear cache button label",
+    "_machine_translated": true,
+    "_source_hash": "a49f545073f8b034"
+  },
+  "settings.cache_clear.description": {
+    "message": "캐시를 삭제합니다. 링크 미리보기가 오래되었거나 잘못 표시될 때 사용하세요.",
+    "description": "Settings: clear cache button description",
+    "_machine_translated": true,
+    "_source_hash": "d70f570cfe2407d5"
+  },
+  "settings.cache_clear.confirm": {
+    "message": "캐시된 모든 링크 미리보기를 지우시겠습니까? 다음에 URL이 나타나면 다시 가져옵니다.",
+    "description": "Confirmation prompt before clearing cache",
+    "_machine_translated": true,
+    "_source_hash": "f0b0851ffc83c81e"
   }
 }

@@ -2,20 +2,24 @@
  * Focus Tracker settings provider (sandboxed).
  */
 export default class FocusTrackerSettingsProvider {
-    initialize(context) { this.config = context.config || {}; }
+    initialize(context) {
+        this.config = context.config || {};
+        this.t = context.i18n?.t?.bind(context.i18n) || ((k) => k);
+    }
     onConfigUpdate(config) { this.config = config || {}; }
 
     getSettings() {
+        const t = this.t;
         return {
-            description: 'Track app usage, context switches, and focus streaks. Type your trigger keyword to see reports.',
+            description: t('settings.description'),
             sections: [
                 {
                     controls: [
                         {
                             type: 'text',
                             id: 'trigger',
-                            label: 'Trigger Keyword',
-                            description: 'Type this keyword to see focus reports (e.g. "focus today", "focus week").',
+                            label: t('settings.trigger.label'),
+                            description: t('settings.trigger.description'),
                             default: 'focus',
                             placeholder: 'focus',
                             maxWidth: 120,
@@ -23,8 +27,8 @@ export default class FocusTrackerSettingsProvider {
                         {
                             type: 'number',
                             id: 'poll_interval',
-                            label: 'Poll Interval (seconds)',
-                            description: 'How often to check the active window. Lower = more accurate but uses more resources.',
+                            label: t('settings.poll_interval.label'),
+                            description: t('settings.poll_interval.description'),
                             default: 5,
                             min: 2,
                             max: 60,
@@ -33,18 +37,18 @@ export default class FocusTrackerSettingsProvider {
                         {
                             type: 'checkbox',
                             id: 'auto_start',
-                            label: 'Auto-start Tracking',
-                            description: 'Start tracking automatically when the app launches',
+                            label: t('settings.auto_start.label'),
+                            description: t('settings.auto_start.description'),
                             default: true,
                         },
                     ],
                 },
                 {
-                    label: 'Data to Track',
+                    label: t('settings.section.data_to_track'),
                     controls: [
-                        { type: 'checkbox', id: 'track_screen_time', label: 'Screen Time',       description: 'Track time spent in each application', default: true },
-                        { type: 'checkbox', id: 'track_switches',    label: 'Context Switches', description: 'Count how often you switch between apps', default: true },
-                        { type: 'checkbox', id: 'track_streaks',     label: 'Focus Streaks',    description: 'Track longest uninterrupted focus periods', default: true },
+                        { type: 'checkbox', id: 'track_screen_time', label: t('settings.track_screen_time.label'), description: t('settings.track_screen_time.description'), default: true },
+                        { type: 'checkbox', id: 'track_switches',    label: t('settings.track_switches.label'),    description: t('settings.track_switches.description'),    default: true },
+                        { type: 'checkbox', id: 'track_streaks',     label: t('settings.track_streaks.label'),     description: t('settings.track_streaks.description'),     default: true },
                     ],
                 },
             ],
@@ -54,7 +58,7 @@ export default class FocusTrackerSettingsProvider {
     validate(values) {
         const n = Number(values.poll_interval);
         if (!Number.isFinite(n) || n < 2 || n > 60) {
-            return { valid: false, error: 'Poll interval must be between 2 and 60 seconds' };
+            return { valid: false, error: this.t('settings.validate.poll_interval_range') };
         }
         return { valid: true };
     }

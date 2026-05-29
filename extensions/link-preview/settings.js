@@ -10,39 +10,38 @@
 export default class LinkPreviewSettingsProvider {
     initialize(context) {
         this.config = context.config || {};
+        this.t = context.i18n?.t?.bind(context.i18n) || ((k) => k);
     }
     onConfigUpdate(config) {
         this.config = config || {};
     }
 
     getSettings() {
+        const t = this.t;
         return {
-            description: 'Shows inline preview cards for URLs in AI responses.',
+            description: t('settings.description'),
             sections: [
                 {
                     controls: [
                         {
                             type: 'checkbox',
                             id: 'enabled',
-                            label: 'Enable Link Previews',
-                            description:
-                                'Show preview cards for URLs found in assistant messages.',
+                            label: t('settings.enabled.label'),
+                            description: t('settings.enabled.description'),
                             default: true,
                         },
                         {
                             type: 'checkbox',
                             id: 'show_images',
-                            label: 'Show hero images',
-                            description:
-                                "Render the page's Open Graph or Twitter Card image when available. Turn off to keep cards compact (no images at all).",
+                            label: t('settings.show_images.label'),
+                            description: t('settings.show_images.description'),
                             default: true,
                         },
                         {
                             type: 'number',
                             id: 'max_previews',
-                            label: 'Max Previews Per Message',
-                            description:
-                                'Limit the number of preview cards shown per message to avoid clutter.',
+                            label: t('settings.max_previews.label'),
+                            description: t('settings.max_previews.description'),
                             default: 5,
                             min: 1,
                             max: 20,
@@ -51,30 +50,27 @@ export default class LinkPreviewSettingsProvider {
                     ],
                 },
                 {
-                    title: 'Cache',
+                    title: t('settings.section.cache'),
                     controls: [
                         {
                             type: 'info',
-                            html: 'Fetched metadata is cached on disk for up to 7 days so reopening a chat does not re-fetch every URL. Failed fetches are cached briefly so transient errors recover on their own.',
+                            html: t('settings.cache.info_html'),
                         },
                         {
                             type: 'action',
                             id: 'cacheStats',
-                            label: 'Show cache size',
+                            label: t('settings.cache_stats.label'),
                             action: 'cache_stats',
-                            description:
-                                'Check how much disk space the link-preview cache is using.',
+                            description: t('settings.cache_stats.description'),
                         },
                         {
                             type: 'action',
                             id: 'cacheClear',
-                            label: 'Clear cache',
+                            label: t('settings.cache_clear.label'),
                             action: 'cache_clear',
                             variant: 'danger',
-                            confirm:
-                                'Clear all cached link previews? URLs will be re-fetched the next time they appear.',
-                            description:
-                                'Wipe the cache. Use this if a link preview looks stale or wrong.',
+                            confirm: t('settings.cache_clear.confirm'),
+                            description: t('settings.cache_clear.description'),
                         },
                     ],
                 },

@@ -12,9 +12,45 @@
     "_source_hash": "205c3e69ca030742"
   },
   "manifest.description": {
-    "message": "絵文字を名前で検索してコピーします。「:fire」や「emoji rocket」と入力すると、よく使われる約1500種類の絵文字から最も近いものを選びます。",
+    "message": "絵文字を名前で検索してコピーします。「:fire」や「emoji rocket」と入力すると、よく使われる約1500の絵文字から最も近いものを選びます。",
     "description": "Extension description",
     "_machine_translated": true,
-    "_source_hash": "59640ff70d49d4b7"
+    "_source_hash": "b9390cfd94255409"
+  },
+  "result.hint.label": {
+    "message": "絵文字 · 入力して検索",
+    "description": "Hint label when only the trigger word is typed",
+    "_machine_translated": true,
+    "_source_hash": "a2471f31b8da42e8"
+  },
+  "result.hint.description": {
+    "message": "「{trigger} fire」や「:fire」を試してください",
+    "description": "Hint description suggesting trigger usage",
+    "_machine_translated": true,
+    "_source_hash": "c66d707a23b3874e"
+  },
+  "settings.description": {
+    "message": "よく使われる約250の絵文字を名前で検索します。2つのトリガー形式が使えます：<code>emoji fire</code> または <code>:fire</code>。いずれかを選び、Enter でクリップボードにコピーします。",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "9d1fa3f643108b7e"
+  },
+  "settings.enabled.label": {
+    "message": "有効にする",
+    "description": "Settings: enable toggle label",
+    "_machine_translated": true,
+    "_source_hash": "efce5571f8dbd1e9"
+  },
+  "settings.trigger.label": {
+    "message": "トリガーワード",
+    "description": "Settings: trigger word label",
+    "_machine_translated": true,
+    "_source_hash": "5ab4f2dc19af741d"
+  },
+  "settings.shortcode_trigger.label": {
+    "message": "ショートコードも一致させる（例：「:fire」）",
+    "description": "Settings: shortcode trigger toggle label",
+    "_machine_translated": true,
+    "_source_hash": "a3ef5561dd4cf5f6"
   }
 }

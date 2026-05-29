@@ -8,6 +8,7 @@ export default class TodosToolbarProvider {
     initialize(context) {
         this.config = context.config || {};
         this.invoke = context.invoke;
+        this.t = context.i18n?.t?.bind(context.i18n) || ((k) => k);
     }
 
     onConfigUpdate(config) { this.config = config || {}; }
@@ -19,7 +20,7 @@ export default class TodosToolbarProvider {
         return [{
             id: 'todos-summary',
             icon: '✅',
-            tooltip: 'Show task summary',
+            tooltip: this.t('toolbar.summary_tooltip'),
         }];
     }
 
@@ -32,7 +33,7 @@ export default class TodosToolbarProvider {
             host: {
                 type: 'show_ephemeral_message',
                 tag: 'summary',
-                title: '📋 Task Summary',
+                title: this.t('toolbar.summary_title'),
                 html,
             },
         };
@@ -76,7 +77,7 @@ export default class TodosToolbarProvider {
 
     _renderSummary(todos, stats) {
         if (stats.total === 0) {
-            return '<p>No tasks yet. Type <code>todo+ buy milk</code> in the floating window to add one.</p>';
+            return this.t('toolbar.empty_html');
         }
 
         const now = new Date(); now.setHours(0, 0, 0, 0);
@@ -98,18 +99,15 @@ export default class TodosToolbarProvider {
         });
 
         const lines = [];
-        lines.push(
-            `<p><strong>${stats.complete}/${stats.total}</strong> done` +
-            (stats.overdue > 0 ? `, <span style="color:#e25">⚠ ${stats.overdue} overdue</span>` : '') +
-            '</p>',
-        );
+        const overdueChip = stats.overdue > 0 ? this.t('toolbar.overdue_html', { count: stats.overdue }) : '';
+        lines.push(this.t('toolbar.summary_done_html', { complete: stats.complete, total: stats.total, overdue: overdueChip }));
 
         if (pending.length > 0) {
             lines.push('<ul>');
             for (const t of pending) {
                 const d = this._parseDue(t.dueDate);
                 const overdue = d && d < now;
-                const due = t.dueDate ? ` <small>(due ${escape(t.dueDate)}${overdue ? ' ⚠' : ''})</small>` : '';
+                const due = t.dueDate ? this.t('toolbar.due_suffix_html', { date: escape(t.dueDate), warn: overdue ? ' ⚠' : '' }) : '';
                 const pri = t.priority === 'high' ? ' 🔴'
                           : t.priority === 'medium' ? ' 🟡' : '';
                 const cat = t.category ? ` <small>[${escape(t.category)}]</small>` : '';
@@ -120,10 +118,10 @@ export default class TodosToolbarProvider {
 
         if (completed.length > 0 && this.config?.show_completed !== false) {
             const shown = completed.slice(0, 5);
-            lines.push('<p style="margin-top:8px;"><small>Recently completed:</small></p><ul>');
+            lines.push(this.t('toolbar.recently_completed_html') + '<ul>');
             for (const t of shown) lines.push(`<li><s>${escape(t.text)}</s></li>`);
             if (completed.length > 5) {
-                lines.push(`<li><small>…and ${completed.length - 5} more</small></li>`);
+                lines.push(this.t('toolbar.completed_more_html', { count: completed.length - 5 }));
             }
             lines.push('</ul>');
         }

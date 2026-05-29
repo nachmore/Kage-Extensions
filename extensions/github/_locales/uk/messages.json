@@ -16,5 +16,125 @@
     "description": "Extension description",
     "_machine_translated": true,
     "_source_hash": "cf3213df81c4f097"
+  },
+  "result.home.label": {
+    "message": "GitHub · Відкрити github.com",
+    "description": "Result label when only the trigger is typed",
+    "_machine_translated": true,
+    "_source_hash": "b6eafc95b31667d0"
+  },
+  "result.home.description": {
+    "message": "Або введіть «gh <запит>», щоб шукати репозиторії",
+    "description": "Hint to search after the trigger",
+    "_machine_translated": true,
+    "_source_hash": "c872db2af40296be"
+  },
+  "result.me.label": {
+    "message": "GitHub · Відкрити мій профіль",
+    "description": "Result label for opening the user's GitHub profile",
+    "_machine_translated": true,
+    "_source_hash": "3f3a6f385df7c81e"
+  },
+  "result.me.description": {
+    "message": "(використовує токен, якщо налаштовано, інакше — головну github.com)",
+    "description": "Hint that token-aware lookup is used",
+    "_machine_translated": true,
+    "_source_hash": "54d57f46be8c2890"
+  },
+  "result.searching.label": {
+    "message": "GitHub · Пошук «{query}»…",
+    "description": "Loading label while async search runs",
+    "_machine_translated": true,
+    "_source_hash": "4b8084ae1e4c57c8"
+  },
+  "result.error.label": {
+    "message": "Помилка пошуку GitHub",
+    "description": "Label when search throws",
+    "_machine_translated": true,
+    "_source_hash": "bd8f0076c981725b"
+  },
+  "settings.description": {
+    "message": "Шукайте на GitHub із лаунчера. Без автентифікації працює до 60 запитів/год (на IP). Необов'язково: вставте детальний персональний токен доступу для 5000 запитів/год і доступу до приватних репозиторіїв. Токен зберігається локально в ізольованих даних розширення Kage.",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "096fabdf2865ace3"
+  },
+  "settings.enabled.label": {
+    "message": "Увімкнути",
+    "description": "Settings: enable toggle",
+    "_machine_translated": true,
+    "_source_hash": "813fb292fb3bfe0d"
+  },
+  "settings.trigger.label": {
+    "message": "Тригер",
+    "description": "Settings: trigger word label",
+    "_machine_translated": true,
+    "_source_hash": "96f47964f4358372"
+  },
+  "settings.section.access": {
+    "message": "Доступ до GitHub (необов'язково)",
+    "description": "Settings section heading",
+    "_machine_translated": true,
+    "_source_hash": "65d353111422ac3b"
+  },
+  "settings.access.intro_html": {
+    "message": "<p>Створіть детальний персональний токен доступу на <a href=\"https://github.com/settings/personal-access-tokens/new\">github.com/settings/personal-access-tokens/new</a>. Достатньо доступу <em>лише для читання</em> до репозиторіїв / issues / користувачів, які ви хочете шукати. Токен ніколи не залишає ваш пристрій, окрім як у заголовку Authorization до <code>api.github.com</code>.</p>",
+    "description": "Intro html in settings",
+    "_machine_translated": true,
+    "_source_hash": "da1ef02e09e2a79f"
+  },
+  "settings.access.token_saved_html": {
+    "message": "<p><strong>Токен збережено.</strong> Вставте новий, щоб замінити, або натисніть <em>Забути токен</em>, щоб видалити.</p>",
+    "description": "Shown when a token is already saved",
+    "_machine_translated": true,
+    "_source_hash": "37c9c6f5f61bbbcb"
+  },
+  "settings.token_input.label": {
+    "message": "Токен",
+    "description": "Settings: token input label",
+    "_machine_translated": true,
+    "_source_hash": "5961c53b3862be04"
+  },
+  "settings.save_token.label": {
+    "message": "Зберегти токен",
+    "description": "Settings: save token action label",
+    "_machine_translated": true,
+    "_source_hash": "0be88428b7ed35d4"
+  },
+  "settings.clear_token.label": {
+    "message": "Забути токен",
+    "description": "Settings: clear token action label",
+    "_machine_translated": true,
+    "_source_hash": "0a797b8748a16eee"
+  },
+  "settings.clear_token.confirm": {
+    "message": "Забути збережений токен GitHub? Подальші пошуки повернуться до публічного ліміту 60 запитів/год.",
+    "description": "Confirmation prompt before forgetting the token",
+    "_machine_translated": true,
+    "_source_hash": "c8745b14624c50d6"
+  },
+  "action.save_token.empty": {
+    "message": "⚠️ Спочатку вставте токен.",
+    "description": "Status when save action runs without input",
+    "_machine_translated": true,
+    "_source_hash": "b57474d5250af9a6"
+  },
+  "action.save_token.invalid": {
+    "message": "⚠️ Не схоже на токен GitHub.",
+    "description": "Status when token format is unexpected",
+    "_machine_translated": true,
+    "_source_hash": "3fd9c6334d9895da"
+  },
+  "action.save_token.success": {
+    "message": "✅ Токен збережено.",
+    "description": "Status when token saves successfully",
+    "_machine_translated": true,
+    "_source_hash": "566d5afa1d7f53bf"
+  },
+  "action.clear_token.success": {
+    "message": "✅ Токен забуто.",
+    "description": "Status when token is cleared",
+    "_machine_translated": true,
+    "_source_hash": "0fb0a3d9df6b2cc6"
   }
 }

@@ -36,7 +36,10 @@ function search(query, limit) {
 }
 
 export default class EmojiSearchProvider {
-    initialize(context) { this.config = context.config || {}; }
+    initialize(context) {
+        this.config = context.config || {};
+        this.t = context.i18n?.t?.bind(context.i18n) || ((k) => k);
+    }
     onConfigUpdate(config) { this.config = config || {}; }
 
     match(query) {
@@ -60,8 +63,8 @@ export default class EmojiSearchProvider {
                 return [{
                     id: 'emoji:hint',
                     type: 'emoji',
-                    label: `Emoji · type to search`,
-                    description: `Try "${trigger} fire" or ":fire"`,
+                    label: this.t('result.hint.label'),
+                    description: this.t('result.hint.description', { trigger }),
                     icon: '😀',
                     score: 70,
                     data: { hint: true },

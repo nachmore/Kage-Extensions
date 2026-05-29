@@ -51,6 +51,7 @@ export default class GitHubSearchProvider {
         this.invoke = context.invoke;
         this.config = context.config || {};
         this.log = context.log;
+        this.t = context.i18n?.t?.bind(context.i18n) || ((k) => k);
     }
     onConfigUpdate(config) { this.config = config || {}; }
 
@@ -63,8 +64,8 @@ export default class GitHubSearchProvider {
         if (!rest) {
             return [{
                 id: 'gh:home', type: 'github',
-                label: 'GitHub · Open github.com',
-                description: 'Or type "gh <query>" to search repos',
+                label: this.t('result.home.label'),
+                description: this.t('result.home.description'),
                 icon: '🐙', score: 80,
                 data: { url: 'https://github.com' },
             }];
@@ -72,15 +73,15 @@ export default class GitHubSearchProvider {
         if (rest === 'me') {
             return [{
                 id: 'gh:me', type: 'github',
-                label: 'GitHub · Open my profile',
-                description: '(uses the token if configured, otherwise github.com home)',
+                label: this.t('result.me.label'),
+                description: this.t('result.me.description'),
                 icon: '🐙', score: 90,
                 data: { meHome: true },
             }];
         }
         return [{
             id: `gh:loading:${rest}`, type: 'github',
-            label: `GitHub · Searching "${rest}"…`,
+            label: this.t('result.searching.label', { query: rest }),
             description: '',
             icon: '🐙', score: 50,
             data: { pending: true },
@@ -140,7 +141,7 @@ export default class GitHubSearchProvider {
             this.log?.warn?.('GitHub fetch failed: ' + (e?.message || e));
             return [{
                 id: 'gh:err', type: 'github',
-                label: 'GitHub search failed',
+                label: this.t('result.error.label'),
                 description: e?.message || String(e),
                 icon: '⚠️', score: 60,
                 data: { error: true },

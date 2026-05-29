@@ -16,5 +16,149 @@
     "description": "Extension description",
     "_machine_translated": true,
     "_source_hash": "49d4746132984668"
+  },
+  "result.uuid.label": {
+    "message": "UUID v4",
+    "description": "Result label for UUID generation",
+    "_machine_translated": true,
+    "_source_hash": "d3fe489b61b340eb"
+  },
+  "result.copy_hint": {
+    "message": "برای کپی Enter را بزنید",
+    "description": "Description hint shown next to copyable results",
+    "_machine_translated": true,
+    "_source_hash": "b02c13cf1ffa5cd0"
+  },
+  "result.copy_hint_short": {
+    "message": "Enter برای کپی",
+    "description": "Shorter copy hint",
+    "_machine_translated": true,
+    "_source_hash": "6ca21eed070240ef"
+  },
+  "result.base64_encode.label": {
+    "message": "رمزگذاری Base64",
+    "description": "Result label for base64 encoding",
+    "_machine_translated": true,
+    "_source_hash": "6073aa5da178f89b"
+  },
+  "result.base64_encode.description": {
+    "message": "«{text}» ← Enter برای کپی",
+    "description": "Description for base64 encode result",
+    "_machine_translated": true,
+    "_source_hash": "466a20bfd2ecd1dc"
+  },
+  "result.base64_decode.label": {
+    "message": "رمزگشایی Base64",
+    "description": "Result label for base64 decoding",
+    "_machine_translated": true,
+    "_source_hash": "414db3097f8ee0db"
+  },
+  "result.hash.label": {
+    "message": "هش {algo}",
+    "description": "Result label for hash calculation",
+    "_machine_translated": true,
+    "_source_hash": "66480e8f9bdff6f1"
+  },
+  "result.hash.computing": {
+    "message": "در حال محاسبه...",
+    "description": "Hash computing description",
+    "_machine_translated": true,
+    "_source_hash": "285c7eb7307e4e0f"
+  },
+  "result.epoch.label": {
+    "message": "Epoch ← تاریخ",
+    "description": "Result label for epoch-to-date conversion",
+    "_machine_translated": true,
+    "_source_hash": "b7f91cf41909a0db"
+  },
+  "result.epoch_now.label": {
+    "message": "Epoch فعلی",
+    "description": "Result label for current epoch timestamp",
+    "_machine_translated": true,
+    "_source_hash": "575ea42947bc47f7"
+  },
+  "result.json_format.label": {
+    "message": "قالب‌بندی JSON",
+    "description": "Result label for JSON formatting",
+    "_machine_translated": true,
+    "_source_hash": "5de3ec6192458850"
+  },
+  "result.json_format.description": {
+    "message": "{count} کلید · Enter برای کپی",
+    "description": "Description for JSON format result",
+    "_machine_translated": true,
+    "_source_hash": "3917600f856833ae"
+  },
+  "settings.description": {
+    "message": "تولید UUID، رمزگذاری/رمزگشایی base64، هش‌سازی، تبدیل epoch و قالب‌بندی JSON.",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "97722a102e9aa297"
+  },
+  "settings.section.individual_tools": {
+    "message": "ابزارهای جداگانه",
+    "description": "Settings section label",
+    "_machine_translated": true,
+    "_source_hash": "9ae76124a4a4e933"
+  },
+  "settings.uuid.label": {
+    "message": "تولیدکنندهٔ UUID",
+    "description": "Settings: UUID toggle label",
+    "_machine_translated": true,
+    "_source_hash": "879d62558ec3a6d1"
+  },
+  "settings.uuid.description": {
+    "message": "برای تولید یک UUID v4 تصادفی، «uuid» را تایپ کنید.",
+    "description": "Settings: UUID toggle description",
+    "_machine_translated": true,
+    "_source_hash": "06b39caeb2f6ec17"
+  },
+  "settings.base64.label": {
+    "message": "رمزگذاری/رمزگشایی Base64",
+    "description": "Settings: Base64 toggle label",
+    "_machine_translated": true,
+    "_source_hash": "c51aa045ef4ce6c8"
+  },
+  "settings.base64.description": {
+    "message": "برای رمزگذاری «base64 text» یا برای رمزگشایی «b64d encoded» را تایپ کنید.",
+    "description": "Settings: Base64 toggle description",
+    "_machine_translated": true,
+    "_source_hash": "5442e1fb29755519"
+  },
+  "settings.hash.label": {
+    "message": "ماشین‌حساب هش",
+    "description": "Settings: hash toggle label",
+    "_machine_translated": true,
+    "_source_hash": "7938519ccb1b9c7f"
+  },
+  "settings.hash.description": {
+    "message": "«md5 text»، «sha1 text»، «sha256 text» یا «sha512 text» را تایپ کنید.",
+    "description": "Settings: hash toggle description",
+    "_machine_translated": true,
+    "_source_hash": "342e5f6a3cb93c29"
+  },
+  "settings.epoch.label": {
+    "message": "مبدل Epoch/تاریخ",
+    "description": "Settings: epoch toggle label",
+    "_machine_translated": true,
+    "_source_hash": "b4d8c2df0372658b"
+  },
+  "settings.epoch.description": {
+    "message": "یک زمان‌سنج یونیکس را برای دیدن تاریخ تایپ کنید، یا برای epoch فعلی «now» را وارد کنید.",
+    "description": "Settings: epoch toggle description",
+    "_machine_translated": true,
+    "_source_hash": "571a7a1b0bd2ac99"
+  },
+  "settings.json_format.label": {
+    "message": "قالب‌بند JSON",
+    "description": "Settings: JSON toggle label",
+    "_machine_translated": true,
+    "_source_hash": "3e70429a5ca9e8ef"
+  },
+  "settings.json_format.description": {
+    "message": "JSON فشرده‌شده را بچسبانید تا به‌صورت مرتب نمایش داده شود.",
+    "description": "Settings: JSON toggle description",
+    "_machine_translated": true,
+    "_source_hash": "462f3cecbc5fd99e"
   }
 }

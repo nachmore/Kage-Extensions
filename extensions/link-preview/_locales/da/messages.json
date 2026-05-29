@@ -12,9 +12,99 @@
     "_source_hash": "71f62720d8c6e809"
   },
   "manifest.description": {
-    "message": "Detaljerede forhåndsvisningskort for URL'er i AI-svar – Open Graph-hovedbilleder, beskrivelser og favikoner med offline-venlig diskcaching.",
+    "message": "Detaljerede linkforhåndsvisningskort for URL'er i AI-svar — Open Graph-hovedbilleder, beskrivelser og favicons, med offline-venlig diskcache.",
     "description": "Extension description",
     "_machine_translated": true,
-    "_source_hash": "8715cca27a85ca14"
+    "_source_hash": "1115a6d66a236b52"
+  },
+  "card.aria_label": {
+    "message": "Linkforhåndsvisning: {title}",
+    "description": "Aria label on a link-preview card",
+    "_machine_translated": true,
+    "_source_hash": "0d14ec57b9273822"
+  },
+  "settings.description": {
+    "message": "Viser indlejrede forhåndsvisningskort for URL'er i AI-svar.",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "8f8fad89bd661f18"
+  },
+  "settings.enabled.label": {
+    "message": "Aktivér linkforhåndsvisninger",
+    "description": "Settings: enable toggle label",
+    "_machine_translated": true,
+    "_source_hash": "8d8bac295d1fb446"
+  },
+  "settings.enabled.description": {
+    "message": "Vis forhåndsvisningskort for URL'er fundet i assistentbeskeder.",
+    "description": "Settings: enable toggle description",
+    "_machine_translated": true,
+    "_source_hash": "a09c739f5e71639d"
+  },
+  "settings.show_images.label": {
+    "message": "Vis hovedbilleder",
+    "description": "Settings: hero images toggle label",
+    "_machine_translated": true,
+    "_source_hash": "780bd9e8467dff8a"
+  },
+  "settings.show_images.description": {
+    "message": "Vis sidens Open Graph- eller Twitter Card-billede, når det er tilgængeligt. Slå fra for at holde kortene kompakte (ingen billeder overhovedet).",
+    "description": "Settings: hero images toggle description",
+    "_machine_translated": true,
+    "_source_hash": "93de34f690c3ff82"
+  },
+  "settings.max_previews.label": {
+    "message": "Maks. forhåndsvisninger pr. besked",
+    "description": "Settings: max previews label",
+    "_machine_translated": true,
+    "_source_hash": "0b07938756b890da"
+  },
+  "settings.max_previews.description": {
+    "message": "Begræns antallet af forhåndsvisningskort pr. besked for at undgå rod.",
+    "description": "Settings: max previews description",
+    "_machine_translated": true,
+    "_source_hash": "9210823b6078eb39"
+  },
+  "settings.section.cache": {
+    "message": "Cache",
+    "description": "Settings section: cache",
+    "_machine_translated": true,
+    "_source_hash": "eb6835b21d425ab6"
+  },
+  "settings.cache.info_html": {
+    "message": "Hentede metadata gemmes i cachen på disken i op til 7 dage, så genåbning af en chat ikke henter alle URL'er igen. Mislykkede hentninger caches kortvarigt, så midlertidige fejl løser sig selv.",
+    "description": "Settings: cache info text",
+    "_machine_translated": true,
+    "_source_hash": "3bdf171c7cecf3ef"
+  },
+  "settings.cache_stats.label": {
+    "message": "Vis cachestørrelse",
+    "description": "Settings: cache stats button label",
+    "_machine_translated": true,
+    "_source_hash": "c372374c660f33ba"
+  },
+  "settings.cache_stats.description": {
+    "message": "Se hvor meget diskplads linkforhåndsvisnings-cachen bruger.",
+    "description": "Settings: cache stats button description",
+    "_machine_translated": true,
+    "_source_hash": "9bdb5c472c2c9222"
+  },
+  "settings.cache_clear.label": {
+    "message": "Ryd cache",
+    "description": "Settings: clear cache button label",
+    "_machine_translated": true,
+    "_source_hash": "a49f545073f8b034"
+  },
+  "settings.cache_clear.description": {
+    "message": "Slet cachen. Brug dette, hvis en linkforhåndsvisning ser forældet eller forkert ud.",
+    "description": "Settings: clear cache button description",
+    "_machine_translated": true,
+    "_source_hash": "d70f570cfe2407d5"
+  },
+  "settings.cache_clear.confirm": {
+    "message": "Ryd alle cachelagrede linkforhåndsvisninger? URL'er hentes igen, næste gang de vises.",
+    "description": "Confirmation prompt before clearing cache",
+    "_machine_translated": true,
+    "_source_hash": "f0b0851ffc83c81e"
   }
 }

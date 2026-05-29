@@ -4,6 +4,7 @@
 export default class TodosTriggerProvider {
     initialize(context) {
         this.invoke = context.invoke;
+        this.t = context.i18n?.t?.bind(context.i18n) || ((k) => k);
         this._interval = null;
         this._lastNotified = new Set();
         this._todos = [];
@@ -26,9 +27,9 @@ export default class TodosTriggerProvider {
 
     getTriggers() {
         return [
-            { name: 'todos:item_due', description: 'A todo item is due today', icon: '🔔' },
-            { name: 'todos:item_overdue', description: 'A todo item is overdue', icon: '🔴' },
-            { name: 'todos:all_complete', description: 'All todos are complete', icon: '✅' },
+            { name: 'todos:item_due', description: this.t('trigger.item_due.description'), icon: '🔔' },
+            { name: 'todos:item_overdue', description: this.t('trigger.item_overdue.description'), icon: '🔴' },
+            { name: 'todos:all_complete', description: this.t('trigger.all_complete.description'), icon: '✅' },
         ];
     }
 

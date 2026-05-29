@@ -12,9 +12,99 @@
     "_source_hash": "71f62720d8c6e809"
   },
   "manifest.description": {
-    "message": "AIの応答に含まれるURLのリッチなリンクプレビューカード。Open Graphのヒーロー画像、説明、ファビコンを表示し、オフラインに対応したディスクキャッシュを備えています。",
+    "message": "AI の応答内の URL に対するリッチなリンクプレビューカード。Open Graph のヒーロー画像、説明、ファビコンを表示し、オフラインでも使えるディスクキャッシュに対応します。",
     "description": "Extension description",
     "_machine_translated": true,
-    "_source_hash": "8715cca27a85ca14"
+    "_source_hash": "1115a6d66a236b52"
+  },
+  "card.aria_label": {
+    "message": "リンクプレビュー: {title}",
+    "description": "Aria label on a link-preview card",
+    "_machine_translated": true,
+    "_source_hash": "0d14ec57b9273822"
+  },
+  "settings.description": {
+    "message": "AI の応答内の URL に対してインラインのプレビューカードを表示します。",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "8f8fad89bd661f18"
+  },
+  "settings.enabled.label": {
+    "message": "リンクプレビューを有効化",
+    "description": "Settings: enable toggle label",
+    "_machine_translated": true,
+    "_source_hash": "8d8bac295d1fb446"
+  },
+  "settings.enabled.description": {
+    "message": "アシスタントのメッセージ内で見つかった URL のプレビューカードを表示します。",
+    "description": "Settings: enable toggle description",
+    "_machine_translated": true,
+    "_source_hash": "a09c739f5e71639d"
+  },
+  "settings.show_images.label": {
+    "message": "ヒーロー画像を表示",
+    "description": "Settings: hero images toggle label",
+    "_machine_translated": true,
+    "_source_hash": "780bd9e8467dff8a"
+  },
+  "settings.show_images.description": {
+    "message": "利用可能な場合、ページの Open Graph または Twitter Card の画像を表示します。オフにするとカードがコンパクトになります（画像は一切表示されません）。",
+    "description": "Settings: hero images toggle description",
+    "_machine_translated": true,
+    "_source_hash": "93de34f690c3ff82"
+  },
+  "settings.max_previews.label": {
+    "message": "メッセージごとの最大プレビュー数",
+    "description": "Settings: max previews label",
+    "_machine_translated": true,
+    "_source_hash": "0b07938756b890da"
+  },
+  "settings.max_previews.description": {
+    "message": "煩雑にならないよう、メッセージごとに表示するプレビューカードの数を制限します。",
+    "description": "Settings: max previews description",
+    "_machine_translated": true,
+    "_source_hash": "9210823b6078eb39"
+  },
+  "settings.section.cache": {
+    "message": "キャッシュ",
+    "description": "Settings section: cache",
+    "_machine_translated": true,
+    "_source_hash": "eb6835b21d425ab6"
+  },
+  "settings.cache.info_html": {
+    "message": "取得したメタデータは最大 7 日間ディスクにキャッシュされるため、チャットを再度開いても毎回すべての URL を取得し直すことはありません。取得に失敗した場合は短時間だけキャッシュされ、一時的なエラーは自動的に回復します。",
+    "description": "Settings: cache info text",
+    "_machine_translated": true,
+    "_source_hash": "3bdf171c7cecf3ef"
+  },
+  "settings.cache_stats.label": {
+    "message": "キャッシュサイズを表示",
+    "description": "Settings: cache stats button label",
+    "_machine_translated": true,
+    "_source_hash": "c372374c660f33ba"
+  },
+  "settings.cache_stats.description": {
+    "message": "リンクプレビューのキャッシュが使用しているディスク容量を確認します。",
+    "description": "Settings: cache stats button description",
+    "_machine_translated": true,
+    "_source_hash": "9bdb5c472c2c9222"
+  },
+  "settings.cache_clear.label": {
+    "message": "キャッシュをクリア",
+    "description": "Settings: clear cache button label",
+    "_machine_translated": true,
+    "_source_hash": "a49f545073f8b034"
+  },
+  "settings.cache_clear.description": {
+    "message": "キャッシュを消去します。リンクプレビューが古い、または正しく表示されない場合に使用してください。",
+    "description": "Settings: clear cache button description",
+    "_machine_translated": true,
+    "_source_hash": "d70f570cfe2407d5"
+  },
+  "settings.cache_clear.confirm": {
+    "message": "キャッシュされたリンクプレビューをすべて消去しますか？ URL は次回表示されたときに再取得されます。",
+    "description": "Confirmation prompt before clearing cache",
+    "_machine_translated": true,
+    "_source_hash": "f0b0851ffc83c81e"
   }
 }

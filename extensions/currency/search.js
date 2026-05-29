@@ -22,6 +22,7 @@ export default class CurrencySearchProvider {
         this.invoke = context.invoke;
         this.config = context.config || {};
         this.log = context.log;
+        this.t = context.i18n?.t?.bind(context.i18n) || ((k) => k);
         this._memCache = null;
     }
     onConfigUpdate(config) { this.config = config || {}; this._memCache = null; }
@@ -36,10 +37,10 @@ export default class CurrencySearchProvider {
         if (!COMMON_CCYS.has(from)) return [];
         if (!COMMON_CCYS.has(to)) return [];
         if (from === to) {
-            return [this._row(`${amount.toLocaleString()} ${from}`, `Same currency`, amount, from, to)];
+            return [this._row(`${amount.toLocaleString()} ${from}`, this.t('result.same_currency'), amount, from, to)];
         }
         // Synchronous "loading" placeholder; matchAsync fills in real rate.
-        return [this._row(`${amount.toLocaleString()} ${from} → ${to}`, 'Looking up rate…', null, from, to, amount)];
+        return [this._row(`${amount.toLocaleString()} ${from} → ${to}`, this.t('result.looking_up'), null, from, to, amount)];
     }
 
     async matchAsync(query) {
@@ -57,7 +58,7 @@ export default class CurrencySearchProvider {
             const formatted = converted.toLocaleString(undefined, {
                 maximumFractionDigits: converted >= 100 ? 2 : 4,
             });
-            const desc = `Rate: 1 ${from} = ${rate.toFixed(4)} ${to}`;
+            const desc = this.t('result.rate', { from, rate: rate.toFixed(4), to });
             return [this._row(`${amount.toLocaleString()} ${from} = ${formatted} ${to}`, desc, converted, from, to, amount)];
         } catch (e) {
             this.log?.warn?.('Currency lookup failed: ' + (e?.message || e));

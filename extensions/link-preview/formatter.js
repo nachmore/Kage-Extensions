@@ -30,6 +30,7 @@ export default class LinkPreviewFormatter {
     initialize(context) {
         this.config = context.config || {};
         this.invoke = context.invoke;
+        this.t = context.i18n?.t?.bind(context.i18n) || ((k) => k);
         // In-memory cache for the duration of this sandbox lifetime. The
         // disk cache lives in the host (`get_link_metadata_cached`) and
         // is shared across windows / restarts.
@@ -152,7 +153,7 @@ export default class LinkPreviewFormatter {
         // Mark the card up as a link to a preview so screen readers
         // describe what the user is about to follow. The default link
         // text would just be the URL.
-        card.setAttribute('aria-label', `Link preview: ${title}`);
+        card.setAttribute('aria-label', this.t('card.aria_label', { title }));
 
         if (isHero) {
             const heroWrap = doc.createElement('span');

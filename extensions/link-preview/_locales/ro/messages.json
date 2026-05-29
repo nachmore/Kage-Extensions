@@ -12,9 +12,99 @@
     "_source_hash": "71f62720d8c6e809"
   },
   "manifest.description": {
-    "message": "Carduri bogate de previzualizare a linkurilor pentru URL-uri în răspunsurile AI  imagini hero Open Graph, descrieri și favicon-uri, cu memorare în cache pe disc compatibilă offline.",
+    "message": "Carduri bogate de previzualizare pentru URL-urile din răspunsurile AI  imagini Open Graph, descrieri și favicon-uri, cu cache pe disc compatibil offline.",
     "description": "Extension description",
     "_machine_translated": true,
-    "_source_hash": "8715cca27a85ca14"
+    "_source_hash": "1115a6d66a236b52"
+  },
+  "card.aria_label": {
+    "message": "Previzualizare link: {title}",
+    "description": "Aria label on a link-preview card",
+    "_machine_translated": true,
+    "_source_hash": "0d14ec57b9273822"
+  },
+  "settings.description": {
+    "message": "Afișează carduri de previzualizare inline pentru URL-urile din răspunsurile AI.",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "8f8fad89bd661f18"
+  },
+  "settings.enabled.label": {
+    "message": "Activează previzualizările de linkuri",
+    "description": "Settings: enable toggle label",
+    "_machine_translated": true,
+    "_source_hash": "8d8bac295d1fb446"
+  },
+  "settings.enabled.description": {
+    "message": "Afișează carduri de previzualizare pentru URL-urile găsite în mesajele asistentului.",
+    "description": "Settings: enable toggle description",
+    "_machine_translated": true,
+    "_source_hash": "a09c739f5e71639d"
+  },
+  "settings.show_images.label": {
+    "message": "Afișează imaginile principale",
+    "description": "Settings: hero images toggle label",
+    "_machine_translated": true,
+    "_source_hash": "780bd9e8467dff8a"
+  },
+  "settings.show_images.description": {
+    "message": "Randează imaginea Open Graph sau Twitter Card a paginii când este disponibilă. Dezactivează pentru a păstra cardurile compacte (fără nicio imagine).",
+    "description": "Settings: hero images toggle description",
+    "_machine_translated": true,
+    "_source_hash": "93de34f690c3ff82"
+  },
+  "settings.max_previews.label": {
+    "message": "Număr maxim de previzualizări per mesaj",
+    "description": "Settings: max previews label",
+    "_machine_translated": true,
+    "_source_hash": "0b07938756b890da"
+  },
+  "settings.max_previews.description": {
+    "message": "Limitează numărul de carduri de previzualizare afișate per mesaj pentru a evita aglomerarea.",
+    "description": "Settings: max previews description",
+    "_machine_translated": true,
+    "_source_hash": "9210823b6078eb39"
+  },
+  "settings.section.cache": {
+    "message": "Cache",
+    "description": "Settings section: cache",
+    "_machine_translated": true,
+    "_source_hash": "eb6835b21d425ab6"
+  },
+  "settings.cache.info_html": {
+    "message": "Metadatele preluate sunt stocate în cache pe disc până la 7 zile, astfel încât redeschiderea unei conversații să nu reîncarce fiecare URL. Preluările eșuate sunt stocate în cache pentru scurt timp, pentru ca erorile temporare să se recupereze de la sine.",
+    "description": "Settings: cache info text",
+    "_machine_translated": true,
+    "_source_hash": "3bdf171c7cecf3ef"
+  },
+  "settings.cache_stats.label": {
+    "message": "Afișează dimensiunea cache-ului",
+    "description": "Settings: cache stats button label",
+    "_machine_translated": true,
+    "_source_hash": "c372374c660f33ba"
+  },
+  "settings.cache_stats.description": {
+    "message": "Verifică cât spațiu pe disc folosește cache-ul de previzualizări.",
+    "description": "Settings: cache stats button description",
+    "_machine_translated": true,
+    "_source_hash": "9bdb5c472c2c9222"
+  },
+  "settings.cache_clear.label": {
+    "message": "Șterge cache-ul",
+    "description": "Settings: clear cache button label",
+    "_machine_translated": true,
+    "_source_hash": "a49f545073f8b034"
+  },
+  "settings.cache_clear.description": {
+    "message": "Șterge cache-ul. Folosește această opțiune dacă o previzualizare pare învechită sau greșită.",
+    "description": "Settings: clear cache button description",
+    "_machine_translated": true,
+    "_source_hash": "d70f570cfe2407d5"
+  },
+  "settings.cache_clear.confirm": {
+    "message": "Ștergi toate previzualizările de linkuri din cache? URL-urile vor fi preluate din nou la următoarea apariție.",
+    "description": "Confirmation prompt before clearing cache",
+    "_machine_translated": true,
+    "_source_hash": "f0b0851ffc83c81e"
   }
 }

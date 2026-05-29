@@ -12,9 +12,99 @@
     "_source_hash": "71f62720d8c6e809"
   },
   "manifest.description": {
-    "message": "Tarjetas enriquecidas de vista previa para URL en las respuestas de IA: imágenes principales de Open Graph, descripciones y favicons, con caché en disco compatible sin conexión.",
+    "message": "Tarjetas de vista previa enriquecida para URL en respuestas de IA con imágenes principales de Open Graph, descripciones y favicons, con caché en disco apto para uso sin conexión.",
     "description": "Extension description",
     "_machine_translated": true,
-    "_source_hash": "8715cca27a85ca14"
+    "_source_hash": "1115a6d66a236b52"
+  },
+  "card.aria_label": {
+    "message": "Vista previa del enlace: {title}",
+    "description": "Aria label on a link-preview card",
+    "_machine_translated": true,
+    "_source_hash": "0d14ec57b9273822"
+  },
+  "settings.description": {
+    "message": "Muestra tarjetas de vista previa en línea para URL en respuestas de IA.",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "8f8fad89bd661f18"
+  },
+  "settings.enabled.label": {
+    "message": "Activar vistas previas de enlaces",
+    "description": "Settings: enable toggle label",
+    "_machine_translated": true,
+    "_source_hash": "8d8bac295d1fb446"
+  },
+  "settings.enabled.description": {
+    "message": "Mostrar tarjetas de vista previa para las URL encontradas en los mensajes del asistente.",
+    "description": "Settings: enable toggle description",
+    "_machine_translated": true,
+    "_source_hash": "a09c739f5e71639d"
+  },
+  "settings.show_images.label": {
+    "message": "Mostrar imágenes principales",
+    "description": "Settings: hero images toggle label",
+    "_machine_translated": true,
+    "_source_hash": "780bd9e8467dff8a"
+  },
+  "settings.show_images.description": {
+    "message": "Mostrar la imagen de Open Graph o Twitter Card de la página cuando esté disponible. Desactívalo para mantener las tarjetas compactas (sin imágenes).",
+    "description": "Settings: hero images toggle description",
+    "_machine_translated": true,
+    "_source_hash": "93de34f690c3ff82"
+  },
+  "settings.max_previews.label": {
+    "message": "Máximo de vistas previas por mensaje",
+    "description": "Settings: max previews label",
+    "_machine_translated": true,
+    "_source_hash": "0b07938756b890da"
+  },
+  "settings.max_previews.description": {
+    "message": "Limita el número de tarjetas de vista previa que se muestran por mensaje para evitar el desorden.",
+    "description": "Settings: max previews description",
+    "_machine_translated": true,
+    "_source_hash": "9210823b6078eb39"
+  },
+  "settings.section.cache": {
+    "message": "Caché",
+    "description": "Settings section: cache",
+    "_machine_translated": true,
+    "_source_hash": "eb6835b21d425ab6"
+  },
+  "settings.cache.info_html": {
+    "message": "Los metadatos obtenidos se almacenan en caché en disco hasta 7 días para que al reabrir un chat no se vuelva a consultar cada URL. Las consultas fallidas se almacenan brevemente para que los errores transitorios se recuperen por sí solos.",
+    "description": "Settings: cache info text",
+    "_machine_translated": true,
+    "_source_hash": "3bdf171c7cecf3ef"
+  },
+  "settings.cache_stats.label": {
+    "message": "Mostrar tamaño de la caché",
+    "description": "Settings: cache stats button label",
+    "_machine_translated": true,
+    "_source_hash": "c372374c660f33ba"
+  },
+  "settings.cache_stats.description": {
+    "message": "Comprueba cuánto espacio en disco está usando la caché de vistas previas de enlaces.",
+    "description": "Settings: cache stats button description",
+    "_machine_translated": true,
+    "_source_hash": "9bdb5c472c2c9222"
+  },
+  "settings.cache_clear.label": {
+    "message": "Borrar caché",
+    "description": "Settings: clear cache button label",
+    "_machine_translated": true,
+    "_source_hash": "a49f545073f8b034"
+  },
+  "settings.cache_clear.description": {
+    "message": "Borra la caché. Úsalo si una vista previa de enlace parece obsoleta o incorrecta.",
+    "description": "Settings: clear cache button description",
+    "_machine_translated": true,
+    "_source_hash": "d70f570cfe2407d5"
+  },
+  "settings.cache_clear.confirm": {
+    "message": "¿Borrar todas las vistas previas de enlaces en caché? Las URL se volverán a consultar la próxima vez que aparezcan.",
+    "description": "Confirmation prompt before clearing cache",
+    "_machine_translated": true,
+    "_source_hash": "f0b0851ffc83c81e"
   }
 }

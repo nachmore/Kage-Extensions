@@ -1,36 +1,38 @@
 export default class PasswordSettingsProvider {
-    initialize(context) { this.config = context.config || {}; }
+    initialize(context) {
+        this.config = context.config || {};
+        this.t = context.i18n?.t?.bind(context.i18n) || ((k) => k);
+    }
     onConfigUpdate(config) { this.config = config || {}; }
 
     getSettings() {
+        const t = this.t;
         return {
-            description:
-                'Generates passwords using <code>crypto.getRandomValues</code> — same entropy source ' +
-                'browsers use for TLS keys. Hit Enter to copy. The "Generate another" row rolls a fresh one.',
+            description: t('settings.description'),
             sections: [
                 {
-                    label: 'Defaults',
+                    label: t('settings.section.defaults'),
                     controls: [
-                        { type: 'checkbox', id: 'enabled', label: 'Enable', default: true },
-                        { type: 'text', id: 'trigger', label: 'Trigger', default: 'pw', maxWidth: 80 },
+                        { type: 'checkbox', id: 'enabled', label: t('settings.enabled.label'), default: true },
+                        { type: 'text', id: 'trigger', label: t('settings.trigger.label'), default: 'pw', maxWidth: 80 },
                         {
-                            type: 'number', id: 'default_length', label: 'Default password length',
+                            type: 'number', id: 'default_length', label: t('settings.default_length.label'),
                             default: 20, min: 4, max: 128,
                         },
                     ],
                 },
                 {
-                    label: 'Character classes',
+                    label: t('settings.section.character_classes'),
                     controls: [
-                        { type: 'checkbox', id: 'include_lowercase', label: 'Lowercase (a-z)', default: true },
-                        { type: 'checkbox', id: 'include_uppercase', label: 'Uppercase (A-Z)', default: true },
-                        { type: 'checkbox', id: 'include_numbers', label: 'Numbers (0-9)', default: true },
-                        { type: 'checkbox', id: 'include_symbols', label: 'Symbols (!@#…)', default: true },
+                        { type: 'checkbox', id: 'include_lowercase', label: t('settings.include_lowercase.label'), default: true },
+                        { type: 'checkbox', id: 'include_uppercase', label: t('settings.include_uppercase.label'), default: true },
+                        { type: 'checkbox', id: 'include_numbers', label: t('settings.include_numbers.label'), default: true },
+                        { type: 'checkbox', id: 'include_symbols', label: t('settings.include_symbols.label'), default: true },
                         {
                             type: 'checkbox', id: 'exclude_ambiguous',
-                            label: 'Exclude ambiguous (Il1O0|\'`")',
+                            label: t('settings.exclude_ambiguous.label'),
                             default: true,
-                            description: 'Drops characters that are easy to misread.',
+                            description: t('settings.exclude_ambiguous.description'),
                         },
                     ],
                 },

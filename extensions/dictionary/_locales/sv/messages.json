@@ -16,5 +16,149 @@
     "description": "Extension description",
     "_machine_translated": true,
     "_source_hash": "23f2411c0957401e"
+  },
+  "result.error.label": {
+    "message": "📖 Kunde inte slå upp \"{word}\"",
+    "description": "Error label when dictionary lookup fails",
+    "_machine_translated": true,
+    "_source_hash": "26fa9b62e8c2308d"
+  },
+  "result.error.description": {
+    "message": "Nätverksfel – kontrollera din anslutning",
+    "description": "Error description for failed lookup",
+    "_machine_translated": true,
+    "_source_hash": "6a528e1a02f5df4a"
+  },
+  "result.not_found.label": {
+    "message": "Ingen definition hittades för \"{word}\"",
+    "description": "Label when word has no definition",
+    "_machine_translated": true,
+    "_source_hash": "d8badf7aa4e38bae"
+  },
+  "result.not_found.description": {
+    "message": "Prova en annan stavning",
+    "description": "Hint when no definition was found",
+    "_machine_translated": true,
+    "_source_hash": "f26c73ffe19ef7fa"
+  },
+  "result.loading.label": {
+    "message": "Slår upp \"{word}\"...",
+    "description": "Loading label while definition fetches",
+    "_machine_translated": true,
+    "_source_hash": "a3266221037cb0d7"
+  },
+  "result.suggestion.label": {
+    "message": "Menade du: {word}?",
+    "description": "Spell-correction suggestion label",
+    "_machine_translated": true,
+    "_source_hash": "05e11a0aeb79492a"
+  },
+  "result.suggestion.description": {
+    "message": "Tryck på Enter för att kopiera det rättade ordet",
+    "description": "Spell-correction suggestion description",
+    "_machine_translated": true,
+    "_source_hash": "7e7e96bfc765a8e3"
+  },
+  "render.looking_up": {
+    "message": "Slår upp \"{word}\"...",
+    "description": "Inline 'looking up' header in detail render",
+    "_machine_translated": true,
+    "_source_hash": "dc34da96dd70f9da"
+  },
+  "render.no_definition": {
+    "message": "Ingen definition hittades för \"{word}\"",
+    "description": "Inline 'no definition' header in detail render",
+    "_machine_translated": true,
+    "_source_hash": "a68d1cc259f7e0ab"
+  },
+  "render.synonyms_label": {
+    "message": "Syn:",
+    "description": "Synonyms section prefix",
+    "_machine_translated": true,
+    "_source_hash": "0795db7980a91647"
+  },
+  "render.suggestion_text": {
+    "message": "Menade du",
+    "description": "Suggestion HTML prefix",
+    "_machine_translated": true,
+    "_source_hash": "d35bcd93b5b84204"
+  },
+  "settings.description": {
+    "message": "Slå upp orddefinitioner, stavningsrättningar och uttal. Drivs av FreeDictionaryAPI.com (Wiktionary-data).",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "4a6876370e806ad0"
+  },
+  "settings.trigger.label": {
+    "message": "Utlösarord",
+    "description": "Settings: trigger keyword label",
+    "_machine_translated": true,
+    "_source_hash": "e31045bbce24b0f7"
+  },
+  "settings.trigger.description": {
+    "message": "Skriv detta nyckelord följt av ett mellanslag för att aktivera ordboksuppslag (t.ex. \"dict hej\"). Lämna tomt för att slå upp vilket inskrivet ord som helst.",
+    "description": "Settings: trigger keyword description",
+    "_machine_translated": true,
+    "_source_hash": "d6848ef9ee8f5c82"
+  },
+  "settings.language.label": {
+    "message": "Språk",
+    "description": "Settings: language select label",
+    "_machine_translated": true,
+    "_source_hash": "717cd225449abe95"
+  },
+  "settings.language.description": {
+    "message": "Ordboksspråk för uppslagningar. Automatisk identifiering använder tinyld för att identifiera språket. Stöder över 250 språk via FreeDictionaryAPI.com.",
+    "description": "Settings: language select description",
+    "_machine_translated": true,
+    "_source_hash": "6bd5f5d3c31bc5f2"
+  },
+  "settings.language.auto": {
+    "message": "Identifiera automatiskt",
+    "description": "Auto-detect language option",
+    "_machine_translated": true,
+    "_source_hash": "62c3494299cbcada"
+  },
+  "settings.show_pronunciation.label": {
+    "message": "Visa uttal",
+    "description": "Settings: show pronunciation toggle label",
+    "_machine_translated": true,
+    "_source_hash": "3bb974161d86d4bb"
+  },
+  "settings.show_pronunciation.description": {
+    "message": "Visa IPA-uttal när det finns tillgängligt",
+    "description": "Settings: show pronunciation toggle description",
+    "_machine_translated": true,
+    "_source_hash": "1edcb2f4624bd4f1"
+  },
+  "settings.show_examples.label": {
+    "message": "Visa exempel",
+    "description": "Settings: show examples toggle label",
+    "_machine_translated": true,
+    "_source_hash": "adee122b133ca243"
+  },
+  "settings.show_examples.description": {
+    "message": "Visa användningsexempel när de finns tillgängliga",
+    "description": "Settings: show examples toggle description",
+    "_machine_translated": true,
+    "_source_hash": "32e532ff2cb0ec62"
+  },
+  "settings.show_synonyms.label": {
+    "message": "Visa synonymer",
+    "description": "Settings: show synonyms toggle label",
+    "_machine_translated": true,
+    "_source_hash": "b1a51bfe3e343b5f"
+  },
+  "settings.show_synonyms.description": {
+    "message": "Visa synonymer när de finns tillgängliga",
+    "description": "Settings: show synonyms toggle description",
+    "_machine_translated": true,
+    "_source_hash": "585585fd8530cfcb"
+  },
+  "settings.attribution.html": {
+    "message": "Data hämtad från <a href=\"https://en.wiktionary.org/\" target=\"_blank\">Wiktionary</a> via <a href=\"https://freedictionaryapi.com/\" target=\"_blank\">FreeDictionaryAPI.com</a> under <a href=\"https://creativecommons.org/licenses/by-sa/4.0/\" target=\"_blank\">CC BY-SA 4.0</a>. Stavningsförslag från <a href=\"https://www.datamuse.com/\" target=\"_blank\">Datamuse</a>.",
+    "description": "Settings: attribution info text",
+    "_machine_translated": true,
+    "_source_hash": "ec30fe1abb2842cf"
   }
 }

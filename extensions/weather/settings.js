@@ -1,29 +1,33 @@
 export default class WeatherSettingsProvider {
-    initialize(context) { this.config = context.config || {}; }
+    initialize(context) {
+        this.config = context.config || {};
+        this.t = context.i18n?.t?.bind(context.i18n) || ((k) => k);
+    }
     onConfigUpdate(config) { this.config = config || {}; }
 
     getSettings() {
+        const t = this.t;
         return {
-            description: 'Forecasts from <a href="https://open-meteo.com">Open-Meteo</a>; geocoding via OpenStreetMap Nominatim.',
+            description: t('settings.description'),
             sections: [
                 {
                     controls: [
-                        { type: 'checkbox', id: 'enabled', label: 'Enable', default: true },
+                        { type: 'checkbox', id: 'enabled', label: t('settings.enabled.label'), default: true },
                         {
-                            type: 'text', id: 'trigger', label: 'Trigger word',
+                            type: 'text', id: 'trigger', label: t('settings.trigger.label'),
                             default: 'weather', maxWidth: 140,
-                            description: 'Type this followed by a city, or alone for your home location.',
+                            description: t('settings.trigger.description'),
                         },
                         {
-                            type: 'text', id: 'home_location', label: 'Home location',
-                            default: '', placeholder: 'e.g. San Francisco, CA',
-                            description: 'Used when you type just the trigger word.',
+                            type: 'text', id: 'home_location', label: t('settings.home_location.label'),
+                            default: '', placeholder: t('settings.home_location.placeholder'),
+                            description: t('settings.home_location.description'),
                         },
                         {
-                            type: 'select', id: 'units', label: 'Units', default: 'metric',
+                            type: 'select', id: 'units', label: t('settings.units.label'), default: 'metric',
                             options: [
-                                { value: 'metric', label: 'Metric (°C, km/h)' },
-                                { value: 'imperial', label: 'Imperial (°F, mph)' },
+                                { value: 'metric', label: t('settings.units.option_metric') },
+                                { value: 'imperial', label: t('settings.units.option_imperial') },
                             ],
                         },
                     ],

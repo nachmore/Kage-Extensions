@@ -12,9 +12,45 @@
     "_source_hash": "205c3e69ca030742"
   },
   "manifest.description": {
-    "message": "جست‌وجو و کپی ایموجی‌ها بر اساس نام. عبارت «:fire» یا «emoji rocket» را تایپ کنید تا نزدیک‌ترین گزینه از میان حدود ۱۵۰۰ ایموجی پرکاربرد انتخاب شود.",
+    "message": "جست‌وجو و کپی ایموجی‌ها با نام. با تایپ «:fire» یا «emoji rocket» نزدیک‌ترین مورد را از میان حدود ۱۵۰۰ ایموجی پرکاربرد پیدا می‌کند.",
     "description": "Extension description",
     "_machine_translated": true,
-    "_source_hash": "59640ff70d49d4b7"
+    "_source_hash": "b9390cfd94255409"
+  },
+  "result.hint.label": {
+    "message": "ایموجی · برای جست‌وجو تایپ کنید",
+    "description": "Hint label when only the trigger word is typed",
+    "_machine_translated": true,
+    "_source_hash": "a2471f31b8da42e8"
+  },
+  "result.hint.description": {
+    "message": "«{trigger} fire» یا «:fire» را امتحان کنید",
+    "description": "Hint description suggesting trigger usage",
+    "_machine_translated": true,
+    "_source_hash": "c66d707a23b3874e"
+  },
+  "settings.description": {
+    "message": "جست‌وجوی حدود ۲۵۰ ایموجی پرکاربرد با نام. دو سبک فراخوان در دسترس است: <code>emoji fire</code> یا فقط <code>:fire</code>. یکی را انتخاب کنید و با Enter به کلیپ‌بورد کپی کنید.",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "9d1fa3f643108b7e"
+  },
+  "settings.enabled.label": {
+    "message": "فعال‌سازی",
+    "description": "Settings: enable toggle label",
+    "_machine_translated": true,
+    "_source_hash": "efce5571f8dbd1e9"
+  },
+  "settings.trigger.label": {
+    "message": "کلمه فراخوان",
+    "description": "Settings: trigger word label",
+    "_machine_translated": true,
+    "_source_hash": "5ab4f2dc19af741d"
+  },
+  "settings.shortcode_trigger.label": {
+    "message": "تطبیق با کدهای کوتاه نیز (مثلاً «:fire»)",
+    "description": "Settings: shortcode trigger toggle label",
+    "_machine_translated": true,
+    "_source_hash": "a3ef5561dd4cf5f6"
   }
 }

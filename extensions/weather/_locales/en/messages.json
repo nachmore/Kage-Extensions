@@ -12,5 +12,95 @@
   "manifest.description": {
     "message": "Current weather and forecast for any location. Type \"weather\" for your home, or \"weather <city>\" for somewhere else. Powered by open-meteo.com.",
     "description": "Extension description"
+  },
+  "result.no_location.label": {
+    "message": "Weather · set a home location first",
+    "description": "Result label when no home location and no query"
+  },
+  "result.no_location.description": {
+    "message": "Open settings → Weather → Home location",
+    "description": "Hint pointing to settings"
+  },
+  "result.lookup.label": {
+    "message": "Weather · {place}",
+    "description": "Loading label while forecast loads"
+  },
+  "result.lookup.description": {
+    "message": "Looking up forecast…",
+    "description": "Description while loading"
+  },
+  "result.miss.description": {
+    "message": "Location not found",
+    "description": "Description when geocoding returns nothing"
+  },
+  "wmo.0": { "message": "Clear sky", "description": "WMO weather code 0" },
+  "wmo.1": { "message": "Mainly clear", "description": "WMO weather code 1" },
+  "wmo.2": { "message": "Partly cloudy", "description": "WMO weather code 2" },
+  "wmo.3": { "message": "Overcast", "description": "WMO weather code 3" },
+  "wmo.45": { "message": "Fog", "description": "WMO weather code 45" },
+  "wmo.48": { "message": "Rime fog", "description": "WMO weather code 48" },
+  "wmo.51": { "message": "Light drizzle", "description": "WMO weather code 51" },
+  "wmo.53": { "message": "Drizzle", "description": "WMO weather code 53" },
+  "wmo.55": { "message": "Heavy drizzle", "description": "WMO weather code 55" },
+  "wmo.61": { "message": "Light rain", "description": "WMO weather code 61" },
+  "wmo.63": { "message": "Rain", "description": "WMO weather code 63" },
+  "wmo.65": { "message": "Heavy rain", "description": "WMO weather code 65" },
+  "wmo.71": { "message": "Light snow", "description": "WMO weather code 71" },
+  "wmo.73": { "message": "Snow", "description": "WMO weather code 73" },
+  "wmo.75": { "message": "Heavy snow", "description": "WMO weather code 75" },
+  "wmo.80": { "message": "Light showers", "description": "WMO weather code 80" },
+  "wmo.81": { "message": "Showers", "description": "WMO weather code 81" },
+  "wmo.82": { "message": "Heavy showers", "description": "WMO weather code 82" },
+  "wmo.95": { "message": "Thunderstorm", "description": "WMO weather code 95" },
+  "wmo.96": { "message": "Thunderstorm with hail", "description": "WMO weather code 96" },
+  "wmo.99": { "message": "Thunderstorm with heavy hail", "description": "WMO weather code 99" },
+  "wmo.unknown": { "message": "Unknown", "description": "WMO unknown code label" },
+  "result.feels_like": {
+    "message": "Feels like {temp}{unit}",
+    "description": "Forecast 'feels like' prefix"
+  },
+  "result.day.today": {
+    "message": "Today",
+    "description": "Day label for today's forecast row"
+  },
+  "settings.description": {
+    "message": "Forecasts from <a href=\"https://open-meteo.com\">Open-Meteo</a>; geocoding via OpenStreetMap Nominatim.",
+    "description": "Settings page description"
+  },
+  "settings.enabled.label": {
+    "message": "Enable",
+    "description": "Settings: enable toggle"
+  },
+  "settings.trigger.label": {
+    "message": "Trigger word",
+    "description": "Settings: trigger word label"
+  },
+  "settings.trigger.description": {
+    "message": "Type this followed by a city, or alone for your home location.",
+    "description": "Settings: trigger word description"
+  },
+  "settings.home_location.label": {
+    "message": "Home location",
+    "description": "Settings: home location label"
+  },
+  "settings.home_location.placeholder": {
+    "message": "e.g. San Francisco, CA",
+    "description": "Settings: home location placeholder"
+  },
+  "settings.home_location.description": {
+    "message": "Used when you type just the trigger word.",
+    "description": "Settings: home location description"
+  },
+  "settings.units.label": {
+    "message": "Units",
+    "description": "Settings: units select label"
+  },
+  "settings.units.option_metric": {
+    "message": "Metric (°C, km/h)",
+    "description": "Units: metric"
+  },
+  "settings.units.option_imperial": {
+    "message": "Imperial (°F, mph)",
+    "description": "Units: imperial"
   }
 }

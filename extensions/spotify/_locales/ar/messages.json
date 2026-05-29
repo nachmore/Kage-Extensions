@@ -16,5 +16,407 @@
     "description": "Extension description",
     "_machine_translated": true,
     "_source_hash": "74abec23ede6a157"
+  },
+  "result.now.label": {
+    "message": "Spotify · قيد التشغيل الآن",
+    "description": "Result label for the now-playing row",
+    "_machine_translated": true,
+    "_source_hash": "181185bfb0511267"
+  },
+  "result.now.description": {
+    "message": "عرض ما يتم تشغيله حاليًا",
+    "description": "Result description for the now-playing row",
+    "_machine_translated": true,
+    "_source_hash": "6e7fd6cebea9ef23"
+  },
+  "result.help.label": {
+    "message": "Spotify · الأوامر",
+    "description": "Result label for the help row",
+    "_machine_translated": true,
+    "_source_hash": "260860647df2e4c3"
+  },
+  "result.help.description": {
+    "message": "play، queue، like، unlike، next، prev، vol، device، playlist",
+    "description": "Result description listing available commands",
+    "_machine_translated": true,
+    "_source_hash": "8b31d4e33332771c"
+  },
+  "result.play_query.label": {
+    "message": "Spotify · تشغيل ‏\"{query}\"‏",
+    "description": "Result label when playing a search query",
+    "_machine_translated": true,
+    "_source_hash": "af064a58eb97b354"
+  },
+  "result.play_query.description": {
+    "message": "البحث في Spotify وتشغيل أفضل نتيجة",
+    "description": "Description for the play-query row",
+    "_machine_translated": true,
+    "_source_hash": "7f99e0f76309ba7a"
+  },
+  "result.resume.label": {
+    "message": "Spotify · استئناف",
+    "description": "Result label for resuming playback",
+    "_machine_translated": true,
+    "_source_hash": "07be4bde32890aef"
+  },
+  "result.resume.description": {
+    "message": "استئناف التشغيل على الجهاز النشط",
+    "description": "Description for the resume row",
+    "_machine_translated": true,
+    "_source_hash": "cbf3198e23dba063"
+  },
+  "result.pause.label": {
+    "message": "Spotify · إيقاف مؤقت",
+    "description": "Result label for pause",
+    "_machine_translated": true,
+    "_source_hash": "ac51d9d429c2f1b7"
+  },
+  "result.pause.description": {
+    "message": "إيقاف الجهاز النشط مؤقتًا",
+    "description": "Description for pause row",
+    "_machine_translated": true,
+    "_source_hash": "1b0dab8982fda108"
+  },
+  "result.queue.label": {
+    "message": "Spotify · إضافة \"{query}\" إلى قائمة الانتظار",
+    "description": "Result label when queuing a search",
+    "_machine_translated": true,
+    "_source_hash": "0be00e368e376f36"
+  },
+  "result.queue.description": {
+    "message": "إضافة أفضل نتيجة إلى قائمة الانتظار",
+    "description": "Description for queue row",
+    "_machine_translated": true,
+    "_source_hash": "30607d5f786a99c2"
+  },
+  "result.like.label": {
+    "message": "Spotify · الإعجاب بالمسار الحالي",
+    "description": "Result label for like action",
+    "_machine_translated": true,
+    "_source_hash": "5f9b496655382057"
+  },
+  "result.like.description": {
+    "message": "إضافة إلى المسارات المحفوظة",
+    "description": "Description for like row",
+    "_machine_translated": true,
+    "_source_hash": "876cab1c92ec71be"
+  },
+  "result.unlike.label": {
+    "message": "Spotify · إلغاء الإعجاب بالمسار الحالي",
+    "description": "Result label for unlike action",
+    "_machine_translated": true,
+    "_source_hash": "6f7a1e5c82e415bd"
+  },
+  "result.unlike.description": {
+    "message": "إزالة من المسارات المحفوظة",
+    "description": "Description for unlike row",
+    "_machine_translated": true,
+    "_source_hash": "53b8b58cd571b3c7"
+  },
+  "result.next.label": {
+    "message": "Spotify · المسار التالي",
+    "description": "Result label for next track",
+    "_machine_translated": true,
+    "_source_hash": "bdcf2029c09306b0"
+  },
+  "result.prev.label": {
+    "message": "Spotify · المسار السابق",
+    "description": "Result label for previous track",
+    "_machine_translated": true,
+    "_source_hash": "132020e15ef219d0"
+  },
+  "result.volume.label": {
+    "message": "Spotify · ضبط مستوى الصوت على {percent}٪",
+    "description": "Result label for volume change",
+    "_machine_translated": true,
+    "_source_hash": "5f7600baf1d0b7ca"
+  },
+  "result.device.label": {
+    "message": "Spotify · النقل إلى الجهاز \"{name}\"",
+    "description": "Result label for device transfer",
+    "_machine_translated": true,
+    "_source_hash": "4ef5f7529ee72183"
+  },
+  "result.playlist.label": {
+    "message": "Spotify · تشغيل قائمة التشغيل \"{name}\"",
+    "description": "Result label for playlist playback",
+    "_machine_translated": true,
+    "_source_hash": "8dbdb47b42aa40a0"
+  },
+  "result.playlist.description": {
+    "message": "المطابقة بالاسم",
+    "description": "Description hint for playlist row",
+    "_machine_translated": true,
+    "_source_hash": "48a30828009c6225"
+  },
+  "result.connect.label": {
+    "message": "Spotify · الاتصال…",
+    "description": "Result label for connect",
+    "_machine_translated": true,
+    "_source_hash": "5077bd8d58200f28"
+  },
+  "result.connect.description": {
+    "message": "تسجيل الدخول عبر المتصفح",
+    "description": "Description for connect",
+    "_machine_translated": true,
+    "_source_hash": "7b1f8b83c93f90ab"
+  },
+  "result.disconnect.label": {
+    "message": "Spotify · تسجيل الخروج",
+    "description": "Result label for sign out",
+    "_machine_translated": true,
+    "_source_hash": "dcd23e45986f9bca"
+  },
+  "result.disconnect.description": {
+    "message": "نسيان الرموز المميزة",
+    "description": "Description for sign out",
+    "_machine_translated": true,
+    "_source_hash": "8953e3749997983d"
+  },
+  "error.not_signed_in": {
+    "message": "لم يتم تسجيل الدخول إلى Spotify. اكتب \"sp connect\" لتسجيل الدخول.",
+    "description": "Error message when no Spotify session",
+    "_machine_translated": true,
+    "_source_hash": "5c47d0a1c1afadde"
+  },
+  "error.nothing_playing": {
+    "message": "لا يوجد شيء قيد التشغيل الآن.",
+    "description": "Error when like is invoked with no track",
+    "_machine_translated": true,
+    "_source_hash": "e05b8cfc4d7b8207"
+  },
+  "error.no_match": {
+    "message": "لا توجد نتائج في Spotify لـ \"{query}\".",
+    "description": "Error when search returns nothing",
+    "_machine_translated": true,
+    "_source_hash": "2c73db6de1d390c6"
+  },
+  "error.no_device": {
+    "message": "لا يوجد جهاز Spotify باسم \"{name}\".",
+    "description": "Error when device name not found",
+    "_machine_translated": true,
+    "_source_hash": "b68bd8b5724d8e8f"
+  },
+  "error.no_playlist": {
+    "message": "لا توجد قائمة تشغيل مطابقة لـ \"{name}\".",
+    "description": "Error when playlist name not found",
+    "_machine_translated": true,
+    "_source_hash": "546f21735552f9e5"
+  },
+  "widget.like.add_tooltip": {
+    "message": "حفظ في مكتبتك",
+    "description": "Tooltip on the like button when not liked",
+    "_machine_translated": true,
+    "_source_hash": "0c68c715ea7ad9f1"
+  },
+  "widget.like.remove_tooltip": {
+    "message": "إزالة من مكتبتك",
+    "description": "Tooltip on the like button when already liked",
+    "_machine_translated": true,
+    "_source_hash": "9257eafcd17260a9"
+  },
+  "widget.previous_tooltip": {
+    "message": "المقطع السابق",
+    "description": "Tooltip on the previous-track button",
+    "_machine_translated": true,
+    "_source_hash": "a3331164cb9beaf8"
+  },
+  "widget.next_tooltip": {
+    "message": "المقطع التالي",
+    "description": "Tooltip on the next-track button",
+    "_machine_translated": true,
+    "_source_hash": "afb6f0b66d97789b"
+  },
+  "widget.pause_tooltip": {
+    "message": "إيقاف مؤقت",
+    "description": "Tooltip on the play/pause button when playing",
+    "_machine_translated": true,
+    "_source_hash": "c041bbd438222791"
+  },
+  "widget.resume_tooltip": {
+    "message": "استئناف",
+    "description": "Tooltip on the play/pause button when paused",
+    "_machine_translated": true,
+    "_source_hash": "21695f71faff6bf7"
+  },
+  "settings.description": {
+    "message": "اعرض ما يتم تشغيله حاليًا، وتحكم في التشغيل، ونفّذ اختصارات مثل \"sp like\" أو \"sp play <track>\". يستخدم تدفق PKCE من Spotify عبر مستمع localhost لمرة واحدة — لا يغادر أي client secret جهازك.",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "9f8a00aca11b1f67"
+  },
+  "settings.section.display": {
+    "message": "العرض",
+    "description": "Settings section: display",
+    "_machine_translated": true,
+    "_source_hash": "bf664ebb2209530c"
+  },
+  "settings.enabled.label": {
+    "message": "تفعيل",
+    "description": "Settings: enable toggle",
+    "_machine_translated": true,
+    "_source_hash": "813fb292fb3bfe0d"
+  },
+  "settings.show_now_playing_bar.label": {
+    "message": "إظهار شريط \"قيد التشغيل الآن\" في النافذة العائمة",
+    "description": "Settings: show now-playing bar",
+    "_machine_translated": true,
+    "_source_hash": "dfa7f840d99eb82e"
+  },
+  "settings.refresh_seconds.label": {
+    "message": "التحديث كل (بالثواني)",
+    "description": "Settings: refresh seconds label",
+    "_machine_translated": true,
+    "_source_hash": "76c1ce92f5661830"
+  },
+  "settings.refresh_seconds.description": {
+    "message": "مدى تكرار استعلام شريط \"قيد التشغيل الآن\" من Spotify. القيم الأقل تعني تحديثات أسرع وعدد استدعاءات API أكبر قليلًا.",
+    "description": "Settings: refresh seconds description",
+    "_machine_translated": true,
+    "_source_hash": "f2e9e332fda01695"
+  },
+  "settings.trigger.label": {
+    "message": "كلمة التشغيل",
+    "description": "Settings: trigger word label",
+    "_machine_translated": true,
+    "_source_hash": "5ab4f2dc19af741d"
+  },
+  "settings.trigger.description": {
+    "message": "ما تكتبه لاستدعاء اختصارات Spotify في النافذة العائمة. على سبيل المثال، \"sp like\" أو \"sp play lofi beats\".",
+    "description": "Settings: trigger word description",
+    "_machine_translated": true,
+    "_source_hash": "e155eb413157ceae"
+  },
+  "settings.section.app": {
+    "message": "تطبيق Spotify",
+    "description": "Settings section: spotify app",
+    "_machine_translated": true,
+    "_source_hash": "d0fcd903dec290c3"
+  },
+  "settings.app.intro_html": {
+    "message": "أنشئ تطبيق <strong>Spotify Developer</strong> مجانيًا على <a href=\"https://developer.spotify.com/dashboard\">developer.spotify.com/dashboard</a>. أضف <code>http://127.0.0.1/spotify/callback</code> كعنوان URL لإعادة التوجيه (أي منفذ يعمل — يضيف Kage المنفذ الفعلي عند تسجيل الدخول، ويُطابق Spotify المضيف + المسار). انسخ <strong>Client ID</strong> أدناه.",
+    "description": "Settings: app setup instructions",
+    "_machine_translated": true,
+    "_source_hash": "4b925a1e8d4fe58f"
+  },
+  "settings.client_id.label": {
+    "message": "Client ID",
+    "description": "Settings: Client ID input label",
+    "_machine_translated": true,
+    "_source_hash": "88c50480decaca58"
+  },
+  "settings.client_id.placeholder": {
+    "message": "ألصق client_id الخاص بـ Spotify هنا",
+    "description": "Settings: Client ID placeholder",
+    "_machine_translated": true,
+    "_source_hash": "00365c0104e05fb3"
+  },
+  "settings.client_id.description": {
+    "message": "يُخزَّن محليًا؛ ولا يُرسَل إلى أي مكان باستثناء Spotify.",
+    "description": "Settings: Client ID description",
+    "_machine_translated": true,
+    "_source_hash": "726633bc55ffbe83"
+  },
+  "settings.save_client_id.label": {
+    "message": "حفظ معرّف العميل",
+    "description": "Settings: save client id button",
+    "_machine_translated": true,
+    "_source_hash": "1b31bf8b9640a2bc"
+  },
+  "settings.section.connection": {
+    "message": "الاتصال",
+    "description": "Settings section: connection",
+    "_machine_translated": true,
+    "_source_hash": "f358cdafb27f4748"
+  },
+  "settings.connection.connected": {
+    "message": "<strong>متصل</strong> — عناصر التحكم في التشغيل جاهزة.",
+    "description": "Settings: connection ready text",
+    "_machine_translated": true,
+    "_source_hash": "6824068777a99688"
+  },
+  "settings.connection.not_connected": {
+    "message": "غير متصل بعد. انقر على <strong>اتصال</strong> للتفويض.",
+    "description": "Settings: not connected text",
+    "_machine_translated": true,
+    "_source_hash": "7a248676d782c5cd"
+  },
+  "settings.connection.no_client_id": {
+    "message": "احفظ معرّف العميل أولاً، ثم اتصل.",
+    "description": "Settings: needs client ID first",
+    "_machine_translated": true,
+    "_source_hash": "6e654060ef7b1a02"
+  },
+  "settings.connect.label_connect": {
+    "message": "اتصال…",
+    "description": "Settings: connect button",
+    "_machine_translated": true,
+    "_source_hash": "216bfcabdbc9c99d"
+  },
+  "settings.connect.label_reconnect": {
+    "message": "إعادة الاتصال…",
+    "description": "Settings: reconnect button",
+    "_machine_translated": true,
+    "_source_hash": "d8e56b0170e24f86"
+  },
+  "settings.disconnect.label": {
+    "message": "تسجيل الخروج",
+    "description": "Settings: sign-out button",
+    "_machine_translated": true,
+    "_source_hash": "ccc6a1247a0bc31c"
+  },
+  "settings.disconnect.confirm": {
+    "message": "هل تريد تسجيل الخروج من Spotify؟ ستحتاج إلى إعادة التفويض لاستخدام اختصارات التشغيل.",
+    "description": "Confirmation prompt before signing out",
+    "_machine_translated": true,
+    "_source_hash": "a27426d3adcd7ad4"
+  },
+  "settings.validate.trigger_required": {
+    "message": "كلمة التشغيل مطلوبة.",
+    "description": "Validation error when trigger is empty",
+    "_machine_translated": true,
+    "_source_hash": "c758c958af83b189"
+  },
+  "settings.validate.trigger_format": {
+    "message": "يجب أن تتكوّن كلمة التشغيل من حروف أو أرقام أو شرطات.",
+    "description": "Validation error for invalid trigger characters",
+    "_machine_translated": true,
+    "_source_hash": "69d9b6a61cce96e9"
+  },
+  "action.save_client_id.empty": {
+    "message": "⚠️ ألصق معرّف العميل أولاً.",
+    "description": "Status when Client ID input is empty",
+    "_machine_translated": true,
+    "_source_hash": "dae11461665c6476"
+  },
+  "action.save_client_id.invalid": {
+    "message": "⚠️ هذا لا يبدو معرّف عميل Spotify صالحاً.",
+    "description": "Status when Client ID format invalid",
+    "_machine_translated": true,
+    "_source_hash": "e696470bcef2160e"
+  },
+  "action.save_client_id.success": {
+    "message": "✅ تم حفظ معرّف العميل.",
+    "description": "Status when Client ID is saved",
+    "_machine_translated": true,
+    "_source_hash": "f75eefe56c7a28c0"
+  },
+  "action.connect.success": {
+    "message": "✅ تم الاتصال. سيظهر شريط «قيد التشغيل الآن» عند تشغيل شيء ما.",
+    "description": "Status after a successful connect",
+    "_machine_translated": true,
+    "_source_hash": "31fe35562a8c271b"
+  },
+  "action.connect.error": {
+    "message": "⚠️ {message}",
+    "description": "Status with error after a failed connect",
+    "_machine_translated": true,
+    "_source_hash": "b0d53e592dd2232c"
+  },
+  "action.disconnect.success": {
+    "message": "✅ تم تسجيل الخروج.",
+    "description": "Status after a successful sign-out",
+    "_machine_translated": true,
+    "_source_hash": "64224f1b6f2851a7"
   }
 }

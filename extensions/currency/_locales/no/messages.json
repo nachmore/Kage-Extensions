@@ -16,5 +16,23 @@
     "description": "Extension description",
     "_machine_translated": true,
     "_source_hash": "72af6e5aebb257be"
+  },
+  "result.same_currency": {
+    "message": "Samme valuta",
+    "description": "Description shown when source and target currency are the same",
+    "_machine_translated": true,
+    "_source_hash": "562ea0fec3cec04d"
+  },
+  "result.looking_up": {
+    "message": "Henter kurs …",
+    "description": "Sync placeholder description while the rate is fetched",
+    "_machine_translated": true,
+    "_source_hash": "0eb2fad3be4b3ef7"
+  },
+  "result.rate": {
+    "message": "Kurs: 1 {from} = {rate} {to}",
+    "description": "Description showing the live FX rate",
+    "_machine_translated": true,
+    "_source_hash": "374825e1c70178b5"
   }
 }

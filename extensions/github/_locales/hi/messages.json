@@ -16,5 +16,125 @@
     "description": "Extension description",
     "_machine_translated": true,
     "_source_hash": "cf3213df81c4f097"
+  },
+  "result.home.label": {
+    "message": "GitHub · github.com खोलें",
+    "description": "Result label when only the trigger is typed",
+    "_machine_translated": true,
+    "_source_hash": "b6eafc95b31667d0"
+  },
+  "result.home.description": {
+    "message": "या रिपो खोजने के लिए \"gh <query>\" टाइप करें",
+    "description": "Hint to search after the trigger",
+    "_machine_translated": true,
+    "_source_hash": "c872db2af40296be"
+  },
+  "result.me.label": {
+    "message": "GitHub · मेरी प्रोफ़ाइल खोलें",
+    "description": "Result label for opening the user's GitHub profile",
+    "_machine_translated": true,
+    "_source_hash": "3f3a6f385df7c81e"
+  },
+  "result.me.description": {
+    "message": "(कॉन्फ़िगर होने पर टोकन का उपयोग करता है, अन्यथा github.com होम)",
+    "description": "Hint that token-aware lookup is used",
+    "_machine_translated": true,
+    "_source_hash": "54d57f46be8c2890"
+  },
+  "result.searching.label": {
+    "message": "GitHub · \"{query}\" खोजा जा रहा है…",
+    "description": "Loading label while async search runs",
+    "_machine_translated": true,
+    "_source_hash": "4b8084ae1e4c57c8"
+  },
+  "result.error.label": {
+    "message": "GitHub खोज विफल हुई",
+    "description": "Label when search throws",
+    "_machine_translated": true,
+    "_source_hash": "bd8f0076c981725b"
+  },
+  "settings.description": {
+    "message": "लॉन्चर से GitHub खोजें। बिना प्रमाणीकरण के 60 req/hr तक काम करता है (प्रति IP)। वैकल्पिक: 5,000 req/hr और निजी रिपो तक पहुँच के लिए एक fine-grained personal access token पेस्ट करें। टोकन Kage के सैंडबॉक्स्ड एक्सटेंशन डेटा में स्थानीय रूप से संग्रहीत होता है।",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "096fabdf2865ace3"
+  },
+  "settings.enabled.label": {
+    "message": "सक्षम करें",
+    "description": "Settings: enable toggle",
+    "_machine_translated": true,
+    "_source_hash": "813fb292fb3bfe0d"
+  },
+  "settings.trigger.label": {
+    "message": "ट्रिगर",
+    "description": "Settings: trigger word label",
+    "_machine_translated": true,
+    "_source_hash": "96f47964f4358372"
+  },
+  "settings.section.access": {
+    "message": "GitHub पहुँच (वैकल्पिक)",
+    "description": "Settings section heading",
+    "_machine_translated": true,
+    "_source_hash": "65d353111422ac3b"
+  },
+  "settings.access.intro_html": {
+    "message": "<p><a href=\"https://github.com/settings/personal-access-tokens/new\">github.com/settings/personal-access-tokens/new</a> पर एक fine-grained personal access token बनाएँ। जिन रिपो / issues / users को आप खोजना चाहते हैं, उन पर <em>केवल पढ़ने</em> की अनुमति पर्याप्त है। टोकन आपकी मशीन से कभी बाहर नहीं जाता, सिवाय <code>api.github.com</code> के Authorization हेडर में।</p>",
+    "description": "Intro html in settings",
+    "_machine_translated": true,
+    "_source_hash": "da1ef02e09e2a79f"
+  },
+  "settings.access.token_saved_html": {
+    "message": "<p><strong>टोकन सहेजा गया।</strong> बदलने के लिए नया पेस्ट करें, या हटाने के लिए <em>टोकन भूलें</em> पर क्लिक करें।</p>",
+    "description": "Shown when a token is already saved",
+    "_machine_translated": true,
+    "_source_hash": "37c9c6f5f61bbbcb"
+  },
+  "settings.token_input.label": {
+    "message": "टोकन",
+    "description": "Settings: token input label",
+    "_machine_translated": true,
+    "_source_hash": "5961c53b3862be04"
+  },
+  "settings.save_token.label": {
+    "message": "टोकन सहेजें",
+    "description": "Settings: save token action label",
+    "_machine_translated": true,
+    "_source_hash": "0be88428b7ed35d4"
+  },
+  "settings.clear_token.label": {
+    "message": "टोकन भूलें",
+    "description": "Settings: clear token action label",
+    "_machine_translated": true,
+    "_source_hash": "0a797b8748a16eee"
+  },
+  "settings.clear_token.confirm": {
+    "message": "सहेजा गया GitHub टोकन भूल जाएँ? भविष्य की खोजें 60 req/hr की सार्वजनिक सीमा पर आ जाएँगी।",
+    "description": "Confirmation prompt before forgetting the token",
+    "_machine_translated": true,
+    "_source_hash": "c8745b14624c50d6"
+  },
+  "action.save_token.empty": {
+    "message": "⚠️ पहले एक टोकन पेस्ट करें।",
+    "description": "Status when save action runs without input",
+    "_machine_translated": true,
+    "_source_hash": "b57474d5250af9a6"
+  },
+  "action.save_token.invalid": {
+    "message": "⚠️ यह GitHub टोकन जैसा नहीं लगता।",
+    "description": "Status when token format is unexpected",
+    "_machine_translated": true,
+    "_source_hash": "3fd9c6334d9895da"
+  },
+  "action.save_token.success": {
+    "message": "✅ टोकन सहेजा गया।",
+    "description": "Status when token saves successfully",
+    "_machine_translated": true,
+    "_source_hash": "566d5afa1d7f53bf"
+  },
+  "action.clear_token.success": {
+    "message": "✅ टोकन भुला दिया गया।",
+    "description": "Status when token is cleared",
+    "_machine_translated": true,
+    "_source_hash": "0fb0a3d9df6b2cc6"
   }
 }

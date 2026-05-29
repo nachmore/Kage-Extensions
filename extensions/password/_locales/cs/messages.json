@@ -16,5 +16,101 @@
     "description": "Extension description",
     "_machine_translated": true,
     "_source_hash": "0fa52e497866e221"
+  },
+  "result.passphrase.description": {
+    "message": "Heslová fráze · {count} slov · ~{bits} bitů entropie",
+    "description": "Description shown for a generated passphrase",
+    "_machine_translated": true,
+    "_source_hash": "3856983374e49098"
+  },
+  "result.password.description": {
+    "message": "Heslo · {length} znaků · ~{bits} bitů entropie",
+    "description": "Description shown for a generated password",
+    "_machine_translated": true,
+    "_source_hash": "6c122e5ad39d3576"
+  },
+  "result.regen.label": {
+    "message": "Vygenerovat další",
+    "description": "Label for the 'generate another' row",
+    "_machine_translated": true,
+    "_source_hash": "87656be639f2afe3"
+  },
+  "result.regen.description": {
+    "message": "Kliknutím vygenerujete nové",
+    "description": "Description for the 'generate another' row",
+    "_machine_translated": true,
+    "_source_hash": "3039687031661be2"
+  },
+  "settings.description": {
+    "message": "Generuje hesla pomocí <code>crypto.getRandomValues</code> — stejný zdroj entropie, který prohlížeče používají pro klíče TLS. Stisknutím klávesy Enter zkopírujete. Řádek „Vygenerovat další“ vytvoří nové.",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "8be283f1fd3b3176"
+  },
+  "settings.section.defaults": {
+    "message": "Výchozí hodnoty",
+    "description": "Settings section: defaults",
+    "_machine_translated": true,
+    "_source_hash": "dd9f392bd82cb46e"
+  },
+  "settings.enabled.label": {
+    "message": "Povolit",
+    "description": "Settings: enable toggle",
+    "_machine_translated": true,
+    "_source_hash": "813fb292fb3bfe0d"
+  },
+  "settings.trigger.label": {
+    "message": "Spouštěč",
+    "description": "Settings: trigger word label",
+    "_machine_translated": true,
+    "_source_hash": "96f47964f4358372"
+  },
+  "settings.default_length.label": {
+    "message": "Výchozí délka hesla",
+    "description": "Settings: default length label",
+    "_machine_translated": true,
+    "_source_hash": "df75741eab05dada"
+  },
+  "settings.section.character_classes": {
+    "message": "Třídy znaků",
+    "description": "Settings section: character classes",
+    "_machine_translated": true,
+    "_source_hash": "17285d1e3a9b1b91"
+  },
+  "settings.include_lowercase.label": {
+    "message": "Malá písmena (a–z)",
+    "description": "Settings: lowercase toggle",
+    "_machine_translated": true,
+    "_source_hash": "2e430990e5dd5e37"
+  },
+  "settings.include_uppercase.label": {
+    "message": "Velká písmena (A–Z)",
+    "description": "Settings: uppercase toggle",
+    "_machine_translated": true,
+    "_source_hash": "b9ea2b607851f55e"
+  },
+  "settings.include_numbers.label": {
+    "message": "Číslice (0–9)",
+    "description": "Settings: numbers toggle",
+    "_machine_translated": true,
+    "_source_hash": "5aef4f3080107695"
+  },
+  "settings.include_symbols.label": {
+    "message": "Symboly (!@#…)",
+    "description": "Settings: symbols toggle",
+    "_machine_translated": true,
+    "_source_hash": "50e30323811a7a37"
+  },
+  "settings.exclude_ambiguous.label": {
+    "message": "Vyloučit nejednoznačné (Il1O0|'`\")",
+    "description": "Settings: exclude ambiguous toggle",
+    "_machine_translated": true,
+    "_source_hash": "d680fc4ae7208f0e"
+  },
+  "settings.exclude_ambiguous.description": {
+    "message": "Odstraní znaky, které lze snadno zaměnit.",
+    "description": "Settings: exclude ambiguous description",
+    "_machine_translated": true,
+    "_source_hash": "9f407f14493e6443"
   }
 }

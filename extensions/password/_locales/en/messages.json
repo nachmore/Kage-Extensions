@@ -12,5 +12,69 @@
   "manifest.description": {
     "message": "Generate strong random passwords with one keystroke. Type \"pw\" for the default, \"pw 32\" for a custom length, \"pw word\" for a passphrase.",
     "description": "Extension description"
+  },
+  "result.passphrase.description": {
+    "message": "Passphrase · {count} words · ~{bits} bits of entropy",
+    "description": "Description shown for a generated passphrase"
+  },
+  "result.password.description": {
+    "message": "Password · {length} chars · ~{bits} bits of entropy",
+    "description": "Description shown for a generated password"
+  },
+  "result.regen.label": {
+    "message": "Generate another",
+    "description": "Label for the 'generate another' row"
+  },
+  "result.regen.description": {
+    "message": "Click to roll a new one",
+    "description": "Description for the 'generate another' row"
+  },
+  "settings.description": {
+    "message": "Generates passwords using <code>crypto.getRandomValues</code> — same entropy source browsers use for TLS keys. Hit Enter to copy. The \"Generate another\" row rolls a fresh one.",
+    "description": "Settings page description"
+  },
+  "settings.section.defaults": {
+    "message": "Defaults",
+    "description": "Settings section: defaults"
+  },
+  "settings.enabled.label": {
+    "message": "Enable",
+    "description": "Settings: enable toggle"
+  },
+  "settings.trigger.label": {
+    "message": "Trigger",
+    "description": "Settings: trigger word label"
+  },
+  "settings.default_length.label": {
+    "message": "Default password length",
+    "description": "Settings: default length label"
+  },
+  "settings.section.character_classes": {
+    "message": "Character classes",
+    "description": "Settings section: character classes"
+  },
+  "settings.include_lowercase.label": {
+    "message": "Lowercase (a-z)",
+    "description": "Settings: lowercase toggle"
+  },
+  "settings.include_uppercase.label": {
+    "message": "Uppercase (A-Z)",
+    "description": "Settings: uppercase toggle"
+  },
+  "settings.include_numbers.label": {
+    "message": "Numbers (0-9)",
+    "description": "Settings: numbers toggle"
+  },
+  "settings.include_symbols.label": {
+    "message": "Symbols (!@#…)",
+    "description": "Settings: symbols toggle"
+  },
+  "settings.exclude_ambiguous.label": {
+    "message": "Exclude ambiguous (Il1O0|'`\")",
+    "description": "Settings: exclude ambiguous toggle"
+  },
+  "settings.exclude_ambiguous.description": {
+    "message": "Drops characters that are easy to misread.",
+    "description": "Settings: exclude ambiguous description"
   }
 }

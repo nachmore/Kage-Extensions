@@ -12,9 +12,99 @@
     "_source_hash": "71f62720d8c6e809"
   },
   "manifest.description": {
-    "message": "بطاقات معاينة غنية للروابط في ردود الذكاء الاصطناعي - صور Open Graph الرئيسية والأوصاف وأيقونات المواقع، مع تخزين مؤقت على القرص يعمل دون اتصال.",
+    "message": "بطاقات معاينة غنية للروابط الواردة في ردود الذكاء الاصطناعي، تتضمن صور Open Graph الرئيسية والأوصاف وأيقونات المواقع، مع تخزين مؤقت على القرص يعمل دون اتصال.",
     "description": "Extension description",
     "_machine_translated": true,
-    "_source_hash": "8715cca27a85ca14"
+    "_source_hash": "1115a6d66a236b52"
+  },
+  "card.aria_label": {
+    "message": "معاينة الرابط: {title}",
+    "description": "Aria label on a link-preview card",
+    "_machine_translated": true,
+    "_source_hash": "0d14ec57b9273822"
+  },
+  "settings.description": {
+    "message": "يعرض بطاقات معاينة مضمّنة للروابط في ردود الذكاء الاصطناعي.",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "8f8fad89bd661f18"
+  },
+  "settings.enabled.label": {
+    "message": "تفعيل معاينات الروابط",
+    "description": "Settings: enable toggle label",
+    "_machine_translated": true,
+    "_source_hash": "8d8bac295d1fb446"
+  },
+  "settings.enabled.description": {
+    "message": "عرض بطاقات معاينة للروابط الموجودة في رسائل المساعد.",
+    "description": "Settings: enable toggle description",
+    "_machine_translated": true,
+    "_source_hash": "a09c739f5e71639d"
+  },
+  "settings.show_images.label": {
+    "message": "عرض الصور الرئيسية",
+    "description": "Settings: hero images toggle label",
+    "_machine_translated": true,
+    "_source_hash": "780bd9e8467dff8a"
+  },
+  "settings.show_images.description": {
+    "message": "عرض صورة Open Graph أو Twitter Card الخاصة بالصفحة عند توفرها. أوقف هذا الخيار لإبقاء البطاقات مختصرة (بدون أي صور).",
+    "description": "Settings: hero images toggle description",
+    "_machine_translated": true,
+    "_source_hash": "93de34f690c3ff82"
+  },
+  "settings.max_previews.label": {
+    "message": "الحد الأقصى للمعاينات لكل رسالة",
+    "description": "Settings: max previews label",
+    "_machine_translated": true,
+    "_source_hash": "0b07938756b890da"
+  },
+  "settings.max_previews.description": {
+    "message": "حدّ عدد بطاقات المعاينة المعروضة لكل رسالة لتجنب الازدحام.",
+    "description": "Settings: max previews description",
+    "_machine_translated": true,
+    "_source_hash": "9210823b6078eb39"
+  },
+  "settings.section.cache": {
+    "message": "ذاكرة التخزين المؤقت",
+    "description": "Settings section: cache",
+    "_machine_translated": true,
+    "_source_hash": "eb6835b21d425ab6"
+  },
+  "settings.cache.info_html": {
+    "message": "يتم تخزين البيانات الوصفية المُجلَبة على القرص لمدة تصل إلى 7 أيام حتى لا يُعاد جلب كل URL عند إعادة فتح المحادثة. تُخزَّن عمليات الجلب الفاشلة لفترة قصيرة لتتعافى الأخطاء المؤقتة من تلقاء نفسها.",
+    "description": "Settings: cache info text",
+    "_machine_translated": true,
+    "_source_hash": "3bdf171c7cecf3ef"
+  },
+  "settings.cache_stats.label": {
+    "message": "عرض حجم ذاكرة التخزين المؤقت",
+    "description": "Settings: cache stats button label",
+    "_machine_translated": true,
+    "_source_hash": "c372374c660f33ba"
+  },
+  "settings.cache_stats.description": {
+    "message": "تحقق من مقدار مساحة القرص التي تستخدمها ذاكرة التخزين المؤقت لمعاينة الروابط.",
+    "description": "Settings: cache stats button description",
+    "_machine_translated": true,
+    "_source_hash": "9bdb5c472c2c9222"
+  },
+  "settings.cache_clear.label": {
+    "message": "مسح ذاكرة التخزين المؤقت",
+    "description": "Settings: clear cache button label",
+    "_machine_translated": true,
+    "_source_hash": "a49f545073f8b034"
+  },
+  "settings.cache_clear.description": {
+    "message": "امسح ذاكرة التخزين المؤقت. استخدم هذا إذا بدت معاينة الرابط قديمة أو خاطئة.",
+    "description": "Settings: clear cache button description",
+    "_machine_translated": true,
+    "_source_hash": "d70f570cfe2407d5"
+  },
+  "settings.cache_clear.confirm": {
+    "message": "هل تريد مسح جميع معاينات الروابط المخزنة مؤقتًا؟ ستُجلَب الروابط مجددًا في المرة القادمة التي تظهر فيها.",
+    "description": "Confirmation prompt before clearing cache",
+    "_machine_translated": true,
+    "_source_hash": "f0b0851ffc83c81e"
   }
 }

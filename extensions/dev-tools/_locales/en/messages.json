@@ -12,5 +12,101 @@
   "manifest.description": {
     "message": "UUID generation, base64 encode/decode, hashing, epoch conversion, JSON formatting",
     "description": "Extension description"
+  },
+  "result.uuid.label": {
+    "message": "UUID v4",
+    "description": "Result label for UUID generation"
+  },
+  "result.copy_hint": {
+    "message": "Press Enter to copy",
+    "description": "Description hint shown next to copyable results"
+  },
+  "result.copy_hint_short": {
+    "message": "Enter to copy",
+    "description": "Shorter copy hint"
+  },
+  "result.base64_encode.label": {
+    "message": "Base64 Encode",
+    "description": "Result label for base64 encoding"
+  },
+  "result.base64_encode.description": {
+    "message": "\"{text}\" → Enter to copy",
+    "description": "Description for base64 encode result"
+  },
+  "result.base64_decode.label": {
+    "message": "Base64 Decode",
+    "description": "Result label for base64 decoding"
+  },
+  "result.hash.label": {
+    "message": "{algo} Hash",
+    "description": "Result label for hash calculation"
+  },
+  "result.hash.computing": {
+    "message": "Computing...",
+    "description": "Hash computing description"
+  },
+  "result.epoch.label": {
+    "message": "Epoch → Date",
+    "description": "Result label for epoch-to-date conversion"
+  },
+  "result.epoch_now.label": {
+    "message": "Current Epoch",
+    "description": "Result label for current epoch timestamp"
+  },
+  "result.json_format.label": {
+    "message": "Format JSON",
+    "description": "Result label for JSON formatting"
+  },
+  "result.json_format.description": {
+    "message": "{count} keys · Enter to copy",
+    "description": "Description for JSON format result"
+  },
+  "settings.description": {
+    "message": "UUID generation, base64 encode/decode, hashing, epoch conversion, JSON formatting.",
+    "description": "Settings page description"
+  },
+  "settings.section.individual_tools": {
+    "message": "Individual tools",
+    "description": "Settings section label"
+  },
+  "settings.uuid.label": {
+    "message": "UUID generator",
+    "description": "Settings: UUID toggle label"
+  },
+  "settings.uuid.description": {
+    "message": "Type \"uuid\" to generate a random UUID v4.",
+    "description": "Settings: UUID toggle description"
+  },
+  "settings.base64.label": {
+    "message": "Base64 encode/decode",
+    "description": "Settings: Base64 toggle label"
+  },
+  "settings.base64.description": {
+    "message": "Type \"base64 text\" to encode or \"b64d encoded\" to decode.",
+    "description": "Settings: Base64 toggle description"
+  },
+  "settings.hash.label": {
+    "message": "Hash calculator",
+    "description": "Settings: hash toggle label"
+  },
+  "settings.hash.description": {
+    "message": "Type \"md5 text\", \"sha1 text\", \"sha256 text\", or \"sha512 text\".",
+    "description": "Settings: hash toggle description"
+  },
+  "settings.epoch.label": {
+    "message": "Epoch/date converter",
+    "description": "Settings: epoch toggle label"
+  },
+  "settings.epoch.description": {
+    "message": "Type a Unix timestamp to see the date, or \"now\" for the current epoch.",
+    "description": "Settings: epoch toggle description"
+  },
+  "settings.json_format.label": {
+    "message": "JSON formatter",
+    "description": "Settings: JSON toggle label"
+  },
+  "settings.json_format.description": {
+    "message": "Paste minified JSON to see it pretty-printed.",
+    "description": "Settings: JSON toggle description"
   }
 }

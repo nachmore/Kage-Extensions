@@ -12,9 +12,45 @@
     "_source_hash": "205c3e69ca030742"
   },
   "manifest.description": {
-    "message": "Emojileri ada göre arayın ve kopyalayın. \":fire\" veya \"emoji rocket\" yazın; en çok kullanılan ~1500 emoji arasından en yakın eşleşmeyi seçer.",
+    "message": "Emojileri ada göre arayın ve kopyalayın. \":fire\" veya \"emoji roket\" yazdığınızda, en çok kullanılan ~1500 emoji arasından en yakın eşleşme seçilir.",
     "description": "Extension description",
     "_machine_translated": true,
-    "_source_hash": "59640ff70d49d4b7"
+    "_source_hash": "b9390cfd94255409"
+  },
+  "result.hint.label": {
+    "message": "Emoji · aramak için yazın",
+    "description": "Hint label when only the trigger word is typed",
+    "_machine_translated": true,
+    "_source_hash": "a2471f31b8da42e8"
+  },
+  "result.hint.description": {
+    "message": "\"{trigger} ateş\" veya \":fire\" deneyin",
+    "description": "Hint description suggesting trigger usage",
+    "_machine_translated": true,
+    "_source_hash": "c66d707a23b3874e"
+  },
+  "settings.description": {
+    "message": "En çok kullanılan ~250 emojiyi ada göre arayın. İki tetikleme stili çalışır: <code>emoji ateş</code> veya yalnızca <code>:fire</code>. Birini seçip Enter'a basarak panoya kopyalayın.",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "9d1fa3f643108b7e"
+  },
+  "settings.enabled.label": {
+    "message": "Etkinleştir",
+    "description": "Settings: enable toggle label",
+    "_machine_translated": true,
+    "_source_hash": "efce5571f8dbd1e9"
+  },
+  "settings.trigger.label": {
+    "message": "Tetikleyici sözcük",
+    "description": "Settings: trigger word label",
+    "_machine_translated": true,
+    "_source_hash": "5ab4f2dc19af741d"
+  },
+  "settings.shortcode_trigger.label": {
+    "message": "Kısa kodları da eşleştir (ör. \":fire\")",
+    "description": "Settings: shortcode trigger toggle label",
+    "_machine_translated": true,
+    "_source_hash": "a3ef5561dd4cf5f6"
   }
 }

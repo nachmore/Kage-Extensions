@@ -16,5 +16,179 @@
     "description": "Extension description",
     "_machine_translated": true,
     "_source_hash": "249b504d57430c6f"
+  },
+  "result.loading.label": {
+    "message": "📊 Chargement du rapport {period}...",
+    "description": "Label shown while activity report loads",
+    "_machine_translated": true,
+    "_source_hash": "a004240e6f3fcaf3"
+  },
+  "result.loading.description": {
+    "message": "Récupération des données d'activité",
+    "description": "Description shown while activity report loads",
+    "_machine_translated": true,
+    "_source_hash": "de94d2423bc9a013"
+  },
+  "result.error.label": {
+    "message": "📊 Impossible de charger le rapport d'activité",
+    "description": "Label shown when report fetch fails",
+    "_machine_translated": true,
+    "_source_hash": "348a7efb884d2839"
+  },
+  "result.summary.label": {
+    "message": "📊 {period} : {time} suivi",
+    "description": "Activity summary label",
+    "_machine_translated": true,
+    "_source_hash": "80f5ea2944d58d80"
+  },
+  "result.summary.description": {
+    "message": "{switches} basculements · meilleure série de {streak} min ({app}) · Entrée pour un résumé IA",
+    "description": "Activity summary description",
+    "_machine_translated": true,
+    "_source_hash": "505ab90472681d45"
+  },
+  "result.app.description": {
+    "message": "{count} sessions",
+    "description": "App row description",
+    "_machine_translated": true,
+    "_source_hash": "49a3ce91d2335869"
+  },
+  "result.site.description": {
+    "message": "{pct} % de {app}",
+    "description": "Site row description",
+    "_machine_translated": true,
+    "_source_hash": "ea862ba31e9d36b5"
+  },
+  "result.insight.label": {
+    "message": "💡 Obtenir des analyses IA sur la concentration",
+    "description": "AI insights row label",
+    "_machine_translated": true,
+    "_source_hash": "b38ae097d7b0c2bd"
+  },
+  "result.insight.description": {
+    "message": "Appuyez sur Entrée pour demander des conseils de productivité à l'IA",
+    "description": "AI insights row description",
+    "_machine_translated": true,
+    "_source_hash": "83b23c71c9d66544"
+  },
+  "render.summary.title": {
+    "message": "{period} : {time} suivi",
+    "description": "Summary title in inline render",
+    "_machine_translated": true,
+    "_source_hash": "dae73df6d0d671c5"
+  },
+  "render.summary.meta": {
+    "message": "{switches} basculements · meilleure série de {streak} min ({app}) · {appCount} applications",
+    "description": "Summary meta line in inline render",
+    "_machine_translated": true,
+    "_source_hash": "59daec5b0e1091b0"
+  },
+  "render.app.sessions": {
+    "message": "{count} sessions",
+    "description": "App sessions count in inline render",
+    "_machine_translated": true,
+    "_source_hash": "3cec6bece20a1f90"
+  },
+  "render.site.parent_pct": {
+    "message": "{pct} % de {app}",
+    "description": "Site percentage of parent in inline render",
+    "_machine_translated": true,
+    "_source_hash": "6e32b7767a13f748"
+  },
+  "render.insight.text": {
+    "message": "Obtenir des analyses IA sur la concentration",
+    "description": "Inline insight text",
+    "_machine_translated": true,
+    "_source_hash": "d4fb10c1a8a26281"
+  },
+  "settings.description": {
+    "message": "Suivez l'utilisation des applications, les changements de contexte et les séries de concentration. Saisissez votre mot-clé déclencheur pour afficher les rapports.",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "808a09db07c6c2dc"
+  },
+  "settings.trigger.label": {
+    "message": "Mot-clé déclencheur",
+    "description": "Settings: trigger keyword label",
+    "_machine_translated": true,
+    "_source_hash": "e31045bbce24b0f7"
+  },
+  "settings.trigger.description": {
+    "message": "Saisissez ce mot-clé pour afficher les rapports de concentration (par ex. « focus today », « focus week »).",
+    "description": "Settings: trigger keyword description",
+    "_machine_translated": true,
+    "_source_hash": "d25ff7bcd6b0245d"
+  },
+  "settings.poll_interval.label": {
+    "message": "Intervalle d'interrogation (secondes)",
+    "description": "Settings: poll interval label",
+    "_machine_translated": true,
+    "_source_hash": "eff03bac7ebfd7c6"
+  },
+  "settings.poll_interval.description": {
+    "message": "Fréquence de vérification de la fenêtre active. Plus bas = plus précis mais consomme plus de ressources.",
+    "description": "Settings: poll interval description",
+    "_machine_translated": true,
+    "_source_hash": "2f7d98036a3c54d9"
+  },
+  "settings.auto_start.label": {
+    "message": "Démarrage automatique du suivi",
+    "description": "Settings: auto-start toggle label",
+    "_machine_translated": true,
+    "_source_hash": "4234006ff6820f4f"
+  },
+  "settings.auto_start.description": {
+    "message": "Démarrer le suivi automatiquement au lancement de l'application",
+    "description": "Settings: auto-start toggle description",
+    "_machine_translated": true,
+    "_source_hash": "2b2bb02ec327371d"
+  },
+  "settings.section.data_to_track": {
+    "message": "Données à suivre",
+    "description": "Settings section heading",
+    "_machine_translated": true,
+    "_source_hash": "cfd8959a024167cf"
+  },
+  "settings.track_screen_time.label": {
+    "message": "Temps d'écran",
+    "description": "Settings: screen time toggle label",
+    "_machine_translated": true,
+    "_source_hash": "8e661b5113dc145c"
+  },
+  "settings.track_screen_time.description": {
+    "message": "Suivre le temps passé dans chaque application",
+    "description": "Settings: screen time toggle description",
+    "_machine_translated": true,
+    "_source_hash": "7a0a088c3a230a89"
+  },
+  "settings.track_switches.label": {
+    "message": "Changements de contexte",
+    "description": "Settings: context switches toggle label",
+    "_machine_translated": true,
+    "_source_hash": "b004389d12cd1499"
+  },
+  "settings.track_switches.description": {
+    "message": "Compter la fréquence de vos changements d'application",
+    "description": "Settings: context switches toggle description",
+    "_machine_translated": true,
+    "_source_hash": "287c0d0a0f24b68e"
+  },
+  "settings.track_streaks.label": {
+    "message": "Séries de concentration",
+    "description": "Settings: focus streaks toggle label",
+    "_machine_translated": true,
+    "_source_hash": "5ce25266a7b929f2"
+  },
+  "settings.track_streaks.description": {
+    "message": "Suivre les plus longues périodes de concentration ininterrompue",
+    "description": "Settings: focus streaks toggle description",
+    "_machine_translated": true,
+    "_source_hash": "78ee2f56696d0840"
+  },
+  "settings.validate.poll_interval_range": {
+    "message": "L'intervalle d'interrogation doit être compris entre 2 et 60 secondes",
+    "description": "Validation error for poll interval",
+    "_machine_translated": true,
+    "_source_hash": "d768cd635e999624"
   }
 }

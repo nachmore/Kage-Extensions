@@ -53,7 +53,10 @@ function entropyBits(length, poolSize) {
 }
 
 export default class PasswordSearchProvider {
-    initialize(context) { this.config = context.config || {}; }
+    initialize(context) {
+        this.config = context.config || {};
+        this.t = context.i18n?.t?.bind(context.i18n) || ((k) => k);
+    }
     onConfigUpdate(config) { this.config = config || {}; }
 
     match(query) {
@@ -73,7 +76,7 @@ export default class PasswordSearchProvider {
                 id: `pw:phrase:${phrase}`,
                 type: 'password',
                 label: phrase,
-                description: `Passphrase · ${count} words · ~${bits} bits of entropy`,
+                description: this.t('result.passphrase.description', { count, bits }),
                 icon: '🔐',
                 score: 95,
                 data: { value: phrase },
@@ -90,15 +93,15 @@ export default class PasswordSearchProvider {
             id: `pw:${password}`,
             type: 'password',
             label: password,
-            description: `Password · ${length} chars · ~${bits} bits of entropy`,
+            description: this.t('result.password.description', { length, bits }),
             icon: '🔐',
             score: 95,
             data: { value: password },
         }, {
             id: 'pw:regen',
             type: 'password',
-            label: 'Generate another',
-            description: 'Click to roll a new one',
+            label: this.t('result.regen.label'),
+            description: this.t('result.regen.description'),
             icon: '🔁',
             score: 80,
             data: { regen: true, rest },

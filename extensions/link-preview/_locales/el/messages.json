@@ -12,9 +12,99 @@
     "_source_hash": "71f62720d8c6e809"
   },
   "manifest.description": {
-    "message": "Εμπλουτισμένες κάρτες προεπισκόπησης συνδέσμων για URL στις απαντήσεις της AI  κεντρικές εικόνες Open Graph, περιγραφές και εικονίδια ιστότοπου, με φιλική προς εκτός σύνδεσης προσωρινή αποθήκευση στον δίσκο.",
+    "message": "Εμπλουτισμένες κάρτες προεπισκόπησης συνδέσμων για URL σε απαντήσεις AI  εικόνες Open Graph, περιγραφές και favicons, με αποθήκευση στον δίσκο για χρήση εκτός σύνδεσης.",
     "description": "Extension description",
     "_machine_translated": true,
-    "_source_hash": "8715cca27a85ca14"
+    "_source_hash": "1115a6d66a236b52"
+  },
+  "card.aria_label": {
+    "message": "Προεπισκόπηση συνδέσμου: {title}",
+    "description": "Aria label on a link-preview card",
+    "_machine_translated": true,
+    "_source_hash": "0d14ec57b9273822"
+  },
+  "settings.description": {
+    "message": "Εμφανίζει ενσωματωμένες κάρτες προεπισκόπησης για URL σε απαντήσεις AI.",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "8f8fad89bd661f18"
+  },
+  "settings.enabled.label": {
+    "message": "Ενεργοποίηση προεπισκοπήσεων συνδέσμων",
+    "description": "Settings: enable toggle label",
+    "_machine_translated": true,
+    "_source_hash": "8d8bac295d1fb446"
+  },
+  "settings.enabled.description": {
+    "message": "Εμφάνιση καρτών προεπισκόπησης για URL που βρίσκονται σε μηνύματα του βοηθού.",
+    "description": "Settings: enable toggle description",
+    "_machine_translated": true,
+    "_source_hash": "a09c739f5e71639d"
+  },
+  "settings.show_images.label": {
+    "message": "Εμφάνιση κύριων εικόνων",
+    "description": "Settings: hero images toggle label",
+    "_machine_translated": true,
+    "_source_hash": "780bd9e8467dff8a"
+  },
+  "settings.show_images.description": {
+    "message": "Εμφάνιση της εικόνας Open Graph ή Twitter Card της σελίδας όταν είναι διαθέσιμη. Απενεργοποιήστε το για να διατηρείτε τις κάρτες συμπαγείς (χωρίς εικόνες).",
+    "description": "Settings: hero images toggle description",
+    "_machine_translated": true,
+    "_source_hash": "93de34f690c3ff82"
+  },
+  "settings.max_previews.label": {
+    "message": "Μέγιστες προεπισκοπήσεις ανά μήνυμα",
+    "description": "Settings: max previews label",
+    "_machine_translated": true,
+    "_source_hash": "0b07938756b890da"
+  },
+  "settings.max_previews.description": {
+    "message": "Περιορίστε τον αριθμό των καρτών προεπισκόπησης ανά μήνυμα για να αποφύγετε την ακαταστασία.",
+    "description": "Settings: max previews description",
+    "_machine_translated": true,
+    "_source_hash": "9210823b6078eb39"
+  },
+  "settings.section.cache": {
+    "message": "Κρυφή μνήμη",
+    "description": "Settings section: cache",
+    "_machine_translated": true,
+    "_source_hash": "eb6835b21d425ab6"
+  },
+  "settings.cache.info_html": {
+    "message": "Τα μεταδεδομένα που λαμβάνονται αποθηκεύονται στον δίσκο για έως 7 ημέρες, ώστε το άνοιγμα μιας συνομιλίας να μην ξανακατεβάζει κάθε URL. Οι αποτυχημένες λήψεις αποθηκεύονται για μικρό διάστημα, ώστε τα παροδικά σφάλματα να ανακάμπτουν μόνα τους.",
+    "description": "Settings: cache info text",
+    "_machine_translated": true,
+    "_source_hash": "3bdf171c7cecf3ef"
+  },
+  "settings.cache_stats.label": {
+    "message": "Εμφάνιση μεγέθους κρυφής μνήμης",
+    "description": "Settings: cache stats button label",
+    "_machine_translated": true,
+    "_source_hash": "c372374c660f33ba"
+  },
+  "settings.cache_stats.description": {
+    "message": "Ελέγξτε πόσο χώρο στον δίσκο χρησιμοποιεί η κρυφή μνήμη προεπισκόπησης συνδέσμων.",
+    "description": "Settings: cache stats button description",
+    "_machine_translated": true,
+    "_source_hash": "9bdb5c472c2c9222"
+  },
+  "settings.cache_clear.label": {
+    "message": "Εκκαθάριση κρυφής μνήμης",
+    "description": "Settings: clear cache button label",
+    "_machine_translated": true,
+    "_source_hash": "a49f545073f8b034"
+  },
+  "settings.cache_clear.description": {
+    "message": "Διαγράψτε την κρυφή μνήμη. Χρησιμοποιήστε το αν μια προεπισκόπηση συνδέσμου φαίνεται παλιά ή λανθασμένη.",
+    "description": "Settings: clear cache button description",
+    "_machine_translated": true,
+    "_source_hash": "d70f570cfe2407d5"
+  },
+  "settings.cache_clear.confirm": {
+    "message": "Εκκαθάριση όλων των αποθηκευμένων προεπισκοπήσεων συνδέσμων; Τα URL θα ληφθούν ξανά την επόμενη φορά που θα εμφανιστούν.",
+    "description": "Confirmation prompt before clearing cache",
+    "_machine_translated": true,
+    "_source_hash": "f0b0851ffc83c81e"
   }
 }

@@ -16,5 +16,53 @@
     "description": "Extension description",
     "_machine_translated": true,
     "_source_hash": "31c7e58200c59012"
+  },
+  "result.color.description": {
+    "message": "颜色预览 · 按 Enter 复制",
+    "description": "Description shown next to a detected color result",
+    "_machine_translated": true,
+    "_source_hash": "0c9bfd07d7319131"
+  },
+  "settings.description": {
+    "message": "检测颜色值（hex、rgb、hsl、命名颜色）并显示预览及格式转换。",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "92a9e6cf9777abb0"
+  },
+  "settings.copy_format.label": {
+    "message": "复制格式",
+    "description": "Settings: copy format select label",
+    "_machine_translated": true,
+    "_source_hash": "3641f2d390c4c2c1"
+  },
+  "settings.copy_format.description": {
+    "message": "在颜色结果上按 Enter 时复制的格式。",
+    "description": "Settings: copy format select description",
+    "_machine_translated": true,
+    "_source_hash": "14bba7dcd907a4d1"
+  },
+  "settings.copy_format.option_all": {
+    "message": "所有格式",
+    "description": "Copy format dropdown: all formats",
+    "_machine_translated": true,
+    "_source_hash": "56fcd923c445666b"
+  },
+  "settings.copy_format.option_hex": {
+    "message": "仅 HEX",
+    "description": "Copy format dropdown: hex only",
+    "_machine_translated": true,
+    "_source_hash": "85938ccd3f4ee5f8"
+  },
+  "settings.copy_format.option_rgb": {
+    "message": "仅 RGB",
+    "description": "Copy format dropdown: rgb only",
+    "_machine_translated": true,
+    "_source_hash": "c30a0594a49b951b"
+  },
+  "settings.copy_format.option_hsl": {
+    "message": "仅 HSL",
+    "description": "Copy format dropdown: hsl only",
+    "_machine_translated": true,
+    "_source_hash": "997183a6f818deb2"
   }
 }

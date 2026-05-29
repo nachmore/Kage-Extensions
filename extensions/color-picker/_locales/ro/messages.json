@@ -16,5 +16,53 @@
     "description": "Extension description",
     "_machine_translated": true,
     "_source_hash": "31c7e58200c59012"
+  },
+  "result.color.description": {
+    "message": "Previzualizare culoare · Enter pentru a copia",
+    "description": "Description shown next to a detected color result",
+    "_machine_translated": true,
+    "_source_hash": "0c9bfd07d7319131"
+  },
+  "settings.description": {
+    "message": "Detectează valorile de culoare (hex, rgb, hsl, culori cu nume) și afișează o previzualizare cu conversii de format.",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "92a9e6cf9777abb0"
+  },
+  "settings.copy_format.label": {
+    "message": "Format de copiere",
+    "description": "Settings: copy format select label",
+    "_machine_translated": true,
+    "_source_hash": "3641f2d390c4c2c1"
+  },
+  "settings.copy_format.description": {
+    "message": "Ce format să fie copiat la apăsarea Enter pe un rezultat de culoare.",
+    "description": "Settings: copy format select description",
+    "_machine_translated": true,
+    "_source_hash": "14bba7dcd907a4d1"
+  },
+  "settings.copy_format.option_all": {
+    "message": "Toate formatele",
+    "description": "Copy format dropdown: all formats",
+    "_machine_translated": true,
+    "_source_hash": "56fcd923c445666b"
+  },
+  "settings.copy_format.option_hex": {
+    "message": "Doar HEX",
+    "description": "Copy format dropdown: hex only",
+    "_machine_translated": true,
+    "_source_hash": "85938ccd3f4ee5f8"
+  },
+  "settings.copy_format.option_rgb": {
+    "message": "Doar RGB",
+    "description": "Copy format dropdown: rgb only",
+    "_machine_translated": true,
+    "_source_hash": "c30a0594a49b951b"
+  },
+  "settings.copy_format.option_hsl": {
+    "message": "Doar HSL",
+    "description": "Copy format dropdown: hsl only",
+    "_machine_translated": true,
+    "_source_hash": "997183a6f818deb2"
   }
 }

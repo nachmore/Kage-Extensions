@@ -12,5 +12,381 @@
   "manifest.description": {
     "message": "Task manager with due dates, categories, priorities, and progress tracking. Type 'todo' for a summary, 'todo+ <task>' to add, 'todo+ <task> due:<date>' for a reminder with a due-date banner.",
     "description": "Extension description"
+  },
+  "date.today": {
+    "message": "📅 Today",
+    "description": "Date label: today"
+  },
+  "date.tomorrow": {
+    "message": "📅 Tomorrow",
+    "description": "Date label: tomorrow"
+  },
+  "date.yesterday": {
+    "message": "📅 Yesterday",
+    "description": "Date label: yesterday"
+  },
+  "date.overdue": {
+    "message": "📅 {days}d overdue",
+    "description": "Date label for overdue dates"
+  },
+  "date.in_days": {
+    "message": "📅 In {days}d",
+    "description": "Date label for upcoming dates"
+  },
+  "date.exact": {
+    "message": "📅 {date}",
+    "description": "Date label fallback with raw date"
+  },
+  "result.summary.label": {
+    "message": "📋 Todos {complete}/{total} {progress}",
+    "description": "Header label for the summary view"
+  },
+  "result.summary.description": {
+    "message": "Press Enter for full summary · todo+ to add · todo- to remove",
+    "description": "Description for summary header"
+  },
+  "result.todo.cycle_hint": {
+    "message": "Enter: cycle status",
+    "description": "Description hint for cycling todo status"
+  },
+  "result.add_hint.label": {
+    "message": "➕ Type a task to add",
+    "description": "Hint label when only `todo+` is typed"
+  },
+  "result.add_hint.description": {
+    "message": "todo+ buy milk #shopping @high due:friday · due: sets a reminder",
+    "description": "Hint description showing usage"
+  },
+  "result.delete_empty.label": {
+    "message": "🗑️ No todos to remove",
+    "description": "Label when delete invoked with no todos"
+  },
+  "result.delete_empty.description": {
+    "message": "Use todo+ to add tasks first",
+    "description": "Hint when no todos to delete"
+  },
+  "result.delete_no_match.label": {
+    "message": "🗑️ No todos matching \"{query}\"",
+    "description": "Label when delete-search returns no matches"
+  },
+  "result.delete_no_match.description": {
+    "message": "Try a different search",
+    "description": "Description when delete-search returns no matches"
+  },
+  "result.delete_header.label": {
+    "message": "🗑️ Select a todo to remove",
+    "description": "Header for delete list"
+  },
+  "result.delete_header.description": {
+    "message": "Type todo- <search> to filter",
+    "description": "Hint above delete list"
+  },
+  "result.delete_item.label": {
+    "message": "🗑️ {icon} {text}",
+    "description": "Label for a todo in delete list"
+  },
+  "result.delete_item.description": {
+    "message": "Press Enter to delete",
+    "description": "Description for a todo in delete list"
+  },
+  "result.add.label": {
+    "message": "➕ Add: {text}",
+    "description": "Label for a quick-add result"
+  },
+  "result.add.fallback_description": {
+    "message": "Press Enter to add",
+    "description": "Description shown when no metadata is set"
+  },
+  "result.no_match.label": {
+    "message": "No todos matching \"{query}\"",
+    "description": "Label when search has no matches"
+  },
+  "result.no_match.description": {
+    "message": "Use todo+ to create a todo",
+    "description": "Hint when search has no matches"
+  },
+  "result.list.header_label": {
+    "message": "📋 Todos {complete}/{total} {progress}",
+    "description": "Header label for the list view"
+  },
+  "result.list.overdue_chip": {
+    "message": "🔴 {count} overdue",
+    "description": "Overdue chip in list header"
+  },
+  "result.list.in_progress_chip": {
+    "message": "🔵 {count} in progress",
+    "description": "In-progress chip in list header"
+  },
+  "result.list.add_hint": {
+    "message": "todo+ <task> to add · use due:<date> for reminders",
+    "description": "Hint shown in list header"
+  },
+  "result.list.more_label": {
+    "message": "... and {count} more",
+    "description": "Label when more items are available"
+  },
+  "result.list.more_description": {
+    "message": "Use filters: /done /overdue /active /high #category",
+    "description": "Description telling user about filters"
+  },
+  "result.list.clear_label": {
+    "message": "🧹 Clear {count} completed",
+    "description": "Action label to clear completed todos"
+  },
+  "result.list.clear_description": {
+    "message": "Press Enter to remove completed todos",
+    "description": "Description for clear completed action"
+  },
+  "summary.title": {
+    "message": "📋 **Todos & Reminders** — {complete}/{total} done ({pct}%)",
+    "description": "Top line of the summary text response"
+  },
+  "summary.empty_hint": {
+    "message": "\nNo tasks yet. Use `todo+ <task>` to add one. Add `due:<date>` for a reminder.",
+    "description": "Empty state in the summary text"
+  },
+  "summary.section.overdue": {
+    "message": "\n🔴 **Overdue:**",
+    "description": "Overdue section heading in the summary text"
+  },
+  "summary.section.in_progress": {
+    "message": "\n🔵 **In Progress:**",
+    "description": "In-progress section heading in the summary text"
+  },
+  "summary.section.pending": {
+    "message": "\n⬜ **Pending** ({count}):",
+    "description": "Pending section heading in the summary text"
+  },
+  "summary.pending_more": {
+    "message": "- *...and {count} more*",
+    "description": "Pending overflow line"
+  },
+  "summary.completed_count": {
+    "message": "\n✅ {count} completed",
+    "description": "Completed count line"
+  },
+  "execute.added": {
+    "message": "✅ Added: {text}{due}",
+    "description": "Display message after adding a todo"
+  },
+  "execute.added_due": {
+    "message": " (due {label})",
+    "description": "Suffix when adding with a due date"
+  },
+  "execute.cycled": {
+    "message": "{icon} {text} → {status}",
+    "description": "Display message after cycling status"
+  },
+  "execute.removed": {
+    "message": "🗑️ Removed: {text}",
+    "description": "Display message after removing a todo"
+  },
+  "execute.cleared": {
+    "message": "🧹 Cleared {count} completed todos",
+    "description": "Display message after clearing completed"
+  },
+  "widget.due_today": {
+    "message": "(due today)",
+    "description": "Widget label when item due today"
+  },
+  "widget.one_day_overdue": {
+    "message": "(1 day overdue)",
+    "description": "Widget label when 1 day overdue"
+  },
+  "widget.days_overdue": {
+    "message": "({days} days overdue)",
+    "description": "Widget label when N days overdue"
+  },
+  "widget.due_tomorrow": {
+    "message": "(due tomorrow)",
+    "description": "Widget label when due tomorrow"
+  },
+  "widget.due_in_days": {
+    "message": "(due in {days} days)",
+    "description": "Widget label when due in N days"
+  },
+  "widget.previous_tooltip": {
+    "message": "Previous",
+    "description": "Tooltip on the previous button"
+  },
+  "widget.next_tooltip": {
+    "message": "Next",
+    "description": "Tooltip on the next button"
+  },
+  "widget.mark_done_tooltip": {
+    "message": "Mark done",
+    "description": "Tooltip on the mark-done button"
+  },
+  "widget.dismiss_tooltip": {
+    "message": "Dismiss all",
+    "description": "Tooltip on the dismiss-all button"
+  },
+  "toolbar.summary_tooltip": {
+    "message": "Show task summary",
+    "description": "Tooltip on the toolbar summary button"
+  },
+  "toolbar.summary_title": {
+    "message": "📋 Task Summary",
+    "description": "Title of the toolbar summary popup"
+  },
+  "toolbar.empty_html": {
+    "message": "<p>No tasks yet. Type <code>todo+ buy milk</code> in the floating window to add one.</p>",
+    "description": "HTML body when no tasks"
+  },
+  "toolbar.summary_done_html": {
+    "message": "<p><strong>{complete}/{total}</strong> done{overdue}</p>",
+    "description": "HTML summary line"
+  },
+  "toolbar.overdue_html": {
+    "message": ", <span style=\"color:#e25\">⚠ {count} overdue</span>",
+    "description": "HTML overdue suffix"
+  },
+  "toolbar.due_suffix_html": {
+    "message": " <small>(due {date}{warn})</small>",
+    "description": "Due-date suffix HTML in summary list"
+  },
+  "toolbar.recently_completed_html": {
+    "message": "<p style=\"margin-top:8px;\"><small>Recently completed:</small></p>",
+    "description": "Recently-completed heading"
+  },
+  "toolbar.completed_more_html": {
+    "message": "<li><small>…and {count} more</small></li>",
+    "description": "Overflow line for recently completed"
+  },
+  "trigger.item_due.description": {
+    "message": "A todo item is due today",
+    "description": "Trigger description: item due"
+  },
+  "trigger.item_overdue.description": {
+    "message": "A todo item is overdue",
+    "description": "Trigger description: item overdue"
+  },
+  "trigger.all_complete.description": {
+    "message": "All todos are complete",
+    "description": "Trigger description: all complete"
+  },
+  "settings.description": {
+    "message": "Task manager with reminders. Type \"todo+ <task>\" to add, \"todo+ <task> due:<date>\" for a reminder, \"todos\" to view list.",
+    "description": "Settings page description"
+  },
+  "settings.section.display": {
+    "message": "Display",
+    "description": "Settings section: display"
+  },
+  "settings.default_category.label": {
+    "message": "Default Category",
+    "description": "Settings: default category label"
+  },
+  "settings.default_category.description": {
+    "message": "New todos get this category unless overridden with #tag.",
+    "description": "Settings: default category description"
+  },
+  "settings.default_category.placeholder": {
+    "message": "e.g. work, personal",
+    "description": "Settings: default category placeholder"
+  },
+  "settings.sort_by.label": {
+    "message": "Sort By",
+    "description": "Settings: sort label"
+  },
+  "settings.sort_by.description": {
+    "message": "How to order todos in the list.",
+    "description": "Settings: sort description"
+  },
+  "settings.sort_by.option_created": {
+    "message": "Newest first",
+    "description": "Sort option: newest"
+  },
+  "settings.sort_by.option_due": {
+    "message": "Due date",
+    "description": "Sort option: due date"
+  },
+  "settings.sort_by.option_priority": {
+    "message": "Priority",
+    "description": "Sort option: priority"
+  },
+  "settings.sort_by.option_status": {
+    "message": "Status",
+    "description": "Sort option: status"
+  },
+  "settings.show_completed.label": {
+    "message": "Show Completed",
+    "description": "Settings: show completed label"
+  },
+  "settings.show_completed.description": {
+    "message": "Display completed todos in the main list.",
+    "description": "Settings: show completed description"
+  },
+  "settings.section.behavior": {
+    "message": "Behavior",
+    "description": "Settings section: behavior"
+  },
+  "settings.confirm_delete.label": {
+    "message": "Confirm Delete",
+    "description": "Settings: confirm delete label"
+  },
+  "settings.confirm_delete.description": {
+    "message": "Ask for confirmation before deleting a todo.",
+    "description": "Settings: confirm delete description"
+  },
+  "settings.show_due_banner.label": {
+    "message": "Show Due Reminder Banner",
+    "description": "Settings: show due banner label"
+  },
+  "settings.show_due_banner.description": {
+    "message": "Show a banner in the floating window when reminders are due today or overdue.",
+    "description": "Settings: show due banner description"
+  },
+  "settings.section.data": {
+    "message": "Data",
+    "description": "Settings section: data"
+  },
+  "settings.data.info": {
+    "message": "Export or clear all your todos and reminders.",
+    "description": "Settings: data info"
+  },
+  "settings.export.label": {
+    "message": "Export JSON",
+    "description": "Settings: export action label"
+  },
+  "settings.import.label": {
+    "message": "Import JSON",
+    "description": "Settings: import action label"
+  },
+  "settings.clear_all.label": {
+    "message": "Clear All",
+    "description": "Settings: clear all action label"
+  },
+  "settings.clear_all.confirm": {
+    "message": "Delete ALL todos and reminders? This cannot be undone.",
+    "description": "Confirmation prompt before clearing all"
+  },
+  "action.export.success": {
+    "message": "✅ Exported",
+    "description": "Status when export succeeds"
+  },
+  "action.export.error": {
+    "message": "❌ Export failed: {message}",
+    "description": "Status when export fails"
+  },
+  "action.clear_all.success": {
+    "message": "✅ All todos and reminders cleared.",
+    "description": "Status when clear all succeeds"
+  },
+  "action.clear_all.error": {
+    "message": "❌ {message}",
+    "description": "Status when clear all fails"
+  },
+  "action.import.invalid_format": {
+    "message": "Invalid format (expected JSON array)",
+    "description": "Error: import format invalid"
+  },
+  "action.import.success": {
+    "message": "✅ Imported {count} todos.",
+    "description": "Status when import succeeds"
+  },
+  "action.import.error": {
+    "message": "❌ Import failed: {message}",
+    "description": "Status when import fails"
   }
 }

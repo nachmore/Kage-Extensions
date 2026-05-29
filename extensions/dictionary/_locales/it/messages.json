@@ -16,5 +16,149 @@
     "description": "Extension description",
     "_machine_translated": true,
     "_source_hash": "23f2411c0957401e"
+  },
+  "result.error.label": {
+    "message": "📖 Impossibile cercare \"{word}\"",
+    "description": "Error label when dictionary lookup fails",
+    "_machine_translated": true,
+    "_source_hash": "26fa9b62e8c2308d"
+  },
+  "result.error.description": {
+    "message": "Errore di rete — controlla la connessione",
+    "description": "Error description for failed lookup",
+    "_machine_translated": true,
+    "_source_hash": "6a528e1a02f5df4a"
+  },
+  "result.not_found.label": {
+    "message": "Nessuna definizione trovata per \"{word}\"",
+    "description": "Label when word has no definition",
+    "_machine_translated": true,
+    "_source_hash": "d8badf7aa4e38bae"
+  },
+  "result.not_found.description": {
+    "message": "Prova con un'altra grafia",
+    "description": "Hint when no definition was found",
+    "_machine_translated": true,
+    "_source_hash": "f26c73ffe19ef7fa"
+  },
+  "result.loading.label": {
+    "message": "Ricerca di \"{word}\" in corso...",
+    "description": "Loading label while definition fetches",
+    "_machine_translated": true,
+    "_source_hash": "a3266221037cb0d7"
+  },
+  "result.suggestion.label": {
+    "message": "Forse cercavi: {word}?",
+    "description": "Spell-correction suggestion label",
+    "_machine_translated": true,
+    "_source_hash": "05e11a0aeb79492a"
+  },
+  "result.suggestion.description": {
+    "message": "Premi Invio per copiare la parola corretta",
+    "description": "Spell-correction suggestion description",
+    "_machine_translated": true,
+    "_source_hash": "7e7e96bfc765a8e3"
+  },
+  "render.looking_up": {
+    "message": "Ricerca di \"{word}\" in corso...",
+    "description": "Inline 'looking up' header in detail render",
+    "_machine_translated": true,
+    "_source_hash": "dc34da96dd70f9da"
+  },
+  "render.no_definition": {
+    "message": "Nessuna definizione trovata per \"{word}\"",
+    "description": "Inline 'no definition' header in detail render",
+    "_machine_translated": true,
+    "_source_hash": "a68d1cc259f7e0ab"
+  },
+  "render.synonyms_label": {
+    "message": "Sin.:",
+    "description": "Synonyms section prefix",
+    "_machine_translated": true,
+    "_source_hash": "0795db7980a91647"
+  },
+  "render.suggestion_text": {
+    "message": "Forse cercavi",
+    "description": "Suggestion HTML prefix",
+    "_machine_translated": true,
+    "_source_hash": "d35bcd93b5b84204"
+  },
+  "settings.description": {
+    "message": "Cerca definizioni, correzioni ortografiche e pronuncia delle parole. Basato su FreeDictionaryAPI.com (dati di Wiktionary).",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "4a6876370e806ad0"
+  },
+  "settings.trigger.label": {
+    "message": "Parola chiave di attivazione",
+    "description": "Settings: trigger keyword label",
+    "_machine_translated": true,
+    "_source_hash": "e31045bbce24b0f7"
+  },
+  "settings.trigger.description": {
+    "message": "Digita questa parola chiave seguita da uno spazio per attivare la ricerca nel dizionario (es. \"dict ciao\"). Lascia vuoto per cercare qualsiasi parola digitata.",
+    "description": "Settings: trigger keyword description",
+    "_machine_translated": true,
+    "_source_hash": "d6848ef9ee8f5c82"
+  },
+  "settings.language.label": {
+    "message": "Lingua",
+    "description": "Settings: language select label",
+    "_machine_translated": true,
+    "_source_hash": "717cd225449abe95"
+  },
+  "settings.language.description": {
+    "message": "Lingua del dizionario per le ricerche. Il rilevamento automatico usa tinyld per identificare la lingua. Supporta oltre 250 lingue tramite FreeDictionaryAPI.com.",
+    "description": "Settings: language select description",
+    "_machine_translated": true,
+    "_source_hash": "6bd5f5d3c31bc5f2"
+  },
+  "settings.language.auto": {
+    "message": "Rilevamento automatico",
+    "description": "Auto-detect language option",
+    "_machine_translated": true,
+    "_source_hash": "62c3494299cbcada"
+  },
+  "settings.show_pronunciation.label": {
+    "message": "Mostra pronuncia",
+    "description": "Settings: show pronunciation toggle label",
+    "_machine_translated": true,
+    "_source_hash": "3bb974161d86d4bb"
+  },
+  "settings.show_pronunciation.description": {
+    "message": "Visualizza la pronuncia IPA quando disponibile",
+    "description": "Settings: show pronunciation toggle description",
+    "_machine_translated": true,
+    "_source_hash": "1edcb2f4624bd4f1"
+  },
+  "settings.show_examples.label": {
+    "message": "Mostra esempi",
+    "description": "Settings: show examples toggle label",
+    "_machine_translated": true,
+    "_source_hash": "adee122b133ca243"
+  },
+  "settings.show_examples.description": {
+    "message": "Visualizza esempi d'uso quando disponibili",
+    "description": "Settings: show examples toggle description",
+    "_machine_translated": true,
+    "_source_hash": "32e532ff2cb0ec62"
+  },
+  "settings.show_synonyms.label": {
+    "message": "Mostra sinonimi",
+    "description": "Settings: show synonyms toggle label",
+    "_machine_translated": true,
+    "_source_hash": "b1a51bfe3e343b5f"
+  },
+  "settings.show_synonyms.description": {
+    "message": "Visualizza i sinonimi quando disponibili",
+    "description": "Settings: show synonyms toggle description",
+    "_machine_translated": true,
+    "_source_hash": "585585fd8530cfcb"
+  },
+  "settings.attribution.html": {
+    "message": "Dati forniti da <a href=\"https://en.wiktionary.org/\" target=\"_blank\">Wiktionary</a> tramite <a href=\"https://freedictionaryapi.com/\" target=\"_blank\">FreeDictionaryAPI.com</a> con licenza <a href=\"https://creativecommons.org/licenses/by-sa/4.0/\" target=\"_blank\">CC BY-SA 4.0</a>. Suggerimenti ortografici di <a href=\"https://www.datamuse.com/\" target=\"_blank\">Datamuse</a>.",
+    "description": "Settings: attribution info text",
+    "_machine_translated": true,
+    "_source_hash": "ec30fe1abb2842cf"
   }
 }

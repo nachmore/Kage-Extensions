@@ -16,5 +16,95 @@
     "description": "Extension description",
     "_machine_translated": true,
     "_source_hash": "667e7829308ceab3"
+  },
+  "result.add_help.label": {
+    "message": "Lưu đoạn văn bản",
+    "description": "Result label when only `snip+` is typed",
+    "_machine_translated": true,
+    "_source_hash": "08f80a8e1e7bfa91"
+  },
+  "result.add_help.description": {
+    "message": "Cách dùng: snip+ <tên> <nội dung>",
+    "description": "Result description for the save help row",
+    "_machine_translated": true,
+    "_source_hash": "75bb8c519e2f80a9"
+  },
+  "result.add.label": {
+    "message": "Lưu đoạn văn bản \"{name}\"",
+    "description": "Result label for a valid save command",
+    "_machine_translated": true,
+    "_source_hash": "b344556d649210b1"
+  },
+  "result.del.label": {
+    "message": "Xóa đoạn văn bản \"{name}\"",
+    "description": "Result label for the delete command",
+    "_machine_translated": true,
+    "_source_hash": "6e592f8176809992"
+  },
+  "result.list.label_query": {
+    "message": "Đoạn văn bản · \"{query}\"",
+    "description": "Sync placeholder label while async results load with a query",
+    "_machine_translated": true,
+    "_source_hash": "230e131b0f6755ed"
+  },
+  "result.list.label_all": {
+    "message": "Đoạn văn bản",
+    "description": "Sync placeholder label while async results load without a query",
+    "_machine_translated": true,
+    "_source_hash": "df2d4654f0cd9bd6"
+  },
+  "result.list.loading": {
+    "message": "Đang tải…",
+    "description": "Description shown while async results load",
+    "_machine_translated": true,
+    "_source_hash": "19eca1be9378e999"
+  },
+  "result.empty.label": {
+    "message": "Chưa có đoạn văn bản nào",
+    "description": "Empty-state label when the user has no snippets",
+    "_machine_translated": true,
+    "_source_hash": "1907e237ca206234"
+  },
+  "result.empty.description": {
+    "message": "Lưu một đoạn bằng `snip+ <tên> <nội dung>`",
+    "description": "Empty-state hint pointing to the save command",
+    "_machine_translated": true,
+    "_source_hash": "e661761053eeb015"
+  },
+  "settings.description": {
+    "message": "Lưu các đoạn văn bản — câu trả lời mẫu, địa chỉ, lệnh, khối mã — và sao chép chúng chỉ với một thao tác phím.",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "39c8f4d65c94fd7a"
+  },
+  "settings.enabled.label": {
+    "message": "Bật",
+    "description": "Settings: enable toggle",
+    "_machine_translated": true,
+    "_source_hash": "813fb292fb3bfe0d"
+  },
+  "settings.trigger.label": {
+    "message": "Từ kích hoạt",
+    "description": "Settings: trigger word label",
+    "_machine_translated": true,
+    "_source_hash": "5ab4f2dc19af741d"
+  },
+  "settings.info.saved_count": {
+    "message": "<p><strong>Đã lưu {count} đoạn văn bản{plural}.</strong></p>",
+    "description": "HTML count summary in settings",
+    "_machine_translated": true,
+    "_source_hash": "63593bd3c09cc4cf"
+  },
+  "settings.info.none_yet": {
+    "message": "<p>Chưa có đoạn nào.</p>",
+    "description": "HTML shown when no snippets are saved",
+    "_machine_translated": true,
+    "_source_hash": "e32420667030c4f8"
+  },
+  "settings.info.usage_html": {
+    "message": "<p><em>Cách dùng:</em> <code>snip tên</code> để sao chép, <code>snip+ tên nội dung</code> để lưu, <code>snip- tên</code> để xóa.</p>",
+    "description": "Usage hint HTML",
+    "_machine_translated": true,
+    "_source_hash": "29d9dfcceaed7106"
   }
 }

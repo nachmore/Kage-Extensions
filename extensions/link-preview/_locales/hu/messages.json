@@ -12,9 +12,99 @@
     "_source_hash": "71f62720d8c6e809"
   },
   "manifest.description": {
-    "message": "Gazdag hivatkozás-előnézeti kártyák a MI-válaszokban szereplő URL-ekhez  Open Graph borítóképek, leírások és favikonok, offline-barát lemezes gyorsítótárral.",
+    "message": "Részletes linkelőnézeti kártyák az AI-válaszokban szereplő URL-ekhez – Open Graph címképek, leírások és kedvencikonok, offline-barát lemezgyorsítótárral.",
     "description": "Extension description",
     "_machine_translated": true,
-    "_source_hash": "8715cca27a85ca14"
+    "_source_hash": "1115a6d66a236b52"
+  },
+  "card.aria_label": {
+    "message": "Linkelőnézet: {title}",
+    "description": "Aria label on a link-preview card",
+    "_machine_translated": true,
+    "_source_hash": "0d14ec57b9273822"
+  },
+  "settings.description": {
+    "message": "Beágyazott előnézeti kártyákat jelenít meg az AI-válaszokban szereplő URL-ekhez.",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "8f8fad89bd661f18"
+  },
+  "settings.enabled.label": {
+    "message": "Linkelőnézetek bekapcsolása",
+    "description": "Settings: enable toggle label",
+    "_machine_translated": true,
+    "_source_hash": "8d8bac295d1fb446"
+  },
+  "settings.enabled.description": {
+    "message": "Előnézeti kártyák megjelenítése az asszisztensüzenetekben található URL-ekhez.",
+    "description": "Settings: enable toggle description",
+    "_machine_translated": true,
+    "_source_hash": "a09c739f5e71639d"
+  },
+  "settings.show_images.label": {
+    "message": "Címképek megjelenítése",
+    "description": "Settings: hero images toggle label",
+    "_machine_translated": true,
+    "_source_hash": "780bd9e8467dff8a"
+  },
+  "settings.show_images.description": {
+    "message": "Az oldal Open Graph- vagy Twitter Card-képének megjelenítése, ha elérhető. Kapcsold ki, hogy a kártyák kompaktak maradjanak (képek nélkül).",
+    "description": "Settings: hero images toggle description",
+    "_machine_translated": true,
+    "_source_hash": "93de34f690c3ff82"
+  },
+  "settings.max_previews.label": {
+    "message": "Előnézetek maximális száma üzenetenként",
+    "description": "Settings: max previews label",
+    "_machine_translated": true,
+    "_source_hash": "0b07938756b890da"
+  },
+  "settings.max_previews.description": {
+    "message": "Korlátozza az üzenetenként megjelenő előnézeti kártyák számát, hogy ne legyen zsúfolt.",
+    "description": "Settings: max previews description",
+    "_machine_translated": true,
+    "_source_hash": "9210823b6078eb39"
+  },
+  "settings.section.cache": {
+    "message": "Gyorsítótár",
+    "description": "Settings section: cache",
+    "_machine_translated": true,
+    "_source_hash": "eb6835b21d425ab6"
+  },
+  "settings.cache.info_html": {
+    "message": "A lekért metaadatok legfeljebb 7 napig a lemezen vannak gyorsítótárazva, így egy beszélgetés újranyitásakor nem kell minden URL-t újra letölteni. A sikertelen lekérések rövid ideig vannak gyorsítótárazva, hogy az átmeneti hibák maguktól helyreálljanak.",
+    "description": "Settings: cache info text",
+    "_machine_translated": true,
+    "_source_hash": "3bdf171c7cecf3ef"
+  },
+  "settings.cache_stats.label": {
+    "message": "Gyorsítótár méretének megjelenítése",
+    "description": "Settings: cache stats button label",
+    "_machine_translated": true,
+    "_source_hash": "c372374c660f33ba"
+  },
+  "settings.cache_stats.description": {
+    "message": "Ellenőrizd, mennyi lemezterületet használ a linkelőnézet-gyorsítótár.",
+    "description": "Settings: cache stats button description",
+    "_machine_translated": true,
+    "_source_hash": "9bdb5c472c2c9222"
+  },
+  "settings.cache_clear.label": {
+    "message": "Gyorsítótár ürítése",
+    "description": "Settings: clear cache button label",
+    "_machine_translated": true,
+    "_source_hash": "a49f545073f8b034"
+  },
+  "settings.cache_clear.description": {
+    "message": "Gyorsítótár törlése. Akkor használd, ha egy linkelőnézet elavultnak vagy hibásnak tűnik.",
+    "description": "Settings: clear cache button description",
+    "_machine_translated": true,
+    "_source_hash": "d70f570cfe2407d5"
+  },
+  "settings.cache_clear.confirm": {
+    "message": "Töröljük az összes gyorsítótárazott linkelőnézetet? Az URL-ek a következő megjelenéskor újra le lesznek kérve.",
+    "description": "Confirmation prompt before clearing cache",
+    "_machine_translated": true,
+    "_source_hash": "f0b0851ffc83c81e"
   }
 }

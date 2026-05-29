@@ -12,9 +12,45 @@
     "_source_hash": "205c3e69ca030742"
   },
   "manifest.description": {
-    "message": "Tìm và sao chép emoji theo tên. Nhập \":fire\" hoặc \"emoji rocket\" để chọn kết quả phù hợp nhất trong khoảng 1500 emoji được dùng nhiều nhất.",
+    "message": "Tìm và sao chép emoji theo tên. Nhập \":fire\" hoặc \"emoji rocket\" để chọn kết quả khớp nhất trong khoảng 1500 emoji được dùng nhiều nhất.",
     "description": "Extension description",
     "_machine_translated": true,
-    "_source_hash": "59640ff70d49d4b7"
+    "_source_hash": "b9390cfd94255409"
+  },
+  "result.hint.label": {
+    "message": "Emoji · nhập để tìm kiếm",
+    "description": "Hint label when only the trigger word is typed",
+    "_machine_translated": true,
+    "_source_hash": "a2471f31b8da42e8"
+  },
+  "result.hint.description": {
+    "message": "Thử \"{trigger} fire\" hoặc \":fire\"",
+    "description": "Hint description suggesting trigger usage",
+    "_machine_translated": true,
+    "_source_hash": "c66d707a23b3874e"
+  },
+  "settings.description": {
+    "message": "Tìm khoảng 250 emoji được dùng nhiều nhất theo tên. Có hai kiểu kích hoạt: <code>emoji fire</code> hoặc chỉ <code>:fire</code>. Chọn một rồi nhấn Enter để sao chép vào clipboard.",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "9d1fa3f643108b7e"
+  },
+  "settings.enabled.label": {
+    "message": "Bật",
+    "description": "Settings: enable toggle label",
+    "_machine_translated": true,
+    "_source_hash": "efce5571f8dbd1e9"
+  },
+  "settings.trigger.label": {
+    "message": "Từ kích hoạt",
+    "description": "Settings: trigger word label",
+    "_machine_translated": true,
+    "_source_hash": "5ab4f2dc19af741d"
+  },
+  "settings.shortcode_trigger.label": {
+    "message": "Khớp cả mã ngắn (ví dụ \":fire\")",
+    "description": "Settings: shortcode trigger toggle label",
+    "_machine_translated": true,
+    "_source_hash": "a3ef5561dd4cf5f6"
   }
 }

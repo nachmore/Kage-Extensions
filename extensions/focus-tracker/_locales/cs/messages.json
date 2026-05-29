@@ -16,5 +16,179 @@
     "description": "Extension description",
     "_machine_translated": true,
     "_source_hash": "249b504d57430c6f"
+  },
+  "result.loading.label": {
+    "message": "📊 Načítání reportu {period}...",
+    "description": "Label shown while activity report loads",
+    "_machine_translated": true,
+    "_source_hash": "a004240e6f3fcaf3"
+  },
+  "result.loading.description": {
+    "message": "Načítání dat o aktivitě",
+    "description": "Description shown while activity report loads",
+    "_machine_translated": true,
+    "_source_hash": "de94d2423bc9a013"
+  },
+  "result.error.label": {
+    "message": "📊 Nelze načíst report aktivity",
+    "description": "Label shown when report fetch fails",
+    "_machine_translated": true,
+    "_source_hash": "348a7efb884d2839"
+  },
+  "result.summary.label": {
+    "message": "📊 {period}: sledováno {time}",
+    "description": "Activity summary label",
+    "_machine_translated": true,
+    "_source_hash": "80f5ea2944d58d80"
+  },
+  "result.summary.description": {
+    "message": "{switches} přepnutí · nejlepší souvislý čas {streak} min ({app}) · Enter pro souhrn AI",
+    "description": "Activity summary description",
+    "_machine_translated": true,
+    "_source_hash": "505ab90472681d45"
+  },
+  "result.app.description": {
+    "message": "{count} relací",
+    "description": "App row description",
+    "_machine_translated": true,
+    "_source_hash": "49a3ce91d2335869"
+  },
+  "result.site.description": {
+    "message": "{pct} % z {app}",
+    "description": "Site row description",
+    "_machine_translated": true,
+    "_source_hash": "ea862ba31e9d36b5"
+  },
+  "result.insight.label": {
+    "message": "💡 Získat postřehy AI o soustředění",
+    "description": "AI insights row label",
+    "_machine_translated": true,
+    "_source_hash": "b38ae097d7b0c2bd"
+  },
+  "result.insight.description": {
+    "message": "Stiskněte Enter a požádejte AI o tipy na produktivitu",
+    "description": "AI insights row description",
+    "_machine_translated": true,
+    "_source_hash": "83b23c71c9d66544"
+  },
+  "render.summary.title": {
+    "message": "{period}: sledováno {time}",
+    "description": "Summary title in inline render",
+    "_machine_translated": true,
+    "_source_hash": "dae73df6d0d671c5"
+  },
+  "render.summary.meta": {
+    "message": "{switches} přepnutí · nejlepší souvislý čas {streak} min ({app}) · {appCount} aplikací",
+    "description": "Summary meta line in inline render",
+    "_machine_translated": true,
+    "_source_hash": "59daec5b0e1091b0"
+  },
+  "render.app.sessions": {
+    "message": "{count} relací",
+    "description": "App sessions count in inline render",
+    "_machine_translated": true,
+    "_source_hash": "3cec6bece20a1f90"
+  },
+  "render.site.parent_pct": {
+    "message": "{pct} % z {app}",
+    "description": "Site percentage of parent in inline render",
+    "_machine_translated": true,
+    "_source_hash": "6e32b7767a13f748"
+  },
+  "render.insight.text": {
+    "message": "Získat postřehy AI o soustředění",
+    "description": "Inline insight text",
+    "_machine_translated": true,
+    "_source_hash": "d4fb10c1a8a26281"
+  },
+  "settings.description": {
+    "message": "Sledujte používání aplikací, přepínání kontextu a souvislé časy soustředění. Pro zobrazení reportů zadejte své spouštěcí klíčové slovo.",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "808a09db07c6c2dc"
+  },
+  "settings.trigger.label": {
+    "message": "Spouštěcí klíčové slovo",
+    "description": "Settings: trigger keyword label",
+    "_machine_translated": true,
+    "_source_hash": "e31045bbce24b0f7"
+  },
+  "settings.trigger.description": {
+    "message": "Zadejte toto klíčové slovo pro zobrazení reportů soustředění (např. „focus today“, „focus week“).",
+    "description": "Settings: trigger keyword description",
+    "_machine_translated": true,
+    "_source_hash": "d25ff7bcd6b0245d"
+  },
+  "settings.poll_interval.label": {
+    "message": "Interval dotazování (sekundy)",
+    "description": "Settings: poll interval label",
+    "_machine_translated": true,
+    "_source_hash": "eff03bac7ebfd7c6"
+  },
+  "settings.poll_interval.description": {
+    "message": "Jak často kontrolovat aktivní okno. Nižší = přesnější, ale spotřebovává více prostředků.",
+    "description": "Settings: poll interval description",
+    "_machine_translated": true,
+    "_source_hash": "2f7d98036a3c54d9"
+  },
+  "settings.auto_start.label": {
+    "message": "Automaticky spustit sledování",
+    "description": "Settings: auto-start toggle label",
+    "_machine_translated": true,
+    "_source_hash": "4234006ff6820f4f"
+  },
+  "settings.auto_start.description": {
+    "message": "Spustit sledování automaticky při startu aplikace",
+    "description": "Settings: auto-start toggle description",
+    "_machine_translated": true,
+    "_source_hash": "2b2bb02ec327371d"
+  },
+  "settings.section.data_to_track": {
+    "message": "Sledovaná data",
+    "description": "Settings section heading",
+    "_machine_translated": true,
+    "_source_hash": "cfd8959a024167cf"
+  },
+  "settings.track_screen_time.label": {
+    "message": "Čas u obrazovky",
+    "description": "Settings: screen time toggle label",
+    "_machine_translated": true,
+    "_source_hash": "8e661b5113dc145c"
+  },
+  "settings.track_screen_time.description": {
+    "message": "Sledovat čas strávený v každé aplikaci",
+    "description": "Settings: screen time toggle description",
+    "_machine_translated": true,
+    "_source_hash": "7a0a088c3a230a89"
+  },
+  "settings.track_switches.label": {
+    "message": "Přepínání kontextu",
+    "description": "Settings: context switches toggle label",
+    "_machine_translated": true,
+    "_source_hash": "b004389d12cd1499"
+  },
+  "settings.track_switches.description": {
+    "message": "Počítá, jak často přepínáte mezi aplikacemi",
+    "description": "Settings: context switches toggle description",
+    "_machine_translated": true,
+    "_source_hash": "287c0d0a0f24b68e"
+  },
+  "settings.track_streaks.label": {
+    "message": "Série soustředění",
+    "description": "Settings: focus streaks toggle label",
+    "_machine_translated": true,
+    "_source_hash": "5ce25266a7b929f2"
+  },
+  "settings.track_streaks.description": {
+    "message": "Sleduje nejdelší nepřerušené období soustředění",
+    "description": "Settings: focus streaks toggle description",
+    "_machine_translated": true,
+    "_source_hash": "78ee2f56696d0840"
+  },
+  "settings.validate.poll_interval_range": {
+    "message": "Interval dotazování musí být mezi 2 a 60 sekundami",
+    "description": "Validation error for poll interval",
+    "_machine_translated": true,
+    "_source_hash": "d768cd635e999624"
   }
 }

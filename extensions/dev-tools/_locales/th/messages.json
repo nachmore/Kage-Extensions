@@ -16,5 +16,149 @@
     "description": "Extension description",
     "_machine_translated": true,
     "_source_hash": "49d4746132984668"
+  },
+  "result.uuid.label": {
+    "message": "UUID v4",
+    "description": "Result label for UUID generation",
+    "_machine_translated": true,
+    "_source_hash": "d3fe489b61b340eb"
+  },
+  "result.copy_hint": {
+    "message": "กด Enter เพื่อคัดลอก",
+    "description": "Description hint shown next to copyable results",
+    "_machine_translated": true,
+    "_source_hash": "b02c13cf1ffa5cd0"
+  },
+  "result.copy_hint_short": {
+    "message": "Enter เพื่อคัดลอก",
+    "description": "Shorter copy hint",
+    "_machine_translated": true,
+    "_source_hash": "6ca21eed070240ef"
+  },
+  "result.base64_encode.label": {
+    "message": "เข้ารหัส Base64",
+    "description": "Result label for base64 encoding",
+    "_machine_translated": true,
+    "_source_hash": "6073aa5da178f89b"
+  },
+  "result.base64_encode.description": {
+    "message": "\"{text}\" → Enter เพื่อคัดลอก",
+    "description": "Description for base64 encode result",
+    "_machine_translated": true,
+    "_source_hash": "466a20bfd2ecd1dc"
+  },
+  "result.base64_decode.label": {
+    "message": "ถอดรหัส Base64",
+    "description": "Result label for base64 decoding",
+    "_machine_translated": true,
+    "_source_hash": "414db3097f8ee0db"
+  },
+  "result.hash.label": {
+    "message": "แฮช {algo}",
+    "description": "Result label for hash calculation",
+    "_machine_translated": true,
+    "_source_hash": "66480e8f9bdff6f1"
+  },
+  "result.hash.computing": {
+    "message": "กำลังคำนวณ...",
+    "description": "Hash computing description",
+    "_machine_translated": true,
+    "_source_hash": "285c7eb7307e4e0f"
+  },
+  "result.epoch.label": {
+    "message": "Epoch → วันที่",
+    "description": "Result label for epoch-to-date conversion",
+    "_machine_translated": true,
+    "_source_hash": "b7f91cf41909a0db"
+  },
+  "result.epoch_now.label": {
+    "message": "Epoch ปัจจุบัน",
+    "description": "Result label for current epoch timestamp",
+    "_machine_translated": true,
+    "_source_hash": "575ea42947bc47f7"
+  },
+  "result.json_format.label": {
+    "message": "จัดรูปแบบ JSON",
+    "description": "Result label for JSON formatting",
+    "_machine_translated": true,
+    "_source_hash": "5de3ec6192458850"
+  },
+  "result.json_format.description": {
+    "message": "{count} คีย์ · Enter เพื่อคัดลอก",
+    "description": "Description for JSON format result",
+    "_machine_translated": true,
+    "_source_hash": "3917600f856833ae"
+  },
+  "settings.description": {
+    "message": "สร้าง UUID, เข้ารหัส/ถอดรหัส base64, แฮช, แปลง epoch, จัดรูปแบบ JSON",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "97722a102e9aa297"
+  },
+  "settings.section.individual_tools": {
+    "message": "เครื่องมือแต่ละรายการ",
+    "description": "Settings section label",
+    "_machine_translated": true,
+    "_source_hash": "9ae76124a4a4e933"
+  },
+  "settings.uuid.label": {
+    "message": "ตัวสร้าง UUID",
+    "description": "Settings: UUID toggle label",
+    "_machine_translated": true,
+    "_source_hash": "879d62558ec3a6d1"
+  },
+  "settings.uuid.description": {
+    "message": "พิมพ์ \"uuid\" เพื่อสร้าง UUID v4 แบบสุ่ม",
+    "description": "Settings: UUID toggle description",
+    "_machine_translated": true,
+    "_source_hash": "06b39caeb2f6ec17"
+  },
+  "settings.base64.label": {
+    "message": "เข้ารหัส/ถอดรหัส Base64",
+    "description": "Settings: Base64 toggle label",
+    "_machine_translated": true,
+    "_source_hash": "c51aa045ef4ce6c8"
+  },
+  "settings.base64.description": {
+    "message": "พิมพ์ \"base64 text\" เพื่อเข้ารหัส หรือ \"b64d encoded\" เพื่อถอดรหัส",
+    "description": "Settings: Base64 toggle description",
+    "_machine_translated": true,
+    "_source_hash": "5442e1fb29755519"
+  },
+  "settings.hash.label": {
+    "message": "เครื่องคำนวณแฮช",
+    "description": "Settings: hash toggle label",
+    "_machine_translated": true,
+    "_source_hash": "7938519ccb1b9c7f"
+  },
+  "settings.hash.description": {
+    "message": "พิมพ์ \"md5 text\", \"sha1 text\", \"sha256 text\" หรือ \"sha512 text\"",
+    "description": "Settings: hash toggle description",
+    "_machine_translated": true,
+    "_source_hash": "342e5f6a3cb93c29"
+  },
+  "settings.epoch.label": {
+    "message": "ตัวแปลง Epoch/วันที่",
+    "description": "Settings: epoch toggle label",
+    "_machine_translated": true,
+    "_source_hash": "b4d8c2df0372658b"
+  },
+  "settings.epoch.description": {
+    "message": "พิมพ์ Unix timestamp เพื่อดูวันที่ หรือ \"now\" สำหรับ epoch ปัจจุบัน",
+    "description": "Settings: epoch toggle description",
+    "_machine_translated": true,
+    "_source_hash": "571a7a1b0bd2ac99"
+  },
+  "settings.json_format.label": {
+    "message": "ตัวจัดรูปแบบ JSON",
+    "description": "Settings: JSON toggle label",
+    "_machine_translated": true,
+    "_source_hash": "3e70429a5ca9e8ef"
+  },
+  "settings.json_format.description": {
+    "message": "วาง JSON ที่ย่อแล้วเพื่อดูแบบจัดรูปแบบสวยงาม",
+    "description": "Settings: JSON toggle description",
+    "_machine_translated": true,
+    "_source_hash": "462f3cecbc5fd99e"
   }
 }

@@ -12,5 +12,49 @@
   "manifest.description": {
     "message": "Save and open URLs from Kage's launcher. Type \"bm <name>\" to open, \"bm+ <name> <url>\" to save, \"bm- <name>\" to delete.",
     "description": "Extension description"
+  },
+  "result.add_help.label": {
+    "message": "Save bookmark",
+    "description": "Result label when the user types just `bm+`"
+  },
+  "result.add_help.description": {
+    "message": "Usage: bm+ <name> <url>",
+    "description": "Result description when the user types just `bm+`"
+  },
+  "result.add_bad.label": {
+    "message": "Save \"{name}\"",
+    "description": "Result label when the URL fails validation"
+  },
+  "result.add_bad.description": {
+    "message": "URL must start with http:// or https://",
+    "description": "Result description when the URL fails validation"
+  },
+  "result.add.label": {
+    "message": "Save bookmark \"{name}\"",
+    "description": "Result label for a valid save command"
+  },
+  "result.del.label": {
+    "message": "Delete bookmark \"{name}\"",
+    "description": "Result label for the delete command"
+  },
+  "result.list.label_query": {
+    "message": "Bookmarks · \"{query}\"",
+    "description": "Sync placeholder label while async results load with a query"
+  },
+  "result.list.label_all": {
+    "message": "Bookmarks",
+    "description": "Sync placeholder label while async results load without a query"
+  },
+  "result.list.loading": {
+    "message": "Loading…",
+    "description": "Description shown while async results load"
+  },
+  "result.none.label": {
+    "message": "No bookmark matching \"{query}\"",
+    "description": "Empty-result label when nothing matches"
+  },
+  "result.none.description": {
+    "message": "Save one with `bm+ <name> <url>`",
+    "description": "Empty-result hint pointing to the save command"
   }
 }

@@ -10,7 +10,31 @@
     "description": "Extension display name"
   },
   "manifest.description": {
-    "message": "Search and copy emojis by name. Type \":fire\" or \"emoji rocket\"  picks the closest match across ~1500 of the most-used emojis.",
+    "message": "Search and copy emojis by name. Type \":fire\" or \"emoji rocket\"  picks the closest match across ~1500 of the most-used emojis.",
     "description": "Extension description"
+  },
+  "result.hint.label": {
+    "message": "Emoji · type to search",
+    "description": "Hint label when only the trigger word is typed"
+  },
+  "result.hint.description": {
+    "message": "Try \"{trigger} fire\" or \":fire\"",
+    "description": "Hint description suggesting trigger usage"
+  },
+  "settings.description": {
+    "message": "Search ~250 of the most-used emojis by name. Two trigger styles work: <code>emoji fire</code> or just <code>:fire</code>. Pick one and Enter to copy it to your clipboard.",
+    "description": "Settings page description"
+  },
+  "settings.enabled.label": {
+    "message": "Enable",
+    "description": "Settings: enable toggle label"
+  },
+  "settings.trigger.label": {
+    "message": "Trigger word",
+    "description": "Settings: trigger word label"
+  },
+  "settings.shortcode_trigger.label": {
+    "message": "Also match shortcodes (e.g. \":fire\")",
+    "description": "Settings: shortcode trigger toggle label"
   }
 }

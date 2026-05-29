@@ -16,5 +16,101 @@
     "description": "Extension description",
     "_machine_translated": true,
     "_source_hash": "0fa52e497866e221"
+  },
+  "result.passphrase.description": {
+    "message": "Парольная фраза · {count} слов · ~{bits} бит энтропии",
+    "description": "Description shown for a generated passphrase",
+    "_machine_translated": true,
+    "_source_hash": "3856983374e49098"
+  },
+  "result.password.description": {
+    "message": "Пароль · {length} симв. · ~{bits} бит энтропии",
+    "description": "Description shown for a generated password",
+    "_machine_translated": true,
+    "_source_hash": "6c122e5ad39d3576"
+  },
+  "result.regen.label": {
+    "message": "Сгенерировать другой",
+    "description": "Label for the 'generate another' row",
+    "_machine_translated": true,
+    "_source_hash": "87656be639f2afe3"
+  },
+  "result.regen.description": {
+    "message": "Нажмите, чтобы получить новый",
+    "description": "Description for the 'generate another' row",
+    "_machine_translated": true,
+    "_source_hash": "3039687031661be2"
+  },
+  "settings.description": {
+    "message": "Генерирует пароли с помощью <code>crypto.getRandomValues</code> — тот же источник энтропии, который браузеры используют для ключей TLS. Нажмите Enter, чтобы скопировать. Строка «Сгенерировать другой» создаёт новый.",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "8be283f1fd3b3176"
+  },
+  "settings.section.defaults": {
+    "message": "По умолчанию",
+    "description": "Settings section: defaults",
+    "_machine_translated": true,
+    "_source_hash": "dd9f392bd82cb46e"
+  },
+  "settings.enabled.label": {
+    "message": "Включить",
+    "description": "Settings: enable toggle",
+    "_machine_translated": true,
+    "_source_hash": "813fb292fb3bfe0d"
+  },
+  "settings.trigger.label": {
+    "message": "Триггер",
+    "description": "Settings: trigger word label",
+    "_machine_translated": true,
+    "_source_hash": "96f47964f4358372"
+  },
+  "settings.default_length.label": {
+    "message": "Длина пароля по умолчанию",
+    "description": "Settings: default length label",
+    "_machine_translated": true,
+    "_source_hash": "df75741eab05dada"
+  },
+  "settings.section.character_classes": {
+    "message": "Классы символов",
+    "description": "Settings section: character classes",
+    "_machine_translated": true,
+    "_source_hash": "17285d1e3a9b1b91"
+  },
+  "settings.include_lowercase.label": {
+    "message": "Строчные (a-z)",
+    "description": "Settings: lowercase toggle",
+    "_machine_translated": true,
+    "_source_hash": "2e430990e5dd5e37"
+  },
+  "settings.include_uppercase.label": {
+    "message": "Прописные (A-Z)",
+    "description": "Settings: uppercase toggle",
+    "_machine_translated": true,
+    "_source_hash": "b9ea2b607851f55e"
+  },
+  "settings.include_numbers.label": {
+    "message": "Цифры (0-9)",
+    "description": "Settings: numbers toggle",
+    "_machine_translated": true,
+    "_source_hash": "5aef4f3080107695"
+  },
+  "settings.include_symbols.label": {
+    "message": "Символы (!@#…)",
+    "description": "Settings: symbols toggle",
+    "_machine_translated": true,
+    "_source_hash": "50e30323811a7a37"
+  },
+  "settings.exclude_ambiguous.label": {
+    "message": "Исключить неоднозначные (Il1O0|'`\")",
+    "description": "Settings: exclude ambiguous toggle",
+    "_machine_translated": true,
+    "_source_hash": "d680fc4ae7208f0e"
+  },
+  "settings.exclude_ambiguous.description": {
+    "message": "Убирает символы, которые легко перепутать.",
+    "description": "Settings: exclude ambiguous description",
+    "_machine_translated": true,
+    "_source_hash": "9f407f14493e6443"
   }
 }

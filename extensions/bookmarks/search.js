@@ -26,6 +26,7 @@ export default class BookmarksSearchProvider {
     initialize(context) {
         this.invoke = context.invoke;
         this.config = context.config || {};
+        this.t = context.i18n?.t?.bind(context.i18n) || ((k) => k);
         this._cache = null;
     }
     onConfigUpdate(config) { this.config = config || {}; }
@@ -58,19 +59,22 @@ export default class BookmarksSearchProvider {
             const space = args.indexOf(' ');
             if (space < 0) return [{
                 id: 'bm:add-help', type: 'bookmarks',
-                label: 'Save bookmark', description: 'Usage: bm+ <name> <url>',
+                label: this.t('result.add_help.label'),
+                description: this.t('result.add_help.description'),
                 icon: '🔖', score: 80, data: { help: true },
             }];
             const name = args.slice(0, space).trim();
             const url = args.slice(space + 1).trim();
-            if (!url || !/^https?:\/\//i.test(url)) return [{
+            if (!url || /^https?:\/\//i.test(url) === false) return [{
                 id: 'bm:add-bad', type: 'bookmarks',
-                label: `Save "${name}"`, description: 'URL must start with http:// or https://',
+                label: this.t('result.add_bad.label', { name }),
+                description: this.t('result.add_bad.description'),
                 icon: '⚠️', score: 80, data: { error: true },
             }];
             return [{
                 id: `bm:add:${name}`, type: 'bookmarks',
-                label: `Save bookmark "${name}"`, description: url,
+                label: this.t('result.add.label', { name }),
+                description: url,
                 icon: '➕', score: 95, data: { add: { name, url } },
             }];
         }
@@ -81,16 +85,20 @@ export default class BookmarksSearchProvider {
             if (!name) return [];
             return [{
                 id: `bm:del:${name}`, type: 'bookmarks',
-                label: `Delete bookmark "${name}"`, description: '',
+                label: this.t('result.del.label', { name }),
+                description: '',
                 icon: '🗑️', score: 90, data: { del: name },
             }];
         }
 
         // bm <q>  — fuzzy-match. Async for actual disk read.
+        const query = rest.trim();
         return [{
             id: 'bm:loading', type: 'bookmarks',
-            label: rest.trim() ? `Bookmarks · "${rest.trim()}"` : 'Bookmarks',
-            description: 'Loading…',
+            label: query
+                ? this.t('result.list.label_query', { query })
+                : this.t('result.list.label_all'),
+            description: this.t('result.list.loading'),
             icon: '🔖', score: 50, data: { pending: true },
         }];
     }
@@ -113,8 +121,8 @@ export default class BookmarksSearchProvider {
         if (matches.length === 0 && q) {
             return [{
                 id: `bm:none:${q}`, type: 'bookmarks',
-                label: `No bookmark matching "${q}"`,
-                description: 'Save one with `bm+ <name> <url>`',
+                label: this.t('result.none.label', { query: q }),
+                description: this.t('result.none.description'),
                 icon: '🤷', score: 70, data: { miss: true },
             }];
         }

@@ -16,5 +16,71 @@
     "description": "Extension description",
     "_machine_translated": true,
     "_source_hash": "a45fe2ba27938cb2"
+  },
+  "result.add_help.label": {
+    "message": "Bladwijzer opslaan",
+    "description": "Result label when the user types just `bm+`",
+    "_machine_translated": true,
+    "_source_hash": "5dccb8e14f25988b"
+  },
+  "result.add_help.description": {
+    "message": "Gebruik: bm+ <naam> <url>",
+    "description": "Result description when the user types just `bm+`",
+    "_machine_translated": true,
+    "_source_hash": "4e52c9d3eeb6bd6a"
+  },
+  "result.add_bad.label": {
+    "message": "\"{name}\" opslaan",
+    "description": "Result label when the URL fails validation",
+    "_machine_translated": true,
+    "_source_hash": "e22c6abc48a8f237"
+  },
+  "result.add_bad.description": {
+    "message": "URL moet beginnen met http:// of https://",
+    "description": "Result description when the URL fails validation",
+    "_machine_translated": true,
+    "_source_hash": "09d55151e0b9fc12"
+  },
+  "result.add.label": {
+    "message": "Bladwijzer \"{name}\" opslaan",
+    "description": "Result label for a valid save command",
+    "_machine_translated": true,
+    "_source_hash": "ef5efe72b57d0caf"
+  },
+  "result.del.label": {
+    "message": "Bladwijzer \"{name}\" verwijderen",
+    "description": "Result label for the delete command",
+    "_machine_translated": true,
+    "_source_hash": "67a29f800f671077"
+  },
+  "result.list.label_query": {
+    "message": "Bladwijzers · \"{query}\"",
+    "description": "Sync placeholder label while async results load with a query",
+    "_machine_translated": true,
+    "_source_hash": "066fd1f1c4ab9c6a"
+  },
+  "result.list.label_all": {
+    "message": "Bladwijzers",
+    "description": "Sync placeholder label while async results load without a query",
+    "_machine_translated": true,
+    "_source_hash": "2803141f907796e8"
+  },
+  "result.list.loading": {
+    "message": "Laden…",
+    "description": "Description shown while async results load",
+    "_machine_translated": true,
+    "_source_hash": "19eca1be9378e999"
+  },
+  "result.none.label": {
+    "message": "Geen bladwijzer komt overeen met \"{query}\"",
+    "description": "Empty-result label when nothing matches",
+    "_machine_translated": true,
+    "_source_hash": "901c04256e8cf720"
+  },
+  "result.none.description": {
+    "message": "Sla er een op met `bm+ <naam> <url>`",
+    "description": "Empty-result hint pointing to the save command",
+    "_machine_translated": true,
+    "_source_hash": "2d525aedebadba73"
   }
 }

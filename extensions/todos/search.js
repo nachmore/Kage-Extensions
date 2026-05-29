@@ -18,6 +18,7 @@ export default class TodosSearchProvider {
     initialize(context) {
         this.config = context.config || {};
         this.invoke = context.invoke;
+        this.t = context.i18n?.t?.bind(context.i18n) || ((k) => k);
         this.todos = [];
         this._loadFailed = false;
         this._ready = this._load();
@@ -164,12 +165,12 @@ export default class TodosSearchProvider {
         const now = new Date();
         now.setHours(0, 0, 0, 0);
         const diff = Math.round((d - now) / 86400000);
-        if (diff === 0) return '📅 Today';
-        if (diff === 1) return '📅 Tomorrow';
-        if (diff === -1) return '📅 Yesterday';
-        if (diff < -1) return `📅 ${Math.abs(diff)}d overdue`;
-        if (diff <= 7) return `📅 In ${diff}d`;
-        return `📅 ${dateStr}`;
+        if (diff === 0) return this.t('date.today');
+        if (diff === 1) return this.t('date.tomorrow');
+        if (diff === -1) return this.t('date.yesterday');
+        if (diff < -1) return this.t('date.overdue', { days: Math.abs(diff) });
+        if (diff <= 7) return this.t('date.in_days', { days: diff });
+        return this.t('date.exact', { date: dateStr });
     }
 
     getStats() {
@@ -238,8 +239,8 @@ export default class TodosSearchProvider {
             const pct = stats.total > 0 ? Math.round((stats.complete / stats.total) * 100) : 0;
             const results = [{
                 id: 'todo:summary', type: 'todo_action',
-                label: `📋 Todos ${stats.complete}/${stats.total} ${this._renderProgressText(pct)}`,
-                description: 'Press Enter for full summary · todo+ to add · todo- to remove',
+                label: this.t('result.summary.label', { complete: stats.complete, total: stats.total, progress: this._renderProgressText(pct) }),
+                description: this.t('result.summary.description'),
                 icon: '✅', score: 100,
                 data: { action: 'summary' },
             }];
@@ -255,7 +256,7 @@ export default class TodosSearchProvider {
                 results.push({
                     id: `todo:${todo.id}`, type: 'todo_item',
                     label: `${statusIcon} ${todo.text}`,
-                    description: parts || 'Enter: cycle status',
+                    description: parts || this.t('result.todo.cycle_hint'),
                     icon: statusIcon, score: 90,
                     data: { action: 'cycle', todoId: todo.id },
                 });
@@ -267,8 +268,8 @@ export default class TodosSearchProvider {
         if (lower === 'todo+') {
             return [{
                 id: 'todo:add-hint', type: 'todo_header',
-                label: '➕ Type a task to add',
-                description: 'todo+ buy milk #shopping @high due:friday · due: sets a reminder',
+                label: this.t('result.add_hint.label'),
+                description: this.t('result.add_hint.description'),
                 icon: '✅', score: 100, data: { action: 'none' },
             }];
         }
@@ -277,8 +278,8 @@ export default class TodosSearchProvider {
         if (lower.startsWith('todo+') && query.trim().replace(/^todo\+\s*/, '') === '') {
             return [{
                 id: 'todo:add-hint', type: 'todo_header',
-                label: '➕ Type a task to add',
-                description: 'todo+ buy milk #shopping @high due:friday · due: sets a reminder',
+                label: this.t('result.add_hint.label'),
+                description: this.t('result.add_hint.description'),
                 icon: '✅', score: 100, data: { action: 'none' },
             }];
         }
@@ -292,8 +293,8 @@ export default class TodosSearchProvider {
             if (this.todos.length === 0) {
                 return [{
                     id: 'todo:del-empty', type: 'todo_header',
-                    label: '🗑️ No todos to remove',
-                    description: 'Use todo+ to add tasks first',
+                    label: this.t('result.delete_empty.label'),
+                    description: this.t('result.delete_empty.description'),
                     icon: '✅', score: 100, data: { action: 'none' },
                 }];
             }
@@ -308,8 +309,8 @@ export default class TodosSearchProvider {
             if (results.length === 0) {
                 return [{
                     id: 'todo:del-none', type: 'todo_header',
-                    label: `🗑️ No todos matching "${term}"`,
-                    description: 'Try a different search',
+                    label: this.t('result.delete_no_match.label', { query: term }),
+                    description: this.t('result.delete_no_match.description'),
                     icon: '✅', score: 100, data: { action: 'none' },
                 }];
             }
@@ -342,8 +343,8 @@ export default class TodosSearchProvider {
                 if (filtered.length === 0) {
                     return [{
                         id: 'todo:no-match', type: 'todo_header',
-                        label: `No todos matching "${term}"`,
-                        description: 'Use todo+ to create a todo',
+                        label: this.t('result.no_match.label', { query: term }),
+                        description: this.t('result.no_match.description'),
                         icon: '📋', score: 100, data: { action: 'none' },
                     }];
                 }
@@ -379,8 +380,8 @@ export default class TodosSearchProvider {
 
         return [{
             id: 'todo:add', type: 'todo_action',
-            label: `➕ Add: ${text}`,
-            description: desc || 'Press Enter to add',
+            label: this.t('result.add.label', { text }),
+            description: desc || this.t('result.add.fallback_description'),
             icon: '✅', score: 95,
             data: { action: 'add', text, category, priority, dueDate },
         }];
@@ -398,11 +399,11 @@ export default class TodosSearchProvider {
         const pct = stats.total > 0 ? Math.round((stats.complete / stats.total) * 100) : 0;
         results.push({
             id: 'todo:header', type: 'todo_header',
-            label: `📋 Todos ${stats.complete}/${stats.total} ${this._renderProgressText(pct)}`,
+            label: this.t('result.list.header_label', { complete: stats.complete, total: stats.total, progress: this._renderProgressText(pct) }),
             description: [
-                stats.overdue > 0 ? `🔴 ${stats.overdue} overdue` : '',
-                stats.inProgress > 0 ? `🔵 ${stats.inProgress} in progress` : '',
-                'todo+ <task> to add · use due:<date> for reminders',
+                stats.overdue > 0 ? this.t('result.list.overdue_chip', { count: stats.overdue }) : '',
+                stats.inProgress > 0 ? this.t('result.list.in_progress_chip', { count: stats.inProgress }) : '',
+                this.t('result.list.add_hint'),
             ].filter(Boolean).join(' · '),
             icon: '✅', score: 100, data: { action: 'none' },
         });
@@ -420,7 +421,7 @@ export default class TodosSearchProvider {
             results.push({
                 id: `todo:${todo.id}`, type: 'todo_item',
                 label: `${statusIcon} ${todo.text}`,
-                description: parts || 'Enter: cycle status',
+                description: parts || this.t('result.todo.cycle_hint'),
                 icon: statusIcon, score: 90 - sorted.indexOf(todo),
                 data: { action: 'cycle', todoId: todo.id },
             });
@@ -429,8 +430,8 @@ export default class TodosSearchProvider {
         if (sorted.length > 20) {
             results.push({
                 id: 'todo:more', type: 'todo_header',
-                label: `... and ${sorted.length - 20} more`,
-                description: 'Use filters: /done /overdue /active /high #category',
+                label: this.t('result.list.more_label', { count: sorted.length - 20 }),
+                description: this.t('result.list.more_description'),
                 icon: '📋', score: 0, data: { action: 'none' },
             });
         }
@@ -438,8 +439,8 @@ export default class TodosSearchProvider {
         if (stats.complete > 0) {
             results.push({
                 id: 'todo:clear', type: 'todo_action',
-                label: `🧹 Clear ${stats.complete} completed`,
-                description: 'Press Enter to remove completed todos',
+                label: this.t('result.list.clear_label', { count: stats.complete }),
+                description: this.t('result.list.clear_description'),
                 icon: '🧹', score: -1,
                 data: { action: 'clear_completed' },
             });
@@ -459,8 +460,8 @@ export default class TodosSearchProvider {
         if (showHeader) {
             results.push({
                 id: 'todo:delete-header', type: 'todo_header',
-                label: '🗑️ Select a todo to remove',
-                description: 'Type todo- <search> to filter',
+                label: this.t('result.delete_header.label'),
+                description: this.t('result.delete_header.description'),
                 icon: '✅', score: 100, data: { action: 'none' },
             });
         }
@@ -469,8 +470,8 @@ export default class TodosSearchProvider {
                 : todo.status === 'in-progress' ? '🔵' : '⬜';
             results.push({
                 id: `todo:del:${todo.id}`, type: 'todo_item',
-                label: `🗑️ ${statusIcon} ${todo.text}`,
-                description: 'Press Enter to delete',
+                label: this.t('result.delete_item.label', { icon: statusIcon, text: todo.text }),
+                description: this.t('result.delete_item.description'),
                 icon: '✅', score: 90 - sorted.indexOf(todo),
                 data: { action: 'delete', todoId: todo.id },
             });
@@ -482,33 +483,33 @@ export default class TodosSearchProvider {
         const stats = this.getStats();
         const lines = [];
         const pct = stats.total > 0 ? Math.round((stats.complete / stats.total) * 100) : 0;
-        lines.push(`📋 **Todos & Reminders** — ${stats.complete}/${stats.total} done (${pct}%)`);
+        lines.push(this.t('summary.title', { complete: stats.complete, total: stats.total, pct }));
 
         if (stats.total === 0) {
-            lines.push('\nNo tasks yet. Use `todo+ <task>` to add one. Add `due:<date>` for a reminder.');
+            lines.push(this.t('summary.empty_hint'));
             return { type: 'display', value: lines.join('\n') };
         }
 
         const overdue = this.todos.filter(t => t.status !== 'complete' && this._isOverdue(t));
         if (overdue.length > 0) {
-            lines.push('\n🔴 **Overdue:**');
+            lines.push(this.t('summary.section.overdue'));
             for (const t of overdue) lines.push(`- ${t.text}${t.dueDate ? ` *(${this._formatDateDisplay(t.dueDate)})*` : ''}`);
         }
         const active = this.todos.filter(t => t.status === 'in-progress');
         if (active.length > 0) {
-            lines.push('\n🔵 **In Progress:**');
+            lines.push(this.t('summary.section.in_progress'));
             for (const t of active) lines.push(`- ${t.text}`);
         }
         const pending = this.todos.filter(t => t.status === 'pending' && !this._isOverdue(t));
         if (pending.length > 0) {
-            lines.push(`\n⬜ **Pending** (${pending.length}):`);
+            lines.push(this.t('summary.section.pending', { count: pending.length }));
             for (const t of pending.slice(0, 10)) {
                 const due = t.dueDate ? ` *(${this._formatDateDisplay(t.dueDate)})*` : '';
                 lines.push(`- ${t.text}${due}`);
             }
-            if (pending.length > 10) lines.push(`- *...and ${pending.length - 10} more*`);
+            if (pending.length > 10) lines.push(this.t('summary.pending_more', { count: pending.length - 10 }));
         }
-        if (stats.complete > 0) lines.push(`\n✅ ${stats.complete} completed`);
+        if (stats.complete > 0) lines.push(this.t('summary.completed_count', { count: stats.complete }));
         return { type: 'display', value: lines.join('\n') };
     }
 
@@ -544,8 +545,8 @@ export default class TodosSearchProvider {
         };
         this.todos.unshift(todo);
         this._save();
-        const dueNote = todo.dueDate ? ` (due ${this._formatDateDisplay(todo.dueDate)})` : '';
-        return { type: 'display', value: `✅ Added: ${todo.text}${dueNote}` };
+        const dueNote = todo.dueDate ? this.t('execute.added_due', { label: this._formatDateDisplay(todo.dueDate) }) : '';
+        return { type: 'display', value: this.t('execute.added', { text: todo.text, due: dueNote }) };
     }
 
     _cycleTodoStatus(todoId) {
@@ -555,7 +556,7 @@ export default class TodosSearchProvider {
         todo.status = cycle[todo.status] || 'pending';
         this._save();
         const icons = { 'pending': '⬜', 'in-progress': '🔵', 'complete': '✅' };
-        return { type: 'display', value: `${icons[todo.status]} ${todo.text} → ${todo.status}` };
+        return { type: 'display', value: this.t('execute.cycled', { icon: icons[todo.status], text: todo.text, status: todo.status }) };
     }
 
     _deleteTodo(todoId) {
@@ -563,14 +564,14 @@ export default class TodosSearchProvider {
         if (idx === -1) return null;
         const removed = this.todos.splice(idx, 1)[0];
         this._save();
-        return { type: 'display', value: `🗑️ Removed: ${removed.text}` };
+        return { type: 'display', value: this.t('execute.removed', { text: removed.text }) };
     }
 
     _clearCompleted() {
         const count = this.todos.filter(t => t.status === 'complete').length;
         this.todos = this.todos.filter(t => t.status !== 'complete');
         this._save();
-        return { type: 'display', value: `🧹 Cleared ${count} completed todos` };
+        return { type: 'display', value: this.t('execute.cleared', { count }) };
     }
 
     // --- Public API for toolbar ---

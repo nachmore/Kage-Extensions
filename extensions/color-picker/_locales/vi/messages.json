@@ -16,5 +16,53 @@
     "description": "Extension description",
     "_machine_translated": true,
     "_source_hash": "31c7e58200c59012"
+  },
+  "result.color.description": {
+    "message": "Xem trước màu · Nhấn Enter để sao chép",
+    "description": "Description shown next to a detected color result",
+    "_machine_translated": true,
+    "_source_hash": "0c9bfd07d7319131"
+  },
+  "settings.description": {
+    "message": "Phát hiện giá trị màu (hex, rgb, hsl, tên màu) và hiển thị bản xem trước cùng các định dạng chuyển đổi.",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "92a9e6cf9777abb0"
+  },
+  "settings.copy_format.label": {
+    "message": "Định dạng sao chép",
+    "description": "Settings: copy format select label",
+    "_machine_translated": true,
+    "_source_hash": "3641f2d390c4c2c1"
+  },
+  "settings.copy_format.description": {
+    "message": "Định dạng được sao chép khi nhấn Enter trên kết quả màu.",
+    "description": "Settings: copy format select description",
+    "_machine_translated": true,
+    "_source_hash": "14bba7dcd907a4d1"
+  },
+  "settings.copy_format.option_all": {
+    "message": "Tất cả định dạng",
+    "description": "Copy format dropdown: all formats",
+    "_machine_translated": true,
+    "_source_hash": "56fcd923c445666b"
+  },
+  "settings.copy_format.option_hex": {
+    "message": "Chỉ HEX",
+    "description": "Copy format dropdown: hex only",
+    "_machine_translated": true,
+    "_source_hash": "85938ccd3f4ee5f8"
+  },
+  "settings.copy_format.option_rgb": {
+    "message": "Chỉ RGB",
+    "description": "Copy format dropdown: rgb only",
+    "_machine_translated": true,
+    "_source_hash": "c30a0594a49b951b"
+  },
+  "settings.copy_format.option_hsl": {
+    "message": "Chỉ HSL",
+    "description": "Copy format dropdown: hsl only",
+    "_machine_translated": true,
+    "_source_hash": "997183a6f818deb2"
   }
 }

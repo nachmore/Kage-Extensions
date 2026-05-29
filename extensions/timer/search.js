@@ -6,6 +6,7 @@
 export default class TimerSearchProvider {
     initialize(context) {
         this.config = context.config || {};
+        this.t = context.i18n?.t?.bind(context.i18n) || ((k) => k);
     }
 
     onConfigUpdate(config) {
@@ -15,11 +16,19 @@ export default class TimerSearchProvider {
     match(query) {
         const parsed = parseTimerCommand(query);
         if (!parsed) return [];
+        const label = parsed.type === 'hint'
+            ? this.t('result.hint.label')
+            : parsed.type === 'timer'
+                ? this.t('result.timer.label')
+                : this.t('result.stopwatch.label');
+        const description = parsed.type === 'hint'
+            ? this.t('result.hint.description')
+            : this.t('result.press_enter');
         return [{
             id: 'timer:' + parsed.type,
             type: 'timer_cmd',
-            label: parsed.type === 'hint' ? 'Timer' : parsed.type === 'timer' ? 'Start Timer' : 'Stopwatch',
-            description: parsed.type === 'hint' ? 'timer 5m · timer 1h30m · timer 90s' : 'Press Enter',
+            label,
+            description,
             icon: '⏱️',
             score: 91,
             data: parsed,

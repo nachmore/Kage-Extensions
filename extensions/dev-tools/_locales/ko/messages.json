@@ -16,5 +16,149 @@
     "description": "Extension description",
     "_machine_translated": true,
     "_source_hash": "49d4746132984668"
+  },
+  "result.uuid.label": {
+    "message": "UUID v4",
+    "description": "Result label for UUID generation",
+    "_machine_translated": true,
+    "_source_hash": "d3fe489b61b340eb"
+  },
+  "result.copy_hint": {
+    "message": "Enter 키를 눌러 복사",
+    "description": "Description hint shown next to copyable results",
+    "_machine_translated": true,
+    "_source_hash": "b02c13cf1ffa5cd0"
+  },
+  "result.copy_hint_short": {
+    "message": "Enter로 복사",
+    "description": "Shorter copy hint",
+    "_machine_translated": true,
+    "_source_hash": "6ca21eed070240ef"
+  },
+  "result.base64_encode.label": {
+    "message": "Base64 인코딩",
+    "description": "Result label for base64 encoding",
+    "_machine_translated": true,
+    "_source_hash": "6073aa5da178f89b"
+  },
+  "result.base64_encode.description": {
+    "message": "\"{text}\" → Enter로 복사",
+    "description": "Description for base64 encode result",
+    "_machine_translated": true,
+    "_source_hash": "466a20bfd2ecd1dc"
+  },
+  "result.base64_decode.label": {
+    "message": "Base64 디코딩",
+    "description": "Result label for base64 decoding",
+    "_machine_translated": true,
+    "_source_hash": "414db3097f8ee0db"
+  },
+  "result.hash.label": {
+    "message": "{algo} 해시",
+    "description": "Result label for hash calculation",
+    "_machine_translated": true,
+    "_source_hash": "66480e8f9bdff6f1"
+  },
+  "result.hash.computing": {
+    "message": "계산 중...",
+    "description": "Hash computing description",
+    "_machine_translated": true,
+    "_source_hash": "285c7eb7307e4e0f"
+  },
+  "result.epoch.label": {
+    "message": "Epoch → 날짜",
+    "description": "Result label for epoch-to-date conversion",
+    "_machine_translated": true,
+    "_source_hash": "b7f91cf41909a0db"
+  },
+  "result.epoch_now.label": {
+    "message": "현재 Epoch",
+    "description": "Result label for current epoch timestamp",
+    "_machine_translated": true,
+    "_source_hash": "575ea42947bc47f7"
+  },
+  "result.json_format.label": {
+    "message": "JSON 포맷",
+    "description": "Result label for JSON formatting",
+    "_machine_translated": true,
+    "_source_hash": "5de3ec6192458850"
+  },
+  "result.json_format.description": {
+    "message": "키 {count}개 · Enter로 복사",
+    "description": "Description for JSON format result",
+    "_machine_translated": true,
+    "_source_hash": "3917600f856833ae"
+  },
+  "settings.description": {
+    "message": "UUID 생성, base64 인코딩/디코딩, 해싱, epoch 변환, JSON 포맷.",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "97722a102e9aa297"
+  },
+  "settings.section.individual_tools": {
+    "message": "개별 도구",
+    "description": "Settings section label",
+    "_machine_translated": true,
+    "_source_hash": "9ae76124a4a4e933"
+  },
+  "settings.uuid.label": {
+    "message": "UUID 생성기",
+    "description": "Settings: UUID toggle label",
+    "_machine_translated": true,
+    "_source_hash": "879d62558ec3a6d1"
+  },
+  "settings.uuid.description": {
+    "message": "임의의 UUID v4를 생성하려면 \"uuid\"를 입력하세요.",
+    "description": "Settings: UUID toggle description",
+    "_machine_translated": true,
+    "_source_hash": "06b39caeb2f6ec17"
+  },
+  "settings.base64.label": {
+    "message": "Base64 인코딩/디코딩",
+    "description": "Settings: Base64 toggle label",
+    "_machine_translated": true,
+    "_source_hash": "c51aa045ef4ce6c8"
+  },
+  "settings.base64.description": {
+    "message": "인코딩하려면 \"base64 text\", 디코딩하려면 \"b64d encoded\"를 입력하세요.",
+    "description": "Settings: Base64 toggle description",
+    "_machine_translated": true,
+    "_source_hash": "5442e1fb29755519"
+  },
+  "settings.hash.label": {
+    "message": "해시 계산기",
+    "description": "Settings: hash toggle label",
+    "_machine_translated": true,
+    "_source_hash": "7938519ccb1b9c7f"
+  },
+  "settings.hash.description": {
+    "message": "\"md5 text\", \"sha1 text\", \"sha256 text\" 또는 \"sha512 text\"를 입력하세요.",
+    "description": "Settings: hash toggle description",
+    "_machine_translated": true,
+    "_source_hash": "342e5f6a3cb93c29"
+  },
+  "settings.epoch.label": {
+    "message": "Epoch/날짜 변환기",
+    "description": "Settings: epoch toggle label",
+    "_machine_translated": true,
+    "_source_hash": "b4d8c2df0372658b"
+  },
+  "settings.epoch.description": {
+    "message": "날짜를 보려면 Unix 타임스탬프를 입력하거나, 현재 epoch을 보려면 \"now\"를 입력하세요.",
+    "description": "Settings: epoch toggle description",
+    "_machine_translated": true,
+    "_source_hash": "571a7a1b0bd2ac99"
+  },
+  "settings.json_format.label": {
+    "message": "JSON 포매터",
+    "description": "Settings: JSON toggle label",
+    "_machine_translated": true,
+    "_source_hash": "3e70429a5ca9e8ef"
+  },
+  "settings.json_format.description": {
+    "message": "압축된 JSON을 붙여넣으면 보기 좋게 정렬됩니다.",
+    "description": "Settings: JSON toggle description",
+    "_machine_translated": true,
+    "_source_hash": "462f3cecbc5fd99e"
   }
 }

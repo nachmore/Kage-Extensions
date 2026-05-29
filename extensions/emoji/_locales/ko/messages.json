@@ -12,9 +12,45 @@
     "_source_hash": "205c3e69ca030742"
   },
   "manifest.description": {
-    "message": "이름으로 이모지를 검색하고 복사합니다. \":fire\" 또는 \"emoji rocket\"을 입력하면 가장 많이 사용되는 이모지 약 1,500개 중 가장 가까운 항목을 선택합니다.",
+    "message": "이름으로 이모지를 검색하고 복사합니다. \":fire\" 또는 \"emoji rocket\"을 입력하면 가장 많이 사용되는 이모지 약 1500개 중에서 가장 가까운 항목을 찾아줍니다.",
     "description": "Extension description",
     "_machine_translated": true,
-    "_source_hash": "59640ff70d49d4b7"
+    "_source_hash": "b9390cfd94255409"
+  },
+  "result.hint.label": {
+    "message": "이모지 · 검색하려면 입력하세요",
+    "description": "Hint label when only the trigger word is typed",
+    "_machine_translated": true,
+    "_source_hash": "a2471f31b8da42e8"
+  },
+  "result.hint.description": {
+    "message": "\"{trigger} fire\" 또는 \":fire\"를 사용해 보세요",
+    "description": "Hint description suggesting trigger usage",
+    "_machine_translated": true,
+    "_source_hash": "c66d707a23b3874e"
+  },
+  "settings.description": {
+    "message": "이름으로 가장 많이 사용되는 이모지 약 250개를 검색합니다. 두 가지 트리거 방식이 있습니다: <code>emoji fire</code> 또는 <code>:fire</code>. 원하는 방식을 선택하고 Enter를 누르면 클립보드에 복사됩니다.",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "9d1fa3f643108b7e"
+  },
+  "settings.enabled.label": {
+    "message": "사용",
+    "description": "Settings: enable toggle label",
+    "_machine_translated": true,
+    "_source_hash": "efce5571f8dbd1e9"
+  },
+  "settings.trigger.label": {
+    "message": "트리거 단어",
+    "description": "Settings: trigger word label",
+    "_machine_translated": true,
+    "_source_hash": "5ab4f2dc19af741d"
+  },
+  "settings.shortcode_trigger.label": {
+    "message": "단축 코드도 일치 (예: \":fire\")",
+    "description": "Settings: shortcode trigger toggle label",
+    "_machine_translated": true,
+    "_source_hash": "a3ef5561dd4cf5f6"
   }
 }

@@ -16,5 +16,125 @@
     "description": "Extension description",
     "_machine_translated": true,
     "_source_hash": "cf3213df81c4f097"
+  },
+  "result.home.label": {
+    "message": "GitHub · github.com খুলুন",
+    "description": "Result label when only the trigger is typed",
+    "_machine_translated": true,
+    "_source_hash": "b6eafc95b31667d0"
+  },
+  "result.home.description": {
+    "message": "অথবা রিপো খুঁজতে \"gh <query>\" টাইপ করুন",
+    "description": "Hint to search after the trigger",
+    "_machine_translated": true,
+    "_source_hash": "c872db2af40296be"
+  },
+  "result.me.label": {
+    "message": "GitHub · আমার প্রোফাইল খুলুন",
+    "description": "Result label for opening the user's GitHub profile",
+    "_machine_translated": true,
+    "_source_hash": "3f3a6f385df7c81e"
+  },
+  "result.me.description": {
+    "message": "(কনফিগার করা থাকলে টোকেন ব্যবহার করে, অন্যথায় github.com হোম)",
+    "description": "Hint that token-aware lookup is used",
+    "_machine_translated": true,
+    "_source_hash": "54d57f46be8c2890"
+  },
+  "result.searching.label": {
+    "message": "GitHub · \"{query}\" খোঁজা হচ্ছে…",
+    "description": "Loading label while async search runs",
+    "_machine_translated": true,
+    "_source_hash": "4b8084ae1e4c57c8"
+  },
+  "result.error.label": {
+    "message": "GitHub অনুসন্ধান ব্যর্থ হয়েছে",
+    "description": "Label when search throws",
+    "_machine_translated": true,
+    "_source_hash": "bd8f0076c981725b"
+  },
+  "settings.description": {
+    "message": "লঞ্চার থেকে GitHub-এ অনুসন্ধান করুন। অননুমোদিতভাবে প্রতি ঘণ্টায় ৬০টি অনুরোধ পর্যন্ত কাজ করে (প্রতি IP)। ঐচ্ছিক: প্রতি ঘণ্টায় ৫,০০০ অনুরোধ এবং প্রাইভেট রিপোতে অ্যাক্সেসের জন্য একটি ফাইন-গ্রেইনড পার্সোনাল অ্যাক্সেস টোকেন পেস্ট করুন। টোকেনটি Kage-এর স্যান্ডবক্সড এক্সটেনশন ডেটায় স্থানীয়ভাবে সংরক্ষিত হয়।",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "096fabdf2865ace3"
+  },
+  "settings.enabled.label": {
+    "message": "সক্ষম করুন",
+    "description": "Settings: enable toggle",
+    "_machine_translated": true,
+    "_source_hash": "813fb292fb3bfe0d"
+  },
+  "settings.trigger.label": {
+    "message": "ট্রিগার",
+    "description": "Settings: trigger word label",
+    "_machine_translated": true,
+    "_source_hash": "96f47964f4358372"
+  },
+  "settings.section.access": {
+    "message": "GitHub অ্যাক্সেস (ঐচ্ছিক)",
+    "description": "Settings section heading",
+    "_machine_translated": true,
+    "_source_hash": "65d353111422ac3b"
+  },
+  "settings.access.intro_html": {
+    "message": "<p><a href=\"https://github.com/settings/personal-access-tokens/new\">github.com/settings/personal-access-tokens/new</a>-এ একটি ফাইন-গ্রেইনড পার্সোনাল অ্যাক্সেস টোকেন তৈরি করুন। আপনি যে রিপো / ইস্যু / ইউজার খুঁজতে চান তাতে <em>রিড-অনলি</em> অনুমতিই যথেষ্ট। টোকেনটি <code>api.github.com</code>-এ Authorization হেডার ছাড়া কখনো আপনার মেশিন ছেড়ে যায় না।</p>",
+    "description": "Intro html in settings",
+    "_machine_translated": true,
+    "_source_hash": "da1ef02e09e2a79f"
+  },
+  "settings.access.token_saved_html": {
+    "message": "<p><strong>টোকেন সংরক্ষিত হয়েছে।</strong> প্রতিস্থাপন করতে নতুন একটি পেস্ট করুন, অথবা সরাতে <em>টোকেন ভুলে যান</em>-এ ক্লিক করুন।</p>",
+    "description": "Shown when a token is already saved",
+    "_machine_translated": true,
+    "_source_hash": "37c9c6f5f61bbbcb"
+  },
+  "settings.token_input.label": {
+    "message": "টোকেন",
+    "description": "Settings: token input label",
+    "_machine_translated": true,
+    "_source_hash": "5961c53b3862be04"
+  },
+  "settings.save_token.label": {
+    "message": "টোকেন সংরক্ষণ করুন",
+    "description": "Settings: save token action label",
+    "_machine_translated": true,
+    "_source_hash": "0be88428b7ed35d4"
+  },
+  "settings.clear_token.label": {
+    "message": "টোকেন ভুলে যান",
+    "description": "Settings: clear token action label",
+    "_machine_translated": true,
+    "_source_hash": "0a797b8748a16eee"
+  },
+  "settings.clear_token.confirm": {
+    "message": "সংরক্ষিত GitHub টোকেন ভুলে যাবেন? পরবর্তী অনুসন্ধানগুলি প্রতি ঘণ্টায় ৬০ অনুরোধের পাবলিক সীমাতে ফিরে যাবে।",
+    "description": "Confirmation prompt before forgetting the token",
+    "_machine_translated": true,
+    "_source_hash": "c8745b14624c50d6"
+  },
+  "action.save_token.empty": {
+    "message": "⚠️ আগে একটি টোকেন পেস্ট করুন।",
+    "description": "Status when save action runs without input",
+    "_machine_translated": true,
+    "_source_hash": "b57474d5250af9a6"
+  },
+  "action.save_token.invalid": {
+    "message": "⚠️ এটি GitHub টোকেনের মতো দেখাচ্ছে না।",
+    "description": "Status when token format is unexpected",
+    "_machine_translated": true,
+    "_source_hash": "3fd9c6334d9895da"
+  },
+  "action.save_token.success": {
+    "message": "✅ টোকেন সংরক্ষিত হয়েছে।",
+    "description": "Status when token saves successfully",
+    "_machine_translated": true,
+    "_source_hash": "566d5afa1d7f53bf"
+  },
+  "action.clear_token.success": {
+    "message": "✅ টোকেন ভুলে যাওয়া হয়েছে।",
+    "description": "Status when token is cleared",
+    "_machine_translated": true,
+    "_source_hash": "0fb0a3d9df6b2cc6"
   }
 }

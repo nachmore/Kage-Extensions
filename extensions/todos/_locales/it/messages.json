@@ -16,5 +16,569 @@
     "description": "Extension description",
     "_machine_translated": true,
     "_source_hash": "707ab313e0ae2676"
+  },
+  "date.today": {
+    "message": "📅 Oggi",
+    "description": "Date label: today",
+    "_machine_translated": true,
+    "_source_hash": "b3418964c9eb360f"
+  },
+  "date.tomorrow": {
+    "message": "📅 Domani",
+    "description": "Date label: tomorrow",
+    "_machine_translated": true,
+    "_source_hash": "b204b7672041f71f"
+  },
+  "date.yesterday": {
+    "message": "📅 Ieri",
+    "description": "Date label: yesterday",
+    "_machine_translated": true,
+    "_source_hash": "9ecb393737d4e83e"
+  },
+  "date.overdue": {
+    "message": "📅 In ritardo di {days}g",
+    "description": "Date label for overdue dates",
+    "_machine_translated": true,
+    "_source_hash": "c08941af21033d49"
+  },
+  "date.in_days": {
+    "message": "📅 Tra {days}g",
+    "description": "Date label for upcoming dates",
+    "_machine_translated": true,
+    "_source_hash": "a4f93cbd4783b80f"
+  },
+  "date.exact": {
+    "message": "📅 {date}",
+    "description": "Date label fallback with raw date",
+    "_machine_translated": true,
+    "_source_hash": "9ab4e688b7df5ba7"
+  },
+  "result.summary.label": {
+    "message": "📋 Attività {complete}/{total} {progress}",
+    "description": "Header label for the summary view",
+    "_machine_translated": true,
+    "_source_hash": "08766562554ca296"
+  },
+  "result.summary.description": {
+    "message": "Premi Invio per il riepilogo completo · todo+ per aggiungere · todo- per rimuovere",
+    "description": "Description for summary header",
+    "_machine_translated": true,
+    "_source_hash": "aead781220c1e57d"
+  },
+  "result.todo.cycle_hint": {
+    "message": "Invio: cambia stato",
+    "description": "Description hint for cycling todo status",
+    "_machine_translated": true,
+    "_source_hash": "bde597a4ed80378b"
+  },
+  "result.add_hint.label": {
+    "message": "➕ Digita un'attività da aggiungere",
+    "description": "Hint label when only `todo+` is typed",
+    "_machine_translated": true,
+    "_source_hash": "a4cc87f481d5bd18"
+  },
+  "result.add_hint.description": {
+    "message": "todo+ comprare latte #spesa @alta due:venerdì · due: imposta un promemoria",
+    "description": "Hint description showing usage",
+    "_machine_translated": true,
+    "_source_hash": "f386560106404c93"
+  },
+  "result.delete_empty.label": {
+    "message": "🗑️ Nessuna attività da rimuovere",
+    "description": "Label when delete invoked with no todos",
+    "_machine_translated": true,
+    "_source_hash": "de869784114a7fae"
+  },
+  "result.delete_empty.description": {
+    "message": "Usa todo+ per aggiungere prima delle attività",
+    "description": "Hint when no todos to delete",
+    "_machine_translated": true,
+    "_source_hash": "b2938e7f9386e832"
+  },
+  "result.delete_no_match.label": {
+    "message": "🗑️ Nessuna attività corrispondente a \"{query}\"",
+    "description": "Label when delete-search returns no matches",
+    "_machine_translated": true,
+    "_source_hash": "71b9266da8011692"
+  },
+  "result.delete_no_match.description": {
+    "message": "Prova una ricerca diversa",
+    "description": "Description when delete-search returns no matches",
+    "_machine_translated": true,
+    "_source_hash": "21f037ed8e7e074e"
+  },
+  "result.delete_header.label": {
+    "message": "🗑️ Seleziona un'attività da rimuovere",
+    "description": "Header for delete list",
+    "_machine_translated": true,
+    "_source_hash": "774b48d1b524668c"
+  },
+  "result.delete_header.description": {
+    "message": "Digita todo- <ricerca> per filtrare",
+    "description": "Hint above delete list",
+    "_machine_translated": true,
+    "_source_hash": "17f810bfc49dd906"
+  },
+  "result.delete_item.label": {
+    "message": "🗑️ {icon} {text}",
+    "description": "Label for a todo in delete list",
+    "_machine_translated": true,
+    "_source_hash": "961c9f8d69e2bed0"
+  },
+  "result.delete_item.description": {
+    "message": "Premi Invio per eliminare",
+    "description": "Description for a todo in delete list",
+    "_machine_translated": true,
+    "_source_hash": "44ca27bf043f1e5a"
+  },
+  "result.add.label": {
+    "message": "➕ Aggiungi: {text}",
+    "description": "Label for a quick-add result",
+    "_machine_translated": true,
+    "_source_hash": "d7e2eab0244e87ed"
+  },
+  "result.add.fallback_description": {
+    "message": "Premi Invio per aggiungere",
+    "description": "Description shown when no metadata is set",
+    "_machine_translated": true,
+    "_source_hash": "fc73858805de5f69"
+  },
+  "result.no_match.label": {
+    "message": "Nessuna attività corrispondente a \"{query}\"",
+    "description": "Label when search has no matches",
+    "_machine_translated": true,
+    "_source_hash": "dc198138495f53c9"
+  },
+  "result.no_match.description": {
+    "message": "Usa todo+ per creare un'attività",
+    "description": "Hint when search has no matches",
+    "_machine_translated": true,
+    "_source_hash": "f09c7b7b2579ef33"
+  },
+  "result.list.header_label": {
+    "message": "📋 Attività {complete}/{total} {progress}",
+    "description": "Header label for the list view",
+    "_machine_translated": true,
+    "_source_hash": "9626401a5199169e"
+  },
+  "result.list.overdue_chip": {
+    "message": "🔴 {count} in ritardo",
+    "description": "Overdue chip in list header",
+    "_machine_translated": true,
+    "_source_hash": "92d25430ad7d9502"
+  },
+  "result.list.in_progress_chip": {
+    "message": "🔵 {count} in corso",
+    "description": "In-progress chip in list header",
+    "_machine_translated": true,
+    "_source_hash": "301c6728ece8c980"
+  },
+  "result.list.add_hint": {
+    "message": "todo+ <attività> per aggiungere · usa due:<data> per promemoria",
+    "description": "Hint shown in list header",
+    "_machine_translated": true,
+    "_source_hash": "3ba1c9faa81fecea"
+  },
+  "result.list.more_label": {
+    "message": "... e altri {count}",
+    "description": "Label when more items are available",
+    "_machine_translated": true,
+    "_source_hash": "8403b309beb5e153"
+  },
+  "result.list.more_description": {
+    "message": "Usa i filtri: /done /overdue /active /high #categoria",
+    "description": "Description telling user about filters",
+    "_machine_translated": true,
+    "_source_hash": "6cbf568f59e04567"
+  },
+  "result.list.clear_label": {
+    "message": "🧹 Cancella {count} completati",
+    "description": "Action label to clear completed todos",
+    "_machine_translated": true,
+    "_source_hash": "6cb2db18221cf076"
+  },
+  "result.list.clear_description": {
+    "message": "Premi Invio per rimuovere i todo completati",
+    "description": "Description for clear completed action",
+    "_machine_translated": true,
+    "_source_hash": "bf6099b5dcf3fa7a"
+  },
+  "summary.title": {
+    "message": "📋 **Todo e promemoria** — {complete}/{total} completati ({pct}%)",
+    "description": "Top line of the summary text response",
+    "_machine_translated": true,
+    "_source_hash": "b97e145ef8d08290"
+  },
+  "summary.empty_hint": {
+    "message": "\nNessuna attività. Usa `todo+ <attività>` per aggiungerne una. Aggiungi `due:<data>` per un promemoria.",
+    "description": "Empty state in the summary text",
+    "_machine_translated": true,
+    "_source_hash": "569eea3d03ff0a4c"
+  },
+  "summary.section.overdue": {
+    "message": "\n🔴 **In ritardo:**",
+    "description": "Overdue section heading in the summary text",
+    "_machine_translated": true,
+    "_source_hash": "d884e600b08b5122"
+  },
+  "summary.section.in_progress": {
+    "message": "\n🔵 **In corso:**",
+    "description": "In-progress section heading in the summary text",
+    "_machine_translated": true,
+    "_source_hash": "0b15f434cff78c9b"
+  },
+  "summary.section.pending": {
+    "message": "\n⬜ **In sospeso** ({count}):",
+    "description": "Pending section heading in the summary text",
+    "_machine_translated": true,
+    "_source_hash": "7ba1422d1ae7c8cb"
+  },
+  "summary.pending_more": {
+    "message": "- *...e altri {count}*",
+    "description": "Pending overflow line",
+    "_machine_translated": true,
+    "_source_hash": "2647a0f411b79588"
+  },
+  "summary.completed_count": {
+    "message": "\n✅ {count} completati",
+    "description": "Completed count line",
+    "_machine_translated": true,
+    "_source_hash": "e3d3cfc9728a7528"
+  },
+  "execute.added": {
+    "message": "✅ Aggiunto: {text}{due}",
+    "description": "Display message after adding a todo",
+    "_machine_translated": true,
+    "_source_hash": "57835203d6e24b0f"
+  },
+  "execute.added_due": {
+    "message": " (scadenza {label})",
+    "description": "Suffix when adding with a due date",
+    "_machine_translated": true,
+    "_source_hash": "1dc6484be82d99f6"
+  },
+  "execute.cycled": {
+    "message": "{icon} {text} → {status}",
+    "description": "Display message after cycling status",
+    "_machine_translated": true,
+    "_source_hash": "d89537d947f0a24f"
+  },
+  "execute.removed": {
+    "message": "🗑️ Rimosso: {text}",
+    "description": "Display message after removing a todo",
+    "_machine_translated": true,
+    "_source_hash": "bfdfcaada5bb595f"
+  },
+  "execute.cleared": {
+    "message": "🧹 Cancellati {count} todo completati",
+    "description": "Display message after clearing completed",
+    "_machine_translated": true,
+    "_source_hash": "14d29502e15a654e"
+  },
+  "widget.due_today": {
+    "message": "(scade oggi)",
+    "description": "Widget label when item due today",
+    "_machine_translated": true,
+    "_source_hash": "d215ce58095fc8f8"
+  },
+  "widget.one_day_overdue": {
+    "message": "(1 giorno di ritardo)",
+    "description": "Widget label when 1 day overdue",
+    "_machine_translated": true,
+    "_source_hash": "37ac0de008121e48"
+  },
+  "widget.days_overdue": {
+    "message": "({days} giorni di ritardo)",
+    "description": "Widget label when N days overdue",
+    "_machine_translated": true,
+    "_source_hash": "78c7c9a08f05975a"
+  },
+  "widget.due_tomorrow": {
+    "message": "(scade domani)",
+    "description": "Widget label when due tomorrow",
+    "_machine_translated": true,
+    "_source_hash": "2829632b30ab2fa4"
+  },
+  "widget.due_in_days": {
+    "message": "(scade tra {days} giorni)",
+    "description": "Widget label when due in N days",
+    "_machine_translated": true,
+    "_source_hash": "238fd8d6f7063535"
+  },
+  "widget.previous_tooltip": {
+    "message": "Precedente",
+    "description": "Tooltip on the previous button",
+    "_machine_translated": true,
+    "_source_hash": "60f110b0f3736928"
+  },
+  "widget.next_tooltip": {
+    "message": "Successivo",
+    "description": "Tooltip on the next button",
+    "_machine_translated": true,
+    "_source_hash": "560320e8c98fc53b"
+  },
+  "widget.mark_done_tooltip": {
+    "message": "Segna come completato",
+    "description": "Tooltip on the mark-done button",
+    "_machine_translated": true,
+    "_source_hash": "cf304502a35e1375"
+  },
+  "widget.dismiss_tooltip": {
+    "message": "Ignora tutti",
+    "description": "Tooltip on the dismiss-all button",
+    "_machine_translated": true,
+    "_source_hash": "4cabc73307bb4d43"
+  },
+  "toolbar.summary_tooltip": {
+    "message": "Mostra riepilogo attività",
+    "description": "Tooltip on the toolbar summary button",
+    "_machine_translated": true,
+    "_source_hash": "5f7ce449fb9caeb5"
+  },
+  "toolbar.summary_title": {
+    "message": "📋 Riepilogo attività",
+    "description": "Title of the toolbar summary popup",
+    "_machine_translated": true,
+    "_source_hash": "fd54dd7da788e596"
+  },
+  "toolbar.empty_html": {
+    "message": "<p>Nessuna attività al momento. Digita <code>todo+ comprare il latte</code> nella finestra fluttuante per aggiungerne una.</p>",
+    "description": "HTML body when no tasks",
+    "_machine_translated": true,
+    "_source_hash": "b04d7f757e19b85a"
+  },
+  "toolbar.summary_done_html": {
+    "message": "<p><strong>{complete}/{total}</strong> completate{overdue}</p>",
+    "description": "HTML summary line",
+    "_machine_translated": true,
+    "_source_hash": "3ae96b9991312ce2"
+  },
+  "toolbar.overdue_html": {
+    "message": ", <span style=\"color:#e25\">⚠ {count} in ritardo</span>",
+    "description": "HTML overdue suffix",
+    "_machine_translated": true,
+    "_source_hash": "f0fd341d0634d1e1"
+  },
+  "toolbar.due_suffix_html": {
+    "message": " <small>(scadenza {date}{warn})</small>",
+    "description": "Due-date suffix HTML in summary list",
+    "_machine_translated": true,
+    "_source_hash": "38ef79e0e532f945"
+  },
+  "toolbar.recently_completed_html": {
+    "message": "<p style=\"margin-top:8px;\"><small>Completate di recente:</small></p>",
+    "description": "Recently-completed heading",
+    "_machine_translated": true,
+    "_source_hash": "79a9d1c8706fc698"
+  },
+  "toolbar.completed_more_html": {
+    "message": "<li><small>…e altre {count}</small></li>",
+    "description": "Overflow line for recently completed",
+    "_machine_translated": true,
+    "_source_hash": "841dbeede3359a90"
+  },
+  "trigger.item_due.description": {
+    "message": "Un'attività scade oggi",
+    "description": "Trigger description: item due",
+    "_machine_translated": true,
+    "_source_hash": "a048032705425ac8"
+  },
+  "trigger.item_overdue.description": {
+    "message": "Un'attività è in ritardo",
+    "description": "Trigger description: item overdue",
+    "_machine_translated": true,
+    "_source_hash": "215264b42242883a"
+  },
+  "trigger.all_complete.description": {
+    "message": "Tutte le attività sono completate",
+    "description": "Trigger description: all complete",
+    "_machine_translated": true,
+    "_source_hash": "ac8f270e88baf5e5"
+  },
+  "settings.description": {
+    "message": "Gestore attività con promemoria. Digita \"todo+ <attività>\" per aggiungere, \"todo+ <attività> due:<data>\" per un promemoria, \"todos\" per vedere l'elenco.",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "0161d9792e66d4ad"
+  },
+  "settings.section.display": {
+    "message": "Visualizzazione",
+    "description": "Settings section: display",
+    "_machine_translated": true,
+    "_source_hash": "bf664ebb2209530c"
+  },
+  "settings.default_category.label": {
+    "message": "Categoria predefinita",
+    "description": "Settings: default category label",
+    "_machine_translated": true,
+    "_source_hash": "2471475fff5eba21"
+  },
+  "settings.default_category.description": {
+    "message": "Le nuove attività ricevono questa categoria a meno che non venga sovrascritta con #tag.",
+    "description": "Settings: default category description",
+    "_machine_translated": true,
+    "_source_hash": "9e6f73436d45dddd"
+  },
+  "settings.default_category.placeholder": {
+    "message": "es. lavoro, personale",
+    "description": "Settings: default category placeholder",
+    "_machine_translated": true,
+    "_source_hash": "af53922621f792fb"
+  },
+  "settings.sort_by.label": {
+    "message": "Ordina per",
+    "description": "Settings: sort label",
+    "_machine_translated": true,
+    "_source_hash": "bf40436de76a68b2"
+  },
+  "settings.sort_by.description": {
+    "message": "Come ordinare le attività nell'elenco.",
+    "description": "Settings: sort description",
+    "_machine_translated": true,
+    "_source_hash": "f0960a58f59c1304"
+  },
+  "settings.sort_by.option_created": {
+    "message": "Più recenti prima",
+    "description": "Sort option: newest",
+    "_machine_translated": true,
+    "_source_hash": "33a0c5717c1c6045"
+  },
+  "settings.sort_by.option_due": {
+    "message": "Data di scadenza",
+    "description": "Sort option: due date",
+    "_machine_translated": true,
+    "_source_hash": "d24e147f4ebf5396"
+  },
+  "settings.sort_by.option_priority": {
+    "message": "Priorità",
+    "description": "Sort option: priority",
+    "_machine_translated": true,
+    "_source_hash": "f6c35de686bac243"
+  },
+  "settings.sort_by.option_status": {
+    "message": "Stato",
+    "description": "Sort option: status",
+    "_machine_translated": true,
+    "_source_hash": "0b91473c57ac8d4b"
+  },
+  "settings.show_completed.label": {
+    "message": "Mostra completate",
+    "description": "Settings: show completed label",
+    "_machine_translated": true,
+    "_source_hash": "7776a9afce64e1ba"
+  },
+  "settings.show_completed.description": {
+    "message": "Mostra i todo completati nell'elenco principale.",
+    "description": "Settings: show completed description",
+    "_machine_translated": true,
+    "_source_hash": "3f03b91369ce20cd"
+  },
+  "settings.section.behavior": {
+    "message": "Comportamento",
+    "description": "Settings section: behavior",
+    "_machine_translated": true,
+    "_source_hash": "887383d5d54edda8"
+  },
+  "settings.confirm_delete.label": {
+    "message": "Conferma eliminazione",
+    "description": "Settings: confirm delete label",
+    "_machine_translated": true,
+    "_source_hash": "bc0b18fb9be84061"
+  },
+  "settings.confirm_delete.description": {
+    "message": "Chiedi conferma prima di eliminare un todo.",
+    "description": "Settings: confirm delete description",
+    "_machine_translated": true,
+    "_source_hash": "918d6a90de2837e3"
+  },
+  "settings.show_due_banner.label": {
+    "message": "Mostra banner promemoria in scadenza",
+    "description": "Settings: show due banner label",
+    "_machine_translated": true,
+    "_source_hash": "a72c421aa32d1240"
+  },
+  "settings.show_due_banner.description": {
+    "message": "Mostra un banner nella finestra fluttuante quando i promemoria sono in scadenza oggi o scaduti.",
+    "description": "Settings: show due banner description",
+    "_machine_translated": true,
+    "_source_hash": "4eded75137c6a306"
+  },
+  "settings.section.data": {
+    "message": "Dati",
+    "description": "Settings section: data",
+    "_machine_translated": true,
+    "_source_hash": "bdb272d5f7870ba6"
+  },
+  "settings.data.info": {
+    "message": "Esporta o cancella tutti i tuoi todo e promemoria.",
+    "description": "Settings: data info",
+    "_machine_translated": true,
+    "_source_hash": "d3b76eae2e506cdf"
+  },
+  "settings.export.label": {
+    "message": "Esporta JSON",
+    "description": "Settings: export action label",
+    "_machine_translated": true,
+    "_source_hash": "6c1e19e4d7b0d526"
+  },
+  "settings.import.label": {
+    "message": "Importa JSON",
+    "description": "Settings: import action label",
+    "_machine_translated": true,
+    "_source_hash": "85aaecaf617f534d"
+  },
+  "settings.clear_all.label": {
+    "message": "Cancella tutto",
+    "description": "Settings: clear all action label",
+    "_machine_translated": true,
+    "_source_hash": "90eaf049c8f1b843"
+  },
+  "settings.clear_all.confirm": {
+    "message": "Eliminare TUTTI i todo e i promemoria? L'operazione non può essere annullata.",
+    "description": "Confirmation prompt before clearing all",
+    "_machine_translated": true,
+    "_source_hash": "758fa234727d04e2"
+  },
+  "action.export.success": {
+    "message": "✅ Esportato",
+    "description": "Status when export succeeds",
+    "_machine_translated": true,
+    "_source_hash": "0fdf2cf270b201c3"
+  },
+  "action.export.error": {
+    "message": "❌ Esportazione non riuscita: {message}",
+    "description": "Status when export fails",
+    "_machine_translated": true,
+    "_source_hash": "87010dc307e365e0"
+  },
+  "action.clear_all.success": {
+    "message": "✅ Tutti i todo e i promemoria sono stati cancellati.",
+    "description": "Status when clear all succeeds",
+    "_machine_translated": true,
+    "_source_hash": "ea8b06a25b983d87"
+  },
+  "action.clear_all.error": {
+    "message": "❌ {message}",
+    "description": "Status when clear all fails",
+    "_machine_translated": true,
+    "_source_hash": "ba49edde99e2adde"
+  },
+  "action.import.invalid_format": {
+    "message": "Formato non valido (atteso array JSON)",
+    "description": "Error: import format invalid",
+    "_machine_translated": true,
+    "_source_hash": "37d2a82c960de97a"
+  },
+  "action.import.success": {
+    "message": "✅ Importati {count} todo.",
+    "description": "Status when import succeeds",
+    "_machine_translated": true,
+    "_source_hash": "3b4ac831c4bff79d"
+  },
+  "action.import.error": {
+    "message": "❌ Importazione non riuscita: {message}",
+    "description": "Status when import fails",
+    "_machine_translated": true,
+    "_source_hash": "8c1be51111141497"
   }
 }

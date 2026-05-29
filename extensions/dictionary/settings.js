@@ -3,7 +3,7 @@
  */
 
 const LANGUAGES = [
-    { code: 'auto', name: 'Auto-detect' },
+    { code: 'auto', name: null }, // localized below
     { code: 'en', name: 'English' },
     { code: 'la', name: 'Latin' },
     { code: 'es', name: 'Spanish' },
@@ -37,20 +37,24 @@ const LANGUAGES = [
 ];
 
 export default class DictionarySettingsProvider {
-    initialize(context) { this.config = context.config || {}; }
+    initialize(context) {
+        this.config = context.config || {};
+        this.t = context.i18n?.t?.bind(context.i18n) || ((k) => k);
+    }
     onConfigUpdate(config) { this.config = config || {}; }
 
     getSettings() {
+        const t = this.t;
         return {
-            description: 'Look up word definitions, spelling corrections, and pronunciation. Powered by FreeDictionaryAPI.com (Wiktionary data).',
+            description: t('settings.description'),
             sections: [
                 {
                     controls: [
                         {
                             type: 'text',
                             id: 'trigger',
-                            label: 'Trigger Keyword',
-                            description: 'Type this keyword followed by a space to activate dictionary lookup (e.g. "dict hello"). Leave empty to look up any typed word.',
+                            label: t('settings.trigger.label'),
+                            description: t('settings.trigger.description'),
                             default: 'dict',
                             placeholder: 'dict',
                             maxWidth: 100,
@@ -58,20 +62,20 @@ export default class DictionarySettingsProvider {
                         {
                             type: 'select',
                             id: 'language',
-                            label: 'Language',
-                            description: 'Dictionary language for lookups. Auto-detect uses tinyld to identify the language. Supports 250+ languages via FreeDictionaryAPI.com.',
+                            label: t('settings.language.label'),
+                            description: t('settings.language.description'),
                             default: 'auto',
-                            options: LANGUAGES.map(l => ({ value: l.code, label: l.name })),
+                            options: LANGUAGES.map(l => ({
+                                value: l.code,
+                                label: l.code === 'auto' ? t('settings.language.auto') : l.name,
+                            })),
                         },
-                        { type: 'checkbox', id: 'show_pronunciation', label: 'Show Pronunciation', description: 'Display IPA pronunciation when available', default: true },
-                        { type: 'checkbox', id: 'show_examples',      label: 'Show Examples',       description: 'Display usage examples when available', default: true },
-                        { type: 'checkbox', id: 'show_synonyms',      label: 'Show Synonyms',       description: 'Display synonyms when available', default: true },
+                        { type: 'checkbox', id: 'show_pronunciation', label: t('settings.show_pronunciation.label'), description: t('settings.show_pronunciation.description'), default: true },
+                        { type: 'checkbox', id: 'show_examples',      label: t('settings.show_examples.label'),      description: t('settings.show_examples.description'),      default: true },
+                        { type: 'checkbox', id: 'show_synonyms',      label: t('settings.show_synonyms.label'),      description: t('settings.show_synonyms.description'),      default: true },
                         {
                             type: 'info',
-                            html: 'Data sourced from <a href="https://en.wiktionary.org/" target="_blank">Wiktionary</a> '
-                                + 'via <a href="https://freedictionaryapi.com/" target="_blank">FreeDictionaryAPI.com</a> '
-                                + 'under <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank">CC BY-SA 4.0</a>. '
-                                + 'Spelling suggestions by <a href="https://www.datamuse.com/" target="_blank">Datamuse</a>.',
+                            html: t('settings.attribution.html'),
                         },
                     ],
                 },

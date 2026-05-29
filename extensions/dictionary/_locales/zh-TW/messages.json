@@ -16,5 +16,149 @@
     "description": "Extension description",
     "_machine_translated": true,
     "_source_hash": "23f2411c0957401e"
+  },
+  "result.error.label": {
+    "message": "📖 無法查詢「{word}」",
+    "description": "Error label when dictionary lookup fails",
+    "_machine_translated": true,
+    "_source_hash": "26fa9b62e8c2308d"
+  },
+  "result.error.description": {
+    "message": "網路錯誤 — 請檢查您的連線",
+    "description": "Error description for failed lookup",
+    "_machine_translated": true,
+    "_source_hash": "6a528e1a02f5df4a"
+  },
+  "result.not_found.label": {
+    "message": "找不到「{word}」的定義",
+    "description": "Label when word has no definition",
+    "_machine_translated": true,
+    "_source_hash": "d8badf7aa4e38bae"
+  },
+  "result.not_found.description": {
+    "message": "請嘗試其他拼法",
+    "description": "Hint when no definition was found",
+    "_machine_translated": true,
+    "_source_hash": "f26c73ffe19ef7fa"
+  },
+  "result.loading.label": {
+    "message": "正在查詢「{word}」...",
+    "description": "Loading label while definition fetches",
+    "_machine_translated": true,
+    "_source_hash": "a3266221037cb0d7"
+  },
+  "result.suggestion.label": {
+    "message": "您是否要查詢：{word}？",
+    "description": "Spell-correction suggestion label",
+    "_machine_translated": true,
+    "_source_hash": "05e11a0aeb79492a"
+  },
+  "result.suggestion.description": {
+    "message": "按 Enter 複製更正後的字詞",
+    "description": "Spell-correction suggestion description",
+    "_machine_translated": true,
+    "_source_hash": "7e7e96bfc765a8e3"
+  },
+  "render.looking_up": {
+    "message": "正在查詢「{word}」...",
+    "description": "Inline 'looking up' header in detail render",
+    "_machine_translated": true,
+    "_source_hash": "dc34da96dd70f9da"
+  },
+  "render.no_definition": {
+    "message": "找不到「{word}」的定義",
+    "description": "Inline 'no definition' header in detail render",
+    "_machine_translated": true,
+    "_source_hash": "a68d1cc259f7e0ab"
+  },
+  "render.synonyms_label": {
+    "message": "同義詞：",
+    "description": "Synonyms section prefix",
+    "_machine_translated": true,
+    "_source_hash": "0795db7980a91647"
+  },
+  "render.suggestion_text": {
+    "message": "您是否要查詢",
+    "description": "Suggestion HTML prefix",
+    "_machine_translated": true,
+    "_source_hash": "d35bcd93b5b84204"
+  },
+  "settings.description": {
+    "message": "查詢字詞定義、拼字更正與發音。採用 FreeDictionaryAPI.com（Wiktionary 資料）。",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "4a6876370e806ad0"
+  },
+  "settings.trigger.label": {
+    "message": "觸發關鍵字",
+    "description": "Settings: trigger keyword label",
+    "_machine_translated": true,
+    "_source_hash": "e31045bbce24b0f7"
+  },
+  "settings.trigger.description": {
+    "message": "輸入此關鍵字並加上空格以啟動字典查詢（例如「dict hello」）。留空則可查詢任何輸入的字詞。",
+    "description": "Settings: trigger keyword description",
+    "_machine_translated": true,
+    "_source_hash": "d6848ef9ee8f5c82"
+  },
+  "settings.language.label": {
+    "message": "語言",
+    "description": "Settings: language select label",
+    "_machine_translated": true,
+    "_source_hash": "717cd225449abe95"
+  },
+  "settings.language.description": {
+    "message": "查詢使用的字典語言。自動偵測使用 tinyld 來辨識語言。透過 FreeDictionaryAPI.com 支援 250+ 種語言。",
+    "description": "Settings: language select description",
+    "_machine_translated": true,
+    "_source_hash": "6bd5f5d3c31bc5f2"
+  },
+  "settings.language.auto": {
+    "message": "自動偵測",
+    "description": "Auto-detect language option",
+    "_machine_translated": true,
+    "_source_hash": "62c3494299cbcada"
+  },
+  "settings.show_pronunciation.label": {
+    "message": "顯示發音",
+    "description": "Settings: show pronunciation toggle label",
+    "_machine_translated": true,
+    "_source_hash": "3bb974161d86d4bb"
+  },
+  "settings.show_pronunciation.description": {
+    "message": "在可用時顯示 IPA 發音",
+    "description": "Settings: show pronunciation toggle description",
+    "_machine_translated": true,
+    "_source_hash": "1edcb2f4624bd4f1"
+  },
+  "settings.show_examples.label": {
+    "message": "顯示範例",
+    "description": "Settings: show examples toggle label",
+    "_machine_translated": true,
+    "_source_hash": "adee122b133ca243"
+  },
+  "settings.show_examples.description": {
+    "message": "在可用時顯示用法範例",
+    "description": "Settings: show examples toggle description",
+    "_machine_translated": true,
+    "_source_hash": "32e532ff2cb0ec62"
+  },
+  "settings.show_synonyms.label": {
+    "message": "顯示同義詞",
+    "description": "Settings: show synonyms toggle label",
+    "_machine_translated": true,
+    "_source_hash": "b1a51bfe3e343b5f"
+  },
+  "settings.show_synonyms.description": {
+    "message": "在可用時顯示同義詞",
+    "description": "Settings: show synonyms toggle description",
+    "_machine_translated": true,
+    "_source_hash": "585585fd8530cfcb"
+  },
+  "settings.attribution.html": {
+    "message": "資料來源為 <a href=\"https://en.wiktionary.org/\" target=\"_blank\">Wiktionary</a>，透過 <a href=\"https://freedictionaryapi.com/\" target=\"_blank\">FreeDictionaryAPI.com</a> 提供，依據 <a href=\"https://creativecommons.org/licenses/by-sa/4.0/\" target=\"_blank\">CC BY-SA 4.0</a> 授權。拼字建議由 <a href=\"https://www.datamuse.com/\" target=\"_blank\">Datamuse</a> 提供。",
+    "description": "Settings: attribution info text",
+    "_machine_translated": true,
+    "_source_hash": "ec30fe1abb2842cf"
   }
 }

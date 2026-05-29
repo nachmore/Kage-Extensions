@@ -16,5 +16,95 @@
     "description": "Extension description",
     "_machine_translated": true,
     "_source_hash": "667e7829308ceab3"
+  },
+  "result.add_help.label": {
+    "message": "스니펫 저장",
+    "description": "Result label when only `snip+` is typed",
+    "_machine_translated": true,
+    "_source_hash": "08f80a8e1e7bfa91"
+  },
+  "result.add_help.description": {
+    "message": "사용법: snip+ <이름> <내용>",
+    "description": "Result description for the save help row",
+    "_machine_translated": true,
+    "_source_hash": "75bb8c519e2f80a9"
+  },
+  "result.add.label": {
+    "message": "스니펫 \"{name}\" 저장",
+    "description": "Result label for a valid save command",
+    "_machine_translated": true,
+    "_source_hash": "b344556d649210b1"
+  },
+  "result.del.label": {
+    "message": "스니펫 \"{name}\" 삭제",
+    "description": "Result label for the delete command",
+    "_machine_translated": true,
+    "_source_hash": "6e592f8176809992"
+  },
+  "result.list.label_query": {
+    "message": "스니펫 · \"{query}\"",
+    "description": "Sync placeholder label while async results load with a query",
+    "_machine_translated": true,
+    "_source_hash": "230e131b0f6755ed"
+  },
+  "result.list.label_all": {
+    "message": "스니펫",
+    "description": "Sync placeholder label while async results load without a query",
+    "_machine_translated": true,
+    "_source_hash": "df2d4654f0cd9bd6"
+  },
+  "result.list.loading": {
+    "message": "불러오는 중…",
+    "description": "Description shown while async results load",
+    "_machine_translated": true,
+    "_source_hash": "19eca1be9378e999"
+  },
+  "result.empty.label": {
+    "message": "저장된 스니펫이 없습니다",
+    "description": "Empty-state label when the user has no snippets",
+    "_machine_translated": true,
+    "_source_hash": "1907e237ca206234"
+  },
+  "result.empty.description": {
+    "message": "`snip+ <이름> <내용>` 으로 저장하세요",
+    "description": "Empty-state hint pointing to the save command",
+    "_machine_translated": true,
+    "_source_hash": "e661761053eeb015"
+  },
+  "settings.description": {
+    "message": "자주 쓰는 답장, 주소, 명령어, 코드 블록 등의 텍스트를 저장하고 단축키로 복사하세요.",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "39c8f4d65c94fd7a"
+  },
+  "settings.enabled.label": {
+    "message": "사용",
+    "description": "Settings: enable toggle",
+    "_machine_translated": true,
+    "_source_hash": "813fb292fb3bfe0d"
+  },
+  "settings.trigger.label": {
+    "message": "트리거 단어",
+    "description": "Settings: trigger word label",
+    "_machine_translated": true,
+    "_source_hash": "5ab4f2dc19af741d"
+  },
+  "settings.info.saved_count": {
+    "message": "<p><strong>스니펫{plural} {count}개 저장됨.</strong></p>",
+    "description": "HTML count summary in settings",
+    "_machine_translated": true,
+    "_source_hash": "63593bd3c09cc4cf"
+  },
+  "settings.info.none_yet": {
+    "message": "<p>아직 없습니다.</p>",
+    "description": "HTML shown when no snippets are saved",
+    "_machine_translated": true,
+    "_source_hash": "e32420667030c4f8"
+  },
+  "settings.info.usage_html": {
+    "message": "<p><em>사용법:</em> 복사는 <code>snip 이름</code>, 저장은 <code>snip+ 이름 내용</code>, 삭제는 <code>snip- 이름</code>.</p>",
+    "description": "Usage hint HTML",
+    "_machine_translated": true,
+    "_source_hash": "29d9dfcceaed7106"
   }
 }

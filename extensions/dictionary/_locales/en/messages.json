@@ -12,5 +12,101 @@
   "manifest.description": {
     "message": "Look up word definitions, spelling corrections, and pronunciation using FreeDictionaryAPI.com",
     "description": "Extension description"
+  },
+  "result.error.label": {
+    "message": "📖 Could not look up \"{word}\"",
+    "description": "Error label when dictionary lookup fails"
+  },
+  "result.error.description": {
+    "message": "Network error — check your connection",
+    "description": "Error description for failed lookup"
+  },
+  "result.not_found.label": {
+    "message": "No definition found for \"{word}\"",
+    "description": "Label when word has no definition"
+  },
+  "result.not_found.description": {
+    "message": "Try a different spelling",
+    "description": "Hint when no definition was found"
+  },
+  "result.loading.label": {
+    "message": "Looking up \"{word}\"...",
+    "description": "Loading label while definition fetches"
+  },
+  "result.suggestion.label": {
+    "message": "Did you mean: {word}?",
+    "description": "Spell-correction suggestion label"
+  },
+  "result.suggestion.description": {
+    "message": "Press Enter to copy corrected word",
+    "description": "Spell-correction suggestion description"
+  },
+  "render.looking_up": {
+    "message": "Looking up \"{word}\"...",
+    "description": "Inline 'looking up' header in detail render"
+  },
+  "render.no_definition": {
+    "message": "No definition found for \"{word}\"",
+    "description": "Inline 'no definition' header in detail render"
+  },
+  "render.synonyms_label": {
+    "message": "Syn:",
+    "description": "Synonyms section prefix"
+  },
+  "render.suggestion_text": {
+    "message": "Did you mean",
+    "description": "Suggestion HTML prefix"
+  },
+  "settings.description": {
+    "message": "Look up word definitions, spelling corrections, and pronunciation. Powered by FreeDictionaryAPI.com (Wiktionary data).",
+    "description": "Settings page description"
+  },
+  "settings.trigger.label": {
+    "message": "Trigger Keyword",
+    "description": "Settings: trigger keyword label"
+  },
+  "settings.trigger.description": {
+    "message": "Type this keyword followed by a space to activate dictionary lookup (e.g. \"dict hello\"). Leave empty to look up any typed word.",
+    "description": "Settings: trigger keyword description"
+  },
+  "settings.language.label": {
+    "message": "Language",
+    "description": "Settings: language select label"
+  },
+  "settings.language.description": {
+    "message": "Dictionary language for lookups. Auto-detect uses tinyld to identify the language. Supports 250+ languages via FreeDictionaryAPI.com.",
+    "description": "Settings: language select description"
+  },
+  "settings.language.auto": {
+    "message": "Auto-detect",
+    "description": "Auto-detect language option"
+  },
+  "settings.show_pronunciation.label": {
+    "message": "Show Pronunciation",
+    "description": "Settings: show pronunciation toggle label"
+  },
+  "settings.show_pronunciation.description": {
+    "message": "Display IPA pronunciation when available",
+    "description": "Settings: show pronunciation toggle description"
+  },
+  "settings.show_examples.label": {
+    "message": "Show Examples",
+    "description": "Settings: show examples toggle label"
+  },
+  "settings.show_examples.description": {
+    "message": "Display usage examples when available",
+    "description": "Settings: show examples toggle description"
+  },
+  "settings.show_synonyms.label": {
+    "message": "Show Synonyms",
+    "description": "Settings: show synonyms toggle label"
+  },
+  "settings.show_synonyms.description": {
+    "message": "Display synonyms when available",
+    "description": "Settings: show synonyms toggle description"
+  },
+  "settings.attribution.html": {
+    "message": "Data sourced from <a href=\"https://en.wiktionary.org/\" target=\"_blank\">Wiktionary</a> via <a href=\"https://freedictionaryapi.com/\" target=\"_blank\">FreeDictionaryAPI.com</a> under <a href=\"https://creativecommons.org/licenses/by-sa/4.0/\" target=\"_blank\">CC BY-SA 4.0</a>. Spelling suggestions by <a href=\"https://www.datamuse.com/\" target=\"_blank\">Datamuse</a>.",
+    "description": "Settings: attribution info text"
   }
 }

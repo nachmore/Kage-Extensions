@@ -12,5 +12,85 @@
   "manifest.description": {
     "message": "Search GitHub repos, users, and issues from the launcher. Type \"gh <query>\" for repos, \"gh @<user>\" for users, \"gh #<query>\" for issues.",
     "description": "Extension description"
+  },
+  "result.home.label": {
+    "message": "GitHub · Open github.com",
+    "description": "Result label when only the trigger is typed"
+  },
+  "result.home.description": {
+    "message": "Or type \"gh <query>\" to search repos",
+    "description": "Hint to search after the trigger"
+  },
+  "result.me.label": {
+    "message": "GitHub · Open my profile",
+    "description": "Result label for opening the user's GitHub profile"
+  },
+  "result.me.description": {
+    "message": "(uses the token if configured, otherwise github.com home)",
+    "description": "Hint that token-aware lookup is used"
+  },
+  "result.searching.label": {
+    "message": "GitHub · Searching \"{query}\"…",
+    "description": "Loading label while async search runs"
+  },
+  "result.error.label": {
+    "message": "GitHub search failed",
+    "description": "Label when search throws"
+  },
+  "settings.description": {
+    "message": "Search GitHub from the launcher. Works unauthenticated up to 60 req/hr (per IP). Optional: paste a fine-grained personal access token for 5,000 req/hr and access to private repos. The token is stored locally in Kage's sandboxed extension data.",
+    "description": "Settings page description"
+  },
+  "settings.enabled.label": {
+    "message": "Enable",
+    "description": "Settings: enable toggle"
+  },
+  "settings.trigger.label": {
+    "message": "Trigger",
+    "description": "Settings: trigger word label"
+  },
+  "settings.section.access": {
+    "message": "GitHub access (optional)",
+    "description": "Settings section heading"
+  },
+  "settings.access.intro_html": {
+    "message": "<p>Generate a fine-grained personal access token at <a href=\"https://github.com/settings/personal-access-tokens/new\">github.com/settings/personal-access-tokens/new</a>. <em>Read-only</em> on the repos / issues / users you want to search is enough. The token never leaves your machine except in the Authorization header to <code>api.github.com</code>.</p>",
+    "description": "Intro html in settings"
+  },
+  "settings.access.token_saved_html": {
+    "message": "<p><strong>Token saved.</strong> Paste a new one to replace, or click <em>Forget token</em> to remove.</p>",
+    "description": "Shown when a token is already saved"
+  },
+  "settings.token_input.label": {
+    "message": "Token",
+    "description": "Settings: token input label"
+  },
+  "settings.save_token.label": {
+    "message": "Save token",
+    "description": "Settings: save token action label"
+  },
+  "settings.clear_token.label": {
+    "message": "Forget token",
+    "description": "Settings: clear token action label"
+  },
+  "settings.clear_token.confirm": {
+    "message": "Forget the saved GitHub token? Future searches fall back to the 60 req/hr public limit.",
+    "description": "Confirmation prompt before forgetting the token"
+  },
+  "action.save_token.empty": {
+    "message": "⚠️ Paste a token first.",
+    "description": "Status when save action runs without input"
+  },
+  "action.save_token.invalid": {
+    "message": "⚠️ Doesn't look like a GitHub token.",
+    "description": "Status when token format is unexpected"
+  },
+  "action.save_token.success": {
+    "message": "✅ Token saved.",
+    "description": "Status when token saves successfully"
+  },
+  "action.clear_token.success": {
+    "message": "✅ Token forgotten.",
+    "description": "Status when token is cleared"
   }
 }

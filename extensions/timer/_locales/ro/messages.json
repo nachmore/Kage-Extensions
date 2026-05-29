@@ -16,5 +16,161 @@
     "description": "Extension description",
     "_machine_translated": true,
     "_source_hash": "5e3d3fcb6c65000a"
+  },
+  "result.hint.label": {
+    "message": "Cronometru",
+    "description": "Result label when only the trigger word is typed",
+    "_machine_translated": true,
+    "_source_hash": "27e682c3e5972839"
+  },
+  "result.hint.description": {
+    "message": "timer 5m · timer 1h30m · timer 90s",
+    "description": "Hint description showing usage examples",
+    "_machine_translated": true,
+    "_source_hash": "7f6ab4da59ebb05d"
+  },
+  "result.timer.label": {
+    "message": "Pornește cronometrul",
+    "description": "Result label for starting a countdown",
+    "_machine_translated": true,
+    "_source_hash": "9e7935f08809a649"
+  },
+  "result.stopwatch.label": {
+    "message": "Cronograf",
+    "description": "Result label for starting a stopwatch",
+    "_machine_translated": true,
+    "_source_hash": "7969fc43909f4d99"
+  },
+  "result.press_enter": {
+    "message": "Apasă Enter",
+    "description": "Generic press-enter description",
+    "_machine_translated": true,
+    "_source_hash": "6e02475041e5dcea"
+  },
+  "settings.description": {
+    "message": "Tastează „timer 5m” pentru numărătoare inversă sau „stopwatch” pentru cronograf.",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "c145c143e034bb33"
+  },
+  "settings.section.on_complete": {
+    "message": "La finalizarea cronometrului",
+    "description": "Settings section heading",
+    "_machine_translated": true,
+    "_source_hash": "0cbcd8d1f33cb9a4"
+  },
+  "settings.notify_on_complete.label": {
+    "message": "Afișează notificarea de sistem",
+    "description": "Settings: notify on complete label",
+    "_machine_translated": true,
+    "_source_hash": "7566031fd64f0775"
+  },
+  "settings.notify_on_complete.description": {
+    "message": "Afișează o notificare pe desktop când numărătoarea inversă ajunge la zero.",
+    "description": "Settings: notify on complete description",
+    "_machine_translated": true,
+    "_source_hash": "57355b39f926be73"
+  },
+  "settings.sound_on_complete.label": {
+    "message": "Redă sunet",
+    "description": "Settings: play sound label",
+    "_machine_translated": true,
+    "_source_hash": "10b682a53643b4fe"
+  },
+  "settings.sound_on_complete.description": {
+    "message": "Redă un sunet de notificare când numărătoarea inversă ajunge la zero.",
+    "description": "Settings: play sound description",
+    "_machine_translated": true,
+    "_source_hash": "bdcdc8d6a0821bca"
+  },
+  "settings.sound_id.label": {
+    "message": "Sunet de notificare",
+    "description": "Settings: sound select label",
+    "_machine_translated": true,
+    "_source_hash": "f9ebc433e4e0b1e3"
+  },
+  "settings.sound_id.description": {
+    "message": "Selectează un sunet care să fie redat la finalizarea cronometrului.",
+    "description": "Settings: sound select description",
+    "_machine_translated": true,
+    "_source_hash": "4c5163330ec0794c"
+  },
+  "settings.sound_id.option_two_tone": {
+    "message": "Bip pe două tonuri",
+    "description": "Sound option: two-tone",
+    "_machine_translated": true,
+    "_source_hash": "6df5bfb7a52634fc"
+  },
+  "settings.sound_id.option_chime": {
+    "message": "Clopoțel",
+    "description": "Sound option: chime",
+    "_machine_translated": true,
+    "_source_hash": "dee93f9099598fd7"
+  },
+  "settings.sound_id.option_alert": {
+    "message": "Alertă",
+    "description": "Sound option: alert",
+    "_machine_translated": true,
+    "_source_hash": "ecd8336bd091fa21"
+  },
+  "settings.sound_id.option_gentle": {
+    "message": "Blând",
+    "description": "Sound option: gentle",
+    "_machine_translated": true,
+    "_source_hash": "626a62bef353f3a2"
+  },
+  "settings.sound_id.option_bell": {
+    "message": "Sonerie",
+    "description": "Sound option: bell",
+    "_machine_translated": true,
+    "_source_hash": "28aebe3a9a9f7b8f"
+  },
+  "settings.sound_id.option_success": {
+    "message": "Reușită",
+    "description": "Sound option: success",
+    "_machine_translated": true,
+    "_source_hash": "962715f3e0091aa9"
+  },
+  "settings.sound_id.option_custom": {
+    "message": "Fișier personalizat...",
+    "description": "Sound option: custom file",
+    "_machine_translated": true,
+    "_source_hash": "245cf5ab9c4466d8"
+  },
+  "settings.custom_sound_path.label": {
+    "message": "Fișier de sunet personalizat",
+    "description": "Settings: custom sound path label",
+    "_machine_translated": true,
+    "_source_hash": "51537035a13c621c"
+  },
+  "settings.custom_sound_path.description": {
+    "message": "Calea către un fișier .wav sau .mp3 de pe disc.",
+    "description": "Settings: custom sound path description",
+    "_machine_translated": true,
+    "_source_hash": "f0809bc3401a8436"
+  },
+  "settings.sound_repeats.label": {
+    "message": "Număr de repetări",
+    "description": "Settings: repeat count label",
+    "_machine_translated": true,
+    "_source_hash": "1b504b031089d511"
+  },
+  "settings.preview.label": {
+    "message": "▶ Previzualizează sunetul",
+    "description": "Settings: preview sound button label",
+    "_machine_translated": true,
+    "_source_hash": "05f24759492d1b5f"
+  },
+  "settings.show_window_on_complete.label": {
+    "message": "Afișează fereastra plutitoare",
+    "description": "Settings: show window on complete label",
+    "_machine_translated": true,
+    "_source_hash": "1fadb880dd4b49f6"
+  },
+  "settings.show_window_on_complete.description": {
+    "message": "Afișează automat fereastra flotantă dacă este ascunsă la finalizarea cronometrului.",
+    "description": "Settings: show window on complete description",
+    "_machine_translated": true,
+    "_source_hash": "51afccfa96c099d0"
   }
 }

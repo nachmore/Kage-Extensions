@@ -9,6 +9,7 @@ export default class TodosDueWidget {
     initialize(context) {
         this.config = context.config || {};
         this.invoke = context.invoke;
+        this.t = context.i18n?.t?.bind(context.i18n) || ((k) => k);
         this._dueItems = [];
         this._dueIndex = 0;
         this._dismissedSet = new Set();
@@ -36,8 +37,8 @@ export default class TodosDueWidget {
         const multi = this._dueItems.length > 1;
         const counter = multi ? `<span class="reminder-bar-counter">${this._dueIndex + 1}/${this._dueItems.length}</span>` : '';
         const navButtons = multi
-            ? `<button data-ext-action="prev" class="extension-bar-btn" title="Previous">◀</button>
-               <button data-ext-action="next" class="extension-bar-btn" title="Next">▶</button>`
+            ? `<button data-ext-action="prev" class="extension-bar-btn" title="${escape(this.t('widget.previous_tooltip'))}">◀</button>
+               <button data-ext-action="next" class="extension-bar-btn" title="${escape(this.t('widget.next_tooltip'))}">▶</button>`
             : '';
 
         return {
@@ -51,8 +52,8 @@ export default class TodosDueWidget {
                 <div class="extension-bar-controls">
                     ${counter}
                     ${navButtons}
-                    <button data-ext-action="done" class="extension-bar-btn" title="Mark done">✓</button>
-                    <button data-ext-action="dismiss" class="extension-bar-btn" title="Dismiss all">✕</button>
+                    <button data-ext-action="done" class="extension-bar-btn" title="${escape(this.t('widget.mark_done_tooltip'))}">✓</button>
+                    <button data-ext-action="dismiss" class="extension-bar-btn" title="${escape(this.t('widget.dismiss_tooltip'))}">✕</button>
                 </div>
             `,
             actions: [
@@ -155,11 +156,11 @@ export default class TodosDueWidget {
         if (isNaN(parsed)) return '';
         parsed.setHours(0, 0, 0, 0);
         const diffDays = Math.round((parsed - today) / 86400000);
-        if (diffDays === 0) return '(due today)';
-        if (diffDays === -1) return '(1 day overdue)';
-        if (diffDays < 0) return `(${Math.abs(diffDays)} days overdue)`;
-        if (diffDays === 1) return '(due tomorrow)';
-        return `(due in ${diffDays} days)`;
+        if (diffDays === 0) return this.t('widget.due_today');
+        if (diffDays === -1) return this.t('widget.one_day_overdue');
+        if (diffDays < 0) return this.t('widget.days_overdue', { days: Math.abs(diffDays) });
+        if (diffDays === 1) return this.t('widget.due_tomorrow');
+        return this.t('widget.due_in_days', { days: diffDays });
     }
 }
 

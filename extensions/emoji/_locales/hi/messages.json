@@ -12,9 +12,45 @@
     "_source_hash": "205c3e69ca030742"
   },
   "manifest.description": {
-    "message": "नाम से इमोजी खोजें और कॉपी करें। \":fire\" या \"emoji rocket\" टाइप करें — लगभग 1500 सबसे अधिक उपयोग होने वाले इमोजी में से सबसे करीबी मिलान चुनता है।",
+    "message": "नाम से इमोजी खोजें और कॉपी करें। \":fire\" या \"emoji rocket\" टाइप करें — लगभग 1500 सबसे अधिक उपयोग किए जाने वाले इमोजी में से सबसे मिलता-जुलता चुनता है।",
     "description": "Extension description",
     "_machine_translated": true,
-    "_source_hash": "59640ff70d49d4b7"
+    "_source_hash": "b9390cfd94255409"
+  },
+  "result.hint.label": {
+    "message": "इमोजी · खोजने के लिए टाइप करें",
+    "description": "Hint label when only the trigger word is typed",
+    "_machine_translated": true,
+    "_source_hash": "a2471f31b8da42e8"
+  },
+  "result.hint.description": {
+    "message": "\"{trigger} fire\" या \":fire\" आज़माएँ",
+    "description": "Hint description suggesting trigger usage",
+    "_machine_translated": true,
+    "_source_hash": "c66d707a23b3874e"
+  },
+  "settings.description": {
+    "message": "लगभग 250 सबसे अधिक उपयोग किए जाने वाले इमोजी को नाम से खोजें। दो ट्रिगर शैलियाँ काम करती हैं: <code>emoji fire</code> या केवल <code>:fire</code>। एक चुनें और क्लिपबोर्ड पर कॉपी करने के लिए Enter दबाएँ।",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "9d1fa3f643108b7e"
+  },
+  "settings.enabled.label": {
+    "message": "सक्षम करें",
+    "description": "Settings: enable toggle label",
+    "_machine_translated": true,
+    "_source_hash": "efce5571f8dbd1e9"
+  },
+  "settings.trigger.label": {
+    "message": "ट्रिगर शब्द",
+    "description": "Settings: trigger word label",
+    "_machine_translated": true,
+    "_source_hash": "5ab4f2dc19af741d"
+  },
+  "settings.shortcode_trigger.label": {
+    "message": "शॉर्टकोड भी मिलाएँ (उदा. \":fire\")",
+    "description": "Settings: shortcode trigger toggle label",
+    "_machine_translated": true,
+    "_source_hash": "a3ef5561dd4cf5f6"
   }
 }

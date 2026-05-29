@@ -16,5 +16,407 @@
     "description": "Extension description",
     "_machine_translated": true,
     "_source_hash": "74abec23ede6a157"
+  },
+  "result.now.label": {
+    "message": "Spotify · Právě hraje",
+    "description": "Result label for the now-playing row",
+    "_machine_translated": true,
+    "_source_hash": "181185bfb0511267"
+  },
+  "result.now.description": {
+    "message": "Zobrazit, co se právě přehrává",
+    "description": "Result description for the now-playing row",
+    "_machine_translated": true,
+    "_source_hash": "6e7fd6cebea9ef23"
+  },
+  "result.help.label": {
+    "message": "Spotify · Příkazy",
+    "description": "Result label for the help row",
+    "_machine_translated": true,
+    "_source_hash": "260860647df2e4c3"
+  },
+  "result.help.description": {
+    "message": "play, queue, like, unlike, next, prev, vol, device, playlist",
+    "description": "Result description listing available commands",
+    "_machine_translated": true,
+    "_source_hash": "8b31d4e33332771c"
+  },
+  "result.play_query.label": {
+    "message": "Spotify · Přehrát „{query}“",
+    "description": "Result label when playing a search query",
+    "_machine_translated": true,
+    "_source_hash": "af064a58eb97b354"
+  },
+  "result.play_query.description": {
+    "message": "Vyhledat na Spotify a přehrát nejlepší výsledek",
+    "description": "Description for the play-query row",
+    "_machine_translated": true,
+    "_source_hash": "7f99e0f76309ba7a"
+  },
+  "result.resume.label": {
+    "message": "Spotify · Pokračovat",
+    "description": "Result label for resuming playback",
+    "_machine_translated": true,
+    "_source_hash": "07be4bde32890aef"
+  },
+  "result.resume.description": {
+    "message": "Pokračovat v přehrávání na aktivním zařízení",
+    "description": "Description for the resume row",
+    "_machine_translated": true,
+    "_source_hash": "cbf3198e23dba063"
+  },
+  "result.pause.label": {
+    "message": "Spotify · Pozastavit",
+    "description": "Result label for pause",
+    "_machine_translated": true,
+    "_source_hash": "ac51d9d429c2f1b7"
+  },
+  "result.pause.description": {
+    "message": "Pozastavit aktivní zařízení",
+    "description": "Description for pause row",
+    "_machine_translated": true,
+    "_source_hash": "1b0dab8982fda108"
+  },
+  "result.queue.label": {
+    "message": "Spotify · Zařadit „{query}“",
+    "description": "Result label when queuing a search",
+    "_machine_translated": true,
+    "_source_hash": "0be00e368e376f36"
+  },
+  "result.queue.description": {
+    "message": "Přidat nejlepší výsledek do fronty",
+    "description": "Description for queue row",
+    "_machine_translated": true,
+    "_source_hash": "30607d5f786a99c2"
+  },
+  "result.like.label": {
+    "message": "Spotify · To se mi líbí – aktuální skladba",
+    "description": "Result label for like action",
+    "_machine_translated": true,
+    "_source_hash": "5f9b496655382057"
+  },
+  "result.like.description": {
+    "message": "Přidat do uložených skladeb",
+    "description": "Description for like row",
+    "_machine_translated": true,
+    "_source_hash": "876cab1c92ec71be"
+  },
+  "result.unlike.label": {
+    "message": "Spotify · Zrušit „To se mi líbí“ u aktuální skladby",
+    "description": "Result label for unlike action",
+    "_machine_translated": true,
+    "_source_hash": "6f7a1e5c82e415bd"
+  },
+  "result.unlike.description": {
+    "message": "Odebrat z uložených skladeb",
+    "description": "Description for unlike row",
+    "_machine_translated": true,
+    "_source_hash": "53b8b58cd571b3c7"
+  },
+  "result.next.label": {
+    "message": "Spotify · Další skladba",
+    "description": "Result label for next track",
+    "_machine_translated": true,
+    "_source_hash": "bdcf2029c09306b0"
+  },
+  "result.prev.label": {
+    "message": "Spotify · Předchozí skladba",
+    "description": "Result label for previous track",
+    "_machine_translated": true,
+    "_source_hash": "132020e15ef219d0"
+  },
+  "result.volume.label": {
+    "message": "Spotify · Nastavit hlasitost na {percent} %",
+    "description": "Result label for volume change",
+    "_machine_translated": true,
+    "_source_hash": "5f7600baf1d0b7ca"
+  },
+  "result.device.label": {
+    "message": "Spotify · Přenést na zařízení „{name}“",
+    "description": "Result label for device transfer",
+    "_machine_translated": true,
+    "_source_hash": "4ef5f7529ee72183"
+  },
+  "result.playlist.label": {
+    "message": "Spotify · Přehrát playlist „{name}“",
+    "description": "Result label for playlist playback",
+    "_machine_translated": true,
+    "_source_hash": "8dbdb47b42aa40a0"
+  },
+  "result.playlist.description": {
+    "message": "Hledat podle názvu",
+    "description": "Description hint for playlist row",
+    "_machine_translated": true,
+    "_source_hash": "48a30828009c6225"
+  },
+  "result.connect.label": {
+    "message": "Spotify · Připojit…",
+    "description": "Result label for connect",
+    "_machine_translated": true,
+    "_source_hash": "5077bd8d58200f28"
+  },
+  "result.connect.description": {
+    "message": "Přihlásit se přes prohlížeč",
+    "description": "Description for connect",
+    "_machine_translated": true,
+    "_source_hash": "7b1f8b83c93f90ab"
+  },
+  "result.disconnect.label": {
+    "message": "Spotify · Odhlásit se",
+    "description": "Result label for sign out",
+    "_machine_translated": true,
+    "_source_hash": "dcd23e45986f9bca"
+  },
+  "result.disconnect.description": {
+    "message": "Zapomenout vaše tokeny",
+    "description": "Description for sign out",
+    "_machine_translated": true,
+    "_source_hash": "8953e3749997983d"
+  },
+  "error.not_signed_in": {
+    "message": "Nejste přihlášeni ke Spotify. Pro přihlášení napište \"sp connect\".",
+    "description": "Error message when no Spotify session",
+    "_machine_translated": true,
+    "_source_hash": "5c47d0a1c1afadde"
+  },
+  "error.nothing_playing": {
+    "message": "Právě se nic nepřehrává.",
+    "description": "Error when like is invoked with no track",
+    "_machine_translated": true,
+    "_source_hash": "e05b8cfc4d7b8207"
+  },
+  "error.no_match": {
+    "message": "Žádná shoda na Spotify pro \"{query}\".",
+    "description": "Error when search returns nothing",
+    "_machine_translated": true,
+    "_source_hash": "2c73db6de1d390c6"
+  },
+  "error.no_device": {
+    "message": "Žádné zařízení Spotify s názvem \"{name}\".",
+    "description": "Error when device name not found",
+    "_machine_translated": true,
+    "_source_hash": "b68bd8b5724d8e8f"
+  },
+  "error.no_playlist": {
+    "message": "Žádný playlist odpovídající \"{name}\".",
+    "description": "Error when playlist name not found",
+    "_machine_translated": true,
+    "_source_hash": "546f21735552f9e5"
+  },
+  "widget.like.add_tooltip": {
+    "message": "Uložit do knihovny",
+    "description": "Tooltip on the like button when not liked",
+    "_machine_translated": true,
+    "_source_hash": "0c68c715ea7ad9f1"
+  },
+  "widget.like.remove_tooltip": {
+    "message": "Odstranit z knihovny",
+    "description": "Tooltip on the like button when already liked",
+    "_machine_translated": true,
+    "_source_hash": "9257eafcd17260a9"
+  },
+  "widget.previous_tooltip": {
+    "message": "Předchozí skladba",
+    "description": "Tooltip on the previous-track button",
+    "_machine_translated": true,
+    "_source_hash": "a3331164cb9beaf8"
+  },
+  "widget.next_tooltip": {
+    "message": "Další skladba",
+    "description": "Tooltip on the next-track button",
+    "_machine_translated": true,
+    "_source_hash": "afb6f0b66d97789b"
+  },
+  "widget.pause_tooltip": {
+    "message": "Pozastavit",
+    "description": "Tooltip on the play/pause button when playing",
+    "_machine_translated": true,
+    "_source_hash": "c041bbd438222791"
+  },
+  "widget.resume_tooltip": {
+    "message": "Pokračovat",
+    "description": "Tooltip on the play/pause button when paused",
+    "_machine_translated": true,
+    "_source_hash": "21695f71faff6bf7"
+  },
+  "settings.description": {
+    "message": "Zobrazte, co se přehrává, ovládejte přehrávání a spouštějte zkratky jako \"sp like\" nebo \"sp play <track>\". Používá tok PKCE od Spotify přes jednorázový posluchač na localhostu — žádné tajemství klienta neopustí váš počítač.",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "9f8a00aca11b1f67"
+  },
+  "settings.section.display": {
+    "message": "Zobrazení",
+    "description": "Settings section: display",
+    "_machine_translated": true,
+    "_source_hash": "bf664ebb2209530c"
+  },
+  "settings.enabled.label": {
+    "message": "Povolit",
+    "description": "Settings: enable toggle",
+    "_machine_translated": true,
+    "_source_hash": "813fb292fb3bfe0d"
+  },
+  "settings.show_now_playing_bar.label": {
+    "message": "Zobrazit lištu právě přehrávaného v plovoucím okně",
+    "description": "Settings: show now-playing bar",
+    "_machine_translated": true,
+    "_source_hash": "dfa7f840d99eb82e"
+  },
+  "settings.refresh_seconds.label": {
+    "message": "Obnovovat každých (sekund)",
+    "description": "Settings: refresh seconds label",
+    "_machine_translated": true,
+    "_source_hash": "76c1ce92f5661830"
+  },
+  "settings.refresh_seconds.description": {
+    "message": "Jak často lišta právě přehrávaného dotazuje Spotify. Nižší hodnota znamená rychlejší aktualizace a o něco více volání API.",
+    "description": "Settings: refresh seconds description",
+    "_machine_translated": true,
+    "_source_hash": "f2e9e332fda01695"
+  },
+  "settings.trigger.label": {
+    "message": "Spouštěcí slovo",
+    "description": "Settings: trigger word label",
+    "_machine_translated": true,
+    "_source_hash": "5ab4f2dc19af741d"
+  },
+  "settings.trigger.description": {
+    "message": "Co napíšete pro vyvolání zkratek Spotify v plovoucím okně. Například \"sp like\" nebo \"sp play lofi beats\".",
+    "description": "Settings: trigger word description",
+    "_machine_translated": true,
+    "_source_hash": "e155eb413157ceae"
+  },
+  "settings.section.app": {
+    "message": "Aplikace Spotify",
+    "description": "Settings section: spotify app",
+    "_machine_translated": true,
+    "_source_hash": "d0fcd903dec290c3"
+  },
+  "settings.app.intro_html": {
+    "message": "Vytvořte si zdarma aplikaci <strong>Spotify Developer</strong> na <a href=\"https://developer.spotify.com/dashboard\">developer.spotify.com/dashboard</a>. Přidejte <code>http://127.0.0.1/spotify/callback</code> jako Redirect URI (libovolný port funguje — Kage doplní skutečný port při přihlášení a Spotify porovnává host + cestu). Níže zkopírujte <strong>Client ID</strong>.",
+    "description": "Settings: app setup instructions",
+    "_machine_translated": true,
+    "_source_hash": "4b925a1e8d4fe58f"
+  },
+  "settings.client_id.label": {
+    "message": "Client ID",
+    "description": "Settings: Client ID input label",
+    "_machine_translated": true,
+    "_source_hash": "88c50480decaca58"
+  },
+  "settings.client_id.placeholder": {
+    "message": "Sem vložte vaše Spotify client_id",
+    "description": "Settings: Client ID placeholder",
+    "_machine_translated": true,
+    "_source_hash": "00365c0104e05fb3"
+  },
+  "settings.client_id.description": {
+    "message": "Uloženo lokálně; nikdy nikam neodesláno kromě Spotify.",
+    "description": "Settings: Client ID description",
+    "_machine_translated": true,
+    "_source_hash": "726633bc55ffbe83"
+  },
+  "settings.save_client_id.label": {
+    "message": "Uložit Client ID",
+    "description": "Settings: save client id button",
+    "_machine_translated": true,
+    "_source_hash": "1b31bf8b9640a2bc"
+  },
+  "settings.section.connection": {
+    "message": "Připojení",
+    "description": "Settings section: connection",
+    "_machine_translated": true,
+    "_source_hash": "f358cdafb27f4748"
+  },
+  "settings.connection.connected": {
+    "message": "<strong>Připojeno</strong> — ovládání přehrávání je připraveno.",
+    "description": "Settings: connection ready text",
+    "_machine_translated": true,
+    "_source_hash": "6824068777a99688"
+  },
+  "settings.connection.not_connected": {
+    "message": "Zatím nepřipojeno. Klikněte na <strong>Připojit</strong> pro autorizaci.",
+    "description": "Settings: not connected text",
+    "_machine_translated": true,
+    "_source_hash": "7a248676d782c5cd"
+  },
+  "settings.connection.no_client_id": {
+    "message": "Nejprve uložte Client ID a poté se připojte.",
+    "description": "Settings: needs client ID first",
+    "_machine_translated": true,
+    "_source_hash": "6e654060ef7b1a02"
+  },
+  "settings.connect.label_connect": {
+    "message": "Připojit…",
+    "description": "Settings: connect button",
+    "_machine_translated": true,
+    "_source_hash": "216bfcabdbc9c99d"
+  },
+  "settings.connect.label_reconnect": {
+    "message": "Připojit znovu…",
+    "description": "Settings: reconnect button",
+    "_machine_translated": true,
+    "_source_hash": "d8e56b0170e24f86"
+  },
+  "settings.disconnect.label": {
+    "message": "Odhlásit se",
+    "description": "Settings: sign-out button",
+    "_machine_translated": true,
+    "_source_hash": "ccc6a1247a0bc31c"
+  },
+  "settings.disconnect.confirm": {
+    "message": "Odhlásit se ze Spotify? Pro použití zkratek přehrávání se budete muset znovu autorizovat.",
+    "description": "Confirmation prompt before signing out",
+    "_machine_translated": true,
+    "_source_hash": "a27426d3adcd7ad4"
+  },
+  "settings.validate.trigger_required": {
+    "message": "Spouštěcí slovo je povinné.",
+    "description": "Validation error when trigger is empty",
+    "_machine_translated": true,
+    "_source_hash": "c758c958af83b189"
+  },
+  "settings.validate.trigger_format": {
+    "message": "Spouštěcí slovo může obsahovat pouze písmena, číslice nebo pomlčky.",
+    "description": "Validation error for invalid trigger characters",
+    "_machine_translated": true,
+    "_source_hash": "69d9b6a61cce96e9"
+  },
+  "action.save_client_id.empty": {
+    "message": "⚠️ Nejprve vložte Client ID.",
+    "description": "Status when Client ID input is empty",
+    "_machine_translated": true,
+    "_source_hash": "dae11461665c6476"
+  },
+  "action.save_client_id.invalid": {
+    "message": "⚠️ Toto nevypadá jako platné Client ID pro Spotify.",
+    "description": "Status when Client ID format invalid",
+    "_machine_translated": true,
+    "_source_hash": "e696470bcef2160e"
+  },
+  "action.save_client_id.success": {
+    "message": "✅ Client ID uloženo.",
+    "description": "Status when Client ID is saved",
+    "_machine_translated": true,
+    "_source_hash": "f75eefe56c7a28c0"
+  },
+  "action.connect.success": {
+    "message": "✅ Připojeno. Lišta právě přehrávaného se zobrazí, jakmile se něco spustí.",
+    "description": "Status after a successful connect",
+    "_machine_translated": true,
+    "_source_hash": "31fe35562a8c271b"
+  },
+  "action.connect.error": {
+    "message": "⚠️ {message}",
+    "description": "Status with error after a failed connect",
+    "_machine_translated": true,
+    "_source_hash": "b0d53e592dd2232c"
+  },
+  "action.disconnect.success": {
+    "message": "✅ Odhlášeno.",
+    "description": "Status after a successful sign-out",
+    "_machine_translated": true,
+    "_source_hash": "64224f1b6f2851a7"
   }
 }

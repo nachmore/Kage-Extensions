@@ -16,5 +16,101 @@
     "description": "Extension description",
     "_machine_translated": true,
     "_source_hash": "0fa52e497866e221"
+  },
+  "result.passphrase.description": {
+    "message": "패스프레이즈 · {count}개 단어 · 엔트로피 약 {bits}비트",
+    "description": "Description shown for a generated passphrase",
+    "_machine_translated": true,
+    "_source_hash": "3856983374e49098"
+  },
+  "result.password.description": {
+    "message": "비밀번호 · {length}자 · 엔트로피 약 {bits}비트",
+    "description": "Description shown for a generated password",
+    "_machine_translated": true,
+    "_source_hash": "6c122e5ad39d3576"
+  },
+  "result.regen.label": {
+    "message": "다시 생성",
+    "description": "Label for the 'generate another' row",
+    "_machine_translated": true,
+    "_source_hash": "87656be639f2afe3"
+  },
+  "result.regen.description": {
+    "message": "클릭하여 새로 생성합니다",
+    "description": "Description for the 'generate another' row",
+    "_machine_translated": true,
+    "_source_hash": "3039687031661be2"
+  },
+  "settings.description": {
+    "message": "<code>crypto.getRandomValues</code>를 사용하여 비밀번호를 생성합니다 — 브라우저가 TLS 키에 사용하는 것과 동일한 엔트로피 소스입니다. Enter를 눌러 복사하세요. \"다시 생성\" 행을 누르면 새로운 비밀번호가 생성됩니다.",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "8be283f1fd3b3176"
+  },
+  "settings.section.defaults": {
+    "message": "기본값",
+    "description": "Settings section: defaults",
+    "_machine_translated": true,
+    "_source_hash": "dd9f392bd82cb46e"
+  },
+  "settings.enabled.label": {
+    "message": "활성화",
+    "description": "Settings: enable toggle",
+    "_machine_translated": true,
+    "_source_hash": "813fb292fb3bfe0d"
+  },
+  "settings.trigger.label": {
+    "message": "트리거",
+    "description": "Settings: trigger word label",
+    "_machine_translated": true,
+    "_source_hash": "96f47964f4358372"
+  },
+  "settings.default_length.label": {
+    "message": "기본 비밀번호 길이",
+    "description": "Settings: default length label",
+    "_machine_translated": true,
+    "_source_hash": "df75741eab05dada"
+  },
+  "settings.section.character_classes": {
+    "message": "문자 종류",
+    "description": "Settings section: character classes",
+    "_machine_translated": true,
+    "_source_hash": "17285d1e3a9b1b91"
+  },
+  "settings.include_lowercase.label": {
+    "message": "소문자 (a-z)",
+    "description": "Settings: lowercase toggle",
+    "_machine_translated": true,
+    "_source_hash": "2e430990e5dd5e37"
+  },
+  "settings.include_uppercase.label": {
+    "message": "대문자 (A-Z)",
+    "description": "Settings: uppercase toggle",
+    "_machine_translated": true,
+    "_source_hash": "b9ea2b607851f55e"
+  },
+  "settings.include_numbers.label": {
+    "message": "숫자 (0-9)",
+    "description": "Settings: numbers toggle",
+    "_machine_translated": true,
+    "_source_hash": "5aef4f3080107695"
+  },
+  "settings.include_symbols.label": {
+    "message": "기호 (!@#…)",
+    "description": "Settings: symbols toggle",
+    "_machine_translated": true,
+    "_source_hash": "50e30323811a7a37"
+  },
+  "settings.exclude_ambiguous.label": {
+    "message": "혼동되는 문자 제외 (Il1O0|'`\")",
+    "description": "Settings: exclude ambiguous toggle",
+    "_machine_translated": true,
+    "_source_hash": "d680fc4ae7208f0e"
+  },
+  "settings.exclude_ambiguous.description": {
+    "message": "잘못 읽기 쉬운 문자를 제거합니다.",
+    "description": "Settings: exclude ambiguous description",
+    "_machine_translated": true,
+    "_source_hash": "9f407f14493e6443"
   }
 }

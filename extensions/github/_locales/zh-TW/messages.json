@@ -16,5 +16,125 @@
     "description": "Extension description",
     "_machine_translated": true,
     "_source_hash": "cf3213df81c4f097"
+  },
+  "result.home.label": {
+    "message": "GitHub · 開啟 github.com",
+    "description": "Result label when only the trigger is typed",
+    "_machine_translated": true,
+    "_source_hash": "b6eafc95b31667d0"
+  },
+  "result.home.description": {
+    "message": "或輸入「gh <查詢>」搜尋儲存庫",
+    "description": "Hint to search after the trigger",
+    "_machine_translated": true,
+    "_source_hash": "c872db2af40296be"
+  },
+  "result.me.label": {
+    "message": "GitHub · 開啟我的個人檔案",
+    "description": "Result label for opening the user's GitHub profile",
+    "_machine_translated": true,
+    "_source_hash": "3f3a6f385df7c81e"
+  },
+  "result.me.description": {
+    "message": "（若已設定 token 則使用之，否則開啟 github.com 首頁）",
+    "description": "Hint that token-aware lookup is used",
+    "_machine_translated": true,
+    "_source_hash": "54d57f46be8c2890"
+  },
+  "result.searching.label": {
+    "message": "GitHub · 正在搜尋「{query}」…",
+    "description": "Loading label while async search runs",
+    "_machine_translated": true,
+    "_source_hash": "4b8084ae1e4c57c8"
+  },
+  "result.error.label": {
+    "message": "GitHub 搜尋失敗",
+    "description": "Label when search throws",
+    "_machine_translated": true,
+    "_source_hash": "bd8f0076c981725b"
+  },
+  "settings.description": {
+    "message": "從啟動器搜尋 GitHub。未驗證時每小時最多 60 次請求（依 IP 計算）。選用：貼上 fine-grained 個人存取 token，可享每小時 5,000 次請求並存取私人儲存庫。Token 僅儲存在本機 Kage 沙箱的擴充功能資料中。",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "096fabdf2865ace3"
+  },
+  "settings.enabled.label": {
+    "message": "啟用",
+    "description": "Settings: enable toggle",
+    "_machine_translated": true,
+    "_source_hash": "813fb292fb3bfe0d"
+  },
+  "settings.trigger.label": {
+    "message": "觸發字",
+    "description": "Settings: trigger word label",
+    "_machine_translated": true,
+    "_source_hash": "96f47964f4358372"
+  },
+  "settings.section.access": {
+    "message": "GitHub 存取權（選用）",
+    "description": "Settings section heading",
+    "_machine_translated": true,
+    "_source_hash": "65d353111422ac3b"
+  },
+  "settings.access.intro_html": {
+    "message": "<p>請於 <a href=\"https://github.com/settings/personal-access-tokens/new\">github.com/settings/personal-access-tokens/new</a> 建立 fine-grained 個人存取 token。對你想搜尋的儲存庫／議題／使用者具備<em>唯讀</em>權限即可。Token 不會離開你的裝置，僅會在 Authorization 標頭中送至 <code>api.github.com</code>。</p>",
+    "description": "Intro html in settings",
+    "_machine_translated": true,
+    "_source_hash": "da1ef02e09e2a79f"
+  },
+  "settings.access.token_saved_html": {
+    "message": "<p><strong>Token 已儲存。</strong>貼上新的 token 以取代，或點擊<em>清除 token</em> 將其移除。</p>",
+    "description": "Shown when a token is already saved",
+    "_machine_translated": true,
+    "_source_hash": "37c9c6f5f61bbbcb"
+  },
+  "settings.token_input.label": {
+    "message": "Token",
+    "description": "Settings: token input label",
+    "_machine_translated": true,
+    "_source_hash": "5961c53b3862be04"
+  },
+  "settings.save_token.label": {
+    "message": "儲存 token",
+    "description": "Settings: save token action label",
+    "_machine_translated": true,
+    "_source_hash": "0be88428b7ed35d4"
+  },
+  "settings.clear_token.label": {
+    "message": "清除 token",
+    "description": "Settings: clear token action label",
+    "_machine_translated": true,
+    "_source_hash": "0a797b8748a16eee"
+  },
+  "settings.clear_token.confirm": {
+    "message": "確定要清除已儲存的 GitHub token 嗎？後續搜尋將回退至每小時 60 次請求的公開限制。",
+    "description": "Confirmation prompt before forgetting the token",
+    "_machine_translated": true,
+    "_source_hash": "c8745b14624c50d6"
+  },
+  "action.save_token.empty": {
+    "message": "⚠️ 請先貼上 token。",
+    "description": "Status when save action runs without input",
+    "_machine_translated": true,
+    "_source_hash": "b57474d5250af9a6"
+  },
+  "action.save_token.invalid": {
+    "message": "⚠️ 看起來不像是 GitHub token。",
+    "description": "Status when token format is unexpected",
+    "_machine_translated": true,
+    "_source_hash": "3fd9c6334d9895da"
+  },
+  "action.save_token.success": {
+    "message": "✅ Token 已儲存。",
+    "description": "Status when token saves successfully",
+    "_machine_translated": true,
+    "_source_hash": "566d5afa1d7f53bf"
+  },
+  "action.clear_token.success": {
+    "message": "✅ Token 已清除。",
+    "description": "Status when token is cleared",
+    "_machine_translated": true,
+    "_source_hash": "0fb0a3d9df6b2cc6"
   }
 }

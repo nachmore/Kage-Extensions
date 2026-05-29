@@ -12,9 +12,45 @@
     "_source_hash": "205c3e69ca030742"
   },
   "manifest.description": {
-    "message": "Recherchez et copiez des emojis par nom. Taper « :fire » ou « emoji rocket » sélectionne la correspondance la plus proche parmi environ 1500 des emojis les plus utilisés.",
+    "message": "Recherchez et copiez des emojis par leur nom. Tapez « :fire » ou « emoji rocket » pour trouver la meilleure correspondance parmi environ 1500 des emojis les plus utilisés.",
     "description": "Extension description",
     "_machine_translated": true,
-    "_source_hash": "59640ff70d49d4b7"
+    "_source_hash": "b9390cfd94255409"
+  },
+  "result.hint.label": {
+    "message": "Emoji · tapez pour rechercher",
+    "description": "Hint label when only the trigger word is typed",
+    "_machine_translated": true,
+    "_source_hash": "a2471f31b8da42e8"
+  },
+  "result.hint.description": {
+    "message": "Essayez « {trigger} fire » ou « :fire »",
+    "description": "Hint description suggesting trigger usage",
+    "_machine_translated": true,
+    "_source_hash": "c66d707a23b3874e"
+  },
+  "settings.description": {
+    "message": "Recherchez environ 250 des emojis les plus utilisés par leur nom. Deux styles de déclencheur fonctionnent : <code>emoji fire</code> ou simplement <code>:fire</code>. Choisissez-en un et appuyez sur Entrée pour le copier dans le presse-papiers.",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "9d1fa3f643108b7e"
+  },
+  "settings.enabled.label": {
+    "message": "Activer",
+    "description": "Settings: enable toggle label",
+    "_machine_translated": true,
+    "_source_hash": "efce5571f8dbd1e9"
+  },
+  "settings.trigger.label": {
+    "message": "Mot déclencheur",
+    "description": "Settings: trigger word label",
+    "_machine_translated": true,
+    "_source_hash": "5ab4f2dc19af741d"
+  },
+  "settings.shortcode_trigger.label": {
+    "message": "Reconnaître aussi les codes courts (par ex. « :fire »)",
+    "description": "Settings: shortcode trigger toggle label",
+    "_machine_translated": true,
+    "_source_hash": "a3ef5561dd4cf5f6"
   }
 }

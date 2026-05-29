@@ -26,6 +26,7 @@ async function _getDetector() {
 export default class DictionarySearchProvider {
     initialize(context) {
         this.config = context.config || {};
+        this.t = context.i18n?.t?.bind(context.i18n) || ((k) => k);
         this._cache = new Map();
         this._suggestCache = new Map();
     }
@@ -122,8 +123,8 @@ export default class DictionarySearchProvider {
             return [{
                 id: 'dict-error',
                 type: 'dictionary',
-                label: `📖 Could not look up "${word}"`,
-                description: 'Network error — check your connection',
+                label: this.t('result.error.label', { word }),
+                description: this.t('result.error.description'),
                 icon: '📖',
                 score: 85,
                 data: { type: 'error', word },
@@ -154,11 +155,11 @@ export default class DictionarySearchProvider {
             return true;
         }
         if (result.data?.type === 'loading') {
-            element.innerHTML = `<div class="dict-result"><div class="dict-header"><span class="dict-icon">📖</span><span class="dict-word">Looking up "${_escHtml(result.data.word)}"...</span></div></div>`;
+            element.innerHTML = `<div class="dict-result"><div class="dict-header"><span class="dict-icon">📖</span><span class="dict-word">${_escHtml(this.t('render.looking_up', { word: result.data.word }))}</span></div></div>`;
             return true;
         }
         if (result.data?.type === 'not_found') {
-            element.innerHTML = `<div class="dict-result"><div class="dict-header"><span class="dict-icon">📖</span><span class="dict-word">No definition found for "${_escHtml(result.data.word)}"</span></div></div>`;
+            element.innerHTML = `<div class="dict-result"><div class="dict-header"><span class="dict-icon">📖</span><span class="dict-word">${_escHtml(this.t('render.no_definition', { word: result.data.word }))}</span></div></div>`;
             return true;
         }
         return false;
@@ -205,8 +206,8 @@ export default class DictionarySearchProvider {
         return {
             id: 'dict-not-found',
             type: 'dictionary',
-            label: `No definition found for "${word}"`,
-            description: 'Try a different spelling',
+            label: this.t('result.not_found.label', { word }),
+            description: this.t('result.not_found.description'),
             icon: '📖',
             score: 85,
             data: { type: 'not_found', word },
@@ -217,7 +218,7 @@ export default class DictionarySearchProvider {
         return {
             id: 'dict-loading',
             type: 'dictionary',
-            label: `Looking up "${word}"...`,
+            label: this.t('result.loading.label', { word }),
             description: '',
             icon: '📖',
             score: 85,
@@ -248,8 +249,8 @@ export default class DictionarySearchProvider {
                 .map((s, i) => ({
                     id: `dict-suggest:${s.word}`,
                     type: 'dictionary',
-                    label: `Did you mean: ${s.word}?`,
-                    description: 'Press Enter to copy corrected word',
+                    label: this.t('result.suggestion.label', { word: s.word }),
+                    description: this.t('result.suggestion.description'),
                     icon: '📖',
                     score: 82 - i,
                     data: { type: 'suggestion', word: s.word },
@@ -335,7 +336,7 @@ export default class DictionarySearchProvider {
 
         let synHtml = '';
         if (data.synonyms.length > 0) {
-            synHtml = `<div class="dict-syn">Syn: ${data.synonyms.map(s => _escHtml(s)).join(', ')}</div>`;
+            synHtml = `<div class="dict-syn">${_escHtml(this.t('render.synonyms_label'))} ${data.synonyms.map(s => _escHtml(s)).join(', ')}</div>`;
         }
 
         let exHtml = '';
@@ -359,7 +360,7 @@ export default class DictionarySearchProvider {
         return `
             <div class="dict-result dict-suggestion">
                 <span class="dict-icon">🔤</span>
-                <span class="dict-suggest-text">Did you mean <strong>${_escHtml(data.word)}</strong>?</span>
+                <span class="dict-suggest-text">${_escHtml(this.t('render.suggestion_text'))} <strong>${_escHtml(data.word)}</strong>?</span>
             </div>
         `;
     }

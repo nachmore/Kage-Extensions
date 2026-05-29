@@ -12,9 +12,99 @@
     "_source_hash": "71f62720d8c6e809"
   },
   "manifest.description": {
-    "message": "Thẻ xem trước phong phú cho các URL trong phản hồi AI  ảnh hero Open Graph, mô tả và favicon, kèm bộ nhớ đệm trên đĩa thân thiện ngoại tuyến.",
+    "message": "Thẻ xem trước liên kết phong phú cho các URL trong phản hồi AI  ảnh hero Open Graph, mô tả và favicon, với bộ nhớ đệm trên đĩa thân thiện khi ngoại tuyến.",
     "description": "Extension description",
     "_machine_translated": true,
-    "_source_hash": "8715cca27a85ca14"
+    "_source_hash": "1115a6d66a236b52"
+  },
+  "card.aria_label": {
+    "message": "Xem trước liên kết: {title}",
+    "description": "Aria label on a link-preview card",
+    "_machine_translated": true,
+    "_source_hash": "0d14ec57b9273822"
+  },
+  "settings.description": {
+    "message": "Hiển thị thẻ xem trước nội tuyến cho các URL trong phản hồi AI.",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "8f8fad89bd661f18"
+  },
+  "settings.enabled.label": {
+    "message": "Bật xem trước liên kết",
+    "description": "Settings: enable toggle label",
+    "_machine_translated": true,
+    "_source_hash": "8d8bac295d1fb446"
+  },
+  "settings.enabled.description": {
+    "message": "Hiển thị thẻ xem trước cho các URL được tìm thấy trong tin nhắn của trợ lý.",
+    "description": "Settings: enable toggle description",
+    "_machine_translated": true,
+    "_source_hash": "a09c739f5e71639d"
+  },
+  "settings.show_images.label": {
+    "message": "Hiển thị ảnh hero",
+    "description": "Settings: hero images toggle label",
+    "_machine_translated": true,
+    "_source_hash": "780bd9e8467dff8a"
+  },
+  "settings.show_images.description": {
+    "message": "Hiển thị ảnh Open Graph hoặc Twitter Card của trang khi có sẵn. Tắt để giữ thẻ gọn gàng (không có ảnh nào).",
+    "description": "Settings: hero images toggle description",
+    "_machine_translated": true,
+    "_source_hash": "93de34f690c3ff82"
+  },
+  "settings.max_previews.label": {
+    "message": "Số xem trước tối đa mỗi tin nhắn",
+    "description": "Settings: max previews label",
+    "_machine_translated": true,
+    "_source_hash": "0b07938756b890da"
+  },
+  "settings.max_previews.description": {
+    "message": "Giới hạn số thẻ xem trước hiển thị trên mỗi tin nhắn để tránh lộn xộn.",
+    "description": "Settings: max previews description",
+    "_machine_translated": true,
+    "_source_hash": "9210823b6078eb39"
+  },
+  "settings.section.cache": {
+    "message": "Bộ nhớ đệm",
+    "description": "Settings section: cache",
+    "_machine_translated": true,
+    "_source_hash": "eb6835b21d425ab6"
+  },
+  "settings.cache.info_html": {
+    "message": "Siêu dữ liệu đã tải được lưu trên đĩa tối đa 7 ngày để khi mở lại cuộc trò chuyện không phải tải lại mọi URL. Các lần tải thất bại được lưu trong thời gian ngắn để các lỗi tạm thời tự khôi phục.",
+    "description": "Settings: cache info text",
+    "_machine_translated": true,
+    "_source_hash": "3bdf171c7cecf3ef"
+  },
+  "settings.cache_stats.label": {
+    "message": "Hiển thị dung lượng bộ nhớ đệm",
+    "description": "Settings: cache stats button label",
+    "_machine_translated": true,
+    "_source_hash": "c372374c660f33ba"
+  },
+  "settings.cache_stats.description": {
+    "message": "Kiểm tra dung lượng đĩa mà bộ nhớ đệm xem trước liên kết đang sử dụng.",
+    "description": "Settings: cache stats button description",
+    "_machine_translated": true,
+    "_source_hash": "9bdb5c472c2c9222"
+  },
+  "settings.cache_clear.label": {
+    "message": "Xóa bộ nhớ đệm",
+    "description": "Settings: clear cache button label",
+    "_machine_translated": true,
+    "_source_hash": "a49f545073f8b034"
+  },
+  "settings.cache_clear.description": {
+    "message": "Xóa sạch bộ nhớ đệm. Hãy dùng tùy chọn này nếu một bản xem trước liên kết trông cũ hoặc sai.",
+    "description": "Settings: clear cache button description",
+    "_machine_translated": true,
+    "_source_hash": "d70f570cfe2407d5"
+  },
+  "settings.cache_clear.confirm": {
+    "message": "Xóa tất cả bản xem trước liên kết đã lưu? Các URL sẽ được tải lại vào lần xuất hiện kế tiếp.",
+    "description": "Confirmation prompt before clearing cache",
+    "_machine_translated": true,
+    "_source_hash": "f0b0851ffc83c81e"
   }
 }

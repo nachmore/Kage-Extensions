@@ -2,10 +2,12 @@ export default class SnippetsSettingsProvider {
     initialize(context) {
         this.invoke = context.invoke;
         this.config = context.config || {};
+        this.t = context.i18n?.t?.bind(context.i18n) || ((k) => k);
     }
     onConfigUpdate(config) { this.config = config || {}; }
 
     async getSettings() {
+        const t = this.t;
         const raw = await this.invoke('load_extension_data', { key: 'snippets' });
         const all = raw ? JSON.parse(raw) : {};
         const count = Object.keys(all).length;
@@ -17,18 +19,18 @@ export default class SnippetsSettingsProvider {
                 return `<li><strong>${escapeHtml(name)}</strong> &mdash; <code>${escapeHtml(preview)}</code></li>`;
             })
             .join('');
+        const countHtml = t('settings.info.saved_count', { count, plural: count === 1 ? '' : 's' });
+        const bodyHtml = count > 0 ? `<ul>${list}</ul>` : t('settings.info.none_yet');
         return {
-            description: 'Save bits of text — canned replies, addresses, commands, code blocks — and copy them with one keystroke.',
+            description: t('settings.description'),
             sections: [
                 {
                     controls: [
-                        { type: 'checkbox', id: 'enabled', label: 'Enable', default: true },
-                        { type: 'text', id: 'trigger', label: 'Trigger word', default: 'snip', maxWidth: 120 },
+                        { type: 'checkbox', id: 'enabled', label: t('settings.enabled.label'), default: true },
+                        { type: 'text', id: 'trigger', label: t('settings.trigger.label'), default: 'snip', maxWidth: 120 },
                         {
                             type: 'info',
-                            html: `<p><strong>${count} snippet${count === 1 ? '' : 's'} saved.</strong></p>` +
-                                (count > 0 ? `<ul>${list}</ul>` : '<p>None yet.</p>') +
-                                '<p><em>Usage:</em> <code>snip name</code> to copy, <code>snip+ name body</code> to save, <code>snip- name</code> to delete.</p>',
+                            html: countHtml + bodyHtml + t('settings.info.usage_html'),
                         },
                     ],
                 },

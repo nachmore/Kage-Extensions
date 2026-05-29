@@ -16,5 +16,149 @@
     "description": "Extension description",
     "_machine_translated": true,
     "_source_hash": "23f2411c0957401e"
+  },
+  "result.error.label": {
+    "message": "📖 \"{word}\" नहीं ढूँढ सके",
+    "description": "Error label when dictionary lookup fails",
+    "_machine_translated": true,
+    "_source_hash": "26fa9b62e8c2308d"
+  },
+  "result.error.description": {
+    "message": "नेटवर्क त्रुटि — अपना कनेक्शन जाँचें",
+    "description": "Error description for failed lookup",
+    "_machine_translated": true,
+    "_source_hash": "6a528e1a02f5df4a"
+  },
+  "result.not_found.label": {
+    "message": "\"{word}\" के लिए कोई परिभाषा नहीं मिली",
+    "description": "Label when word has no definition",
+    "_machine_translated": true,
+    "_source_hash": "d8badf7aa4e38bae"
+  },
+  "result.not_found.description": {
+    "message": "अलग वर्तनी आज़माएँ",
+    "description": "Hint when no definition was found",
+    "_machine_translated": true,
+    "_source_hash": "f26c73ffe19ef7fa"
+  },
+  "result.loading.label": {
+    "message": "\"{word}\" खोजा जा रहा है...",
+    "description": "Loading label while definition fetches",
+    "_machine_translated": true,
+    "_source_hash": "a3266221037cb0d7"
+  },
+  "result.suggestion.label": {
+    "message": "क्या आपका मतलब था: {word}?",
+    "description": "Spell-correction suggestion label",
+    "_machine_translated": true,
+    "_source_hash": "05e11a0aeb79492a"
+  },
+  "result.suggestion.description": {
+    "message": "सही शब्द कॉपी करने के लिए Enter दबाएँ",
+    "description": "Spell-correction suggestion description",
+    "_machine_translated": true,
+    "_source_hash": "7e7e96bfc765a8e3"
+  },
+  "render.looking_up": {
+    "message": "\"{word}\" खोजा जा रहा है...",
+    "description": "Inline 'looking up' header in detail render",
+    "_machine_translated": true,
+    "_source_hash": "dc34da96dd70f9da"
+  },
+  "render.no_definition": {
+    "message": "\"{word}\" के लिए कोई परिभाषा नहीं मिली",
+    "description": "Inline 'no definition' header in detail render",
+    "_machine_translated": true,
+    "_source_hash": "a68d1cc259f7e0ab"
+  },
+  "render.synonyms_label": {
+    "message": "पर्या:",
+    "description": "Synonyms section prefix",
+    "_machine_translated": true,
+    "_source_hash": "0795db7980a91647"
+  },
+  "render.suggestion_text": {
+    "message": "क्या आपका मतलब था",
+    "description": "Suggestion HTML prefix",
+    "_machine_translated": true,
+    "_source_hash": "d35bcd93b5b84204"
+  },
+  "settings.description": {
+    "message": "शब्दों की परिभाषाएँ, वर्तनी सुधार और उच्चारण देखें। FreeDictionaryAPI.com (Wiktionary डेटा) द्वारा संचालित।",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "4a6876370e806ad0"
+  },
+  "settings.trigger.label": {
+    "message": "ट्रिगर कीवर्ड",
+    "description": "Settings: trigger keyword label",
+    "_machine_translated": true,
+    "_source_hash": "e31045bbce24b0f7"
+  },
+  "settings.trigger.description": {
+    "message": "शब्दकोश लुकअप सक्रिय करने के लिए इस कीवर्ड के बाद स्पेस टाइप करें (जैसे \"dict hello\")। किसी भी टाइप किए गए शब्द को खोजने के लिए खाली छोड़ें।",
+    "description": "Settings: trigger keyword description",
+    "_machine_translated": true,
+    "_source_hash": "d6848ef9ee8f5c82"
+  },
+  "settings.language.label": {
+    "message": "भाषा",
+    "description": "Settings: language select label",
+    "_machine_translated": true,
+    "_source_hash": "717cd225449abe95"
+  },
+  "settings.language.description": {
+    "message": "लुकअप के लिए शब्दकोश भाषा। ऑटो-डिटेक्ट भाषा पहचानने के लिए tinyld का उपयोग करता है। FreeDictionaryAPI.com के माध्यम से 250+ भाषाओं का समर्थन करता है।",
+    "description": "Settings: language select description",
+    "_machine_translated": true,
+    "_source_hash": "6bd5f5d3c31bc5f2"
+  },
+  "settings.language.auto": {
+    "message": "स्वतः पहचान",
+    "description": "Auto-detect language option",
+    "_machine_translated": true,
+    "_source_hash": "62c3494299cbcada"
+  },
+  "settings.show_pronunciation.label": {
+    "message": "उच्चारण दिखाएँ",
+    "description": "Settings: show pronunciation toggle label",
+    "_machine_translated": true,
+    "_source_hash": "3bb974161d86d4bb"
+  },
+  "settings.show_pronunciation.description": {
+    "message": "उपलब्ध होने पर IPA उच्चारण दिखाएँ",
+    "description": "Settings: show pronunciation toggle description",
+    "_machine_translated": true,
+    "_source_hash": "1edcb2f4624bd4f1"
+  },
+  "settings.show_examples.label": {
+    "message": "उदाहरण दिखाएँ",
+    "description": "Settings: show examples toggle label",
+    "_machine_translated": true,
+    "_source_hash": "adee122b133ca243"
+  },
+  "settings.show_examples.description": {
+    "message": "उपलब्ध होने पर उपयोग के उदाहरण दिखाएँ",
+    "description": "Settings: show examples toggle description",
+    "_machine_translated": true,
+    "_source_hash": "32e532ff2cb0ec62"
+  },
+  "settings.show_synonyms.label": {
+    "message": "पर्यायवाची दिखाएँ",
+    "description": "Settings: show synonyms toggle label",
+    "_machine_translated": true,
+    "_source_hash": "b1a51bfe3e343b5f"
+  },
+  "settings.show_synonyms.description": {
+    "message": "उपलब्ध होने पर पर्यायवाची दिखाएँ",
+    "description": "Settings: show synonyms toggle description",
+    "_machine_translated": true,
+    "_source_hash": "585585fd8530cfcb"
+  },
+  "settings.attribution.html": {
+    "message": "डेटा <a href=\"https://en.wiktionary.org/\" target=\"_blank\">Wiktionary</a> से <a href=\"https://freedictionaryapi.com/\" target=\"_blank\">FreeDictionaryAPI.com</a> के माध्यम से <a href=\"https://creativecommons.org/licenses/by-sa/4.0/\" target=\"_blank\">CC BY-SA 4.0</a> के तहत प्राप्त किया गया। वर्तनी सुझाव <a href=\"https://www.datamuse.com/\" target=\"_blank\">Datamuse</a> द्वारा।",
+    "description": "Settings: attribution info text",
+    "_machine_translated": true,
+    "_source_hash": "ec30fe1abb2842cf"
   }
 }

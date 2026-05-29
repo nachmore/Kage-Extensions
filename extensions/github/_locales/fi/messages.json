@@ -16,5 +16,125 @@
     "description": "Extension description",
     "_machine_translated": true,
     "_source_hash": "cf3213df81c4f097"
+  },
+  "result.home.label": {
+    "message": "GitHub · Avaa github.com",
+    "description": "Result label when only the trigger is typed",
+    "_machine_translated": true,
+    "_source_hash": "b6eafc95b31667d0"
+  },
+  "result.home.description": {
+    "message": "Tai kirjoita ”gh <kysely>” hakeaksesi repoja",
+    "description": "Hint to search after the trigger",
+    "_machine_translated": true,
+    "_source_hash": "c872db2af40296be"
+  },
+  "result.me.label": {
+    "message": "GitHub · Avaa profiilini",
+    "description": "Result label for opening the user's GitHub profile",
+    "_machine_translated": true,
+    "_source_hash": "3f3a6f385df7c81e"
+  },
+  "result.me.description": {
+    "message": "(käyttää tokenia jos määritetty, muuten github.com etusivu)",
+    "description": "Hint that token-aware lookup is used",
+    "_machine_translated": true,
+    "_source_hash": "54d57f46be8c2890"
+  },
+  "result.searching.label": {
+    "message": "GitHub · Haetaan ”{query}”…",
+    "description": "Loading label while async search runs",
+    "_machine_translated": true,
+    "_source_hash": "4b8084ae1e4c57c8"
+  },
+  "result.error.label": {
+    "message": "GitHub-haku epäonnistui",
+    "description": "Label when search throws",
+    "_machine_translated": true,
+    "_source_hash": "bd8f0076c981725b"
+  },
+  "settings.description": {
+    "message": "Hae GitHubista käynnistimestä. Toimii ilman kirjautumista 60 pyyntöön/h asti (per IP). Valinnainen: liitä fine-grained personal access token saadaksesi 5 000 pyyntöä/h ja pääsyn yksityisiin repoihin. Token tallennetaan paikallisesti Kagen hiekkalaatikoidun laajennuksen tietoihin.",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "096fabdf2865ace3"
+  },
+  "settings.enabled.label": {
+    "message": "Ota käyttöön",
+    "description": "Settings: enable toggle",
+    "_machine_translated": true,
+    "_source_hash": "813fb292fb3bfe0d"
+  },
+  "settings.trigger.label": {
+    "message": "Liipaisin",
+    "description": "Settings: trigger word label",
+    "_machine_translated": true,
+    "_source_hash": "96f47964f4358372"
+  },
+  "settings.section.access": {
+    "message": "GitHub-pääsy (valinnainen)",
+    "description": "Settings section heading",
+    "_machine_translated": true,
+    "_source_hash": "65d353111422ac3b"
+  },
+  "settings.access.intro_html": {
+    "message": "<p>Luo fine-grained personal access token osoitteessa <a href=\"https://github.com/settings/personal-access-tokens/new\">github.com/settings/personal-access-tokens/new</a>. <em>Vain luku</em> -oikeus haettaviin repoihin / issueihin / käyttäjiin riittää. Token ei poistu koneeltasi muuten kuin Authorization-otsakkeessa osoitteeseen <code>api.github.com</code>.</p>",
+    "description": "Intro html in settings",
+    "_machine_translated": true,
+    "_source_hash": "da1ef02e09e2a79f"
+  },
+  "settings.access.token_saved_html": {
+    "message": "<p><strong>Token tallennettu.</strong> Liitä uusi korvataksesi, tai napsauta <em>Unohda token</em> poistaaksesi.</p>",
+    "description": "Shown when a token is already saved",
+    "_machine_translated": true,
+    "_source_hash": "37c9c6f5f61bbbcb"
+  },
+  "settings.token_input.label": {
+    "message": "Token",
+    "description": "Settings: token input label",
+    "_machine_translated": true,
+    "_source_hash": "5961c53b3862be04"
+  },
+  "settings.save_token.label": {
+    "message": "Tallenna token",
+    "description": "Settings: save token action label",
+    "_machine_translated": true,
+    "_source_hash": "0be88428b7ed35d4"
+  },
+  "settings.clear_token.label": {
+    "message": "Unohda token",
+    "description": "Settings: clear token action label",
+    "_machine_translated": true,
+    "_source_hash": "0a797b8748a16eee"
+  },
+  "settings.clear_token.confirm": {
+    "message": "Unohdetaanko tallennettu GitHub-token? Tulevat haut palautuvat 60 pyynnön/h julkiseen rajaan.",
+    "description": "Confirmation prompt before forgetting the token",
+    "_machine_translated": true,
+    "_source_hash": "c8745b14624c50d6"
+  },
+  "action.save_token.empty": {
+    "message": "⚠️ Liitä token ensin.",
+    "description": "Status when save action runs without input",
+    "_machine_translated": true,
+    "_source_hash": "b57474d5250af9a6"
+  },
+  "action.save_token.invalid": {
+    "message": "⚠️ Ei näytä GitHub-tokenilta.",
+    "description": "Status when token format is unexpected",
+    "_machine_translated": true,
+    "_source_hash": "3fd9c6334d9895da"
+  },
+  "action.save_token.success": {
+    "message": "✅ Token tallennettu.",
+    "description": "Status when token saves successfully",
+    "_machine_translated": true,
+    "_source_hash": "566d5afa1d7f53bf"
+  },
+  "action.clear_token.success": {
+    "message": "✅ Token unohdettu.",
+    "description": "Status when token is cleared",
+    "_machine_translated": true,
+    "_source_hash": "0fb0a3d9df6b2cc6"
   }
 }

@@ -6,6 +6,7 @@
 export default class ColorPickerSearchProvider {
     initialize(context) {
         this.config = context.config || {};
+        this.t = context.i18n?.t?.bind(context.i18n) || ((k) => k);
     }
 
     onConfigUpdate(config) {
@@ -21,7 +22,7 @@ export default class ColorPickerSearchProvider {
             id: 'color:' + hex,
             type: 'color',
             label: hex.toUpperCase(),
-            description: 'Color preview · Enter to copy',
+            description: this.t('result.color.description'),
             icon: '🎨',
             score: 95,
             data: color,

@@ -10,7 +10,67 @@
     "description": "Extension display name"
   },
   "manifest.description": {
-    "message": "Rich link preview cards for URLs in AI responses  Open Graph hero images, descriptions, and favicons, with offline-friendly disk caching.",
+    "message": "Rich link preview cards for URLs in AI responses  Open Graph hero images, descriptions, and favicons, with offline-friendly disk caching.",
     "description": "Extension description"
+  },
+  "card.aria_label": {
+    "message": "Link preview: {title}",
+    "description": "Aria label on a link-preview card"
+  },
+  "settings.description": {
+    "message": "Shows inline preview cards for URLs in AI responses.",
+    "description": "Settings page description"
+  },
+  "settings.enabled.label": {
+    "message": "Enable Link Previews",
+    "description": "Settings: enable toggle label"
+  },
+  "settings.enabled.description": {
+    "message": "Show preview cards for URLs found in assistant messages.",
+    "description": "Settings: enable toggle description"
+  },
+  "settings.show_images.label": {
+    "message": "Show hero images",
+    "description": "Settings: hero images toggle label"
+  },
+  "settings.show_images.description": {
+    "message": "Render the page's Open Graph or Twitter Card image when available. Turn off to keep cards compact (no images at all).",
+    "description": "Settings: hero images toggle description"
+  },
+  "settings.max_previews.label": {
+    "message": "Max Previews Per Message",
+    "description": "Settings: max previews label"
+  },
+  "settings.max_previews.description": {
+    "message": "Limit the number of preview cards shown per message to avoid clutter.",
+    "description": "Settings: max previews description"
+  },
+  "settings.section.cache": {
+    "message": "Cache",
+    "description": "Settings section: cache"
+  },
+  "settings.cache.info_html": {
+    "message": "Fetched metadata is cached on disk for up to 7 days so reopening a chat does not re-fetch every URL. Failed fetches are cached briefly so transient errors recover on their own.",
+    "description": "Settings: cache info text"
+  },
+  "settings.cache_stats.label": {
+    "message": "Show cache size",
+    "description": "Settings: cache stats button label"
+  },
+  "settings.cache_stats.description": {
+    "message": "Check how much disk space the link-preview cache is using.",
+    "description": "Settings: cache stats button description"
+  },
+  "settings.cache_clear.label": {
+    "message": "Clear cache",
+    "description": "Settings: clear cache button label"
+  },
+  "settings.cache_clear.description": {
+    "message": "Wipe the cache. Use this if a link preview looks stale or wrong.",
+    "description": "Settings: clear cache button description"
+  },
+  "settings.cache_clear.confirm": {
+    "message": "Clear all cached link previews? URLs will be re-fetched the next time they appear.",
+    "description": "Confirmation prompt before clearing cache"
   }
 }

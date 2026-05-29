@@ -12,9 +12,45 @@
     "_source_hash": "205c3e69ca030742"
   },
   "manifest.description": {
-    "message": "নাম দিয়ে ইমোজি খুঁজুন ও কপি করুন। \":fire\" বা \"emoji rocket\" টাইপ করলে সবচেয়ে বেশি ব্যবহৃত প্রায় ১৫০০টি ইমোজির মধ্যে নিকটতম মিল বেছে নেওয়া হয়।",
+    "message": "নাম দিয়ে ইমোজি অনুসন্ধান ও কপি করুন। \":fire\" বা \"emoji rocket\" টাইপ করলে সর্বাধিক ব্যবহৃত প্রায় ১৫০০টি ইমোজির মধ্যে সবচেয়ে কাছাকাছি মিলটি বেছে নেওয়া হয়।",
     "description": "Extension description",
     "_machine_translated": true,
-    "_source_hash": "59640ff70d49d4b7"
+    "_source_hash": "b9390cfd94255409"
+  },
+  "result.hint.label": {
+    "message": "ইমোজি · অনুসন্ধান করতে টাইপ করুন",
+    "description": "Hint label when only the trigger word is typed",
+    "_machine_translated": true,
+    "_source_hash": "a2471f31b8da42e8"
+  },
+  "result.hint.description": {
+    "message": "\"{trigger} fire\" বা \":fire\" চেষ্টা করুন",
+    "description": "Hint description suggesting trigger usage",
+    "_machine_translated": true,
+    "_source_hash": "c66d707a23b3874e"
+  },
+  "settings.description": {
+    "message": "নাম দিয়ে সর্বাধিক ব্যবহৃত প্রায় ২৫০টি ইমোজি অনুসন্ধান করুন। দুটি ট্রিগার শৈলী কাজ করে: <code>emoji fire</code> অথবা শুধু <code>:fire</code>। একটি বেছে নিন এবং ক্লিপবোর্ডে কপি করতে Enter চাপুন।",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "9d1fa3f643108b7e"
+  },
+  "settings.enabled.label": {
+    "message": "সক্ষম করুন",
+    "description": "Settings: enable toggle label",
+    "_machine_translated": true,
+    "_source_hash": "efce5571f8dbd1e9"
+  },
+  "settings.trigger.label": {
+    "message": "ট্রিগার শব্দ",
+    "description": "Settings: trigger word label",
+    "_machine_translated": true,
+    "_source_hash": "5ab4f2dc19af741d"
+  },
+  "settings.shortcode_trigger.label": {
+    "message": "শর্টকোডও মিলিয়ে দেখুন (যেমন \":fire\")",
+    "description": "Settings: shortcode trigger toggle label",
+    "_machine_translated": true,
+    "_source_hash": "a3ef5561dd4cf5f6"
   }
 }

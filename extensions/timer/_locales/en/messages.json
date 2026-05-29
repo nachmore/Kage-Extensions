@@ -12,5 +12,109 @@
   "manifest.description": {
     "message": "Countdown timer and stopwatch with notification sounds",
     "description": "Extension description"
+  },
+  "result.hint.label": {
+    "message": "Timer",
+    "description": "Result label when only the trigger word is typed"
+  },
+  "result.hint.description": {
+    "message": "timer 5m · timer 1h30m · timer 90s",
+    "description": "Hint description showing usage examples"
+  },
+  "result.timer.label": {
+    "message": "Start Timer",
+    "description": "Result label for starting a countdown"
+  },
+  "result.stopwatch.label": {
+    "message": "Stopwatch",
+    "description": "Result label for starting a stopwatch"
+  },
+  "result.press_enter": {
+    "message": "Press Enter",
+    "description": "Generic press-enter description"
+  },
+  "settings.description": {
+    "message": "Type \"timer 5m\" for a countdown or \"stopwatch\" to count up.",
+    "description": "Settings page description"
+  },
+  "settings.section.on_complete": {
+    "message": "When timer completes",
+    "description": "Settings section heading"
+  },
+  "settings.notify_on_complete.label": {
+    "message": "Show system notification",
+    "description": "Settings: notify on complete label"
+  },
+  "settings.notify_on_complete.description": {
+    "message": "Display a desktop notification when the countdown reaches zero.",
+    "description": "Settings: notify on complete description"
+  },
+  "settings.sound_on_complete.label": {
+    "message": "Play sound",
+    "description": "Settings: play sound label"
+  },
+  "settings.sound_on_complete.description": {
+    "message": "Play a notification sound when the countdown reaches zero.",
+    "description": "Settings: play sound description"
+  },
+  "settings.sound_id.label": {
+    "message": "Notification sound",
+    "description": "Settings: sound select label"
+  },
+  "settings.sound_id.description": {
+    "message": "Select a sound to play when the timer completes.",
+    "description": "Settings: sound select description"
+  },
+  "settings.sound_id.option_two_tone": {
+    "message": "Two-Tone Beep",
+    "description": "Sound option: two-tone"
+  },
+  "settings.sound_id.option_chime": {
+    "message": "Chime",
+    "description": "Sound option: chime"
+  },
+  "settings.sound_id.option_alert": {
+    "message": "Alert",
+    "description": "Sound option: alert"
+  },
+  "settings.sound_id.option_gentle": {
+    "message": "Gentle",
+    "description": "Sound option: gentle"
+  },
+  "settings.sound_id.option_bell": {
+    "message": "Bell",
+    "description": "Sound option: bell"
+  },
+  "settings.sound_id.option_success": {
+    "message": "Success",
+    "description": "Sound option: success"
+  },
+  "settings.sound_id.option_custom": {
+    "message": "Custom file...",
+    "description": "Sound option: custom file"
+  },
+  "settings.custom_sound_path.label": {
+    "message": "Custom sound file",
+    "description": "Settings: custom sound path label"
+  },
+  "settings.custom_sound_path.description": {
+    "message": "Path to a .wav or .mp3 file on disk.",
+    "description": "Settings: custom sound path description"
+  },
+  "settings.sound_repeats.label": {
+    "message": "Repeat count",
+    "description": "Settings: repeat count label"
+  },
+  "settings.preview.label": {
+    "message": "▶ Preview sound",
+    "description": "Settings: preview sound button label"
+  },
+  "settings.show_window_on_complete.label": {
+    "message": "Show floating window",
+    "description": "Settings: show window on complete label"
+  },
+  "settings.show_window_on_complete.description": {
+    "message": "Automatically show the floating window if hidden when the timer completes.",
+    "description": "Settings: show window on complete description"
   }
 }

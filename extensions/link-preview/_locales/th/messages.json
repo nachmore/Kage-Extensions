@@ -12,9 +12,99 @@
     "_source_hash": "71f62720d8c6e809"
   },
   "manifest.description": {
-    "message": "การ์ดแสดงตัวอย่างลิงก์แบบสมบูรณ์สำหรับ URL ในคำตอบของ AI พร้อมรูปภาพหลัก Open Graph คำอธิบาย และไอคอนเว็บ รองรับการแคชบนดิสก์เพื่อใช้งานแบบออฟไลน์",
+    "message": "การ์ดแสดงตัวอย่างลิงก์แบบสมบูรณ์สำหรับ URL ในคำตอบของ AI ภาพหลัก Open Graph คำอธิบาย และไอคอนเว็บ พร้อมแคชบนดิสก์ที่ใช้งานแบบออฟไลน์ได้",
     "description": "Extension description",
     "_machine_translated": true,
-    "_source_hash": "8715cca27a85ca14"
+    "_source_hash": "1115a6d66a236b52"
+  },
+  "card.aria_label": {
+    "message": "ตัวอย่างลิงก์: {title}",
+    "description": "Aria label on a link-preview card",
+    "_machine_translated": true,
+    "_source_hash": "0d14ec57b9273822"
+  },
+  "settings.description": {
+    "message": "แสดงการ์ดตัวอย่างแบบอินไลน์สำหรับ URL ในคำตอบของ AI",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "8f8fad89bd661f18"
+  },
+  "settings.enabled.label": {
+    "message": "เปิดใช้งานการแสดงตัวอย่างลิงก์",
+    "description": "Settings: enable toggle label",
+    "_machine_translated": true,
+    "_source_hash": "8d8bac295d1fb446"
+  },
+  "settings.enabled.description": {
+    "message": "แสดงการ์ดตัวอย่างสำหรับ URL ที่พบในข้อความของผู้ช่วย",
+    "description": "Settings: enable toggle description",
+    "_machine_translated": true,
+    "_source_hash": "a09c739f5e71639d"
+  },
+  "settings.show_images.label": {
+    "message": "แสดงภาพหลัก",
+    "description": "Settings: hero images toggle label",
+    "_machine_translated": true,
+    "_source_hash": "780bd9e8467dff8a"
+  },
+  "settings.show_images.description": {
+    "message": "แสดงภาพ Open Graph หรือ Twitter Card ของหน้าเมื่อมี ปิดเพื่อให้การ์ดกะทัดรัด (ไม่มีภาพเลย)",
+    "description": "Settings: hero images toggle description",
+    "_machine_translated": true,
+    "_source_hash": "93de34f690c3ff82"
+  },
+  "settings.max_previews.label": {
+    "message": "จำนวนตัวอย่างสูงสุดต่อข้อความ",
+    "description": "Settings: max previews label",
+    "_machine_translated": true,
+    "_source_hash": "0b07938756b890da"
+  },
+  "settings.max_previews.description": {
+    "message": "จำกัดจำนวนการ์ดตัวอย่างที่แสดงต่อข้อความเพื่อหลีกเลี่ยงความรกตา",
+    "description": "Settings: max previews description",
+    "_machine_translated": true,
+    "_source_hash": "9210823b6078eb39"
+  },
+  "settings.section.cache": {
+    "message": "แคช",
+    "description": "Settings section: cache",
+    "_machine_translated": true,
+    "_source_hash": "eb6835b21d425ab6"
+  },
+  "settings.cache.info_html": {
+    "message": "ข้อมูลเมตาที่ดึงมาจะถูกแคชบนดิสก์ได้นานสูงสุด 7 วัน เพื่อให้การเปิดแชทอีกครั้งไม่ต้องดึงทุก URL ใหม่ การดึงที่ล้มเหลวจะถูกแคชไว้ชั่วครู่ เพื่อให้ข้อผิดพลาดชั่วคราวกู้คืนได้เอง",
+    "description": "Settings: cache info text",
+    "_machine_translated": true,
+    "_source_hash": "3bdf171c7cecf3ef"
+  },
+  "settings.cache_stats.label": {
+    "message": "แสดงขนาดแคช",
+    "description": "Settings: cache stats button label",
+    "_machine_translated": true,
+    "_source_hash": "c372374c660f33ba"
+  },
+  "settings.cache_stats.description": {
+    "message": "ตรวจสอบว่าแคชตัวอย่างลิงก์ใช้พื้นที่ดิสก์ไปเท่าใด",
+    "description": "Settings: cache stats button description",
+    "_machine_translated": true,
+    "_source_hash": "9bdb5c472c2c9222"
+  },
+  "settings.cache_clear.label": {
+    "message": "ล้างแคช",
+    "description": "Settings: clear cache button label",
+    "_machine_translated": true,
+    "_source_hash": "a49f545073f8b034"
+  },
+  "settings.cache_clear.description": {
+    "message": "ล้างแคช ใช้เมื่อตัวอย่างลิงก์ดูไม่อัปเดตหรือไม่ถูกต้อง",
+    "description": "Settings: clear cache button description",
+    "_machine_translated": true,
+    "_source_hash": "d70f570cfe2407d5"
+  },
+  "settings.cache_clear.confirm": {
+    "message": "ล้างตัวอย่างลิงก์ที่แคชไว้ทั้งหมดหรือไม่ URL จะถูกดึงใหม่ในครั้งถัดไปที่ปรากฏ",
+    "description": "Confirmation prompt before clearing cache",
+    "_machine_translated": true,
+    "_source_hash": "f0b0851ffc83c81e"
   }
 }

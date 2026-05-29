@@ -16,5 +16,179 @@
     "description": "Extension description",
     "_machine_translated": true,
     "_source_hash": "249b504d57430c6f"
+  },
+  "result.loading.label": {
+    "message": "📊 {period} রিপোর্ট লোড হচ্ছে...",
+    "description": "Label shown while activity report loads",
+    "_machine_translated": true,
+    "_source_hash": "a004240e6f3fcaf3"
+  },
+  "result.loading.description": {
+    "message": "অ্যাক্টিভিটি ডেটা আনা হচ্ছে",
+    "description": "Description shown while activity report loads",
+    "_machine_translated": true,
+    "_source_hash": "de94d2423bc9a013"
+  },
+  "result.error.label": {
+    "message": "📊 অ্যাক্টিভিটি রিপোর্ট লোড করা যায়নি",
+    "description": "Label shown when report fetch fails",
+    "_machine_translated": true,
+    "_source_hash": "348a7efb884d2839"
+  },
+  "result.summary.label": {
+    "message": "📊 {period}: {time} ট্র্যাক করা হয়েছে",
+    "description": "Activity summary label",
+    "_machine_translated": true,
+    "_source_hash": "80f5ea2944d58d80"
+  },
+  "result.summary.description": {
+    "message": "{switches} সুইচ · {streak}m সেরা ধারা ({app}) · AI সারসংক্ষেপের জন্য Enter চাপুন",
+    "description": "Activity summary description",
+    "_machine_translated": true,
+    "_source_hash": "505ab90472681d45"
+  },
+  "result.app.description": {
+    "message": "{count} সেশন",
+    "description": "App row description",
+    "_machine_translated": true,
+    "_source_hash": "49a3ce91d2335869"
+  },
+  "result.site.description": {
+    "message": "{app}-এর {pct}%",
+    "description": "Site row description",
+    "_machine_translated": true,
+    "_source_hash": "ea862ba31e9d36b5"
+  },
+  "result.insight.label": {
+    "message": "💡 AI ফোকাস ইনসাইট পান",
+    "description": "AI insights row label",
+    "_machine_translated": true,
+    "_source_hash": "b38ae097d7b0c2bd"
+  },
+  "result.insight.description": {
+    "message": "উৎপাদনশীলতার পরামর্শের জন্য AI-কে জিজ্ঞাসা করতে Enter চাপুন",
+    "description": "AI insights row description",
+    "_machine_translated": true,
+    "_source_hash": "83b23c71c9d66544"
+  },
+  "render.summary.title": {
+    "message": "{period}: {time} ট্র্যাক করা হয়েছে",
+    "description": "Summary title in inline render",
+    "_machine_translated": true,
+    "_source_hash": "dae73df6d0d671c5"
+  },
+  "render.summary.meta": {
+    "message": "{switches} সুইচ · {streak}m সেরা ধারা ({app}) · {appCount} অ্যাপ",
+    "description": "Summary meta line in inline render",
+    "_machine_translated": true,
+    "_source_hash": "59daec5b0e1091b0"
+  },
+  "render.app.sessions": {
+    "message": "{count} সেশন",
+    "description": "App sessions count in inline render",
+    "_machine_translated": true,
+    "_source_hash": "3cec6bece20a1f90"
+  },
+  "render.site.parent_pct": {
+    "message": "{app}-এর {pct}%",
+    "description": "Site percentage of parent in inline render",
+    "_machine_translated": true,
+    "_source_hash": "6e32b7767a13f748"
+  },
+  "render.insight.text": {
+    "message": "AI ফোকাস ইনসাইট পান",
+    "description": "Inline insight text",
+    "_machine_translated": true,
+    "_source_hash": "d4fb10c1a8a26281"
+  },
+  "settings.description": {
+    "message": "অ্যাপ ব্যবহার, কনটেক্সট সুইচ এবং ফোকাস ধারা ট্র্যাক করুন। রিপোর্ট দেখতে আপনার ট্রিগার কীওয়ার্ড টাইপ করুন।",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "808a09db07c6c2dc"
+  },
+  "settings.trigger.label": {
+    "message": "ট্রিগার কীওয়ার্ড",
+    "description": "Settings: trigger keyword label",
+    "_machine_translated": true,
+    "_source_hash": "e31045bbce24b0f7"
+  },
+  "settings.trigger.description": {
+    "message": "ফোকাস রিপোর্ট দেখতে এই কীওয়ার্ড টাইপ করুন (যেমন \"focus today\", \"focus week\")।",
+    "description": "Settings: trigger keyword description",
+    "_machine_translated": true,
+    "_source_hash": "d25ff7bcd6b0245d"
+  },
+  "settings.poll_interval.label": {
+    "message": "পোল ইন্টারভাল (সেকেন্ড)",
+    "description": "Settings: poll interval label",
+    "_machine_translated": true,
+    "_source_hash": "eff03bac7ebfd7c6"
+  },
+  "settings.poll_interval.description": {
+    "message": "কত ঘন ঘন সক্রিয় উইন্ডো পরীক্ষা করা হবে। কম = বেশি নির্ভুল কিন্তু বেশি রিসোর্স ব্যবহার করে।",
+    "description": "Settings: poll interval description",
+    "_machine_translated": true,
+    "_source_hash": "2f7d98036a3c54d9"
+  },
+  "settings.auto_start.label": {
+    "message": "স্বয়ংক্রিয় ট্র্যাকিং শুরু",
+    "description": "Settings: auto-start toggle label",
+    "_machine_translated": true,
+    "_source_hash": "4234006ff6820f4f"
+  },
+  "settings.auto_start.description": {
+    "message": "অ্যাপ চালু হলে স্বয়ংক্রিয়ভাবে ট্র্যাকিং শুরু করুন",
+    "description": "Settings: auto-start toggle description",
+    "_machine_translated": true,
+    "_source_hash": "2b2bb02ec327371d"
+  },
+  "settings.section.data_to_track": {
+    "message": "ট্র্যাক করার ডেটা",
+    "description": "Settings section heading",
+    "_machine_translated": true,
+    "_source_hash": "cfd8959a024167cf"
+  },
+  "settings.track_screen_time.label": {
+    "message": "স্ক্রিন টাইম",
+    "description": "Settings: screen time toggle label",
+    "_machine_translated": true,
+    "_source_hash": "8e661b5113dc145c"
+  },
+  "settings.track_screen_time.description": {
+    "message": "প্রতিটি অ্যাপ্লিকেশনে ব্যয় করা সময় ট্র্যাক করুন",
+    "description": "Settings: screen time toggle description",
+    "_machine_translated": true,
+    "_source_hash": "7a0a088c3a230a89"
+  },
+  "settings.track_switches.label": {
+    "message": "কনটেক্সট সুইচ",
+    "description": "Settings: context switches toggle label",
+    "_machine_translated": true,
+    "_source_hash": "b004389d12cd1499"
+  },
+  "settings.track_switches.description": {
+    "message": "আপনি কত বার অ্যাপের মধ্যে স্যুইচ করেন তা গণনা করুন",
+    "description": "Settings: context switches toggle description",
+    "_machine_translated": true,
+    "_source_hash": "287c0d0a0f24b68e"
+  },
+  "settings.track_streaks.label": {
+    "message": "ফোকাস স্ট্রিক",
+    "description": "Settings: focus streaks toggle label",
+    "_machine_translated": true,
+    "_source_hash": "5ce25266a7b929f2"
+  },
+  "settings.track_streaks.description": {
+    "message": "দীর্ঘতম নিরবচ্ছিন্ন ফোকাস সময় ট্র্যাক করুন",
+    "description": "Settings: focus streaks toggle description",
+    "_machine_translated": true,
+    "_source_hash": "78ee2f56696d0840"
+  },
+  "settings.validate.poll_interval_range": {
+    "message": "পোল ইন্টারভাল ২ থেকে ৬০ সেকেন্ডের মধ্যে হতে হবে",
+    "description": "Validation error for poll interval",
+    "_machine_translated": true,
+    "_source_hash": "d768cd635e999624"
   }
 }

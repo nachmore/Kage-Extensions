@@ -16,5 +16,179 @@
     "description": "Extension description",
     "_machine_translated": true,
     "_source_hash": "249b504d57430c6f"
+  },
+  "result.loading.label": {
+    "message": "📊 Indlæser {period}-rapport ...",
+    "description": "Label shown while activity report loads",
+    "_machine_translated": true,
+    "_source_hash": "a004240e6f3fcaf3"
+  },
+  "result.loading.description": {
+    "message": "Henter aktivitetsdata",
+    "description": "Description shown while activity report loads",
+    "_machine_translated": true,
+    "_source_hash": "de94d2423bc9a013"
+  },
+  "result.error.label": {
+    "message": "📊 Kunne ikke indlæse aktivitetsrapport",
+    "description": "Label shown when report fetch fails",
+    "_machine_translated": true,
+    "_source_hash": "348a7efb884d2839"
+  },
+  "result.summary.label": {
+    "message": "📊 {period}: {time} registreret",
+    "description": "Activity summary label",
+    "_machine_translated": true,
+    "_source_hash": "80f5ea2944d58d80"
+  },
+  "result.summary.description": {
+    "message": "{switches} skift · {streak}m bedste stime ({app}) · Tryk Enter for AI-resumé",
+    "description": "Activity summary description",
+    "_machine_translated": true,
+    "_source_hash": "505ab90472681d45"
+  },
+  "result.app.description": {
+    "message": "{count} sessioner",
+    "description": "App row description",
+    "_machine_translated": true,
+    "_source_hash": "49a3ce91d2335869"
+  },
+  "result.site.description": {
+    "message": "{pct} % af {app}",
+    "description": "Site row description",
+    "_machine_translated": true,
+    "_source_hash": "ea862ba31e9d36b5"
+  },
+  "result.insight.label": {
+    "message": "💡 Få AI-fokusindsigt",
+    "description": "AI insights row label",
+    "_machine_translated": true,
+    "_source_hash": "b38ae097d7b0c2bd"
+  },
+  "result.insight.description": {
+    "message": "Tryk Enter for at bede AI'en om produktivitetstips",
+    "description": "AI insights row description",
+    "_machine_translated": true,
+    "_source_hash": "83b23c71c9d66544"
+  },
+  "render.summary.title": {
+    "message": "{period}: {time} registreret",
+    "description": "Summary title in inline render",
+    "_machine_translated": true,
+    "_source_hash": "dae73df6d0d671c5"
+  },
+  "render.summary.meta": {
+    "message": "{switches} skift · {streak}m bedste stime ({app}) · {appCount} apps",
+    "description": "Summary meta line in inline render",
+    "_machine_translated": true,
+    "_source_hash": "59daec5b0e1091b0"
+  },
+  "render.app.sessions": {
+    "message": "{count} sessioner",
+    "description": "App sessions count in inline render",
+    "_machine_translated": true,
+    "_source_hash": "3cec6bece20a1f90"
+  },
+  "render.site.parent_pct": {
+    "message": "{pct} % af {app}",
+    "description": "Site percentage of parent in inline render",
+    "_machine_translated": true,
+    "_source_hash": "6e32b7767a13f748"
+  },
+  "render.insight.text": {
+    "message": "Få AI-fokusindsigt",
+    "description": "Inline insight text",
+    "_machine_translated": true,
+    "_source_hash": "d4fb10c1a8a26281"
+  },
+  "settings.description": {
+    "message": "Spor appforbrug, kontekstskift og fokusstimer. Skriv dit udløserord for at se rapporter.",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "808a09db07c6c2dc"
+  },
+  "settings.trigger.label": {
+    "message": "Udløserord",
+    "description": "Settings: trigger keyword label",
+    "_machine_translated": true,
+    "_source_hash": "e31045bbce24b0f7"
+  },
+  "settings.trigger.description": {
+    "message": "Skriv dette ord for at se fokusrapporter (f.eks. \"focus today\", \"focus week\").",
+    "description": "Settings: trigger keyword description",
+    "_machine_translated": true,
+    "_source_hash": "d25ff7bcd6b0245d"
+  },
+  "settings.poll_interval.label": {
+    "message": "Pollinterval (sekunder)",
+    "description": "Settings: poll interval label",
+    "_machine_translated": true,
+    "_source_hash": "eff03bac7ebfd7c6"
+  },
+  "settings.poll_interval.description": {
+    "message": "Hvor ofte det aktive vindue skal tjekkes. Lavere = mere præcist, men bruger flere ressourcer.",
+    "description": "Settings: poll interval description",
+    "_machine_translated": true,
+    "_source_hash": "2f7d98036a3c54d9"
+  },
+  "settings.auto_start.label": {
+    "message": "Autostart sporing",
+    "description": "Settings: auto-start toggle label",
+    "_machine_translated": true,
+    "_source_hash": "4234006ff6820f4f"
+  },
+  "settings.auto_start.description": {
+    "message": "Start sporing automatisk, når appen åbnes",
+    "description": "Settings: auto-start toggle description",
+    "_machine_translated": true,
+    "_source_hash": "2b2bb02ec327371d"
+  },
+  "settings.section.data_to_track": {
+    "message": "Data der skal spores",
+    "description": "Settings section heading",
+    "_machine_translated": true,
+    "_source_hash": "cfd8959a024167cf"
+  },
+  "settings.track_screen_time.label": {
+    "message": "Skærmtid",
+    "description": "Settings: screen time toggle label",
+    "_machine_translated": true,
+    "_source_hash": "8e661b5113dc145c"
+  },
+  "settings.track_screen_time.description": {
+    "message": "Spor tid brugt i hvert program",
+    "description": "Settings: screen time toggle description",
+    "_machine_translated": true,
+    "_source_hash": "7a0a088c3a230a89"
+  },
+  "settings.track_switches.label": {
+    "message": "Kontekstskift",
+    "description": "Settings: context switches toggle label",
+    "_machine_translated": true,
+    "_source_hash": "b004389d12cd1499"
+  },
+  "settings.track_switches.description": {
+    "message": "Tæl hvor ofte du skifter mellem apps",
+    "description": "Settings: context switches toggle description",
+    "_machine_translated": true,
+    "_source_hash": "287c0d0a0f24b68e"
+  },
+  "settings.track_streaks.label": {
+    "message": "Fokusstreaks",
+    "description": "Settings: focus streaks toggle label",
+    "_machine_translated": true,
+    "_source_hash": "5ce25266a7b929f2"
+  },
+  "settings.track_streaks.description": {
+    "message": "Spor de længste uafbrudte fokusperioder",
+    "description": "Settings: focus streaks toggle description",
+    "_machine_translated": true,
+    "_source_hash": "78ee2f56696d0840"
+  },
+  "settings.validate.poll_interval_range": {
+    "message": "Poll-interval skal være mellem 2 og 60 sekunder",
+    "description": "Validation error for poll interval",
+    "_machine_translated": true,
+    "_source_hash": "d768cd635e999624"
   }
 }

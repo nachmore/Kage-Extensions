@@ -14,6 +14,7 @@ export default class FocusTrackerSearchProvider {
     initialize(context) {
         this.config = context.config || {};
         this.invoke = context.invoke;
+        this.t = context.i18n?.t?.bind(context.i18n) || ((k) => k);
         this._cache = new Map();
         this._started = false;
 
@@ -45,8 +46,8 @@ export default class FocusTrackerSearchProvider {
         return [{
             id: `focus-loading-${parsed.period}`,
             type: 'focus-tracker',
-            label: `📊 Loading ${parsed.period} report...`,
-            description: 'Fetching activity data',
+            label: this.t('result.loading.label', { period: parsed.period }),
+            description: this.t('result.loading.description'),
             icon: '📊',
             score: 86,
             data: { type: 'loading', period: parsed.period },
@@ -83,7 +84,7 @@ export default class FocusTrackerSearchProvider {
             return [{
                 id: 'focus-error',
                 type: 'focus-tracker',
-                label: '📊 Could not load activity report',
+                label: this.t('result.error.label'),
                 description: String(e),
                 icon: '📊',
                 score: 85,
@@ -186,8 +187,8 @@ export default class FocusTrackerSearchProvider {
         results.push({
             id: `focus-summary-${period}`,
             type: 'focus-tracker',
-            label: `📊 ${report.period}: ${timeStr} tracked`,
-            description: `${report.context_switches} switches · ${streakMin}m best streak (${report.longest_streak_app}) · Enter for AI summary`,
+            label: this.t('result.summary.label', { period: report.period, time: timeStr }),
+            description: this.t('result.summary.description', { switches: report.context_switches, streak: streakMin, app: report.longest_streak_app }),
             icon: '📊',
             score: 86,
             data: {
@@ -216,7 +217,7 @@ export default class FocusTrackerSearchProvider {
                     id: `focus-app-${period}-${app.process_name}`,
                     type: 'focus-tracker',
                     label: `${app.display_name}: ${appTime} (${pct}%)`,
-                    description: `${app.switches_to} sessions`,
+                    description: this.t('result.app.description', { count: app.switches_to }),
                     icon: _appEmoji(app.process_name),
                     // Use high base score minus a small fraction per app to maintain order
                     // Sites use the same base minus smaller fractions to stay under their parent
@@ -243,7 +244,7 @@ export default class FocusTrackerSearchProvider {
                             id: `focus-site-${period}-${app.process_name}-${j}`,
                             type: 'focus-tracker',
                             label: `  ${site.site}: ${siteTime}`,
-                            description: `${sitePct}% of ${app.display_name}`,
+                            description: this.t('result.site.description', { pct: sitePct, app: app.display_name }),
                             icon: '🔹',
                             score: 85 - (i * 0.01) - ((j + 1) * 0.001),
                             tooltip: `${site.site}: ${siteTime} (${sitePct}% of ${app.display_name})`,
@@ -267,8 +268,8 @@ export default class FocusTrackerSearchProvider {
             results.push({
                 id: `focus-insight-${period}`,
                 type: 'focus-tracker',
-                label: '💡 Get AI focus insights',
-                description: 'Press Enter to ask the AI for productivity tips',
+                label: this.t('result.insight.label'),
+                description: this.t('result.insight.description'),
                 icon: '💡',
                 score: 80,
                 data: {
@@ -291,8 +292,8 @@ export default class FocusTrackerSearchProvider {
             <div class="focus-result focus-summary">
                 <span class="focus-icon">📊</span>
                 <div class="focus-summary-content">
-                    <div class="focus-title">${_esc(data.period)}: ${_esc(data.timeStr)} tracked</div>
-                    <div class="focus-meta">${data.switches} switches · ${data.streakMin}m best streak (${_esc(data.streakApp)}) · ${data.appCount} apps</div>
+                    <div class="focus-title">${_esc(this.t('render.summary.title', { period: data.period, time: data.timeStr }))}</div>
+                    <div class="focus-meta">${_esc(this.t('render.summary.meta', { switches: data.switches, streak: data.streakMin, app: data.streakApp, appCount: data.appCount }))}</div>
                 </div>
             </div>
         `;
@@ -305,7 +306,7 @@ export default class FocusTrackerSearchProvider {
                 <div class="focus-app-info">
                     <span class="focus-app-name">${_esc(data.name)}</span>
                     <span class="focus-app-time">${_esc(data.time)} (${data.pct}%)</span>
-                    <span class="focus-app-sessions">${data.sessions} sessions</span>
+                    <span class="focus-app-sessions">${_esc(this.t('render.app.sessions', { count: data.sessions }))}</span>
                 </div>
             </div>
         `;
@@ -318,7 +319,7 @@ export default class FocusTrackerSearchProvider {
                 <div class="focus-app-info">
                     <span class="focus-app-name focus-site-name">🔹 ${_esc(data.site)}</span>
                     <span class="focus-app-time">${_esc(data.time)}</span>
-                    <span class="focus-app-sessions">${data.pct}% of ${_esc(data.parentApp)}</span>
+                    <span class="focus-app-sessions">${_esc(this.t('render.site.parent_pct', { pct: data.pct, app: data.parentApp }))}</span>
                 </div>
             </div>
         `;
@@ -328,7 +329,7 @@ export default class FocusTrackerSearchProvider {
         return `
             <div class="focus-result focus-insight">
                 <span class="focus-icon">💡</span>
-                <span class="focus-insight-text">Get AI focus insights</span>
+                <span class="focus-insight-text">${_esc(this.t('render.insight.text'))}</span>
             </div>
         `;
     }

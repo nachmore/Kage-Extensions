@@ -16,5 +16,149 @@
     "description": "Extension description",
     "_machine_translated": true,
     "_source_hash": "49d4746132984668"
+  },
+  "result.uuid.label": {
+    "message": "UUID v4",
+    "description": "Result label for UUID generation",
+    "_machine_translated": true,
+    "_source_hash": "d3fe489b61b340eb"
+  },
+  "result.copy_hint": {
+    "message": "Kopioi painamalla Enter",
+    "description": "Description hint shown next to copyable results",
+    "_machine_translated": true,
+    "_source_hash": "b02c13cf1ffa5cd0"
+  },
+  "result.copy_hint_short": {
+    "message": "Kopioi: Enter",
+    "description": "Shorter copy hint",
+    "_machine_translated": true,
+    "_source_hash": "6ca21eed070240ef"
+  },
+  "result.base64_encode.label": {
+    "message": "Base64-koodaus",
+    "description": "Result label for base64 encoding",
+    "_machine_translated": true,
+    "_source_hash": "6073aa5da178f89b"
+  },
+  "result.base64_encode.description": {
+    "message": "”{text}” → kopioi painamalla Enter",
+    "description": "Description for base64 encode result",
+    "_machine_translated": true,
+    "_source_hash": "466a20bfd2ecd1dc"
+  },
+  "result.base64_decode.label": {
+    "message": "Base64-purku",
+    "description": "Result label for base64 decoding",
+    "_machine_translated": true,
+    "_source_hash": "414db3097f8ee0db"
+  },
+  "result.hash.label": {
+    "message": "{algo}-tiiviste",
+    "description": "Result label for hash calculation",
+    "_machine_translated": true,
+    "_source_hash": "66480e8f9bdff6f1"
+  },
+  "result.hash.computing": {
+    "message": "Lasketaan...",
+    "description": "Hash computing description",
+    "_machine_translated": true,
+    "_source_hash": "285c7eb7307e4e0f"
+  },
+  "result.epoch.label": {
+    "message": "Epoch → päivämäärä",
+    "description": "Result label for epoch-to-date conversion",
+    "_machine_translated": true,
+    "_source_hash": "b7f91cf41909a0db"
+  },
+  "result.epoch_now.label": {
+    "message": "Nykyinen epoch",
+    "description": "Result label for current epoch timestamp",
+    "_machine_translated": true,
+    "_source_hash": "575ea42947bc47f7"
+  },
+  "result.json_format.label": {
+    "message": "Muotoile JSON",
+    "description": "Result label for JSON formatting",
+    "_machine_translated": true,
+    "_source_hash": "5de3ec6192458850"
+  },
+  "result.json_format.description": {
+    "message": "{count} avainta · kopioi painamalla Enter",
+    "description": "Description for JSON format result",
+    "_machine_translated": true,
+    "_source_hash": "3917600f856833ae"
+  },
+  "settings.description": {
+    "message": "UUID-generointi, Base64-koodaus/-purku, tiivistäminen, epoch-muunnos, JSON-muotoilu.",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "97722a102e9aa297"
+  },
+  "settings.section.individual_tools": {
+    "message": "Yksittäiset työkalut",
+    "description": "Settings section label",
+    "_machine_translated": true,
+    "_source_hash": "9ae76124a4a4e933"
+  },
+  "settings.uuid.label": {
+    "message": "UUID-generaattori",
+    "description": "Settings: UUID toggle label",
+    "_machine_translated": true,
+    "_source_hash": "879d62558ec3a6d1"
+  },
+  "settings.uuid.description": {
+    "message": "Kirjoita ”uuid” luodaksesi satunnaisen UUID v4 -tunnisteen.",
+    "description": "Settings: UUID toggle description",
+    "_machine_translated": true,
+    "_source_hash": "06b39caeb2f6ec17"
+  },
+  "settings.base64.label": {
+    "message": "Base64-koodaus/-purku",
+    "description": "Settings: Base64 toggle label",
+    "_machine_translated": true,
+    "_source_hash": "c51aa045ef4ce6c8"
+  },
+  "settings.base64.description": {
+    "message": "Kirjoita ”base64 teksti” koodataksesi tai ”b64d koodattu” purkaaksesi.",
+    "description": "Settings: Base64 toggle description",
+    "_machine_translated": true,
+    "_source_hash": "5442e1fb29755519"
+  },
+  "settings.hash.label": {
+    "message": "Tiivistelaskin",
+    "description": "Settings: hash toggle label",
+    "_machine_translated": true,
+    "_source_hash": "7938519ccb1b9c7f"
+  },
+  "settings.hash.description": {
+    "message": "Kirjoita ”md5 teksti”, ”sha1 teksti”, ”sha256 teksti” tai ”sha512 teksti”.",
+    "description": "Settings: hash toggle description",
+    "_machine_translated": true,
+    "_source_hash": "342e5f6a3cb93c29"
+  },
+  "settings.epoch.label": {
+    "message": "Epoch/päivämäärä-muunnin",
+    "description": "Settings: epoch toggle label",
+    "_machine_translated": true,
+    "_source_hash": "b4d8c2df0372658b"
+  },
+  "settings.epoch.description": {
+    "message": "Kirjoita Unix-aikaleima nähdäksesi päivämäärän tai ”now” saadaksesi nykyisen epoch-arvon.",
+    "description": "Settings: epoch toggle description",
+    "_machine_translated": true,
+    "_source_hash": "571a7a1b0bd2ac99"
+  },
+  "settings.json_format.label": {
+    "message": "JSON-muotoilija",
+    "description": "Settings: JSON toggle label",
+    "_machine_translated": true,
+    "_source_hash": "3e70429a5ca9e8ef"
+  },
+  "settings.json_format.description": {
+    "message": "Liitä minimoitu JSON nähdäksesi sen siistissä muodossa.",
+    "description": "Settings: JSON toggle description",
+    "_machine_translated": true,
+    "_source_hash": "462f3cecbc5fd99e"
   }
 }

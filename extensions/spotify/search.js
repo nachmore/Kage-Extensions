@@ -26,6 +26,7 @@ export default class SpotifySearchProvider {
         this.invoke = context.invoke;
         this.log = context.log;
         this.config = context.config || {};
+        this.t = context.i18n?.t?.bind(context.i18n) || ((k) => k);
     }
 
     onConfigUpdate(config) {
@@ -44,13 +45,8 @@ export default class SpotifySearchProvider {
 
         if (rest === '') {
             return [
-                this._row('now', 'Spotify · Now playing', 'Show what\'s currently playing', 95),
-                this._row(
-                    'help',
-                    'Spotify · Commands',
-                    'play, queue, like, unlike, next, prev, vol, device, playlist',
-                    80
-                ),
+                this._row('now', this.t('result.now.label'), this.t('result.now.description'), 95),
+                this._row('help', this.t('result.help.label'), this.t('result.help.description'), 80),
             ];
         }
 
@@ -61,54 +57,54 @@ export default class SpotifySearchProvider {
 
         switch (verbLower) {
             case 'now':
-                return [this._row('now', 'Spotify · Now playing', 'Show what\'s currently playing', 95)];
+                return [this._row('now', this.t('result.now.label'), this.t('result.now.description'), 95)];
             case 'play':
                 return arg
-                    ? [this._row(`play:${arg}`, `Spotify · Play "${arg}"`, 'Search Spotify and play the top result', 90)]
-                    : [this._row('play', 'Spotify · Resume', 'Resume playback on the active device', 90)];
+                    ? [this._row(`play:${arg}`, this.t('result.play_query.label', { query: arg }), this.t('result.play_query.description'), 90)]
+                    : [this._row('play', this.t('result.resume.label'), this.t('result.resume.description'), 90)];
             case 'pause':
-                return [this._row('pause', 'Spotify · Pause', 'Pause the active device', 90)];
+                return [this._row('pause', this.t('result.pause.label'), this.t('result.pause.description'), 90)];
             case 'queue':
                 if (!arg) return [];
-                return [this._row(`queue:${arg}`, `Spotify · Queue "${arg}"`, 'Add the top result to your queue', 88)];
+                return [this._row(`queue:${arg}`, this.t('result.queue.label', { query: arg }), this.t('result.queue.description'), 88)];
             case 'like':
-                return [this._row('like', 'Spotify · Like current track', 'Add to your saved tracks', 90)];
+                return [this._row('like', this.t('result.like.label'), this.t('result.like.description'), 90)];
             case 'unlike':
-                return [this._row('unlike', 'Spotify · Unlike current track', 'Remove from your saved tracks', 90)];
+                return [this._row('unlike', this.t('result.unlike.label'), this.t('result.unlike.description'), 90)];
             case 'next':
-                return [this._row('next', 'Spotify · Next track', '', 88)];
+                return [this._row('next', this.t('result.next.label'), '', 88)];
             case 'prev':
             case 'previous':
-                return [this._row('prev', 'Spotify · Previous track', '', 88)];
+                return [this._row('prev', this.t('result.prev.label'), '', 88)];
             case 'vol':
             case 'volume': {
                 const n = parseInt(arg, 10);
                 if (Number.isFinite(n) && n >= 0 && n <= 100) {
-                    return [this._row(`vol:${n}`, `Spotify · Set volume to ${n}%`, '', 88)];
+                    return [this._row(`vol:${n}`, this.t('result.volume.label', { percent: n }), '', 88)];
                 }
                 return [];
             }
             case 'device':
                 if (!arg) return [];
-                return [this._row(`device:${arg}`, `Spotify · Transfer to device "${arg}"`, '', 85)];
+                return [this._row(`device:${arg}`, this.t('result.device.label', { name: arg }), '', 85)];
             case 'playlist':
                 if (!arg) return [];
                 return [
-                    this._row(`playlist:${arg}`, `Spotify · Play playlist "${arg}"`, 'Match by name', 85),
+                    this._row(`playlist:${arg}`, this.t('result.playlist.label', { name: arg }), this.t('result.playlist.description'), 85),
                 ];
             case 'connect':
-                return [this._row('connect', 'Spotify · Connect…', 'Sign in via the browser', 95)];
+                return [this._row('connect', this.t('result.connect.label'), this.t('result.connect.description'), 95)];
             case 'sign-out':
             case 'signout':
             case 'disconnect':
-                return [this._row('disconnect', 'Spotify · Sign out', 'Forget your tokens', 80)];
+                return [this._row('disconnect', this.t('result.disconnect.label'), this.t('result.disconnect.description'), 80)];
             default: {
                 // Treat the rest as a free-form play query.
                 return [
                     this._row(
                         `play:${rest}`,
-                        `Spotify · Play "${rest}"`,
-                        'Search Spotify and play the top result',
+                        this.t('result.play_query.label', { query: rest }),
+                        this.t('result.play_query.description'),
                         82
                     ),
                 ];
@@ -158,7 +154,7 @@ export default class SpotifySearchProvider {
         }
 
         if (!(await auth.isConnected())) {
-            throw new Error('Not signed in to Spotify. Type "sp connect" to sign in.');
+            throw new Error(this.t('error.not_signed_in'));
         }
 
         if (id === 'now') {
@@ -197,7 +193,7 @@ export default class SpotifySearchProvider {
     async _toggleLike(want) {
         const state = await auth.api('GET', '/me/player');
         const trackId = state?.item?.id;
-        if (!trackId) throw new Error('Nothing is playing right now.');
+        if (!trackId) throw new Error(this.t('error.nothing_playing'));
         const path = `/me/tracks?ids=${trackId}`;
         await auth.api(want ? 'PUT' : 'DELETE', path);
     }
@@ -208,7 +204,7 @@ export default class SpotifySearchProvider {
             `/search?type=track&limit=1&q=${encodeURIComponent(query)}`
         );
         const track = search?.tracks?.items?.[0];
-        if (!track) throw new Error(`No Spotify match for "${query}".`);
+        if (!track) throw new Error(this.t('error.no_match', { query }));
         if (queueOnly) {
             await auth.api('POST', `/me/player/queue?uri=${encodeURIComponent(track.uri)}`);
         } else {
@@ -223,7 +219,7 @@ export default class SpotifySearchProvider {
         const target = (list?.devices || []).find(
             (d) => d.name.toLowerCase() === name.toLowerCase()
         );
-        if (!target) throw new Error(`No Spotify device named "${name}".`);
+        if (!target) throw new Error(this.t('error.no_device', { name }));
         await auth.api('PUT', '/me/player', {
             body: { device_ids: [target.id], play: true },
         });
@@ -238,7 +234,7 @@ export default class SpotifySearchProvider {
             p.name.toLowerCase().includes(lower)
         );
         if (candidates.length === 0) {
-            throw new Error(`No playlist matching "${name}".`);
+            throw new Error(this.t('error.no_playlist', { name }));
         }
         // Prefer exact case-insensitive matches if present.
         const exact = candidates.find((p) => p.name.toLowerCase() === lower);

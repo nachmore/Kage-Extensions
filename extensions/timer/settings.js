@@ -2,53 +2,57 @@
  * Timer settings provider (sandboxed).
  */
 export default class TimerSettingsProvider {
-    initialize(context) { this.config = context.config || {}; }
+    initialize(context) {
+        this.config = context.config || {};
+        this.t = context.i18n?.t?.bind(context.i18n) || ((k) => k);
+    }
     onConfigUpdate(config) { this.config = config || {}; }
 
     getSettings() {
+        const t = this.t;
         return {
-            description: 'Type "timer 5m" for a countdown or "stopwatch" to count up.',
+            description: t('settings.description'),
             sections: [
                 {
-                    label: 'When timer completes',
+                    label: t('settings.section.on_complete'),
                     controls: [
                         {
                             type: 'checkbox',
                             id: 'notify_on_complete',
-                            label: 'Show system notification',
-                            description: 'Display a desktop notification when the countdown reaches zero.',
+                            label: t('settings.notify_on_complete.label'),
+                            description: t('settings.notify_on_complete.description'),
                             default: true,
                         },
                         {
                             type: 'checkbox',
                             id: 'sound_on_complete',
-                            label: 'Play sound',
-                            description: 'Play a notification sound when the countdown reaches zero.',
+                            label: t('settings.sound_on_complete.label'),
+                            description: t('settings.sound_on_complete.description'),
                             default: true,
                         },
                         {
                             type: 'select',
                             id: 'sound_id',
-                            label: 'Notification sound',
-                            description: 'Select a sound to play when the timer completes.',
+                            label: t('settings.sound_id.label'),
+                            description: t('settings.sound_id.description'),
                             default: 'two-tone',
                             maxWidth: 200,
                             showWhen: { id: 'sound_on_complete', equals: true },
                             options: [
-                                { value: 'two-tone', label: 'Two-Tone Beep' },
-                                { value: 'chime',    label: 'Chime' },
-                                { value: 'alert',    label: 'Alert' },
-                                { value: 'gentle',   label: 'Gentle' },
-                                { value: 'bell',     label: 'Bell' },
-                                { value: 'success',  label: 'Success' },
-                                { value: 'custom',   label: 'Custom file...' },
+                                { value: 'two-tone', label: t('settings.sound_id.option_two_tone') },
+                                { value: 'chime',    label: t('settings.sound_id.option_chime') },
+                                { value: 'alert',    label: t('settings.sound_id.option_alert') },
+                                { value: 'gentle',   label: t('settings.sound_id.option_gentle') },
+                                { value: 'bell',     label: t('settings.sound_id.option_bell') },
+                                { value: 'success',  label: t('settings.sound_id.option_success') },
+                                { value: 'custom',   label: t('settings.sound_id.option_custom') },
                             ],
                         },
                         {
                             type: 'text',
                             id: 'custom_sound_path',
-                            label: 'Custom sound file',
-                            description: 'Path to a .wav or .mp3 file on disk.',
+                            label: t('settings.custom_sound_path.label'),
+                            description: t('settings.custom_sound_path.description'),
                             default: '',
                             placeholder: 'C:\\path\\to\\sound.wav',
                             maxWidth: 350,
@@ -57,7 +61,7 @@ export default class TimerSettingsProvider {
                         {
                             type: 'range',
                             id: 'sound_repeats',
-                            label: 'Repeat count',
+                            label: t('settings.sound_repeats.label'),
                             default: 3,
                             min: 1,
                             max: 10,
@@ -68,15 +72,15 @@ export default class TimerSettingsProvider {
                         {
                             type: 'action',
                             id: 'preview',
-                            label: '▶ Preview sound',
+                            label: t('settings.preview.label'),
                             action: 'preview_sound',
                             showWhen: { id: 'sound_on_complete', equals: true },
                         },
                         {
                             type: 'checkbox',
                             id: 'show_window_on_complete',
-                            label: 'Show floating window',
-                            description: 'Automatically show the floating window if hidden when the timer completes.',
+                            label: t('settings.show_window_on_complete.label'),
+                            description: t('settings.show_window_on_complete.description'),
                             default: true,
                         },
                     ],

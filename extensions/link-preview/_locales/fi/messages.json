@@ -12,9 +12,99 @@
     "_source_hash": "71f62720d8c6e809"
   },
   "manifest.description": {
-    "message": "Rikkaat linkin esikatselukortit tekoälyvastauksissa oleville URL-osoitteille  Open Graph -pääkuvat, kuvaukset ja favicon-kuvakkeet, offline-ystävällisellä levyvälimuistilla.",
+    "message": "Rikkaat linkkien esikatselukortit URL-osoitteille tekoälyn vastauksissa  Open Graph -pääkuvat, kuvaukset ja favicon-kuvakkeet, sekä offline-tilaa tukeva levyvälimuisti.",
     "description": "Extension description",
     "_machine_translated": true,
-    "_source_hash": "8715cca27a85ca14"
+    "_source_hash": "1115a6d66a236b52"
+  },
+  "card.aria_label": {
+    "message": "Linkin esikatselu: {title}",
+    "description": "Aria label on a link-preview card",
+    "_machine_translated": true,
+    "_source_hash": "0d14ec57b9273822"
+  },
+  "settings.description": {
+    "message": "Näyttää URL-osoitteille esikatselukortit tekoälyn vastauksissa.",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "8f8fad89bd661f18"
+  },
+  "settings.enabled.label": {
+    "message": "Ota linkkien esikatselut käyttöön",
+    "description": "Settings: enable toggle label",
+    "_machine_translated": true,
+    "_source_hash": "8d8bac295d1fb446"
+  },
+  "settings.enabled.description": {
+    "message": "Näytä esikatselukortit avustajan viesteissä esiintyville URL-osoitteille.",
+    "description": "Settings: enable toggle description",
+    "_machine_translated": true,
+    "_source_hash": "a09c739f5e71639d"
+  },
+  "settings.show_images.label": {
+    "message": "Näytä pääkuvat",
+    "description": "Settings: hero images toggle label",
+    "_machine_translated": true,
+    "_source_hash": "780bd9e8467dff8a"
+  },
+  "settings.show_images.description": {
+    "message": "Näytä sivun Open Graph- tai Twitter Card -kuva, kun se on saatavilla. Poista käytöstä pitääksesi kortit tiiviinä (ei kuvia lainkaan).",
+    "description": "Settings: hero images toggle description",
+    "_machine_translated": true,
+    "_source_hash": "93de34f690c3ff82"
+  },
+  "settings.max_previews.label": {
+    "message": "Esikatselujen enimmäismäärä viestiä kohti",
+    "description": "Settings: max previews label",
+    "_machine_translated": true,
+    "_source_hash": "0b07938756b890da"
+  },
+  "settings.max_previews.description": {
+    "message": "Rajoita viestiä kohti näytettävien esikatselukorttien määrää sotkun välttämiseksi.",
+    "description": "Settings: max previews description",
+    "_machine_translated": true,
+    "_source_hash": "9210823b6078eb39"
+  },
+  "settings.section.cache": {
+    "message": "Välimuisti",
+    "description": "Settings section: cache",
+    "_machine_translated": true,
+    "_source_hash": "eb6835b21d425ab6"
+  },
+  "settings.cache.info_html": {
+    "message": "Haetut metatiedot tallennetaan levyvälimuistiin enintään 7 päiväksi, jotta keskustelun avaaminen uudelleen ei hae jokaista URL-osoitetta uudestaan. Epäonnistuneet haut tallennetaan välimuistiin lyhyeksi aikaa, jotta tilapäiset virheet korjautuvat itsestään.",
+    "description": "Settings: cache info text",
+    "_machine_translated": true,
+    "_source_hash": "3bdf171c7cecf3ef"
+  },
+  "settings.cache_stats.label": {
+    "message": "Näytä välimuistin koko",
+    "description": "Settings: cache stats button label",
+    "_machine_translated": true,
+    "_source_hash": "c372374c660f33ba"
+  },
+  "settings.cache_stats.description": {
+    "message": "Tarkista, kuinka paljon levytilaa linkkien esikatselun välimuisti käyttää.",
+    "description": "Settings: cache stats button description",
+    "_machine_translated": true,
+    "_source_hash": "9bdb5c472c2c9222"
+  },
+  "settings.cache_clear.label": {
+    "message": "Tyhjennä välimuisti",
+    "description": "Settings: clear cache button label",
+    "_machine_translated": true,
+    "_source_hash": "a49f545073f8b034"
+  },
+  "settings.cache_clear.description": {
+    "message": "Tyhjennä välimuisti. Käytä tätä, jos linkin esikatselu näyttää vanhentuneelta tai virheelliseltä.",
+    "description": "Settings: clear cache button description",
+    "_machine_translated": true,
+    "_source_hash": "d70f570cfe2407d5"
+  },
+  "settings.cache_clear.confirm": {
+    "message": "Tyhjennetäänkö kaikki välimuistissa olevat linkkien esikatselut? URL-osoitteet haetaan uudelleen, kun ne tulevat seuraavan kerran esiin.",
+    "description": "Confirmation prompt before clearing cache",
+    "_machine_translated": true,
+    "_source_hash": "f0b0851ffc83c81e"
   }
 }

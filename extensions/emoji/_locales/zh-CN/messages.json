@@ -12,9 +12,45 @@
     "_source_hash": "205c3e69ca030742"
   },
   "manifest.description": {
-    "message": "按名称搜索并复制表情符号。输入 \":fire\" 或 \"emoji rocket\"，可在约 1500 个最常用的表情符号中匹配最接近的结果。",
+    "message": "按名称搜索并复制表情符号。输入 \":fire\" 或 \"emoji rocket\"，可在约 1500 个最常用的表情符号中匹配最接近的项。",
     "description": "Extension description",
     "_machine_translated": true,
-    "_source_hash": "59640ff70d49d4b7"
+    "_source_hash": "b9390cfd94255409"
+  },
+  "result.hint.label": {
+    "message": "表情符号 · 输入以搜索",
+    "description": "Hint label when only the trigger word is typed",
+    "_machine_translated": true,
+    "_source_hash": "a2471f31b8da42e8"
+  },
+  "result.hint.description": {
+    "message": "试试 \"{trigger} fire\" 或 \":fire\"",
+    "description": "Hint description suggesting trigger usage",
+    "_machine_translated": true,
+    "_source_hash": "c66d707a23b3874e"
+  },
+  "settings.description": {
+    "message": "按名称搜索约 250 个最常用的表情符号。支持两种触发方式：<code>emoji fire</code> 或直接 <code>:fire</code>。选择其中一种并按 Enter 即可复制到剪贴板。",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "9d1fa3f643108b7e"
+  },
+  "settings.enabled.label": {
+    "message": "启用",
+    "description": "Settings: enable toggle label",
+    "_machine_translated": true,
+    "_source_hash": "efce5571f8dbd1e9"
+  },
+  "settings.trigger.label": {
+    "message": "触发词",
+    "description": "Settings: trigger word label",
+    "_machine_translated": true,
+    "_source_hash": "5ab4f2dc19af741d"
+  },
+  "settings.shortcode_trigger.label": {
+    "message": "同时匹配短代码（例如 \":fire\"）",
+    "description": "Settings: shortcode trigger toggle label",
+    "_machine_translated": true,
+    "_source_hash": "a3ef5561dd4cf5f6"
   }
 }

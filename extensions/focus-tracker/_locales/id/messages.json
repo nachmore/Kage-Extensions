@@ -16,5 +16,179 @@
     "description": "Extension description",
     "_machine_translated": true,
     "_source_hash": "249b504d57430c6f"
+  },
+  "result.loading.label": {
+    "message": "📊 Memuat laporan {period}...",
+    "description": "Label shown while activity report loads",
+    "_machine_translated": true,
+    "_source_hash": "a004240e6f3fcaf3"
+  },
+  "result.loading.description": {
+    "message": "Mengambil data aktivitas",
+    "description": "Description shown while activity report loads",
+    "_machine_translated": true,
+    "_source_hash": "de94d2423bc9a013"
+  },
+  "result.error.label": {
+    "message": "📊 Tidak dapat memuat laporan aktivitas",
+    "description": "Label shown when report fetch fails",
+    "_machine_translated": true,
+    "_source_hash": "348a7efb884d2839"
+  },
+  "result.summary.label": {
+    "message": "📊 {period}: {time} tercatat",
+    "description": "Activity summary label",
+    "_machine_translated": true,
+    "_source_hash": "80f5ea2944d58d80"
+  },
+  "result.summary.description": {
+    "message": "{switches} peralihan · streak terbaik {streak}m ({app}) · Enter untuk ringkasan AI",
+    "description": "Activity summary description",
+    "_machine_translated": true,
+    "_source_hash": "505ab90472681d45"
+  },
+  "result.app.description": {
+    "message": "{count} sesi",
+    "description": "App row description",
+    "_machine_translated": true,
+    "_source_hash": "49a3ce91d2335869"
+  },
+  "result.site.description": {
+    "message": "{pct}% dari {app}",
+    "description": "Site row description",
+    "_machine_translated": true,
+    "_source_hash": "ea862ba31e9d36b5"
+  },
+  "result.insight.label": {
+    "message": "💡 Dapatkan wawasan fokus AI",
+    "description": "AI insights row label",
+    "_machine_translated": true,
+    "_source_hash": "b38ae097d7b0c2bd"
+  },
+  "result.insight.description": {
+    "message": "Tekan Enter untuk meminta tips produktivitas dari AI",
+    "description": "AI insights row description",
+    "_machine_translated": true,
+    "_source_hash": "83b23c71c9d66544"
+  },
+  "render.summary.title": {
+    "message": "{period}: {time} tercatat",
+    "description": "Summary title in inline render",
+    "_machine_translated": true,
+    "_source_hash": "dae73df6d0d671c5"
+  },
+  "render.summary.meta": {
+    "message": "{switches} peralihan · streak terbaik {streak}m ({app}) · {appCount} aplikasi",
+    "description": "Summary meta line in inline render",
+    "_machine_translated": true,
+    "_source_hash": "59daec5b0e1091b0"
+  },
+  "render.app.sessions": {
+    "message": "{count} sesi",
+    "description": "App sessions count in inline render",
+    "_machine_translated": true,
+    "_source_hash": "3cec6bece20a1f90"
+  },
+  "render.site.parent_pct": {
+    "message": "{pct}% dari {app}",
+    "description": "Site percentage of parent in inline render",
+    "_machine_translated": true,
+    "_source_hash": "6e32b7767a13f748"
+  },
+  "render.insight.text": {
+    "message": "Dapatkan wawasan fokus AI",
+    "description": "Inline insight text",
+    "_machine_translated": true,
+    "_source_hash": "d4fb10c1a8a26281"
+  },
+  "settings.description": {
+    "message": "Lacak penggunaan aplikasi, peralihan konteks, dan streak fokus. Ketik kata kunci pemicu untuk melihat laporan.",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "808a09db07c6c2dc"
+  },
+  "settings.trigger.label": {
+    "message": "Kata Kunci Pemicu",
+    "description": "Settings: trigger keyword label",
+    "_machine_translated": true,
+    "_source_hash": "e31045bbce24b0f7"
+  },
+  "settings.trigger.description": {
+    "message": "Ketik kata kunci ini untuk melihat laporan fokus (mis. \"focus today\", \"focus week\").",
+    "description": "Settings: trigger keyword description",
+    "_machine_translated": true,
+    "_source_hash": "d25ff7bcd6b0245d"
+  },
+  "settings.poll_interval.label": {
+    "message": "Interval Polling (detik)",
+    "description": "Settings: poll interval label",
+    "_machine_translated": true,
+    "_source_hash": "eff03bac7ebfd7c6"
+  },
+  "settings.poll_interval.description": {
+    "message": "Seberapa sering memeriksa jendela aktif. Lebih rendah = lebih akurat tetapi menggunakan lebih banyak sumber daya.",
+    "description": "Settings: poll interval description",
+    "_machine_translated": true,
+    "_source_hash": "2f7d98036a3c54d9"
+  },
+  "settings.auto_start.label": {
+    "message": "Mulai Pelacakan Otomatis",
+    "description": "Settings: auto-start toggle label",
+    "_machine_translated": true,
+    "_source_hash": "4234006ff6820f4f"
+  },
+  "settings.auto_start.description": {
+    "message": "Mulai pelacakan secara otomatis saat aplikasi diluncurkan",
+    "description": "Settings: auto-start toggle description",
+    "_machine_translated": true,
+    "_source_hash": "2b2bb02ec327371d"
+  },
+  "settings.section.data_to_track": {
+    "message": "Data yang Dilacak",
+    "description": "Settings section heading",
+    "_machine_translated": true,
+    "_source_hash": "cfd8959a024167cf"
+  },
+  "settings.track_screen_time.label": {
+    "message": "Waktu Layar",
+    "description": "Settings: screen time toggle label",
+    "_machine_translated": true,
+    "_source_hash": "8e661b5113dc145c"
+  },
+  "settings.track_screen_time.description": {
+    "message": "Lacak waktu yang dihabiskan di setiap aplikasi",
+    "description": "Settings: screen time toggle description",
+    "_machine_translated": true,
+    "_source_hash": "7a0a088c3a230a89"
+  },
+  "settings.track_switches.label": {
+    "message": "Peralihan Konteks",
+    "description": "Settings: context switches toggle label",
+    "_machine_translated": true,
+    "_source_hash": "b004389d12cd1499"
+  },
+  "settings.track_switches.description": {
+    "message": "Hitung seberapa sering Anda berpindah antar aplikasi",
+    "description": "Settings: context switches toggle description",
+    "_machine_translated": true,
+    "_source_hash": "287c0d0a0f24b68e"
+  },
+  "settings.track_streaks.label": {
+    "message": "Rentetan fokus",
+    "description": "Settings: focus streaks toggle label",
+    "_machine_translated": true,
+    "_source_hash": "5ce25266a7b929f2"
+  },
+  "settings.track_streaks.description": {
+    "message": "Lacak periode fokus terpanjang tanpa gangguan",
+    "description": "Settings: focus streaks toggle description",
+    "_machine_translated": true,
+    "_source_hash": "78ee2f56696d0840"
+  },
+  "settings.validate.poll_interval_range": {
+    "message": "Interval polling harus antara 2 dan 60 detik",
+    "description": "Validation error for poll interval",
+    "_machine_translated": true,
+    "_source_hash": "d768cd635e999624"
   }
 }

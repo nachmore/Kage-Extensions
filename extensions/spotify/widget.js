@@ -24,6 +24,7 @@ export default class SpotifyNowPlayingWidget {
         this.invoke = context.invoke;
         this.log = context.log;
         this.config = context.config || {};
+        this.t = context.i18n?.t?.bind(context.i18n) || ((k) => k);
         this._lastTrackId = null;
         this._liked = null;
     }
@@ -79,7 +80,10 @@ export default class SpotifyNowPlayingWidget {
         const playPauseAction = isPlaying ? 'pause' : 'play';
         const likeLabel = this._liked ? '♥' : '♡';
         const likeAction = this._liked ? 'unlike' : 'like';
-        const likeTitle = this._liked ? 'Remove from your library' : 'Save to your library';
+        const likeTitle = this._liked ? this.t('widget.like.remove_tooltip') : this.t('widget.like.add_tooltip');
+        const playPauseTitle = isPlaying ? this.t('widget.pause_tooltip') : this.t('widget.resume_tooltip');
+        const prevTitle = this.t('widget.previous_tooltip');
+        const nextTitle = this.t('widget.next_tooltip');
 
         const html = `
             <span class="extension-bar-icon spotify-art">
@@ -90,10 +94,10 @@ export default class SpotifyNowPlayingWidget {
                 <span class="spotify-artist">${escapeHtml(artists)}</span>
             </span>
             <div class="extension-bar-controls spotify-controls">
-                <button data-ext-action="prev" class="extension-bar-btn" title="Previous track">⏮</button>
-                <button data-ext-action="${playPauseAction}" class="extension-bar-btn" title="${isPlaying ? 'Pause' : 'Resume'}">${playPauseLabel}</button>
-                <button data-ext-action="next" class="extension-bar-btn" title="Next track">⏭</button>
-                <button data-ext-action="${likeAction}" class="extension-bar-btn spotify-like ${this._liked ? 'is-liked' : ''}" title="${likeTitle}">${likeLabel}</button>
+                <button data-ext-action="prev" class="extension-bar-btn" title="${escapeHtml(prevTitle)}">⏮</button>
+                <button data-ext-action="${playPauseAction}" class="extension-bar-btn" title="${escapeHtml(playPauseTitle)}">${playPauseLabel}</button>
+                <button data-ext-action="next" class="extension-bar-btn" title="${escapeHtml(nextTitle)}">⏭</button>
+                <button data-ext-action="${likeAction}" class="extension-bar-btn spotify-like ${this._liked ? 'is-liked' : ''}" title="${escapeHtml(likeTitle)}">${likeLabel}</button>
             </div>
         `;
 

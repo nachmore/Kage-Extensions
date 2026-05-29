@@ -12,5 +12,37 @@
   "manifest.description": {
     "message": "Detect and preview colors (hex, rgb, hsl, named) with format conversion",
     "description": "Extension description"
+  },
+  "result.color.description": {
+    "message": "Color preview · Enter to copy",
+    "description": "Description shown next to a detected color result"
+  },
+  "settings.description": {
+    "message": "Detect color values (hex, rgb, hsl, named colors) and show a preview with format conversions.",
+    "description": "Settings page description"
+  },
+  "settings.copy_format.label": {
+    "message": "Copy format",
+    "description": "Settings: copy format select label"
+  },
+  "settings.copy_format.description": {
+    "message": "Which format to copy when pressing Enter on a color result.",
+    "description": "Settings: copy format select description"
+  },
+  "settings.copy_format.option_all": {
+    "message": "All formats",
+    "description": "Copy format dropdown: all formats"
+  },
+  "settings.copy_format.option_hex": {
+    "message": "HEX only",
+    "description": "Copy format dropdown: hex only"
+  },
+  "settings.copy_format.option_rgb": {
+    "message": "RGB only",
+    "description": "Copy format dropdown: rgb only"
+  },
+  "settings.copy_format.option_hsl": {
+    "message": "HSL only",
+    "description": "Copy format dropdown: hsl only"
   }
 }

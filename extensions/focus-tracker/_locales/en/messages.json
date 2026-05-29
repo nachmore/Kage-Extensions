@@ -12,5 +12,121 @@
   "manifest.description": {
     "message": "Track app usage, context switches, and focus streaks. Get daily/weekly/monthly reports with AI insights.",
     "description": "Extension description"
+  },
+  "result.loading.label": {
+    "message": "📊 Loading {period} report...",
+    "description": "Label shown while activity report loads"
+  },
+  "result.loading.description": {
+    "message": "Fetching activity data",
+    "description": "Description shown while activity report loads"
+  },
+  "result.error.label": {
+    "message": "📊 Could not load activity report",
+    "description": "Label shown when report fetch fails"
+  },
+  "result.summary.label": {
+    "message": "📊 {period}: {time} tracked",
+    "description": "Activity summary label"
+  },
+  "result.summary.description": {
+    "message": "{switches} switches · {streak}m best streak ({app}) · Enter for AI summary",
+    "description": "Activity summary description"
+  },
+  "result.app.description": {
+    "message": "{count} sessions",
+    "description": "App row description"
+  },
+  "result.site.description": {
+    "message": "{pct}% of {app}",
+    "description": "Site row description"
+  },
+  "result.insight.label": {
+    "message": "💡 Get AI focus insights",
+    "description": "AI insights row label"
+  },
+  "result.insight.description": {
+    "message": "Press Enter to ask the AI for productivity tips",
+    "description": "AI insights row description"
+  },
+  "render.summary.title": {
+    "message": "{period}: {time} tracked",
+    "description": "Summary title in inline render"
+  },
+  "render.summary.meta": {
+    "message": "{switches} switches · {streak}m best streak ({app}) · {appCount} apps",
+    "description": "Summary meta line in inline render"
+  },
+  "render.app.sessions": {
+    "message": "{count} sessions",
+    "description": "App sessions count in inline render"
+  },
+  "render.site.parent_pct": {
+    "message": "{pct}% of {app}",
+    "description": "Site percentage of parent in inline render"
+  },
+  "render.insight.text": {
+    "message": "Get AI focus insights",
+    "description": "Inline insight text"
+  },
+  "settings.description": {
+    "message": "Track app usage, context switches, and focus streaks. Type your trigger keyword to see reports.",
+    "description": "Settings page description"
+  },
+  "settings.trigger.label": {
+    "message": "Trigger Keyword",
+    "description": "Settings: trigger keyword label"
+  },
+  "settings.trigger.description": {
+    "message": "Type this keyword to see focus reports (e.g. \"focus today\", \"focus week\").",
+    "description": "Settings: trigger keyword description"
+  },
+  "settings.poll_interval.label": {
+    "message": "Poll Interval (seconds)",
+    "description": "Settings: poll interval label"
+  },
+  "settings.poll_interval.description": {
+    "message": "How often to check the active window. Lower = more accurate but uses more resources.",
+    "description": "Settings: poll interval description"
+  },
+  "settings.auto_start.label": {
+    "message": "Auto-start Tracking",
+    "description": "Settings: auto-start toggle label"
+  },
+  "settings.auto_start.description": {
+    "message": "Start tracking automatically when the app launches",
+    "description": "Settings: auto-start toggle description"
+  },
+  "settings.section.data_to_track": {
+    "message": "Data to Track",
+    "description": "Settings section heading"
+  },
+  "settings.track_screen_time.label": {
+    "message": "Screen Time",
+    "description": "Settings: screen time toggle label"
+  },
+  "settings.track_screen_time.description": {
+    "message": "Track time spent in each application",
+    "description": "Settings: screen time toggle description"
+  },
+  "settings.track_switches.label": {
+    "message": "Context Switches",
+    "description": "Settings: context switches toggle label"
+  },
+  "settings.track_switches.description": {
+    "message": "Count how often you switch between apps",
+    "description": "Settings: context switches toggle description"
+  },
+  "settings.track_streaks.label": {
+    "message": "Focus Streaks",
+    "description": "Settings: focus streaks toggle label"
+  },
+  "settings.track_streaks.description": {
+    "message": "Track longest uninterrupted focus periods",
+    "description": "Settings: focus streaks toggle description"
+  },
+  "settings.validate.poll_interval_range": {
+    "message": "Poll interval must be between 2 and 60 seconds",
+    "description": "Validation error for poll interval"
   }
 }

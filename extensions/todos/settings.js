@@ -7,79 +7,81 @@ export default class TodosSettingsProvider {
     initialize(context) {
         this.config = context.config || {};
         this.invoke = context.invoke;
+        this.t = context.i18n?.t?.bind(context.i18n) || ((k) => k);
     }
 
     onConfigUpdate(config) { this.config = config || {}; }
 
     getSettings() {
+        const t = this.t;
         return {
-            description: 'Task manager with reminders. Type "todo+ <task>" to add, "todo+ <task> due:<date>" for a reminder, "todos" to view list.',
+            description: t('settings.description'),
             sections: [
                 {
-                    label: 'Display',
+                    label: t('settings.section.display'),
                     controls: [
                         {
                             type: 'text',
                             id: 'default_category',
-                            label: 'Default Category',
-                            description: 'New todos get this category unless overridden with #tag.',
+                            label: t('settings.default_category.label'),
+                            description: t('settings.default_category.description'),
                             default: '',
-                            placeholder: 'e.g. work, personal',
+                            placeholder: t('settings.default_category.placeholder'),
                             maxWidth: 200,
                         },
                         {
                             type: 'select',
                             id: 'sort_by',
-                            label: 'Sort By',
-                            description: 'How to order todos in the list.',
+                            label: t('settings.sort_by.label'),
+                            description: t('settings.sort_by.description'),
                             default: 'created',
                             maxWidth: 200,
                             options: [
-                                { value: 'created', label: 'Newest first' },
-                                { value: 'due', label: 'Due date' },
-                                { value: 'priority', label: 'Priority' },
-                                { value: 'status', label: 'Status' },
+                                { value: 'created', label: t('settings.sort_by.option_created') },
+                                { value: 'due', label: t('settings.sort_by.option_due') },
+                                { value: 'priority', label: t('settings.sort_by.option_priority') },
+                                { value: 'status', label: t('settings.sort_by.option_status') },
                             ],
                         },
                         {
                             type: 'checkbox',
                             id: 'show_completed',
-                            label: 'Show Completed',
-                            description: 'Display completed todos in the main list.',
+                            label: t('settings.show_completed.label'),
+                            description: t('settings.show_completed.description'),
                             default: true,
                         },
                     ],
                 },
                 {
-                    label: 'Behavior',
+                    label: t('settings.section.behavior'),
                     controls: [
                         {
                             type: 'checkbox',
                             id: 'confirm_delete',
-                            label: 'Confirm Delete',
-                            description: 'Ask for confirmation before deleting a todo.',
+                            label: t('settings.confirm_delete.label'),
+                            description: t('settings.confirm_delete.description'),
                             default: true,
                         },
                         {
                             type: 'checkbox',
                             id: 'show_due_banner',
-                            label: 'Show Due Reminder Banner',
-                            description: 'Show a banner in the floating window when reminders are due today or overdue.',
+                            label: t('settings.show_due_banner.label'),
+                            description: t('settings.show_due_banner.description'),
                             default: true,
                         },
                     ],
                 },
                 {
-                    label: 'Data',
+                    label: t('settings.section.data'),
                     controls: [
                         {
                             type: 'info',
-                            html: 'Export or clear all your todos and reminders.',
+                            html: t('settings.data.info'),
                         },
-                        { type: 'action', id: 'export',   label: 'Export JSON', action: 'export' },
-                        { type: 'action', id: 'import',   label: 'Import JSON', action: 'import' },
-                        { type: 'action', id: 'clearAll', label: 'Clear All',   action: 'clear_all', variant: 'danger',
-                          confirm: 'Delete ALL todos and reminders? This cannot be undone.' },
+                        { type: 'action', id: 'export',   label: t('settings.export.label'), action: 'export' },
+                        { type: 'action', id: 'import',   label: t('settings.import.label'), action: 'import' },
+                        { type: 'action', id: 'clearAll', label: t('settings.clear_all.label'), action: 'clear_all', variant: 'danger',
+                          confirm: t('settings.clear_all.confirm') },
                     ],
                 },
             ],
@@ -87,6 +89,7 @@ export default class TodosSettingsProvider {
     }
 
     async runAction(action, _values) {
+        const t = this.t;
         if (action === 'export') {
             try {
                 const raw = await this.invoke('load_extension_data', { key: STORAGE_KEY });
@@ -98,10 +101,10 @@ export default class TodosSettingsProvider {
                         content: data,
                         mime: 'application/json',
                     },
-                    status: '✅ Exported',
+                    status: t('action.export.success'),
                 };
             } catch (e) {
-                return { status: `❌ Export failed: ${e?.message || e}` };
+                return { status: t('action.export.error', { message: e?.message || e }) };
             }
         }
         if (action === 'import') {
@@ -110,26 +113,27 @@ export default class TodosSettingsProvider {
         if (action === 'clear_all') {
             try {
                 await this.invoke('delete_extension_data', { key: STORAGE_KEY });
-                return { status: '✅ All todos and reminders cleared.' };
+                return { status: t('action.clear_all.success') };
             } catch (e) {
-                return { status: `❌ ${e?.message || e}` };
+                return { status: t('action.clear_all.error', { message: e?.message || e }) };
             }
         }
         return {};
     }
 
     async onFileSelected(params) {
+        const t = this.t;
         if (params.action !== 'import') return {};
         try {
             const data = JSON.parse(params.content);
-            if (!Array.isArray(data)) throw new Error('Invalid format (expected JSON array)');
+            if (!Array.isArray(data)) throw new Error(t('action.import.invalid_format'));
             await this.invoke('save_extension_data', {
                 key: STORAGE_KEY,
                 data: JSON.stringify(data),
             });
-            return { status: `✅ Imported ${data.length} todos.` };
+            return { status: t('action.import.success', { count: data.length }) };
         } catch (e) {
-            return { status: `❌ Import failed: ${e?.message || e}` };
+            return { status: t('action.import.error', { message: e?.message || e }) };
         }
     }
 }

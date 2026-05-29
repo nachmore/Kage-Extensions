@@ -16,5 +16,239 @@
     "description": "Extension description",
     "_machine_translated": true,
     "_source_hash": "6c710d2555644788"
+  },
+  "result.no_location.label": {
+    "message": "Thời tiết · hãy đặt vị trí nhà trước",
+    "description": "Result label when no home location and no query",
+    "_machine_translated": true,
+    "_source_hash": "50e8993803f45a26"
+  },
+  "result.no_location.description": {
+    "message": "Mở cài đặt → Thời tiết → Vị trí nhà",
+    "description": "Hint pointing to settings",
+    "_machine_translated": true,
+    "_source_hash": "5c6c5ef99be91913"
+  },
+  "result.lookup.label": {
+    "message": "Thời tiết · {place}",
+    "description": "Loading label while forecast loads",
+    "_machine_translated": true,
+    "_source_hash": "b7d72ce211497faa"
+  },
+  "result.lookup.description": {
+    "message": "Đang tra cứu dự báo…",
+    "description": "Description while loading",
+    "_machine_translated": true,
+    "_source_hash": "ad77cd07c062a304"
+  },
+  "result.miss.description": {
+    "message": "Không tìm thấy vị trí",
+    "description": "Description when geocoding returns nothing",
+    "_machine_translated": true,
+    "_source_hash": "179261d53a068810"
+  },
+  "wmo.0": {
+    "message": "Trời quang",
+    "description": "WMO weather code 0",
+    "_machine_translated": true,
+    "_source_hash": "abc5129cba58b2ea"
+  },
+  "wmo.1": {
+    "message": "Hầu như quang",
+    "description": "WMO weather code 1",
+    "_machine_translated": true,
+    "_source_hash": "0bb79d0a65711f6b"
+  },
+  "wmo.2": {
+    "message": "Mây rải rác",
+    "description": "WMO weather code 2",
+    "_machine_translated": true,
+    "_source_hash": "552ed8e0e71da608"
+  },
+  "wmo.3": {
+    "message": "Nhiều mây",
+    "description": "WMO weather code 3",
+    "_machine_translated": true,
+    "_source_hash": "c578c669aa79546c"
+  },
+  "wmo.45": {
+    "message": "Sương mù",
+    "description": "WMO weather code 45",
+    "_machine_translated": true,
+    "_source_hash": "31c57d8794773178"
+  },
+  "wmo.48": {
+    "message": "Sương muối",
+    "description": "WMO weather code 48",
+    "_machine_translated": true,
+    "_source_hash": "eb2283fc7af0be5f"
+  },
+  "wmo.51": {
+    "message": "Mưa phùn nhẹ",
+    "description": "WMO weather code 51",
+    "_machine_translated": true,
+    "_source_hash": "15455f8601facee6"
+  },
+  "wmo.53": {
+    "message": "Mưa phùn",
+    "description": "WMO weather code 53",
+    "_machine_translated": true,
+    "_source_hash": "adef5138bae3c61c"
+  },
+  "wmo.55": {
+    "message": "Mưa phùn nặng hạt",
+    "description": "WMO weather code 55",
+    "_machine_translated": true,
+    "_source_hash": "7cd9613e28bb3148"
+  },
+  "wmo.61": {
+    "message": "Mưa nhẹ",
+    "description": "WMO weather code 61",
+    "_machine_translated": true,
+    "_source_hash": "aea6d323e78140b0"
+  },
+  "wmo.63": {
+    "message": "Mưa",
+    "description": "WMO weather code 63",
+    "_machine_translated": true,
+    "_source_hash": "fb8c27ad6be61481"
+  },
+  "wmo.65": {
+    "message": "Mưa to",
+    "description": "WMO weather code 65",
+    "_machine_translated": true,
+    "_source_hash": "4c50541078d31fdb"
+  },
+  "wmo.71": {
+    "message": "Tuyết nhẹ",
+    "description": "WMO weather code 71",
+    "_machine_translated": true,
+    "_source_hash": "ecefc3cb46e31400"
+  },
+  "wmo.73": {
+    "message": "Tuyết",
+    "description": "WMO weather code 73",
+    "_machine_translated": true,
+    "_source_hash": "782fb19b4c56fc15"
+  },
+  "wmo.75": {
+    "message": "Tuyết dày",
+    "description": "WMO weather code 75",
+    "_machine_translated": true,
+    "_source_hash": "53f4854d96a9d8af"
+  },
+  "wmo.80": {
+    "message": "Mưa rào nhẹ",
+    "description": "WMO weather code 80",
+    "_machine_translated": true,
+    "_source_hash": "d243b7ccb179ce96"
+  },
+  "wmo.81": {
+    "message": "Mưa rào",
+    "description": "WMO weather code 81",
+    "_machine_translated": true,
+    "_source_hash": "a9c7b4046a055efd"
+  },
+  "wmo.82": {
+    "message": "Mưa rào nặng hạt",
+    "description": "WMO weather code 82",
+    "_machine_translated": true,
+    "_source_hash": "f58093d9cc38c7df"
+  },
+  "wmo.95": {
+    "message": "Giông bão",
+    "description": "WMO weather code 95",
+    "_machine_translated": true,
+    "_source_hash": "a2210372c092d4be"
+  },
+  "wmo.96": {
+    "message": "Giông bão kèm mưa đá",
+    "description": "WMO weather code 96",
+    "_machine_translated": true,
+    "_source_hash": "0954fc5f651e7dd3"
+  },
+  "wmo.99": {
+    "message": "Giông bão kèm mưa đá lớn",
+    "description": "WMO weather code 99",
+    "_machine_translated": true,
+    "_source_hash": "59f01ac1bd125fc4"
+  },
+  "wmo.unknown": {
+    "message": "Không xác định",
+    "description": "WMO unknown code label",
+    "_machine_translated": true,
+    "_source_hash": "5581bc44f639cdc0"
+  },
+  "result.feels_like": {
+    "message": "Cảm giác như {temp}{unit}",
+    "description": "Forecast 'feels like' prefix",
+    "_machine_translated": true,
+    "_source_hash": "ff97ffbbd65a00e1"
+  },
+  "result.day.today": {
+    "message": "Hôm nay",
+    "description": "Day label for today's forecast row",
+    "_machine_translated": true,
+    "_source_hash": "046cd8cd5af95199"
+  },
+  "settings.description": {
+    "message": "Dự báo từ <a href=\"https://open-meteo.com\">Open-Meteo</a>; mã hóa địa lý qua OpenStreetMap Nominatim.",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "7f2435163a522988"
+  },
+  "settings.enabled.label": {
+    "message": "Bật",
+    "description": "Settings: enable toggle",
+    "_machine_translated": true,
+    "_source_hash": "813fb292fb3bfe0d"
+  },
+  "settings.trigger.label": {
+    "message": "Từ kích hoạt",
+    "description": "Settings: trigger word label",
+    "_machine_translated": true,
+    "_source_hash": "5ab4f2dc19af741d"
+  },
+  "settings.trigger.description": {
+    "message": "Nhập từ này theo sau là tên thành phố, hoặc đứng một mình để dùng vị trí nhà của bạn.",
+    "description": "Settings: trigger word description",
+    "_machine_translated": true,
+    "_source_hash": "97eb20ae7eb64591"
+  },
+  "settings.home_location.label": {
+    "message": "Vị trí nhà",
+    "description": "Settings: home location label",
+    "_machine_translated": true,
+    "_source_hash": "437be7e3895c3807"
+  },
+  "settings.home_location.placeholder": {
+    "message": "ví dụ: San Francisco, CA",
+    "description": "Settings: home location placeholder",
+    "_machine_translated": true,
+    "_source_hash": "3d6a568951847a77"
+  },
+  "settings.home_location.description": {
+    "message": "Được dùng khi bạn chỉ nhập từ kích hoạt.",
+    "description": "Settings: home location description",
+    "_machine_translated": true,
+    "_source_hash": "ac42a4d70e979089"
+  },
+  "settings.units.label": {
+    "message": "Đơn vị",
+    "description": "Settings: units select label",
+    "_machine_translated": true,
+    "_source_hash": "19d0282019f048c4"
+  },
+  "settings.units.option_metric": {
+    "message": "Hệ mét (°C, km/h)",
+    "description": "Units: metric",
+    "_machine_translated": true,
+    "_source_hash": "56f194f5a9e06e79"
+  },
+  "settings.units.option_imperial": {
+    "message": "Hệ Anh (°F, mph)",
+    "description": "Units: imperial",
+    "_machine_translated": true,
+    "_source_hash": "945255c141de7296"
   }
 }

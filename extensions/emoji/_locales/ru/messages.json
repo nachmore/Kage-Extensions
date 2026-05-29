@@ -12,9 +12,45 @@
     "_source_hash": "205c3e69ca030742"
   },
   "manifest.description": {
-    "message": "Поиск и копирование эмодзи по названию. Введите «:fire» или «emoji rocket» — будет выбрано наиболее подходящее совпадение среди ~1500 самых используемых эмодзи.",
+    "message": "Поиск и копирование эмодзи по названию. Введите «:fire» или «emoji rocket» — будет подобрано наиболее подходящее из примерно 1500 самых популярных эмодзи.",
     "description": "Extension description",
     "_machine_translated": true,
-    "_source_hash": "59640ff70d49d4b7"
+    "_source_hash": "b9390cfd94255409"
+  },
+  "result.hint.label": {
+    "message": "Эмодзи · введите запрос для поиска",
+    "description": "Hint label when only the trigger word is typed",
+    "_machine_translated": true,
+    "_source_hash": "a2471f31b8da42e8"
+  },
+  "result.hint.description": {
+    "message": "Попробуйте «{trigger} fire» или «:fire»",
+    "description": "Hint description suggesting trigger usage",
+    "_machine_translated": true,
+    "_source_hash": "c66d707a23b3874e"
+  },
+  "settings.description": {
+    "message": "Поиск примерно 250 самых популярных эмодзи по названию. Доступны два варианта запуска: <code>emoji fire</code> или просто <code>:fire</code>. Выберите эмодзи и нажмите Enter, чтобы скопировать его в буфер обмена.",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "9d1fa3f643108b7e"
+  },
+  "settings.enabled.label": {
+    "message": "Включить",
+    "description": "Settings: enable toggle label",
+    "_machine_translated": true,
+    "_source_hash": "efce5571f8dbd1e9"
+  },
+  "settings.trigger.label": {
+    "message": "Слово-триггер",
+    "description": "Settings: trigger word label",
+    "_machine_translated": true,
+    "_source_hash": "5ab4f2dc19af741d"
+  },
+  "settings.shortcode_trigger.label": {
+    "message": "Также распознавать шорткоды (например, «:fire»)",
+    "description": "Settings: shortcode trigger toggle label",
+    "_machine_translated": true,
+    "_source_hash": "a3ef5561dd4cf5f6"
   }
 }

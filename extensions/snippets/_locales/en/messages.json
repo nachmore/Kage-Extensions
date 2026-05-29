@@ -12,5 +12,65 @@
   "manifest.description": {
     "message": "Saved text snippets, copyable from the launcher. Perfect for canned responses, addresses, GIT commands, anything you type often.",
     "description": "Extension description"
+  },
+  "result.add_help.label": {
+    "message": "Save snippet",
+    "description": "Result label when only `snip+` is typed"
+  },
+  "result.add_help.description": {
+    "message": "Usage: snip+ <name> <body>",
+    "description": "Result description for the save help row"
+  },
+  "result.add.label": {
+    "message": "Save snippet \"{name}\"",
+    "description": "Result label for a valid save command"
+  },
+  "result.del.label": {
+    "message": "Delete snippet \"{name}\"",
+    "description": "Result label for the delete command"
+  },
+  "result.list.label_query": {
+    "message": "Snippets · \"{query}\"",
+    "description": "Sync placeholder label while async results load with a query"
+  },
+  "result.list.label_all": {
+    "message": "Snippets",
+    "description": "Sync placeholder label while async results load without a query"
+  },
+  "result.list.loading": {
+    "message": "Loading…",
+    "description": "Description shown while async results load"
+  },
+  "result.empty.label": {
+    "message": "No snippets yet",
+    "description": "Empty-state label when the user has no snippets"
+  },
+  "result.empty.description": {
+    "message": "Save one with `snip+ <name> <body>`",
+    "description": "Empty-state hint pointing to the save command"
+  },
+  "settings.description": {
+    "message": "Save bits of text — canned replies, addresses, commands, code blocks — and copy them with one keystroke.",
+    "description": "Settings page description"
+  },
+  "settings.enabled.label": {
+    "message": "Enable",
+    "description": "Settings: enable toggle"
+  },
+  "settings.trigger.label": {
+    "message": "Trigger word",
+    "description": "Settings: trigger word label"
+  },
+  "settings.info.saved_count": {
+    "message": "<p><strong>{count} snippet{plural} saved.</strong></p>",
+    "description": "HTML count summary in settings"
+  },
+  "settings.info.none_yet": {
+    "message": "<p>None yet.</p>",
+    "description": "HTML shown when no snippets are saved"
+  },
+  "settings.info.usage_html": {
+    "message": "<p><em>Usage:</em> <code>snip name</code> to copy, <code>snip+ name body</code> to save, <code>snip- name</code> to delete.</p>",
+    "description": "Usage hint HTML"
   }
 }

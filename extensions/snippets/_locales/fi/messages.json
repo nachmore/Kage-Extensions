@@ -16,5 +16,95 @@
     "description": "Extension description",
     "_machine_translated": true,
     "_source_hash": "667e7829308ceab3"
+  },
+  "result.add_help.label": {
+    "message": "Tallenna katkelma",
+    "description": "Result label when only `snip+` is typed",
+    "_machine_translated": true,
+    "_source_hash": "08f80a8e1e7bfa91"
+  },
+  "result.add_help.description": {
+    "message": "Käyttö: snip+ <nimi> <sisältö>",
+    "description": "Result description for the save help row",
+    "_machine_translated": true,
+    "_source_hash": "75bb8c519e2f80a9"
+  },
+  "result.add.label": {
+    "message": "Tallenna katkelma ”{name}”",
+    "description": "Result label for a valid save command",
+    "_machine_translated": true,
+    "_source_hash": "b344556d649210b1"
+  },
+  "result.del.label": {
+    "message": "Poista katkelma ”{name}”",
+    "description": "Result label for the delete command",
+    "_machine_translated": true,
+    "_source_hash": "6e592f8176809992"
+  },
+  "result.list.label_query": {
+    "message": "Katkelmat · ”{query}”",
+    "description": "Sync placeholder label while async results load with a query",
+    "_machine_translated": true,
+    "_source_hash": "230e131b0f6755ed"
+  },
+  "result.list.label_all": {
+    "message": "Katkelmat",
+    "description": "Sync placeholder label while async results load without a query",
+    "_machine_translated": true,
+    "_source_hash": "df2d4654f0cd9bd6"
+  },
+  "result.list.loading": {
+    "message": "Ladataan…",
+    "description": "Description shown while async results load",
+    "_machine_translated": true,
+    "_source_hash": "19eca1be9378e999"
+  },
+  "result.empty.label": {
+    "message": "Ei vielä katkelmia",
+    "description": "Empty-state label when the user has no snippets",
+    "_machine_translated": true,
+    "_source_hash": "1907e237ca206234"
+  },
+  "result.empty.description": {
+    "message": "Tallenna komennolla `snip+ <nimi> <sisältö>`",
+    "description": "Empty-state hint pointing to the save command",
+    "_machine_translated": true,
+    "_source_hash": "e661761053eeb015"
+  },
+  "settings.description": {
+    "message": "Tallenna tekstinpätkiä — valmiita vastauksia, osoitteita, komentoja, koodilohkoja — ja kopioi ne yhdellä näppäimenpainalluksella.",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "39c8f4d65c94fd7a"
+  },
+  "settings.enabled.label": {
+    "message": "Ota käyttöön",
+    "description": "Settings: enable toggle",
+    "_machine_translated": true,
+    "_source_hash": "813fb292fb3bfe0d"
+  },
+  "settings.trigger.label": {
+    "message": "Liipaisinsana",
+    "description": "Settings: trigger word label",
+    "_machine_translated": true,
+    "_source_hash": "5ab4f2dc19af741d"
+  },
+  "settings.info.saved_count": {
+    "message": "<p><strong>{count} katkelma{plural} tallennettu.</strong></p>",
+    "description": "HTML count summary in settings",
+    "_machine_translated": true,
+    "_source_hash": "63593bd3c09cc4cf"
+  },
+  "settings.info.none_yet": {
+    "message": "<p>Ei vielä yhtään.</p>",
+    "description": "HTML shown when no snippets are saved",
+    "_machine_translated": true,
+    "_source_hash": "e32420667030c4f8"
+  },
+  "settings.info.usage_html": {
+    "message": "<p><em>Käyttö:</em> <code>snip nimi</code> kopioi, <code>snip+ nimi sisältö</code> tallentaa, <code>snip- nimi</code> poistaa.</p>",
+    "description": "Usage hint HTML",
+    "_machine_translated": true,
+    "_source_hash": "29d9dfcceaed7106"
   }
 }

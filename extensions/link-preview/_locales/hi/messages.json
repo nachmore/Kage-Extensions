@@ -12,9 +12,99 @@
     "_source_hash": "71f62720d8c6e809"
   },
   "manifest.description": {
-    "message": "AI उत्तरों में URL के लिए समृद्ध लिंक पूर्वावलोकन कार्ड  Open Graph हीरो छवियाँ, विवरण और फ़ेविकॉन, ऑफ़लाइन-अनुकूल डिस्क कैशिंग के साथ।",
+    "message": "AI प्रतिक्रियाओं में URL के लिए समृद्ध लिंक प्रीव्यू कार्ड — Open Graph हीरो छवियाँ, विवरण और फ़ेविकॉन, ऑफ़लाइन-अनुकूल डिस्क कैशिंग के साथ।",
     "description": "Extension description",
     "_machine_translated": true,
-    "_source_hash": "8715cca27a85ca14"
+    "_source_hash": "1115a6d66a236b52"
+  },
+  "card.aria_label": {
+    "message": "लिंक प्रीव्यू: {title}",
+    "description": "Aria label on a link-preview card",
+    "_machine_translated": true,
+    "_source_hash": "0d14ec57b9273822"
+  },
+  "settings.description": {
+    "message": "AI प्रतिक्रियाओं में URL के लिए इनलाइन प्रीव्यू कार्ड दिखाता है।",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "8f8fad89bd661f18"
+  },
+  "settings.enabled.label": {
+    "message": "लिंक प्रीव्यू सक्षम करें",
+    "description": "Settings: enable toggle label",
+    "_machine_translated": true,
+    "_source_hash": "8d8bac295d1fb446"
+  },
+  "settings.enabled.description": {
+    "message": "सहायक संदेशों में मिलने वाले URL के लिए प्रीव्यू कार्ड दिखाएँ।",
+    "description": "Settings: enable toggle description",
+    "_machine_translated": true,
+    "_source_hash": "a09c739f5e71639d"
+  },
+  "settings.show_images.label": {
+    "message": "हीरो छवियाँ दिखाएँ",
+    "description": "Settings: hero images toggle label",
+    "_machine_translated": true,
+    "_source_hash": "780bd9e8467dff8a"
+  },
+  "settings.show_images.description": {
+    "message": "उपलब्ध होने पर पृष्ठ की Open Graph या Twitter Card छवि प्रस्तुत करें। कार्ड को संक्षिप्त रखने के लिए बंद करें (कोई छवि नहीं)।",
+    "description": "Settings: hero images toggle description",
+    "_machine_translated": true,
+    "_source_hash": "93de34f690c3ff82"
+  },
+  "settings.max_previews.label": {
+    "message": "प्रति संदेश अधिकतम प्रीव्यू",
+    "description": "Settings: max previews label",
+    "_machine_translated": true,
+    "_source_hash": "0b07938756b890da"
+  },
+  "settings.max_previews.description": {
+    "message": "अव्यवस्था से बचने के लिए प्रति संदेश दिखाए जाने वाले प्रीव्यू कार्ड की संख्या सीमित करें।",
+    "description": "Settings: max previews description",
+    "_machine_translated": true,
+    "_source_hash": "9210823b6078eb39"
+  },
+  "settings.section.cache": {
+    "message": "कैश",
+    "description": "Settings section: cache",
+    "_machine_translated": true,
+    "_source_hash": "eb6835b21d425ab6"
+  },
+  "settings.cache.info_html": {
+    "message": "प्राप्त की गई मेटाडेटा डिस्क पर 7 दिनों तक कैश की जाती है ताकि चैट दोबारा खोलने पर हर URL को फिर से लाने की ज़रूरत न हो। विफल फ़ेच को थोड़े समय के लिए कैश किया जाता है ताकि अस्थायी त्रुटियाँ अपने आप ठीक हो जाएँ।",
+    "description": "Settings: cache info text",
+    "_machine_translated": true,
+    "_source_hash": "3bdf171c7cecf3ef"
+  },
+  "settings.cache_stats.label": {
+    "message": "कैश आकार दिखाएँ",
+    "description": "Settings: cache stats button label",
+    "_machine_translated": true,
+    "_source_hash": "c372374c660f33ba"
+  },
+  "settings.cache_stats.description": {
+    "message": "जाँचें कि लिंक-प्रीव्यू कैश कितनी डिस्क जगह उपयोग कर रहा है।",
+    "description": "Settings: cache stats button description",
+    "_machine_translated": true,
+    "_source_hash": "9bdb5c472c2c9222"
+  },
+  "settings.cache_clear.label": {
+    "message": "कैश साफ़ करें",
+    "description": "Settings: clear cache button label",
+    "_machine_translated": true,
+    "_source_hash": "a49f545073f8b034"
+  },
+  "settings.cache_clear.description": {
+    "message": "कैश मिटाएँ। यदि कोई लिंक प्रीव्यू पुराना या ग़लत लगे तो इसका उपयोग करें।",
+    "description": "Settings: clear cache button description",
+    "_machine_translated": true,
+    "_source_hash": "d70f570cfe2407d5"
+  },
+  "settings.cache_clear.confirm": {
+    "message": "सभी कैश किए गए लिंक प्रीव्यू साफ़ करें? URL अगली बार प्रकट होने पर फिर से लाए जाएँगे।",
+    "description": "Confirmation prompt before clearing cache",
+    "_machine_translated": true,
+    "_source_hash": "f0b0851ffc83c81e"
   }
 }

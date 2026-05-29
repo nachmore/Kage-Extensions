@@ -12,9 +12,45 @@
     "_source_hash": "205c3e69ca030742"
   },
   "manifest.description": {
-    "message": "Wyszukuj i kopiuj emoji po nazwie. Wpisz „:fire” lub „emoji rakieta”, aby znaleźć najlepsze dopasowanie spośród ok. 1500 najczęściej używanych emoji.",
+    "message": "Wyszukuj i kopiuj emoji po nazwie. Wpisz „:fire\" lub „emoji rocket\", a najlepsze trafienie zostanie wybrane spośród ok. 1500 najczęściej używanych emoji.",
     "description": "Extension description",
     "_machine_translated": true,
-    "_source_hash": "59640ff70d49d4b7"
+    "_source_hash": "b9390cfd94255409"
+  },
+  "result.hint.label": {
+    "message": "Emoji · wpisz, aby wyszukać",
+    "description": "Hint label when only the trigger word is typed",
+    "_machine_translated": true,
+    "_source_hash": "a2471f31b8da42e8"
+  },
+  "result.hint.description": {
+    "message": "Spróbuj „{trigger} fire\" lub „:fire\"",
+    "description": "Hint description suggesting trigger usage",
+    "_machine_translated": true,
+    "_source_hash": "c66d707a23b3874e"
+  },
+  "settings.description": {
+    "message": "Wyszukuj ok. 250 najczęściej używanych emoji po nazwie. Działają dwa style wyzwalaczy: <code>emoji fire</code> albo po prostu <code>:fire</code>. Wybierz jedno i naciśnij Enter, aby skopiować do schowka.",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "9d1fa3f643108b7e"
+  },
+  "settings.enabled.label": {
+    "message": "Włącz",
+    "description": "Settings: enable toggle label",
+    "_machine_translated": true,
+    "_source_hash": "efce5571f8dbd1e9"
+  },
+  "settings.trigger.label": {
+    "message": "Słowo wyzwalające",
+    "description": "Settings: trigger word label",
+    "_machine_translated": true,
+    "_source_hash": "5ab4f2dc19af741d"
+  },
+  "settings.shortcode_trigger.label": {
+    "message": "Dopasowuj też skrócone kody (np. „:fire\")",
+    "description": "Settings: shortcode trigger toggle label",
+    "_machine_translated": true,
+    "_source_hash": "a3ef5561dd4cf5f6"
   }
 }

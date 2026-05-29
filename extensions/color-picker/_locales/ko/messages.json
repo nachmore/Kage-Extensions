@@ -16,5 +16,53 @@
     "description": "Extension description",
     "_machine_translated": true,
     "_source_hash": "31c7e58200c59012"
+  },
+  "result.color.description": {
+    "message": "색상 미리보기 · Enter 키로 복사",
+    "description": "Description shown next to a detected color result",
+    "_machine_translated": true,
+    "_source_hash": "0c9bfd07d7319131"
+  },
+  "settings.description": {
+    "message": "색상 값(hex, rgb, hsl, 이름이 지정된 색상)을 감지하고 형식 변환과 함께 미리보기를 표시합니다.",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "92a9e6cf9777abb0"
+  },
+  "settings.copy_format.label": {
+    "message": "복사 형식",
+    "description": "Settings: copy format select label",
+    "_machine_translated": true,
+    "_source_hash": "3641f2d390c4c2c1"
+  },
+  "settings.copy_format.description": {
+    "message": "색상 결과에서 Enter 키를 눌렀을 때 복사할 형식입니다.",
+    "description": "Settings: copy format select description",
+    "_machine_translated": true,
+    "_source_hash": "14bba7dcd907a4d1"
+  },
+  "settings.copy_format.option_all": {
+    "message": "모든 형식",
+    "description": "Copy format dropdown: all formats",
+    "_machine_translated": true,
+    "_source_hash": "56fcd923c445666b"
+  },
+  "settings.copy_format.option_hex": {
+    "message": "HEX만",
+    "description": "Copy format dropdown: hex only",
+    "_machine_translated": true,
+    "_source_hash": "85938ccd3f4ee5f8"
+  },
+  "settings.copy_format.option_rgb": {
+    "message": "RGB만",
+    "description": "Copy format dropdown: rgb only",
+    "_machine_translated": true,
+    "_source_hash": "c30a0594a49b951b"
+  },
+  "settings.copy_format.option_hsl": {
+    "message": "HSL만",
+    "description": "Copy format dropdown: hsl only",
+    "_machine_translated": true,
+    "_source_hash": "997183a6f818deb2"
   }
 }

@@ -12,9 +12,99 @@
     "_source_hash": "71f62720d8c6e809"
   },
   "manifest.description": {
-    "message": "AI yanıtlarındaki URL'ler için zengin bağlantı önizleme kartları  Open Graph kapak görselleri, açıklamalar ve favicon'lar, çevrimdışı uyumlu disk önbelleğiyle.",
+    "message": "Yapay zeka yanıtlarındaki URL'ler için zengin bağlantı önizleme kartları  Open Graph görselleri, açıklamalar ve favicon'lar; çevrimdışı uyumlu disk önbelleği ile.",
     "description": "Extension description",
     "_machine_translated": true,
-    "_source_hash": "8715cca27a85ca14"
+    "_source_hash": "1115a6d66a236b52"
+  },
+  "card.aria_label": {
+    "message": "Bağlantı önizlemesi: {title}",
+    "description": "Aria label on a link-preview card",
+    "_machine_translated": true,
+    "_source_hash": "0d14ec57b9273822"
+  },
+  "settings.description": {
+    "message": "Yapay zeka yanıtlarındaki URL'ler için satır içi önizleme kartları gösterir.",
+    "description": "Settings page description",
+    "_machine_translated": true,
+    "_source_hash": "8f8fad89bd661f18"
+  },
+  "settings.enabled.label": {
+    "message": "Bağlantı önizlemelerini etkinleştir",
+    "description": "Settings: enable toggle label",
+    "_machine_translated": true,
+    "_source_hash": "8d8bac295d1fb446"
+  },
+  "settings.enabled.description": {
+    "message": "Asistan mesajlarında bulunan URL'ler için önizleme kartları göster.",
+    "description": "Settings: enable toggle description",
+    "_machine_translated": true,
+    "_source_hash": "a09c739f5e71639d"
+  },
+  "settings.show_images.label": {
+    "message": "Kapak görsellerini göster",
+    "description": "Settings: hero images toggle label",
+    "_machine_translated": true,
+    "_source_hash": "780bd9e8467dff8a"
+  },
+  "settings.show_images.description": {
+    "message": "Mevcut olduğunda sayfanın Open Graph veya Twitter Card görselini göster. Kartları kompakt tutmak için kapatın (görsel hiç gösterilmez).",
+    "description": "Settings: hero images toggle description",
+    "_machine_translated": true,
+    "_source_hash": "93de34f690c3ff82"
+  },
+  "settings.max_previews.label": {
+    "message": "Mesaj başına maksimum önizleme",
+    "description": "Settings: max previews label",
+    "_machine_translated": true,
+    "_source_hash": "0b07938756b890da"
+  },
+  "settings.max_previews.description": {
+    "message": "Karmaşadan kaçınmak için mesaj başına gösterilen önizleme kartı sayısını sınırlandır.",
+    "description": "Settings: max previews description",
+    "_machine_translated": true,
+    "_source_hash": "9210823b6078eb39"
+  },
+  "settings.section.cache": {
+    "message": "Önbellek",
+    "description": "Settings section: cache",
+    "_machine_translated": true,
+    "_source_hash": "eb6835b21d425ab6"
+  },
+  "settings.cache.info_html": {
+    "message": "Alınan meta veriler, bir sohbet yeniden açıldığında her URL'nin tekrar çekilmemesi için diskte 7 güne kadar önbelleğe alınır. Başarısız istekler kısa süreliğine önbelleğe alınır, böylece geçici hatalar kendiliğinden düzelir.",
+    "description": "Settings: cache info text",
+    "_machine_translated": true,
+    "_source_hash": "3bdf171c7cecf3ef"
+  },
+  "settings.cache_stats.label": {
+    "message": "Önbellek boyutunu göster",
+    "description": "Settings: cache stats button label",
+    "_machine_translated": true,
+    "_source_hash": "c372374c660f33ba"
+  },
+  "settings.cache_stats.description": {
+    "message": "Bağlantı önizleme önbelleğinin ne kadar disk alanı kullandığını kontrol et.",
+    "description": "Settings: cache stats button description",
+    "_machine_translated": true,
+    "_source_hash": "9bdb5c472c2c9222"
+  },
+  "settings.cache_clear.label": {
+    "message": "Önbelleği temizle",
+    "description": "Settings: clear cache button label",
+    "_machine_translated": true,
+    "_source_hash": "a49f545073f8b034"
+  },
+  "settings.cache_clear.description": {
+    "message": "Önbelleği sil. Bir bağlantı önizlemesi eski veya yanlış görünüyorsa bunu kullanın.",
+    "description": "Settings: clear cache button description",
+    "_machine_translated": true,
+    "_source_hash": "d70f570cfe2407d5"
+  },
+  "settings.cache_clear.confirm": {
+    "message": "Önbelleğe alınmış tüm bağlantı önizlemeleri temizlensin mi? URL'ler bir sonraki görüldüklerinde yeniden alınacaktır.",
+    "description": "Confirmation prompt before clearing cache",
+    "_machine_translated": true,
+    "_source_hash": "f0b0851ffc83c81e"
   }
 }
