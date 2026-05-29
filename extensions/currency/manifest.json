@@ -1,0 +1,23 @@
+{
+  "id": "currency",
+  "name": "Currency Converter",
+  "version": "1.0.0",
+  "type": "extension",
+  "description": "Live currency conversion. Type \"100 usd to eur\" or \"50 jpy in cad\". Rates from frankfurter.dev (European Central Bank).",
+  "icon": "💱",
+  "author": "kage",
+  "tags": ["currency", "money", "fx", "exchange", "convert", "finance"],
+
+  "permissions": ["storage"],
+
+  "config": {
+    "enabled": { "type": "boolean", "default": true },
+    "default_source": { "type": "string", "default": "USD" },
+    "default_target": { "type": "string", "default": "EUR" }
+  },
+
+  "contributes": {
+    "searchProvider": "./search.js",
+    "settingsProvider": "./settings.js"
+  }
+}
