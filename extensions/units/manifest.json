@@ -1,0 +1,21 @@
+{
+  "id": "units",
+  "name": "Unit Converter",
+  "version": "1.0.0",
+  "type": "extension",
+  "description": "Convert lengths, weights, temperatures, volumes, time, and data sizes inline. \"5 miles to km\", \"200 lb in kg\", \"100F in C\", \"500MB to GB\".",
+  "icon": "📏",
+  "author": "kage",
+  "tags": ["units", "convert", "measurement", "length", "weight", "temperature", "volume", "data"],
+
+  "permissions": [],
+
+  "config": {
+    "enabled": { "type": "boolean", "default": true }
+  },
+
+  "contributes": {
+    "searchProvider": "./search.js",
+    "settingsProvider": "./settings.js"
+  }
+}

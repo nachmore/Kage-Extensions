@@ -1,0 +1,24 @@
+{
+  "id": "weather",
+  "name": "Weather",
+  "version": "1.0.0",
+  "type": "extension",
+  "description": "Current weather and forecast for any location. Type \"weather\" for your home, or \"weather <city>\" for somewhere else. Powered by open-meteo.com.",
+  "icon": "🌤️",
+  "author": "kage",
+  "tags": ["weather", "forecast", "temperature", "open-meteo"],
+
+  "permissions": ["storage"],
+
+  "config": {
+    "enabled": { "type": "boolean", "default": true },
+    "trigger": { "type": "string", "default": "weather" },
+    "home_location": { "type": "string", "default": "" },
+    "units": { "type": "string", "default": "metric" }
+  },
+
+  "contributes": {
+    "searchProvider": "./search.js",
+    "settingsProvider": "./settings.js"
+  }
+}
