@@ -1,0 +1,57 @@
+/* Spotify now-playing bar — slot: floating-bottom. Designed to read
+   cleanly against both Kage's dark default and Nord/Sunset themes. */
+
+.spotify-bar {
+    --spotify-green: #1db954;
+    gap: 10px;
+}
+.spotify-art {
+    width: 28px;
+    height: 28px;
+    flex: 0 0 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.18);
+}
+.spotify-art-img {
+    width: 28px;
+    height: 28px;
+    object-fit: cover;
+    border-radius: 4px;
+    display: block;
+}
+.spotify-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.15;
+    overflow: hidden;
+}
+.spotify-track {
+    font-weight: 500;
+    color: var(--kage-text-primary, #e6e6f0);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.spotify-artist {
+    font-size: 11px;
+    color: var(--kage-text-muted, #9aa0b4);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.spotify-controls {
+    gap: 4px;
+}
+.spotify-controls .extension-bar-btn {
+    width: 26px;
+    text-align: center;
+    padding-left: 0;
+    padding-right: 0;
+}
+.spotify-like.is-liked {
+    color: var(--spotify-green);
+}
