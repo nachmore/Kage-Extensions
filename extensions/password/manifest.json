@@ -1,0 +1,28 @@
+{
+  "id": "password",
+  "name": "Password Generator",
+  "version": "1.0.0",
+  "type": "extension",
+  "description": "Generate strong random passwords with one keystroke. Type \"pw\" for the default, \"pw 32\" for a custom length, \"pw word\" for a passphrase.",
+  "icon": "🔐",
+  "author": "kage",
+  "tags": ["password", "passphrase", "random", "security", "generator"],
+
+  "permissions": [],
+
+  "config": {
+    "enabled": { "type": "boolean", "default": true },
+    "trigger": { "type": "string", "default": "pw" },
+    "default_length": { "type": "number", "default": 20 },
+    "include_symbols": { "type": "boolean", "default": true },
+    "include_numbers": { "type": "boolean", "default": true },
+    "include_lowercase": { "type": "boolean", "default": true },
+    "include_uppercase": { "type": "boolean", "default": true },
+    "exclude_ambiguous": { "type": "boolean", "default": true }
+  },
+
+  "contributes": {
+    "searchProvider": "./search.js",
+    "settingsProvider": "./settings.js"
+  }
+}
