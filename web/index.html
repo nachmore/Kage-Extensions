@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Kage Extension Store</title>
+        <link rel="stylesheet" href="./style.css" />
+    </head>
+    <body>
+        <header class="hero">
+            <div class="hero-inner">
+                <h1>
+                    <span class="hero-mark">✨</span>
+                    Kage Extensions
+                </h1>
+                <p class="lede">
+                    Search providers, themes, and widgets for
+                    <a href="https://github.com/nachmore/Kage">Kage</a>. Browse, search,
+                    install — or download the zip and side-load.
+                </p>
+                <div class="search-row">
+                    <input
+                        id="search"
+                        type="search"
+                        placeholder="Search by name, tag, or description…"
+                        autocomplete="off"
+                    />
+                    <div class="filters">
+                        <button class="chip is-active" data-filter="all">All</button>
+                        <button class="chip" data-filter="extension">Extensions</button>
+                        <button class="chip" data-filter="theme">Themes</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <main>
+            <section id="results" class="grid"></section>
+            <p id="empty" class="empty hidden">Nothing matches your search.</p>
+            <p id="loading" class="empty">Loading catalog…</p>
+        </main>
+        <footer>
+            <p>
+                <a href="https://github.com/nachmore/Kage-Extensions">Source</a>
+                ·
+                <a href="https://github.com/nachmore/Kage-Extensions/blob/main/CONTRIBUTING.md"
+                    >Contribute</a
+                >
+                · catalog
+                <span id="generated-at">…</span>
+            </p>
+        </footer>
+        <template id="card-template">
+            <article class="card">
+                <header class="card-header">
+                    <span class="card-icon"></span>
+                    <div>
+                        <h2 class="card-name"></h2>
+                        <p class="card-author"></p>
+                    </div>
+                    <span class="card-type"></span>
+                </header>
+                <p class="card-desc"></p>
+                <ul class="card-tags"></ul>
+                <footer class="card-footer">
+                    <span class="card-version"></span>
+                    <a class="card-download">Download .zip</a>
+                </footer>
+            </article>
+        </template>
+        <script src="./app.js" type="module"></script>
+    </body>
+</html>

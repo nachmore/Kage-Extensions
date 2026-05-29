@@ -1,0 +1,82 @@
+name: build-catalog
+
+on:
+    push:
+        branches: [main]
+    pull_request:
+        branches: [main]
+    workflow_dispatch:
+
+permissions:
+    contents: read
+    pages: write
+    id-token: write
+
+concurrency:
+    group: pages
+    cancel-in-progress: false
+
+jobs:
+    validate:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  cache: npm
+            - run: npm ci
+            - run: npm run validate
+
+    build:
+        # Only build the catalog + deploy on push to main. PRs run validate-only.
+        if: github.event_name != 'pull_request'
+        needs: validate
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  cache: npm
+
+            # Pull the previous gh-pages content into dist/ so the build
+            # script can detect "source unchanged → reuse zip" and skip
+            # repackaging. First-ever run won't have it; build-catalog.mjs
+            # handles that gracefully.
+            - name: Restore previous catalog
+              uses: actions/checkout@v4
+              continue-on-error: true
+              with:
+                  ref: gh-pages
+                  path: dist
+            - name: Strip gh-pages metadata
+              run: |
+                  if [ -d dist/.git ]; then rm -rf dist/.git; fi
+
+            - run: npm ci
+            - run: npm run build
+
+            # Drop the static store browser at the Pages root so visiting
+            # the site shows a real page, not a 404.
+            - name: Stage web browser
+              run: |
+                  cp web/index.html dist/index.html
+                  cp web/style.css dist/style.css
+                  cp web/app.js dist/app.js
+                  cp web/spotify-callback.html dist/spotify-callback.html
+
+            - uses: actions/upload-pages-artifact@v3
+              with:
+                  path: dist
+
+    deploy:
+        if: github.event_name != 'pull_request'
+        needs: build
+        runs-on: ubuntu-latest
+        environment:
+            name: github-pages
+            url: ${{ steps.deployment.outputs.page_url }}
+        steps:
+            - id: deployment
+              uses: actions/deploy-pages@v4

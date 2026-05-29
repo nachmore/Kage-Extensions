@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Spotify · Kage Authorization</title>
+        <link rel="stylesheet" href="./style.css" />
+        <style>
+            .auth {
+                max-width: 540px;
+                margin: 60px auto;
+                padding: 28px;
+                background: var(--bg-elev);
+                border: 1px solid var(--border);
+                border-radius: var(--radius);
+            }
+            .auth h1 {
+                margin-top: 0;
+            }
+            .code-box {
+                font-family: ui-monospace, Menlo, monospace;
+                background: var(--bg-elev-2);
+                padding: 14px;
+                border-radius: 8px;
+                word-break: break-all;
+                user-select: all;
+                font-size: 13px;
+                line-height: 1.4;
+            }
+            .copy-btn {
+                margin-top: 12px;
+                background: var(--accent);
+                color: #fff;
+                border: 0;
+                border-radius: 8px;
+                padding: 10px 16px;
+                font-size: 14px;
+                cursor: pointer;
+            }
+            .copy-btn:hover {
+                filter: brightness(1.1);
+            }
+            .status {
+                margin-top: 14px;
+                color: var(--text-dim);
+                font-size: 13px;
+            }
+            .err {
+                color: #ff7e7e;
+            }
+        </style>
+    </head>
+    <body>
+        <main class="auth" id="root">
+            <h1>Connecting to Spotify…</h1>
+            <p class="status" id="status">Reading the response from Spotify.</p>
+            <div id="code-section" style="display: none">
+                <p>
+                    Spotify sent us a one-time code. Copy it back into the Kage Spotify
+                    settings page to finish connecting.
+                </p>
+                <div class="code-box" id="code">…</div>
+                <button class="copy-btn" id="copy">Copy code</button>
+                <p class="status">
+                    The code is single-use and expires in about 10 minutes — copy and
+                    paste promptly.
+                </p>
+            </div>
+            <div id="error-section" style="display: none">
+                <p class="err" id="error-text">Authorization failed.</p>
+                <p class="status">
+                    Close this tab and retry from Kage's Spotify settings.
+                </p>
+            </div>
+        </main>
+        <script>
+            // This page is the fallback redirect target for the Spotify auth flow
+            // when Kage can't bind a loopback listener (firewall, port blocked,
+            // etc). It pulls ?code= out of the URL and surfaces it for the user
+            // to paste into the extension's settings page. Stays static — no
+            // build step, no token exchange here (that requires the PKCE
+            // verifier the extension holds).
+            const params = new URLSearchParams(window.location.search);
+            const code = params.get('code');
+            const state = params.get('state');
+            const err = params.get('error');
+            const status = document.getElementById('status');
+            const codeSection = document.getElementById('code-section');
+            const errorSection = document.getElementById('error-section');
+            const errorText = document.getElementById('error-text');
+            const codeEl = document.getElementById('code');
+            const copyBtn = document.getElementById('copy');
+
+            if (err) {
+                errorText.textContent = `Spotify rejected the request: ${err}`;
+                errorSection.style.display = '';
+                status.textContent = 'Authorization failed.';
+            } else if (code) {
+                // Combine code + state so the extension can verify state too.
+                const combined = state ? `${code}.${state}` : code;
+                codeEl.textContent = combined;
+                codeSection.style.display = '';
+                status.textContent = 'Authorization successful. Copy the code below.';
+                copyBtn.addEventListener('click', async () => {
+                    try {
+                        await navigator.clipboard.writeText(combined);
+                        copyBtn.textContent = 'Copied ✓';
+                        setTimeout(() => (copyBtn.textContent = 'Copy code'), 1500);
+                    } catch {
+                        // Fallback — select the code box.
+                        const r = document.createRange();
+                        r.selectNodeContents(codeEl);
+                        const sel = window.getSelection();
+                        sel.removeAllRanges();
+                        sel.addRange(r);
+                    }
+                });
+            } else {
+                errorText.textContent =
+                    "Spotify didn't return a code. Try again from Kage's Spotify settings.";
+                errorSection.style.display = '';
+                status.textContent = 'No code in URL.';
+            }
+        </script>
+    </body>
+</html>

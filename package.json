@@ -1,0 +1,14 @@
+{
+  "name": "kage-extensions",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Catalog of Kage extensions and themes",
+  "scripts": {
+    "build": "node scripts/build-catalog.mjs",
+    "validate": "node scripts/validate-manifests.mjs"
+  },
+  "devDependencies": {
+    "archiver": "^7.0.1"
+  }
+}

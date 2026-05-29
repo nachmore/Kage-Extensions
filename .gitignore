@@ -141,3 +141,6 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+
+# Catalog build output — published to gh-pages by CI, never committed.
+dist/
