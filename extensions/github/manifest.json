@@ -1,0 +1,23 @@
+{
+  "id": "github",
+  "name": "GitHub Search",
+  "version": "1.0.0",
+  "type": "extension",
+  "description": "Search GitHub repos, users, and issues from the launcher. Type \"gh <query>\" for repos, \"gh @<user>\" for users, \"gh #<query>\" for issues.",
+  "icon": "🐙",
+  "author": "kage",
+  "tags": ["github", "search", "repos", "developer", "code"],
+
+  "permissions": ["shell", "storage"],
+
+  "config": {
+    "enabled": { "type": "boolean", "default": true },
+    "trigger": { "type": "string", "default": "gh" },
+    "personal_token": { "type": "string", "default": "" }
+  },
+
+  "contributes": {
+    "searchProvider": "./search.js",
+    "settingsProvider": "./settings.js"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "id": "json-tools",
+  "name": "JSON Tools",
+  "version": "1.0.0",
+  "type": "extension",
+  "description": "Validate, prettify, and minify JSON from your clipboard. \"json fmt\" pretty-prints, \"json min\" minifies, \"json check\" validates.",
+  "icon": "🧰",
+  "author": "kage",
+  "tags": ["json", "format", "validate", "minify", "developer"],
+
+  "permissions": ["clipboard"],
+
+  "config": {
+    "enabled": { "type": "boolean", "default": true },
+    "trigger": { "type": "string", "default": "json" },
+    "indent_spaces": { "type": "number", "default": 2 }
+  },
+
+  "contributes": {
+    "searchProvider": "./search.js",
+    "settingsProvider": "./settings.js"
+  }
+}
