@@ -40,21 +40,16 @@ jobs:
                   node-version: 20
                   cache: npm
 
-            # Pull the previous gh-pages content into dist/ so the build
-            # script can detect "source unchanged → reuse zip" and skip
-            # repackaging. First-ever run won't have it; build-catalog.mjs
-            # handles that gracefully.
-            - name: Restore previous catalog
-              uses: actions/checkout@v4
-              continue-on-error: true
-              with:
-                  ref: gh-pages
-                  path: dist
-            - name: Strip gh-pages metadata
-              run: |
-                  if [ -d dist/.git ]; then rm -rf dist/.git; fi
-
             - run: npm ci
+
+            # Pull the previously deployed catalog + zips from the live
+            # Pages URL so the build script can reuse unchanged zips
+            # (saves CI minutes on rebuilds). Skipped on first-ever run
+            # — the URL 404s and seed-dist.mjs degrades gracefully.
+            - name: Seed dist/ from live Pages
+              continue-on-error: true
+              run: node scripts/seed-dist.mjs
+
             - run: npm run build
 
             # Drop the static store browser at the Pages root so visiting
