@@ -17,10 +17,20 @@ const VALID_TYPES = new Set(['extension', 'theme', 'commands']);
 
 // Mirrors ui/js/shared/extension-permissions.js KNOWN_CAPABILITIES.
 // Keep in sync — the host enforces this list at install time too.
+//
+// `shell` was the previous catch-all for "open URLs, file paths, and
+// launch other apps." Pre-launch we split it into `urls` (web links +
+// safe deep links, scheme-allowlisted at the sandbox boundary) and
+// `launch` (open arbitrary files / launch apps by name). No back-
+// compat path — any manifest that still says `shell` will fail
+// validation here, in the host loader, and at the install-time
+// prompt. Replace with `urls` for browser handoff or `launch` for
+// genuine app/file launching.
 const KNOWN_CAPABILITIES = new Set([
     'storage',
     'clipboard',
-    'shell',
+    'urls',
+    'launch',
     'network',
     'oauth',
     'filesystem',

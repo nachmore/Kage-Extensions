@@ -14,7 +14,7 @@
     "code"
   ],
   "permissions": [
-    "shell",
+    "urls",
     "storage"
   ],
   "config": {
