@@ -20,13 +20,69 @@ jobs:
     validate:
         runs-on: ubuntu-latest
         steps:
+            # `fetch-depth: 0` so we can compute changed-paths against
+            # the merge-base of the PR (or the previous commit on push).
+            # The check-* scripts use BASE_SHA / HEAD_SHA below to
+            # decide which extensions to scan; without full history,
+            # `git merge-base` falls back to "everything changed" and
+            # the per-extension scoping is wasted.
             - uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
             - uses: actions/setup-node@v4
               with:
                   node-version: 20
                   cache: npm
             - run: npm ci
-            - run: npm run validate
+
+            # Schema check runs against EVERY manifest, every time —
+            # cheap, and a malformed manifest in extension A can break
+            # the catalog build for everyone, so we don't scope it to
+            # changed items.
+            - name: Validate manifests (every extension, every run)
+              run: npm run validate
+
+            # Per-extension checks scoped to changed items. The
+            # affected-items helper picks up BASE_SHA / HEAD_SHA from
+            # the env and walks `git diff --name-only base..head` to
+            # decide what to scan. On a push to main this scopes to
+            # whatever the merge introduced; on a PR it scopes to the
+            # PR diff against the merge-base. Local runs without these
+            # env vars fall back to "everything" (safe default).
+            - name: Resolve diff range
+              id: diff
+              run: |
+                  if [ "${{ github.event_name }}" = "pull_request" ]; then
+                    echo "base=${{ github.event.pull_request.base.sha }}" >> "$GITHUB_OUTPUT"
+                    echo "head=${{ github.event.pull_request.head.sha }}" >> "$GITHUB_OUTPUT"
+                  else
+                    echo "base=${{ github.event.before }}" >> "$GITHUB_OUTPUT"
+                    echo "head=${{ github.sha }}" >> "$GITHUB_OUTPUT"
+                  fi
+
+            - name: Permissions hygiene
+              env:
+                  BASE_SHA: ${{ steps.diff.outputs.base }}
+                  HEAD_SHA: ${{ steps.diff.outputs.head }}
+              run: npm run check:permissions
+
+            - name: Static security checks
+              env:
+                  BASE_SHA: ${{ steps.diff.outputs.base }}
+                  HEAD_SHA: ${{ steps.diff.outputs.head }}
+              run: npm run check:security
+
+            - name: i18n hygiene
+              env:
+                  BASE_SHA: ${{ steps.diff.outputs.base }}
+                  HEAD_SHA: ${{ steps.diff.outputs.head }}
+              run: npm run check:i18n
+
+            - name: Bundle hygiene
+              env:
+                  BASE_SHA: ${{ steps.diff.outputs.base }}
+                  HEAD_SHA: ${{ steps.diff.outputs.head }}
+              run: npm run check:bundle
 
     build:
         # Only build the catalog + deploy on push to main. PRs run validate-only.

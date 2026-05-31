@@ -1,0 +1,80 @@
+# Daily drift check between scripts/host-capabilities.mjs (vendored)
+# and the upstream Kage repo's extension-permissions.js (canonical).
+#
+# Why this exists:
+#   - Per-PR build.yml runs offline so no extension PR is blocked by a
+#     network blip or rate limit.
+#   - But the vendored table CAN drift — Kage's `COMMAND_CAPABILITIES`
+#     gets new entries as new commands ship, and any extension built
+#     against the new caps would fail our static check until the
+#     vendor copy is refreshed.
+#
+# Schedule: once a day. We open an issue when drift is detected so a
+# maintainer notices on the next morning, rather than failing CI for
+# every extension PR until someone fixes it.
+#
+# To force a refresh manually:
+#   gh workflow run host-sync.yml
+
+name: host-capability-drift
+
+on:
+    schedule:
+        - cron: '0 9 * * *' # 09:00 UTC daily
+    workflow_dispatch:
+
+permissions:
+    contents: read
+    issues: write
+
+jobs:
+    check:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  cache: npm
+            - run: npm ci
+
+            - name: Compare vendored host-capabilities.mjs against upstream
+              id: drift
+              # Capture stdout AND stderr; the script exits non-zero on
+              # drift but we want to keep going so we can open an issue.
+              run: |
+                  set +e
+                  npm run check:host-sync 2>&1 | tee drift.log
+                  echo "exit=$?" >> "$GITHUB_OUTPUT"
+
+            - name: Open / refresh tracking issue on drift
+              if: steps.drift.outputs.exit != '0'
+              env:
+                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              run: |
+                  TITLE="Host capability table drift detected"
+                  BODY=$(cat <<EOF
+                  The daily drift check between \`scripts/host-capabilities.mjs\`
+                  (vendored) and the upstream Kage permissions table is reporting
+                  divergence. See the workflow logs for the full diff.
+
+                  \`\`\`
+                  $(cat drift.log)
+                  \`\`\`
+
+                  Sync \`scripts/host-capabilities.mjs\` against
+                  https://github.com/nachmore/Kage/blob/main/ui/js/shared/extension-permissions.js
+                  and merge — the next scheduled run will close this issue
+                  automatically.
+                  EOF
+                  )
+
+                  # Reuse an existing open issue with the same title so we
+                  # don't open a duplicate every night.
+                  EXISTING=$(gh issue list --search "$TITLE in:title is:open" --json number --jq '.[0].number')
+                  if [ -n "$EXISTING" ]; then
+                    gh issue edit "$EXISTING" --body "$BODY"
+                  else
+                    gh issue create --title "$TITLE" --body "$BODY" --label "ci-drift" || \
+                      gh issue create --title "$TITLE" --body "$BODY"
+                  fi

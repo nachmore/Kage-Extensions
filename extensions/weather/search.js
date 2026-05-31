@@ -30,11 +30,14 @@ export default class WeatherSearchProvider {
         this.t = context.i18n?.t?.bind(context.i18n) || ((k) => k);
         this._memCache = new Map();
     }
+    // i18n-keys: wmo.*
     _wmo(code) {
         const known = WMO_ICONS[code];
-        // Backtick template literal: keeps the static drift-checker from
-        // misreading the key as a string-concat literal. Every numbered
-        // wmo.<n> entry lives in _locales/en/messages.json.
+        // Dynamic lookup against `wmo.<numeric WMO code>` keys in
+        // _locales/en/messages.json. The CI i18n-checker doesn't see
+        // these as referenced (template literal beats the static
+        // analyzer), so the hint comment above whitelists every
+        // `wmo.*` key as in-use.
         return {
             icon: known || '🌡️',
             label: known ? this.t(`wmo.${code}`) : this.t('wmo.unknown'),

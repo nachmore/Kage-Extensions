@@ -6,7 +6,13 @@
   "description": "Catalog of Kage extensions and themes",
   "scripts": {
     "build": "node scripts/build-catalog.mjs",
-    "validate": "node scripts/validate-manifests.mjs"
+    "validate": "node scripts/validate-manifests.mjs",
+    "check:permissions": "node scripts/check-permissions.mjs",
+    "check:security": "node scripts/check-security.mjs",
+    "check:i18n": "node scripts/check-i18n.mjs",
+    "check:bundle": "node scripts/check-bundle.mjs",
+    "check:host-sync": "node scripts/check-host-sync.mjs",
+    "check:all": "npm run validate && npm run check:permissions && npm run check:security && npm run check:i18n && npm run check:bundle"
   },
   "devDependencies": {
     "archiver": "^7.0.1"

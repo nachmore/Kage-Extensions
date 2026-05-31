@@ -16,9 +16,53 @@ sandbox model are spec'd there.
 git clone https://github.com/nachmore/Kage-Extensions.git
 cd Kage-Extensions
 npm install
-npm run validate           # check every manifest under extensions/ and themes/
+npm run check:all          # full CI gate (manifest schema + permissions + security + i18n + bundle)
 npm run build              # produce dist/ (catalog.json + per-id zips)
 ```
+
+### Running individual gates
+
+| Script                     | What it checks                                                                                                                                                          |
+|----------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `npm run validate`         | Manifest schema: required fields, semver, capability names, contributes paths exist, ID/folder match, length limits, no unknown top-level fields, ID-collision sweep.   |
+| `npm run check:permissions`| Static analysis of `invoke('cmd', ...)` call sites cross-referenced with the host's `COMMAND_CAPABILITIES`. Errors on used-but-undeclared, warns on declared-but-unused. |
+| `npm run check:security`   | Forbids `eval`, `new Function`, `setTimeout(string)`, `import('http...')`, `<script src=http...>`, `document.write`. Flags `innerHTML +=`-shaped XSS smell.              |
+| `npm run check:i18n`       | Every `__MSG_*__` token in manifest + every `t('key')` call in code must resolve in `_locales/en/messages.json`. Non-EN catalogs flagged for empty / TODO strings.       |
+| `npm run check:bundle`     | Forbids OS junk (`.DS_Store`, `Thumbs.db`), env files, `node_modules/`, sourcemaps, lock files, secrets. Per-file size cap 5MB; per-extension cap 10MB.                  |
+
+### Affected-paths scoping (CI)
+
+Heavy checks (`permissions`, `security`, `i18n`, `bundle`) only run on
+extensions whose source files changed in the PR. Schema validation
+runs against every manifest, every time. Locally `npm run check:*`
+without arguments diffs against `origin/main`; pass `--all` to force
+a full sweep.
+
+This means a regression in extension X (say, a vendored library going
+out of date) won't block a PR that only touches extension Y. The
+trade-off is that "everything's fine after merge" is only guaranteed
+for the extensions the PR touched — periodic full sweeps are run on
+the host-capability-drift workflow.
+
+### Hint comments for dynamic dispatch
+
+The static analyzers can't follow indirection. If your code calls
+`invoke(commandVar)` instead of `invoke('literal_command')`, or
+`t(\`prefix.${id}\`)` instead of `t('literal.key')`, the checks miss
+those usages and may report false positives. Two escape hatches:
+
+```js
+// permissions: clipboard, network
+const cmd = pickCommand();
+await this.invoke(cmd, args);
+
+// i18n-keys: wmo.*
+return this.t(`wmo.${code}`);
+```
+
+Both are comma-separated lists; `*` at the end of an i18n key makes
+it a prefix glob (`wmo.*` whitelists every EN-catalog key starting
+with `wmo.`).
 
 ## Layout
 
