@@ -16,7 +16,7 @@
   ],
   "permissions": [
     "storage",
-    "shell",
+    "urls",
     "oauth"
   ],
   "config": {
