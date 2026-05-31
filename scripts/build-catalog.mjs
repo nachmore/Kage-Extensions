@@ -131,11 +131,48 @@ async function loadPreviousCatalog() {
     }
 }
 
+/**
+ * Resolve `__MSG_<key>__` tokens in a string against the extension's EN
+ * catalog. Used at catalog-publish time so the browser-facing name and
+ * description fields are rendered in English instead of leaking the raw
+ * Chrome-style i18n tokens to the store window. Per-language resolution
+ * is a future enhancement — right now the catalog ships a single set of
+ * strings and the host falls back to its own i18n proxy when an
+ * extension is actually installed.
+ */
+function resolveMsgTokens(value, enCatalog) {
+    if (typeof value !== 'string' || !value.startsWith('__MSG_') || !value.endsWith('__')) {
+        return value;
+    }
+    const key = value.slice(6, -2);
+    const entry = enCatalog?.[key];
+    return entry?.message ?? value;
+}
+
+async function loadExtensionEnCatalog(srcDir) {
+    const enPath = path.join(srcDir, '_locales', 'en', 'messages.json');
+    if (!existsSync(enPath)) return null;
+    try {
+        return JSON.parse(await readFile(enPath, 'utf8'));
+    } catch (e) {
+        console.warn(`  (could not parse ${enPath}: ${e.message})`);
+        return null;
+    }
+}
+
 async function processItem({ kind, dirName, previousById }) {
     const srcRoot = path.join(repoRoot, kind === 'extension' ? 'extensions' : 'themes');
     const srcDir = path.join(srcRoot, dirName);
     const manifestPath = path.join(srcDir, 'manifest.json');
     const manifest = await readJson(manifestPath);
+
+    // Resolve __MSG_*__ name/description tokens against the extension's
+    // English catalog before they land in catalog.json / detail/<id>.json.
+    // The store fetches those JSON files raw, so unresolved tokens would
+    // surface as "__MSG_manifest.name__" in the UI.
+    const enCatalog = await loadExtensionEnCatalog(srcDir);
+    const resolvedName = resolveMsgTokens(manifest.name, enCatalog);
+    const resolvedDescription = resolveMsgTokens(manifest.description, enCatalog);
 
     const id = manifest.id;
     const version = manifest.version;
@@ -181,10 +218,10 @@ async function processItem({ kind, dirName, previousById }) {
     const catalogEntry = {
         id,
         type: manifest.type,
-        name: manifest.name,
+        name: resolvedName,
         version,
         author: manifest.author ?? null,
-        description: manifest.description ?? '',
+        description: resolvedDescription ?? '',
         icon: manifest.icon ?? '',
         tags: Array.isArray(manifest.tags) ? manifest.tags : [],
         permissions: Array.isArray(manifest.permissions) ? manifest.permissions : [],
