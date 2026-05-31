@@ -15,8 +15,11 @@
                 </h1>
                 <p class="lede">
                     Search providers, themes, and widgets for
-                    <a href="https://github.com/nachmore/Kage">Kage</a>. Browse, search,
-                    install — or download the zip and side-load.
+                    <a href="https://github.com/nachmore/Kage">Kage</a>. Click
+                    <strong>Install in Kage</strong> on any card to open Kage's
+                    store and approve the install. No Kage yet? Grab the
+                    <code>.zip</code> instead and side-load it from the store
+                    window.
                 </p>
                 <div class="search-row">
                     <input
@@ -61,9 +64,17 @@
                 </header>
                 <p class="card-desc"></p>
                 <ul class="card-tags"></ul>
+                <ul class="card-perms" aria-label="Capabilities this extension requests"></ul>
                 <footer class="card-footer">
                     <span class="card-version"></span>
-                    <a class="card-download">Download .zip</a>
+                    <span class="card-actions">
+                        <a class="card-install"
+                           title="Open Kage and start the install with the permission prompt"
+                           >Install in Kage</a>
+                        <a class="card-download"
+                           title="Download the .zip and side-load it from Kage's store"
+                           >.zip</a>
+                    </span>
                 </footer>
             </article>
         </template>
