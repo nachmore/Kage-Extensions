@@ -36,10 +36,10 @@
     "_source_hash": "260860647df2e4c3"
   },
   "result.help.description": {
-    "message": "play, queue, like, unlike, next, prev, vol, device, playlist",
+    "message": "사용 예: sp play <song>, sp queue <song>, sp like, sp next, sp vol 50, sp device, sp playlist <name>",
     "description": "Result description listing available commands",
     "_machine_translated": true,
-    "_source_hash": "8b31d4e33332771c"
+    "_source_hash": "f1d75821b8d7ab50"
   },
   "result.play_query.label": {
     "message": "Spotify · \"{query}\" 재생",
@@ -168,10 +168,10 @@
     "_source_hash": "dcd23e45986f9bca"
   },
   "result.disconnect.description": {
-    "message": "토큰을 삭제합니다",
+    "message": "이 컴퓨터에서 Spotify 계정에서 로그아웃합니다",
     "description": "Description for sign out",
     "_machine_translated": true,
-    "_source_hash": "8953e3749997983d"
+    "_source_hash": "c711eb41e917238b"
   },
   "error.not_signed_in": {
     "message": "Spotify에 로그인되어 있지 않습니다. 로그인하려면 \"sp connect\"를 입력하세요.",
@@ -240,10 +240,10 @@
     "_source_hash": "21695f71faff6bf7"
   },
   "settings.description": {
-    "message": "재생 중인 항목을 표시하고, 재생을 제어하며, \"sp like\"나 \"sp play <track>\" 같은 단축 명령을 실행합니다. 일회성 localhost 리스너를 통한 Spotify의 PKCE 플로우를 사용합니다. 클라이언트 시크릿이 기기 밖으로 나가지 않습니다.",
+    "message": "재생 중인 곡 확인, 곡 대기열 추가, 현재 트랙 좋아요, 건너뛰기 등을 Kage 런처나 채팅 명령어로 모두 사용할 수 있습니다. 본인의 Spotify 계정으로 로그인하세요. 비밀번호는 브라우저를 벗어나지 않습니다.",
     "description": "Settings page description",
     "_machine_translated": true,
-    "_source_hash": "9f8a00aca11b1f67"
+    "_source_hash": "07ab0647eb5e6f94"
   },
   "settings.section.display": {
     "message": "표시",
@@ -270,10 +270,10 @@
     "_source_hash": "76c1ce92f5661830"
   },
   "settings.refresh_seconds.description": {
-    "message": "재생 중 표시줄이 Spotify를 폴링하는 빈도입니다. 값이 낮을수록 업데이트가 빨라지지만 API 호출이 약간 더 늘어납니다.",
+    "message": "Kage가 재생 중인 항목을 Spotify에서 얼마나 자주 확인할지 설정합니다. 값이 낮을수록 바가 더 빨리 업데이트되지만 Spotify에 더 자주 요청합니다. 기본값은 15초입니다.",
     "description": "Settings: refresh seconds description",
     "_machine_translated": true,
-    "_source_hash": "f2e9e332fda01695"
+    "_source_hash": "6465de9f91b4dda0"
   },
   "settings.trigger.label": {
     "message": "트리거 단어",
@@ -294,10 +294,10 @@
     "_source_hash": "d0fcd903dec290c3"
   },
   "settings.app.intro_html": {
-    "message": "<a href=\"https://developer.spotify.com/dashboard\">developer.spotify.com/dashboard</a>에서 무료 <strong>Spotify Developer</strong> 앱을 생성하세요. 리디렉션 URI로 <code>http://127.0.0.1/spotify/callback</code>을 추가하세요(포트는 무엇이든 됩니다. Kage가 로그인 시점에 실제 포트를 추가하며 Spotify는 호스트와 경로만 일치시킵니다). 아래에 <strong>Client ID</strong>를 복사해 붙여 넣으세요.",
+    "message": "Spotify는 모든 앱에 자체 <strong>Client ID</strong>를 등록하도록 요구합니다. <a href=\"https://developer.spotify.com/dashboard\">developer.spotify.com/dashboard</a>에서 무료로 생성하세요(<em>Create app</em>을 클릭하고 이름을 자유롭게 지정한 뒤 <em>Web API</em>를 체크합니다). Redirect URI로 <code>http://127.0.0.1:8080/spotify/callback</code>을 추가하세요. 포트는 무엇이든 상관없으며, Spotify는 하나가 있기만 하면 됩니다. 발급된 Client ID를 복사하여 아래에 붙여넣으세요.",
     "description": "Settings: app setup instructions",
     "_machine_translated": true,
-    "_source_hash": "4b925a1e8d4fe58f"
+    "_source_hash": "177c4bb9f2055193"
   },
   "settings.client_id.label": {
     "message": "Client ID",
@@ -312,10 +312,10 @@
     "_source_hash": "00365c0104e05fb3"
   },
   "settings.client_id.description": {
-    "message": "로컬에 저장되며 Spotify 외에는 어디에도 전송되지 않습니다.",
+    "message": "이 컴퓨터에만 저장됩니다. 로그인할 때 Spotify로만 전송되며 다른 곳으로는 전송되지 않습니다.",
     "description": "Settings: Client ID description",
     "_machine_translated": true,
-    "_source_hash": "726633bc55ffbe83"
+    "_source_hash": "74280ec7c0552793"
   },
   "settings.save_client_id.label": {
     "message": "Client ID 저장",
@@ -330,22 +330,22 @@
     "_source_hash": "f358cdafb27f4748"
   },
   "settings.connection.connected": {
-    "message": "<strong>연결됨</strong> — 재생 컨트롤을 사용할 수 있습니다.",
+    "message": "<strong>로그인되었습니다.</strong> 재생 컨트롤을 사용할 준비가 되었습니다.",
     "description": "Settings: connection ready text",
     "_machine_translated": true,
-    "_source_hash": "6824068777a99688"
+    "_source_hash": "e0ab77ca56a0682c"
   },
   "settings.connection.not_connected": {
-    "message": "아직 연결되지 않았습니다. 인증하려면 <strong>연결</strong>을 클릭하세요.",
+    "message": "아직 로그인되지 않았습니다. <strong>Connect</strong>를 클릭하여 Spotify에 로그인하세요.",
     "description": "Settings: not connected text",
     "_machine_translated": true,
-    "_source_hash": "7a248676d782c5cd"
+    "_source_hash": "210fcedbc5081420"
   },
   "settings.connection.no_client_id": {
-    "message": "먼저 Client ID를 저장한 후 연결하세요.",
+    "message": "먼저 위에 Client ID를 붙여넣은 후 여기로 돌아와 연결하세요.",
     "description": "Settings: needs client ID first",
     "_machine_translated": true,
-    "_source_hash": "6e654060ef7b1a02"
+    "_source_hash": "3316be227daf1055"
   },
   "settings.connect.label_connect": {
     "message": "연결…",
@@ -366,10 +366,10 @@
     "_source_hash": "ccc6a1247a0bc31c"
   },
   "settings.disconnect.confirm": {
-    "message": "Spotify에서 로그아웃하시겠습니까? 재생 단축키를 사용하려면 다시 인증해야 합니다.",
+    "message": "Spotify에서 로그아웃하시겠습니까? 재생 단축키를 사용하려면 다시 로그인해야 합니다.",
     "description": "Confirmation prompt before signing out",
     "_machine_translated": true,
-    "_source_hash": "a27426d3adcd7ad4"
+    "_source_hash": "9dd32ff7ac62f6bb"
   },
   "settings.validate.trigger_required": {
     "message": "트리거 단어는 필수입니다.",
@@ -418,5 +418,83 @@
     "description": "Status after a successful sign-out",
     "_machine_translated": true,
     "_source_hash": "64224f1b6f2851a7"
+  },
+  "error.no_devices": {
+    "message": "온라인 상태인 Spotify 기기가 없습니다. 휴대폰, 컴퓨터 또는 스피커에서 Spotify를 먼저 연 후 다시 시도해 주세요.",
+    "description": "Error when no Spotify Connect targets are visible",
+    "_machine_translated": true,
+    "_source_hash": "75e4fe1869d99e6e"
+  },
+  "error.pick_device": {
+    "message": "둘 이상의 Spotify 기기가 온라인 상태입니다({names}). \"sp device\"를 입력하여 하나를 선택하세요.",
+    "description": "Error when there are multiple devices and we don't know which to use",
+    "_machine_translated": true,
+    "_source_hash": "47fb0622fbcea4f4"
+  },
+  "error.device_offline": {
+    "message": "저장된 기기 \"{name}\"이(가) 오프라인 상태입니다. \"sp device\"를 입력하여 다른 기기를 선택하세요.",
+    "description": "Error when saved preferred device is no longer reachable",
+    "_machine_translated": true,
+    "_source_hash": "a89789c54fcb37e5"
+  },
+  "error.no_active_device": {
+    "message": "Spotify 기기에 연결할 수 없습니다. 어딘가(휴대폰, 브라우저, 스피커)에서 Spotify를 열고 다시 시도해 주세요.",
+    "description": "Error when transfer-and-retry still fails",
+    "_machine_translated": true,
+    "_source_hash": "3a60400c28c7d034"
+  },
+  "error.premium_required": {
+    "message": "재생 제어에는 Spotify Premium이 필요합니다. 무료 계정은 현재 재생 중인 항목만 확인할 수 있습니다.",
+    "description": "Error when the API rejects a control call for free-tier users",
+    "_machine_translated": true,
+    "_source_hash": "b0ce9682859a8a50"
+  },
+  "error.device_list_failed": {
+    "message": "Spotify 기기를 가져올 수 없습니다. 잠시 후 다시 시도해 주세요.",
+    "description": "Fallback when /me/player/devices throws",
+    "_machine_translated": true,
+    "_source_hash": "87bdd3bbb1df1643"
+  },
+  "result.device.list.loading_label": {
+    "message": "Spotify · 기기를 선택하세요…",
+    "description": "Placeholder row while devices are being fetched",
+    "_machine_translated": true,
+    "_source_hash": "8f18b4fcacdb3f36"
+  },
+  "result.device.list.loading_description": {
+    "message": "음악을 재생할 수 있는 모든 곳을 찾는 중입니다",
+    "description": "Description on the loading row",
+    "_machine_translated": true,
+    "_source_hash": "e6dd3724e39b3ac1"
+  },
+  "result.device.list.none_label": {
+    "message": "Spotify · 온라인 기기 없음",
+    "description": "Row shown when /me/player/devices returns empty",
+    "_machine_translated": true,
+    "_source_hash": "71c30b51eaf3ee41"
+  },
+  "result.device.list.none_description": {
+    "message": "휴대폰, 브라우저 또는 스피커에서 Spotify를 열면 여기에 표시됩니다",
+    "description": "Hint when no devices are available",
+    "_machine_translated": true,
+    "_source_hash": "f80c690726eca758"
+  },
+  "result.device.list.row_label": {
+    "message": "Spotify · {name}",
+    "description": "One row per available Spotify Connect device",
+    "_machine_translated": true,
+    "_source_hash": "a19993681ea8bbdf"
+  },
+  "result.device.list.active": {
+    "message": "재생 중",
+    "description": "Inline tag on the device that is currently active",
+    "_machine_translated": true,
+    "_source_hash": "0ddf701326b71d67"
+  },
+  "result.device.list.preferred": {
+    "message": "기본 설정",
+    "description": "Inline tag on the user's previously-chosen device",
+    "_machine_translated": true,
+    "_source_hash": "f7da9a8829ce9a43"
   }
 }

@@ -36,10 +36,10 @@
     "_source_hash": "260860647df2e4c3"
   },
   "result.help.description": {
-    "message": "play, queue, like, unlike, next, prev, vol, device, playlist",
+    "message": "आज़माएँ: sp play <song>, sp queue <song>, sp like, sp next, sp vol 50, sp device, sp playlist <name>",
     "description": "Result description listing available commands",
     "_machine_translated": true,
-    "_source_hash": "8b31d4e33332771c"
+    "_source_hash": "f1d75821b8d7ab50"
   },
   "result.play_query.label": {
     "message": "Spotify · \"{query}\" चलाएं",
@@ -168,10 +168,10 @@
     "_source_hash": "dcd23e45986f9bca"
   },
   "result.disconnect.description": {
-    "message": "अपने टोकन भूल जाएँ",
+    "message": "इस कंप्यूटर पर अपने Spotify खाते से साइन आउट करें",
     "description": "Description for sign out",
     "_machine_translated": true,
-    "_source_hash": "8953e3749997983d"
+    "_source_hash": "c711eb41e917238b"
   },
   "error.not_signed_in": {
     "message": "Spotify में साइन इन नहीं हैं। साइन इन करने के लिए \"sp connect\" टाइप करें।",
@@ -240,10 +240,10 @@
     "_source_hash": "21695f71faff6bf7"
   },
   "settings.description": {
-    "message": "जो चल रहा है वह दिखाएँ, प्लेबैक नियंत्रित करें, और \"sp like\" या \"sp play <track>\" जैसे शॉर्टकट चलाएँ। एक-शॉट localhost listener पर Spotify के PKCE flow का उपयोग करता है — कोई client secret आपकी मशीन से बाहर नहीं जाता।",
+    "message": "देखें क्या चल रहा है, गाने क्यू में डालें, मौजूदा ट्रैक को लाइक करें, स्किप करें — यह सब Kage लॉन्चर या चैट कमांड से। अपने Spotify खाते से साइन इन करें; आपका पासवर्ड कभी आपके ब्राउज़र से बाहर नहीं जाता।",
     "description": "Settings page description",
     "_machine_translated": true,
-    "_source_hash": "9f8a00aca11b1f67"
+    "_source_hash": "07ab0647eb5e6f94"
   },
   "settings.section.display": {
     "message": "डिस्प्ले",
@@ -270,10 +270,10 @@
     "_source_hash": "76c1ce92f5661830"
   },
   "settings.refresh_seconds.description": {
-    "message": "अभी चल रहा है बार Spotify को कितनी बार पोल करता है। कम मतलब तेज़ अपडेट और थोड़ी अधिक API कॉल।",
+    "message": "Kage कितनी बार Spotify से जाँचता है कि क्या चल रहा है। कम संख्या बार को तेज़ी से अपडेट करती है लेकिन Spotify से ज़्यादा बार पूछती है। डिफ़ॉल्ट 15 सेकंड है।",
     "description": "Settings: refresh seconds description",
     "_machine_translated": true,
-    "_source_hash": "f2e9e332fda01695"
+    "_source_hash": "6465de9f91b4dda0"
   },
   "settings.trigger.label": {
     "message": "ट्रिगर शब्द",
@@ -294,10 +294,10 @@
     "_source_hash": "d0fcd903dec290c3"
   },
   "settings.app.intro_html": {
-    "message": "<a href=\"https://developer.spotify.com/dashboard\">developer.spotify.com/dashboard</a> पर एक मुफ़्त <strong>Spotify Developer</strong> ऐप बनाएँ। Redirect URI के रूप में <code>http://127.0.0.1/spotify/callback</code> जोड़ें (कोई भी पोर्ट काम करता है — Kage साइन-इन के समय वास्तविक पोर्ट जोड़ता है, और Spotify host + path से मिलान करता है)। नीचे <strong>Client ID</strong> कॉपी करें।",
+    "message": "Spotify हर ऐप से अपना खुद का <strong>Client ID</strong> रजिस्टर करने को कहता है। एक मुफ़्त ID <a href=\"https://developer.spotify.com/dashboard\">developer.spotify.com/dashboard</a> पर बनाएँ (<em>Create app</em> पर क्लिक करें, कोई भी नाम दें, <em>Web API</em> टिक करें)। Redirect URI के रूप में <code>http://127.0.0.1:8080/spotify/callback</code> जोड़ें — कोई भी पोर्ट चलेगा, Spotify को बस एक मौजूद चाहिए। मिले हुए Client ID को कॉपी करके नीचे पेस्ट करें।",
     "description": "Settings: app setup instructions",
     "_machine_translated": true,
-    "_source_hash": "4b925a1e8d4fe58f"
+    "_source_hash": "177c4bb9f2055193"
   },
   "settings.client_id.label": {
     "message": "Client ID",
@@ -312,10 +312,10 @@
     "_source_hash": "00365c0104e05fb3"
   },
   "settings.client_id.description": {
-    "message": "स्थानीय रूप से संग्रहीत; Spotify के अलावा कहीं नहीं भेजा जाता।",
+    "message": "केवल इस कंप्यूटर पर सहेजा गया। साइन इन करते समय Spotify को भेजा जाता है, और कहीं नहीं।",
     "description": "Settings: Client ID description",
     "_machine_translated": true,
-    "_source_hash": "726633bc55ffbe83"
+    "_source_hash": "74280ec7c0552793"
   },
   "settings.save_client_id.label": {
     "message": "Client ID सहेजें",
@@ -330,22 +330,22 @@
     "_source_hash": "f358cdafb27f4748"
   },
   "settings.connection.connected": {
-    "message": "<strong>कनेक्ट है</strong> — प्लेबैक नियंत्रण तैयार हैं।",
+    "message": "<strong>साइन इन हो गए।</strong> प्लेबैक नियंत्रण तैयार हैं।",
     "description": "Settings: connection ready text",
     "_machine_translated": true,
-    "_source_hash": "6824068777a99688"
+    "_source_hash": "e0ab77ca56a0682c"
   },
   "settings.connection.not_connected": {
-    "message": "अभी तक कनेक्ट नहीं है। प्राधिकृत करने के लिए <strong>कनेक्ट करें</strong> पर क्लिक करें।",
+    "message": "अभी तक साइन इन नहीं हैं। Spotify में साइन इन करने के लिए <strong>Connect</strong> पर क्लिक करें।",
     "description": "Settings: not connected text",
     "_machine_translated": true,
-    "_source_hash": "7a248676d782c5cd"
+    "_source_hash": "210fcedbc5081420"
   },
   "settings.connection.no_client_id": {
-    "message": "पहले Client ID सहेजें, फिर कनेक्ट करें।",
+    "message": "पहले ऊपर एक Client ID पेस्ट करें, फिर कनेक्ट करने के लिए यहाँ वापस आएँ।",
     "description": "Settings: needs client ID first",
     "_machine_translated": true,
-    "_source_hash": "6e654060ef7b1a02"
+    "_source_hash": "3316be227daf1055"
   },
   "settings.connect.label_connect": {
     "message": "कनेक्ट करें…",
@@ -366,10 +366,10 @@
     "_source_hash": "ccc6a1247a0bc31c"
   },
   "settings.disconnect.confirm": {
-    "message": "Spotify से साइन आउट करें? प्लेबैक शॉर्टकट उपयोग करने के लिए आपको फिर से प्राधिकृत करना होगा।",
+    "message": "Spotify से साइन आउट करें? प्लेबैक शॉर्टकट इस्तेमाल करने के लिए आपको दोबारा साइन इन करना होगा।",
     "description": "Confirmation prompt before signing out",
     "_machine_translated": true,
-    "_source_hash": "a27426d3adcd7ad4"
+    "_source_hash": "9dd32ff7ac62f6bb"
   },
   "settings.validate.trigger_required": {
     "message": "ट्रिगर शब्द आवश्यक है।",
@@ -418,5 +418,83 @@
     "description": "Status after a successful sign-out",
     "_machine_translated": true,
     "_source_hash": "64224f1b6f2851a7"
+  },
+  "error.no_devices": {
+    "message": "कोई Spotify डिवाइस ऑनलाइन नहीं है। पहले अपने फ़ोन, कंप्यूटर या स्पीकर पर Spotify खोलें, फिर दोबारा कोशिश करें।",
+    "description": "Error when no Spotify Connect targets are visible",
+    "_machine_translated": true,
+    "_source_hash": "75e4fe1869d99e6e"
+  },
+  "error.pick_device": {
+    "message": "एक से अधिक Spotify डिवाइस ऑनलाइन हैं ({names})। एक चुनने के लिए \"sp device\" टाइप करें।",
+    "description": "Error when there are multiple devices and we don't know which to use",
+    "_machine_translated": true,
+    "_source_hash": "47fb0622fbcea4f4"
+  },
+  "error.device_offline": {
+    "message": "आपका सहेजा गया डिवाइस \"{name}\" ऑफ़लाइन है। दूसरा चुनने के लिए \"sp device\" टाइप करें।",
+    "description": "Error when saved preferred device is no longer reachable",
+    "_machine_translated": true,
+    "_source_hash": "a89789c54fcb37e5"
+  },
+  "error.no_active_device": {
+    "message": "किसी Spotify डिवाइस तक नहीं पहुँच सके। कहीं भी Spotify खोलें (फ़ोन, ब्राउज़र, स्पीकर) और दोबारा कोशिश करें।",
+    "description": "Error when transfer-and-retry still fails",
+    "_machine_translated": true,
+    "_source_hash": "3a60400c28c7d034"
+  },
+  "error.premium_required": {
+    "message": "प्लेबैक नियंत्रण के लिए Spotify Premium ज़रूरी है। फ़्री खाते अभी भी देख सकते हैं कि क्या चल रहा है।",
+    "description": "Error when the API rejects a control call for free-tier users",
+    "_machine_translated": true,
+    "_source_hash": "b0ce9682859a8a50"
+  },
+  "error.device_list_failed": {
+    "message": "आपके Spotify डिवाइस नहीं ला सके। कुछ देर बाद दोबारा कोशिश करें।",
+    "description": "Fallback when /me/player/devices throws",
+    "_machine_translated": true,
+    "_source_hash": "87bdd3bbb1df1643"
+  },
+  "result.device.list.loading_label": {
+    "message": "Spotify · डिवाइस चुनें…",
+    "description": "Placeholder row while devices are being fetched",
+    "_machine_translated": true,
+    "_source_hash": "8f18b4fcacdb3f36"
+  },
+  "result.device.list.loading_description": {
+    "message": "उन सभी जगहों को खोजा जा रहा है जहाँ आप संगीत चला सकते हैं",
+    "description": "Description on the loading row",
+    "_machine_translated": true,
+    "_source_hash": "e6dd3724e39b3ac1"
+  },
+  "result.device.list.none_label": {
+    "message": "Spotify · कोई डिवाइस ऑनलाइन नहीं",
+    "description": "Row shown when /me/player/devices returns empty",
+    "_machine_translated": true,
+    "_source_hash": "71c30b51eaf3ee41"
+  },
+  "result.device.list.none_description": {
+    "message": "किसी फ़ोन, ब्राउज़र या स्पीकर पर Spotify खोलें ताकि वह यहाँ दिखे",
+    "description": "Hint when no devices are available",
+    "_machine_translated": true,
+    "_source_hash": "f80c690726eca758"
+  },
+  "result.device.list.row_label": {
+    "message": "Spotify · {name}",
+    "description": "One row per available Spotify Connect device",
+    "_machine_translated": true,
+    "_source_hash": "a19993681ea8bbdf"
+  },
+  "result.device.list.active": {
+    "message": "अभी चल रहा है",
+    "description": "Inline tag on the device that is currently active",
+    "_machine_translated": true,
+    "_source_hash": "0ddf701326b71d67"
+  },
+  "result.device.list.preferred": {
+    "message": "पसंदीदा",
+    "description": "Inline tag on the user's previously-chosen device",
+    "_machine_translated": true,
+    "_source_hash": "f7da9a8829ce9a43"
   }
 }

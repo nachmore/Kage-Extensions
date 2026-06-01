@@ -83,7 +83,44 @@ export async function setClientId(clientId) {
 export async function clearAll() {
     await _ctx.invoke('delete_extension_data', { key: 'creds' });
     await _ctx.invoke('delete_extension_data', { key: 'client' });
+    await _ctx.invoke('delete_extension_data', { key: 'device' });
     _cachedToken = null;
+}
+
+// ---- Preferred-device storage --------------------------------------
+//
+// Spotify's "active device" is whatever Spotify is currently streaming
+// to. If nothing is streaming, ALL `/me/player/*` calls that drive
+// playback (play/pause/next/prev/queue/volume/...) reject with HTTP
+// 404 + reason `NO_ACTIVE_DEVICE`. The fix is to call
+// `PUT /me/player` with a `device_ids` list — that wakes the chosen
+// device and the next play call succeeds.
+//
+// We persist the user's last-used device so subsequent commands don't
+// have to ask. The id alone is enough for the API; we keep the name
+// for nicer error messages and future "reset device" UX.
+
+export async function getPreferredDevice() {
+    const raw = await _ctx.invoke('load_extension_data', { key: 'device' });
+    if (!raw) return null;
+    try {
+        const obj = JSON.parse(raw);
+        return obj && obj.id ? obj : null;
+    } catch {
+        return null;
+    }
+}
+
+export async function setPreferredDevice(device) {
+    if (!device || !device.id) return;
+    await _ctx.invoke('save_extension_data', {
+        key: 'device',
+        data: JSON.stringify({ id: device.id, name: device.name || '' }),
+    });
+}
+
+export async function clearPreferredDevice() {
+    await _ctx.invoke('delete_extension_data', { key: 'device' });
 }
 
 async function readCreds() {
@@ -308,10 +345,21 @@ async function parseSpotifyResponse(resp) {
     if (resp.status === 204) return null;
     const text = await resp.text();
     if (!resp.ok) {
-        const err = new Error(
-            `Spotify API ${resp.status}: ${text.slice(0, 200) || resp.statusText}`
-        );
+        // Pull the structured error body when present so callers can
+        // distinguish recovery cases (NO_ACTIVE_DEVICE, PREMIUM_REQUIRED,
+        // etc.) without parsing the prose. The Web API consistently
+        // returns `{ error: { status, message, reason? } }`.
+        let parsed = null;
+        try {
+            parsed = JSON.parse(text);
+        } catch {
+            /* not JSON — leave parsed null */
+        }
+        const reason = parsed?.error?.reason || null;
+        const message = parsed?.error?.message || text.slice(0, 200) || resp.statusText;
+        const err = new Error(`Spotify API ${resp.status}: ${message}`);
         err.status = resp.status;
+        err.reason = reason;
         throw err;
     }
     if (!text) return null;
@@ -319,5 +367,131 @@ async function parseSpotifyResponse(resp) {
         return JSON.parse(text);
     } catch {
         return text;
+    }
+}
+
+// ---- Player API helper ---------------------------------------------
+//
+// Player commands fail with `404 / NO_ACTIVE_DEVICE` when nothing is
+// currently streaming. The standard Spotify recovery is to transfer
+// playback to a chosen device first (which "wakes" it server-side),
+// then retry the original command. We wrap every player call so the
+// caller doesn't have to plumb device handling through every shortcut.
+//
+// Strategy:
+//   1. Fast path: send the command. If it succeeds, we're done.
+//   2. On NO_ACTIVE_DEVICE:
+//      - Fetch `/me/player/devices`.
+//      - Pick the user's saved preference if it's in the list.
+//      - Otherwise, if there's exactly one device, use that and save
+//        it as the preference.
+//      - Otherwise, throw a structured `no_devices` error so callers
+//        can route the user into the device-picker.
+//   3. Transfer playback to the chosen device (`PUT /me/player`),
+//      wait briefly for Spotify to commit, retry the command once.
+//
+// We don't add device_id directly to every URL because not all
+// player endpoints accept it — and the transfer dance is what
+// actually moves an idle Spotify Connect target into "active"
+// state. Adding `?device_id=...` to a play call when the device is
+// asleep still 404s.
+//
+// Errors thrown by this helper carry an extra `code` field so the UI
+// can pick a localised message:
+//   - 'no_devices'            — no Spotify devices online anywhere
+//   - 'device_unavailable'    — saved device is gone; user must pick
+//   - 'premium_required'      — playback API is Premium-only
+//   - 'no_active_device'      — recovery attempted but still 404
+// Anything else falls through with the original `.status` / `.reason`.
+
+const NO_ACTIVE = 'NO_ACTIVE_DEVICE';
+const TRANSFER_SETTLE_MS = 700; // Spotify needs a beat to wake the target
+
+export async function listDevices() {
+    const resp = await api('GET', '/me/player/devices');
+    return Array.isArray(resp?.devices) ? resp.devices : [];
+}
+
+async function transferPlaybackTo(deviceId, play) {
+    await api('PUT', '/me/player', {
+        body: { device_ids: [deviceId], play: !!play },
+    });
+    // Give Spotify a beat to commit the transfer; immediate follow-up
+    // calls have been observed returning NO_ACTIVE_DEVICE again.
+    await new Promise((r) => setTimeout(r, TRANSFER_SETTLE_MS));
+}
+
+/**
+ * Player API call with auto-device-recovery.
+ *
+ * @param {string} method  HTTP verb (PUT/POST/GET/DELETE)
+ * @param {string} path    Path under SPOTIFY_API_BASE
+ * @param {object} [opts]  Same shape as `api()`.
+ * @param {object} [recovery]
+ * @param {boolean} [recovery.willStartPlaying]
+ *   True for play/queue/skip/playlist calls that ARE driving playback
+ *   (so the transfer should `play: true`); false for pause/volume/etc
+ *   where we want to wake the device but not start music. Defaults
+ *   to true — the more common case and the safe assumption.
+ */
+export async function playerApi(method, path, opts = {}, recovery = {}) {
+    try {
+        return await api(method, path, opts);
+    } catch (e) {
+        // Only NO_ACTIVE_DEVICE is recoverable. Everything else (auth
+        // expired, Premium required, malformed body, etc.) goes
+        // straight back to the caller.
+        if (e?.status !== 404 || e?.reason !== NO_ACTIVE) throw e;
+    }
+
+    // Fetch devices and pick a target.
+    const devices = await listDevices();
+    if (!devices.length) {
+        const err = new Error('No Spotify devices found.');
+        err.code = 'no_devices';
+        throw err;
+    }
+
+    const pref = await getPreferredDevice();
+    let target = pref ? devices.find((d) => d.id === pref.id) : null;
+    if (!target) {
+        if (pref) {
+            // Preference is stale — clear it so the next attempt
+            // re-prompts. Don't auto-pick a different device behind
+            // the user's back: the saved preference reflected an
+            // explicit choice, and silently switching to "phone" when
+            // they expected "speaker" is the worse failure mode.
+            await clearPreferredDevice();
+            const err = new Error('Saved device is offline.');
+            err.code = 'device_unavailable';
+            err.lastDevice = pref;
+            throw err;
+        }
+        if (devices.length === 1) {
+            target = devices[0];
+            await setPreferredDevice(target);
+        } else {
+            const err = new Error('Multiple devices available; pick one first.');
+            err.code = 'multiple_devices';
+            err.devices = devices;
+            throw err;
+        }
+    }
+
+    // Wake the target.
+    const willPlay = recovery.willStartPlaying !== false;
+    await transferPlaybackTo(target.id, willPlay);
+    // Save the working device — survives an explicit picker choice
+    // too, since the picker writes it before calling player commands.
+    await setPreferredDevice(target);
+
+    // Retry once. If it fails again, surface a stable code.
+    try {
+        return await api(method, path, opts);
+    } catch (e) {
+        if (e?.status === 404 && e?.reason === NO_ACTIVE) {
+            e.code = 'no_active_device';
+        }
+        throw e;
     }
 }

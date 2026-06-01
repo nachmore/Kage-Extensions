@@ -85,7 +85,21 @@ export default class SpotifySearchProvider {
                 return [];
             }
             case 'device':
-                if (!arg) return [];
+                if (!arg) {
+                    // Bare `sp device` — show a "Loading…" row that
+                    // matchAsync replaces with one row per available
+                    // Spotify Connect target. Selecting a row
+                    // transfers playback and saves the choice as the
+                    // preferred device for future commands.
+                    return [
+                        this._row(
+                            'device:__loading',
+                            this.t('result.device.list.loading_label'),
+                            this.t('result.device.list.loading_description'),
+                            90
+                        ),
+                    ];
+                }
                 return [this._row(`device:${arg}`, this.t('result.device.label', { name: arg }), '', 85)];
             case 'playlist':
                 if (!arg) return [];
@@ -112,7 +126,77 @@ export default class SpotifySearchProvider {
         }
     }
 
-    _row(id, label, description, score) {
+    /**
+     * Async match — runs after `match()` and replaces rows whose data
+     * carries `pending: true`. Used for `sp device` (no arg) to pull
+     * the live device list from Spotify.
+     */
+    async matchAsync(query) {
+        const trigger = (this.config.trigger || 'sp').toLowerCase();
+        const trimmed = query.trim();
+        if (!trimmed.toLowerCase().startsWith(trigger)) return [];
+        const rest = trimmed.slice(trigger.length).trim();
+        const [verb, ...restParts] = rest.split(/\s+/);
+        if (verb.toLowerCase() !== 'device') return [];
+        if (restParts.length > 0) return []; // user typed a name; fall back to sync match
+
+        if (!(await auth.isConnected())) return [];
+
+        let devices;
+        try {
+            devices = await auth.listDevices();
+        } catch (e) {
+            this.log?.warn?.('Spotify device list failed: ' + (e?.message || e));
+            return [
+                this._row(
+                    'device:__error',
+                    this.t('error.device_list_failed'),
+                    '',
+                    70,
+                    { miss: true }
+                ),
+            ];
+        }
+        if (!devices.length) {
+            return [
+                this._row(
+                    'device:__none',
+                    this.t('result.device.list.none_label'),
+                    this.t('result.device.list.none_description'),
+                    70,
+                    { miss: true }
+                ),
+            ];
+        }
+
+        const pref = await auth.getPreferredDevice();
+        // Sort: active device first (Spotify says is_active=true for
+        // the currently-streaming target), then preferred device,
+        // then everything else by name.
+        devices.sort((a, b) => {
+            if (a.is_active !== b.is_active) return a.is_active ? -1 : 1;
+            const aPref = pref && a.id === pref.id;
+            const bPref = pref && b.id === pref.id;
+            if (aPref !== bPref) return aPref ? -1 : 1;
+            return (a.name || '').localeCompare(b.name || '');
+        });
+        return devices.map((d, i) => {
+            const isActive = !!d.is_active;
+            const isPref = pref && d.id === pref.id;
+            const detail = [d.type || '', isActive ? this.t('result.device.list.active') : null, isPref ? this.t('result.device.list.preferred') : null]
+                .filter(Boolean)
+                .join(' · ');
+            return this._row(
+                `device-id:${d.id}`,
+                this.t('result.device.list.row_label', { name: d.name }),
+                detail,
+                90 - i,
+                { deviceId: d.id, deviceName: d.name }
+            );
+        });
+    }
+
+    _row(id, label, description, score, extraData) {
         return {
             id: `spotify:${id}`,
             type: 'spotify',
@@ -120,12 +204,22 @@ export default class SpotifySearchProvider {
             description,
             icon: ICON,
             score,
-            data: { id },
+            data: { id, ...(extraData || {}) },
         };
     }
 
     async execute(result) {
         const id = result?.data?.id || '';
+        // device-id rows carry the actual id in data.deviceId — let the
+        // dispatch read it directly so we don't have to re-parse the
+        // id string. Same for the pending placeholders.
+        if (id === 'device:__loading' || id === 'device:__error' || id === 'device:__none') {
+            return;
+        }
+        if (id.startsWith('device-id:')) {
+            const data = result?.data || {};
+            return await this._activateDevice(data.deviceId, data.deviceName);
+        }
         try {
             await this._dispatch(id);
         } catch (e) {
@@ -162,32 +256,77 @@ export default class SpotifySearchProvider {
             // success and the next refresh shows current state.
             return;
         }
-        if (id === 'play') return await auth.api('PUT', '/me/player/play');
-        if (id === 'pause') return await auth.api('PUT', '/me/player/pause');
-        if (id === 'next') return await auth.api('POST', '/me/player/next');
-        if (id === 'prev') return await auth.api('POST', '/me/player/previous');
-        if (id === 'like') return await this._toggleLike(true);
-        if (id === 'unlike') return await this._toggleLike(false);
-        if (id.startsWith('vol:')) {
-            const n = parseInt(id.slice(4), 10);
-            return await auth.api('PUT', `/me/player/volume?volume_percent=${n}`);
+        try {
+            if (id === 'play')
+                return await auth.playerApi('PUT', '/me/player/play', undefined, {
+                    willStartPlaying: true,
+                });
+            if (id === 'pause')
+                return await auth.playerApi('PUT', '/me/player/pause', undefined, {
+                    willStartPlaying: false,
+                });
+            if (id === 'next') return await auth.playerApi('POST', '/me/player/next');
+            if (id === 'prev') return await auth.playerApi('POST', '/me/player/previous');
+            if (id === 'like') return await this._toggleLike(true);
+            if (id === 'unlike') return await this._toggleLike(false);
+            if (id.startsWith('vol:')) {
+                const n = parseInt(id.slice(4), 10);
+                return await auth.playerApi(
+                    'PUT',
+                    `/me/player/volume?volume_percent=${n}`,
+                    undefined,
+                    { willStartPlaying: false }
+                );
+            }
+            if (id.startsWith('play:')) {
+                const q = id.slice(5);
+                return await this._playSearch(q, false);
+            }
+            if (id.startsWith('queue:')) {
+                const q = id.slice(6);
+                return await this._playSearch(q, true);
+            }
+            if (id.startsWith('device:')) {
+                const name = id.slice(7);
+                return await this._transferToDevice(name);
+            }
+            if (id.startsWith('playlist:')) {
+                const name = id.slice(9);
+                return await this._playPlaylist(name);
+            }
+        } catch (e) {
+            // Translate the playerApi recovery codes into friendly
+            // messages. Anything else (auth, malformed body, etc.)
+            // re-throws with the original Spotify text. Keeps the
+            // floating window's status banner readable instead of
+            // showing 404 JSON to the user.
+            throw this._wrapPlayerError(e);
         }
-        if (id.startsWith('play:')) {
-            const q = id.slice(5);
-            return await this._playSearch(q, false);
+    }
+
+    _wrapPlayerError(e) {
+        const code = e?.code;
+        if (code === 'no_devices') return new Error(this.t('error.no_devices'));
+        if (code === 'multiple_devices') {
+            // Spell out the available device names so the user can
+            // pick one without having to memorise/spell it from
+            // their phone or speakers' label. Comma-separated, max
+            // ~3 names so the floating window doesn't grow on a
+            // multi-device household.
+            const names = (e.devices || [])
+                .map((d) => d.name)
+                .slice(0, 3)
+                .join(', ');
+            return new Error(this.t('error.pick_device', { names }));
         }
-        if (id.startsWith('queue:')) {
-            const q = id.slice(6);
-            return await this._playSearch(q, true);
+        if (code === 'device_unavailable') {
+            const name = e?.lastDevice?.name || '';
+            return new Error(this.t('error.device_offline', { name }));
         }
-        if (id.startsWith('device:')) {
-            const name = id.slice(7);
-            return await this._transferToDevice(name);
-        }
-        if (id.startsWith('playlist:')) {
-            const name = id.slice(9);
-            return await this._playPlaylist(name);
-        }
+        if (code === 'no_active_device') return new Error(this.t('error.no_active_device'));
+        if (e?.reason === 'PREMIUM_REQUIRED')
+            return new Error(this.t('error.premium_required'));
+        return e;
     }
 
     async _toggleLike(want) {
@@ -206,23 +345,52 @@ export default class SpotifySearchProvider {
         const track = search?.tracks?.items?.[0];
         if (!track) throw new Error(this.t('error.no_match', { query }));
         if (queueOnly) {
-            await auth.api('POST', `/me/player/queue?uri=${encodeURIComponent(track.uri)}`);
+            await auth.playerApi(
+                'POST',
+                `/me/player/queue?uri=${encodeURIComponent(track.uri)}`,
+                undefined,
+                // Queue doesn't actually start playback if the device
+                // is paused; we still want the device awake for the
+                // queue to land somewhere visible.
+                { willStartPlaying: false }
+            );
         } else {
-            await auth.api('PUT', '/me/player/play', {
-                body: { uris: [track.uri] },
-            });
+            await auth.playerApi(
+                'PUT',
+                '/me/player/play',
+                { body: { uris: [track.uri] } },
+                { willStartPlaying: true }
+            );
         }
     }
 
     async _transferToDevice(name) {
-        const list = await auth.api('GET', '/me/player/devices');
-        const target = (list?.devices || []).find(
-            (d) => d.name.toLowerCase() === name.toLowerCase()
-        );
+        const devices = await auth.listDevices();
+        const target = devices.find((d) => d.name.toLowerCase() === name.toLowerCase());
         if (!target) throw new Error(this.t('error.no_device', { name }));
         await auth.api('PUT', '/me/player', {
             body: { device_ids: [target.id], play: true },
         });
+        // Remember the explicit choice so the next no-active-device
+        // recovery uses this device automatically.
+        await auth.setPreferredDevice(target);
+    }
+
+    /**
+     * Direct activation by device id, used by the device-picker rows
+     * matchAsync produces. We don't try to start playback here —
+     * `play: false` keeps a paused queue paused after the transfer
+     * — because the picker is itself the user's "wake up this
+     * device" gesture, separate from the next play command they'll
+     * issue. The picker's whole point is to make subsequent
+     * commands route correctly without surprise.
+     */
+    async _activateDevice(deviceId, deviceName) {
+        if (!deviceId) return;
+        await auth.api('PUT', '/me/player', {
+            body: { device_ids: [deviceId], play: false },
+        });
+        await auth.setPreferredDevice({ id: deviceId, name: deviceName || '' });
     }
 
     async _playPlaylist(name) {
@@ -239,8 +407,11 @@ export default class SpotifySearchProvider {
         // Prefer exact case-insensitive matches if present.
         const exact = candidates.find((p) => p.name.toLowerCase() === lower);
         const target = exact || candidates[0];
-        await auth.api('PUT', '/me/player/play', {
-            body: { context_uri: target.uri },
-        });
+        await auth.playerApi(
+            'PUT',
+            '/me/player/play',
+            { body: { context_uri: target.uri } },
+            { willStartPlaying: true }
+        );
     }
 }

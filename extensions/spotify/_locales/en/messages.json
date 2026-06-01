@@ -26,7 +26,7 @@
     "description": "Result label for the help row"
   },
   "result.help.description": {
-    "message": "play, queue, like, unlike, next, prev, vol, device, playlist",
+    "message": "Try: sp play <song>, sp queue <song>, sp like, sp next, sp vol 50, sp device, sp playlist <name>",
     "description": "Result description listing available commands"
   },
   "result.play_query.label": {
@@ -114,7 +114,7 @@
     "description": "Result label for sign out"
   },
   "result.disconnect.description": {
-    "message": "Forget your tokens",
+    "message": "Sign out of your Spotify account on this computer",
     "description": "Description for sign out"
   },
   "error.not_signed_in": {
@@ -136,6 +136,58 @@
   "error.no_playlist": {
     "message": "No playlist matching \"{name}\".",
     "description": "Error when playlist name not found"
+  },
+  "error.no_devices": {
+    "message": "No Spotify devices are online. Open Spotify on your phone, computer, or speaker first, then try again.",
+    "description": "Error when no Spotify Connect targets are visible"
+  },
+  "error.pick_device": {
+    "message": "More than one Spotify device is online ({names}). Type \"sp device\" to pick one.",
+    "description": "Error when there are multiple devices and we don't know which to use"
+  },
+  "error.device_offline": {
+    "message": "Your saved device \"{name}\" is offline. Type \"sp device\" to pick another.",
+    "description": "Error when saved preferred device is no longer reachable"
+  },
+  "error.no_active_device": {
+    "message": "Couldn't reach a Spotify device. Open Spotify somewhere (phone, browser, speaker) and try again.",
+    "description": "Error when transfer-and-retry still fails"
+  },
+  "error.premium_required": {
+    "message": "Spotify Premium is required for playback control. Free accounts can still see what's playing.",
+    "description": "Error when the API rejects a control call for free-tier users"
+  },
+  "error.device_list_failed": {
+    "message": "Couldn't fetch your Spotify devices. Try again in a moment.",
+    "description": "Fallback when /me/player/devices throws"
+  },
+  "result.device.list.loading_label": {
+    "message": "Spotify · Choose a device…",
+    "description": "Placeholder row while devices are being fetched"
+  },
+  "result.device.list.loading_description": {
+    "message": "Looking up everywhere you can play music",
+    "description": "Description on the loading row"
+  },
+  "result.device.list.none_label": {
+    "message": "Spotify · No devices online",
+    "description": "Row shown when /me/player/devices returns empty"
+  },
+  "result.device.list.none_description": {
+    "message": "Open Spotify on a phone, browser, or speaker so it appears here",
+    "description": "Hint when no devices are available"
+  },
+  "result.device.list.row_label": {
+    "message": "Spotify · {name}",
+    "description": "One row per available Spotify Connect device"
+  },
+  "result.device.list.active": {
+    "message": "playing now",
+    "description": "Inline tag on the device that is currently active"
+  },
+  "result.device.list.preferred": {
+    "message": "preferred",
+    "description": "Inline tag on the user's previously-chosen device"
   },
   "widget.like.add_tooltip": {
     "message": "Save to your library",
@@ -162,7 +214,7 @@
     "description": "Tooltip on the play/pause button when paused"
   },
   "settings.description": {
-    "message": "Show what's playing, control playback, and run shortcuts like \"sp like\" or \"sp play <track>\". Uses Spotify's PKCE flow over a one-shot localhost listener — no client secret leaves your machine.",
+    "message": "See what's playing, queue songs, like the current track, skip — all from the Kage launcher or a chat command. Sign in with your own Spotify account; your password never leaves your browser.",
     "description": "Settings page description"
   },
   "settings.section.display": {
@@ -182,7 +234,7 @@
     "description": "Settings: refresh seconds label"
   },
   "settings.refresh_seconds.description": {
-    "message": "How often the now-playing bar polls Spotify. Lower means snappier updates and slightly more API calls.",
+    "message": "How often Kage checks Spotify for what's playing. Lower numbers update the bar faster but ask Spotify more often. Default is 15 seconds.",
     "description": "Settings: refresh seconds description"
   },
   "settings.trigger.label": {
@@ -198,7 +250,7 @@
     "description": "Settings section: spotify app"
   },
   "settings.app.intro_html": {
-    "message": "Create a free <strong>Spotify Developer</strong> app at <a href=\"https://developer.spotify.com/dashboard\">developer.spotify.com/dashboard</a>. Add <code>http://127.0.0.1/spotify/callback</code> as a Redirect URI (any port works — Kage adds the actual port at sign-in time, and Spotify matches the host + path). Copy the <strong>Client ID</strong> below.",
+    "message": "Spotify asks every app to register its own <strong>Client ID</strong>. Create a free one at <a href=\"https://developer.spotify.com/dashboard\">developer.spotify.com/dashboard</a> (click <em>Create app</em>, name it anything, tick <em>Web API</em>). Add <code>http://127.0.0.1:8080/spotify/callback</code> as the Redirect URI — any port works, Spotify just needs one to be present. Copy the Client ID it gives you and paste it below.",
     "description": "Settings: app setup instructions"
   },
   "settings.client_id.label": {
@@ -210,7 +262,7 @@
     "description": "Settings: Client ID placeholder"
   },
   "settings.client_id.description": {
-    "message": "Stored locally; never sent anywhere except Spotify.",
+    "message": "Saved on this computer only. Sent to Spotify when you sign in, nowhere else.",
     "description": "Settings: Client ID description"
   },
   "settings.save_client_id.label": {
@@ -222,15 +274,15 @@
     "description": "Settings section: connection"
   },
   "settings.connection.connected": {
-    "message": "<strong>Connected</strong> — playback controls are ready.",
+    "message": "<strong>Signed in.</strong> Playback controls are ready.",
     "description": "Settings: connection ready text"
   },
   "settings.connection.not_connected": {
-    "message": "Not connected yet. Click <strong>Connect</strong> to authorize.",
+    "message": "Not signed in yet. Click <strong>Connect</strong> to sign in to Spotify.",
     "description": "Settings: not connected text"
   },
   "settings.connection.no_client_id": {
-    "message": "Save a Client ID first, then connect.",
+    "message": "Paste a Client ID above first, then come back here to connect.",
     "description": "Settings: needs client ID first"
   },
   "settings.connect.label_connect": {
@@ -246,7 +298,7 @@
     "description": "Settings: sign-out button"
   },
   "settings.disconnect.confirm": {
-    "message": "Sign out of Spotify? You'll need to re-authorize to use playback shortcuts.",
+    "message": "Sign out of Spotify? You'll need to sign in again to use playback shortcuts.",
     "description": "Confirmation prompt before signing out"
   },
   "settings.validate.trigger_required": {

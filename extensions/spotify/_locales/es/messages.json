@@ -36,10 +36,10 @@
     "_source_hash": "260860647df2e4c3"
   },
   "result.help.description": {
-    "message": "play, queue, like, unlike, next, prev, vol, device, playlist",
+    "message": "Prueba: sp play <canción>, sp queue <canción>, sp like, sp next, sp vol 50, sp device, sp playlist <nombre>",
     "description": "Result description listing available commands",
     "_machine_translated": true,
-    "_source_hash": "8b31d4e33332771c"
+    "_source_hash": "f1d75821b8d7ab50"
   },
   "result.play_query.label": {
     "message": "Spotify · Reproducir «{query}»",
@@ -168,10 +168,10 @@
     "_source_hash": "dcd23e45986f9bca"
   },
   "result.disconnect.description": {
-    "message": "Olvidar tus tokens",
+    "message": "Cierra la sesión de tu cuenta de Spotify en este equipo",
     "description": "Description for sign out",
     "_machine_translated": true,
-    "_source_hash": "8953e3749997983d"
+    "_source_hash": "c711eb41e917238b"
   },
   "error.not_signed_in": {
     "message": "No has iniciado sesión en Spotify. Escribe \"sp connect\" para iniciar sesión.",
@@ -240,10 +240,10 @@
     "_source_hash": "21695f71faff6bf7"
   },
   "settings.description": {
-    "message": "Muestra lo que se está reproduciendo, controla la reproducción y ejecuta atajos como \"sp like\" o \"sp play <track>\". Usa el flujo PKCE de Spotify a través de un listener localhost de un solo uso: ningún client secret sale de tu equipo.",
+    "message": "Mira lo que está sonando, añade canciones a la cola, da me gusta a la pista actual, salta — todo desde el lanzador de Kage o con un comando del chat. Inicia sesión con tu propia cuenta de Spotify; tu contraseña nunca sale de tu navegador.",
     "description": "Settings page description",
     "_machine_translated": true,
-    "_source_hash": "9f8a00aca11b1f67"
+    "_source_hash": "07ab0647eb5e6f94"
   },
   "settings.section.display": {
     "message": "Visualización",
@@ -270,10 +270,10 @@
     "_source_hash": "76c1ce92f5661830"
   },
   "settings.refresh_seconds.description": {
-    "message": "Con qué frecuencia la barra de reproducción actual consulta Spotify. Un valor menor implica actualizaciones más rápidas y algunas llamadas más a la API.",
+    "message": "Con qué frecuencia Kage consulta a Spotify lo que está sonando. Los valores más bajos actualizan la barra más rápido pero consultan a Spotify con más frecuencia. El valor predeterminado es 15 segundos.",
     "description": "Settings: refresh seconds description",
     "_machine_translated": true,
-    "_source_hash": "f2e9e332fda01695"
+    "_source_hash": "6465de9f91b4dda0"
   },
   "settings.trigger.label": {
     "message": "Palabra de activación",
@@ -294,10 +294,10 @@
     "_source_hash": "d0fcd903dec290c3"
   },
   "settings.app.intro_html": {
-    "message": "Crea una aplicación gratuita de <strong>Spotify Developer</strong> en <a href=\"https://developer.spotify.com/dashboard\">developer.spotify.com/dashboard</a>. Añade <code>http://127.0.0.1/spotify/callback</code> como Redirect URI (cualquier puerto funciona: Kage añade el puerto real al iniciar sesión, y Spotify hace coincidir el host y la ruta). Copia el <strong>Client ID</strong> a continuación.",
+    "message": "Spotify pide a cada aplicación que registre su propio <strong>Client ID</strong>. Crea uno gratis en <a href=\"https://developer.spotify.com/dashboard\">developer.spotify.com/dashboard</a> (haz clic en <em>Create app</em>, ponle cualquier nombre y marca <em>Web API</em>). Añade <code>http://127.0.0.1:8080/spotify/callback</code> como Redirect URI — cualquier puerto vale, Spotify solo necesita que haya uno. Copia el Client ID que te dé y pégalo abajo.",
     "description": "Settings: app setup instructions",
     "_machine_translated": true,
-    "_source_hash": "4b925a1e8d4fe58f"
+    "_source_hash": "177c4bb9f2055193"
   },
   "settings.client_id.label": {
     "message": "Client ID",
@@ -312,10 +312,10 @@
     "_source_hash": "00365c0104e05fb3"
   },
   "settings.client_id.description": {
-    "message": "Se almacena localmente; nunca se envía a ningún sitio excepto a Spotify.",
+    "message": "Se guarda solo en este equipo. Se envía a Spotify al iniciar sesión, a ningún otro sitio.",
     "description": "Settings: Client ID description",
     "_machine_translated": true,
-    "_source_hash": "726633bc55ffbe83"
+    "_source_hash": "74280ec7c0552793"
   },
   "settings.save_client_id.label": {
     "message": "Guardar Client ID",
@@ -330,22 +330,22 @@
     "_source_hash": "f358cdafb27f4748"
   },
   "settings.connection.connected": {
-    "message": "<strong>Conectado</strong>: los controles de reproducción están listos.",
+    "message": "<strong>Sesión iniciada.</strong> Los controles de reproducción están listos.",
     "description": "Settings: connection ready text",
     "_machine_translated": true,
-    "_source_hash": "6824068777a99688"
+    "_source_hash": "e0ab77ca56a0682c"
   },
   "settings.connection.not_connected": {
-    "message": "Aún no conectado. Haz clic en <strong>Conectar</strong> para autorizar.",
+    "message": "Aún no has iniciado sesión. Haz clic en <strong>Conectar</strong> para iniciar sesión en Spotify.",
     "description": "Settings: not connected text",
     "_machine_translated": true,
-    "_source_hash": "7a248676d782c5cd"
+    "_source_hash": "210fcedbc5081420"
   },
   "settings.connection.no_client_id": {
-    "message": "Primero guarda un Client ID y luego conéctate.",
+    "message": "Pega primero un Client ID arriba y luego vuelve aquí para conectarte.",
     "description": "Settings: needs client ID first",
     "_machine_translated": true,
-    "_source_hash": "6e654060ef7b1a02"
+    "_source_hash": "3316be227daf1055"
   },
   "settings.connect.label_connect": {
     "message": "Conectar…",
@@ -366,10 +366,10 @@
     "_source_hash": "ccc6a1247a0bc31c"
   },
   "settings.disconnect.confirm": {
-    "message": "¿Cerrar sesión de Spotify? Tendrás que volver a autorizar para usar los atajos de reproducción.",
+    "message": "¿Cerrar la sesión de Spotify? Tendrás que iniciar sesión de nuevo para usar los atajos de reproducción.",
     "description": "Confirmation prompt before signing out",
     "_machine_translated": true,
-    "_source_hash": "a27426d3adcd7ad4"
+    "_source_hash": "9dd32ff7ac62f6bb"
   },
   "settings.validate.trigger_required": {
     "message": "La palabra desencadenante es obligatoria.",
@@ -418,5 +418,83 @@
     "description": "Status after a successful sign-out",
     "_machine_translated": true,
     "_source_hash": "64224f1b6f2851a7"
+  },
+  "error.no_devices": {
+    "message": "No hay dispositivos de Spotify en línea. Abre Spotify en tu teléfono, ordenador o altavoz y vuelve a intentarlo.",
+    "description": "Error when no Spotify Connect targets are visible",
+    "_machine_translated": true,
+    "_source_hash": "75e4fe1869d99e6e"
+  },
+  "error.pick_device": {
+    "message": "Hay más de un dispositivo de Spotify en línea ({names}). Escribe \"sp device\" para elegir uno.",
+    "description": "Error when there are multiple devices and we don't know which to use",
+    "_machine_translated": true,
+    "_source_hash": "47fb0622fbcea4f4"
+  },
+  "error.device_offline": {
+    "message": "Tu dispositivo guardado \"{name}\" está sin conexión. Escribe \"sp device\" para elegir otro.",
+    "description": "Error when saved preferred device is no longer reachable",
+    "_machine_translated": true,
+    "_source_hash": "a89789c54fcb37e5"
+  },
+  "error.no_active_device": {
+    "message": "No se pudo conectar con un dispositivo de Spotify. Abre Spotify en algún sitio (teléfono, navegador, altavoz) e inténtalo de nuevo.",
+    "description": "Error when transfer-and-retry still fails",
+    "_machine_translated": true,
+    "_source_hash": "3a60400c28c7d034"
+  },
+  "error.premium_required": {
+    "message": "Se requiere Spotify Premium para controlar la reproducción. Las cuentas gratuitas pueden seguir viendo lo que se está reproduciendo.",
+    "description": "Error when the API rejects a control call for free-tier users",
+    "_machine_translated": true,
+    "_source_hash": "b0ce9682859a8a50"
+  },
+  "error.device_list_failed": {
+    "message": "No se pudieron obtener tus dispositivos de Spotify. Inténtalo de nuevo en un momento.",
+    "description": "Fallback when /me/player/devices throws",
+    "_machine_translated": true,
+    "_source_hash": "87bdd3bbb1df1643"
+  },
+  "result.device.list.loading_label": {
+    "message": "Spotify · Elige un dispositivo…",
+    "description": "Placeholder row while devices are being fetched",
+    "_machine_translated": true,
+    "_source_hash": "8f18b4fcacdb3f36"
+  },
+  "result.device.list.loading_description": {
+    "message": "Buscando en todos los sitios donde puedes reproducir música",
+    "description": "Description on the loading row",
+    "_machine_translated": true,
+    "_source_hash": "e6dd3724e39b3ac1"
+  },
+  "result.device.list.none_label": {
+    "message": "Spotify · Sin dispositivos en línea",
+    "description": "Row shown when /me/player/devices returns empty",
+    "_machine_translated": true,
+    "_source_hash": "71c30b51eaf3ee41"
+  },
+  "result.device.list.none_description": {
+    "message": "Abre Spotify en un teléfono, navegador o altavoz para que aparezca aquí",
+    "description": "Hint when no devices are available",
+    "_machine_translated": true,
+    "_source_hash": "f80c690726eca758"
+  },
+  "result.device.list.row_label": {
+    "message": "Spotify · {name}",
+    "description": "One row per available Spotify Connect device",
+    "_machine_translated": true,
+    "_source_hash": "a19993681ea8bbdf"
+  },
+  "result.device.list.active": {
+    "message": "reproduciendo ahora",
+    "description": "Inline tag on the device that is currently active",
+    "_machine_translated": true,
+    "_source_hash": "0ddf701326b71d67"
+  },
+  "result.device.list.preferred": {
+    "message": "preferido",
+    "description": "Inline tag on the user's previously-chosen device",
+    "_machine_translated": true,
+    "_source_hash": "f7da9a8829ce9a43"
   }
 }

@@ -36,10 +36,10 @@
     "_source_hash": "260860647df2e4c3"
   },
   "result.help.description": {
-    "message": "play, queue, like, unlike, next, prev, vol, device, playlist",
+    "message": "Prøv: sp play <sang>, sp queue <sang>, sp like, sp next, sp vol 50, sp device, sp playlist <navn>",
     "description": "Result description listing available commands",
     "_machine_translated": true,
-    "_source_hash": "8b31d4e33332771c"
+    "_source_hash": "f1d75821b8d7ab50"
   },
   "result.play_query.label": {
     "message": "Spotify · Spill «{query}»",
@@ -168,10 +168,10 @@
     "_source_hash": "dcd23e45986f9bca"
   },
   "result.disconnect.description": {
-    "message": "Glem tokenene dine",
+    "message": "Logg ut av Spotify-kontoen din på denne datamaskinen",
     "description": "Description for sign out",
     "_machine_translated": true,
-    "_source_hash": "8953e3749997983d"
+    "_source_hash": "c711eb41e917238b"
   },
   "error.not_signed_in": {
     "message": "Ikke logget på Spotify. Skriv «sp connect» for å logge på.",
@@ -240,10 +240,10 @@
     "_source_hash": "21695f71faff6bf7"
   },
   "settings.description": {
-    "message": "Vis hva som spilles av, styr avspilling og kjør snarveier som «sp like» eller «sp play <spor>». Bruker Spotifys PKCE-flyt over en engangs localhost-lytter – ingen klienthemmelighet forlater maskinen din.",
+    "message": "Se hva som spilles av, legg sanger i kø, lik gjeldende spor, hopp over – alt fra Kage-launcheren eller en chat-kommando. Logg inn med din egen Spotify-konto; passordet ditt forlater aldri nettleseren din.",
     "description": "Settings page description",
     "_machine_translated": true,
-    "_source_hash": "9f8a00aca11b1f67"
+    "_source_hash": "07ab0647eb5e6f94"
   },
   "settings.section.display": {
     "message": "Visning",
@@ -270,10 +270,10 @@
     "_source_hash": "76c1ce92f5661830"
   },
   "settings.refresh_seconds.description": {
-    "message": "Hvor ofte spilles nå-linjen forespør Spotify. Lavere betyr raskere oppdateringer og litt flere API-kall.",
+    "message": "Hvor ofte Kage sjekker Spotify for hva som spilles av. Lavere tall oppdaterer linjen raskere, men spør Spotify oftere. Standard er 15 sekunder.",
     "description": "Settings: refresh seconds description",
     "_machine_translated": true,
-    "_source_hash": "f2e9e332fda01695"
+    "_source_hash": "6465de9f91b4dda0"
   },
   "settings.trigger.label": {
     "message": "Utløserord",
@@ -294,10 +294,10 @@
     "_source_hash": "d0fcd903dec290c3"
   },
   "settings.app.intro_html": {
-    "message": "Opprett en gratis <strong>Spotify Developer</strong>-app på <a href=\"https://developer.spotify.com/dashboard\">developer.spotify.com/dashboard</a>. Legg til <code>http://127.0.0.1/spotify/callback</code> som Redirect URI (hvilken som helst port fungerer – Kage legger til den faktiske porten ved pålogging, og Spotify samsvarer på vert + sti). Kopier <strong>Client ID</strong> nedenfor.",
+    "message": "Spotify ber hver app registrere sin egen <strong>Client ID</strong>. Lag en gratis på <a href=\"https://developer.spotify.com/dashboard\">developer.spotify.com/dashboard</a> (klikk <em>Create app</em>, gi den hvilket som helst navn, kryss av <em>Web API</em>). Legg til <code>http://127.0.0.1:8080/spotify/callback</code> som Redirect URI – hvilken som helst port fungerer, Spotify trenger bare at en er til stede. Kopier Client ID-en du får, og lim den inn nedenfor.",
     "description": "Settings: app setup instructions",
     "_machine_translated": true,
-    "_source_hash": "4b925a1e8d4fe58f"
+    "_source_hash": "177c4bb9f2055193"
   },
   "settings.client_id.label": {
     "message": "Client ID",
@@ -312,10 +312,10 @@
     "_source_hash": "00365c0104e05fb3"
   },
   "settings.client_id.description": {
-    "message": "Lagres lokalt; sendes aldri noe annet sted enn til Spotify.",
+    "message": "Lagres kun på denne datamaskinen. Sendes til Spotify når du logger inn, ingen andre steder.",
     "description": "Settings: Client ID description",
     "_machine_translated": true,
-    "_source_hash": "726633bc55ffbe83"
+    "_source_hash": "74280ec7c0552793"
   },
   "settings.save_client_id.label": {
     "message": "Lagre Client ID",
@@ -330,22 +330,22 @@
     "_source_hash": "f358cdafb27f4748"
   },
   "settings.connection.connected": {
-    "message": "<strong>Tilkoblet</strong> – avspillingskontrollene er klare.",
+    "message": "<strong>Logget inn.</strong> Avspillingskontroller er klare.",
     "description": "Settings: connection ready text",
     "_machine_translated": true,
-    "_source_hash": "6824068777a99688"
+    "_source_hash": "e0ab77ca56a0682c"
   },
   "settings.connection.not_connected": {
-    "message": "Ikke tilkoblet ennå. Klikk <strong>Koble til</strong> for å autorisere.",
+    "message": "Ikke logget inn ennå. Klikk <strong>Koble til</strong> for å logge inn på Spotify.",
     "description": "Settings: not connected text",
     "_machine_translated": true,
-    "_source_hash": "7a248676d782c5cd"
+    "_source_hash": "210fcedbc5081420"
   },
   "settings.connection.no_client_id": {
-    "message": "Lagre en Client ID først, og koble deretter til.",
+    "message": "Lim inn en Client ID ovenfor først, og kom tilbake hit for å koble til.",
     "description": "Settings: needs client ID first",
     "_machine_translated": true,
-    "_source_hash": "6e654060ef7b1a02"
+    "_source_hash": "3316be227daf1055"
   },
   "settings.connect.label_connect": {
     "message": "Koble til …",
@@ -366,10 +366,10 @@
     "_source_hash": "ccc6a1247a0bc31c"
   },
   "settings.disconnect.confirm": {
-    "message": "Logge ut av Spotify? Du må autorisere på nytt for å bruke avspillingssnarveier.",
+    "message": "Logge ut av Spotify? Du må logge inn igjen for å bruke avspillingssnarveier.",
     "description": "Confirmation prompt before signing out",
     "_machine_translated": true,
-    "_source_hash": "a27426d3adcd7ad4"
+    "_source_hash": "9dd32ff7ac62f6bb"
   },
   "settings.validate.trigger_required": {
     "message": "Utløserord er påkrevd.",
@@ -418,5 +418,83 @@
     "description": "Status after a successful sign-out",
     "_machine_translated": true,
     "_source_hash": "64224f1b6f2851a7"
+  },
+  "error.no_devices": {
+    "message": "Ingen Spotify-enheter er tilkoblet. Åpne Spotify på telefonen, datamaskinen eller høyttaleren først, og prøv igjen.",
+    "description": "Error when no Spotify Connect targets are visible",
+    "_machine_translated": true,
+    "_source_hash": "75e4fe1869d99e6e"
+  },
+  "error.pick_device": {
+    "message": "Mer enn én Spotify-enhet er tilkoblet ({names}). Skriv «sp device» for å velge en.",
+    "description": "Error when there are multiple devices and we don't know which to use",
+    "_machine_translated": true,
+    "_source_hash": "47fb0622fbcea4f4"
+  },
+  "error.device_offline": {
+    "message": "Den lagrede enheten din «{name}» er frakoblet. Skriv «sp device» for å velge en annen.",
+    "description": "Error when saved preferred device is no longer reachable",
+    "_machine_translated": true,
+    "_source_hash": "a89789c54fcb37e5"
+  },
+  "error.no_active_device": {
+    "message": "Fant ingen Spotify-enhet. Åpne Spotify et sted (telefon, nettleser, høyttaler) og prøv igjen.",
+    "description": "Error when transfer-and-retry still fails",
+    "_machine_translated": true,
+    "_source_hash": "3a60400c28c7d034"
+  },
+  "error.premium_required": {
+    "message": "Spotify Premium kreves for avspillingskontroll. Gratiskontoer kan fortsatt se hva som spilles av.",
+    "description": "Error when the API rejects a control call for free-tier users",
+    "_machine_translated": true,
+    "_source_hash": "b0ce9682859a8a50"
+  },
+  "error.device_list_failed": {
+    "message": "Kunne ikke hente Spotify-enhetene dine. Prøv igjen om litt.",
+    "description": "Fallback when /me/player/devices throws",
+    "_machine_translated": true,
+    "_source_hash": "87bdd3bbb1df1643"
+  },
+  "result.device.list.loading_label": {
+    "message": "Spotify · Velg en enhet …",
+    "description": "Placeholder row while devices are being fetched",
+    "_machine_translated": true,
+    "_source_hash": "8f18b4fcacdb3f36"
+  },
+  "result.device.list.loading_description": {
+    "message": "Søker etter alle steder du kan spille av musikk",
+    "description": "Description on the loading row",
+    "_machine_translated": true,
+    "_source_hash": "e6dd3724e39b3ac1"
+  },
+  "result.device.list.none_label": {
+    "message": "Spotify · Ingen enheter tilkoblet",
+    "description": "Row shown when /me/player/devices returns empty",
+    "_machine_translated": true,
+    "_source_hash": "71c30b51eaf3ee41"
+  },
+  "result.device.list.none_description": {
+    "message": "Åpne Spotify på en telefon, nettleser eller høyttaler så den dukker opp her",
+    "description": "Hint when no devices are available",
+    "_machine_translated": true,
+    "_source_hash": "f80c690726eca758"
+  },
+  "result.device.list.row_label": {
+    "message": "Spotify · {name}",
+    "description": "One row per available Spotify Connect device",
+    "_machine_translated": true,
+    "_source_hash": "a19993681ea8bbdf"
+  },
+  "result.device.list.active": {
+    "message": "spiller av nå",
+    "description": "Inline tag on the device that is currently active",
+    "_machine_translated": true,
+    "_source_hash": "0ddf701326b71d67"
+  },
+  "result.device.list.preferred": {
+    "message": "foretrukket",
+    "description": "Inline tag on the user's previously-chosen device",
+    "_machine_translated": true,
+    "_source_hash": "f7da9a8829ce9a43"
   }
 }

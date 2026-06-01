@@ -36,10 +36,10 @@
     "_source_hash": "260860647df2e4c3"
   },
   "result.help.description": {
-    "message": "play، queue، like، unlike، next، prev، vol، device، playlist",
+    "message": "جرّب: sp play <أغنية>، sp queue <أغنية>، sp like، sp next، sp vol 50، sp device، sp playlist <اسم>",
     "description": "Result description listing available commands",
     "_machine_translated": true,
-    "_source_hash": "8b31d4e33332771c"
+    "_source_hash": "f1d75821b8d7ab50"
   },
   "result.play_query.label": {
     "message": "Spotify · تشغيل ‏\"{query}\"‏",
@@ -168,10 +168,10 @@
     "_source_hash": "dcd23e45986f9bca"
   },
   "result.disconnect.description": {
-    "message": "نسيان الرموز المميزة",
+    "message": "تسجيل الخروج من حساب Spotify على هذا الكمبيوتر",
     "description": "Description for sign out",
     "_machine_translated": true,
-    "_source_hash": "8953e3749997983d"
+    "_source_hash": "c711eb41e917238b"
   },
   "error.not_signed_in": {
     "message": "لم يتم تسجيل الدخول إلى Spotify. اكتب \"sp connect\" لتسجيل الدخول.",
@@ -240,10 +240,10 @@
     "_source_hash": "21695f71faff6bf7"
   },
   "settings.description": {
-    "message": "اعرض ما يتم تشغيله حاليًا، وتحكم في التشغيل، ونفّذ اختصارات مثل \"sp like\" أو \"sp play <track>\". يستخدم تدفق PKCE من Spotify عبر مستمع localhost لمرة واحدة — لا يغادر أي client secret جهازك.",
+    "message": "اطّلع على ما يُشغَّل، أضف أغاني إلى قائمة الانتظار، أعجب بالمقطوعة الحالية، تخطَّ — كل ذلك من مشغّل Kage أو عبر أمر محادثة. سجّل الدخول بحسابك الخاص في Spotify؛ كلمة المرور لا تغادر متصفحك أبدًا.",
     "description": "Settings page description",
     "_machine_translated": true,
-    "_source_hash": "9f8a00aca11b1f67"
+    "_source_hash": "07ab0647eb5e6f94"
   },
   "settings.section.display": {
     "message": "العرض",
@@ -270,10 +270,10 @@
     "_source_hash": "76c1ce92f5661830"
   },
   "settings.refresh_seconds.description": {
-    "message": "مدى تكرار استعلام شريط \"قيد التشغيل الآن\" من Spotify. القيم الأقل تعني تحديثات أسرع وعدد استدعاءات API أكبر قليلًا.",
+    "message": "عدد المرات التي يتحقق فيها Kage من Spotify لمعرفة ما يُشغَّل. الأرقام الأقل تحدّث الشريط بسرعة أكبر لكنها تستعلم Spotify بمعدّل أعلى. القيمة الافتراضية 15 ثانية.",
     "description": "Settings: refresh seconds description",
     "_machine_translated": true,
-    "_source_hash": "f2e9e332fda01695"
+    "_source_hash": "6465de9f91b4dda0"
   },
   "settings.trigger.label": {
     "message": "كلمة التشغيل",
@@ -294,10 +294,10 @@
     "_source_hash": "d0fcd903dec290c3"
   },
   "settings.app.intro_html": {
-    "message": "أنشئ تطبيق <strong>Spotify Developer</strong> مجانيًا على <a href=\"https://developer.spotify.com/dashboard\">developer.spotify.com/dashboard</a>. أضف <code>http://127.0.0.1/spotify/callback</code> كعنوان URL لإعادة التوجيه (أي منفذ يعمل — يضيف Kage المنفذ الفعلي عند تسجيل الدخول، ويُطابق Spotify المضيف + المسار). انسخ <strong>Client ID</strong> أدناه.",
+    "message": "يطلب Spotify من كل تطبيق تسجيل <strong>Client ID</strong> خاص به. أنشئ واحدًا مجانًا من <a href=\"https://developer.spotify.com/dashboard\">developer.spotify.com/dashboard</a> (انقر <em>Create app</em>، سمِّه بأي اسم، وفعّل <em>Web API</em>). أضف <code>http://127.0.0.1:8080/spotify/callback</code> كـ Redirect URI — أي منفذ يصلح، لكن Spotify يحتاج إلى وجود واحد. انسخ الـ Client ID الذي يعطيه لك والصقه أدناه.",
     "description": "Settings: app setup instructions",
     "_machine_translated": true,
-    "_source_hash": "4b925a1e8d4fe58f"
+    "_source_hash": "177c4bb9f2055193"
   },
   "settings.client_id.label": {
     "message": "Client ID",
@@ -312,10 +312,10 @@
     "_source_hash": "00365c0104e05fb3"
   },
   "settings.client_id.description": {
-    "message": "يُخزَّن محليًا؛ ولا يُرسَل إلى أي مكان باستثناء Spotify.",
+    "message": "محفوظ على هذا الكمبيوتر فقط. يُرسَل إلى Spotify عند تسجيل الدخول، ولا يُرسَل إلى أي مكان آخر.",
     "description": "Settings: Client ID description",
     "_machine_translated": true,
-    "_source_hash": "726633bc55ffbe83"
+    "_source_hash": "74280ec7c0552793"
   },
   "settings.save_client_id.label": {
     "message": "حفظ معرّف العميل",
@@ -330,22 +330,22 @@
     "_source_hash": "f358cdafb27f4748"
   },
   "settings.connection.connected": {
-    "message": "<strong>متصل</strong> — عناصر التحكم في التشغيل جاهزة.",
+    "message": "<strong>تم تسجيل الدخول.</strong> عناصر التحكم في التشغيل جاهزة.",
     "description": "Settings: connection ready text",
     "_machine_translated": true,
-    "_source_hash": "6824068777a99688"
+    "_source_hash": "e0ab77ca56a0682c"
   },
   "settings.connection.not_connected": {
-    "message": "غير متصل بعد. انقر على <strong>اتصال</strong> للتفويض.",
+    "message": "لم يتم تسجيل الدخول بعد. انقر <strong>اتصال</strong> لتسجيل الدخول إلى Spotify.",
     "description": "Settings: not connected text",
     "_machine_translated": true,
-    "_source_hash": "7a248676d782c5cd"
+    "_source_hash": "210fcedbc5081420"
   },
   "settings.connection.no_client_id": {
-    "message": "احفظ معرّف العميل أولاً، ثم اتصل.",
+    "message": "ألصق Client ID أعلاه أولًا، ثم عُد إلى هنا للاتصال.",
     "description": "Settings: needs client ID first",
     "_machine_translated": true,
-    "_source_hash": "6e654060ef7b1a02"
+    "_source_hash": "3316be227daf1055"
   },
   "settings.connect.label_connect": {
     "message": "اتصال…",
@@ -366,10 +366,10 @@
     "_source_hash": "ccc6a1247a0bc31c"
   },
   "settings.disconnect.confirm": {
-    "message": "هل تريد تسجيل الخروج من Spotify؟ ستحتاج إلى إعادة التفويض لاستخدام اختصارات التشغيل.",
+    "message": "تسجيل الخروج من Spotify؟ ستحتاج إلى تسجيل الدخول مجددًا لاستخدام اختصارات التشغيل.",
     "description": "Confirmation prompt before signing out",
     "_machine_translated": true,
-    "_source_hash": "a27426d3adcd7ad4"
+    "_source_hash": "9dd32ff7ac62f6bb"
   },
   "settings.validate.trigger_required": {
     "message": "كلمة التشغيل مطلوبة.",
@@ -418,5 +418,83 @@
     "description": "Status after a successful sign-out",
     "_machine_translated": true,
     "_source_hash": "64224f1b6f2851a7"
+  },
+  "error.no_devices": {
+    "message": "لا توجد أجهزة Spotify متصلة. افتح Spotify على هاتفك أو الكمبيوتر أو السماعة أولًا، ثم حاول مجددًا.",
+    "description": "Error when no Spotify Connect targets are visible",
+    "_machine_translated": true,
+    "_source_hash": "75e4fe1869d99e6e"
+  },
+  "error.pick_device": {
+    "message": "هناك أكثر من جهاز Spotify متصل ({names}). اكتب \"sp device\" لاختيار واحد.",
+    "description": "Error when there are multiple devices and we don't know which to use",
+    "_machine_translated": true,
+    "_source_hash": "47fb0622fbcea4f4"
+  },
+  "error.device_offline": {
+    "message": "جهازك المحفوظ \"{name}\" غير متصل. اكتب \"sp device\" لاختيار جهاز آخر.",
+    "description": "Error when saved preferred device is no longer reachable",
+    "_machine_translated": true,
+    "_source_hash": "a89789c54fcb37e5"
+  },
+  "error.no_active_device": {
+    "message": "تعذّر الوصول إلى جهاز Spotify. افتح Spotify في مكان ما (هاتف، متصفح، سماعة) وحاول مجددًا.",
+    "description": "Error when transfer-and-retry still fails",
+    "_machine_translated": true,
+    "_source_hash": "3a60400c28c7d034"
+  },
+  "error.premium_required": {
+    "message": "يتطلب التحكم في التشغيل اشتراك Spotify Premium. لا تزال الحسابات المجانية قادرة على رؤية ما يُشغَّل.",
+    "description": "Error when the API rejects a control call for free-tier users",
+    "_machine_translated": true,
+    "_source_hash": "b0ce9682859a8a50"
+  },
+  "error.device_list_failed": {
+    "message": "تعذّر جلب أجهزة Spotify. حاول مجددًا بعد قليل.",
+    "description": "Fallback when /me/player/devices throws",
+    "_machine_translated": true,
+    "_source_hash": "87bdd3bbb1df1643"
+  },
+  "result.device.list.loading_label": {
+    "message": "Spotify · اختر جهازًا…",
+    "description": "Placeholder row while devices are being fetched",
+    "_machine_translated": true,
+    "_source_hash": "8f18b4fcacdb3f36"
+  },
+  "result.device.list.loading_description": {
+    "message": "نبحث في كل مكان يمكنك تشغيل الموسيقى منه",
+    "description": "Description on the loading row",
+    "_machine_translated": true,
+    "_source_hash": "e6dd3724e39b3ac1"
+  },
+  "result.device.list.none_label": {
+    "message": "Spotify · لا توجد أجهزة متصلة",
+    "description": "Row shown when /me/player/devices returns empty",
+    "_machine_translated": true,
+    "_source_hash": "71c30b51eaf3ee41"
+  },
+  "result.device.list.none_description": {
+    "message": "افتح Spotify على هاتف أو متصفح أو سماعة ليظهر هنا",
+    "description": "Hint when no devices are available",
+    "_machine_translated": true,
+    "_source_hash": "f80c690726eca758"
+  },
+  "result.device.list.row_label": {
+    "message": "Spotify · {name}",
+    "description": "One row per available Spotify Connect device",
+    "_machine_translated": true,
+    "_source_hash": "a19993681ea8bbdf"
+  },
+  "result.device.list.active": {
+    "message": "قيد التشغيل الآن",
+    "description": "Inline tag on the device that is currently active",
+    "_machine_translated": true,
+    "_source_hash": "0ddf701326b71d67"
+  },
+  "result.device.list.preferred": {
+    "message": "مفضّل",
+    "description": "Inline tag on the user's previously-chosen device",
+    "_machine_translated": true,
+    "_source_hash": "f7da9a8829ce9a43"
   }
 }

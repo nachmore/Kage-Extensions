@@ -36,7 +36,16 @@ export default class SpotifyNowPlayingWidget {
     getRefreshInterval() {
         if (!this.config.show_now_playing_bar) return 0;
         const s = Number(this.config.refresh_seconds);
-        return Number.isFinite(s) && s >= 2 ? s * 1000 : 5000;
+        // Default 15s — a balance between "feels live" and "doesn't
+        // hammer Spotify's rate limit." Spotify doesn't publish exact
+        // numbers, but the per-app sliding window kicks in around the
+        // 100/min mark for the current-playback endpoints; at the
+        // previous 5s default, a single user idling Kage for an hour
+        // would have spent ~720 of those just on the widget. 15s
+        // halves that to ~240, leaving headroom for the actual
+        // user-driven calls. Lower if you want snappier track-change
+        // updates; the floor is 2s.
+        return Number.isFinite(s) && s >= 2 ? s * 1000 : 15000;
     }
 
     async render() {
@@ -119,21 +128,27 @@ export default class SpotifyNowPlayingWidget {
         try {
             switch (action) {
                 case 'prev':
-                    await auth.api('POST', '/me/player/previous');
+                    await auth.playerApi('POST', '/me/player/previous');
                     break;
                 case 'next':
-                    await auth.api('POST', '/me/player/next');
+                    await auth.playerApi('POST', '/me/player/next');
                     break;
                 case 'play':
-                    await auth.api('PUT', '/me/player/play');
+                    await auth.playerApi('PUT', '/me/player/play', undefined, {
+                        willStartPlaying: true,
+                    });
                     break;
                 case 'pause':
-                    await auth.api('PUT', '/me/player/pause');
+                    await auth.playerApi('PUT', '/me/player/pause', undefined, {
+                        willStartPlaying: false,
+                    });
                     break;
                 case 'like':
                 case 'unlike': {
                     if (!this._lastTrackId) break;
                     const path = `/me/tracks?ids=${this._lastTrackId}`;
+                    // like/unlike doesn't need a device — operates on
+                    // the user's library, not on a player.
                     await auth.api(action === 'like' ? 'PUT' : 'DELETE', path);
                     this._liked = action === 'like';
                     break;

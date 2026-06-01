@@ -36,10 +36,10 @@
     "_source_hash": "260860647df2e4c3"
   },
   "result.help.description": {
-    "message": "play, queue, like, unlike, next, prev, vol, device, playlist",
+    "message": "Încearcă: sp play <melodie>, sp queue <melodie>, sp like, sp next, sp vol 50, sp device, sp playlist <nume>",
     "description": "Result description listing available commands",
     "_machine_translated": true,
-    "_source_hash": "8b31d4e33332771c"
+    "_source_hash": "f1d75821b8d7ab50"
   },
   "result.play_query.label": {
     "message": "Spotify · Redă „{query}”",
@@ -168,10 +168,10 @@
     "_source_hash": "dcd23e45986f9bca"
   },
   "result.disconnect.description": {
-    "message": "Uită tokenurile tale",
+    "message": "Deconectează-te de la contul tău Spotify pe acest computer",
     "description": "Description for sign out",
     "_machine_translated": true,
-    "_source_hash": "8953e3749997983d"
+    "_source_hash": "c711eb41e917238b"
   },
   "error.not_signed_in": {
     "message": "Nu ești autentificat în Spotify. Tastează „sp connect” pentru a te autentifica.",
@@ -240,10 +240,10 @@
     "_source_hash": "21695f71faff6bf7"
   },
   "settings.description": {
-    "message": "Afișează ce se redă, controlează redarea și execută scurtături precum „sp like” sau „sp play <piesă>”. Folosește fluxul PKCE al Spotify printr-un ascultător localhost de unică folosință — niciun client secret nu părăsește mașina ta.",
+    "message": "Vezi ce se redă, adaugă melodii la coadă, apreciază piesa curentă, sari peste — totul din launcher-ul Kage sau printr-o comandă de chat. Conectează-te cu propriul tău cont Spotify; parola ta nu părăsește niciodată browserul.",
     "description": "Settings page description",
     "_machine_translated": true,
-    "_source_hash": "9f8a00aca11b1f67"
+    "_source_hash": "07ab0647eb5e6f94"
   },
   "settings.section.display": {
     "message": "Afișare",
@@ -270,10 +270,10 @@
     "_source_hash": "76c1ce92f5661830"
   },
   "settings.refresh_seconds.description": {
-    "message": "Cât de des bara „se redă acum” interoghează Spotify. Mai mic înseamnă actualizări mai rapide și ceva mai multe apeluri API.",
+    "message": "Cât de des verifică Kage la Spotify ce se redă. Numerele mai mici actualizează bara mai rapid, dar întreabă Spotify mai des. Valoarea implicită este 15 secunde.",
     "description": "Settings: refresh seconds description",
     "_machine_translated": true,
-    "_source_hash": "f2e9e332fda01695"
+    "_source_hash": "6465de9f91b4dda0"
   },
   "settings.trigger.label": {
     "message": "Cuvânt declanșator",
@@ -294,10 +294,10 @@
     "_source_hash": "d0fcd903dec290c3"
   },
   "settings.app.intro_html": {
-    "message": "Creează gratuit o aplicație <strong>Spotify Developer</strong> la <a href=\"https://developer.spotify.com/dashboard\">developer.spotify.com/dashboard</a>. Adaugă <code>http://127.0.0.1/spotify/callback</code> ca Redirect URI (orice port funcționează — Kage adaugă portul real la autentificare, iar Spotify potrivește gazda + calea). Copiază <strong>Client ID</strong>-ul de mai jos.",
+    "message": "Spotify cere fiecărei aplicații să-și înregistreze propriul <strong>Client ID</strong>. Creează unul gratuit la <a href=\"https://developer.spotify.com/dashboard\">developer.spotify.com/dashboard</a> (apasă <em>Create app</em>, denumește-o oricum, bifează <em>Web API</em>). Adaugă <code>http://127.0.0.1:8080/spotify/callback</code> ca Redirect URI — orice port funcționează, Spotify are nevoie doar ca unul să fie prezent. Copiază Client ID-ul primit și lipește-l mai jos.",
     "description": "Settings: app setup instructions",
     "_machine_translated": true,
-    "_source_hash": "4b925a1e8d4fe58f"
+    "_source_hash": "177c4bb9f2055193"
   },
   "settings.client_id.label": {
     "message": "Client ID",
@@ -312,10 +312,10 @@
     "_source_hash": "00365c0104e05fb3"
   },
   "settings.client_id.description": {
-    "message": "Stocat local; nu este trimis nicăieri în afară de Spotify.",
+    "message": "Salvat doar pe acest computer. Trimis către Spotify când te conectezi, nicăieri altundeva.",
     "description": "Settings: Client ID description",
     "_machine_translated": true,
-    "_source_hash": "726633bc55ffbe83"
+    "_source_hash": "74280ec7c0552793"
   },
   "settings.save_client_id.label": {
     "message": "Salvează Client ID",
@@ -330,22 +330,22 @@
     "_source_hash": "f358cdafb27f4748"
   },
   "settings.connection.connected": {
-    "message": "<strong>Conectat</strong> — controalele de redare sunt pregătite.",
+    "message": "<strong>Conectat.</strong> Controalele de redare sunt gata.",
     "description": "Settings: connection ready text",
     "_machine_translated": true,
-    "_source_hash": "6824068777a99688"
+    "_source_hash": "e0ab77ca56a0682c"
   },
   "settings.connection.not_connected": {
-    "message": "Neconectat încă. Apasă <strong>Conectează</strong> pentru a autoriza.",
+    "message": "Nu ești conectat încă. Apasă <strong>Connect</strong> pentru a te conecta la Spotify.",
     "description": "Settings: not connected text",
     "_machine_translated": true,
-    "_source_hash": "7a248676d782c5cd"
+    "_source_hash": "210fcedbc5081420"
   },
   "settings.connection.no_client_id": {
-    "message": "Salvează mai întâi un Client ID, apoi conectează-te.",
+    "message": "Lipește mai întâi un Client ID mai sus, apoi revino aici pentru a te conecta.",
     "description": "Settings: needs client ID first",
     "_machine_translated": true,
-    "_source_hash": "6e654060ef7b1a02"
+    "_source_hash": "3316be227daf1055"
   },
   "settings.connect.label_connect": {
     "message": "Conectează…",
@@ -366,10 +366,10 @@
     "_source_hash": "ccc6a1247a0bc31c"
   },
   "settings.disconnect.confirm": {
-    "message": "Te deconectezi de la Spotify? Va trebui să reautorizezi pentru a folosi scurtăturile de redare.",
+    "message": "Te deconectezi de la Spotify? Va trebui să te conectezi din nou pentru a folosi scurtăturile de redare.",
     "description": "Confirmation prompt before signing out",
     "_machine_translated": true,
-    "_source_hash": "a27426d3adcd7ad4"
+    "_source_hash": "9dd32ff7ac62f6bb"
   },
   "settings.validate.trigger_required": {
     "message": "Cuvântul declanșator este obligatoriu.",
@@ -418,5 +418,83 @@
     "description": "Status after a successful sign-out",
     "_machine_translated": true,
     "_source_hash": "64224f1b6f2851a7"
+  },
+  "error.no_devices": {
+    "message": "Niciun dispozitiv Spotify nu este online. Deschide mai întâi Spotify pe telefon, computer sau difuzor, apoi încearcă din nou.",
+    "description": "Error when no Spotify Connect targets are visible",
+    "_machine_translated": true,
+    "_source_hash": "75e4fe1869d99e6e"
+  },
+  "error.pick_device": {
+    "message": "Mai multe dispozitive Spotify sunt online ({names}). Scrie „sp device” pentru a alege unul.",
+    "description": "Error when there are multiple devices and we don't know which to use",
+    "_machine_translated": true,
+    "_source_hash": "47fb0622fbcea4f4"
+  },
+  "error.device_offline": {
+    "message": "Dispozitivul tău salvat „{name}” este offline. Scrie „sp device” pentru a alege altul.",
+    "description": "Error when saved preferred device is no longer reachable",
+    "_machine_translated": true,
+    "_source_hash": "a89789c54fcb37e5"
+  },
+  "error.no_active_device": {
+    "message": "Nu am putut accesa un dispozitiv Spotify. Deschide Spotify undeva (telefon, browser, difuzor) și încearcă din nou.",
+    "description": "Error when transfer-and-retry still fails",
+    "_machine_translated": true,
+    "_source_hash": "3a60400c28c7d034"
+  },
+  "error.premium_required": {
+    "message": "Spotify Premium este necesar pentru controlul redării. Conturile gratuite pot vedea totuși ce se redă.",
+    "description": "Error when the API rejects a control call for free-tier users",
+    "_machine_translated": true,
+    "_source_hash": "b0ce9682859a8a50"
+  },
+  "error.device_list_failed": {
+    "message": "Nu am putut prelua dispozitivele tale Spotify. Încearcă din nou peste un moment.",
+    "description": "Fallback when /me/player/devices throws",
+    "_machine_translated": true,
+    "_source_hash": "87bdd3bbb1df1643"
+  },
+  "result.device.list.loading_label": {
+    "message": "Spotify · Alege un dispozitiv…",
+    "description": "Placeholder row while devices are being fetched",
+    "_machine_translated": true,
+    "_source_hash": "8f18b4fcacdb3f36"
+  },
+  "result.device.list.loading_description": {
+    "message": "Se caută peste tot unde poți reda muzică",
+    "description": "Description on the loading row",
+    "_machine_translated": true,
+    "_source_hash": "e6dd3724e39b3ac1"
+  },
+  "result.device.list.none_label": {
+    "message": "Spotify · Niciun dispozitiv online",
+    "description": "Row shown when /me/player/devices returns empty",
+    "_machine_translated": true,
+    "_source_hash": "71c30b51eaf3ee41"
+  },
+  "result.device.list.none_description": {
+    "message": "Deschide Spotify pe un telefon, browser sau difuzor pentru a apărea aici",
+    "description": "Hint when no devices are available",
+    "_machine_translated": true,
+    "_source_hash": "f80c690726eca758"
+  },
+  "result.device.list.row_label": {
+    "message": "Spotify · {name}",
+    "description": "One row per available Spotify Connect device",
+    "_machine_translated": true,
+    "_source_hash": "a19993681ea8bbdf"
+  },
+  "result.device.list.active": {
+    "message": "se redă acum",
+    "description": "Inline tag on the device that is currently active",
+    "_machine_translated": true,
+    "_source_hash": "0ddf701326b71d67"
+  },
+  "result.device.list.preferred": {
+    "message": "preferat",
+    "description": "Inline tag on the user's previously-chosen device",
+    "_machine_translated": true,
+    "_source_hash": "f7da9a8829ce9a43"
   }
 }

@@ -36,10 +36,10 @@
     "_source_hash": "260860647df2e4c3"
   },
   "result.help.description": {
-    "message": "play, queue, like, unlike, next, prev, vol, device, playlist",
+    "message": "Probeer: sp play <nummer>, sp queue <nummer>, sp like, sp next, sp vol 50, sp device, sp playlist <naam>",
     "description": "Result description listing available commands",
     "_machine_translated": true,
-    "_source_hash": "8b31d4e33332771c"
+    "_source_hash": "f1d75821b8d7ab50"
   },
   "result.play_query.label": {
     "message": "Spotify · \"{query}\" afspelen",
@@ -168,10 +168,10 @@
     "_source_hash": "dcd23e45986f9bca"
   },
   "result.disconnect.description": {
-    "message": "Vergeet je tokens",
+    "message": "Meld je af bij je Spotify-account op deze computer",
     "description": "Description for sign out",
     "_machine_translated": true,
-    "_source_hash": "8953e3749997983d"
+    "_source_hash": "c711eb41e917238b"
   },
   "error.not_signed_in": {
     "message": "Niet aangemeld bij Spotify. Typ \"sp connect\" om aan te melden.",
@@ -240,10 +240,10 @@
     "_source_hash": "21695f71faff6bf7"
   },
   "settings.description": {
-    "message": "Toon wat er wordt afgespeeld, beheer de weergave en gebruik snelkoppelingen zoals \"sp like\" of \"sp play <track>\". Gebruikt Spotify's PKCE-flow via een eenmalige localhost-listener — er verlaat geen client secret je computer.",
+    "message": "Zie wat er speelt, zet nummers in de wachtrij, like het huidige nummer, sla over — allemaal vanuit de Kage-launcher of een chatcommando. Meld je aan met je eigen Spotify-account; je wachtwoord verlaat je browser nooit.",
     "description": "Settings page description",
     "_machine_translated": true,
-    "_source_hash": "9f8a00aca11b1f67"
+    "_source_hash": "07ab0647eb5e6f94"
   },
   "settings.section.display": {
     "message": "Weergave",
@@ -270,10 +270,10 @@
     "_source_hash": "76c1ce92f5661830"
   },
   "settings.refresh_seconds.description": {
-    "message": "Hoe vaak de nu-afgespeeld-balk Spotify pollt. Lager betekent snellere updates en iets meer API-aanroepen.",
+    "message": "Hoe vaak Kage bij Spotify controleert wat er speelt. Lagere waarden werken de balk sneller bij, maar bevragen Spotify vaker. Standaard is 15 seconden.",
     "description": "Settings: refresh seconds description",
     "_machine_translated": true,
-    "_source_hash": "f2e9e332fda01695"
+    "_source_hash": "6465de9f91b4dda0"
   },
   "settings.trigger.label": {
     "message": "Triggerwoord",
@@ -294,10 +294,10 @@
     "_source_hash": "d0fcd903dec290c3"
   },
   "settings.app.intro_html": {
-    "message": "Maak een gratis <strong>Spotify Developer</strong>-app aan op <a href=\"https://developer.spotify.com/dashboard\">developer.spotify.com/dashboard</a>. Voeg <code>http://127.0.0.1/spotify/callback</code> toe als Redirect URI (elke poort werkt — Kage voegt de daadwerkelijke poort toe bij het aanmelden, en Spotify matcht op host + pad). Kopieer hieronder het <strong>Client ID</strong>.",
+    "message": "Spotify vraagt elke app om een eigen <strong>Client ID</strong> te registreren. Maak gratis een aan op <a href=\"https://developer.spotify.com/dashboard\">developer.spotify.com/dashboard</a> (klik op <em>Create app</em>, geef het een willekeurige naam, vink <em>Web API</em> aan). Voeg <code>http://127.0.0.1:8080/spotify/callback</code> toe als Redirect URI — elke poort werkt, Spotify wil er alleen één hebben. Kopieer de Client ID die je krijgt en plak die hieronder.",
     "description": "Settings: app setup instructions",
     "_machine_translated": true,
-    "_source_hash": "4b925a1e8d4fe58f"
+    "_source_hash": "177c4bb9f2055193"
   },
   "settings.client_id.label": {
     "message": "Client ID",
@@ -312,10 +312,10 @@
     "_source_hash": "00365c0104e05fb3"
   },
   "settings.client_id.description": {
-    "message": "Lokaal opgeslagen; wordt nergens anders heen gestuurd dan naar Spotify.",
+    "message": "Alleen op deze computer opgeslagen. Wordt naar Spotify verzonden wanneer je je aanmeldt, nergens anders heen.",
     "description": "Settings: Client ID description",
     "_machine_translated": true,
-    "_source_hash": "726633bc55ffbe83"
+    "_source_hash": "74280ec7c0552793"
   },
   "settings.save_client_id.label": {
     "message": "Client ID opslaan",
@@ -330,22 +330,22 @@
     "_source_hash": "f358cdafb27f4748"
   },
   "settings.connection.connected": {
-    "message": "<strong>Verbonden</strong> — afspeelknoppen zijn gereed.",
+    "message": "<strong>Aangemeld.</strong> Afspeelbediening staat klaar.",
     "description": "Settings: connection ready text",
     "_machine_translated": true,
-    "_source_hash": "6824068777a99688"
+    "_source_hash": "e0ab77ca56a0682c"
   },
   "settings.connection.not_connected": {
-    "message": "Nog niet verbonden. Klik op <strong>Verbinden</strong> om te autoriseren.",
+    "message": "Nog niet aangemeld. Klik op <strong>Verbinden</strong> om je aan te melden bij Spotify.",
     "description": "Settings: not connected text",
     "_machine_translated": true,
-    "_source_hash": "7a248676d782c5cd"
+    "_source_hash": "210fcedbc5081420"
   },
   "settings.connection.no_client_id": {
-    "message": "Sla eerst een Client ID op en maak daarna verbinding.",
+    "message": "Plak hierboven eerst een Client ID en kom dan terug om te verbinden.",
     "description": "Settings: needs client ID first",
     "_machine_translated": true,
-    "_source_hash": "6e654060ef7b1a02"
+    "_source_hash": "3316be227daf1055"
   },
   "settings.connect.label_connect": {
     "message": "Verbinden…",
@@ -366,10 +366,10 @@
     "_source_hash": "ccc6a1247a0bc31c"
   },
   "settings.disconnect.confirm": {
-    "message": "Afmelden bij Spotify? Je moet opnieuw autoriseren om afspeelsnelkoppelingen te gebruiken.",
+    "message": "Afmelden bij Spotify? Je moet je opnieuw aanmelden om de afspeelsnelkoppelingen te gebruiken.",
     "description": "Confirmation prompt before signing out",
     "_machine_translated": true,
-    "_source_hash": "a27426d3adcd7ad4"
+    "_source_hash": "9dd32ff7ac62f6bb"
   },
   "settings.validate.trigger_required": {
     "message": "Triggerwoord is verplicht.",
@@ -418,5 +418,83 @@
     "description": "Status after a successful sign-out",
     "_machine_translated": true,
     "_source_hash": "64224f1b6f2851a7"
+  },
+  "error.no_devices": {
+    "message": "Er zijn geen Spotify-apparaten online. Open Spotify eerst op je telefoon, computer of speaker en probeer het opnieuw.",
+    "description": "Error when no Spotify Connect targets are visible",
+    "_machine_translated": true,
+    "_source_hash": "75e4fe1869d99e6e"
+  },
+  "error.pick_device": {
+    "message": "Er zijn meerdere Spotify-apparaten online ({names}). Typ \"sp device\" om er één te kiezen.",
+    "description": "Error when there are multiple devices and we don't know which to use",
+    "_machine_translated": true,
+    "_source_hash": "47fb0622fbcea4f4"
+  },
+  "error.device_offline": {
+    "message": "Je opgeslagen apparaat \"{name}\" is offline. Typ \"sp device\" om een ander te kiezen.",
+    "description": "Error when saved preferred device is no longer reachable",
+    "_machine_translated": true,
+    "_source_hash": "a89789c54fcb37e5"
+  },
+  "error.no_active_device": {
+    "message": "Kon geen Spotify-apparaat bereiken. Open Spotify ergens (telefoon, browser, speaker) en probeer het opnieuw.",
+    "description": "Error when transfer-and-retry still fails",
+    "_machine_translated": true,
+    "_source_hash": "3a60400c28c7d034"
+  },
+  "error.premium_required": {
+    "message": "Spotify Premium is vereist voor afspeelbediening. Gratis accounts kunnen nog wel zien wat er speelt.",
+    "description": "Error when the API rejects a control call for free-tier users",
+    "_machine_translated": true,
+    "_source_hash": "b0ce9682859a8a50"
+  },
+  "error.device_list_failed": {
+    "message": "Kon je Spotify-apparaten niet ophalen. Probeer het zo opnieuw.",
+    "description": "Fallback when /me/player/devices throws",
+    "_machine_translated": true,
+    "_source_hash": "87bdd3bbb1df1643"
+  },
+  "result.device.list.loading_label": {
+    "message": "Spotify · Kies een apparaat…",
+    "description": "Placeholder row while devices are being fetched",
+    "_machine_translated": true,
+    "_source_hash": "8f18b4fcacdb3f36"
+  },
+  "result.device.list.loading_description": {
+    "message": "Op zoek naar alle plekken waar je muziek kunt afspelen",
+    "description": "Description on the loading row",
+    "_machine_translated": true,
+    "_source_hash": "e6dd3724e39b3ac1"
+  },
+  "result.device.list.none_label": {
+    "message": "Spotify · Geen apparaten online",
+    "description": "Row shown when /me/player/devices returns empty",
+    "_machine_translated": true,
+    "_source_hash": "71c30b51eaf3ee41"
+  },
+  "result.device.list.none_description": {
+    "message": "Open Spotify op een telefoon, browser of speaker zodat het hier verschijnt",
+    "description": "Hint when no devices are available",
+    "_machine_translated": true,
+    "_source_hash": "f80c690726eca758"
+  },
+  "result.device.list.row_label": {
+    "message": "Spotify · {name}",
+    "description": "One row per available Spotify Connect device",
+    "_machine_translated": true,
+    "_source_hash": "a19993681ea8bbdf"
+  },
+  "result.device.list.active": {
+    "message": "speelt nu",
+    "description": "Inline tag on the device that is currently active",
+    "_machine_translated": true,
+    "_source_hash": "0ddf701326b71d67"
+  },
+  "result.device.list.preferred": {
+    "message": "voorkeur",
+    "description": "Inline tag on the user's previously-chosen device",
+    "_machine_translated": true,
+    "_source_hash": "f7da9a8829ce9a43"
   }
 }

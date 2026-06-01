@@ -90,6 +90,14 @@ export default class SpotifyToolProvider {
                     query: { type: 'string', description: 'Playlist name (substring match)' },
                 },
             },
+            {
+                name: 'spotify_list_devices',
+                description:
+                    "List the user's Spotify Connect devices (phone, speaker, browser, etc.). " +
+                    'Useful when a play/pause/skip command fails with "no active device" — call ' +
+                    'this to see what is online, then ask the user which to target.',
+                parameters: {},
+            },
         ];
     }
 
@@ -145,9 +153,12 @@ export default class SpotifyToolProvider {
                 );
                 const track = search?.tracks?.items?.[0];
                 if (!track) throw new Error(`No Spotify match for "${q}".`);
-                await auth.api('PUT', '/me/player/play', {
-                    body: { uris: [track.uri] },
-                });
+                await auth.playerApi(
+                    'PUT',
+                    '/me/player/play',
+                    { body: { uris: [track.uri] } },
+                    { willStartPlaying: true }
+                );
                 return { id: track.id, name: track.name, artists: track.artists.map((a) => a.name) };
             }
             case 'spotify_queue_search': {
@@ -159,7 +170,12 @@ export default class SpotifyToolProvider {
                 );
                 const track = search?.tracks?.items?.[0];
                 if (!track) throw new Error(`No Spotify match for "${q}".`);
-                await auth.api('POST', `/me/player/queue?uri=${encodeURIComponent(track.uri)}`);
+                await auth.playerApi(
+                    'POST',
+                    `/me/player/queue?uri=${encodeURIComponent(track.uri)}`,
+                    undefined,
+                    { willStartPlaying: false }
+                );
                 return { id: track.id, name: track.name, artists: track.artists.map((a) => a.name) };
             }
             case 'spotify_like_current':
@@ -172,23 +188,32 @@ export default class SpotifyToolProvider {
                 return { liked: want, track_id: trackId };
             }
             case 'spotify_pause':
-                await auth.api('PUT', '/me/player/pause');
+                await auth.playerApi('PUT', '/me/player/pause', undefined, {
+                    willStartPlaying: false,
+                });
                 return { ok: true };
             case 'spotify_resume':
-                await auth.api('PUT', '/me/player/play');
+                await auth.playerApi('PUT', '/me/player/play', undefined, {
+                    willStartPlaying: true,
+                });
                 return { ok: true };
             case 'spotify_skip_next':
-                await auth.api('POST', '/me/player/next');
+                await auth.playerApi('POST', '/me/player/next');
                 return { ok: true };
             case 'spotify_skip_prev':
-                await auth.api('POST', '/me/player/previous');
+                await auth.playerApi('POST', '/me/player/previous');
                 return { ok: true };
             case 'spotify_set_volume': {
                 const n = Number(p.percent);
                 if (!Number.isFinite(n) || n < 0 || n > 100) {
                     throw new Error('percent must be 0..100');
                 }
-                await auth.api('PUT', `/me/player/volume?volume_percent=${Math.round(n)}`);
+                await auth.playerApi(
+                    'PUT',
+                    `/me/player/volume?volume_percent=${Math.round(n)}`,
+                    undefined,
+                    { willStartPlaying: false }
+                );
                 return { ok: true, percent: Math.round(n) };
             }
             case 'spotify_list_playlists': {
@@ -211,10 +236,16 @@ export default class SpotifyToolProvider {
                 if (candidates.length === 0) throw new Error(`No playlist matching "${p.query}".`);
                 const exact = candidates.find((pl) => pl.name.toLowerCase() === lower);
                 const target = exact || candidates[0];
-                await auth.api('PUT', '/me/player/play', {
-                    body: { context_uri: target.uri },
-                });
+                await auth.playerApi(
+                    'PUT',
+                    '/me/player/play',
+                    { body: { context_uri: target.uri } },
+                    { willStartPlaying: true }
+                );
                 return { id: target.id, name: target.name };
+            }
+            case 'spotify_list_devices': {
+                return await auth.listDevices();
             }
         }
         throw new Error(`Unknown Spotify tool: ${name}`);

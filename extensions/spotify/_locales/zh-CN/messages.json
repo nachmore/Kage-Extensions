@@ -36,10 +36,10 @@
     "_source_hash": "260860647df2e4c3"
   },
   "result.help.description": {
-    "message": "play、queue、like、unlike、next、prev、vol、device、playlist",
+    "message": "试试：sp play <歌曲>、sp queue <歌曲>、sp like、sp next、sp vol 50、sp device、sp playlist <名称>",
     "description": "Result description listing available commands",
     "_machine_translated": true,
-    "_source_hash": "8b31d4e33332771c"
+    "_source_hash": "f1d75821b8d7ab50"
   },
   "result.play_query.label": {
     "message": "Spotify · 播放“{query}”",
@@ -168,10 +168,10 @@
     "_source_hash": "dcd23e45986f9bca"
   },
   "result.disconnect.description": {
-    "message": "清除你的令牌",
+    "message": "在这台电脑上退出你的 Spotify 账户",
     "description": "Description for sign out",
     "_machine_translated": true,
-    "_source_hash": "8953e3749997983d"
+    "_source_hash": "c711eb41e917238b"
   },
   "error.not_signed_in": {
     "message": "尚未登录 Spotify。输入 \"sp connect\" 进行登录。",
@@ -240,10 +240,10 @@
     "_source_hash": "21695f71faff6bf7"
   },
   "settings.description": {
-    "message": "显示正在播放的内容、控制播放，并运行诸如 \"sp like\" 或 \"sp play <track>\" 的快捷指令。使用 Spotify 的 PKCE 流程，通过一次性的 localhost 监听器完成认证——客户端密钥不会离开你的设备。",
+    "message": "查看正在播放、加入队列、喜欢当前曲目、跳过——全部都能在 Kage 启动器或聊天命令中完成。使用你自己的 Spotify 账户登录；密码永远不会离开你的浏览器。",
     "description": "Settings page description",
     "_machine_translated": true,
-    "_source_hash": "9f8a00aca11b1f67"
+    "_source_hash": "07ab0647eb5e6f94"
   },
   "settings.section.display": {
     "message": "显示",
@@ -270,10 +270,10 @@
     "_source_hash": "76c1ce92f5661830"
   },
   "settings.refresh_seconds.description": {
-    "message": "正在播放栏轮询 Spotify 的频率。数值越低，更新越及时，API 调用也会略多。",
+    "message": "Kage 向 Spotify 查询正在播放内容的频率。数值越小，状态栏更新越快，但请求 Spotify 也更频繁。默认为 15 秒。",
     "description": "Settings: refresh seconds description",
     "_machine_translated": true,
-    "_source_hash": "f2e9e332fda01695"
+    "_source_hash": "6465de9f91b4dda0"
   },
   "settings.trigger.label": {
     "message": "触发词",
@@ -294,10 +294,10 @@
     "_source_hash": "d0fcd903dec290c3"
   },
   "settings.app.intro_html": {
-    "message": "在 <a href=\"https://developer.spotify.com/dashboard\">developer.spotify.com/dashboard</a> 创建一个免费的 <strong>Spotify Developer</strong> 应用。将 <code>http://127.0.0.1/spotify/callback</code> 添加为重定向 URI（任意端口均可——Kage 会在登录时补上实际端口，Spotify 会按主机 + 路径进行匹配）。然后将下方的 <strong>Client ID</strong> 复制过来。",
+    "message": "Spotify 要求每个应用都注册自己的 <strong>Client ID</strong>。在 <a href=\"https://developer.spotify.com/dashboard\">developer.spotify.com/dashboard</a> 免费创建一个（点击 <em>Create app</em>，随意命名，勾选 <em>Web API</em>）。将 <code>http://127.0.0.1:8080/spotify/callback</code> 添加为 Redirect URI——端口任意，Spotify 只需要填一个。复制它给你的 Client ID 并粘贴到下方。",
     "description": "Settings: app setup instructions",
     "_machine_translated": true,
-    "_source_hash": "4b925a1e8d4fe58f"
+    "_source_hash": "177c4bb9f2055193"
   },
   "settings.client_id.label": {
     "message": "Client ID",
@@ -312,10 +312,10 @@
     "_source_hash": "00365c0104e05fb3"
   },
   "settings.client_id.description": {
-    "message": "仅本地存储；除 Spotify 外不会发送到任何地方。",
+    "message": "仅保存在这台电脑上。登录时发送给 Spotify，不会发送到其他任何地方。",
     "description": "Settings: Client ID description",
     "_machine_translated": true,
-    "_source_hash": "726633bc55ffbe83"
+    "_source_hash": "74280ec7c0552793"
   },
   "settings.save_client_id.label": {
     "message": "保存 Client ID",
@@ -330,22 +330,22 @@
     "_source_hash": "f358cdafb27f4748"
   },
   "settings.connection.connected": {
-    "message": "<strong>已连接</strong> — 播放控制已就绪。",
+    "message": "<strong>已登录。</strong>播放控制已就绪。",
     "description": "Settings: connection ready text",
     "_machine_translated": true,
-    "_source_hash": "6824068777a99688"
+    "_source_hash": "e0ab77ca56a0682c"
   },
   "settings.connection.not_connected": {
-    "message": "尚未连接。点击 <strong>连接</strong> 以授权。",
+    "message": "尚未登录。点击 <strong>连接</strong> 登录 Spotify。",
     "description": "Settings: not connected text",
     "_machine_translated": true,
-    "_source_hash": "7a248676d782c5cd"
+    "_source_hash": "210fcedbc5081420"
   },
   "settings.connection.no_client_id": {
-    "message": "请先保存 Client ID，再进行连接。",
+    "message": "请先在上方粘贴 Client ID，然后回到这里进行连接。",
     "description": "Settings: needs client ID first",
     "_machine_translated": true,
-    "_source_hash": "6e654060ef7b1a02"
+    "_source_hash": "3316be227daf1055"
   },
   "settings.connect.label_connect": {
     "message": "连接…",
@@ -366,10 +366,10 @@
     "_source_hash": "ccc6a1247a0bc31c"
   },
   "settings.disconnect.confirm": {
-    "message": "退出 Spotify 登录？再次使用播放快捷方式时需要重新授权。",
+    "message": "退出 Spotify 登录？你需要重新登录才能使用播放快捷方式。",
     "description": "Confirmation prompt before signing out",
     "_machine_translated": true,
-    "_source_hash": "a27426d3adcd7ad4"
+    "_source_hash": "9dd32ff7ac62f6bb"
   },
   "settings.validate.trigger_required": {
     "message": "触发词为必填项。",
@@ -418,5 +418,83 @@
     "description": "Status after a successful sign-out",
     "_machine_translated": true,
     "_source_hash": "64224f1b6f2851a7"
+  },
+  "error.no_devices": {
+    "message": "没有在线的 Spotify 设备。请先在手机、电脑或音箱上打开 Spotify，然后重试。",
+    "description": "Error when no Spotify Connect targets are visible",
+    "_machine_translated": true,
+    "_source_hash": "75e4fe1869d99e6e"
+  },
+  "error.pick_device": {
+    "message": "有多个 Spotify 设备在线（{names}）。输入 “sp device” 选择一个。",
+    "description": "Error when there are multiple devices and we don't know which to use",
+    "_machine_translated": true,
+    "_source_hash": "47fb0622fbcea4f4"
+  },
+  "error.device_offline": {
+    "message": "你保存的设备 “{name}” 当前离线。输入 “sp device” 另选一个。",
+    "description": "Error when saved preferred device is no longer reachable",
+    "_machine_translated": true,
+    "_source_hash": "a89789c54fcb37e5"
+  },
+  "error.no_active_device": {
+    "message": "无法连接 Spotify 设备。请在某处（手机、浏览器、音箱）打开 Spotify 后重试。",
+    "description": "Error when transfer-and-retry still fails",
+    "_machine_translated": true,
+    "_source_hash": "3a60400c28c7d034"
+  },
+  "error.premium_required": {
+    "message": "播放控制需要 Spotify Premium。免费账户仍可查看正在播放的内容。",
+    "description": "Error when the API rejects a control call for free-tier users",
+    "_machine_translated": true,
+    "_source_hash": "b0ce9682859a8a50"
+  },
+  "error.device_list_failed": {
+    "message": "无法获取你的 Spotify 设备。请稍后重试。",
+    "description": "Fallback when /me/player/devices throws",
+    "_machine_translated": true,
+    "_source_hash": "87bdd3bbb1df1643"
+  },
+  "result.device.list.loading_label": {
+    "message": "Spotify · 选择设备…",
+    "description": "Placeholder row while devices are being fetched",
+    "_machine_translated": true,
+    "_source_hash": "8f18b4fcacdb3f36"
+  },
+  "result.device.list.loading_description": {
+    "message": "正在查找所有可播放音乐的地方",
+    "description": "Description on the loading row",
+    "_machine_translated": true,
+    "_source_hash": "e6dd3724e39b3ac1"
+  },
+  "result.device.list.none_label": {
+    "message": "Spotify · 没有在线设备",
+    "description": "Row shown when /me/player/devices returns empty",
+    "_machine_translated": true,
+    "_source_hash": "71c30b51eaf3ee41"
+  },
+  "result.device.list.none_description": {
+    "message": "在手机、浏览器或音箱上打开 Spotify，它就会显示在这里",
+    "description": "Hint when no devices are available",
+    "_machine_translated": true,
+    "_source_hash": "f80c690726eca758"
+  },
+  "result.device.list.row_label": {
+    "message": "Spotify · {name}",
+    "description": "One row per available Spotify Connect device",
+    "_machine_translated": true,
+    "_source_hash": "a19993681ea8bbdf"
+  },
+  "result.device.list.active": {
+    "message": "正在播放",
+    "description": "Inline tag on the device that is currently active",
+    "_machine_translated": true,
+    "_source_hash": "0ddf701326b71d67"
+  },
+  "result.device.list.preferred": {
+    "message": "首选",
+    "description": "Inline tag on the user's previously-chosen device",
+    "_machine_translated": true,
+    "_source_hash": "f7da9a8829ce9a43"
   }
 }

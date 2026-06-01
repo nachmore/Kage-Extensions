@@ -47,7 +47,7 @@ export default class SpotifySettingsProvider {
                             type: 'number',
                             id: 'refresh_seconds',
                             label: t('settings.refresh_seconds.label'),
-                            default: 5,
+                            default: 15,
                             min: 2,
                             max: 60,
                             description: t('settings.refresh_seconds.description'),
