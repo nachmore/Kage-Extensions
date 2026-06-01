@@ -412,6 +412,36 @@ export async function listDevices() {
     return Array.isArray(resp?.devices) ? resp.devices : [];
 }
 
+/**
+ * Pick a target device when we have no saved preference. Returns
+ * null when there's no clear single best — caller should surface a
+ * picker.
+ *
+ * Heuristic in priority order:
+ *
+ *   1. Singleton — exactly one device, no choice to make.
+ *   2. Single Computer — Spotify's own desktop client always reports
+ *      `type: "Computer"` and uses the OS hostname for `name`. If
+ *      there's exactly ONE Computer-typed device in the list, we're
+ *      almost certainly the user's primary desktop — auto-pick. Fall
+ *      back to the picker if there are multiple computers (rare; a
+ *      developer machine + work machine signed into the same Spotify
+ *      account, etc.) so we don't surprise.
+ *
+ * What we deliberately don't do: read the OS hostname. The Kage
+ * sandbox doesn't expose it (and gating that on a new capability
+ * just to break the tie between "phone" and "this computer" would
+ * be heavy). Spotify's `type` is sufficient for the common case;
+ * the picker covers the long tail.
+ */
+function pickBestDeviceWithoutPrompt(devices) {
+    if (!Array.isArray(devices) || devices.length === 0) return null;
+    if (devices.length === 1) return devices[0];
+    const computers = devices.filter((d) => d.type === 'Computer');
+    if (computers.length === 1) return computers[0];
+    return null;
+}
+
 async function transferPlaybackTo(deviceId, play) {
     await api('PUT', '/me/player', {
         body: { device_ids: [deviceId], play: !!play },
@@ -467,8 +497,11 @@ export async function playerApi(method, path, opts = {}, recovery = {}) {
             err.lastDevice = pref;
             throw err;
         }
-        if (devices.length === 1) {
-            target = devices[0];
+        target = pickBestDeviceWithoutPrompt(devices);
+        if (target) {
+            // Save the auto-pick so the next recovery doesn't re-run
+            // the heuristic — and so the user can override it later
+            // via the picker if it guessed wrong.
             await setPreferredDevice(target);
         } else {
             const err = new Error('Multiple devices available; pick one first.');

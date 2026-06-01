@@ -223,10 +223,22 @@ export default class SpotifySearchProvider {
         try {
             await this._dispatch(id);
         } catch (e) {
-            this.log?.warn?.('Spotify action failed: ' + (e?.message || e));
+            // Multiple-devices is a special case: the user wants to
+            // pick, not read an error message. Re-route them into the
+            // device picker by replacing the launcher input with the
+            // bare `device` trigger. The picker's matchAsync then
+            // streams in a row per device. Once they pick, the
+            // device is saved as preferred and the next attempt at
+            // the original command works without prompting again.
+            if (e?.code === 'multiple_devices') {
+                const trigger = (this.config.trigger || 'sp').toLowerCase();
+                return { type: 'replace_input', value: `${trigger} device ` };
+            }
+            const wrapped = this._wrapPlayerError(e);
+            this.log?.warn?.('Spotify action failed: ' + (wrapped?.message || wrapped));
             return {
                 type: 'custom',
-                data: { error: e?.message || String(e) },
+                data: { error: wrapped?.message || String(wrapped) },
             };
         }
         return { type: 'custom', data: { ok: true } };
@@ -256,51 +268,47 @@ export default class SpotifySearchProvider {
             // success and the next refresh shows current state.
             return;
         }
-        try {
-            if (id === 'play')
-                return await auth.playerApi('PUT', '/me/player/play', undefined, {
-                    willStartPlaying: true,
-                });
-            if (id === 'pause')
-                return await auth.playerApi('PUT', '/me/player/pause', undefined, {
-                    willStartPlaying: false,
-                });
-            if (id === 'next') return await auth.playerApi('POST', '/me/player/next');
-            if (id === 'prev') return await auth.playerApi('POST', '/me/player/previous');
-            if (id === 'like') return await this._toggleLike(true);
-            if (id === 'unlike') return await this._toggleLike(false);
-            if (id.startsWith('vol:')) {
-                const n = parseInt(id.slice(4), 10);
-                return await auth.playerApi(
-                    'PUT',
-                    `/me/player/volume?volume_percent=${n}`,
-                    undefined,
-                    { willStartPlaying: false }
-                );
-            }
-            if (id.startsWith('play:')) {
-                const q = id.slice(5);
-                return await this._playSearch(q, false);
-            }
-            if (id.startsWith('queue:')) {
-                const q = id.slice(6);
-                return await this._playSearch(q, true);
-            }
-            if (id.startsWith('device:')) {
-                const name = id.slice(7);
-                return await this._transferToDevice(name);
-            }
-            if (id.startsWith('playlist:')) {
-                const name = id.slice(9);
-                return await this._playPlaylist(name);
-            }
-        } catch (e) {
-            // Translate the playerApi recovery codes into friendly
-            // messages. Anything else (auth, malformed body, etc.)
-            // re-throws with the original Spotify text. Keeps the
-            // floating window's status banner readable instead of
-            // showing 404 JSON to the user.
-            throw this._wrapPlayerError(e);
+        // Errors propagate up to `execute()`, which routes
+        // multiple_devices into the device picker via replace_input
+        // and wraps everything else with `_wrapPlayerError` for a
+        // friendly localised message. Keeping the try/catch here
+        // would just funnel through the same logic less cleanly.
+        if (id === 'play')
+            return await auth.playerApi('PUT', '/me/player/play', undefined, {
+                willStartPlaying: true,
+            });
+        if (id === 'pause')
+            return await auth.playerApi('PUT', '/me/player/pause', undefined, {
+                willStartPlaying: false,
+            });
+        if (id === 'next') return await auth.playerApi('POST', '/me/player/next');
+        if (id === 'prev') return await auth.playerApi('POST', '/me/player/previous');
+        if (id === 'like') return await this._toggleLike(true);
+        if (id === 'unlike') return await this._toggleLike(false);
+        if (id.startsWith('vol:')) {
+            const n = parseInt(id.slice(4), 10);
+            return await auth.playerApi(
+                'PUT',
+                `/me/player/volume?volume_percent=${n}`,
+                undefined,
+                { willStartPlaying: false }
+            );
+        }
+        if (id.startsWith('play:')) {
+            const q = id.slice(5);
+            return await this._playSearch(q, false);
+        }
+        if (id.startsWith('queue:')) {
+            const q = id.slice(6);
+            return await this._playSearch(q, true);
+        }
+        if (id.startsWith('device:')) {
+            const name = id.slice(7);
+            return await this._transferToDevice(name);
+        }
+        if (id.startsWith('playlist:')) {
+            const name = id.slice(9);
+            return await this._playPlaylist(name);
         }
     }
 
