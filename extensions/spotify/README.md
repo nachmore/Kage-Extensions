@@ -44,9 +44,14 @@ into the settings:
 2. Set:
    - **App name**: Kage Spotify (or anything)
    - **App description**: Personal Kage integration
-   - **Redirect URIs**: `http://127.0.0.1/spotify/callback` — leave the
-     port off; Spotify's docs allow loopback URIs to vary the port at
-     auth time.
+   - **Redirect URIs**: `http://127.0.0.1:8080/spotify/callback` — the
+     port is required at registration. Per [Spotify's redirect-URI
+     rules](https://developer.spotify.com/documentation/web-api/concepts/redirect_uri)
+     the form refuses port-less loopback entries. Pick any port you
+     like (8080 is just an example); Spotify treats `127.0.0.1` as
+     the IETF-blessed loopback address and lets the actual runtime
+     port differ from the registered one, so Kage's ephemeral
+     listener still works regardless of what number you typed.
    - Tick the box for **Web API**.
 3. Save. Copy the **Client ID**.
 4. In Kage → Settings → Extensions → Spotify, paste the Client ID and
