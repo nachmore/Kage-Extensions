@@ -13,9 +13,21 @@
     "message": "Track app usage, context switches, and focus streaks. Get daily/weekly/monthly reports with AI insights.",
     "description": "Extension description"
   },
-  "result.loading.label": {
-    "message": "📊 Loading {period} report...",
-    "description": "Label shown while activity report loads"
+  "result.loading.today": {
+    "message": "📊 Loading today's report…",
+    "description": "Label shown while today's activity report loads"
+  },
+  "result.loading.week": {
+    "message": "📊 Loading this week's report…",
+    "description": "Label shown while this week's activity report loads"
+  },
+  "result.loading.month": {
+    "message": "📊 Loading this month's report…",
+    "description": "Label shown while this month's activity report loads"
+  },
+  "result.loading.all": {
+    "message": "📊 Loading all-time report…",
+    "description": "Label shown while the all-time activity report loads"
   },
   "result.loading.description": {
     "message": "Fetching activity data",

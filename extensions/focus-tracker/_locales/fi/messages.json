@@ -17,12 +17,6 @@
     "_machine_translated": true,
     "_source_hash": "249b504d57430c6f"
   },
-  "result.loading.label": {
-    "message": "📊 Ladataan raporttia: {period}...",
-    "description": "Label shown while activity report loads",
-    "_machine_translated": true,
-    "_source_hash": "a004240e6f3fcaf3"
-  },
   "result.loading.description": {
     "message": "Haetaan aktiivisuustietoja",
     "description": "Description shown while activity report loads",

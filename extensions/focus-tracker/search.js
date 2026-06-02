@@ -42,11 +42,15 @@ export default class FocusTrackerSearchProvider {
             return this._formatReport(cached.data, parsed.period);
         }
 
-        // Valid trigger but no cache yet — show placeholder so Enter doesn't send to agent
+        // Valid trigger but no cache yet — show placeholder so Enter doesn't send to agent.
+        // Period-specific keys read as natural English ("Loading today's report…")
+        // instead of splicing the raw period token ("Loading today report…").
+        // i18n-keys: result.loading.today, result.loading.week, result.loading.month, result.loading.all
+        const loadingKey = `result.loading.${parsed.period}`;
         return [{
             id: `focus-loading-${parsed.period}`,
             type: 'focus-tracker',
-            label: this.t('result.loading.label', { period: parsed.period }),
+            label: this.t(loadingKey),
             description: this.t('result.loading.description'),
             icon: '📊',
             score: 86,

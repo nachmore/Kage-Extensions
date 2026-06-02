@@ -17,12 +17,6 @@
     "_machine_translated": true,
     "_source_hash": "249b504d57430c6f"
   },
-  "result.loading.label": {
-    "message": "📊 {period} রিপোর্ট লোড হচ্ছে...",
-    "description": "Label shown while activity report loads",
-    "_machine_translated": true,
-    "_source_hash": "a004240e6f3fcaf3"
-  },
   "result.loading.description": {
     "message": "অ্যাক্টিভিটি ডেটা আনা হচ্ছে",
     "description": "Description shown while activity report loads",
