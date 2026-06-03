@@ -65,36 +65,6 @@
     "_machine_translated": true,
     "_source_hash": "83b23c71c9d66544"
   },
-  "render.summary.title": {
-    "message": "{period}: sledováno {time}",
-    "description": "Summary title in inline render",
-    "_machine_translated": true,
-    "_source_hash": "dae73df6d0d671c5"
-  },
-  "render.summary.meta": {
-    "message": "{switches} přepnutí · nejlepší souvislý čas {streak} min ({app}) · {appCount} aplikací",
-    "description": "Summary meta line in inline render",
-    "_machine_translated": true,
-    "_source_hash": "59daec5b0e1091b0"
-  },
-  "render.app.sessions": {
-    "message": "{count} relací",
-    "description": "App sessions count in inline render",
-    "_machine_translated": true,
-    "_source_hash": "3cec6bece20a1f90"
-  },
-  "render.site.parent_pct": {
-    "message": "{pct} % z {app}",
-    "description": "Site percentage of parent in inline render",
-    "_machine_translated": true,
-    "_source_hash": "6e32b7767a13f748"
-  },
-  "render.insight.text": {
-    "message": "Získat postřehy AI o soustředění",
-    "description": "Inline insight text",
-    "_machine_translated": true,
-    "_source_hash": "d4fb10c1a8a26281"
-  },
   "settings.description": {
     "message": "Sledujte používání aplikací, přepínání kontextu a souvislé časy soustředění. Pro zobrazení reportů zadejte své spouštěcí klíčové slovo.",
     "description": "Settings page description",

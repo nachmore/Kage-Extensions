@@ -65,36 +65,6 @@
     "_machine_translated": true,
     "_source_hash": "83b23c71c9d66544"
   },
-  "render.summary.title": {
-    "message": "{period}: {time} καταγεγραμμένα",
-    "description": "Summary title in inline render",
-    "_machine_translated": true,
-    "_source_hash": "dae73df6d0d671c5"
-  },
-  "render.summary.meta": {
-    "message": "{switches} εναλλαγές · καλύτερο σερί {streak} λ. ({app}) · {appCount} εφαρμογές",
-    "description": "Summary meta line in inline render",
-    "_machine_translated": true,
-    "_source_hash": "59daec5b0e1091b0"
-  },
-  "render.app.sessions": {
-    "message": "{count} συνεδρίες",
-    "description": "App sessions count in inline render",
-    "_machine_translated": true,
-    "_source_hash": "3cec6bece20a1f90"
-  },
-  "render.site.parent_pct": {
-    "message": "{pct}% του {app}",
-    "description": "Site percentage of parent in inline render",
-    "_machine_translated": true,
-    "_source_hash": "6e32b7767a13f748"
-  },
-  "render.insight.text": {
-    "message": "Λάβετε πληροφορίες εστίασης από το AI",
-    "description": "Inline insight text",
-    "_machine_translated": true,
-    "_source_hash": "d4fb10c1a8a26281"
-  },
   "settings.description": {
     "message": "Παρακολουθήστε τη χρήση εφαρμογών, τις εναλλαγές πλαισίου και τα σερί εστίασης. Πληκτρολογήστε τη λέξη-κλειδί ενεργοποίησης για να δείτε αναφορές.",
     "description": "Settings page description",

@@ -17,6 +17,10 @@ export default class FocusTrackerSearchProvider {
         this.t = context.i18n?.t?.bind(context.i18n) || ((k) => k);
         this._cache = new Map();
         this._started = false;
+        // process_name (lowercased) -> icon data URI, or null when the host
+        // has no icon for it. Persists for the session so the report rows
+        // show real app logos instead of the emoji fallback.
+        this._iconCache = new Map();
 
         // Auto-start tracker if configured
         if (this.config.auto_start !== false) {
@@ -82,6 +86,10 @@ export default class FocusTrackerSearchProvider {
                 }).catch(() => {});
             }
 
+            // Resolve real app logos for the top apps before formatting, so
+            // rows render with the actual icon instead of an emoji fallback.
+            await this._ensureIcons(report);
+
             return this._formatReport(report, parsed.period);
         } catch (e) {
             console.warn('[FocusTracker] Report failed:', e);
@@ -117,28 +125,9 @@ export default class FocusTrackerSearchProvider {
         return null;
     }
 
-    renderResult(result, element) {
-        if (result.data?.type === 'summary') {
-            element.innerHTML = this._renderSummaryHtml(result.data);
-            return true;
-        }
-        if (result.data?.type === 'app-row') {
-            element.innerHTML = this._renderAppRowHtml(result.data);
-            return true;
-        }
-        if (result.data?.type === 'site-row') {
-            element.innerHTML = this._renderSiteRowHtml(result.data);
-            return true;
-        }
-        if (result.data?.type === 'insight') {
-            element.innerHTML = this._renderInsightHtml(result.data);
-            return true;
-        }
-        return false;
-    }
-
     destroy() {
         this._cache.clear();
+        this._iconCache.clear();
     }
 
     // --- Private ---
@@ -177,6 +166,33 @@ export default class FocusTrackerSearchProvider {
         } catch (e) {
             console.warn('[FocusTracker] Failed to start tracker:', e);
         }
+    }
+
+    // Resolve real app logos for the report's top apps via the host's
+    // by-process-name icon lookup, caching each result (including misses)
+    // for the session. get_app_icon returns raw base64, so we normalise to
+    // a data URI — the floating renderer only treats `icon` as an image
+    // when it starts with "data:".
+    async _ensureIcons(report) {
+        const names = [];
+        for (const app of (report.apps || []).slice(0, 5)) {
+            const key = app.process_name.toLowerCase();
+            if (!this._iconCache.has(key)) names.push(key);
+        }
+        if (names.length === 0) return;
+        await Promise.all(names.map(async (key) => {
+            try {
+                const icon = await this.invoke('get_app_icon', { processName: key });
+                if (icon) {
+                    this._iconCache.set(key, icon.startsWith('data:') ? icon : 'data:image/png;base64,' + icon);
+                } else {
+                    this._iconCache.set(key, null);
+                }
+            } catch (e) {
+                console.warn('[FocusTracker] Icon fetch failed for ' + key + ':', e);
+                this._iconCache.set(key, null);
+            }
+        }));
     }
 
     _formatReport(report, period) {
@@ -222,7 +238,7 @@ export default class FocusTrackerSearchProvider {
                     type: 'focus-tracker',
                     label: `${app.display_name}: ${appTime} (${pct}%)`,
                     description: this.t('result.app.description', { count: app.switches_to }),
-                    icon: _appEmoji(app.process_name),
+                    icon: this._iconCache.get(app.process_name.toLowerCase()) || _appEmoji(app.process_name),
                     // Use high base score minus a small fraction per app to maintain order
                     // Sites use the same base minus smaller fractions to stay under their parent
                     score: 85 - (i * 0.01),
@@ -249,7 +265,7 @@ export default class FocusTrackerSearchProvider {
                             type: 'focus-tracker',
                             label: `  ${site.site}: ${siteTime}`,
                             description: this.t('result.site.description', { pct: sitePct, app: app.display_name }),
-                            icon: '🔹',
+                            icon: '🌐',
                             score: 85 - (i * 0.01) - ((j + 1) * 0.001),
                             tooltip: `${site.site}: ${siteTime} (${sitePct}% of ${app.display_name})`,
                             data: {
@@ -289,53 +305,6 @@ export default class FocusTrackerSearchProvider {
         }
 
         return results;
-    }
-
-    _renderSummaryHtml(data) {
-        return `
-            <div class="focus-result focus-summary">
-                <span class="focus-icon">📊</span>
-                <div class="focus-summary-content">
-                    <div class="focus-title">${_esc(this.t('render.summary.title', { period: data.period, time: data.timeStr }))}</div>
-                    <div class="focus-meta">${_esc(this.t('render.summary.meta', { switches: data.switches, streak: data.streakMin, app: data.streakApp, appCount: data.appCount }))}</div>
-                </div>
-            </div>
-        `;
-    }
-
-    _renderAppRowHtml(data) {
-        return `
-            <div class="focus-result focus-app-row">
-                <div class="focus-bar-bg"><div class="focus-bar-fill" style="width:${Math.min(data.pct, 100)}%"></div></div>
-                <div class="focus-app-info">
-                    <span class="focus-app-name">${_esc(data.name)}</span>
-                    <span class="focus-app-time">${_esc(data.time)} (${data.pct}%)</span>
-                    <span class="focus-app-sessions">${_esc(this.t('render.app.sessions', { count: data.sessions }))}</span>
-                </div>
-            </div>
-        `;
-    }
-
-    _renderSiteRowHtml(data) {
-        return `
-            <div class="focus-result focus-site-row">
-                <div class="focus-bar-bg focus-bar-indent"><div class="focus-bar-fill focus-bar-site" style="width:${Math.min(data.pct, 100)}%"></div></div>
-                <div class="focus-app-info">
-                    <span class="focus-app-name focus-site-name">🔹 ${_esc(data.site)}</span>
-                    <span class="focus-app-time">${_esc(data.time)}</span>
-                    <span class="focus-app-sessions">${_esc(this.t('render.site.parent_pct', { pct: data.pct, app: data.parentApp }))}</span>
-                </div>
-            </div>
-        `;
-    }
-
-    _renderInsightHtml(data) {
-        return `
-            <div class="focus-result focus-insight">
-                <span class="focus-icon">💡</span>
-                <span class="focus-insight-text">${_esc(this.t('render.insight.text'))}</span>
-            </div>
-        `;
     }
 
     _getComparisonPeriod(period) {
@@ -382,34 +351,6 @@ export default class FocusTrackerSearchProvider {
         return text;
     }
 
-    _buildSummaryMarkdown(data) {
-        const r = data.report;
-        const trigger = (this.config.trigger ?? 'focus').trim();
-        let md = `## 📊 ${data.period}\n\n`;
-        md += `**${data.timeStr}** tracked · **${data.switches}** context switches · **${data.streakMin}m** best streak (${data.streakApp}) · **${data.appCount}** apps\n\n`;
-
-        if (r.apps && r.apps.length > 0) {
-            md += `| App | Time | % |\n|-----|------|---|\n`;
-            for (const app of r.apps.slice(0, 10)) {
-                const t = app.seconds >= 3600 ? `${(app.seconds/3600).toFixed(1)}h` : `${Math.round(app.seconds/60)}m`;
-                md += `| ${app.display_name} | ${t} | ${app.percentage.toFixed(0)}% |\n`;
-                if (app.sites) {
-                    for (const site of app.sites.slice(0, 3)) {
-                        const st = site.seconds >= 3600 ? `${(site.seconds/3600).toFixed(1)}h` : `${Math.round(site.seconds/60)}m`;
-                        md += `| · ${site.site} | ${st} | ${site.percentage.toFixed(0)}% of ${app.display_name} |\n`;
-                    }
-                }
-            }
-        }
-
-        md += `\n---\n`;
-        md += `Try: \`${trigger} week\` · \`${trigger} month\` · \`${trigger} all\``;
-        return md;
-    }
-}
-
-function _esc(s) {
-    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
 function _appEmoji(processName) {

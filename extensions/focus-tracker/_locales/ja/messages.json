@@ -65,36 +65,6 @@
     "_machine_translated": true,
     "_source_hash": "83b23c71c9d66544"
   },
-  "render.summary.title": {
-    "message": "{period}: {time}記録",
-    "description": "Summary title in inline render",
-    "_machine_translated": true,
-    "_source_hash": "dae73df6d0d671c5"
-  },
-  "render.summary.meta": {
-    "message": "{switches}回の切り替え · 最長集中{streak}分 ({app}) · {appCount}アプリ",
-    "description": "Summary meta line in inline render",
-    "_machine_translated": true,
-    "_source_hash": "59daec5b0e1091b0"
-  },
-  "render.app.sessions": {
-    "message": "{count}セッション",
-    "description": "App sessions count in inline render",
-    "_machine_translated": true,
-    "_source_hash": "3cec6bece20a1f90"
-  },
-  "render.site.parent_pct": {
-    "message": "{app}の{pct}%",
-    "description": "Site percentage of parent in inline render",
-    "_machine_translated": true,
-    "_source_hash": "6e32b7767a13f748"
-  },
-  "render.insight.text": {
-    "message": "AI による集中力の分析を取得",
-    "description": "Inline insight text",
-    "_machine_translated": true,
-    "_source_hash": "d4fb10c1a8a26281"
-  },
   "settings.description": {
     "message": "アプリの使用状況、コンテキストの切り替え、集中の連続時間を記録します。トリガーキーワードを入力するとレポートが表示されます。",
     "description": "Settings page description",

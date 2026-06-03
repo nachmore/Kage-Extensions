@@ -65,36 +65,6 @@
     "_machine_translated": true,
     "_source_hash": "83b23c71c9d66544"
   },
-  "render.summary.title": {
-    "message": "{period}：已记录 {time}",
-    "description": "Summary title in inline render",
-    "_machine_translated": true,
-    "_source_hash": "dae73df6d0d671c5"
-  },
-  "render.summary.meta": {
-    "message": "{switches} 次切换 · 最长专注 {streak} 分钟（{app}）· {appCount} 个应用",
-    "description": "Summary meta line in inline render",
-    "_machine_translated": true,
-    "_source_hash": "59daec5b0e1091b0"
-  },
-  "render.app.sessions": {
-    "message": "{count} 个会话",
-    "description": "App sessions count in inline render",
-    "_machine_translated": true,
-    "_source_hash": "3cec6bece20a1f90"
-  },
-  "render.site.parent_pct": {
-    "message": "占 {app} 的 {pct}%",
-    "description": "Site percentage of parent in inline render",
-    "_machine_translated": true,
-    "_source_hash": "6e32b7767a13f748"
-  },
-  "render.insight.text": {
-    "message": "获取 AI 专注洞察",
-    "description": "Inline insight text",
-    "_machine_translated": true,
-    "_source_hash": "d4fb10c1a8a26281"
-  },
   "settings.description": {
     "message": "追踪应用使用情况、上下文切换和专注时长。输入触发关键词查看报告。",
     "description": "Settings page description",

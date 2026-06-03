@@ -65,36 +65,6 @@
     "_machine_translated": true,
     "_source_hash": "83b23c71c9d66544"
   },
-  "render.summary.title": {
-    "message": "{period}: {time} erfasst",
-    "description": "Summary title in inline render",
-    "_machine_translated": true,
-    "_source_hash": "dae73df6d0d671c5"
-  },
-  "render.summary.meta": {
-    "message": "{switches} Wechsel · {streak} Min. längste Phase ({app}) · {appCount} Apps",
-    "description": "Summary meta line in inline render",
-    "_machine_translated": true,
-    "_source_hash": "59daec5b0e1091b0"
-  },
-  "render.app.sessions": {
-    "message": "{count} Sitzungen",
-    "description": "App sessions count in inline render",
-    "_machine_translated": true,
-    "_source_hash": "3cec6bece20a1f90"
-  },
-  "render.site.parent_pct": {
-    "message": "{pct}% von {app}",
-    "description": "Site percentage of parent in inline render",
-    "_machine_translated": true,
-    "_source_hash": "6e32b7767a13f748"
-  },
-  "render.insight.text": {
-    "message": "KI-Fokus-Einblicke abrufen",
-    "description": "Inline insight text",
-    "_machine_translated": true,
-    "_source_hash": "d4fb10c1a8a26281"
-  },
   "settings.description": {
     "message": "App-Nutzung, Kontextwechsel und Fokus-Phasen erfassen. Geben Sie Ihr Auslöse-Schlüsselwort ein, um Berichte anzuzeigen.",
     "description": "Settings page description",

@@ -1,13 +1,14 @@
 {
   "id": "focus-tracker",
   "name": "__MSG_manifest.name__",
-  "version": "1.3.2",
+  "version": "1.4.0",
   "type": "extension",
   "description": "__MSG_manifest.description__",
   "icon": "📊",
   "author": "kage",
   "permissions": [
-    "activity"
+    "activity",
+    "windows"
   ],
   "config": {
     "enabled": {
@@ -41,10 +42,7 @@
   },
   "contributes": {
     "searchProvider": "./search.js",
-    "settingsProvider": "./settings.js",
-    "css": [
-      "./styles.css"
-    ]
+    "settingsProvider": "./settings.js"
   },
   "tags": [
     "focus",
