@@ -19,6 +19,29 @@
 const SPOTIFY_AUTH_BASE = 'https://accounts.spotify.com';
 const SPOTIFY_API_BASE = 'https://api.spotify.com/v1';
 
+// Hard ceiling on every Spotify network call. Without it, a bare
+// `fetch()` against an unreachable host blocks on the OS DNS/TCP-connect
+// timeout — observed in the field at 5–32s — which then trips the host's
+// 5s slow-render guard and 10s renderWidget RPC timeout, eventually
+// tripping the widget circuit breaker. 4s sits comfortably under the 5s
+// slow-render threshold, so the FIRST failed poll returns before the
+// host even classifies it as slow. The happy path returns in well under
+// a second, so this timeout never fires when Spotify is reachable.
+const FETCH_TIMEOUT_MS = 4000;
+
+/**
+ * `fetch` with a hard timeout. Aborts via `AbortSignal.timeout`, so a
+ * hung connect can't outlive `FETCH_TIMEOUT_MS`. Composes with any
+ * caller-supplied `signal` so existing abort semantics still work.
+ */
+async function fetchWithTimeout(url, init = {}) {
+    const timeoutSignal = AbortSignal.timeout(FETCH_TIMEOUT_MS);
+    const signal = init.signal
+        ? AbortSignal.any([init.signal, timeoutSignal])
+        : timeoutSignal;
+    return fetch(url, { ...init, signal });
+}
+
 const SCOPES = [
     'user-read-playback-state',
     'user-read-currently-playing',
@@ -227,7 +250,7 @@ export async function startSignIn() {
         client_id: clientId,
         code_verifier: verifier,
     });
-    const tokenResp = await fetch(`${SPOTIFY_AUTH_BASE}/api/token`, {
+    const tokenResp = await fetchWithTimeout(`${SPOTIFY_AUTH_BASE}/api/token`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: body.toString(),
@@ -264,7 +287,7 @@ async function refreshAccessToken() {
         refresh_token: creds.refresh_token,
         client_id: clientId,
     });
-    const resp = await fetch(`${SPOTIFY_AUTH_BASE}/api/token`, {
+    const resp = await fetchWithTimeout(`${SPOTIFY_AUTH_BASE}/api/token`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: body.toString(),
@@ -328,14 +351,14 @@ export async function api(method, path, opts = {}) {
             headers['Content-Type'] = 'application/json';
         }
     }
-    const resp = await fetch(url, init);
+    const resp = await fetchWithTimeout(url, init);
     if (resp.status === 401) {
         // Access token expired between getAccessToken and the actual
         // request — refresh once and try again.
         _cachedToken = null;
         const fresh = await refreshAccessToken();
         headers.Authorization = `Bearer ${fresh}`;
-        const retry = await fetch(url, init);
+        const retry = await fetchWithTimeout(url, init);
         return await parseSpotifyResponse(retry);
     }
     return await parseSpotifyResponse(resp);

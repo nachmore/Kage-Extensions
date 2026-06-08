@@ -50,6 +50,11 @@ export default class SpotifyNowPlayingWidget {
 
     async render() {
         if (!this.config.show_now_playing_bar) return null;
+        // Fail fast when the browser knows it's offline — skip the network
+        // attempt entirely rather than burning a connect timeout. A false
+        // `onLine` (captive portal, VPN flap) just means the api() call
+        // below times out via fetchWithTimeout, which is still fast.
+        if (typeof navigator !== 'undefined' && navigator.onLine === false) return null;
         if (!(await auth.isConnected())) return null;
 
         let state;
