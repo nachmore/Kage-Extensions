@@ -92,11 +92,11 @@ export default class BookmarksSearchProvider {
         }
 
         // bm <q>  — fuzzy-match. Async for actual disk read.
-        const query = rest.trim();
+        const q = rest.trim();
         return [{
             id: 'bm:loading', type: 'bookmarks',
-            label: query
-                ? this.t('result.list.label_query', { query })
+            label: q
+                ? this.t('result.list.label_query', { query: q })
                 : this.t('result.list.label_all'),
             description: this.t('result.list.loading'),
             icon: '🔖', score: 50, data: { pending: true },
