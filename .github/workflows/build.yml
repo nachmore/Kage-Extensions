@@ -84,6 +84,12 @@ jobs:
                   HEAD_SHA: ${{ steps.diff.outputs.head }}
               run: npm run check:bundle
 
+            # Test-presence gate: every code-contributing extension must ship
+            # tests (or carry a declared exemption). Runs against all
+            # extensions — it's just file-existence + a manifest read.
+            - name: Test presence
+              run: npm run check:tests
+
     test:
         # Functional unit tests for the extensions themselves. Fast (no
         # Worker / no host), so we run the whole suite every time rather
