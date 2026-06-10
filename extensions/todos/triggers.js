@@ -4,6 +4,7 @@
 export default class TodosTriggerProvider {
     initialize(context) {
         this.invoke = context.invoke;
+        this.log = context.log;
         this.t = context.i18n?.t?.bind(context.i18n) || ((k) => k);
         this._interval = null;
         this._lastNotified = new Set();
@@ -20,7 +21,8 @@ export default class TodosTriggerProvider {
             if (!this.invoke) return;
             const raw = await this.invoke('load_extension_data', { key: 'kage-todos' });
             this._todos = raw ? JSON.parse(raw) : [];
-        } catch {
+        } catch (e) {
+            this.log?.warn?.('todos: failed to load todo data: ' + (e?.message || e));
             this._todos = [];
         }
     }
@@ -72,12 +74,16 @@ export default class TodosTriggerProvider {
                 this._lastNotified.add('all_complete');
                 this._emitSignal('todos:all_complete', { total: todos.length });
             }
-        } catch {}
+        } catch (e) {
+            this.log?.warn?.('todos: due-item check failed: ' + (e?.message || e));
+        }
     }
 
     _emitSignal(name, data) {
         if (!this.invoke) return;
-        this.invoke('emit_automation_signal', { name, data }).catch(() => {});
+        this.invoke('emit_automation_signal', { name, data }).catch((e) => {
+            this.log?.warn?.(`todos: failed to emit signal '${name}': ` + (e?.message || e));
+        });
     }
 
     destroy() {

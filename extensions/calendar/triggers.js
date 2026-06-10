@@ -6,6 +6,7 @@ import { initCache, getEvents } from './cache.js';
 export default class CalendarTriggerProvider {
     initialize(context) {
         this.invoke = context.invoke;
+        this.log = context.log;
         initCache(context.invoke);
         this._interval = null;
         this._lastNotified = new Set();
@@ -59,12 +60,16 @@ export default class CalendarTriggerProvider {
             }
             // Clean old entries (older than 1 hour)
             if (this._lastNotified.size > 100) this._lastNotified.clear();
-        } catch {}
+        } catch (e) {
+            this.log?.warn?.('calendar: meeting check failed: ' + (e?.message || e));
+        }
     }
 
     _emitSignal(name, data) {
         if (!this.invoke) return;
-        this.invoke('emit_automation_signal', { name, data }).catch(() => {});
+        this.invoke('emit_automation_signal', { name, data }).catch((e) => {
+            this.log?.warn?.(`calendar: failed to emit signal '${name}': ` + (e?.message || e));
+        });
     }
 
     destroy() {

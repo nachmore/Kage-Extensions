@@ -7,6 +7,7 @@ import { initCache, getEvents } from './cache.js';
 export default class CalendarSearchProvider {
     async initialize(context) {
         this._invoke = context.invoke;
+        this.log = context.log;
         initCache(context.invoke);
         this._config = context.config || {};
         this.t = context.i18n?.t?.bind(context.i18n) || ((k) => k);
@@ -108,7 +109,9 @@ export default class CalendarSearchProvider {
         // this returns a display action synchronously so the floating
         // window shows the formatted info immediately.
         if (e.online_url && this._invoke) {
-            this._invoke('open_url', { url: e.online_url }).catch(() => {});
+            this._invoke('open_url', { url: e.online_url }).catch((err) => {
+                this.log?.warn?.('calendar: failed to open meeting URL: ' + (err?.message || err));
+            });
         }
         return { type: 'display', value: info };
     }

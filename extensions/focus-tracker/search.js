@@ -14,6 +14,7 @@ export default class FocusTrackerSearchProvider {
     initialize(context) {
         this.config = context.config || {};
         this.invoke = context.invoke;
+        this.log = context.log;
         this.t = context.i18n?.t?.bind(context.i18n) || ((k) => k);
         this._cache = new Map();
         this._started = false;
@@ -83,7 +84,9 @@ export default class FocusTrackerSearchProvider {
             if (compPeriod && !this._cache.has(compPeriod)) {
                 this.invoke('get_activity_report', { period: compPeriod }).then(compReport => {
                     this._cache.set(compPeriod, { data: compReport, time: Date.now() });
-                }).catch(() => {});
+                }).catch((e) => {
+                    this.log?.debug?.(`focus-tracker: comparison pre-fetch for '${compPeriod}' failed: ` + (e?.message || e));
+                });
             }
 
             // Resolve real app logos for the top apps before formatting, so
