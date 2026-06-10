@@ -21,7 +21,7 @@ export default class MathSearchProvider {
     }
 
     async match(query) {
-        const mathResult = await evaluateMath(this._runSandboxed, query, this.config.precision ?? 2);
+        const mathResult = await evaluateMath(this._runSandboxed, query, this.config.precision ?? 0);
         if (!mathResult) return [];
 
         let display = mathResult.display;
