@@ -84,10 +84,25 @@ jobs:
                   HEAD_SHA: ${{ steps.diff.outputs.head }}
               run: npm run check:bundle
 
+    test:
+        # Functional unit tests for the extensions themselves. Fast (no
+        # Worker / no host), so we run the whole suite every time rather
+        # than scoping to changed extensions.
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  cache: npm
+            - run: npm ci
+            - name: Run extension test suites
+              run: npm test
+
     build:
         # Only build the catalog + deploy on push to main. PRs run validate-only.
         if: github.event_name != 'pull_request'
-        needs: validate
+        needs: [validate, test]
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4

@@ -12,9 +12,13 @@
     "check:i18n": "node scripts/check-i18n.mjs",
     "check:bundle": "node scripts/check-bundle.mjs",
     "check:host-sync": "node scripts/check-host-sync.mjs",
-    "check:all": "npm run validate && npm run check:permissions && npm run check:security && npm run check:i18n && npm run check:bundle"
+    "check:all": "npm run validate && npm run check:permissions && npm run check:security && npm run check:i18n && npm run check:bundle",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "devDependencies": {
-    "archiver": "^7.0.1"
+    "archiver": "^7.0.1",
+    "mathjs": "^15.2.0",
+    "vitest": "^4.1.8"
   }
 }
