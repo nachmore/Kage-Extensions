@@ -94,7 +94,25 @@ jobs:
         # Functional unit tests for the extensions themselves. Fast (no
         # Worker / no host), so we run the whole suite every time rather
         # than scoping to changed extensions.
+        #
+        # Run under three timezones. Several extensions do date math
+        # (calendar next-meeting, todos due dates): code that does local
+        # arithmetic but formats/compares via toISOString() (UTC) only
+        # diverges when the local date != the UTC date, and the direction
+        # depends on the offset sign. UTC is the case where the bug HIDES
+        # (local == UTC); the value is in the off-UTC zones, one on each
+        # side — behind-UTC (America/Los_Angeles) shifts the date forward,
+        # ahead-of-UTC (Asia/Tokyo) shifts it back. The date tests pin
+        # their own clock (vi.setSystemTime) so they fail deterministically
+        # regardless of when CI runs; this matrix is defense-in-depth that
+        # also catches NEW date code written without a frozen clock.
         runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+            matrix:
+                tz: [UTC, America/Los_Angeles, Asia/Tokyo]
+        env:
+            TZ: ${{ matrix.tz }}
         steps:
             - uses: actions/checkout@v4
             - uses: actions/setup-node@v4
@@ -102,7 +120,7 @@ jobs:
                   node-version: 20
                   cache: npm
             - run: npm ci
-            - name: Run extension test suites
+            - name: Run extension test suites (TZ=${{ matrix.tz }})
               run: npm test
 
     build:

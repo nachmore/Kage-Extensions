@@ -89,6 +89,52 @@ describe('CalendarSearchProvider — _resolveDate', () => {
     });
 });
 
+describe('CalendarSearchProvider — _resolveDate across midnight boundaries', () => {
+    // Deterministic timezone-bug guard. _resolveDate does its arithmetic
+    // in local time; if it formats via toISOString() (UTC) instead of
+    // local, "today" returns the wrong calendar day whenever the local
+    // date != the UTC date. We pin the clock to two instants that straddle
+    // midnight in opposite directions, then assert the round-trip
+    // invariant: _resolveDate('today') === the LOCAL date of `now`.
+    //
+    // Which instant trips the bug depends on the process timezone (set by
+    // the CI matrix): the early-UTC instant is "yesterday" in behind-UTC
+    // zones (America/Los_Angeles), the late-UTC instant is "tomorrow" in
+    // ahead-of-UTC zones (Asia/Tokyo). In UTC neither trips it — that's the
+    // case where this class of bug is invisible, which is exactly why the
+    // matrix runs off-UTC zones too. Freezing the clock makes the failure
+    // deterministic within each zone, independent of when CI runs.
+    const localYmd = (d) =>
+        `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
+    const INSTANTS = [
+        '2026-06-15T06:30:00Z', // behind-UTC: previous local day
+        '2026-06-15T20:30:00Z', // ahead-of-UTC: next local day
+    ];
+
+    afterEach(() => {
+        vi.useRealTimers();
+    });
+
+    for (const iso of INSTANTS) {
+        it(`'today' returns the local date when now is ${iso}`, () => {
+            vi.useFakeTimers();
+            vi.setSystemTime(new Date(iso));
+            const { provider } = setup();
+            expect(provider._resolveDate('today')).toBe(localYmd(new Date()));
+        });
+
+        it(`'tomorrow' is local-today + 1 when now is ${iso}`, () => {
+            vi.useFakeTimers();
+            vi.setSystemTime(new Date(iso));
+            const { provider } = setup();
+            const tom = new Date();
+            tom.setDate(tom.getDate() + 1);
+            expect(provider._resolveDate('tomorrow')).toBe(localYmd(tom));
+        });
+    }
+});
+
 describe('CalendarSearchProvider — matchAsync routing', () => {
     it('ignores non-calendar queries', async () => {
         expect(await setup().provider.matchAsync('hello')).toEqual([]);

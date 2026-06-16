@@ -5,7 +5,7 @@
  * path over a seeded in-memory store.
  */
 
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import TodosSearchProvider from './search.js';
 import { makeContext } from '../../test-helpers/mock-context.mjs';
 
@@ -93,6 +93,44 @@ describe('TodosSearchProvider — _parseDueDate', () => {
     it('returns null for unparseable text', () => {
         expect(p._parseDueDate('whenever')).toBeNull();
     });
+});
+
+describe('TodosSearchProvider — _parseDueDate across midnight boundaries', () => {
+    // Deterministic timezone-bug guard, mirroring the calendar suite.
+    // _parseDueDate does local-time arithmetic and _parseDueDateLocal reads
+    // dates back as local midnight; if _formatDate emits via toISOString()
+    // (UTC) instead of local, "today" lands on the wrong calendar day
+    // whenever the local date != the UTC date. We pin the clock to two
+    // instants straddling midnight in opposite directions and assert the
+    // round-trip invariant. The early-UTC instant trips behind-UTC zones
+    // (America/Los_Angeles); the late-UTC instant trips ahead-of-UTC zones
+    // (Asia/Tokyo); UTC trips neither, which is why CI also runs off-UTC.
+    const localYmd = (d) =>
+        `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
+    const INSTANTS = ['2026-06-15T06:30:00Z', '2026-06-15T20:30:00Z'];
+
+    afterEach(() => {
+        vi.useRealTimers();
+    });
+
+    for (const iso of INSTANTS) {
+        it(`'today' returns the local date when now is ${iso}`, () => {
+            vi.useFakeTimers();
+            vi.setSystemTime(new Date(iso));
+            const { provider } = setup();
+            expect(provider._parseDueDate('today')).toBe(localYmd(new Date()));
+        });
+
+        it(`'tomorrow' is local-today + 1 when now is ${iso}`, () => {
+            vi.useFakeTimers();
+            vi.setSystemTime(new Date(iso));
+            const { provider } = setup();
+            const tom = new Date();
+            tom.setDate(tom.getDate() + 1);
+            expect(provider._parseDueDate('tomorrow')).toBe(localYmd(tom));
+        });
+    }
 });
 
 describe('TodosSearchProvider — match() summary', () => {
