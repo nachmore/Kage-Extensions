@@ -45,7 +45,13 @@ export default class TodosTriggerProvider {
         try {
             const todos = this._todos;
             const now = new Date();
-            const todayStr = now.toISOString().split('T')[0];
+            // Local-time YYYY-MM-DD. dueDate is stored as a local date
+            // string; comparing via toISOString() (UTC) would shift either
+            // side by a day around midnight depending on the offset, so the
+            // "due today" check could fire on the wrong calendar day.
+            const localYmd = (d) =>
+                `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+            const todayStr = localYmd(now);
 
             for (const t of todos) {
                 if (t.status === 'complete' || !t.dueDate) continue;
@@ -56,7 +62,7 @@ export default class TodosTriggerProvider {
                 const due = parts.length === 3
                     ? new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]))
                     : new Date(t.dueDate);
-                const dueStr = due.toISOString().split('T')[0];
+                const dueStr = localYmd(due);
 
                 if (dueStr === todayStr && !this._lastNotified.has('due_' + key)) {
                     this._lastNotified.add('due_' + key);
