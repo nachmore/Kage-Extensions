@@ -1,15 +1,17 @@
 /**
  * Functional tests for the Calendar next-meeting widget.
  *
- * The widget's contract after the stale-bar fix: render() never awaits a
- * calendar fetch — it computes the "next meeting" from a local snapshot
- * (this._events) that a fire-and-forget background refresh keeps warm.
- * These tests exercise the pure picker (_recomputeNextEvent) directly and
- * assert that render() resolves without waiting on a (deliberately slow)
- * invoke.
+ * The widget's contract: render() computes the "next meeting" from a local
+ * snapshot (this._events) that a fire-and-forget background refresh keeps
+ * warm. The WARM path never awaits a fetch. The COLD path (snapshot still
+ * empty, e.g. the first render after mount) briefly awaits the in-flight
+ * fetch — capped at COLD_LOAD_WAIT_MS — so the first paint isn't empty;
+ * on timeout it paints null and the next tick retries.
+ * These tests exercise the pure picker (_recomputeNextEvent) directly plus
+ * both render paths.
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import CalendarNextMeetingWidget from './widget.js';
 import { makeContext } from '../../test-helpers/mock-context.mjs';
 import { invalidate } from './cache.js';
@@ -92,20 +94,39 @@ describe('CalendarNextMeetingWidget — render', () => {
         expect(out.html).toContain('Standup');
     });
 
-    it('resolves render() promptly even when the calendar fetch is slow', async () => {
-        // Slow fetch + empty snapshot: render must return immediately
-        // (null, nothing to show yet) rather than awaiting the fetch. This
-        // is the regression guard for the frozen-stale-bar bug, where a
-        // render that awaited a 9s-killed Outlook query blew the host's
-        // 10s renderWidget RPC budget. Kept last: the slow fetch leaks a
-        // pending promise into the shared cache singleton.
+    it('cold render paints once the (fast) fetch resolves', async () => {
+        // Empty snapshot + a fetch that resolves quickly: the cold path
+        // awaits it briefly and paints the bar on the FIRST render, rather
+        // than returning null and waiting for a later tick (which is paused
+        // while the floating window is hidden — that gap is why the bar
+        // appeared to never show).
         const { widget } = setup({
-            slowFetch: true,
-            events: [{ id: 'a', subject: 'X', start_time: minutesFromNow(-5), duration_minutes: 60 }],
+            events: [{ id: 'a', subject: 'Standup', start_time: minutesFromNow(-2), duration_minutes: 30 }],
         });
-        const start = Date.now();
         const out = await widget.render();
-        expect(Date.now() - start).toBeLessThan(1_000);
-        expect(out).toBeNull();
+        expect(out).not.toBeNull();
+        expect(out.html).toContain('Standup');
+    });
+
+    it('cold render does not block past the cap when the fetch is slow', async () => {
+        // Slow fetch + empty snapshot: the cold-load wait is bounded, so
+        // render resolves at the cap (null, nothing yet) instead of hanging
+        // until the 10s fetch — which would blow the host's renderWidget
+        // RPC budget. Fake timers let us advance past COLD_LOAD_WAIT_MS
+        // without a real wait. Kept last: the slow fetch leaks a pending
+        // promise into the shared cache singleton.
+        vi.useFakeTimers();
+        try {
+            const { widget } = setup({
+                slowFetch: true,
+                events: [{ id: 'a', subject: 'X', start_time: minutesFromNow(-5), duration_minutes: 60 }],
+            });
+            const p = widget.render();
+            await vi.advanceTimersByTimeAsync(3_500);
+            const out = await p;
+            expect(out).toBeNull();
+        } finally {
+            vi.useRealTimers();
+        }
     });
 });

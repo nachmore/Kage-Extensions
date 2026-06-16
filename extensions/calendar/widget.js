@@ -1,6 +1,15 @@
 import { initCache, getEvents } from './cache.js';
 
 /**
+ * How long the FIRST render (cold cache) will wait on the Outlook query
+ * before painting. Only applies when the local snapshot is still empty;
+ * once warm, render never waits. Capped well under the host's 10s
+ * renderWidget RPC budget (and the Rust side's 9s query kill) so a slow
+ * query can't blow the budget — we just paint null and retry next tick.
+ */
+const COLD_LOAD_WAIT_MS = 3_000;
+
+/**
  * Calendar next-meeting overlay widget.
  * Mounts into the floating-bottom slot. Re-renders every 60 seconds.
  */
@@ -38,11 +47,21 @@ export default class CalendarNextMeetingWidget {
 
     async render() {
         if (this._config.show_overlay === false) return null;
-        // Kick off a background refresh if the cache boundary has passed,
-        // then render immediately from the local snapshot — never await
-        // the fetch. The fetch result lands in this._events and shows up
-        // on the next tick.
-        this._refreshEventsInBackground();
+        // Warm path: render instantly from the local snapshot and refresh
+        // in the background — never block a paint on the Outlook query.
+        //
+        // Cold path (snapshot still empty, e.g. the very first render after
+        // mount/update): briefly await the in-flight fetch so the first
+        // paint isn't empty. Without this the widget would render null,
+        // and — because the 60s timer is paused while the floating window
+        // is hidden — nothing would repaint it until well after the user
+        // opens the launcher, so the bar appeared to never show. The wait
+        // is capped far under the host's 10s renderWidget budget; on
+        // timeout we fall through to null and the next tick retries.
+        const fetchPromise = this._refreshEventsInBackground();
+        if (this._events.length === 0 && fetchPromise) {
+            await this._raceTimeout(fetchPromise, COLD_LOAD_WAIT_MS);
+        }
         this._recomputeNextEvent();
         const event = this._cachedEvent;
         if (!event) return null;
@@ -125,10 +144,13 @@ export default class CalendarNextMeetingWidget {
      * keeps overlapping ticks from stacking fetches.
      */
     _refreshEventsInBackground() {
-        if (this._fetchInFlight) return;
+        // Return the in-flight promise so render() can optionally await it
+        // on a cold cache. When a fetch is already running, hand back the
+        // same promise rather than starting a second one.
+        if (this._fetchInFlight) return this._inFlightPromise;
         this._fetchInFlight = true;
         const hours = this._config.lookahead_hours || 8;
-        Promise.resolve(getEvents({ hours }))
+        this._inFlightPromise = Promise.resolve(getEvents({ hours }))
             .then((events) => {
                 if (Array.isArray(events)) this._events = events;
             })
@@ -139,7 +161,19 @@ export default class CalendarNextMeetingWidget {
             })
             .finally(() => {
                 this._fetchInFlight = false;
+                this._inFlightPromise = null;
             });
+        return this._inFlightPromise;
+    }
+
+    /** Resolve when `p` settles or after `ms`, whichever comes first.
+     *  Never rejects — used to cap how long the cold-cache first paint
+     *  waits on the Outlook query. */
+    _raceTimeout(p, ms) {
+        return Promise.race([
+            Promise.resolve(p).catch(() => {}),
+            new Promise((resolve) => setTimeout(resolve, ms)),
+        ]);
     }
 
     /**
