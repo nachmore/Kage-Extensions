@@ -155,8 +155,15 @@ export default class TodosSearchProvider {
         return null;
     }
 
+    /** Local-time YYYY-MM-DD. All the arithmetic above (getDay, setDate,
+     *  new Date(y, m, d)) is local, and _parseDueDateLocal reads it back
+     *  as local midnight — so formatting via toISOString() (UTC) would
+     *  shift the date by a day for anyone behind UTC late in the day. */
     _formatDate(d) {
-        return d.toISOString().split('T')[0];
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${y}-${m}-${day}`;
     }
 
     _formatDateDisplay(dateStr) {

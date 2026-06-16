@@ -23,7 +23,11 @@ function setup({ config = {}, seed = [] } = {}) {
     return { provider, store };
 }
 
-const ymd = (d) => d.toISOString().split('T')[0];
+// Local-time YYYY-MM-DD, matching _formatDate. Using toISOString() (UTC)
+// here would disagree by a day for anyone behind UTC late in the day —
+// the very bug the production fix addresses.
+const ymd = (d) =>
+    `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 
 describe('TodosSearchProvider — _parseDueDate', () => {
     let p;
