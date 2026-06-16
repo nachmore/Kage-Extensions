@@ -12,7 +12,19 @@ export default class CalendarNextMeetingWidget {
         this._dismissedIds = new Set();
         this._cachedEvent = null;
         this._cachedConcurrent = 1;
+        // Local snapshot of events. render() computes the "next meeting"
+        // purely from this — it never awaits a fetch. A background refresh
+        // (fire-and-forget, see _refreshEventsInBackground) keeps it warm.
+        // This is the original design: query periodically, render
+        // instantly. Blocking render on the Outlook query is what let a
+        // slow query (killed at 9s by the Rust side) blow the host's 10s
+        // renderWidget RPC budget and freeze the bar on stale content.
+        this._events = [];
+        this._fetchInFlight = false;
         this.t = context.i18n?.t?.bind(context.i18n) || ((k) => k);
+        // Warm the snapshot immediately so the bar can appear on the first
+        // render tick rather than waiting a full refresh interval.
+        this._refreshEventsInBackground();
     }
 
     onConfigUpdate(config) {
@@ -26,7 +38,12 @@ export default class CalendarNextMeetingWidget {
 
     async render() {
         if (this._config.show_overlay === false) return null;
-        await this._updateNextEvent();
+        // Kick off a background refresh if the cache boundary has passed,
+        // then render immediately from the local snapshot — never await
+        // the fetch. The fetch result lands in this._events and shows up
+        // on the next tick.
+        this._refreshEventsInBackground();
+        this._recomputeNextEvent();
         const event = this._cachedEvent;
         if (!event) return null;
 
@@ -87,8 +104,9 @@ export default class CalendarNextMeetingWidget {
             const e = this._cachedEvent;
             if (e) this._dismissedIds.add(e.id);
             this._cachedEvent = null;
-            // Ask host to re-render immediately so we move to the next event.
-            await this._updateNextEvent();
+            // Recompute from the local snapshot (no fetch) so the host's
+            // immediate re-render moves to the next event.
+            this._recomputeNextEvent();
             return { rerender: true };
         }
         return {};
@@ -98,9 +116,40 @@ export default class CalendarNextMeetingWidget {
 
     // --- Internals ---
 
-    async _updateNextEvent() {
+    /**
+     * Refresh the local event snapshot from the shared cache, off the
+     * render path. `getEvents` only hits Outlook when the cache boundary
+     * (~:25/:55) has passed; otherwise it returns the cached array
+     * cheaply. Fire-and-forget: we never await this from render(), so a
+     * slow Outlook query can't stall a paint. A single in-flight guard
+     * keeps overlapping ticks from stacking fetches.
+     */
+    _refreshEventsInBackground() {
+        if (this._fetchInFlight) return;
+        this._fetchInFlight = true;
         const hours = this._config.lookahead_hours || 8;
-        const events = await getEvents({ hours });
+        Promise.resolve(getEvents({ hours }))
+            .then((events) => {
+                if (Array.isArray(events)) this._events = events;
+            })
+            .catch(() => {
+                // Keep the previous snapshot on failure — better a slightly
+                // stale list than an empty bar. The host-side staleness
+                // guard clears genuinely old content if this keeps failing.
+            })
+            .finally(() => {
+                this._fetchInFlight = false;
+            });
+    }
+
+    /**
+     * Recompute the "next meeting" from the local snapshot. Pure and
+     * synchronous — safe to call from render() and onAction() without
+     * awaiting anything.
+     */
+    _recomputeNextEvent() {
+        const hours = this._config.lookahead_hours || 8;
+        const events = this._events;
         const now = new Date();
         const cutoff = new Date(now.getTime() + hours * 3600_000);
 
