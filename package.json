@@ -13,7 +13,8 @@
     "check:bundle": "node scripts/check-bundle.mjs",
     "check:host-sync": "node scripts/check-host-sync.mjs",
     "check:tests": "node scripts/check-tests.mjs",
-    "check:all": "npm run validate && npm run check:permissions && npm run check:security && npm run check:i18n && npm run check:bundle && npm run check:tests",
+    "check:versions": "node scripts/check-versions.mjs",
+    "check:all": "npm run validate && npm run check:permissions && npm run check:security && npm run check:i18n && npm run check:bundle && npm run check:tests && npm run check:versions",
     "test": "vitest run",
     "test:watch": "vitest"
   },

@@ -90,6 +90,15 @@ jobs:
             - name: Test presence
               run: npm run check:tests
 
+            # Version-bump gate: an extension whose source changed but whose
+            # manifest version didn't will never reach installed clients
+            # (Kage only pulls a higher semver). Compares each extension's
+            # source hash against the published catalog and fails on drift
+            # without a bump. Fetches the live catalog; a fetch failure is a
+            # soft skip (logged), so a Pages outage doesn't block merges.
+            - name: Version-bump gate
+              run: npm run check:versions
+
     test:
         # Functional unit tests for the extensions themselves. Fast (no
         # Worker / no host), so we run the whole suite every time rather

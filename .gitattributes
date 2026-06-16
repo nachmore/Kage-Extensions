@@ -1,0 +1,24 @@
+# Force LF for all text in the repo, on every platform.
+#
+# Why this matters here specifically: the catalog builder
+# (scripts/build-catalog.mjs) hashes each extension's source tree
+# byte-for-byte to (a) decide whether to repackage its zip and (b) record
+# a `sourceHash` that the version-bump gate (scripts/check-versions.mjs)
+# compares against. CI runs on Linux (LF); a Windows checkout with CRLF
+# would produce different bytes — different hashes, spurious "source
+# changed" reports, and — if a zip were ever cut on Windows — installable
+# bundles that differ from the Linux ones for no real reason.
+#
+# `* text=auto eol=lf` normalises line endings to LF in the working tree
+# regardless of core.autocrlf, so every contributor hashes the same bytes
+# CI does.
+* text=auto eol=lf
+
+# Binary types that must never be touched (none committed today, but guard
+# against future additions so they aren't corrupted by EOL normalisation).
+*.png binary
+*.jpg binary
+*.gif binary
+*.zip binary
+*.woff binary
+*.woff2 binary

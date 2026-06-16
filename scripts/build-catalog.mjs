@@ -41,11 +41,11 @@ const distPackages = path.join(distRoot, 'packages');
 const distDetail = path.join(distRoot, 'detail');
 const previousCatalogPath = path.join(distRoot, 'catalog.json');
 
-async function readJson(p) {
+export async function readJson(p) {
     return JSON.parse(await readFile(p, 'utf8'));
 }
 
-async function listDirs(parent) {
+export async function listDirs(parent) {
     try {
         const entries = await readdir(parent, { withFileTypes: true });
         return entries.filter((e) => e.isDirectory()).map((e) => e.name);
@@ -57,7 +57,7 @@ async function listDirs(parent) {
 
 // Recursively list every regular file under `dir`, returned as paths
 // relative to `dir`. Sorted for deterministic hashing across machines.
-async function listFilesRecursive(dir) {
+export async function listFilesRecursive(dir) {
     const out = [];
     async function walk(rel) {
         const abs = path.join(dir, rel);
@@ -78,7 +78,7 @@ async function listFilesRecursive(dir) {
 
 // Hash of the entire extension/theme source tree. Stable across OSes
 // because we sort entries and hash content + relative path.
-async function hashTree(dir) {
+export async function hashTree(dir) {
     const files = await listFilesRecursive(dir);
     const hasher = createHash('sha256');
     for (const rel of files) {
@@ -306,7 +306,13 @@ async function main() {
     console.log(`Wrote catalog with ${items.length} item(s) -> ${previousCatalogPath}`);
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+// Run main() only when invoked directly (node scripts/build-catalog.mjs),
+// not when imported for its helpers (check-versions.mjs). Guard against a
+// missing argv[1] (e.g. `node -e`/`--import`) so importing this module
+// never crashes on the pathToFileURL call.
+const invokedDirectly =
+    process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
+if (invokedDirectly) {
     main().catch((e) => {
         console.error(e);
         process.exit(1);
