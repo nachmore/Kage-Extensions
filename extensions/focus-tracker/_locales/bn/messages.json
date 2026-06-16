@@ -154,5 +154,29 @@
     "description": "Validation error for poll interval",
     "_machine_translated": true,
     "_source_hash": "d768cd635e999624"
+  },
+  "result.loading.today": {
+    "message": "📊 আজকের রিপোর্ট লোড হচ্ছে…",
+    "description": "Label shown while today's activity report loads",
+    "_machine_translated": true,
+    "_source_hash": "3e03399a32329c6d"
+  },
+  "result.loading.week": {
+    "message": "📊 এই সপ্তাহের রিপোর্ট লোড হচ্ছে…",
+    "description": "Label shown while this week's activity report loads",
+    "_machine_translated": true,
+    "_source_hash": "5696557c276188e6"
+  },
+  "result.loading.month": {
+    "message": "📊 এই মাসের রিপোর্ট লোড হচ্ছে…",
+    "description": "Label shown while this month's activity report loads",
+    "_machine_translated": true,
+    "_source_hash": "b71c2c38e62f7bb1"
+  },
+  "result.loading.all": {
+    "message": "📊 সর্বকালের রিপোর্ট লোড হচ্ছে…",
+    "description": "Label shown while the all-time activity report loads",
+    "_machine_translated": true,
+    "_source_hash": "8073e994c571a83a"
   }
 }
