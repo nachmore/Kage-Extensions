@@ -179,7 +179,17 @@ export default class CalendarSearchProvider {
     _resolveDate(input) {
         const s = input.toLowerCase().trim();
         const now = new Date();
-        const fmt = (d) => d.toISOString().slice(0, 10);
+        // Format in LOCAL time. The arithmetic below (getDay, setDate) is
+        // all local, so formatting via toISOString() (which is UTC) would
+        // disagree by a day for anyone behind UTC late in the day — e.g.
+        // "monday" on a Monday evening in UTC-7 would round-trip to a
+        // Tuesday date string.
+        const fmt = (d) => {
+            const y = d.getFullYear();
+            const m = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${y}-${m}-${day}`;
+        };
 
         if (s === 'today') return fmt(now);
         if (s === 'tomorrow') { const d = new Date(now); d.setDate(d.getDate() + 1); return fmt(d); }

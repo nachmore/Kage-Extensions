@@ -53,7 +53,11 @@ describe('CalendarSearchProvider — _resolveDate', () => {
         ({ provider: p } = setup());
     });
 
-    const ymd = (d) => d.toISOString().slice(0, 10);
+    // Local-time YYYY-MM-DD, matching _resolveDate's formatter. Using
+    // toISOString() (UTC) here would disagree by a day for anyone behind
+    // UTC late in the day — the very bug the production fix addresses.
+    const ymd = (d) =>
+        `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 
     it('resolves today/tomorrow/yesterday', () => {
         const now = new Date();
