@@ -151,6 +151,22 @@ describe('CalendarSearchProvider — matchAsync routing', () => {
         expect(rows[0].type).toBe('calendar_refresh');
     });
 
+    it('lists upcoming events for the bare "calendar" trigger (not a bogus filter)', async () => {
+        // Regression: the strip regex was alternation-ordered 'cal' first,
+        // so 'calendar' stripped to 'endar' and fell into the free-text
+        // filter, surfacing a "No meetings matching" row. The full word
+        // must behave exactly like the bare 'cal' trigger.
+        const rows = await setup().provider.matchAsync('calendar');
+        expect(rows.some((r) => r.label?.includes('Standup'))).toBe(true);
+        expect(rows.some((r) => r.id === 'cal:no-match')).toBe(false);
+    });
+
+    it('free-text filters after the full "calendar" keyword', async () => {
+        const rows = await setup().provider.matchAsync('calendar bob');
+        expect(rows).toHaveLength(1);
+        expect(rows[0].label).toContain('Lunch');
+    });
+
     it('free-text filters upcoming events', async () => {
         const rows = await setup().provider.matchAsync('cal bob');
         expect(rows).toHaveLength(1);
@@ -169,5 +185,43 @@ describe('CalendarSearchProvider — matchAsync routing', () => {
             'get_calendar_events_for_date',
             expect.objectContaining({ date: expect.stringMatching(/^\d{4}-\d{2}-\d{2}$/) })
         );
+    });
+});
+
+describe('CalendarSearchProvider — renderCustom', () => {
+    // The mock i18n echoes message keys (no catalog seeded), so assert on
+    // the row's own label/icon — which renderCustom must surface verbatim —
+    // and on the ABSENCE of the event-template breakage.
+
+    it('renders the refresh row from its label/icon, not as an event', async () => {
+        // Regression: the refresh row carries a truthy `data: { action }`,
+        // so a `!data` guard let it fall through to the event template and
+        // render "undefined" / "[Invalid Date] Invalid Date". It must use
+        // the label branch instead.
+        const { provider } = setup();
+        const [refresh] = await provider.matchAsync('cal-refresh');
+        const { html } = provider.renderCustom(refresh);
+        expect(html).toContain(refresh.icon); // 🔄
+        expect(html).toContain(refresh.label); // not the event subject
+        expect(html).not.toContain('undefined');
+        expect(html).not.toMatch(/Invalid Date/i);
+    });
+
+    it('renders a no-match row from its label, not as an event', async () => {
+        const { provider } = setup();
+        const [row] = await provider.matchAsync('cal zzzzz');
+        const { html } = provider.renderCustom(row);
+        expect(html).toContain(row.label);
+        expect(html).not.toContain('undefined');
+        expect(html).not.toMatch(/Invalid Date/i);
+    });
+
+    it('renders an actual event row with its subject', async () => {
+        const { provider } = setup();
+        const rows = await provider.matchAsync('cal');
+        const event = rows.find((r) => r.type === 'calendar_event' && r.data);
+        const { html } = provider.renderCustom(event);
+        expect(html).toContain('Standup');
+        expect(html).not.toContain('undefined');
     });
 });

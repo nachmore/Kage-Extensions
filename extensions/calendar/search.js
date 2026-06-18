@@ -23,7 +23,11 @@ export default class CalendarSearchProvider {
 
     async matchAsync(query) {
         const q = query.toLowerCase().trim();
-        const triggers = ['cal', 'calendar', 'meetings'];
+        // Longest-first. Regex alternation (used for the strip below) is
+        // order-sensitive, not longest-match: with 'cal' first, the input
+        // 'calendar' strips to 'endar' and lands in the free-text filter as
+        // a bogus search term. Keep this list and the strip regex aligned.
+        const triggers = ['calendar', 'meetings', 'cal'];
         const isCalQuery = triggers.some(t => q === t || q.startsWith(t + ' '));
         const isRefresh = q === 'cal-refresh';
         if (!isCalQuery && !isRefresh) return [];
@@ -40,7 +44,7 @@ export default class CalendarSearchProvider {
             }];
         }
 
-        const dateArg = q.replace(/^(cal|calendar|meetings)\s*/i, '').trim();
+        const dateArg = q.replace(/^(calendar|meetings|cal)\s*/i, '').trim();
         if (dateArg) {
             const resolved = this._resolveDate(dateArg);
             if (resolved) return this._fetchEventsForDate(resolved);
@@ -123,10 +127,16 @@ export default class CalendarSearchProvider {
      * `onResultAction(actionId)`.
      */
     renderCustom(result) {
-        const e = result?.data;
+        // Only real calendar events carry an event object worth laying out.
+        // Refresh / no-match / no-upcoming rows set type !== 'calendar_event'
+        // (refresh even has a truthy `data: { action }`), so gate on the
+        // type — not just `data` presence — or those rows render an event
+        // template against undefined fields ("undefined" name,
+        // "[Invalid Date] Invalid Date" subtitle).
+        const e = result?.type === 'calendar_event' ? result?.data : null;
         if (!e) {
             return {
-                html: `<div class="app-icon">📅</div>
+                html: `<div class="app-icon">${escape(result?.icon || '📅')}</div>
                        <div class="app-info" style="flex:1;">
                            <div class="app-name">${escape(result?.label || '')}</div>
                            <div class="app-description">${escape(result?.description || '')}</div>
