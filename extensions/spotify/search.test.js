@@ -25,10 +25,20 @@ describe('SpotifySearchProvider — trigger gating', () => {
         expect(setup().match('')).toEqual([]);
     });
 
+    it('ignores words that merely begin with the trigger', () => {
+        // "spotify" starts with the default "sp" trigger but is not a
+        // whole-word match — it must not strip to "otify" and surface a
+        // bogus play row. See the word-boundary gate in match().
+        expect(setup().match('spotify')).toEqual([]);
+        expect(setup().match('special')).toEqual([]);
+    });
+
     it('honours a custom trigger', () => {
         const p = setup({ trigger: 'spot' });
         expect(p.match('sp now')).toEqual([]);
         expect(ids(p.match('spot'))).toContain('now');
+        // "spotify" begins with "spot" but is still not a whole word.
+        expect(p.match('spotify')).toEqual([]);
     });
 });
 

@@ -38,8 +38,12 @@ export default class SpotifySearchProvider {
         const trimmed = query.trim();
         if (!trimmed) return [];
         const lower = trimmed.toLowerCase();
-        if (!lower.startsWith(trigger)) return [];
-        // Bare trigger, or trigger followed by space + rest.
+        // Whole-word trigger only: the bare trigger, or the trigger
+        // followed by a space + rest. A bare `startsWith(trigger)` also
+        // fires on longer words that merely begin with it — e.g. with the
+        // default `sp` trigger, "spotify" strips to "otify" and surfaces a
+        // bogus "play otify" row. Gate on the word boundary instead.
+        if (lower !== trigger && !lower.startsWith(trigger + ' ')) return [];
         const rest = trimmed.slice(trigger.length).trim();
         const restLower = rest.toLowerCase();
 
@@ -134,7 +138,10 @@ export default class SpotifySearchProvider {
     async matchAsync(query) {
         const trigger = (this.config.trigger || 'sp').toLowerCase();
         const trimmed = query.trim();
-        if (!trimmed.toLowerCase().startsWith(trigger)) return [];
+        const lower = trimmed.toLowerCase();
+        // Whole-word trigger only — see match() for why a bare prefix
+        // check mis-fires on words like "spotify".
+        if (lower !== trigger && !lower.startsWith(trigger + ' ')) return [];
         const rest = trimmed.slice(trigger.length).trim();
         const [verb, ...restParts] = rest.split(/\s+/);
         if (verb.toLowerCase() !== 'device') return [];
