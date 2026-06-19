@@ -26,12 +26,12 @@ jobs:
             # decide which extensions to scan; without full history,
             # `git merge-base` falls back to "everything changed" and
             # the per-extension scoping is wasted.
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v5
               with:
                   fetch-depth: 0
-            - uses: actions/setup-node@v4
+            - uses: actions/setup-node@v5
               with:
-                  node-version: 20
+                  node-version: 24
                   cache: npm
             - run: npm ci
 
@@ -123,10 +123,10 @@ jobs:
         env:
             TZ: ${{ matrix.tz }}
         steps:
-            - uses: actions/checkout@v4
-            - uses: actions/setup-node@v4
+            - uses: actions/checkout@v5
+            - uses: actions/setup-node@v5
               with:
-                  node-version: 20
+                  node-version: 24
                   cache: npm
             - run: npm ci
             - name: Run extension test suites (TZ=${{ matrix.tz }})
@@ -138,10 +138,10 @@ jobs:
         needs: [validate, test]
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v4
-            - uses: actions/setup-node@v4
+            - uses: actions/checkout@v5
+            - uses: actions/setup-node@v5
               with:
-                  node-version: 20
+                  node-version: 24
                   cache: npm
 
             - run: npm ci
@@ -178,4 +178,4 @@ jobs:
             url: ${{ steps.deployment.outputs.page_url }}
         steps:
             - id: deployment
-              uses: actions/deploy-pages@v4
+              uses: actions/deploy-pages@v5
