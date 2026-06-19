@@ -21,6 +21,23 @@ export default class CalendarSearchProvider {
 
     match(_query) { return []; }
 
+    /**
+     * Register trigger words with the host so partial input (e.g. "cal-ref")
+     * surfaces a completion hint before the full keyword is typed. Labels are
+     * i18n KEYS — the host resolves them against this extension's catalog.
+     * `cal` is intentionally omitted: it's a prefix of `calendar`, so the
+     * host already hints `calendar` for a partial `cal`, and a bare `cal` is
+     * a complete trigger that matchAsync() answers directly.
+     */
+    getKeywords() {
+        // i18n-keys: keyword.calendar.label, keyword.calendar.description, keyword.meetings.label, keyword.meetings.description, keyword.refresh.label, keyword.refresh.description
+        return [
+            { keyword: 'calendar', labelKey: 'keyword.calendar.label', descriptionKey: 'keyword.calendar.description', icon: '📅', acceptsArgs: true },
+            { keyword: 'meetings', labelKey: 'keyword.meetings.label', descriptionKey: 'keyword.meetings.description', icon: '📅', acceptsArgs: true },
+            { keyword: 'cal-refresh', labelKey: 'keyword.refresh.label', descriptionKey: 'keyword.refresh.description', icon: '🔄', acceptsArgs: false },
+        ];
+    }
+
     async matchAsync(query) {
         const q = query.toLowerCase().trim();
         // Longest-first. Regex alternation (used for the strip below) is

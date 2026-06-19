@@ -47,6 +47,31 @@ describe('CalendarSearchProvider — match (sync is empty)', () => {
     });
 });
 
+describe('CalendarSearchProvider — getKeywords', () => {
+    const kws = () => setup().provider.getKeywords();
+
+    it('registers calendar, meetings, and cal-refresh as keywords', () => {
+        expect(kws().map((k) => k.keyword)).toEqual(['calendar', 'meetings', 'cal-refresh']);
+    });
+
+    it('returns i18n KEYS for labels, never raw text', () => {
+        for (const k of kws()) {
+            expect(k.labelKey).toMatch(/^keyword\./);
+            expect(k.descriptionKey).toMatch(/^keyword\./);
+            // No raw label/description fields — host resolves keys.
+            expect(k.label).toBeUndefined();
+            expect(k.description).toBeUndefined();
+        }
+    });
+
+    it('marks cal-refresh as taking no args; calendar/meetings take args', () => {
+        const byKw = Object.fromEntries(kws().map((k) => [k.keyword, k]));
+        expect(byKw['cal-refresh'].acceptsArgs).toBe(false);
+        expect(byKw['calendar'].acceptsArgs).toBe(true);
+        expect(byKw['meetings'].acceptsArgs).toBe(true);
+    });
+});
+
 describe('CalendarSearchProvider — _resolveDate', () => {
     let p;
     beforeEach(() => {

@@ -220,5 +220,41 @@
     "description": "Description shown in the automations trigger picker",
     "_machine_translated": true,
     "_source_hash": "307ad39d978c7ff1"
+  },
+  "keyword.calendar.label": {
+    "message": "कैलेंडर",
+    "description": "Keyword hint label for the 'calendar' / 'cal' trigger",
+    "_machine_translated": true,
+    "_source_hash": "5bb00cca95a7cb25"
+  },
+  "keyword.calendar.description": {
+    "message": "आगामी मीटिंग दिखाएँ — 'tomorrow' जैसी कोई तारीख जोड़ें",
+    "description": "Keyword hint description for the calendar trigger",
+    "_machine_translated": true,
+    "_source_hash": "a30fa1d0c6f26a00"
+  },
+  "keyword.meetings.label": {
+    "message": "मीटिंग",
+    "description": "Keyword hint label for the 'meetings' trigger",
+    "_machine_translated": true,
+    "_source_hash": "57cf7879194f3ead"
+  },
+  "keyword.meetings.description": {
+    "message": "आगामी मीटिंग दिखाएँ",
+    "description": "Keyword hint description for the meetings trigger",
+    "_machine_translated": true,
+    "_source_hash": "6b6d9d7ac4482ac9"
+  },
+  "keyword.refresh.label": {
+    "message": "कैलेंडर रीफ़्रेश करें",
+    "description": "Keyword hint label for the 'cal-refresh' trigger",
+    "_machine_translated": true,
+    "_source_hash": "5a4bf464e77c2a41"
+  },
+  "keyword.refresh.description": {
+    "message": "Outlook से इवेंट दोबारा प्राप्त करें",
+    "description": "Keyword hint description for the cal-refresh trigger",
+    "_machine_translated": true,
+    "_source_hash": "7fa31d9f3b6aa747"
   }
 }

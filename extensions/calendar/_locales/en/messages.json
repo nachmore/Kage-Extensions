@@ -148,5 +148,29 @@
   "trigger.day_summary.description": {
     "message": "Daily summary of upcoming meetings",
     "description": "Description shown in the automations trigger picker"
+  },
+  "keyword.calendar.label": {
+    "message": "Calendar",
+    "description": "Keyword hint label for the 'calendar' / 'cal' trigger"
+  },
+  "keyword.calendar.description": {
+    "message": "Show upcoming meetings — add a date like 'tomorrow'",
+    "description": "Keyword hint description for the calendar trigger"
+  },
+  "keyword.meetings.label": {
+    "message": "Meetings",
+    "description": "Keyword hint label for the 'meetings' trigger"
+  },
+  "keyword.meetings.description": {
+    "message": "Show upcoming meetings",
+    "description": "Keyword hint description for the meetings trigger"
+  },
+  "keyword.refresh.label": {
+    "message": "Refresh calendar",
+    "description": "Keyword hint label for the 'cal-refresh' trigger"
+  },
+  "keyword.refresh.description": {
+    "message": "Re-fetch events from Outlook",
+    "description": "Keyword hint description for the cal-refresh trigger"
   }
 }
