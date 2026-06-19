@@ -10,6 +10,22 @@ import { initCache, getEvents } from './cache.js';
 const COLD_LOAD_WAIT_MS = 3_000;
 
 /**
+ * Delay between mount and the first background warm-up fetch.
+ *
+ * The fetch shells out to PowerShell (Outlook query), so spawning it the
+ * instant the widget mounts is dangerous: a host reload re-creates every
+ * widget, and a burst of reloads (e.g. several extensions updating at once)
+ * would fire one PowerShell per mount in a tight loop. During such a burst a
+ * widget mounts and is destroyed within milliseconds, so a short delay means
+ * the timer is cancelled before it ever fires — no spawn. It's kept short
+ * because a user who just installed the extension will try to use it within
+ * a couple of seconds; this only needs to outlast a mount storm, not feel
+ * laggy. The render() cold path still fetches immediately when the user is
+ * actually looking at the bar.
+ */
+const MOUNT_WARMUP_DELAY_MS = 2_000;
+
+/**
  * Calendar next-meeting overlay widget.
  * Mounts into the floating-bottom slot. Re-renders every 60 seconds.
  */
@@ -31,9 +47,15 @@ export default class CalendarNextMeetingWidget {
         this._events = [];
         this._fetchInFlight = false;
         this.t = context.i18n?.t?.bind(context.i18n) || ((k) => k);
-        // Warm the snapshot immediately so the bar can appear on the first
-        // render tick rather than waiting a full refresh interval.
-        this._refreshEventsInBackground();
+        // Warm the snapshot a couple of seconds after mount (not AT mount) so
+        // a reload storm that mounts→destroys this widget rapidly never gets
+        // to spawn a PowerShell query — destroy() cancels the timer first.
+        // See MOUNT_WARMUP_DELAY_MS. A real mount that survives warms up well
+        // before the user opens the launcher.
+        this._warmupTimer = setTimeout(() => {
+            this._warmupTimer = null;
+            this._refreshEventsInBackground();
+        }, MOUNT_WARMUP_DELAY_MS);
     }
 
     onConfigUpdate(config) {
@@ -131,7 +153,14 @@ export default class CalendarNextMeetingWidget {
         return {};
     }
 
-    destroy() {}
+    destroy() {
+        // Cancel a pending warm-up so a widget torn down during a reload
+        // storm never fires its PowerShell query.
+        if (this._warmupTimer) {
+            clearTimeout(this._warmupTimer);
+            this._warmupTimer = null;
+        }
+    }
 
     // --- Internals ---
 

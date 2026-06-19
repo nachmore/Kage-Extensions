@@ -80,6 +80,40 @@ describe('CalendarNextMeetingWidget — _recomputeNextEvent', () => {
     });
 });
 
+describe('CalendarNextMeetingWidget — mount warm-up', () => {
+    beforeEach(() => vi.useFakeTimers());
+    afterEach(() => vi.useRealTimers());
+
+    it('does NOT query at mount — only after the warm-up delay', () => {
+        const calls = { n: 0 };
+        invalidate();
+        const { context } = makeContext({
+            invokes: { get_calendar_events: () => { calls.n++; return []; } },
+        });
+        const widget = new CalendarNextMeetingWidget();
+        widget.initialize(context);
+        // Nothing fired synchronously at mount — that's the whole point.
+        expect(calls.n).toBe(0);
+        // Fires once the warm-up delay elapses.
+        vi.advanceTimersByTime(2_000);
+        expect(calls.n).toBe(1);
+    });
+
+    it('destroy() before the delay cancels the query (reload-storm safety)', () => {
+        const calls = { n: 0 };
+        invalidate();
+        const { context } = makeContext({
+            invokes: { get_calendar_events: () => { calls.n++; return []; } },
+        });
+        const widget = new CalendarNextMeetingWidget();
+        widget.initialize(context);
+        // Torn down almost immediately, as in a mount→unmount reload storm.
+        widget.destroy();
+        vi.advanceTimersByTime(10_000);
+        expect(calls.n).toBe(0); // never spawned
+    });
+});
+
 describe('CalendarNextMeetingWidget — render', () => {
     it('renders the bar synchronously from the local snapshot', async () => {
         // Snapshot set directly — render() reads this._events, it does not
