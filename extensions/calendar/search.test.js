@@ -50,8 +50,20 @@ describe('CalendarSearchProvider — match (sync is empty)', () => {
 describe('CalendarSearchProvider — getKeywords', () => {
     const kws = () => setup().provider.getKeywords();
 
-    it('registers calendar, meetings, and cal-refresh as keywords', () => {
-        expect(kws().map((k) => k.keyword)).toEqual(['calendar', 'meetings', 'cal-refresh']);
+    it('registers cal, calendar, meetings, and cal-refresh as keywords', () => {
+        // `cal` AND `calendar` are both registered: the host gates match() on
+        // the complete set, so the bare `cal` trigger (which matchAsync also
+        // answers) must be present or it'd be unreachable.
+        expect(kws().map((k) => k.keyword)).toEqual(['cal', 'calendar', 'meetings', 'cal-refresh']);
+    });
+
+    it('covers every trigger matchAsync answers (no unreachable triggers)', () => {
+        // Guard against drift: the host only invokes the extension on a
+        // registered keyword, so each live trigger must appear here.
+        const registered = new Set(kws().map((k) => k.keyword));
+        for (const trigger of ['cal', 'calendar', 'meetings', 'cal-refresh']) {
+            expect(registered.has(trigger)).toBe(true);
+        }
     });
 
     it('returns i18n KEYS for labels, never raw text', () => {
