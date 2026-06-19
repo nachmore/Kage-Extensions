@@ -332,5 +332,13 @@
   "action.disconnect.success": {
     "message": "✅ Signed out.",
     "description": "Status after a successful sign-out"
+  },
+  "keyword.spotify.label": {
+    "message": "Spotify",
+    "description": "Keyword hint label for the Spotify trigger"
+  },
+  "keyword.spotify.description": {
+    "message": "Control playback — try 'play', 'pause', 'next', 'vol 50'",
+    "description": "Keyword hint description for the Spotify trigger"
   }
 }

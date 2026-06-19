@@ -42,6 +42,22 @@ describe('SpotifySearchProvider — trigger gating', () => {
     });
 });
 
+describe('SpotifySearchProvider — getKeywords', () => {
+    it('registers the default trigger as a keyword', () => {
+        const [kw] = setup().getKeywords();
+        expect(kw.keyword).toBe('sp');
+        expect(kw.acceptsArgs).toBe(true);
+        expect(kw.labelKey).toMatch(/^keyword\./);
+        // i18n keys only — no raw text the author could forget to localise.
+        expect(kw.label).toBeUndefined();
+    });
+
+    it('reflects a user-configured trigger (config-aware)', () => {
+        const [kw] = setup({ trigger: 'spot' }).getKeywords();
+        expect(kw.keyword).toBe('spot');
+    });
+});
+
 describe('SpotifySearchProvider — verb dispatch', () => {
     let p;
     beforeEach(() => {

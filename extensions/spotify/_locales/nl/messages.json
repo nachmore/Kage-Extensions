@@ -496,5 +496,17 @@
     "description": "Inline tag on the user's previously-chosen device",
     "_machine_translated": true,
     "_source_hash": "f7da9a8829ce9a43"
+  },
+  "keyword.spotify.label": {
+    "message": "Spotify",
+    "description": "Keyword hint label for the Spotify trigger",
+    "_machine_translated": true,
+    "_source_hash": "2301775c13c712b9"
+  },
+  "keyword.spotify.description": {
+    "message": "Afspelen bedienen — probeer 'play', 'pause', 'next', 'vol 50'",
+    "description": "Keyword hint description for the Spotify trigger",
+    "_machine_translated": true,
+    "_source_hash": "a357819ef57037ea"
   }
 }

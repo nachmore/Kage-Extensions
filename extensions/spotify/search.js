@@ -33,6 +33,25 @@ export default class SpotifySearchProvider {
         this.config = config || {};
     }
 
+    /**
+     * Register the trigger word with the host so partial input surfaces a
+     * completion hint. Config-aware: a user who renames the trigger to
+     * "spot" in settings gets hints keyed off "spot". Labels are i18n keys.
+     */
+    getKeywords() {
+        // i18n-keys: keyword.spotify.label, keyword.spotify.description
+        const trigger = (this.config.trigger || 'sp').toLowerCase();
+        return [
+            {
+                keyword: trigger,
+                labelKey: 'keyword.spotify.label',
+                descriptionKey: 'keyword.spotify.description',
+                icon: ICON,
+                acceptsArgs: true,
+            },
+        ];
+    }
+
     match(query) {
         const trigger = (this.config.trigger || 'sp').toLowerCase();
         const trimmed = query.trim();
