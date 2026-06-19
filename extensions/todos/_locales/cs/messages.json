@@ -580,5 +580,41 @@
     "description": "Status when import fails",
     "_machine_translated": true,
     "_source_hash": "8c1be51111141497"
+  },
+  "keyword.todo.label": {
+    "message": "Úkoly",
+    "description": "Keyword hint for todos",
+    "_machine_translated": true,
+    "_source_hash": "3d640e58a7053c39"
+  },
+  "keyword.todo.description": {
+    "message": "Zobrazit seznam úkolů a průběh",
+    "description": "Keyword hint for todos",
+    "_machine_translated": true,
+    "_source_hash": "eab7bfccf1f2074b"
+  },
+  "keyword.add.label": {
+    "message": "Přidat úkol",
+    "description": "Keyword hint for todos",
+    "_machine_translated": true,
+    "_source_hash": "9edbd68002b6babd"
+  },
+  "keyword.add.description": {
+    "message": "Rychlé přidání úkolu: todo+ <text>",
+    "description": "Keyword hint for todos",
+    "_machine_translated": true,
+    "_source_hash": "d24e05ae5c7468d5"
+  },
+  "keyword.del.label": {
+    "message": "Smazat úkol",
+    "description": "Keyword hint for todos",
+    "_machine_translated": true,
+    "_source_hash": "538d98d984673050"
+  },
+  "keyword.del.description": {
+    "message": "Odebrat úkol: todo-",
+    "description": "Keyword hint for todos",
+    "_machine_translated": true,
+    "_source_hash": "174dea6117a8e919"
   }
 }

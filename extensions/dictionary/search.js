@@ -37,6 +37,22 @@ export default class DictionarySearchProvider {
         this._suggestCache.clear();
     }
 
+    /**
+     * Trigger set for host-side gating + hints. Config-aware: when the user
+     * clears the trigger, dictionary becomes a CONTENT matcher (it looks up
+     * any bare word via _extractWord), so we register no keywords and the host
+     * sends every keystroke. With a trigger set, it's keyword-gated on `dict`.
+     * Label is an i18n key, resolved host-side.
+     */
+    getKeywords() {
+        // i18n-keys: keyword.dict.label, keyword.dict.description
+        const trigger = (this.config.trigger ?? 'dict').trim().toLowerCase();
+        if (!trigger) return []; // content matcher — needs every keystroke
+        return [
+            { keyword: trigger, labelKey: 'keyword.dict.label', descriptionKey: 'keyword.dict.description', icon: '📖', acceptsArgs: true },
+        ];
+    }
+
     match(query) {
         const word = this._extractWord(query);
         if (!word || !this._isLookupCandidate(word)) return [];

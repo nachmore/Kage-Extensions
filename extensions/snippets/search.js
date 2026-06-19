@@ -31,6 +31,22 @@ export default class SnippetsSearchProvider {
     }
     onConfigUpdate(config) { this.config = config || {}; }
 
+    /**
+     * Complete, authoritative trigger set — the host hints partial prefixes
+     * and only invokes match()/matchAsync() on a committed keyword. The +/-
+     * sub-commands are distinct whole-word keywords, so each is listed.
+     * Labels are i18n keys, resolved host-side.
+     */
+    getKeywords() {
+        // i18n-keys: keyword.snip.label, keyword.snip.description, keyword.add.label, keyword.add.description, keyword.del.label, keyword.del.description
+        const trigger = (this.config.trigger || 'snip').toLowerCase();
+        return [
+            { keyword: trigger, labelKey: 'keyword.snip.label', descriptionKey: 'keyword.snip.description', icon: '📋', acceptsArgs: true },
+            { keyword: trigger + '+', labelKey: 'keyword.add.label', descriptionKey: 'keyword.add.description', icon: '➕', acceptsArgs: true },
+            { keyword: trigger + '-', labelKey: 'keyword.del.label', descriptionKey: 'keyword.del.description', icon: '🗑️', acceptsArgs: true },
+        ];
+    }
+
     async _load() {
         if (this._cache) return this._cache;
         try {

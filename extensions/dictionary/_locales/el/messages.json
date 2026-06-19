@@ -160,5 +160,17 @@
     "description": "Settings: attribution info text",
     "_machine_translated": true,
     "_source_hash": "ec30fe1abb2842cf"
+  },
+  "keyword.dict.label": {
+    "message": "Λεξικό",
+    "description": "Keyword hint for dictionary",
+    "_machine_translated": true,
+    "_source_hash": "a5a6770fbfa01c36"
+  },
+  "keyword.dict.description": {
+    "message": "Αναζήτηση ορισμού λέξης",
+    "description": "Keyword hint for dictionary",
+    "_machine_translated": true,
+    "_source_hash": "77763b4d5da82c42"
   }
 }

@@ -93,3 +93,22 @@ describe('BookmarksSearchProvider — execute open', () => {
         });
     });
 });
+
+describe('BookmarksSearchProvider — getKeywords', () => {
+    const kw = (cfg) => setup({ config: cfg }).provider.getKeywords();
+
+    it('registers the trigger and its +/- sub-commands', () => {
+        expect(kw().map((k) => k.keyword)).toEqual(['bm', 'bm+', 'bm-']);
+    });
+
+    it('tracks a custom trigger across all sub-commands', () => {
+        expect(kw({ trigger: 'mark' }).map((k) => k.keyword)).toEqual(['mark', 'mark+', 'mark-']);
+    });
+
+    it('returns i18n KEYS for labels, never raw text', () => {
+        for (const k of kw()) {
+            expect(k.labelKey).toMatch(/^keyword\./);
+            expect(k.label).toBeUndefined();
+        }
+    });
+});

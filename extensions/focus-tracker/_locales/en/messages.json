@@ -120,5 +120,13 @@
   "settings.validate.poll_interval_range": {
     "message": "Poll interval must be between 2 and 60 seconds",
     "description": "Validation error for poll interval"
+  },
+  "keyword.focus.label": {
+    "message": "Focus report",
+    "description": "Keyword hint for focus-tracker"
+  },
+  "keyword.focus.description": {
+    "message": "Screen-time report — try today, week, month, all",
+    "description": "Keyword hint for focus-tracker"
   }
 }

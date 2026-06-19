@@ -108,5 +108,13 @@
   "settings.attribution.html": {
     "message": "Data sourced from <a href=\"https://en.wiktionary.org/\" target=\"_blank\">Wiktionary</a> via <a href=\"https://freedictionaryapi.com/\" target=\"_blank\">FreeDictionaryAPI.com</a> under <a href=\"https://creativecommons.org/licenses/by-sa/4.0/\" target=\"_blank\">CC BY-SA 4.0</a>. Spelling suggestions by <a href=\"https://www.datamuse.com/\" target=\"_blank\">Datamuse</a>.",
     "description": "Settings: attribution info text"
+  },
+  "keyword.dict.label": {
+    "message": "Dictionary",
+    "description": "Keyword hint for dictionary"
+  },
+  "keyword.dict.description": {
+    "message": "Look up a word definition",
+    "description": "Keyword hint for dictionary"
   }
 }

@@ -28,6 +28,24 @@ export default class TodosSearchProvider {
         this.config = config || {};
     }
 
+    /**
+     * Complete, authoritative trigger set for host-side gating + hints.
+     * `todo`/`todos` show the list and also accept filters/search args
+     * (`todo #work`, `todo /done`, `todo milk`); `todo+` quick-adds; `todo-`
+     * deletes. All are distinct whole-word keywords, so each is listed or it
+     * becomes unreachable. Triggers are hardcoded (no config). Labels are
+     * i18n keys, resolved host-side.
+     */
+    getKeywords() {
+        // i18n-keys: keyword.todo.label, keyword.todo.description, keyword.add.label, keyword.add.description, keyword.del.label, keyword.del.description
+        return [
+            { keyword: 'todo', labelKey: 'keyword.todo.label', descriptionKey: 'keyword.todo.description', icon: '✅', acceptsArgs: true },
+            { keyword: 'todos', labelKey: 'keyword.todo.label', descriptionKey: 'keyword.todo.description', icon: '✅', acceptsArgs: true },
+            { keyword: 'todo+', labelKey: 'keyword.add.label', descriptionKey: 'keyword.add.description', icon: '➕', acceptsArgs: true },
+            { keyword: 'todo-', labelKey: 'keyword.del.label', descriptionKey: 'keyword.del.description', icon: '🗑️', acceptsArgs: true },
+        ];
+    }
+
     destroy() {}
 
     // --- Persistence via file (through Tauri IPC) ---

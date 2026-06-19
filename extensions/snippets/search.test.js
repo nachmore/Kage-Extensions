@@ -110,3 +110,22 @@ describe('SnippetsSearchProvider — execute copy', () => {
         expect(await provider.execute(row)).toEqual({ type: 'copy', value: 'hello there' });
     });
 });
+
+describe('SnippetsSearchProvider — getKeywords', () => {
+    const kw = (cfg) => setup({ config: cfg }).provider.getKeywords();
+
+    it('registers the trigger and its +/- sub-commands', () => {
+        expect(kw().map((k) => k.keyword)).toEqual(['snip', 'snip+', 'snip-']);
+    });
+
+    it('tracks a custom trigger', () => {
+        expect(kw({ trigger: 's' }).map((k) => k.keyword)).toEqual(['s', 's+', 's-']);
+    });
+
+    it('returns i18n KEYS for labels', () => {
+        for (const k of kw()) {
+            expect(k.labelKey).toMatch(/^keyword\./);
+            expect(k.label).toBeUndefined();
+        }
+    });
+});

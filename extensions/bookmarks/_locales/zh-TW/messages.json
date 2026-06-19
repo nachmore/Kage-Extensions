@@ -82,5 +82,41 @@
     "description": "Empty-result hint pointing to the save command",
     "_machine_translated": true,
     "_source_hash": "2d525aedebadba73"
+  },
+  "keyword.bm.label": {
+    "message": "書籤",
+    "description": "Keyword hint for bookmarks",
+    "_machine_translated": true,
+    "_source_hash": "a8409749dd68649d"
+  },
+  "keyword.bm.description": {
+    "message": "開啟已儲存的書籤 — 輸入以篩選",
+    "description": "Keyword hint for bookmarks",
+    "_machine_translated": true,
+    "_source_hash": "b51c7bb4469cae4c"
+  },
+  "keyword.add.label": {
+    "message": "新增書籤",
+    "description": "Keyword hint for bookmarks",
+    "_machine_translated": true,
+    "_source_hash": "6e8bfd3f221a8cf5"
+  },
+  "keyword.add.description": {
+    "message": "儲存書籤：bm+ <name> <url>",
+    "description": "Keyword hint for bookmarks",
+    "_machine_translated": true,
+    "_source_hash": "7ca8c5d06e98c933"
+  },
+  "keyword.del.label": {
+    "message": "刪除書籤",
+    "description": "Keyword hint for bookmarks",
+    "_machine_translated": true,
+    "_source_hash": "42281c32ebcee2f4"
+  },
+  "keyword.del.description": {
+    "message": "移除書籤：bm- <name>",
+    "description": "Keyword hint for bookmarks",
+    "_machine_translated": true,
+    "_source_hash": "48a005bcd34189e0"
   }
 }

@@ -580,5 +580,41 @@
     "description": "Status when import fails",
     "_machine_translated": true,
     "_source_hash": "8c1be51111141497"
+  },
+  "keyword.todo.label": {
+    "message": "টুডু",
+    "description": "Keyword hint for todos",
+    "_machine_translated": true,
+    "_source_hash": "3d640e58a7053c39"
+  },
+  "keyword.todo.description": {
+    "message": "আপনার টুডু তালিকা ও অগ্রগতি দেখান",
+    "description": "Keyword hint for todos",
+    "_machine_translated": true,
+    "_source_hash": "eab7bfccf1f2074b"
+  },
+  "keyword.add.label": {
+    "message": "টুডু যোগ করুন",
+    "description": "Keyword hint for todos",
+    "_machine_translated": true,
+    "_source_hash": "9edbd68002b6babd"
+  },
+  "keyword.add.description": {
+    "message": "দ্রুত টুডু যোগ করুন: todo+ <text>",
+    "description": "Keyword hint for todos",
+    "_machine_translated": true,
+    "_source_hash": "d24e05ae5c7468d5"
+  },
+  "keyword.del.label": {
+    "message": "টুডু মুছুন",
+    "description": "Keyword hint for todos",
+    "_machine_translated": true,
+    "_source_hash": "538d98d984673050"
+  },
+  "keyword.del.description": {
+    "message": "একটি টুডু সরান: todo-",
+    "description": "Keyword hint for todos",
+    "_machine_translated": true,
+    "_source_hash": "174dea6117a8e919"
   }
 }

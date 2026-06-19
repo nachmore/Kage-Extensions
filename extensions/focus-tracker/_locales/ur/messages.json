@@ -178,5 +178,17 @@
     "description": "Label shown while the all-time activity report loads",
     "_machine_translated": true,
     "_source_hash": "8073e994c571a83a"
+  },
+  "keyword.focus.label": {
+    "message": "فوکس رپورٹ",
+    "description": "Keyword hint for focus-tracker",
+    "_machine_translated": true,
+    "_source_hash": "6c4da031216b18ed"
+  },
+  "keyword.focus.description": {
+    "message": "اسکرین ٹائم رپورٹ — today، week، month، all آزمائیں",
+    "description": "Keyword hint for focus-tracker",
+    "_machine_translated": true,
+    "_source_hash": "28b192b16740b6b3"
   }
 }

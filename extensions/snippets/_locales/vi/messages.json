@@ -106,5 +106,41 @@
     "description": "Usage hint HTML",
     "_machine_translated": true,
     "_source_hash": "29d9dfcceaed7106"
+  },
+  "keyword.snip.label": {
+    "message": "Đoạn văn bản",
+    "description": "Keyword hint for snippets",
+    "_machine_translated": true,
+    "_source_hash": "70abb5cb0e9824ae"
+  },
+  "keyword.snip.description": {
+    "message": "Sao chép đoạn đã lưu — gõ để lọc",
+    "description": "Keyword hint for snippets",
+    "_machine_translated": true,
+    "_source_hash": "45b4150fce971004"
+  },
+  "keyword.add.label": {
+    "message": "Thêm đoạn",
+    "description": "Keyword hint for snippets",
+    "_machine_translated": true,
+    "_source_hash": "aac9f13106d63263"
+  },
+  "keyword.add.description": {
+    "message": "Lưu một đoạn: snip+ <tên> <nội dung>",
+    "description": "Keyword hint for snippets",
+    "_machine_translated": true,
+    "_source_hash": "0e76c7ea06b3a93e"
+  },
+  "keyword.del.label": {
+    "message": "Xóa đoạn",
+    "description": "Keyword hint for snippets",
+    "_machine_translated": true,
+    "_source_hash": "ebc556d9ec1dfad6"
+  },
+  "keyword.del.description": {
+    "message": "Gỡ một đoạn: snip- <tên>",
+    "description": "Keyword hint for snippets",
+    "_machine_translated": true,
+    "_source_hash": "e06570c7c0f2b6c5"
   }
 }

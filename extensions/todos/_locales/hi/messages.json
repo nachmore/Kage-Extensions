@@ -580,5 +580,41 @@
     "description": "Status when import fails",
     "_machine_translated": true,
     "_source_hash": "8c1be51111141497"
+  },
+  "keyword.todo.label": {
+    "message": "कार्यसूची",
+    "description": "Keyword hint for todos",
+    "_machine_translated": true,
+    "_source_hash": "3d640e58a7053c39"
+  },
+  "keyword.todo.description": {
+    "message": "अपनी कार्यसूची और प्रगति देखें",
+    "description": "Keyword hint for todos",
+    "_machine_translated": true,
+    "_source_hash": "eab7bfccf1f2074b"
+  },
+  "keyword.add.label": {
+    "message": "कार्य जोड़ें",
+    "description": "Keyword hint for todos",
+    "_machine_translated": true,
+    "_source_hash": "9edbd68002b6babd"
+  },
+  "keyword.add.description": {
+    "message": "कोई कार्य त्वरित रूप से जोड़ें: todo+ <text>",
+    "description": "Keyword hint for todos",
+    "_machine_translated": true,
+    "_source_hash": "d24e05ae5c7468d5"
+  },
+  "keyword.del.label": {
+    "message": "कार्य हटाएँ",
+    "description": "Keyword hint for todos",
+    "_machine_translated": true,
+    "_source_hash": "538d98d984673050"
+  },
+  "keyword.del.description": {
+    "message": "कोई कार्य हटाएँ: todo-",
+    "description": "Keyword hint for todos",
+    "_machine_translated": true,
+    "_source_hash": "174dea6117a8e919"
   }
 }

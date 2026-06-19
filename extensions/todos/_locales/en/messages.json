@@ -388,5 +388,29 @@
   "action.import.error": {
     "message": "❌ Import failed: {message}",
     "description": "Status when import fails"
+  },
+  "keyword.todo.label": {
+    "message": "Todos",
+    "description": "Keyword hint for todos"
+  },
+  "keyword.todo.description": {
+    "message": "Show your todo list and progress",
+    "description": "Keyword hint for todos"
+  },
+  "keyword.add.label": {
+    "message": "Add todo",
+    "description": "Keyword hint for todos"
+  },
+  "keyword.add.description": {
+    "message": "Quick-add a todo: todo+ <text>",
+    "description": "Keyword hint for todos"
+  },
+  "keyword.del.label": {
+    "message": "Delete todo",
+    "description": "Keyword hint for todos"
+  },
+  "keyword.del.description": {
+    "message": "Remove a todo: todo-",
+    "description": "Keyword hint for todos"
   }
 }

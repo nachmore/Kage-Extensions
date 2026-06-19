@@ -44,5 +44,13 @@
   "settings.hide_minimized.description": {
     "message": "Exclude minimized windows from the list.",
     "description": "Helper for hide-minimized toggle"
+  },
+  "keyword.w.label": {
+    "message": "Switch window",
+    "description": "Keyword hint for window-walker"
+  },
+  "keyword.w.description": {
+    "message": "Find and focus an open window",
+    "description": "Keyword hint for window-walker"
   }
 }

@@ -56,5 +56,29 @@
   "result.none.description": {
     "message": "Save one with `bm+ <name> <url>`",
     "description": "Empty-result hint pointing to the save command"
+  },
+  "keyword.bm.label": {
+    "message": "Bookmarks",
+    "description": "Keyword hint for bookmarks"
+  },
+  "keyword.bm.description": {
+    "message": "Open a saved bookmark — type to filter",
+    "description": "Keyword hint for bookmarks"
+  },
+  "keyword.add.label": {
+    "message": "Add bookmark",
+    "description": "Keyword hint for bookmarks"
+  },
+  "keyword.add.description": {
+    "message": "Save a bookmark: bm+ <name> <url>",
+    "description": "Keyword hint for bookmarks"
+  },
+  "keyword.del.label": {
+    "message": "Delete bookmark",
+    "description": "Keyword hint for bookmarks"
+  },
+  "keyword.del.description": {
+    "message": "Remove a bookmark: bm- <name>",
+    "description": "Keyword hint for bookmarks"
   }
 }

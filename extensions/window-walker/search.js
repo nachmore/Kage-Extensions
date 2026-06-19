@@ -24,6 +24,23 @@ export default class WindowWalkerSearchProvider {
         this.config = config || {};
     }
 
+    /**
+     * Trigger set for host-side gating. The configured trigger carries a
+     * trailing space by default ('w '); we register the trimmed word so the
+     * host's whole-word gate ('w' exact or 'w ' + args) matches the same
+     * queries matchAsync() handles. A single-char trigger never produces a
+     * completion hint (its only strict prefix is the empty query), so this is
+     * purely a per-keystroke gate. Label is an i18n key.
+     */
+    getKeywords() {
+        // i18n-keys: keyword.w.label, keyword.w.description
+        const trigger = (this.config.trigger || 'w ').trim().toLowerCase();
+        if (!trigger) return [];
+        return [
+            { keyword: trigger, labelKey: 'keyword.w.label', descriptionKey: 'keyword.w.description', icon: '🪟', acceptsArgs: true },
+        ];
+    }
+
     match(_query) {
         // All work is async (needs IPC to list windows)
         return [];

@@ -105,3 +105,20 @@ describe('WindowWalkerSearchProvider — execute', () => {
         expect(invoke).toHaveBeenCalledWith('focus_open_window', { handle: 2 });
     });
 });
+
+describe('WindowWalkerSearchProvider — getKeywords', () => {
+    const kw = (cfg) => setup({ config: cfg }).provider.getKeywords();
+
+    it('registers the trimmed trigger word', () => {
+        expect(kw().map((k) => k.keyword)).toEqual(['w']);
+    });
+
+    it('trims a trailing-space trigger and tracks a custom one', () => {
+        expect(kw({ trigger: 'win ' }).map((k) => k.keyword)).toEqual(['win']);
+    });
+
+    it('returns an i18n KEY for the label', () => {
+        expect(kw()[0].labelKey).toMatch(/^keyword\./);
+        expect(kw()[0].label).toBeUndefined();
+    });
+});

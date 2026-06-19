@@ -58,5 +58,17 @@
     "description": "Helper text for the timestamp checkbox",
     "_machine_translated": true,
     "_source_hash": "926be39685a2ac0e"
+  },
+  "keyword.test.label": {
+    "message": "Hallo-Welt-Test",
+    "description": "Keyword hint for hello-world",
+    "_machine_translated": true,
+    "_source_hash": "6f6c5e45c7e9d407"
+  },
+  "keyword.test.description": {
+    "message": "Beispielerweiterung ausführen",
+    "description": "Keyword hint for hello-world",
+    "_machine_translated": true,
+    "_source_hash": "27ac5b8f981093ab"
   }
 }

@@ -72,5 +72,29 @@
   "settings.info.usage_html": {
     "message": "<p><em>Usage:</em> <code>snip name</code> to copy, <code>snip+ name body</code> to save, <code>snip- name</code> to delete.</p>",
     "description": "Usage hint HTML"
+  },
+  "keyword.snip.label": {
+    "message": "Snippets",
+    "description": "Keyword hint for snippets"
+  },
+  "keyword.snip.description": {
+    "message": "Copy a saved snippet — type to filter",
+    "description": "Keyword hint for snippets"
+  },
+  "keyword.add.label": {
+    "message": "Add snippet",
+    "description": "Keyword hint for snippets"
+  },
+  "keyword.add.description": {
+    "message": "Save a snippet: snip+ <name> <body>",
+    "description": "Keyword hint for snippets"
+  },
+  "keyword.del.label": {
+    "message": "Delete snippet",
+    "description": "Keyword hint for snippets"
+  },
+  "keyword.del.description": {
+    "message": "Remove a snippet: snip- <name>",
+    "description": "Keyword hint for snippets"
   }
 }

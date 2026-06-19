@@ -580,5 +580,41 @@
     "description": "Status when import fails",
     "_machine_translated": true,
     "_source_hash": "8c1be51111141497"
+  },
+  "keyword.todo.label": {
+    "message": "ٹوڈوز",
+    "description": "Keyword hint for todos",
+    "_machine_translated": true,
+    "_source_hash": "3d640e58a7053c39"
+  },
+  "keyword.todo.description": {
+    "message": "اپنی ٹوڈو فہرست اور پیش رفت دکھائیں",
+    "description": "Keyword hint for todos",
+    "_machine_translated": true,
+    "_source_hash": "eab7bfccf1f2074b"
+  },
+  "keyword.add.label": {
+    "message": "ٹوڈو شامل کریں",
+    "description": "Keyword hint for todos",
+    "_machine_translated": true,
+    "_source_hash": "9edbd68002b6babd"
+  },
+  "keyword.add.description": {
+    "message": "فوری ٹوڈو شامل کریں: todo+ <text>",
+    "description": "Keyword hint for todos",
+    "_machine_translated": true,
+    "_source_hash": "d24e05ae5c7468d5"
+  },
+  "keyword.del.label": {
+    "message": "ٹوڈو حذف کریں",
+    "description": "Keyword hint for todos",
+    "_machine_translated": true,
+    "_source_hash": "538d98d984673050"
+  },
+  "keyword.del.description": {
+    "message": "ٹوڈو ہٹائیں: todo-",
+    "description": "Keyword hint for todos",
+    "_machine_translated": true,
+    "_source_hash": "174dea6117a8e919"
   }
 }

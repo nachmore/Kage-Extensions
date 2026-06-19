@@ -5,7 +5,6 @@
     "rtl": false,
     "machine_translated": false
   },
-
   "manifest.name": {
     "message": "Hello World",
     "description": "Extension display name shown in Settings → Extensions and the store."
@@ -14,12 +13,10 @@
     "message": "A sample extension that responds to 'test' with 'Hello World'. Use this as a template for building your own extensions.",
     "description": "Extension description shown in Settings → Extensions and the store."
   },
-
   "result.description": {
     "message": "Press Enter to copy",
     "description": "Subtitle on the Hello World search result"
   },
-
   "settings.description": {
     "message": "A sample extension. Type \"test\" or \"hello\" in the floating window to see the greeting.",
     "description": "Top-of-pane description in Settings → Extensions → Hello World"
@@ -43,5 +40,13 @@
   "settings.show_timestamp.description": {
     "message": "Append the current time to the greeting.",
     "description": "Helper text for the timestamp checkbox"
+  },
+  "keyword.test.label": {
+    "message": "Hello World test",
+    "description": "Keyword hint for hello-world"
+  },
+  "keyword.test.description": {
+    "message": "Run the sample extension",
+    "description": "Keyword hint for hello-world"
   }
 }

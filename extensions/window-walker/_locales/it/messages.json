@@ -64,5 +64,17 @@
     "description": "Helper for hide-minimized toggle",
     "_machine_translated": true,
     "_source_hash": "969c657a8dc12e02"
+  },
+  "keyword.w.label": {
+    "message": "Cambia finestra",
+    "description": "Keyword hint for window-walker",
+    "_machine_translated": true,
+    "_source_hash": "37bde271082d92b4"
+  },
+  "keyword.w.description": {
+    "message": "Trova e attiva una finestra aperta",
+    "description": "Keyword hint for window-walker",
+    "_machine_translated": true,
+    "_source_hash": "a047d70bbdba62a1"
   }
 }

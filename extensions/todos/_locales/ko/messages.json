@@ -580,5 +580,41 @@
     "description": "Status when import fails",
     "_machine_translated": true,
     "_source_hash": "8c1be51111141497"
+  },
+  "keyword.todo.label": {
+    "message": "할 일",
+    "description": "Keyword hint for todos",
+    "_machine_translated": true,
+    "_source_hash": "3d640e58a7053c39"
+  },
+  "keyword.todo.description": {
+    "message": "할 일 목록과 진행 상황을 표시합니다",
+    "description": "Keyword hint for todos",
+    "_machine_translated": true,
+    "_source_hash": "eab7bfccf1f2074b"
+  },
+  "keyword.add.label": {
+    "message": "할 일 추가",
+    "description": "Keyword hint for todos",
+    "_machine_translated": true,
+    "_source_hash": "9edbd68002b6babd"
+  },
+  "keyword.add.description": {
+    "message": "할 일을 빠르게 추가합니다: todo+ <text>",
+    "description": "Keyword hint for todos",
+    "_machine_translated": true,
+    "_source_hash": "d24e05ae5c7468d5"
+  },
+  "keyword.del.label": {
+    "message": "할 일 삭제",
+    "description": "Keyword hint for todos",
+    "_machine_translated": true,
+    "_source_hash": "538d98d984673050"
+  },
+  "keyword.del.description": {
+    "message": "할 일을 제거합니다: todo-",
+    "description": "Keyword hint for todos",
+    "_machine_translated": true,
+    "_source_hash": "174dea6117a8e919"
   }
 }

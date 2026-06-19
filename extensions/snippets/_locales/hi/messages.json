@@ -106,5 +106,41 @@
     "description": "Usage hint HTML",
     "_machine_translated": true,
     "_source_hash": "29d9dfcceaed7106"
+  },
+  "keyword.snip.label": {
+    "message": "स्निपेट",
+    "description": "Keyword hint for snippets",
+    "_machine_translated": true,
+    "_source_hash": "70abb5cb0e9824ae"
+  },
+  "keyword.snip.description": {
+    "message": "सहेजा गया स्निपेट कॉपी करें — फ़िल्टर करने के लिए टाइप करें",
+    "description": "Keyword hint for snippets",
+    "_machine_translated": true,
+    "_source_hash": "45b4150fce971004"
+  },
+  "keyword.add.label": {
+    "message": "स्निपेट जोड़ें",
+    "description": "Keyword hint for snippets",
+    "_machine_translated": true,
+    "_source_hash": "aac9f13106d63263"
+  },
+  "keyword.add.description": {
+    "message": "स्निपेट सहेजें: snip+ <name> <body>",
+    "description": "Keyword hint for snippets",
+    "_machine_translated": true,
+    "_source_hash": "0e76c7ea06b3a93e"
+  },
+  "keyword.del.label": {
+    "message": "स्निपेट हटाएँ",
+    "description": "Keyword hint for snippets",
+    "_machine_translated": true,
+    "_source_hash": "ebc556d9ec1dfad6"
+  },
+  "keyword.del.description": {
+    "message": "स्निपेट हटाएँ: snip- <name>",
+    "description": "Keyword hint for snippets",
+    "_machine_translated": true,
+    "_source_hash": "e06570c7c0f2b6c5"
   }
 }

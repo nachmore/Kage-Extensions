@@ -49,3 +49,23 @@ describe('HelloWorldSearchProvider', () => {
         expect(provider.execute(row)).toEqual({ type: 'copy', value: 'Hi' });
     });
 });
+
+describe('HelloWorldSearchProvider — getKeywords', () => {
+    it('registers both test and hello as keywords', () => {
+        const kws = setup().getKeywords();
+        expect(kws.map((k) => k.keyword)).toEqual(['test', 'hello']);
+    });
+
+    it('test accepts args; hello is exact', () => {
+        const byKw = Object.fromEntries(setup().getKeywords().map((k) => [k.keyword, k]));
+        expect(byKw['test'].acceptsArgs).toBe(true);
+        expect(byKw['hello'].acceptsArgs).toBe(false);
+    });
+
+    it('returns i18n KEYS for labels', () => {
+        for (const k of setup().getKeywords()) {
+            expect(k.labelKey).toMatch(/^keyword\./);
+            expect(k.label).toBeUndefined();
+        }
+    });
+});

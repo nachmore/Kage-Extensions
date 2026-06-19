@@ -123,3 +123,22 @@ describe('DictionarySearchProvider — execute', () => {
         expect(p.execute({ data: { type: 'not_found' } })).toBeNull();
     });
 });
+
+describe('DictionarySearchProvider — getKeywords', () => {
+    it('registers the trigger keyword', () => {
+        const kws = setup().getKeywords();
+        expect(kws.map((k) => k.keyword)).toEqual(['dict']);
+        expect(kws[0].labelKey).toMatch(/^keyword\./);
+        expect(kws[0].label).toBeUndefined();
+    });
+
+    it('tracks a custom trigger', () => {
+        expect(setup({ trigger: 'def' }).getKeywords().map((k) => k.keyword)).toEqual(['def']);
+    });
+
+    it('registers NO keywords when the trigger is cleared (content matcher)', () => {
+        // Empty trigger → dictionary looks up any bare word, so it must receive
+        // every keystroke; the host treats an empty keyword list as "always call".
+        expect(setup({ trigger: '' }).getKeywords()).toEqual([]);
+    });
+});

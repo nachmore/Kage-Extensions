@@ -152,3 +152,18 @@ describe('TodosSearchProvider — match() summary', () => {
         expect(provider.match('hello')).toEqual([]);
     });
 });
+
+describe('TodosSearchProvider — getKeywords', () => {
+    const kw = () => setup().provider.getKeywords();
+
+    it('registers todo/todos + add/delete sub-commands', () => {
+        expect(kw().map((k) => k.keyword)).toEqual(['todo', 'todos', 'todo+', 'todo-']);
+    });
+
+    it('returns i18n KEYS for labels', () => {
+        for (const k of kw()) {
+            expect(k.labelKey).toMatch(/^keyword\./);
+            expect(k.label).toBeUndefined();
+        }
+    });
+});

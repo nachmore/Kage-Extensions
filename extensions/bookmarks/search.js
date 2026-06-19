@@ -31,6 +31,23 @@ export default class BookmarksSearchProvider {
     }
     onConfigUpdate(config) { this.config = config || {}; }
 
+    /**
+     * Complete, authoritative trigger set. The host shows completion hints for
+     * partial prefixes and only invokes match()/matchAsync() once one of these
+     * is committed. The bare trigger plus its +/- sub-commands are distinct
+     * whole-word keywords (e.g. `bm+`), so each must be listed or it becomes
+     * unreachable. Labels are i18n keys, resolved host-side.
+     */
+    getKeywords() {
+        // i18n-keys: keyword.bm.label, keyword.bm.description, keyword.add.label, keyword.add.description, keyword.del.label, keyword.del.description
+        const trigger = (this.config.trigger || 'bm').toLowerCase();
+        return [
+            { keyword: trigger, labelKey: 'keyword.bm.label', descriptionKey: 'keyword.bm.description', icon: '🔖', acceptsArgs: true },
+            { keyword: trigger + '+', labelKey: 'keyword.add.label', descriptionKey: 'keyword.add.description', icon: '➕', acceptsArgs: true },
+            { keyword: trigger + '-', labelKey: 'keyword.del.label', descriptionKey: 'keyword.del.description', icon: '🗑️', acceptsArgs: true },
+        ];
+    }
+
     async _load() {
         if (this._cache) return this._cache;
         try {

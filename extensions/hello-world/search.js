@@ -19,6 +19,18 @@ export default class HelloWorldSearchProvider {
         this.config = config || {};
     }
 
+    /**
+     * Complete trigger set for host-side gating + hints. `test` also accepts
+     * trailing args (`test foo`); `hello` is exact. Labels are i18n keys.
+     */
+    getKeywords() {
+        // i18n-keys: keyword.test.label, keyword.test.description
+        return [
+            { keyword: 'test', labelKey: 'keyword.test.label', descriptionKey: 'keyword.test.description', icon: '👋', acceptsArgs: true },
+            { keyword: 'hello', labelKey: 'keyword.test.label', descriptionKey: 'keyword.test.description', icon: '👋', acceptsArgs: false },
+        ];
+    }
+
     match(query) {
         const lower = query.trim().toLowerCase();
         if (lower !== 'test' && lower !== 'hello' && !lower.startsWith('test ')) {

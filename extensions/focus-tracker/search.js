@@ -37,6 +37,21 @@ export default class FocusTrackerSearchProvider {
         }
     }
 
+    /**
+     * Trigger set for host-side gating + hints. `focus` alone reports today;
+     * `focus week` / `month` / `all` pick a period — hence acceptsArgs. The
+     * empty-trigger case can't occur (config default is 'focus' and parsing
+     * bails on an empty trigger), but guard anyway. Label is an i18n key.
+     */
+    getKeywords() {
+        // i18n-keys: keyword.focus.label, keyword.focus.description
+        const trigger = (this.config.trigger ?? 'focus').trim().toLowerCase();
+        if (!trigger) return [];
+        return [
+            { keyword: trigger, labelKey: 'keyword.focus.label', descriptionKey: 'keyword.focus.description', icon: '📊', acceptsArgs: true },
+        ];
+    }
+
     match(query) {
         const parsed = this._parseQuery(query);
         if (!parsed) return [];

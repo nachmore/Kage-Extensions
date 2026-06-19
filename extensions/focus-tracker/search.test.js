@@ -95,3 +95,17 @@ describe('FocusTracker — match()', () => {
         expect(rows.every((r) => r.data?.type !== 'loading')).toBe(true);
     });
 });
+
+describe('FocusTrackerSearchProvider — getKeywords', () => {
+    it('registers the trigger keyword (accepts period args)', () => {
+        const kws = setup().getKeywords();
+        expect(kws.map((k) => k.keyword)).toEqual(['focus']);
+        expect(kws[0].acceptsArgs).toBe(true);
+        expect(kws[0].labelKey).toMatch(/^keyword\./);
+        expect(kws[0].label).toBeUndefined();
+    });
+
+    it('tracks a custom trigger', () => {
+        expect(setup({ trigger: 'time' }).getKeywords().map((k) => k.keyword)).toEqual(['time']);
+    });
+});
