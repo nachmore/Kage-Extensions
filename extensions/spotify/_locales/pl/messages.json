@@ -556,5 +556,17 @@
     "description": "Status when the connection check failed for an unexpected reason",
     "_machine_translated": true,
     "_source_hash": "ebc172347de649d7"
+  },
+  "widget.disconnected.message": {
+    "message": "Rozłączono ze Spotify",
+    "description": "Now-playing bar text shown when the session has been revoked and needs reconnecting",
+    "_machine_translated": true,
+    "_source_hash": "a1a2822d64581ff7"
+  },
+  "widget.disconnected.reconnect": {
+    "message": "Połącz ponownie",
+    "description": "Button on the disconnected now-playing bar that restarts sign-in",
+    "_machine_translated": true,
+    "_source_hash": "2ae2be47f0f4a07f"
   }
 }

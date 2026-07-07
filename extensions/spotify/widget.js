@@ -8,6 +8,12 @@
 
 import * as auth from './auth.js';
 
+// How many consecutive auth-classified poll failures before the widget
+// shows the "disconnected — reconnect" affordance. >1 so a lone blip that
+// happens to look like an auth error never flashes the bar; at the default
+// 15s cadence, 2 means the bar appears ~30s after a genuine revocation.
+const AUTH_FAIL_THRESHOLD = 2;
+
 function escapeHtml(s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({
         '&': '&amp;',
@@ -27,6 +33,11 @@ export default class SpotifyNowPlayingWidget {
         this.t = context.i18n?.t?.bind(context.i18n) || ((k) => k);
         this._lastTrackId = null;
         this._liked = null;
+        // Consecutive critical (auth) poll failures. We only surface the
+        // "disconnected" affordance once this crosses AUTH_FAIL_THRESHOLD,
+        // so a single transient hiccup that happens to classify as auth
+        // never flashes the bar. Reset to 0 on any successful poll.
+        this._authFailStreak = 0;
     }
 
     onConfigUpdate(config) {
@@ -62,8 +73,27 @@ export default class SpotifyNowPlayingWidget {
             state = await auth.api('GET', '/me/player');
         } catch (e) {
             this.log?.warn?.('Spotify widget fetch failed: ' + (e?.message || e));
+            // Only a *critical* auth failure (revoked/expired token) warrants
+            // an affordance — and only after it repeats, so a transient blip
+            // never flashes the bar. Network/unknown errors are left silent:
+            // they're usually momentary, and true offline is covered by the
+            // host's own connectivity bar (we also short-circuit on
+            // navigator.onLine above), so a Spotify-specific banner would
+            // double up.
+            if (auth.classifyError(e) === 'auth') {
+                this._authFailStreak += 1;
+                if (this._authFailStreak >= AUTH_FAIL_THRESHOLD) {
+                    return this._renderDisconnected();
+                }
+            }
+            // Below threshold, or a non-critical error: render nothing and
+            // wait for the next poll to confirm.
             return null;
         }
+
+        // A successful poll means we're connected — clear any failure streak
+        // so a later blip starts counting fresh.
+        this._authFailStreak = 0;
 
         if (!state || !state.item) return null;
 
@@ -129,7 +159,42 @@ export default class SpotifyNowPlayingWidget {
         };
     }
 
+    /**
+     * The "disconnected — reconnect" bar. Shown only after repeated auth
+     * failures (see render()'s catch). Deliberately minimal: an icon, a
+     * short message, and a Reconnect button that kicks off the sign-in flow.
+     */
+    _renderDisconnected() {
+        const msg = this.t('widget.disconnected.message');
+        const reconnect = this.t('widget.disconnected.reconnect');
+        const html = `
+            <span class="extension-bar-icon spotify-art spotify-art-warn">⚠️</span>
+            <span class="extension-bar-text spotify-text">
+                <span class="spotify-track">${escapeHtml(msg)}</span>
+            </span>
+            <div class="extension-bar-controls spotify-controls">
+                <button data-ext-action="reconnect" class="extension-bar-btn spotify-reconnect">${escapeHtml(reconnect)}</button>
+            </div>
+        `;
+        return {
+            className: 'extension-bar spotify-bar spotify-bar-disconnected',
+            html,
+            actions: [{ id: 'reconnect', rpc: 'reconnect' }],
+        };
+    }
+
     async onAction(action) {
+        // Reconnect drives the browser OAuth + loopback flow, which can take
+        // far longer than the host's 10s widget-RPC timeout (the user has to
+        // consent in a browser tab). Fire-and-forget so this RPC returns
+        // immediately; the next successful poll clears the failure streak and
+        // swaps the disconnected bar back to the now-playing view.
+        if (action === 'reconnect') {
+            auth.startSignIn().catch((e) => {
+                this.log?.warn?.('Spotify reconnect failed: ' + (e?.message || e));
+            });
+            return { rerender: false };
+        }
         try {
             switch (action) {
                 case 'prev':

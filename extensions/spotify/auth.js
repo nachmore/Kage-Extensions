@@ -183,6 +183,39 @@ export async function isConnected() {
 }
 
 /**
+ * Classify a thrown Spotify error so callers can tell a *critical* auth
+ * failure (the stored token is dead — only reconnecting fixes it) from a
+ * *transient* one (network blip, timeout — the token is probably fine).
+ * Shared by `checkConnection` and the now-playing widget so both agree on
+ * what "disconnected" means.
+ *
+ * @returns {'auth'|'network'|'unknown'}
+ *   - 'auth'    : 401/403, or a refresh that came back invalid_grant/4xx —
+ *                 Spotify revoked us. api() already retried the refresh
+ *                 once, so surfacing this means the token is genuinely dead.
+ *   - 'network' : offline / DNS / connect timeout / abort — retryable.
+ *   - 'unknown' : anything else; treated as non-critical (don't nag).
+ */
+export function classifyError(e) {
+    const msg = String(e?.message || e);
+    if (
+        e?.status === 401 ||
+        e?.status === 403 ||
+        /invalid_grant|Token refresh failed: 4\d\d|Not signed in/i.test(msg)
+    ) {
+        return 'auth';
+    }
+    if (
+        e?.name === 'TimeoutError' ||
+        e?.name === 'AbortError' ||
+        /fetch|network|timeout|Failed to fetch/i.test(msg)
+    ) {
+        return 'network';
+    }
+    return 'unknown';
+}
+
+/**
  * Actively validate the stored credentials against Spotify, rather than
  * just checking a blob exists on disk (`isConnected`). This is what the
  * settings "Check connection" button calls: `isConnected` can report
@@ -214,25 +247,13 @@ export async function checkConnection() {
         const me = await api('GET', '/me');
         return { ok: true, reason: 'ok', display: me?.display_name || me?.id || '' };
     } catch (e) {
-        // A revoked/invalid refresh token surfaces as a 400 invalid_grant
-        // from the token endpoint (thrown by refreshAccessToken) or a 401
-        // from the API call. Either way the stored creds are dead.
-        const msg = String(e?.message || e);
-        const isAuthFailure =
-            e?.status === 401 ||
-            e?.status === 403 ||
-            /invalid_grant|Token refresh failed: 4\d\d|Not signed in/i.test(msg);
-        if (isAuthFailure) return { ok: false, reason: 'revoked' };
-
-        // AbortSignal.timeout / offline / DNS failures land here — the
-        // token might be perfectly fine, so DON'T report it as revoked.
-        const isNetwork =
-            e?.name === 'TimeoutError' ||
-            e?.name === 'AbortError' ||
-            /fetch|network|timeout|Failed to fetch/i.test(msg);
-        if (isNetwork) return { ok: false, reason: 'network' };
-
-        return { ok: false, reason: 'unknown', display: msg.slice(0, 120) };
+        // Map the shared classification onto the settings-facing reasons.
+        // 'auth' → the stored creds are dead ('revoked'); network/unknown
+        // stay distinct so we don't tell the user to reconnect over a blip.
+        const kind = classifyError(e);
+        if (kind === 'auth') return { ok: false, reason: 'revoked' };
+        if (kind === 'network') return { ok: false, reason: 'network' };
+        return { ok: false, reason: 'unknown', display: String(e?.message || e).slice(0, 120) };
     }
 }
 

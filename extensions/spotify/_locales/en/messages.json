@@ -213,6 +213,14 @@
     "message": "Resume",
     "description": "Tooltip on the play/pause button when paused"
   },
+  "widget.disconnected.message": {
+    "message": "Spotify disconnected",
+    "description": "Now-playing bar text shown when the session has been revoked and needs reconnecting"
+  },
+  "widget.disconnected.reconnect": {
+    "message": "Reconnect",
+    "description": "Button on the disconnected now-playing bar that restarts sign-in"
+  },
   "settings.description": {
     "message": "See what's playing, queue songs, like the current track, skip — all from the Kage launcher or a chat command. Sign in with your own Spotify account; your password never leaves your browser.",
     "description": "Settings page description"

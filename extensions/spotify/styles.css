@@ -55,3 +55,21 @@
 .spotify-like.is-liked {
     color: var(--spotify-green);
 }
+
+/* Disconnected state — shown after repeated auth failures. Muted warning
+   styling; not alarming, just actionable. */
+.spotify-art-warn {
+    background: transparent;
+    font-size: 18px;
+}
+.spotify-bar-disconnected .spotify-track {
+    color: var(--kage-text-muted, #9aa0b4);
+    font-weight: 400;
+}
+.spotify-reconnect {
+    width: auto;
+    padding-left: 10px;
+    padding-right: 10px;
+    color: var(--spotify-green);
+    font-weight: 500;
+}
