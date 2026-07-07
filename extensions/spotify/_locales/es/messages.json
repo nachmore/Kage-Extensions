@@ -508,5 +508,53 @@
     "description": "Keyword hint description for the Spotify trigger",
     "_machine_translated": true,
     "_source_hash": "a357819ef57037ea"
+  },
+  "settings.check_connection.label": {
+    "message": "Comprobar conexión",
+    "description": "Settings: button that validates the stored Spotify session against the API",
+    "_machine_translated": true,
+    "_source_hash": "6193fc1c7ab885e9"
+  },
+  "action.check_connection.ok": {
+    "message": "✅ Conectado. Tu sesión de Spotify es válida.",
+    "description": "Status when the live connection check succeeds",
+    "_machine_translated": true,
+    "_source_hash": "7fe088d014751a3b"
+  },
+  "action.check_connection.ok_named": {
+    "message": "✅ Conectado como {name}. Tu sesión de Spotify es válida.",
+    "description": "Status when the live connection check succeeds and a display name is known",
+    "_machine_translated": true,
+    "_source_hash": "3f096cf0735591ab"
+  },
+  "action.check_connection.no_client_id": {
+    "message": "⚠️ Aún no hay ningún Client ID guardado. Pega uno arriba primero.",
+    "description": "Status when checking connection without a client_id",
+    "_machine_translated": true,
+    "_source_hash": "30500a2d3fcb5cbf"
+  },
+  "action.check_connection.not_signed_in": {
+    "message": "⚠️ No has iniciado sesión. Haz clic en Conectar para iniciar sesión en Spotify.",
+    "description": "Status when checking connection with no stored credentials",
+    "_machine_translated": true,
+    "_source_hash": "3bcdc7e6916aa6c7"
+  },
+  "action.check_connection.revoked": {
+    "message": "❌ Tu sesión de Spotify ha caducado o se ha revocado. Haz clic en Conectar para iniciar sesión de nuevo.",
+    "description": "Status when the stored token is no longer accepted by Spotify",
+    "_machine_translated": true,
+    "_source_hash": "70442bd54e9a93b0"
+  },
+  "action.check_connection.network": {
+    "message": "⚠️ No se pudo conectar con Spotify. Comprueba tu conexión e inténtalo de nuevo; puede que tu sesión siga siendo válida.",
+    "description": "Status when the connection check failed due to a network error",
+    "_machine_translated": true,
+    "_source_hash": "b043d41945ef0ba9"
+  },
+  "action.check_connection.unknown": {
+    "message": "⚠️ No se pudo verificar la conexión: {message}",
+    "description": "Status when the connection check failed for an unexpected reason",
+    "_machine_translated": true,
+    "_source_hash": "ebc172347de649d7"
   }
 }

@@ -110,6 +110,20 @@ export async function clearAll() {
     _cachedToken = null;
 }
 
+/**
+ * Clear the session credentials (and now-meaningless device preference)
+ * but KEEP the user-pasted client_id. Used when Spotify has revoked the
+ * refresh token: the token is dead, but the app registration is still
+ * valid, so reconnecting is a single click rather than a re-paste of the
+ * Client ID. Contrast with `clearAll`, which the explicit "Sign out"
+ * action uses to wipe everything.
+ */
+export async function clearCreds() {
+    await _ctx.invoke('delete_extension_data', { key: 'creds' });
+    await _ctx.invoke('delete_extension_data', { key: 'device' });
+    _cachedToken = null;
+}
+
 // ---- Preferred-device storage --------------------------------------
 //
 // Spotify's "active device" is whatever Spotify is currently streaming
@@ -166,6 +180,60 @@ async function writeCreds(creds) {
 export async function isConnected() {
     const c = await readCreds();
     return !!(c && c.refresh_token);
+}
+
+/**
+ * Actively validate the stored credentials against Spotify, rather than
+ * just checking a blob exists on disk (`isConnected`). This is what the
+ * settings "Check connection" button calls: `isConnected` can report
+ * "Signed in" indefinitely after Spotify revokes the refresh token (e.g.
+ * the user removed the app, or changed their password), because nothing
+ * ever exercises the token until playback is attempted.
+ *
+ * Forces a token refresh + a cheap authenticated call (`GET /me`) and
+ * classifies the outcome so the caller can show an accurate message and
+ * decide whether to clear the now-dead creds.
+ *
+ * @returns {Promise<{ok: boolean, reason: string, display?: string}>}
+ *   reason ∈ 'ok' | 'no_client_id' | 'not_signed_in' | 'revoked'
+ *            | 'network' | 'unknown'. `display` is the Spotify display
+ *   name on success when available.
+ */
+export async function checkConnection() {
+    const clientId = await getClientId();
+    if (!clientId) return { ok: false, reason: 'no_client_id' };
+
+    const creds = await readCreds();
+    if (!creds || !creds.refresh_token) return { ok: false, reason: 'not_signed_in' };
+
+    // Drop any cached access token so we genuinely re-validate against
+    // Spotify instead of trusting an in-memory token from a prior poll.
+    _cachedToken = null;
+
+    try {
+        const me = await api('GET', '/me');
+        return { ok: true, reason: 'ok', display: me?.display_name || me?.id || '' };
+    } catch (e) {
+        // A revoked/invalid refresh token surfaces as a 400 invalid_grant
+        // from the token endpoint (thrown by refreshAccessToken) or a 401
+        // from the API call. Either way the stored creds are dead.
+        const msg = String(e?.message || e);
+        const isAuthFailure =
+            e?.status === 401 ||
+            e?.status === 403 ||
+            /invalid_grant|Token refresh failed: 4\d\d|Not signed in/i.test(msg);
+        if (isAuthFailure) return { ok: false, reason: 'revoked' };
+
+        // AbortSignal.timeout / offline / DNS failures land here — the
+        // token might be perfectly fine, so DON'T report it as revoked.
+        const isNetwork =
+            e?.name === 'TimeoutError' ||
+            e?.name === 'AbortError' ||
+            /fetch|network|timeout|Failed to fetch/i.test(msg);
+        if (isNetwork) return { ok: false, reason: 'network' };
+
+        return { ok: false, reason: 'unknown', display: msg.slice(0, 120) };
+    }
 }
 
 // ---- Sign-in flow ----

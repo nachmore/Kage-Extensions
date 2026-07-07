@@ -107,6 +107,12 @@ export default class SpotifySettingsProvider {
                         },
                         {
                             type: 'action',
+                            id: 'check_connection',
+                            label: t('settings.check_connection.label'),
+                            action: 'check_connection',
+                        },
+                        {
+                            type: 'action',
                             id: 'disconnect',
                             label: t('settings.disconnect.label'),
                             action: 'disconnect',
@@ -152,6 +158,41 @@ export default class SpotifySettingsProvider {
                 return { status: t('action.connect.success') };
             } catch (e) {
                 return { status: t('action.connect.error', { message: e?.message || e }) };
+            }
+        }
+        if (action === 'check_connection') {
+            const res = await auth.checkConnection();
+            switch (res.reason) {
+                case 'ok':
+                    return {
+                        status: res.display
+                            ? t('action.check_connection.ok_named', { name: res.display })
+                            : t('action.check_connection.ok'),
+                    };
+                case 'no_client_id':
+                    return { status: t('action.check_connection.no_client_id') };
+                case 'not_signed_in':
+                    return { status: t('action.check_connection.not_signed_in') };
+                case 'revoked':
+                    // The stored refresh token is dead (Spotify revoked it —
+                    // password change, app removed, etc.). Wipe it so the
+                    // connection status stops falsely reading "Signed in":
+                    // the next time this panel renders, `isConnected()` will
+                    // correctly report disconnected. Keep the Client ID
+                    // (clearCreds, not clearAll) — the app registration is
+                    // still valid, so reconnecting is one click, not a
+                    // re-paste. The status line below is the live, non-cached
+                    // answer to "am I connected?".
+                    await auth.clearCreds();
+                    return { status: t('action.check_connection.revoked') };
+                case 'network':
+                    return { status: t('action.check_connection.network') };
+                default:
+                    return {
+                        status: t('action.check_connection.unknown', {
+                            message: res.display || '',
+                        }),
+                    };
             }
         }
         if (action === 'disconnect') {

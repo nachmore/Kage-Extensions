@@ -508,5 +508,53 @@
     "description": "Keyword hint description for the Spotify trigger",
     "_machine_translated": true,
     "_source_hash": "a357819ef57037ea"
+  },
+  "settings.check_connection.label": {
+    "message": "कनेक्शन जाँचें",
+    "description": "Settings: button that validates the stored Spotify session against the API",
+    "_machine_translated": true,
+    "_source_hash": "6193fc1c7ab885e9"
+  },
+  "action.check_connection.ok": {
+    "message": "✅ कनेक्ट हो गया। आपका Spotify सत्र मान्य है।",
+    "description": "Status when the live connection check succeeds",
+    "_machine_translated": true,
+    "_source_hash": "7fe088d014751a3b"
+  },
+  "action.check_connection.ok_named": {
+    "message": "✅ {name} के रूप में कनेक्ट हो गया। आपका Spotify सत्र मान्य है।",
+    "description": "Status when the live connection check succeeds and a display name is known",
+    "_machine_translated": true,
+    "_source_hash": "3f096cf0735591ab"
+  },
+  "action.check_connection.no_client_id": {
+    "message": "⚠️ अभी तक कोई Client ID सहेजी नहीं गई है। पहले ऊपर एक पेस्ट करें।",
+    "description": "Status when checking connection without a client_id",
+    "_machine_translated": true,
+    "_source_hash": "30500a2d3fcb5cbf"
+  },
+  "action.check_connection.not_signed_in": {
+    "message": "⚠️ साइन इन नहीं हैं। Spotify में साइन इन करने के लिए Connect पर क्लिक करें।",
+    "description": "Status when checking connection with no stored credentials",
+    "_machine_translated": true,
+    "_source_hash": "3bcdc7e6916aa6c7"
+  },
+  "action.check_connection.revoked": {
+    "message": "❌ आपका Spotify सत्र समाप्त हो गया है या रद्द कर दिया गया था। फिर से साइन इन करने के लिए Connect पर क्लिक करें।",
+    "description": "Status when the stored token is no longer accepted by Spotify",
+    "_machine_translated": true,
+    "_source_hash": "70442bd54e9a93b0"
+  },
+  "action.check_connection.network": {
+    "message": "⚠️ Spotify तक नहीं पहुँच सके। अपना कनेक्शन जाँचें और फिर से प्रयास करें — आपका सत्र अभी भी ठीक हो सकता है।",
+    "description": "Status when the connection check failed due to a network error",
+    "_machine_translated": true,
+    "_source_hash": "b043d41945ef0ba9"
+  },
+  "action.check_connection.unknown": {
+    "message": "⚠️ कनेक्शन सत्यापित नहीं किया जा सका: {message}",
+    "description": "Status when the connection check failed for an unexpected reason",
+    "_machine_translated": true,
+    "_source_hash": "ebc172347de649d7"
   }
 }

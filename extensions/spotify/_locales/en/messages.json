@@ -293,6 +293,10 @@
     "message": "Reconnect…",
     "description": "Settings: reconnect button"
   },
+  "settings.check_connection.label": {
+    "message": "Check connection",
+    "description": "Settings: button that validates the stored Spotify session against the API"
+  },
   "settings.disconnect.label": {
     "message": "Sign out",
     "description": "Settings: sign-out button"
@@ -332,6 +336,34 @@
   "action.disconnect.success": {
     "message": "✅ Signed out.",
     "description": "Status after a successful sign-out"
+  },
+  "action.check_connection.ok": {
+    "message": "✅ Connected. Your Spotify session is valid.",
+    "description": "Status when the live connection check succeeds"
+  },
+  "action.check_connection.ok_named": {
+    "message": "✅ Connected as {name}. Your Spotify session is valid.",
+    "description": "Status when the live connection check succeeds and a display name is known"
+  },
+  "action.check_connection.no_client_id": {
+    "message": "⚠️ No Client ID saved yet. Paste one above first.",
+    "description": "Status when checking connection without a client_id"
+  },
+  "action.check_connection.not_signed_in": {
+    "message": "⚠️ Not signed in. Click Connect to sign in to Spotify.",
+    "description": "Status when checking connection with no stored credentials"
+  },
+  "action.check_connection.revoked": {
+    "message": "❌ Your Spotify session has expired or was revoked. Click Connect to sign in again.",
+    "description": "Status when the stored token is no longer accepted by Spotify"
+  },
+  "action.check_connection.network": {
+    "message": "⚠️ Couldn't reach Spotify. Check your connection and try again — your session may still be fine.",
+    "description": "Status when the connection check failed due to a network error"
+  },
+  "action.check_connection.unknown": {
+    "message": "⚠️ Couldn't verify the connection: {message}",
+    "description": "Status when the connection check failed for an unexpected reason"
   },
   "keyword.spotify.label": {
     "message": "Spotify",

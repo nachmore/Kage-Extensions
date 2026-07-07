@@ -508,5 +508,53 @@
     "description": "Keyword hint description for the Spotify trigger",
     "_machine_translated": true,
     "_source_hash": "a357819ef57037ea"
+  },
+  "settings.check_connection.label": {
+    "message": "التحقق من الاتصال",
+    "description": "Settings: button that validates the stored Spotify session against the API",
+    "_machine_translated": true,
+    "_source_hash": "6193fc1c7ab885e9"
+  },
+  "action.check_connection.ok": {
+    "message": "✅ متصل. جلسة Spotify الخاصة بك صالحة.",
+    "description": "Status when the live connection check succeeds",
+    "_machine_translated": true,
+    "_source_hash": "7fe088d014751a3b"
+  },
+  "action.check_connection.ok_named": {
+    "message": "✅ متصل باسم {name}. جلسة Spotify الخاصة بك صالحة.",
+    "description": "Status when the live connection check succeeds and a display name is known",
+    "_machine_translated": true,
+    "_source_hash": "3f096cf0735591ab"
+  },
+  "action.check_connection.no_client_id": {
+    "message": "⚠️ لم يتم حفظ أي Client ID بعد. الصق واحدًا في الأعلى أولًا.",
+    "description": "Status when checking connection without a client_id",
+    "_machine_translated": true,
+    "_source_hash": "30500a2d3fcb5cbf"
+  },
+  "action.check_connection.not_signed_in": {
+    "message": "⚠️ لم يتم تسجيل الدخول. انقر على «اتصال» لتسجيل الدخول إلى Spotify.",
+    "description": "Status when checking connection with no stored credentials",
+    "_machine_translated": true,
+    "_source_hash": "3bcdc7e6916aa6c7"
+  },
+  "action.check_connection.revoked": {
+    "message": "❌ انتهت صلاحية جلسة Spotify الخاصة بك أو تم إلغاؤها. انقر على «اتصال» لتسجيل الدخول مرة أخرى.",
+    "description": "Status when the stored token is no longer accepted by Spotify",
+    "_machine_translated": true,
+    "_source_hash": "70442bd54e9a93b0"
+  },
+  "action.check_connection.network": {
+    "message": "⚠️ تعذّر الوصول إلى Spotify. تحقق من اتصالك وحاول مرة أخرى — قد تكون جلستك سليمة.",
+    "description": "Status when the connection check failed due to a network error",
+    "_machine_translated": true,
+    "_source_hash": "b043d41945ef0ba9"
+  },
+  "action.check_connection.unknown": {
+    "message": "⚠️ تعذّر التحقق من الاتصال: {message}",
+    "description": "Status when the connection check failed for an unexpected reason",
+    "_machine_translated": true,
+    "_source_hash": "ebc172347de649d7"
   }
 }
