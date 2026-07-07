@@ -294,11 +294,11 @@
     "description": "Settings: needs client ID first"
   },
   "settings.connect.label_connect": {
-    "message": "Connect…",
+    "message": "Connect",
     "description": "Settings: connect button"
   },
   "settings.connect.label_reconnect": {
-    "message": "Reconnect…",
+    "message": "Reconnect",
     "description": "Settings: reconnect button"
   },
   "settings.check_connection.label": {

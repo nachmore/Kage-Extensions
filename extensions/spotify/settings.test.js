@@ -109,6 +109,8 @@ describe('Spotify settings — check_connection action', () => {
         expect(store.creds).toBeUndefined();
         // Client ID is a separate concern — leave it so reconnect is one click.
         expect(store.client).toBe(CLIENT);
+        // Request a panel re-render so the status text + button states update.
+        expect(res.host).toEqual({ type: 'refresh' });
     });
 
     it('does NOT clear creds on a transient network failure', async () => {
@@ -136,5 +138,39 @@ describe('Spotify settings — check_connection action', () => {
         const { provider } = setup({});
         const res = await provider.runAction('check_connection', {});
         expect(res.status).toMatch(/No Client ID/i);
+    });
+
+    it('disconnect clears everything and requests a refresh', async () => {
+        const { provider, store } = setup({ client: CLIENT, creds: CREDS });
+        const res = await provider.runAction('disconnect', {});
+        expect(store.creds).toBeUndefined();
+        expect(store.client).toBeUndefined();
+        expect(res.host).toEqual({ type: 'refresh' });
+    });
+});
+
+describe('Spotify settings — getSettings reflects connection state', () => {
+    it('when connected: Reconnect label + Sign Out enabled', async () => {
+        const { provider } = setup({ client: CLIENT, creds: CREDS });
+        const schema = await provider.getSettings();
+        const connSection = schema.sections.find((s) =>
+            s.controls.some((c) => c.id === 'connect')
+        );
+        const connect = connSection.controls.find((c) => c.id === 'connect');
+        const disconnect = connSection.controls.find((c) => c.id === 'disconnect');
+        expect(connect.label).toBe('Reconnect');
+        expect(disconnect.disabled).toBe(false);
+    });
+
+    it('when disconnected: Connect label + Sign Out disabled', async () => {
+        const { provider } = setup({ client: CLIENT }); // client only, no creds
+        const schema = await provider.getSettings();
+        const connSection = schema.sections.find((s) =>
+            s.controls.some((c) => c.id === 'connect')
+        );
+        const connect = connSection.controls.find((c) => c.id === 'connect');
+        const disconnect = connSection.controls.find((c) => c.id === 'disconnect');
+        expect(connect.label).toBe('Connect');
+        expect(disconnect.disabled).toBe(true);
     });
 });

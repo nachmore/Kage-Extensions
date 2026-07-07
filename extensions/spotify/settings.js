@@ -118,6 +118,8 @@ export default class SpotifySettingsProvider {
                             action: 'disconnect',
                             variant: 'danger',
                             confirm: t('settings.disconnect.confirm'),
+                            // Nothing to sign out of when we're not connected.
+                            disabled: !connected,
                         },
                     ],
                 },
@@ -155,7 +157,10 @@ export default class SpotifySettingsProvider {
         if (action === 'connect') {
             try {
                 await auth.startSignIn();
-                return { status: t('action.connect.success') };
+                // Now connected — refresh so the status line, the
+                // Connect→Reconnect label, and the Sign Out enabled state
+                // all reflect it.
+                return { status: t('action.connect.success'), host: { type: 'refresh' } };
             } catch (e) {
                 return { status: t('action.connect.error', { message: e?.message || e }) };
             }
@@ -184,7 +189,12 @@ export default class SpotifySettingsProvider {
                     // re-paste. The status line below is the live, non-cached
                     // answer to "am I connected?".
                     await auth.clearCreds();
-                    return { status: t('action.check_connection.revoked') };
+                    // Refresh so "Signed in." flips to "Not signed in yet.",
+                    // Reconnect becomes Connect, and Sign Out greys out.
+                    return {
+                        status: t('action.check_connection.revoked'),
+                        host: { type: 'refresh' },
+                    };
                 case 'network':
                     return { status: t('action.check_connection.network') };
                 default:
@@ -197,7 +207,9 @@ export default class SpotifySettingsProvider {
         }
         if (action === 'disconnect') {
             await auth.clearAll();
-            return { status: t('action.disconnect.success') };
+            // Refresh so the connection status, button labels, and the now
+            // pointless Sign Out button update immediately.
+            return { status: t('action.disconnect.success'), host: { type: 'refresh' } };
         }
         return {};
     }

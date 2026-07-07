@@ -348,16 +348,16 @@
     "_source_hash": "3316be227daf1055"
   },
   "settings.connect.label_connect": {
-    "message": "연결…",
+    "message": "연결",
     "description": "Settings: connect button",
     "_machine_translated": true,
-    "_source_hash": "216bfcabdbc9c99d"
+    "_source_hash": "f2e6d94ff6eceff2"
   },
   "settings.connect.label_reconnect": {
-    "message": "다시 연결…",
+    "message": "다시 연결",
     "description": "Settings: reconnect button",
     "_machine_translated": true,
-    "_source_hash": "d8e56b0170e24f86"
+    "_source_hash": "9c62c7976e300c7e"
   },
   "settings.disconnect.label": {
     "message": "로그아웃",
