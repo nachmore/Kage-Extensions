@@ -6,9 +6,16 @@
  * most easily breaks — so we test that directly with just config + i18n.
  */
 
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import SpotifySearchProvider from './search.js';
 import { makeContext } from '../../test-helpers/mock-context.mjs';
+
+// Real EN catalog so cheat-sheet assertions match the shipped message text.
+const EN_CATALOG = JSON.parse(
+    readFileSync(fileURLToPath(new URL('./_locales/en/messages.json', import.meta.url)), 'utf8')
+);
 
 function setup(config = {}) {
     const { context } = makeContext({ config });
@@ -16,6 +23,46 @@ function setup(config = {}) {
     provider.initialize(context);
     return provider;
 }
+
+// In-memory extension-data store so execute() paths that read creds/devices
+// via auth.js resolve. Mirrors the store used in settings.test / widget.test.
+function makeStore(initial = {}) {
+    const store = { ...initial };
+    return {
+        store,
+        invokes: {
+            load_extension_data: ({ key }) => store[key] ?? null,
+            save_extension_data: ({ key, data }) => {
+                store[key] = data;
+                return null;
+            },
+            delete_extension_data: ({ key }) => {
+                delete store[key];
+                return null;
+            },
+        },
+    };
+}
+
+const CLIENT = JSON.stringify({ client_id: 'abcdef0123456789abcd' });
+const CREDS = JSON.stringify({
+    refresh_token: 'rt-123',
+    access_token: 'at-123',
+    expires_at: Date.now() + 3_600_000,
+    scopes: 'user-modify-playback-state user-library-modify',
+});
+
+// setup() variant with a live catalog + extension-data store, for execute().
+function setupExec(storeSeed = { client: CLIENT, creds: CREDS }, config = {}) {
+    const { store, invokes } = makeStore(storeSeed);
+    const { context } = makeContext({ invokes, catalog: EN_CATALOG, config });
+    const provider = new SpotifySearchProvider();
+    provider.initialize(context);
+    return { provider, store };
+}
+
+// A row shaped the way match() emits them — execute() reads data.id.
+const row = (id) => ({ data: { id } });
 
 const ids = (rows) => rows.map((r) => r.data.id);
 
@@ -96,5 +143,69 @@ describe('SpotifySearchProvider — verb dispatch', () => {
         expect(ids(p.match('sp vol 100'))).toEqual(['vol:100']);
         expect(p.match('sp vol 150')).toEqual([]);
         expect(p.match('sp vol loud')).toEqual([]);
+    });
+});
+
+describe('SpotifySearchProvider — Commands cheat-sheet', () => {
+    it('the help row prints the command list as markdown', async () => {
+        const { provider } = setupExec();
+        const out = await provider.execute(row('help'));
+        expect(out.type).toBe('display');
+        // Markdown, not HTML — it renders in the chat/response area.
+        expect(out.value).toContain('Spotify commands');
+        expect(out.value).toContain('`sp play <song>`');
+        expect(out.value).toContain('`sp like`');
+    });
+
+    it('uses the configured trigger in the printed list', async () => {
+        const { provider } = setupExec({ client: CLIENT, creds: CREDS }, { trigger: 'spot' });
+        const out = await provider.execute(row('help'));
+        expect(out.value).toContain('`spot play <song>`');
+        expect(out.value).not.toContain('`sp play <song>`');
+    });
+});
+
+describe('SpotifySearchProvider — widget refresh after state change', () => {
+    beforeEach(() => {
+        // A minimal fetch stub so player/library calls in _dispatch succeed.
+        globalThis.fetch = vi.fn(async () => ({
+            ok: true,
+            status: 200,
+            statusText: 'OK',
+            text: async () => JSON.stringify({ item: { id: 't1' } }),
+            json: async () => ({ item: { id: 't1' } }),
+        }));
+    });
+    afterEach(() => {
+        vi.restoreAllMocks();
+        delete globalThis.fetch;
+    });
+
+    it('like returns refresh_widgets so the host repaints the bar', async () => {
+        const { provider } = setupExec();
+        const out = await provider.execute(row('like'));
+        expect(out).toEqual({ type: 'refresh_widgets' });
+    });
+
+    it('pause / next also request a widget refresh', async () => {
+        const { provider } = setupExec();
+        expect(await provider.execute(row('pause'))).toEqual({ type: 'refresh_widgets' });
+        expect(await provider.execute(row('next'))).toEqual({ type: 'refresh_widgets' });
+    });
+
+    it('read-only "now" does not request a refresh', async () => {
+        const { provider } = setupExec();
+        const out = await provider.execute(row('now'));
+        expect(out).toEqual({ type: 'custom', data: { ok: true } });
+    });
+
+    it('_isStateChanging classifies mutating vs read-only ids', () => {
+        const p = setup();
+        for (const id of ['like', 'unlike', 'play', 'pause', 'next', 'prev', 'vol:50', 'play:x', 'queue:x', 'playlist:x', 'device:kitchen', 'device-id:abc']) {
+            expect(p._isStateChanging(id)).toBe(true);
+        }
+        for (const id of ['now', 'help', 'connect', 'disconnect']) {
+            expect(p._isStateChanging(id)).toBe(false);
+        }
     });
 });

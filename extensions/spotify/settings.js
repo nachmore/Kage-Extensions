@@ -61,6 +61,15 @@ export default class SpotifySettingsProvider {
                             maxWidth: 100,
                             description: t('settings.trigger.description'),
                         },
+                        {
+                            type: 'info',
+                            label: t('settings.commands.label'),
+                            // Built with the live trigger so a renamed trigger
+                            // stays accurate in the reference list.
+                            html: t('settings.commands.html', {
+                                trigger: (this.config.trigger || 'sp').toLowerCase(),
+                            }),
+                        },
                     ],
                 },
                 {

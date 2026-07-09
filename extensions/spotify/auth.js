@@ -81,8 +81,32 @@ let _ctx = null; // { invoke, log }
 let _cachedToken = null; // { accessToken, expiresAt }
 let _refreshing = null; // in-flight Promise to dedupe parallel refreshes
 
+// Cross-contribution "playback state changed" signal. The search provider
+// and the now-playing widget are separate provider instances but share this
+// module. When a search command mutates state the widget renders (like/unlike,
+// play/pause, skip, volume, …), it calls `markStateDirty()`. The widget checks
+// `consumeStateDirty()` on its next render and drops its per-track caches (most
+// importantly the like state), so a host-forced refresh after `sp like` shows
+// the new heart instead of the stale cached value. It's a plain boolean, not a
+// queue — one pending "something changed, re-read" is all the widget needs.
+let _stateDirty = false;
+
 export function init(context) {
     _ctx = context;
+}
+
+/** Flag that playback/library state the widget renders has changed, so the
+ *  next widget render re-reads it instead of trusting its per-track cache. */
+export function markStateDirty() {
+    _stateDirty = true;
+}
+
+/** Read-and-clear the dirty flag. Returns true if state changed since the
+ *  last call. The widget uses this to decide whether to invalidate caches. */
+export function consumeStateDirty() {
+    const was = _stateDirty;
+    _stateDirty = false;
+    return was;
 }
 
 export async function getClientId() {

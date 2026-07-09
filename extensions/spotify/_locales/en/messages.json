@@ -29,6 +29,10 @@
     "message": "Try: sp play <song>, sp queue <song>, sp like, sp next, sp vol 50, sp device, sp playlist <name>",
     "description": "Result description listing available commands"
   },
+  "help.commands_markdown": {
+    "message": "**Spotify commands** (trigger: `{trigger}`)\n\n- `{trigger}` — show what's now playing\n- `{trigger} play <song>` — play the first match (bare `{trigger} play` resumes)\n- `{trigger} pause` — pause playback\n- `{trigger} queue <song>` — add the first match to the queue\n- `{trigger} next` / `{trigger} prev` — skip forward / back\n- `{trigger} like` / `{trigger} unlike` — like or unlike the current track\n- `{trigger} vol <0-100>` — set volume on the active device\n- `{trigger} device` — pick a Spotify Connect device (`{trigger} device <name>` targets one directly)\n- `{trigger} playlist <name>` — play a playlist whose name matches\n- `{trigger} connect` / `{trigger} sign-out` — sign in to Spotify / disconnect",
+    "description": "Markdown cheat-sheet printed to chat when the Commands row is run. {trigger} is the configured trigger word."
+  },
   "result.play_query.label": {
     "message": "Spotify · Play \"{query}\"",
     "description": "Result label when playing a search query"
@@ -252,6 +256,14 @@
   "settings.trigger.description": {
     "message": "What you type to invoke Spotify shortcuts in the floating window. For example, \"sp like\" or \"sp play lofi beats\".",
     "description": "Settings: trigger word description"
+  },
+  "settings.commands.label": {
+    "message": "Commands",
+    "description": "Label for the launcher-commands reference panel in settings"
+  },
+  "settings.commands.html": {
+    "message": "<code>{trigger}</code> — now playing<br><code>{trigger} play &lt;song&gt;</code> — play a track (bare <code>{trigger} play</code> resumes)<br><code>{trigger} pause</code> — pause<br><code>{trigger} queue &lt;song&gt;</code> — queue a track<br><code>{trigger} next</code> / <code>{trigger} prev</code> — skip<br><code>{trigger} like</code> / <code>{trigger} unlike</code> — like / unlike current track<br><code>{trigger} vol &lt;0-100&gt;</code> — set volume<br><code>{trigger} device</code> — pick a playback device<br><code>{trigger} playlist &lt;name&gt;</code> — play a matching playlist<br><code>{trigger} connect</code> / <code>{trigger} sign-out</code> — sign in / disconnect",
+    "description": "HTML body listing supported launcher commands (HTML allowed). {trigger} is the configured trigger word."
   },
   "settings.section.app": {
     "message": "Spotify app",

@@ -234,6 +234,36 @@ export default class SpotifySearchProvider {
         };
     }
 
+    /**
+     * True for command ids that mutate playback or library state the
+     * now-playing widget renders (like/unlike, play/pause, skip, volume,
+     * play/queue a track, device transfer, playlist). After one of these
+     * succeeds we mark the shared state dirty and ask the host to repaint
+     * the floating bar so it reflects the change without waiting for the
+     * widget's next poll. Read-only (`now`) and auth (`connect`/`disconnect`)
+     * commands are excluded — the widget's own poll covers those.
+     */
+    _isStateChanging(id) {
+        if (
+            id === 'play' ||
+            id === 'pause' ||
+            id === 'next' ||
+            id === 'prev' ||
+            id === 'like' ||
+            id === 'unlike'
+        ) {
+            return true;
+        }
+        return (
+            id.startsWith('vol:') ||
+            id.startsWith('play:') ||
+            id.startsWith('queue:') ||
+            id.startsWith('device:') ||
+            id.startsWith('playlist:') ||
+            id.startsWith('device-id:')
+        );
+    }
+
     async execute(result) {
         const id = result?.data?.id || '';
         // device-id rows carry the actual id in data.deviceId — let the
@@ -244,7 +274,21 @@ export default class SpotifySearchProvider {
         }
         if (id.startsWith('device-id:')) {
             const data = result?.data || {};
-            return await this._activateDevice(data.deviceId, data.deviceName);
+            try {
+                await this._activateDevice(data.deviceId, data.deviceName);
+            } catch (e) {
+                const wrapped = this._wrapPlayerError(e);
+                this.log?.warn?.('Spotify action failed: ' + (wrapped?.message || wrapped));
+                return { type: 'custom', data: { error: wrapped?.message || String(wrapped) } };
+            }
+            return this._afterStateChange(id);
+        }
+        // The "Commands" row is a cheat-sheet, not an action: print the
+        // supported commands into the chat/response area. The list is built
+        // from the user's configured trigger so a renamed trigger stays
+        // accurate.
+        if (id === 'help') {
+            return { type: 'display', value: this._commandsCheatSheet() };
         }
         try {
             await this._dispatch(id);
@@ -267,7 +311,32 @@ export default class SpotifySearchProvider {
                 data: { error: wrapped?.message || String(wrapped) },
             };
         }
+        return this._afterStateChange(id);
+    }
+
+    /**
+     * Common success return for a command that ran. When the command mutated
+     * state the widget renders, mark the shared dirty flag (so the widget
+     * drops its like cache on the next paint) and return the host
+     * `refresh_widgets` action so the floating bar repaints now instead of at
+     * the next poll. Non-mutating commands (`now`) just report success.
+     */
+    _afterStateChange(id) {
+        if (this._isStateChanging(id)) {
+            auth.markStateDirty();
+            return { type: 'refresh_widgets' };
+        }
         return { type: 'custom', data: { ok: true } };
+    }
+
+    /**
+     * Human-readable list of every supported command, built with the user's
+     * configured trigger so a renamed trigger stays accurate. Rendered as
+     * markdown in the chat/response area by the "Commands" row.
+     */
+    _commandsCheatSheet() {
+        const trigger = (this.config.trigger || 'sp').toLowerCase();
+        return this.t('help.commands_markdown', { trigger });
     }
 
     async _dispatch(id) {
@@ -277,11 +346,6 @@ export default class SpotifySearchProvider {
         }
         if (id === 'disconnect') {
             await auth.clearAll();
-            return;
-        }
-        if (id === 'help') {
-            // Surface the built-in cheat-sheet via the chat as a normal
-            // search-row execute would.
             return;
         }
 

@@ -19,6 +19,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import SpotifyNowPlayingWidget from './widget.js';
+import * as auth from './auth.js';
 import { makeContext } from '../../test-helpers/mock-context.mjs';
 
 const EN_CATALOG = JSON.parse(
@@ -143,5 +144,58 @@ describe('Spotify widget — disconnected affordance', () => {
         });
         const res = await widget.onAction('reconnect');
         expect(res).toEqual({ rerender: false });
+    });
+});
+
+describe('Spotify widget — dirty-flag like-cache invalidation', () => {
+    beforeEach(() => {
+        vi.stubGlobal('navigator', { onLine: true });
+    });
+    afterEach(() => {
+        vi.restoreAllMocks();
+        vi.unstubAllGlobals();
+        delete globalThis.fetch;
+    });
+
+    // URL-aware stub: same track on every /me/player poll, but the like-state
+    // (/me/tracks/contains) flips from [false] to [true] between polls. Lets us
+    // prove the widget re-reads like-state after a state-dirty signal even
+    // though the track id never changed.
+    function stubWithLike(likeStates) {
+        const likes = [...likeStates];
+        globalThis.fetch = vi.fn(async (url) => {
+            const u = String(url);
+            let body;
+            if (u.includes('/me/tracks/contains')) {
+                body = likes.length > 1 ? likes.shift() : likes[0];
+            } else {
+                body = { is_playing: true, item: { id: 't1', name: 'Song', artists: [{ name: 'A' }], album: { images: [] } } };
+            }
+            return {
+                ok: true,
+                status: 200,
+                statusText: 'OK',
+                text: async () => JSON.stringify(body),
+                json: async () => body,
+            };
+        });
+    }
+
+    it('re-reads like-state on the same track after markStateDirty', async () => {
+        const { widget } = setup();
+        stubWithLike([[false], [true]]);
+
+        const first = await widget.render();
+        expect(first.html).toContain('♡'); // not liked yet
+
+        // Without a dirty signal, the widget trusts its per-track cache and
+        // would still show ♡ — assert that baseline so the test is meaningful.
+        const cached = await widget.render();
+        expect(cached.html).toContain('♡');
+
+        // A search command liked the track and flagged state dirty.
+        auth.markStateDirty();
+        const refreshed = await widget.render();
+        expect(refreshed.html).toContain('♥'); // heart now filled
     });
 });

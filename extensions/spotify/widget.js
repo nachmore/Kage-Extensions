@@ -101,6 +101,16 @@ export default class SpotifyNowPlayingWidget {
         const trackId = track.id;
         const isPlaying = !!state.is_playing;
 
+        // A search command (e.g. `sp like`) mutated state we render since the
+        // last paint. Drop the per-track like cache so the block below re-reads
+        // it — otherwise a like/unlike issued from the launcher wouldn't flip
+        // the heart until the track changed. `_lastTrackId` is cleared too so
+        // the trackId comparison always re-fetches even for the same track.
+        if (auth.consumeStateDirty()) {
+            this._lastTrackId = null;
+            this._liked = null;
+        }
+
         // Like-state: cache per-track to avoid a per-tick check call
         // when nothing's changed.
         if (trackId !== this._lastTrackId) {
