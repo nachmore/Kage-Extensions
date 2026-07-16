@@ -568,5 +568,23 @@
     "description": "Button on the disconnected now-playing bar that restarts sign-in",
     "_machine_translated": true,
     "_source_hash": "2ae2be47f0f4a07f"
+  },
+  "help.commands_markdown": {
+    "message": "**Spotify কমান্ড** (ট্রিগার: `{trigger}`)\n\n- `{trigger}` — এখন কী বাজছে তা দেখান\n- `{trigger} play <গান>` — প্রথম মিলটি চালান (শুধু `{trigger} play` দিলে পুনরায় শুরু হয়)\n- `{trigger} pause` — প্লেব্যাক বিরতি দিন\n- `{trigger} queue <গান>` — প্রথম মিলটি সারিতে যোগ করুন\n- `{trigger} next` / `{trigger} prev` — পরের / আগের গানে যান\n- `{trigger} like` / `{trigger} unlike` — বর্তমান ট্র্যাক লাইক বা আনলাইক করুন\n- `{trigger} vol <0-100>` — সক্রিয় ডিভাইসে ভলিউম নির্ধারণ করুন\n- `{trigger} device` — একটি Spotify Connect ডিভাইস বেছে নিন (`{trigger} device <নাম>` সরাসরি একটিকে লক্ষ্য করে)\n- `{trigger} playlist <নাম>` — নামের সাথে মেলে এমন একটি প্লেলিস্ট চালান\n- `{trigger} connect` / `{trigger} sign-out` — Spotify-এ সাইন ইন করুন / সংযোগ বিচ্ছিন্ন করুন",
+    "description": "Markdown cheat-sheet printed to chat when the Commands row is run. {trigger} is the configured trigger word.",
+    "_machine_translated": true,
+    "_source_hash": "882214d187733dbd"
+  },
+  "settings.commands.label": {
+    "message": "কমান্ড",
+    "description": "Label for the launcher-commands reference panel in settings",
+    "_machine_translated": true,
+    "_source_hash": "8d960f2d464a7585"
+  },
+  "settings.commands.html": {
+    "message": "<code>{trigger}</code> — এখন বাজছে<br><code>{trigger} play &lt;গান&gt;</code> — একটি ট্র্যাক চালান (শুধু <code>{trigger} play</code> দিলে পুনরায় শুরু হয়)<br><code>{trigger} pause</code> — বিরতি<br><code>{trigger} queue &lt;গান&gt;</code> — একটি ট্র্যাক সারিতে যোগ করুন<br><code>{trigger} next</code> / <code>{trigger} prev</code> — গান বদলান<br><code>{trigger} like</code> / <code>{trigger} unlike</code> — বর্তমান ট্র্যাক লাইক / আনলাইক করুন<br><code>{trigger} vol &lt;0-100&gt;</code> — ভলিউম নির্ধারণ করুন<br><code>{trigger} device</code> — একটি প্লেব্যাক ডিভাইস বেছে নিন<br><code>{trigger} playlist &lt;নাম&gt;</code> — মেলে এমন একটি প্লেলিস্ট চালান<br><code>{trigger} connect</code> / <code>{trigger} sign-out</code> — সাইন ইন / সংযোগ বিচ্ছিন্ন করুন",
+    "description": "HTML body listing supported launcher commands (HTML allowed). {trigger} is the configured trigger word.",
+    "_machine_translated": true,
+    "_source_hash": "ca8161f663aa319a"
   }
 }

@@ -568,5 +568,23 @@
     "description": "Button on the disconnected now-playing bar that restarts sign-in",
     "_machine_translated": true,
     "_source_hash": "2ae2be47f0f4a07f"
+  },
+  "help.commands_markdown": {
+    "message": "**Spotify کمانڈز** (ٹرگر: `{trigger}`)\n\n- `{trigger}` — دکھائیں کہ اس وقت کیا چل رہا ہے\n- `{trigger} play <song>` — پہلا مماثل ٹریک چلائیں (صرف `{trigger} play` دوبارہ شروع کرتا ہے)\n- `{trigger} pause` — پلے بیک روکیں\n- `{trigger} queue <song>` — پہلے مماثل ٹریک کو قطار میں شامل کریں\n- `{trigger} next` / `{trigger} prev` — آگے / پیچھے جائیں\n- `{trigger} like` / `{trigger} unlike` — موجودہ ٹریک کو پسند یا ناپسند کریں\n- `{trigger} vol <0-100>` — فعال ڈیوائس پر والیوم سیٹ کریں\n- `{trigger} device` — Spotify Connect ڈیوائس منتخب کریں (`{trigger} device <name>` براہِ راست کسی ایک کو منتخب کرتا ہے)\n- `{trigger} playlist <name>` — نام سے مماثل پلے لسٹ چلائیں\n- `{trigger} connect` / `{trigger} sign-out` — Spotify میں سائن اِن کریں / منقطع کریں",
+    "description": "Markdown cheat-sheet printed to chat when the Commands row is run. {trigger} is the configured trigger word.",
+    "_machine_translated": true,
+    "_source_hash": "882214d187733dbd"
+  },
+  "settings.commands.label": {
+    "message": "کمانڈز",
+    "description": "Label for the launcher-commands reference panel in settings",
+    "_machine_translated": true,
+    "_source_hash": "8d960f2d464a7585"
+  },
+  "settings.commands.html": {
+    "message": "<code>{trigger}</code> — اس وقت کیا چل رہا ہے<br><code>{trigger} play &lt;song&gt;</code> — ٹریک چلائیں (صرف <code>{trigger} play</code> دوبارہ شروع کرتا ہے)<br><code>{trigger} pause</code> — روکیں<br><code>{trigger} queue &lt;song&gt;</code> — ٹریک قطار میں شامل کریں<br><code>{trigger} next</code> / <code>{trigger} prev</code> — آگے / پیچھے جائیں<br><code>{trigger} like</code> / <code>{trigger} unlike</code> — موجودہ ٹریک پسند / ناپسند کریں<br><code>{trigger} vol &lt;0-100&gt;</code> — والیوم سیٹ کریں<br><code>{trigger} device</code> — پلے بیک ڈیوائس منتخب کریں<br><code>{trigger} playlist &lt;name&gt;</code> — مماثل پلے لسٹ چلائیں<br><code>{trigger} connect</code> / <code>{trigger} sign-out</code> — سائن اِن کریں / منقطع کریں",
+    "description": "HTML body listing supported launcher commands (HTML allowed). {trigger} is the configured trigger word.",
+    "_machine_translated": true,
+    "_source_hash": "ca8161f663aa319a"
   }
 }

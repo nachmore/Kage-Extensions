@@ -568,5 +568,23 @@
     "description": "Button on the disconnected now-playing bar that restarts sign-in",
     "_machine_translated": true,
     "_source_hash": "2ae2be47f0f4a07f"
+  },
+  "help.commands_markdown": {
+    "message": "**Příkazy pro Spotify** (spouštěč: `{trigger}`)\n\n- `{trigger}` — zobrazí, co právě hraje\n- `{trigger} play <song>` — přehraje první shodu (samotné `{trigger} play` obnoví přehrávání)\n- `{trigger} pause` — pozastaví přehrávání\n- `{trigger} queue <song>` — přidá první shodu do fronty\n- `{trigger} next` / `{trigger} prev` — přeskočí vpřed / zpět\n- `{trigger} like` / `{trigger} unlike` — přidá nebo odebere „líbí se“ u aktuální skladby\n- `{trigger} vol <0-100>` — nastaví hlasitost na aktivním zařízení\n- `{trigger} device` — vybere zařízení Spotify Connect (`{trigger} device <name>` cílí přímo na konkrétní)\n- `{trigger} playlist <name>` — přehraje playlist s odpovídajícím názvem\n- `{trigger} connect` / `{trigger} sign-out` — přihlásí se ke Spotify / odpojí",
+    "description": "Markdown cheat-sheet printed to chat when the Commands row is run. {trigger} is the configured trigger word.",
+    "_machine_translated": true,
+    "_source_hash": "882214d187733dbd"
+  },
+  "settings.commands.label": {
+    "message": "Příkazy",
+    "description": "Label for the launcher-commands reference panel in settings",
+    "_machine_translated": true,
+    "_source_hash": "8d960f2d464a7585"
+  },
+  "settings.commands.html": {
+    "message": "<code>{trigger}</code> — právě hraje<br><code>{trigger} play &lt;song&gt;</code> — přehraje skladbu (samotné <code>{trigger} play</code> obnoví přehrávání)<br><code>{trigger} pause</code> — pozastaví<br><code>{trigger} queue &lt;song&gt;</code> — přidá skladbu do fronty<br><code>{trigger} next</code> / <code>{trigger} prev</code> — přeskočí<br><code>{trigger} like</code> / <code>{trigger} unlike</code> — přidá / odebere „líbí se“ u aktuální skladby<br><code>{trigger} vol &lt;0-100&gt;</code> — nastaví hlasitost<br><code>{trigger} device</code> — vybere zařízení pro přehrávání<br><code>{trigger} playlist &lt;name&gt;</code> — přehraje odpovídající playlist<br><code>{trigger} connect</code> / <code>{trigger} sign-out</code> — přihlásí se / odpojí",
+    "description": "HTML body listing supported launcher commands (HTML allowed). {trigger} is the configured trigger word.",
+    "_machine_translated": true,
+    "_source_hash": "ca8161f663aa319a"
   }
 }

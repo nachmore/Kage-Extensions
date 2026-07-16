@@ -568,5 +568,23 @@
     "description": "Button on the disconnected now-playing bar that restarts sign-in",
     "_machine_translated": true,
     "_source_hash": "2ae2be47f0f4a07f"
+  },
+  "help.commands_markdown": {
+    "message": "**Spotify parancsok** (aktiváló: `{trigger}`)\n\n- `{trigger}` — megmutatja, mi szól éppen\n- `{trigger} play <dal>` — lejátssza az első találatot (a sima `{trigger} play` folytatja a lejátszást)\n- `{trigger} pause` — szünetelteti a lejátszást\n- `{trigger} queue <dal>` — az első találatot a várólistához adja\n- `{trigger} next` / `{trigger} prev` — előre / vissza ugrás\n- `{trigger} like` / `{trigger} unlike` — az aktuális szám kedvelése vagy a kedvelés visszavonása\n- `{trigger} vol <0-100>` — hangerő beállítása az aktív eszközön\n- `{trigger} device` — Spotify Connect eszköz kiválasztása (a `{trigger} device <név>` közvetlenül megcélozza)\n- `{trigger} playlist <név>` — a névre illeszkedő lejátszási lista lejátszása\n- `{trigger} connect` / `{trigger} sign-out` — bejelentkezés a Spotifyba / kapcsolat bontása",
+    "description": "Markdown cheat-sheet printed to chat when the Commands row is run. {trigger} is the configured trigger word.",
+    "_machine_translated": true,
+    "_source_hash": "882214d187733dbd"
+  },
+  "settings.commands.label": {
+    "message": "Parancsok",
+    "description": "Label for the launcher-commands reference panel in settings",
+    "_machine_translated": true,
+    "_source_hash": "8d960f2d464a7585"
+  },
+  "settings.commands.html": {
+    "message": "<code>{trigger}</code> — mi szól éppen<br><code>{trigger} play &lt;dal&gt;</code> — szám lejátszása (a sima <code>{trigger} play</code> folytatja)<br><code>{trigger} pause</code> — szünet<br><code>{trigger} queue &lt;dal&gt;</code> — szám hozzáadása a várólistához<br><code>{trigger} next</code> / <code>{trigger} prev</code> — ugrás<br><code>{trigger} like</code> / <code>{trigger} unlike</code> — az aktuális szám kedvelése / kedvelés visszavonása<br><code>{trigger} vol &lt;0-100&gt;</code> — hangerő beállítása<br><code>{trigger} device</code> — lejátszóeszköz kiválasztása<br><code>{trigger} playlist &lt;név&gt;</code> — illeszkedő lejátszási lista lejátszása<br><code>{trigger} connect</code> / <code>{trigger} sign-out</code> — bejelentkezés / kapcsolat bontása",
+    "description": "HTML body listing supported launcher commands (HTML allowed). {trigger} is the configured trigger word.",
+    "_machine_translated": true,
+    "_source_hash": "ca8161f663aa319a"
   }
 }

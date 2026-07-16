@@ -568,5 +568,23 @@
     "description": "Button on the disconnected now-playing bar that restarts sign-in",
     "_machine_translated": true,
     "_source_hash": "2ae2be47f0f4a07f"
+  },
+  "help.commands_markdown": {
+    "message": "**Perintah Spotify** (pemicu: `{trigger}`)\n\n- `{trigger}` — tampilkan yang sedang diputar\n- `{trigger} play <lagu>` — putar hasil pertama yang cocok (`{trigger} play` tanpa argumen melanjutkan pemutaran)\n- `{trigger} pause` — jeda pemutaran\n- `{trigger} queue <lagu>` — tambahkan hasil pertama yang cocok ke antrean\n- `{trigger} next` / `{trigger} prev` — lompat maju / mundur\n- `{trigger} like` / `{trigger} unlike` — suka atau batal suka lagu saat ini\n- `{trigger} vol <0-100>` — atur volume di perangkat aktif\n- `{trigger} device` — pilih perangkat Spotify Connect (`{trigger} device <nama>` langsung menargetkan satu perangkat)\n- `{trigger} playlist <nama>` — putar playlist yang namanya cocok\n- `{trigger} connect` / `{trigger} sign-out` — masuk ke Spotify / putuskan sambungan",
+    "description": "Markdown cheat-sheet printed to chat when the Commands row is run. {trigger} is the configured trigger word.",
+    "_machine_translated": true,
+    "_source_hash": "882214d187733dbd"
+  },
+  "settings.commands.label": {
+    "message": "Perintah",
+    "description": "Label for the launcher-commands reference panel in settings",
+    "_machine_translated": true,
+    "_source_hash": "8d960f2d464a7585"
+  },
+  "settings.commands.html": {
+    "message": "<code>{trigger}</code> — sedang diputar<br><code>{trigger} play &lt;lagu&gt;</code> — putar sebuah lagu (<code>{trigger} play</code> tanpa argumen melanjutkan pemutaran)<br><code>{trigger} pause</code> — jeda<br><code>{trigger} queue &lt;lagu&gt;</code> — antrekan sebuah lagu<br><code>{trigger} next</code> / <code>{trigger} prev</code> — lompat<br><code>{trigger} like</code> / <code>{trigger} unlike</code> — suka / batal suka lagu saat ini<br><code>{trigger} vol &lt;0-100&gt;</code> — atur volume<br><code>{trigger} device</code> — pilih perangkat pemutaran<br><code>{trigger} playlist &lt;nama&gt;</code> — putar playlist yang cocok<br><code>{trigger} connect</code> / <code>{trigger} sign-out</code> — masuk / putuskan sambungan",
+    "description": "HTML body listing supported launcher commands (HTML allowed). {trigger} is the configured trigger word.",
+    "_machine_translated": true,
+    "_source_hash": "ca8161f663aa319a"
   }
 }

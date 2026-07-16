@@ -219,6 +219,22 @@ async function checkExtension(itemKey) {
     for (const lang of langs) {
         const cat = await readJson(path.join(localesDir, lang, 'messages.json'));
         if (!cat || typeof cat !== 'object') continue;
+
+        // Key-set drift: every EN key must be present in the non-EN catalog.
+        // A missing key means the host renders no string (or the EN fallback)
+        // for that locale — and the host's own check_i18n.py hard-fails on it,
+        // blocking ingest. This was previously undetected here, which let the
+        // spotify extension ship 3 keys missing from 31 catalogs and pass
+        // `npm run check:i18n`. Ignore metadata keys (`_source_hash` etc.).
+        const catKeys = new Set(Object.keys(cat).filter((k) => !k.startsWith('_')));
+        for (const enKey of enKeys) {
+            if (!catKeys.has(enKey)) {
+                errors.push(
+                    `${itemKey}/_locales/${lang}/messages.json: missing key '${enKey}' (present in EN). Run the host's translate.py to regenerate.`
+                );
+            }
+        }
+
         for (const [k, v] of Object.entries(cat)) {
             if (k.startsWith('_')) continue;
             const msg = v?.message;

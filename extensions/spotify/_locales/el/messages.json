@@ -568,5 +568,23 @@
     "description": "Button on the disconnected now-playing bar that restarts sign-in",
     "_machine_translated": true,
     "_source_hash": "2ae2be47f0f4a07f"
+  },
+  "help.commands_markdown": {
+    "message": "**Εντολές Spotify** (ενεργοποίηση: `{trigger}`)\n\n- `{trigger}` — εμφάνιση του κομματιού που παίζει τώρα\n- `{trigger} play <τραγούδι>` — αναπαραγωγή της πρώτης αντιστοιχίας (σκέτο `{trigger} play` συνεχίζει την αναπαραγωγή)\n- `{trigger} pause` — παύση αναπαραγωγής\n- `{trigger} queue <τραγούδι>` — προσθήκη της πρώτης αντιστοιχίας στην ουρά\n- `{trigger} next` / `{trigger} prev` — μετάβαση στο επόμενο / προηγούμενο\n- `{trigger} like` / `{trigger} unlike` — «μου αρέσει» ή αναίρεσή του στο τρέχον κομμάτι\n- `{trigger} vol <0-100>` — ορισμός έντασης στην ενεργή συσκευή\n- `{trigger} device` — επιλογή συσκευής Spotify Connect (`{trigger} device <όνομα>` στοχεύει απευθείας μία)\n- `{trigger} playlist <όνομα>` — αναπαραγωγή λίστας αναπαραγωγής με όνομα που ταιριάζει\n- `{trigger} connect` / `{trigger} sign-out` — σύνδεση στο Spotify / αποσύνδεση",
+    "description": "Markdown cheat-sheet printed to chat when the Commands row is run. {trigger} is the configured trigger word.",
+    "_machine_translated": true,
+    "_source_hash": "882214d187733dbd"
+  },
+  "settings.commands.label": {
+    "message": "Εντολές",
+    "description": "Label for the launcher-commands reference panel in settings",
+    "_machine_translated": true,
+    "_source_hash": "8d960f2d464a7585"
+  },
+  "settings.commands.html": {
+    "message": "<code>{trigger}</code> — παίζει τώρα<br><code>{trigger} play &lt;τραγούδι&gt;</code> — αναπαραγωγή κομματιού (σκέτο <code>{trigger} play</code> συνεχίζει)<br><code>{trigger} pause</code> — παύση<br><code>{trigger} queue &lt;τραγούδι&gt;</code> — προσθήκη κομματιού στην ουρά<br><code>{trigger} next</code> / <code>{trigger} prev</code> — μετάβαση<br><code>{trigger} like</code> / <code>{trigger} unlike</code> — «μου αρέσει» / αναίρεση για το τρέχον κομμάτι<br><code>{trigger} vol &lt;0-100&gt;</code> — ορισμός έντασης<br><code>{trigger} device</code> — επιλογή συσκευής αναπαραγωγής<br><code>{trigger} playlist &lt;όνομα&gt;</code> — αναπαραγωγή λίστας που ταιριάζει<br><code>{trigger} connect</code> / <code>{trigger} sign-out</code> — σύνδεση / αποσύνδεση",
+    "description": "HTML body listing supported launcher commands (HTML allowed). {trigger} is the configured trigger word.",
+    "_machine_translated": true,
+    "_source_hash": "ca8161f663aa319a"
   }
 }

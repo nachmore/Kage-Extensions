@@ -568,5 +568,23 @@
     "description": "Button on the disconnected now-playing bar that restarts sign-in",
     "_machine_translated": true,
     "_source_hash": "2ae2be47f0f4a07f"
+  },
+  "help.commands_markdown": {
+    "message": "**Spotify 指令**（觸發詞：`{trigger}`）\n\n- `{trigger}` — 顯示目前播放的內容\n- `{trigger} play <歌曲>` — 播放第一個符合的結果（單獨輸入 `{trigger} play` 可繼續播放）\n- `{trigger} pause` — 暫停播放\n- `{trigger} queue <歌曲>` — 將第一個符合的結果加入佇列\n- `{trigger} next` / `{trigger} prev` — 跳至下一首 / 上一首\n- `{trigger} like` / `{trigger} unlike` — 對目前曲目按讚或取消按讚\n- `{trigger} vol <0-100>` — 設定使用中裝置的音量\n- `{trigger} device` — 選擇 Spotify Connect 裝置（`{trigger} device <名稱>` 可直接指定）\n- `{trigger} playlist <名稱>` — 播放名稱相符的播放清單\n- `{trigger} connect` / `{trigger} sign-out` — 登入 Spotify / 中斷連線",
+    "description": "Markdown cheat-sheet printed to chat when the Commands row is run. {trigger} is the configured trigger word.",
+    "_machine_translated": true,
+    "_source_hash": "882214d187733dbd"
+  },
+  "settings.commands.label": {
+    "message": "指令",
+    "description": "Label for the launcher-commands reference panel in settings",
+    "_machine_translated": true,
+    "_source_hash": "8d960f2d464a7585"
+  },
+  "settings.commands.html": {
+    "message": "<code>{trigger}</code> — 目前播放<br><code>{trigger} play &lt;歌曲&gt;</code> — 播放曲目（單獨輸入 <code>{trigger} play</code> 可繼續播放）<br><code>{trigger} pause</code> — 暫停<br><code>{trigger} queue &lt;歌曲&gt;</code> — 將曲目加入佇列<br><code>{trigger} next</code> / <code>{trigger} prev</code> — 跳過<br><code>{trigger} like</code> / <code>{trigger} unlike</code> — 對目前曲目按讚 / 取消按讚<br><code>{trigger} vol &lt;0-100&gt;</code> — 設定音量<br><code>{trigger} device</code> — 選擇播放裝置<br><code>{trigger} playlist &lt;名稱&gt;</code> — 播放名稱相符的播放清單<br><code>{trigger} connect</code> / <code>{trigger} sign-out</code> — 登入 / 中斷連線",
+    "description": "HTML body listing supported launcher commands (HTML allowed). {trigger} is the configured trigger word.",
+    "_machine_translated": true,
+    "_source_hash": "ca8161f663aa319a"
   }
 }

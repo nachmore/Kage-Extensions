@@ -568,5 +568,23 @@
     "description": "Button on the disconnected now-playing bar that restarts sign-in",
     "_machine_translated": true,
     "_source_hash": "2ae2be47f0f4a07f"
+  },
+  "help.commands_markdown": {
+    "message": "**Polecenia Spotify** (wyzwalacz: `{trigger}`)\n\n- `{trigger}` — pokaż, co jest teraz odtwarzane\n- `{trigger} play <utwór>` — odtwórz pierwsze dopasowanie (samo `{trigger} play` wznawia)\n- `{trigger} pause` — wstrzymaj odtwarzanie\n- `{trigger} queue <utwór>` — dodaj pierwsze dopasowanie do kolejki\n- `{trigger} next` / `{trigger} prev` — przejdź dalej / wstecz\n- `{trigger} like` / `{trigger} unlike` — polub lub cofnij polubienie bieżącego utworu\n- `{trigger} vol <0-100>` — ustaw głośność na aktywnym urządzeniu\n- `{trigger} device` — wybierz urządzenie Spotify Connect (`{trigger} device <nazwa>` wskazuje je bezpośrednio)\n- `{trigger} playlist <nazwa>` — odtwórz playlistę o pasującej nazwie\n- `{trigger} connect` / `{trigger} sign-out` — zaloguj się do Spotify / rozłącz",
+    "description": "Markdown cheat-sheet printed to chat when the Commands row is run. {trigger} is the configured trigger word.",
+    "_machine_translated": true,
+    "_source_hash": "882214d187733dbd"
+  },
+  "settings.commands.label": {
+    "message": "Polecenia",
+    "description": "Label for the launcher-commands reference panel in settings",
+    "_machine_translated": true,
+    "_source_hash": "8d960f2d464a7585"
+  },
+  "settings.commands.html": {
+    "message": "<code>{trigger}</code> — teraz odtwarzane<br><code>{trigger} play &lt;utwór&gt;</code> — odtwórz utwór (samo <code>{trigger} play</code> wznawia)<br><code>{trigger} pause</code> — wstrzymaj<br><code>{trigger} queue &lt;utwór&gt;</code> — dodaj utwór do kolejki<br><code>{trigger} next</code> / <code>{trigger} prev</code> — pomiń<br><code>{trigger} like</code> / <code>{trigger} unlike</code> — polub / cofnij polubienie bieżącego utworu<br><code>{trigger} vol &lt;0-100&gt;</code> — ustaw głośność<br><code>{trigger} device</code> — wybierz urządzenie odtwarzania<br><code>{trigger} playlist &lt;nazwa&gt;</code> — odtwórz pasującą playlistę<br><code>{trigger} connect</code> / <code>{trigger} sign-out</code> — zaloguj się / rozłącz",
+    "description": "HTML body listing supported launcher commands (HTML allowed). {trigger} is the configured trigger word.",
+    "_machine_translated": true,
+    "_source_hash": "ca8161f663aa319a"
   }
 }

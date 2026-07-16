@@ -568,5 +568,23 @@
     "description": "Button on the disconnected now-playing bar that restarts sign-in",
     "_machine_translated": true,
     "_source_hash": "2ae2be47f0f4a07f"
+  },
+  "help.commands_markdown": {
+    "message": "**Lệnh Spotify** (từ kích hoạt: `{trigger}`)\n\n- `{trigger}` — hiển thị bài đang phát\n- `{trigger} play <bài hát>` — phát kết quả khớp đầu tiên (chỉ `{trigger} play` để tiếp tục phát)\n- `{trigger} pause` — tạm dừng phát\n- `{trigger} queue <bài hát>` — thêm kết quả khớp đầu tiên vào hàng đợi\n- `{trigger} next` / `{trigger} prev` — chuyển tới / lùi lại\n- `{trigger} like` / `{trigger} unlike` — thích hoặc bỏ thích bài hiện tại\n- `{trigger} vol <0-100>` — đặt âm lượng trên thiết bị đang hoạt động\n- `{trigger} device` — chọn thiết bị Spotify Connect (`{trigger} device <tên>` để chọn trực tiếp)\n- `{trigger} playlist <tên>` — phát danh sách phát có tên khớp\n- `{trigger} connect` / `{trigger} sign-out` — đăng nhập Spotify / ngắt kết nối",
+    "description": "Markdown cheat-sheet printed to chat when the Commands row is run. {trigger} is the configured trigger word.",
+    "_machine_translated": true,
+    "_source_hash": "882214d187733dbd"
+  },
+  "settings.commands.label": {
+    "message": "Lệnh",
+    "description": "Label for the launcher-commands reference panel in settings",
+    "_machine_translated": true,
+    "_source_hash": "8d960f2d464a7585"
+  },
+  "settings.commands.html": {
+    "message": "<code>{trigger}</code> — bài đang phát<br><code>{trigger} play &lt;bài hát&gt;</code> — phát một bài (chỉ <code>{trigger} play</code> để tiếp tục phát)<br><code>{trigger} pause</code> — tạm dừng<br><code>{trigger} queue &lt;bài hát&gt;</code> — thêm bài vào hàng đợi<br><code>{trigger} next</code> / <code>{trigger} prev</code> — chuyển bài<br><code>{trigger} like</code> / <code>{trigger} unlike</code> — thích / bỏ thích bài hiện tại<br><code>{trigger} vol &lt;0-100&gt;</code> — đặt âm lượng<br><code>{trigger} device</code> — chọn thiết bị phát<br><code>{trigger} playlist &lt;tên&gt;</code> — phát danh sách phát khớp tên<br><code>{trigger} connect</code> / <code>{trigger} sign-out</code> — đăng nhập / ngắt kết nối",
+    "description": "HTML body listing supported launcher commands (HTML allowed). {trigger} is the configured trigger word.",
+    "_machine_translated": true,
+    "_source_hash": "ca8161f663aa319a"
   }
 }

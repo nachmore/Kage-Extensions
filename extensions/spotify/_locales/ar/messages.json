@@ -568,5 +568,23 @@
     "description": "Button on the disconnected now-playing bar that restarts sign-in",
     "_machine_translated": true,
     "_source_hash": "2ae2be47f0f4a07f"
+  },
+  "help.commands_markdown": {
+    "message": "**أوامر Spotify** (كلمة التفعيل: `{trigger}`)\n\n- `{trigger}` — عرض ما يتم تشغيله الآن\n- `{trigger} play <song>` — تشغيل أول نتيجة مطابقة (`{trigger} play` وحده يستأنف التشغيل)\n- `{trigger} pause` — إيقاف التشغيل مؤقتًا\n- `{trigger} queue <song>` — إضافة أول نتيجة مطابقة إلى قائمة الانتظار\n- `{trigger} next` / `{trigger} prev` — التخطي للأمام / للخلف\n- `{trigger} like` / `{trigger} unlike` — الإعجاب بالمقطع الحالي أو إلغاء الإعجاب به\n- `{trigger} vol <0-100>` — ضبط مستوى الصوت على الجهاز النشط\n- `{trigger} device` — اختيار جهاز Spotify Connect (`{trigger} device <name>` يستهدف جهازًا مباشرة)\n- `{trigger} playlist <name>` — تشغيل قائمة تشغيل يطابق اسمها\n- `{trigger} connect` / `{trigger} sign-out` — تسجيل الدخول إلى Spotify / قطع الاتصال",
+    "description": "Markdown cheat-sheet printed to chat when the Commands row is run. {trigger} is the configured trigger word.",
+    "_machine_translated": true,
+    "_source_hash": "882214d187733dbd"
+  },
+  "settings.commands.label": {
+    "message": "الأوامر",
+    "description": "Label for the launcher-commands reference panel in settings",
+    "_machine_translated": true,
+    "_source_hash": "8d960f2d464a7585"
+  },
+  "settings.commands.html": {
+    "message": "<code>{trigger}</code> — قيد التشغيل الآن<br><code>{trigger} play &lt;song&gt;</code> — تشغيل مقطع (<code>{trigger} play</code> وحده يستأنف التشغيل)<br><code>{trigger} pause</code> — إيقاف مؤقت<br><code>{trigger} queue &lt;song&gt;</code> — إضافة مقطع إلى قائمة الانتظار<br><code>{trigger} next</code> / <code>{trigger} prev</code> — التخطي<br><code>{trigger} like</code> / <code>{trigger} unlike</code> — الإعجاب بالمقطع الحالي / إلغاء الإعجاب<br><code>{trigger} vol &lt;0-100&gt;</code> — ضبط مستوى الصوت<br><code>{trigger} device</code> — اختيار جهاز تشغيل<br><code>{trigger} playlist &lt;name&gt;</code> — تشغيل قائمة تشغيل مطابقة<br><code>{trigger} connect</code> / <code>{trigger} sign-out</code> — تسجيل الدخول / قطع الاتصال",
+    "description": "HTML body listing supported launcher commands (HTML allowed). {trigger} is the configured trigger word.",
+    "_machine_translated": true,
+    "_source_hash": "ca8161f663aa319a"
   }
 }

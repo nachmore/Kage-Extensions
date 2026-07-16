@@ -568,5 +568,23 @@
     "description": "Button on the disconnected now-playing bar that restarts sign-in",
     "_machine_translated": true,
     "_source_hash": "2ae2be47f0f4a07f"
+  },
+  "help.commands_markdown": {
+    "message": "**Spotify komutları** (tetikleyici: `{trigger}`)\n\n- `{trigger}` — şu anda çalanı göster\n- `{trigger} play <şarkı>` — ilk eşleşmeyi çal (yalnız `{trigger} play` kaldığı yerden devam ettirir)\n- `{trigger} pause` — çalmayı duraklat\n- `{trigger} queue <şarkı>` — ilk eşleşmeyi kuyruğa ekle\n- `{trigger} next` / `{trigger} prev` — ileri / geri atla\n- `{trigger} like` / `{trigger} unlike` — geçerli parçayı beğen veya beğenmekten vazgeç\n- `{trigger} vol <0-100>` — etkin cihazda ses düzeyini ayarla\n- `{trigger} device` — bir Spotify Connect cihazı seç (`{trigger} device <ad>` doğrudan birini hedefler)\n- `{trigger} playlist <ad>` — adı eşleşen bir çalma listesini çal\n- `{trigger} connect` / `{trigger} sign-out` — Spotify'da oturum aç / bağlantıyı kes",
+    "description": "Markdown cheat-sheet printed to chat when the Commands row is run. {trigger} is the configured trigger word.",
+    "_machine_translated": true,
+    "_source_hash": "882214d187733dbd"
+  },
+  "settings.commands.label": {
+    "message": "Komutlar",
+    "description": "Label for the launcher-commands reference panel in settings",
+    "_machine_translated": true,
+    "_source_hash": "8d960f2d464a7585"
+  },
+  "settings.commands.html": {
+    "message": "<code>{trigger}</code> — şu anda çalan<br><code>{trigger} play &lt;şarkı&gt;</code> — bir parça çal (yalnız <code>{trigger} play</code> kaldığı yerden devam ettirir)<br><code>{trigger} pause</code> — duraklat<br><code>{trigger} queue &lt;şarkı&gt;</code> — bir parçayı kuyruğa ekle<br><code>{trigger} next</code> / <code>{trigger} prev</code> — atla<br><code>{trigger} like</code> / <code>{trigger} unlike</code> — geçerli parçayı beğen / beğenmekten vazgeç<br><code>{trigger} vol &lt;0-100&gt;</code> — ses düzeyini ayarla<br><code>{trigger} device</code> — bir oynatma cihazı seç<br><code>{trigger} playlist &lt;ad&gt;</code> — eşleşen bir çalma listesini çal<br><code>{trigger} connect</code> / <code>{trigger} sign-out</code> — oturum aç / bağlantıyı kes",
+    "description": "HTML body listing supported launcher commands (HTML allowed). {trigger} is the configured trigger word.",
+    "_machine_translated": true,
+    "_source_hash": "ca8161f663aa319a"
   }
 }

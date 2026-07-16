@@ -568,5 +568,23 @@
     "description": "Button on the disconnected now-playing bar that restarts sign-in",
     "_machine_translated": true,
     "_source_hash": "2ae2be47f0f4a07f"
+  },
+  "help.commands_markdown": {
+    "message": "**Spotify-kommandoer** (utløser: `{trigger}`)\n\n- `{trigger}` — vis hva som spilles nå\n- `{trigger} play <sang>` — spill det første treffet (bare `{trigger} play` gjenopptar)\n- `{trigger} pause` — sett avspilling på pause\n- `{trigger} queue <sang>` — legg det første treffet i køen\n- `{trigger} next` / `{trigger} prev` — hopp fremover / bakover\n- `{trigger} like` / `{trigger} unlike` — lik eller fjern liker på gjeldende spor\n- `{trigger} vol <0-100>` — sett volum på den aktive enheten\n- `{trigger} device` — velg en Spotify Connect-enhet (`{trigger} device <navn>` velger en direkte)\n- `{trigger} playlist <navn>` — spill en spilleliste med samsvarende navn\n- `{trigger} connect` / `{trigger} sign-out` — logg på Spotify / koble fra",
+    "description": "Markdown cheat-sheet printed to chat when the Commands row is run. {trigger} is the configured trigger word.",
+    "_machine_translated": true,
+    "_source_hash": "882214d187733dbd"
+  },
+  "settings.commands.label": {
+    "message": "Kommandoer",
+    "description": "Label for the launcher-commands reference panel in settings",
+    "_machine_translated": true,
+    "_source_hash": "8d960f2d464a7585"
+  },
+  "settings.commands.html": {
+    "message": "<code>{trigger}</code> — spilles nå<br><code>{trigger} play &lt;sang&gt;</code> — spill et spor (bare <code>{trigger} play</code> gjenopptar)<br><code>{trigger} pause</code> — pause<br><code>{trigger} queue &lt;sang&gt;</code> — legg et spor i køen<br><code>{trigger} next</code> / <code>{trigger} prev</code> — hopp over<br><code>{trigger} like</code> / <code>{trigger} unlike</code> — lik / fjern liker på gjeldende spor<br><code>{trigger} vol &lt;0-100&gt;</code> — sett volum<br><code>{trigger} device</code> — velg en avspillingsenhet<br><code>{trigger} playlist &lt;navn&gt;</code> — spill en samsvarende spilleliste<br><code>{trigger} connect</code> / <code>{trigger} sign-out</code> — logg på / koble fra",
+    "description": "HTML body listing supported launcher commands (HTML allowed). {trigger} is the configured trigger word.",
+    "_machine_translated": true,
+    "_source_hash": "ca8161f663aa319a"
   }
 }

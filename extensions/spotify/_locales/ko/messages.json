@@ -568,5 +568,23 @@
     "description": "Button on the disconnected now-playing bar that restarts sign-in",
     "_machine_translated": true,
     "_source_hash": "2ae2be47f0f4a07f"
+  },
+  "help.commands_markdown": {
+    "message": "**Spotify 명령어** (트리거: `{trigger}`)\n\n- `{trigger}` — 현재 재생 중인 곡 표시\n- `{trigger} play <곡>` — 첫 번째 검색 결과 재생 (`{trigger} play`만 입력하면 재생 재개)\n- `{trigger} pause` — 재생 일시정지\n- `{trigger} queue <곡>` — 첫 번째 검색 결과를 대기열에 추가\n- `{trigger} next` / `{trigger} prev` — 다음 곡 / 이전 곡으로 이동\n- `{trigger} like` / `{trigger} unlike` — 현재 트랙 좋아요 추가 또는 해제\n- `{trigger} vol <0-100>` — 활성 기기의 볼륨 설정\n- `{trigger} device` — Spotify Connect 기기 선택 (`{trigger} device <이름>`으로 직접 지정 가능)\n- `{trigger} playlist <이름>` — 이름이 일치하는 플레이리스트 재생\n- `{trigger} connect` / `{trigger} sign-out` — Spotify 로그인 / 연결 해제",
+    "description": "Markdown cheat-sheet printed to chat when the Commands row is run. {trigger} is the configured trigger word.",
+    "_machine_translated": true,
+    "_source_hash": "882214d187733dbd"
+  },
+  "settings.commands.label": {
+    "message": "명령어",
+    "description": "Label for the launcher-commands reference panel in settings",
+    "_machine_translated": true,
+    "_source_hash": "8d960f2d464a7585"
+  },
+  "settings.commands.html": {
+    "message": "<code>{trigger}</code> — 현재 재생 중인 곡<br><code>{trigger} play &lt;곡&gt;</code> — 트랙 재생 (<code>{trigger} play</code>만 입력하면 재생 재개)<br><code>{trigger} pause</code> — 일시정지<br><code>{trigger} queue &lt;곡&gt;</code> — 트랙을 대기열에 추가<br><code>{trigger} next</code> / <code>{trigger} prev</code> — 곡 이동<br><code>{trigger} like</code> / <code>{trigger} unlike</code> — 현재 트랙 좋아요 추가 / 해제<br><code>{trigger} vol &lt;0-100&gt;</code> — 볼륨 설정<br><code>{trigger} device</code> — 재생 기기 선택<br><code>{trigger} playlist &lt;이름&gt;</code> — 이름이 일치하는 플레이리스트 재생<br><code>{trigger} connect</code> / <code>{trigger} sign-out</code> — 로그인 / 연결 해제",
+    "description": "HTML body listing supported launcher commands (HTML allowed). {trigger} is the configured trigger word.",
+    "_machine_translated": true,
+    "_source_hash": "ca8161f663aa319a"
   }
 }

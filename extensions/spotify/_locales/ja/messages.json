@@ -568,5 +568,23 @@
     "description": "Button on the disconnected now-playing bar that restarts sign-in",
     "_machine_translated": true,
     "_source_hash": "2ae2be47f0f4a07f"
+  },
+  "help.commands_markdown": {
+    "message": "**Spotify コマンド**（トリガー: `{trigger}`）\n\n- `{trigger}` — 再生中の曲を表示します\n- `{trigger} play <song>` — 最初にマッチした曲を再生します（`{trigger} play` のみの場合は再生を再開します）\n- `{trigger} pause` — 再生を一時停止します\n- `{trigger} queue <song>` — 最初にマッチした曲をキューに追加します\n- `{trigger} next` / `{trigger} prev` — 次へ / 前へスキップします\n- `{trigger} like` / `{trigger} unlike` — 現在のトラックにいいねを付ける / 外します\n- `{trigger} vol <0-100>` — アクティブなデバイスの音量を設定します\n- `{trigger} device` — Spotify Connect デバイスを選択します（`{trigger} device <name>` で直接指定できます）\n- `{trigger} playlist <name>` — 名前がマッチするプレイリストを再生します\n- `{trigger} connect` / `{trigger} sign-out` — Spotify にサインイン / 接続を解除します",
+    "description": "Markdown cheat-sheet printed to chat when the Commands row is run. {trigger} is the configured trigger word.",
+    "_machine_translated": true,
+    "_source_hash": "882214d187733dbd"
+  },
+  "settings.commands.label": {
+    "message": "コマンド",
+    "description": "Label for the launcher-commands reference panel in settings",
+    "_machine_translated": true,
+    "_source_hash": "8d960f2d464a7585"
+  },
+  "settings.commands.html": {
+    "message": "<code>{trigger}</code> — 再生中の曲を表示<br><code>{trigger} play &lt;song&gt;</code> — トラックを再生（<code>{trigger} play</code> のみの場合は再生を再開）<br><code>{trigger} pause</code> — 一時停止<br><code>{trigger} queue &lt;song&gt;</code> — トラックをキューに追加<br><code>{trigger} next</code> / <code>{trigger} prev</code> — スキップ<br><code>{trigger} like</code> / <code>{trigger} unlike</code> — 現在のトラックにいいねを付ける / 外す<br><code>{trigger} vol &lt;0-100&gt;</code> — 音量を設定<br><code>{trigger} device</code> — 再生デバイスを選択<br><code>{trigger} playlist &lt;name&gt;</code> — マッチするプレイリストを再生<br><code>{trigger} connect</code> / <code>{trigger} sign-out</code> — サインイン / 接続を解除",
+    "description": "HTML body listing supported launcher commands (HTML allowed). {trigger} is the configured trigger word.",
+    "_machine_translated": true,
+    "_source_hash": "ca8161f663aa319a"
   }
 }

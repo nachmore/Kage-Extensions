@@ -568,5 +568,23 @@
     "description": "Button on the disconnected now-playing bar that restarts sign-in",
     "_machine_translated": true,
     "_source_hash": "2ae2be47f0f4a07f"
+  },
+  "help.commands_markdown": {
+    "message": "**Comenzi Spotify** (declanșator: `{trigger}`)\n\n- `{trigger}` — arată ce se redă acum\n- `{trigger} play <melodie>` — redă prima potrivire (simplu `{trigger} play` reia redarea)\n- `{trigger} pause` — pune redarea pe pauză\n- `{trigger} queue <melodie>` — adaugă prima potrivire în coadă\n- `{trigger} next` / `{trigger} prev` — sari înainte / înapoi\n- `{trigger} like` / `{trigger} unlike` — apreciază sau elimină aprecierea piesei curente\n- `{trigger} vol <0-100>` — setează volumul pe dispozitivul activ\n- `{trigger} device` — alege un dispozitiv Spotify Connect (`{trigger} device <nume>` îl vizează direct)\n- `{trigger} playlist <nume>` — redă un playlist al cărui nume se potrivește\n- `{trigger} connect` / `{trigger} sign-out` — conectează-te la Spotify / deconectează-te",
+    "description": "Markdown cheat-sheet printed to chat when the Commands row is run. {trigger} is the configured trigger word.",
+    "_machine_translated": true,
+    "_source_hash": "882214d187733dbd"
+  },
+  "settings.commands.label": {
+    "message": "Comenzi",
+    "description": "Label for the launcher-commands reference panel in settings",
+    "_machine_translated": true,
+    "_source_hash": "8d960f2d464a7585"
+  },
+  "settings.commands.html": {
+    "message": "<code>{trigger}</code> — se redă acum<br><code>{trigger} play &lt;melodie&gt;</code> — redă o piesă (simplu <code>{trigger} play</code> reia redarea)<br><code>{trigger} pause</code> — pauză<br><code>{trigger} queue &lt;melodie&gt;</code> — adaugă o piesă în coadă<br><code>{trigger} next</code> / <code>{trigger} prev</code> — sari<br><code>{trigger} like</code> / <code>{trigger} unlike</code> — apreciază / elimină aprecierea piesei curente<br><code>{trigger} vol &lt;0-100&gt;</code> — setează volumul<br><code>{trigger} device</code> — alege un dispozitiv de redare<br><code>{trigger} playlist &lt;nume&gt;</code> — redă un playlist care se potrivește<br><code>{trigger} connect</code> / <code>{trigger} sign-out</code> — conectare / deconectare",
+    "description": "HTML body listing supported launcher commands (HTML allowed). {trigger} is the configured trigger word.",
+    "_machine_translated": true,
+    "_source_hash": "ca8161f663aa319a"
   }
 }

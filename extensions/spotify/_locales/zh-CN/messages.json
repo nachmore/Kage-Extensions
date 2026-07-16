@@ -568,5 +568,23 @@
     "description": "Button on the disconnected now-playing bar that restarts sign-in",
     "_machine_translated": true,
     "_source_hash": "2ae2be47f0f4a07f"
+  },
+  "help.commands_markdown": {
+    "message": "**Spotify 命令**（触发词：`{trigger}`）\n\n- `{trigger}` — 显示当前播放内容\n- `{trigger} play <song>` — 播放第一个匹配结果（仅输入 `{trigger} play` 则恢复播放）\n- `{trigger} pause` — 暂停播放\n- `{trigger} queue <song>` — 将第一个匹配结果加入队列\n- `{trigger} next` / `{trigger} prev` — 下一首 / 上一首\n- `{trigger} like` / `{trigger} unlike` — 喜欢或取消喜欢当前曲目\n- `{trigger} vol <0-100>` — 设置活动设备的音量\n- `{trigger} device` — 选择 Spotify Connect 设备（`{trigger} device <name>` 可直接指定）\n- `{trigger} playlist <name>` — 播放名称匹配的播放列表\n- `{trigger} connect` / `{trigger} sign-out` — 登录 Spotify / 断开连接",
+    "description": "Markdown cheat-sheet printed to chat when the Commands row is run. {trigger} is the configured trigger word.",
+    "_machine_translated": true,
+    "_source_hash": "882214d187733dbd"
+  },
+  "settings.commands.label": {
+    "message": "命令",
+    "description": "Label for the launcher-commands reference panel in settings",
+    "_machine_translated": true,
+    "_source_hash": "8d960f2d464a7585"
+  },
+  "settings.commands.html": {
+    "message": "<code>{trigger}</code> — 当前播放<br><code>{trigger} play &lt;song&gt;</code> — 播放曲目（仅输入 <code>{trigger} play</code> 则恢复播放）<br><code>{trigger} pause</code> — 暂停<br><code>{trigger} queue &lt;song&gt;</code> — 将曲目加入队列<br><code>{trigger} next</code> / <code>{trigger} prev</code> — 切换曲目<br><code>{trigger} like</code> / <code>{trigger} unlike</code> — 喜欢 / 取消喜欢当前曲目<br><code>{trigger} vol &lt;0-100&gt;</code> — 设置音量<br><code>{trigger} device</code> — 选择播放设备<br><code>{trigger} playlist &lt;name&gt;</code> — 播放匹配的播放列表<br><code>{trigger} connect</code> / <code>{trigger} sign-out</code> — 登录 / 断开连接",
+    "description": "HTML body listing supported launcher commands (HTML allowed). {trigger} is the configured trigger word.",
+    "_machine_translated": true,
+    "_source_hash": "ca8161f663aa319a"
   }
 }

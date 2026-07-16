@@ -568,5 +568,23 @@
     "description": "Button on the disconnected now-playing bar that restarts sign-in",
     "_machine_translated": true,
     "_source_hash": "2ae2be47f0f4a07f"
+  },
+  "help.commands_markdown": {
+    "message": "**คำสั่ง Spotify** (ตัวเรียก: `{trigger}`)\n\n- `{trigger}` — แสดงเพลงที่กำลังเล่นอยู่\n- `{trigger} play <song>` — เล่นเพลงแรกที่ตรงกัน (พิมพ์ `{trigger} play` เปล่า ๆ เพื่อเล่นต่อ)\n- `{trigger} pause` — หยุดเล่นชั่วคราว\n- `{trigger} queue <song>` — เพิ่มเพลงแรกที่ตรงกันเข้าคิว\n- `{trigger} next` / `{trigger} prev` — ข้ามไปข้างหน้า / ย้อนกลับ\n- `{trigger} like` / `{trigger} unlike` — กดถูกใจหรือเลิกถูกใจเพลงปัจจุบัน\n- `{trigger} vol <0-100>` — ตั้งระดับเสียงบนอุปกรณ์ที่ใช้งานอยู่\n- `{trigger} device` — เลือกอุปกรณ์ Spotify Connect (`{trigger} device <name>` เพื่อระบุอุปกรณ์โดยตรง)\n- `{trigger} playlist <name>` — เล่นเพลย์ลิสต์ที่ชื่อตรงกัน\n- `{trigger} connect` / `{trigger} sign-out` — ลงชื่อเข้าใช้ Spotify / ยกเลิกการเชื่อมต่อ",
+    "description": "Markdown cheat-sheet printed to chat when the Commands row is run. {trigger} is the configured trigger word.",
+    "_machine_translated": true,
+    "_source_hash": "882214d187733dbd"
+  },
+  "settings.commands.label": {
+    "message": "คำสั่ง",
+    "description": "Label for the launcher-commands reference panel in settings",
+    "_machine_translated": true,
+    "_source_hash": "8d960f2d464a7585"
+  },
+  "settings.commands.html": {
+    "message": "<code>{trigger}</code> — เพลงที่กำลังเล่น<br><code>{trigger} play &lt;song&gt;</code> — เล่นเพลง (พิมพ์ <code>{trigger} play</code> เปล่า ๆ เพื่อเล่นต่อ)<br><code>{trigger} pause</code> — หยุดชั่วคราว<br><code>{trigger} queue &lt;song&gt;</code> — เพิ่มเพลงเข้าคิว<br><code>{trigger} next</code> / <code>{trigger} prev</code> — ข้ามเพลง<br><code>{trigger} like</code> / <code>{trigger} unlike</code> — ถูกใจ / เลิกถูกใจเพลงปัจจุบัน<br><code>{trigger} vol &lt;0-100&gt;</code> — ตั้งระดับเสียง<br><code>{trigger} device</code> — เลือกอุปกรณ์เล่นเพลง<br><code>{trigger} playlist &lt;name&gt;</code> — เล่นเพลย์ลิสต์ที่ตรงกัน<br><code>{trigger} connect</code> / <code>{trigger} sign-out</code> — ลงชื่อเข้าใช้ / ยกเลิกการเชื่อมต่อ",
+    "description": "HTML body listing supported launcher commands (HTML allowed). {trigger} is the configured trigger word.",
+    "_machine_translated": true,
+    "_source_hash": "ca8161f663aa319a"
   }
 }

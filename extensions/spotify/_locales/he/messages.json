@@ -568,5 +568,23 @@
     "description": "Button on the disconnected now-playing bar that restarts sign-in",
     "_machine_translated": true,
     "_source_hash": "2ae2be47f0f4a07f"
+  },
+  "help.commands_markdown": {
+    "message": "**פקודות Spotify** (טריגר: `{trigger}`)\n\n- `{trigger}` — הצגת מה שמתנגן כעת\n- `{trigger} play <song>` — ניגון ההתאמה הראשונה (`{trigger} play` לבד ממשיך את הניגון)\n- `{trigger} pause` — השהיית הניגון\n- `{trigger} queue <song>` — הוספת ההתאמה הראשונה לתור\n- `{trigger} next` / `{trigger} prev` — דילוג קדימה / אחורה\n- `{trigger} like` / `{trigger} unlike` — סימון לייק לרצועה הנוכחית או ביטולו\n- `{trigger} vol <0-100>` — הגדרת עוצמת השמע במכשיר הפעיל\n- `{trigger} device` — בחירת מכשיר Spotify Connect (`{trigger} device <name>` פונה למכשיר ישירות)\n- `{trigger} playlist <name>` — ניגון פלייליסט ששמו תואם\n- `{trigger} connect` / `{trigger} sign-out` — התחברות ל-Spotify / התנתקות",
+    "description": "Markdown cheat-sheet printed to chat when the Commands row is run. {trigger} is the configured trigger word.",
+    "_machine_translated": true,
+    "_source_hash": "882214d187733dbd"
+  },
+  "settings.commands.label": {
+    "message": "פקודות",
+    "description": "Label for the launcher-commands reference panel in settings",
+    "_machine_translated": true,
+    "_source_hash": "8d960f2d464a7585"
+  },
+  "settings.commands.html": {
+    "message": "<code>{trigger}</code> — מה מתנגן כעת<br><code>{trigger} play &lt;song&gt;</code> — ניגון רצועה (<code>{trigger} play</code> לבד ממשיך את הניגון)<br><code>{trigger} pause</code> — השהיה<br><code>{trigger} queue &lt;song&gt;</code> — הוספת רצועה לתור<br><code>{trigger} next</code> / <code>{trigger} prev</code> — דילוג<br><code>{trigger} like</code> / <code>{trigger} unlike</code> — לייק / ביטול לייק לרצועה הנוכחית<br><code>{trigger} vol &lt;0-100&gt;</code> — הגדרת עוצמת שמע<br><code>{trigger} device</code> — בחירת מכשיר ניגון<br><code>{trigger} playlist &lt;name&gt;</code> — ניגון פלייליסט תואם<br><code>{trigger} connect</code> / <code>{trigger} sign-out</code> — התחברות / התנתקות",
+    "description": "HTML body listing supported launcher commands (HTML allowed). {trigger} is the configured trigger word.",
+    "_machine_translated": true,
+    "_source_hash": "ca8161f663aa319a"
   }
 }

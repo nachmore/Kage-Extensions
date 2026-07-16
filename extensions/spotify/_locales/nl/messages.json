@@ -568,5 +568,23 @@
     "description": "Button on the disconnected now-playing bar that restarts sign-in",
     "_machine_translated": true,
     "_source_hash": "2ae2be47f0f4a07f"
+  },
+  "help.commands_markdown": {
+    "message": "**Spotify-opdrachten** (trigger: `{trigger}`)\n\n- `{trigger}` — toon wat er nu speelt\n- `{trigger} play <song>` — speel de eerste overeenkomst af (alleen `{trigger} play` hervat)\n- `{trigger} pause` — pauzeer het afspelen\n- `{trigger} queue <song>` — voeg de eerste overeenkomst toe aan de wachtrij\n- `{trigger} next` / `{trigger} prev` — ga vooruit / terug\n- `{trigger} like` / `{trigger} unlike` — like of unlike het huidige nummer\n- `{trigger} vol <0-100>` — stel het volume in op het actieve apparaat\n- `{trigger} device` — kies een Spotify Connect-apparaat (`{trigger} device <name>` kiest er direct één)\n- `{trigger} playlist <name>` — speel een afspeellijst met een overeenkomende naam\n- `{trigger} connect` / `{trigger} sign-out` — meld je aan bij Spotify / verbreek de verbinding",
+    "description": "Markdown cheat-sheet printed to chat when the Commands row is run. {trigger} is the configured trigger word.",
+    "_machine_translated": true,
+    "_source_hash": "882214d187733dbd"
+  },
+  "settings.commands.label": {
+    "message": "Opdrachten",
+    "description": "Label for the launcher-commands reference panel in settings",
+    "_machine_translated": true,
+    "_source_hash": "8d960f2d464a7585"
+  },
+  "settings.commands.html": {
+    "message": "<code>{trigger}</code> — nu aan het spelen<br><code>{trigger} play &lt;song&gt;</code> — speel een nummer af (alleen <code>{trigger} play</code> hervat)<br><code>{trigger} pause</code> — pauzeren<br><code>{trigger} queue &lt;song&gt;</code> — zet een nummer in de wachtrij<br><code>{trigger} next</code> / <code>{trigger} prev</code> — overslaan<br><code>{trigger} like</code> / <code>{trigger} unlike</code> — like / unlike het huidige nummer<br><code>{trigger} vol &lt;0-100&gt;</code> — stel het volume in<br><code>{trigger} device</code> — kies een afspeelapparaat<br><code>{trigger} playlist &lt;name&gt;</code> — speel een overeenkomende afspeellijst af<br><code>{trigger} connect</code> / <code>{trigger} sign-out</code> — aanmelden / verbinding verbreken",
+    "description": "HTML body listing supported launcher commands (HTML allowed). {trigger} is the configured trigger word.",
+    "_machine_translated": true,
+    "_source_hash": "ca8161f663aa319a"
   }
 }

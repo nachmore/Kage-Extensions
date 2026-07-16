@@ -568,5 +568,23 @@
     "description": "Button on the disconnected now-playing bar that restarts sign-in",
     "_machine_translated": true,
     "_source_hash": "2ae2be47f0f4a07f"
+  },
+  "help.commands_markdown": {
+    "message": "**Commandes Spotify** (déclencheur : `{trigger}`)\n\n- `{trigger}` — afficher la lecture en cours\n- `{trigger} play <titre>` — lire le premier résultat (`{trigger} play` seul reprend la lecture)\n- `{trigger} pause` — mettre la lecture en pause\n- `{trigger} queue <titre>` — ajouter le premier résultat à la file d'attente\n- `{trigger} next` / `{trigger} prev` — passer au titre suivant / précédent\n- `{trigger} like` / `{trigger} unlike` — aimer ou ne plus aimer le titre en cours\n- `{trigger} vol <0-100>` — régler le volume sur l'appareil actif\n- `{trigger} device` — choisir un appareil Spotify Connect (`{trigger} device <nom>` en cible un directement)\n- `{trigger} playlist <nom>` — lire une playlist dont le nom correspond\n- `{trigger} connect` / `{trigger} sign-out` — se connecter à Spotify / se déconnecter",
+    "description": "Markdown cheat-sheet printed to chat when the Commands row is run. {trigger} is the configured trigger word.",
+    "_machine_translated": true,
+    "_source_hash": "882214d187733dbd"
+  },
+  "settings.commands.label": {
+    "message": "Commandes",
+    "description": "Label for the launcher-commands reference panel in settings",
+    "_machine_translated": true,
+    "_source_hash": "8d960f2d464a7585"
+  },
+  "settings.commands.html": {
+    "message": "<code>{trigger}</code> — lecture en cours<br><code>{trigger} play &lt;titre&gt;</code> — lire un titre (<code>{trigger} play</code> seul reprend la lecture)<br><code>{trigger} pause</code> — mettre en pause<br><code>{trigger} queue &lt;titre&gt;</code> — ajouter un titre à la file d'attente<br><code>{trigger} next</code> / <code>{trigger} prev</code> — passer au titre suivant / précédent<br><code>{trigger} like</code> / <code>{trigger} unlike</code> — aimer / ne plus aimer le titre en cours<br><code>{trigger} vol &lt;0-100&gt;</code> — régler le volume<br><code>{trigger} device</code> — choisir un appareil de lecture<br><code>{trigger} playlist &lt;nom&gt;</code> — lire une playlist correspondante<br><code>{trigger} connect</code> / <code>{trigger} sign-out</code> — se connecter / se déconnecter",
+    "description": "HTML body listing supported launcher commands (HTML allowed). {trigger} is the configured trigger word.",
+    "_machine_translated": true,
+    "_source_hash": "ca8161f663aa319a"
   }
 }

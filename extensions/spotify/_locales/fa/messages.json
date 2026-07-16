@@ -568,5 +568,23 @@
     "description": "Button on the disconnected now-playing bar that restarts sign-in",
     "_machine_translated": true,
     "_source_hash": "2ae2be47f0f4a07f"
+  },
+  "help.commands_markdown": {
+    "message": "**دستورات Spotify** (کلمهٔ فراخوانی: `{trigger}`)\n\n- `{trigger}` — نمایش آهنگ در حال پخش\n- `{trigger} play <song>` — پخش اولین نتیجهٔ منطبق (`{trigger} play` خالی پخش را از سر می‌گیرد)\n- `{trigger} pause` — توقف موقت پخش\n- `{trigger} queue <song>` — افزودن اولین نتیجهٔ منطبق به صف\n- `{trigger} next` / `{trigger} prev` — رفتن به بعدی / قبلی\n- `{trigger} like` / `{trigger} unlike` — پسندیدن یا لغو پسند آهنگ فعلی\n- `{trigger} vol <0-100>` — تنظیم میزان صدا روی دستگاه فعال\n- `{trigger} device` — انتخاب یک دستگاه Spotify Connect (`{trigger} device <name>` مستقیماً یک دستگاه را هدف می‌گیرد)\n- `{trigger} playlist <name>` — پخش فهرست پخشی که نامش منطبق است\n- `{trigger} connect` / `{trigger} sign-out` — ورود به Spotify / قطع اتصال",
+    "description": "Markdown cheat-sheet printed to chat when the Commands row is run. {trigger} is the configured trigger word.",
+    "_machine_translated": true,
+    "_source_hash": "882214d187733dbd"
+  },
+  "settings.commands.label": {
+    "message": "دستورات",
+    "description": "Label for the launcher-commands reference panel in settings",
+    "_machine_translated": true,
+    "_source_hash": "8d960f2d464a7585"
+  },
+  "settings.commands.html": {
+    "message": "<code>{trigger}</code> — آهنگ در حال پخش<br><code>{trigger} play &lt;song&gt;</code> — پخش یک آهنگ (<code>{trigger} play</code> خالی پخش را از سر می‌گیرد)<br><code>{trigger} pause</code> — توقف موقت<br><code>{trigger} queue &lt;song&gt;</code> — افزودن یک آهنگ به صف<br><code>{trigger} next</code> / <code>{trigger} prev</code> — رد کردن<br><code>{trigger} like</code> / <code>{trigger} unlike</code> — پسندیدن / لغو پسند آهنگ فعلی<br><code>{trigger} vol &lt;0-100&gt;</code> — تنظیم میزان صدا<br><code>{trigger} device</code> — انتخاب دستگاه پخش<br><code>{trigger} playlist &lt;name&gt;</code> — پخش فهرست پخش منطبق<br><code>{trigger} connect</code> / <code>{trigger} sign-out</code> — ورود / قطع اتصال",
+    "description": "HTML body listing supported launcher commands (HTML allowed). {trigger} is the configured trigger word.",
+    "_machine_translated": true,
+    "_source_hash": "ca8161f663aa319a"
   }
 }

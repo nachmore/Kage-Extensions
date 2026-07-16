@@ -568,5 +568,23 @@
     "description": "Button on the disconnected now-playing bar that restarts sign-in",
     "_machine_translated": true,
     "_source_hash": "2ae2be47f0f4a07f"
+  },
+  "help.commands_markdown": {
+    "message": "**Comandos do Spotify** (gatilho: `{trigger}`)\n\n- `{trigger}` — mostra o que está a tocar agora\n- `{trigger} play <música>` — toca a primeira correspondência (`{trigger} play` sozinho retoma a reprodução)\n- `{trigger} pause` — pausa a reprodução\n- `{trigger} queue <música>` — adiciona a primeira correspondência à fila\n- `{trigger} next` / `{trigger} prev` — avança / retrocede\n- `{trigger} like` / `{trigger} unlike` — curtir ou descurtir a faixa atual\n- `{trigger} vol <0-100>` — define o volume no dispositivo ativo\n- `{trigger} device` — escolhe um dispositivo Spotify Connect (`{trigger} device <nome>` seleciona um diretamente)\n- `{trigger} playlist <nome>` — toca uma playlist cujo nome corresponda\n- `{trigger} connect` / `{trigger} sign-out` — entrar no Spotify / desconectar",
+    "description": "Markdown cheat-sheet printed to chat when the Commands row is run. {trigger} is the configured trigger word.",
+    "_machine_translated": true,
+    "_source_hash": "882214d187733dbd"
+  },
+  "settings.commands.label": {
+    "message": "Comandos",
+    "description": "Label for the launcher-commands reference panel in settings",
+    "_machine_translated": true,
+    "_source_hash": "8d960f2d464a7585"
+  },
+  "settings.commands.html": {
+    "message": "<code>{trigger}</code> — tocando agora<br><code>{trigger} play &lt;música&gt;</code> — toca uma faixa (<code>{trigger} play</code> sozinho retoma)<br><code>{trigger} pause</code> — pausa<br><code>{trigger} queue &lt;música&gt;</code> — adiciona uma faixa à fila<br><code>{trigger} next</code> / <code>{trigger} prev</code> — pular<br><code>{trigger} like</code> / <code>{trigger} unlike</code> — curtir / descurtir a faixa atual<br><code>{trigger} vol &lt;0-100&gt;</code> — define o volume<br><code>{trigger} device</code> — escolhe um dispositivo de reprodução<br><code>{trigger} playlist &lt;nome&gt;</code> — toca uma playlist correspondente<br><code>{trigger} connect</code> / <code>{trigger} sign-out</code> — entrar / desconectar",
+    "description": "HTML body listing supported launcher commands (HTML allowed). {trigger} is the configured trigger word.",
+    "_machine_translated": true,
+    "_source_hash": "ca8161f663aa319a"
   }
 }
