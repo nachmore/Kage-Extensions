@@ -1,7 +1,7 @@
 {
   "id": "hello-world",
   "name": "__MSG_manifest.name__",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "type": "extension",
   "description": "__MSG_manifest.description__",
   "icon": "👋",
