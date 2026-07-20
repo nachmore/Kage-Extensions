@@ -335,6 +335,12 @@
     "_machine_translated": true,
     "_source_hash": "e0ab77ca56a0682c"
   },
+  "settings.connection.revoked": {
+    "message": "<strong>سیشن کی میعاد ختم ہو گئی ہے۔</strong> Spotify اب محفوظ شدہ سائن ان قبول نہیں کرتا — دوبارہ سائن ان کرنے کے لیے <strong>دوبارہ منسلک کریں</strong> پر کلک کریں۔",
+    "description": "Settings: stored credentials exist but Spotify has revoked them (detected by the now-playing widget's polls)",
+    "_machine_translated": true,
+    "_source_hash": "fdc13580729a4adc"
+  },
   "settings.connection.not_connected": {
     "message": "ابھی سائن ان نہیں ہوئے۔ Spotify میں سائن ان کرنے کے لیے <strong>Connect</strong> پر کلک کریں۔",
     "description": "Settings: not connected text",

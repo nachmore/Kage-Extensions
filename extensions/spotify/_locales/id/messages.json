@@ -335,6 +335,12 @@
     "_machine_translated": true,
     "_source_hash": "e0ab77ca56a0682c"
   },
+  "settings.connection.revoked": {
+    "message": "<strong>Sesi telah berakhir.</strong> Spotify tidak lagi menerima info masuk yang tersimpan — klik <strong>Hubungkan ulang</strong> untuk masuk kembali.",
+    "description": "Settings: stored credentials exist but Spotify has revoked them (detected by the now-playing widget's polls)",
+    "_machine_translated": true,
+    "_source_hash": "fdc13580729a4adc"
+  },
   "settings.connection.not_connected": {
     "message": "Belum masuk. Klik <strong>Connect</strong> untuk masuk ke Spotify.",
     "description": "Settings: not connected text",

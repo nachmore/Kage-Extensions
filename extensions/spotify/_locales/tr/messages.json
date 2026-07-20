@@ -335,6 +335,12 @@
     "_machine_translated": true,
     "_source_hash": "e0ab77ca56a0682c"
   },
+  "settings.connection.revoked": {
+    "message": "<strong>Oturum süresi doldu.</strong> Spotify kayıtlı oturum açmayı artık kabul etmiyor — yeniden oturum açmak için <strong>Yeniden bağlan</strong>'a tıklayın.",
+    "description": "Settings: stored credentials exist but Spotify has revoked them (detected by the now-playing widget's polls)",
+    "_machine_translated": true,
+    "_source_hash": "fdc13580729a4adc"
+  },
   "settings.connection.not_connected": {
     "message": "Henüz oturum açılmadı. Spotify'a giriş yapmak için <strong>Bağlan</strong>'a tıklayın.",
     "description": "Settings: not connected text",

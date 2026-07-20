@@ -335,6 +335,12 @@
     "_machine_translated": true,
     "_source_hash": "e0ab77ca56a0682c"
   },
+  "settings.connection.revoked": {
+    "message": "<strong>工作階段已過期。</strong>Spotify 不再接受已儲存的登入資訊——請按一下<strong>重新連線</strong>以重新登入。",
+    "description": "Settings: stored credentials exist but Spotify has revoked them (detected by the now-playing widget's polls)",
+    "_machine_translated": true,
+    "_source_hash": "fdc13580729a4adc"
+  },
   "settings.connection.not_connected": {
     "message": "尚未登入。點選 <strong>連線</strong> 以登入 Spotify。",
     "description": "Settings: not connected text",

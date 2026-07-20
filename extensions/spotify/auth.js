@@ -93,6 +93,10 @@ let _stateDirty = false;
 
 export function init(context) {
     _ctx = context;
+    // New context may mean a different backing store (fresh sandbox,
+    // tests) — the write-dedup's memory of "what I last wrote" no
+    // longer describes it. Reset to read-through.
+    _revokedWritten = null;
 }
 
 /** Flag that playback/library state the widget renders has changed, so the
@@ -132,6 +136,9 @@ export async function clearAll() {
     await _ctx.invoke('delete_extension_data', { key: 'client' });
     await _ctx.invoke('delete_extension_data', { key: 'device' });
     _cachedToken = null;
+    // No creds → nothing to be revoked; a stale marker would make the
+    // settings panel say "session expired" instead of "not signed in".
+    await clearAuthRevoked();
 }
 
 /**
@@ -146,6 +153,8 @@ export async function clearCreds() {
     await _ctx.invoke('delete_extension_data', { key: 'creds' });
     await _ctx.invoke('delete_extension_data', { key: 'device' });
     _cachedToken = null;
+    // Same as clearAll: without creds the revoked marker is meaningless.
+    await clearAuthRevoked();
 }
 
 // ---- Preferred-device storage --------------------------------------
@@ -204,6 +213,56 @@ async function writeCreds(creds) {
 export async function isConnected() {
     const c = await readCreds();
     return !!(c && c.refresh_token);
+}
+
+// ---- Revoked-session marker ------------------------------------------
+//
+// `isConnected` only proves a credential blob exists on disk — Spotify may
+// have revoked it long ago. The now-playing widget discovers revocation
+// organically (its polls start failing with auth errors), but the settings
+// page lives in a different window with its own sandbox instance, so an
+// in-memory flag can't reach it. The marker below lives in extension-data
+// (host-side storage shared by every window), letting the widget's
+// diagnosis flow to the settings panel: creds present + marker set renders
+// as "session expired — reconnect" instead of a false "Signed in".
+//
+// Set by: the widget when its auth-failure streak crosses threshold.
+// Cleared by: a successful token refresh (the strongest "auth is alive"
+// signal, shared by every contribution), a successful sign-in, and any
+// creds wipe (clearCreds/clearAll — no creds, nothing to be revoked).
+//
+// `_revokedWritten` dedupes WRITE RPCs within one sandbox instance —
+// the widget polls every ~15s and shouldn't re-write the marker (or
+// re-delete a marker that isn't there) on every cycle. Reads are NOT
+// cached: `isAuthRevoked` is only called from settings renders (rare),
+// and each window has its own sandbox instance, so a read cache here
+// would go stale the moment another window flips the marker.
+
+let _revokedWritten = null; // null = unknown, true/false = last write
+
+export async function markAuthRevoked() {
+    if (_revokedWritten === true) return;
+    _revokedWritten = true;
+    await _ctx.invoke('save_extension_data', {
+        key: 'status',
+        data: JSON.stringify({ auth_revoked: true, at: Date.now() }),
+    });
+}
+
+export async function clearAuthRevoked() {
+    if (_revokedWritten === false) return;
+    _revokedWritten = false;
+    await _ctx.invoke('delete_extension_data', { key: 'status' });
+}
+
+export async function isAuthRevoked() {
+    const raw = await _ctx.invoke('load_extension_data', { key: 'status' });
+    if (!raw) return false;
+    try {
+        return !!JSON.parse(raw).auth_revoked;
+    } catch {
+        return false;
+    }
 }
 
 /**
@@ -381,6 +440,8 @@ export async function startSignIn() {
         scopes: tok.scope || SCOPES.join(' '),
     });
     _cachedToken = { accessToken: tok.access_token, expiresAt };
+    // Fresh sign-in supersedes any recorded revocation.
+    await clearAuthRevoked();
     return true;
 }
 
@@ -420,6 +481,9 @@ async function refreshAccessToken() {
     };
     await writeCreds(next);
     _cachedToken = { accessToken: tok.access_token, expiresAt };
+    // A refresh Spotify just accepted is the strongest proof the session
+    // is alive — retract any revoked marker another surface recorded.
+    await clearAuthRevoked();
     return tok.access_token;
 }
 

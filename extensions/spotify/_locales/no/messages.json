@@ -335,6 +335,12 @@
     "_machine_translated": true,
     "_source_hash": "e0ab77ca56a0682c"
   },
+  "settings.connection.revoked": {
+    "message": "<strong>Økten er utløpt.</strong> Spotify godtar ikke lenger den lagrede påloggingen — klikk på <strong>Koble til på nytt</strong> for å logge inn igjen.",
+    "description": "Settings: stored credentials exist but Spotify has revoked them (detected by the now-playing widget's polls)",
+    "_machine_translated": true,
+    "_source_hash": "fdc13580729a4adc"
+  },
   "settings.connection.not_connected": {
     "message": "Ikke logget inn ennå. Klikk <strong>Koble til</strong> for å logge inn på Spotify.",
     "description": "Settings: not connected text",

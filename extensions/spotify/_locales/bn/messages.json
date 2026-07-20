@@ -335,6 +335,12 @@
     "_machine_translated": true,
     "_source_hash": "e0ab77ca56a0682c"
   },
+  "settings.connection.revoked": {
+    "message": "<strong>সেশনের মেয়াদ শেষ হয়েছে।</strong> Spotify আর সংরক্ষিত সাইন-ইন গ্রহণ করছে না — আবার সাইন ইন করতে <strong>পুনরায় সংযোগ করুন</strong>-এ ক্লিক করুন।",
+    "description": "Settings: stored credentials exist but Spotify has revoked them (detected by the now-playing widget's polls)",
+    "_machine_translated": true,
+    "_source_hash": "fdc13580729a4adc"
+  },
   "settings.connection.not_connected": {
     "message": "এখনো সাইন ইন করা হয়নি। Spotify-তে সাইন ইন করতে <strong>Connect</strong>-এ ক্লিক করুন।",
     "description": "Settings: not connected text",

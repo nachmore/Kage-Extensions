@@ -335,6 +335,12 @@
     "_machine_translated": true,
     "_source_hash": "e0ab77ca56a0682c"
   },
+  "settings.connection.revoked": {
+    "message": "<strong>Η συνεδρία έληξε.</strong> Το Spotify δεν δέχεται πλέον την αποθηκευμένη σύνδεση — κάντε κλικ στο <strong>Επανασύνδεση</strong> για να συνδεθείτε ξανά.",
+    "description": "Settings: stored credentials exist but Spotify has revoked them (detected by the now-playing widget's polls)",
+    "_machine_translated": true,
+    "_source_hash": "fdc13580729a4adc"
+  },
   "settings.connection.not_connected": {
     "message": "Δεν έχετε συνδεθεί ακόμη. Κάντε κλικ στο <strong>Σύνδεση</strong> για να συνδεθείτε στο Spotify.",
     "description": "Settings: not connected text",

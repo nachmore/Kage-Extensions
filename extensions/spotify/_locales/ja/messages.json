@@ -335,6 +335,12 @@
     "_machine_translated": true,
     "_source_hash": "e0ab77ca56a0682c"
   },
+  "settings.connection.revoked": {
+    "message": "<strong>セッションの有効期限が切れました。</strong>Spotify は保存されたサインインを受け付けなくなりました。<strong>再接続</strong>をクリックして再度サインインしてください。",
+    "description": "Settings: stored credentials exist but Spotify has revoked them (detected by the now-playing widget's polls)",
+    "_machine_translated": true,
+    "_source_hash": "fdc13580729a4adc"
+  },
   "settings.connection.not_connected": {
     "message": "まだサインインしていません。<strong>接続</strong>をクリックしてSpotifyにサインインしてください。",
     "description": "Settings: not connected text",

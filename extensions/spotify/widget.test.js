@@ -148,6 +148,30 @@ describe('Spotify widget — disconnected affordance', () => {
         const res = await widget.onAction('reconnect');
         expect(res).toEqual({ rerender: false });
     });
+
+    it('persists the revoked marker when the affordance shows (settings reads it)', async () => {
+        const { widget, store } = setup();
+        failFetch(authError);
+        await widget.render(); // strike 1
+        await widget.render(); // strike 2 → affordance + marker
+        // markAuthRevoked is fire-and-forget from render; let it settle.
+        await Promise.resolve();
+        expect(store.status).toBeDefined();
+        expect(JSON.parse(store.status).auth_revoked).toBe(true);
+    });
+
+    it('clears the revoked marker on a healthy poll', async () => {
+        const { widget, store } = setup();
+        failFetch(authError);
+        await widget.render();
+        await widget.render(); // marker set
+        await Promise.resolve();
+        expect(store.status).toBeDefined();
+        okPlayerFetch();
+        await widget.render(); // healthy → marker retracted
+        await Promise.resolve();
+        expect(store.status).toBeUndefined();
+    });
 });
 
 describe('Spotify widget — dirty-flag like-cache invalidation', () => {

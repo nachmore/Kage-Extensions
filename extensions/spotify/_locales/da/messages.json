@@ -335,6 +335,12 @@
     "_machine_translated": true,
     "_source_hash": "e0ab77ca56a0682c"
   },
+  "settings.connection.revoked": {
+    "message": "<strong>Sessionen er udløbet.</strong> Spotify accepterer ikke længere det gemte login — klik på <strong>Genopret forbindelse</strong> for at logge ind igen.",
+    "description": "Settings: stored credentials exist but Spotify has revoked them (detected by the now-playing widget's polls)",
+    "_machine_translated": true,
+    "_source_hash": "fdc13580729a4adc"
+  },
   "settings.connection.not_connected": {
     "message": "Ikke logget ind endnu. Klik på <strong>Connect</strong> for at logge ind på Spotify.",
     "description": "Settings: not connected text",

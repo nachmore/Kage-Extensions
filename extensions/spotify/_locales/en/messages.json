@@ -297,6 +297,10 @@
     "message": "<strong>Signed in.</strong> Playback controls are ready.",
     "description": "Settings: connection ready text"
   },
+  "settings.connection.revoked": {
+    "message": "<strong>Session expired.</strong> Spotify no longer accepts the saved sign-in — click <strong>Reconnect</strong> to sign in again.",
+    "description": "Settings: stored credentials exist but Spotify has revoked them (detected by the now-playing widget's polls)"
+  },
   "settings.connection.not_connected": {
     "message": "Not signed in yet. Click <strong>Connect</strong> to sign in to Spotify.",
     "description": "Settings: not connected text"

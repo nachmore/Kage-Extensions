@@ -335,6 +335,12 @@
     "_machine_translated": true,
     "_source_hash": "e0ab77ca56a0682c"
   },
+  "settings.connection.revoked": {
+    "message": "<strong>Sesja wygasła.</strong> Spotify nie akceptuje już zapisanego logowania — kliknij <strong>Połącz ponownie</strong>, aby zalogować się ponownie.",
+    "description": "Settings: stored credentials exist but Spotify has revoked them (detected by the now-playing widget's polls)",
+    "_machine_translated": true,
+    "_source_hash": "fdc13580729a4adc"
+  },
   "settings.connection.not_connected": {
     "message": "Jeszcze nie zalogowano. Kliknij <strong>Connect</strong>, aby zalogować się do Spotify.",
     "description": "Settings: not connected text",

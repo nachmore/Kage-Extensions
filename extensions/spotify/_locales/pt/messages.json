@@ -335,6 +335,12 @@
     "_machine_translated": true,
     "_source_hash": "e0ab77ca56a0682c"
   },
+  "settings.connection.revoked": {
+    "message": "<strong>A sessão expirou.</strong> O Spotify já não aceita o início de sessão guardado — clique em <strong>Reconectar</strong> para iniciar sessão novamente.",
+    "description": "Settings: stored credentials exist but Spotify has revoked them (detected by the now-playing widget's polls)",
+    "_machine_translated": true,
+    "_source_hash": "fdc13580729a4adc"
+  },
   "settings.connection.not_connected": {
     "message": "Sessão ainda não iniciada. Clique em <strong>Connect</strong> para iniciar sessão no Spotify.",
     "description": "Settings: not connected text",

@@ -24,6 +24,11 @@ export default class SpotifySettingsProvider {
         const connected = await auth.isConnected();
         const clientId = await auth.getClientId();
         const haveClient = !!clientId;
+        // The widget's polls may have already diagnosed the stored session
+        // as revoked (persisted marker — see auth.js). Trust it: showing
+        // "Signed in" off a dead creds blob is the lie this panel used to
+        // tell until the user manually hit "Check connection".
+        const revoked = connected && (await auth.isAuthRevoked());
 
         return {
             description: t('settings.description'),
@@ -100,11 +105,13 @@ export default class SpotifySettingsProvider {
                     controls: [
                         {
                             type: 'info',
-                            html: connected
-                                ? t('settings.connection.connected')
-                                : haveClient
-                                  ? t('settings.connection.not_connected')
-                                  : t('settings.connection.no_client_id'),
+                            html: revoked
+                                ? t('settings.connection.revoked')
+                                : connected
+                                  ? t('settings.connection.connected')
+                                  : haveClient
+                                    ? t('settings.connection.not_connected')
+                                    : t('settings.connection.no_client_id'),
                         },
                         {
                             type: 'action',

@@ -83,6 +83,11 @@ export default class SpotifyNowPlayingWidget {
             if (auth.classifyError(e) === 'auth') {
                 this._authFailStreak += 1;
                 if (this._authFailStreak >= AUTH_FAIL_THRESHOLD) {
+                    // Persist the diagnosis so other windows agree with the
+                    // bar — most visibly the settings panel, which would
+                    // otherwise keep saying "Signed in" off the mere
+                    // existence of the (dead) creds blob.
+                    auth.markAuthRevoked().catch(() => {});
                     return this._renderDisconnected();
                 }
             }
@@ -92,8 +97,10 @@ export default class SpotifyNowPlayingWidget {
         }
 
         // A successful poll means we're connected — clear any failure streak
-        // so a later blip starts counting fresh.
+        // so a later blip starts counting fresh, and retract a persisted
+        // revoked marker (e.g. the user reconnected from another surface).
         this._authFailStreak = 0;
+        auth.clearAuthRevoked().catch(() => {});
 
         if (!state || !state.item) return null;
 

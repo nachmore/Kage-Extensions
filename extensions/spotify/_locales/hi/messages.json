@@ -335,6 +335,12 @@
     "_machine_translated": true,
     "_source_hash": "e0ab77ca56a0682c"
   },
+  "settings.connection.revoked": {
+    "message": "<strong>सत्र समाप्त हो गया है।</strong> Spotify अब सहेजा गया साइन-इन स्वीकार नहीं करता — फिर से साइन इन करने के लिए <strong>फिर से कनेक्ट करें</strong> पर क्लिक करें।",
+    "description": "Settings: stored credentials exist but Spotify has revoked them (detected by the now-playing widget's polls)",
+    "_machine_translated": true,
+    "_source_hash": "fdc13580729a4adc"
+  },
   "settings.connection.not_connected": {
     "message": "अभी तक साइन इन नहीं हैं। Spotify में साइन इन करने के लिए <strong>Connect</strong> पर क्लिक करें।",
     "description": "Settings: not connected text",

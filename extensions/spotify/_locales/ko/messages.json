@@ -335,6 +335,12 @@
     "_machine_translated": true,
     "_source_hash": "e0ab77ca56a0682c"
   },
+  "settings.connection.revoked": {
+    "message": "<strong>세션이 만료되었습니다.</strong> Spotify가 저장된 로그인을 더 이상 허용하지 않습니다 — <strong>다시 연결</strong>을 클릭하여 다시 로그인하세요.",
+    "description": "Settings: stored credentials exist but Spotify has revoked them (detected by the now-playing widget's polls)",
+    "_machine_translated": true,
+    "_source_hash": "fdc13580729a4adc"
+  },
   "settings.connection.not_connected": {
     "message": "아직 로그인되지 않았습니다. <strong>Connect</strong>를 클릭하여 Spotify에 로그인하세요.",
     "description": "Settings: not connected text",

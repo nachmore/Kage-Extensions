@@ -335,6 +335,12 @@
     "_machine_translated": true,
     "_source_hash": "e0ab77ca56a0682c"
   },
+  "settings.connection.revoked": {
+    "message": "<strong>เซสชันหมดอายุแล้ว</strong> Spotify ไม่ยอมรับการลงชื่อเข้าใช้ที่บันทึกไว้อีกต่อไป — คลิก <strong>เชื่อมต่อใหม่</strong> เพื่อลงชื่อเข้าใช้อีกครั้ง",
+    "description": "Settings: stored credentials exist but Spotify has revoked them (detected by the now-playing widget's polls)",
+    "_machine_translated": true,
+    "_source_hash": "fdc13580729a4adc"
+  },
   "settings.connection.not_connected": {
     "message": "ยังไม่ได้ลงชื่อเข้าใช้ คลิก <strong>Connect</strong> เพื่อลงชื่อเข้าใช้ Spotify",
     "description": "Settings: not connected text",

@@ -173,4 +173,43 @@ describe('Spotify settings — getSettings reflects connection state', () => {
         expect(connect.label).toBe('Connect');
         expect(disconnect.disabled).toBe(true);
     });
+
+    it('when the widget marked the session revoked: status says expired, not signed-in', async () => {
+        // Creds exist on disk (so isConnected() is true) but the widget's
+        // polls already diagnosed them as revoked and persisted the marker.
+        // The panel must NOT claim "Signed in" — that lie is the bug this
+        // pins: the floating bar showed disconnected while settings said
+        // signed in until the user manually hit "Check connection".
+        const { provider } = setup({
+            client: CLIENT,
+            creds: CREDS,
+            status: JSON.stringify({ auth_revoked: true, at: 999_999 }),
+        });
+        const schema = await provider.getSettings();
+        const connSection = schema.sections.find((s) =>
+            s.controls.some((c) => c.id === 'connect')
+        );
+        const info = connSection.controls.find((c) => c.type === 'info');
+        expect(info.html).toMatch(/Session expired/i);
+        expect(info.html).not.toMatch(/Signed in/i);
+        // Reconnect stays one click; the button label reflects that creds
+        // exist (Reconnect), and Sign Out remains available to wipe them.
+        const connect = connSection.controls.find((c) => c.id === 'connect');
+        expect(connect.label).toBe('Reconnect');
+    });
+
+    it('marker without creds is ignored (shows plain not-signed-in)', async () => {
+        // A stale marker after sign-out must not produce "Session expired"
+        // over a clean signed-out state.
+        const { provider } = setup({
+            client: CLIENT,
+            status: JSON.stringify({ auth_revoked: true, at: 999_999 }),
+        });
+        const schema = await provider.getSettings();
+        const connSection = schema.sections.find((s) =>
+            s.controls.some((c) => c.id === 'connect')
+        );
+        const info = connSection.controls.find((c) => c.type === 'info');
+        expect(info.html).toMatch(/Not signed in/i);
+    });
 });

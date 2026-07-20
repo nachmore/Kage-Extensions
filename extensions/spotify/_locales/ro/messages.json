@@ -335,6 +335,12 @@
     "_machine_translated": true,
     "_source_hash": "e0ab77ca56a0682c"
   },
+  "settings.connection.revoked": {
+    "message": "<strong>Sesiunea a expirat.</strong> Spotify nu mai acceptă autentificarea salvată — faceți clic pe <strong>Reconectare</strong> pentru a vă autentifica din nou.",
+    "description": "Settings: stored credentials exist but Spotify has revoked them (detected by the now-playing widget's polls)",
+    "_machine_translated": true,
+    "_source_hash": "fdc13580729a4adc"
+  },
   "settings.connection.not_connected": {
     "message": "Nu ești conectat încă. Apasă <strong>Connect</strong> pentru a te conecta la Spotify.",
     "description": "Settings: not connected text",

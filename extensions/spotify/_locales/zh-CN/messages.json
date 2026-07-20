@@ -335,6 +335,12 @@
     "_machine_translated": true,
     "_source_hash": "e0ab77ca56a0682c"
   },
+  "settings.connection.revoked": {
+    "message": "<strong>会话已过期。</strong>Spotify 不再接受已保存的登录信息——点击<strong>重新连接</strong>以重新登录。",
+    "description": "Settings: stored credentials exist but Spotify has revoked them (detected by the now-playing widget's polls)",
+    "_machine_translated": true,
+    "_source_hash": "fdc13580729a4adc"
+  },
   "settings.connection.not_connected": {
     "message": "尚未登录。点击 <strong>连接</strong> 登录 Spotify。",
     "description": "Settings: not connected text",

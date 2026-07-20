@@ -335,6 +335,12 @@
     "_machine_translated": true,
     "_source_hash": "e0ab77ca56a0682c"
   },
+  "settings.connection.revoked": {
+    "message": "<strong>نشست منقضی شده است.</strong> Spotify دیگر ورود ذخیره‌شده را نمی‌پذیرد — برای ورود دوباره روی <strong>اتصال مجدد</strong> کلیک کنید.",
+    "description": "Settings: stored credentials exist but Spotify has revoked them (detected by the now-playing widget's polls)",
+    "_machine_translated": true,
+    "_source_hash": "fdc13580729a4adc"
+  },
   "settings.connection.not_connected": {
     "message": "هنوز وارد نشده‌اید. برای ورود به Spotify روی <strong>Connect</strong> کلیک کنید.",
     "description": "Settings: not connected text",
