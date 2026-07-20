@@ -76,15 +76,28 @@ export async function listFilesRecursive(dir) {
     return out;
 }
 
+// File extensions the .gitattributes marks binary — never line-ending
+// normalised, hashed byte-for-byte.
+const BINARY_EXTENSIONS = new Set(['.png', '.jpg', '.gif', '.zip', '.woff', '.woff2']);
+
 // Hash of the entire extension/theme source tree. Stable across OSes
-// because we sort entries and hash content + relative path.
+// because we sort entries, hash content + relative path, and normalise
+// CRLF→LF in text files. The normalisation matters on Windows: a
+// checkout that predates the .gitattributes eol=lf rule (or an editor
+// that rewrites CRLF) has different bytes on disk than the LF bytes CI
+// hashed into the published catalog, which made check-versions report
+// "source changed" for every extension the contributor had ever
+// touched locally — spurious bumps papering over nothing.
 export async function hashTree(dir) {
     const files = await listFilesRecursive(dir);
     const hasher = createHash('sha256');
     for (const rel of files) {
         hasher.update(rel);
         hasher.update('\0');
-        const data = await readFile(path.join(dir, rel));
+        let data = await readFile(path.join(dir, rel));
+        if (!BINARY_EXTENSIONS.has(path.extname(rel).toLowerCase())) {
+            data = Buffer.from(data.toString('utf8').replaceAll('\r\n', '\n'));
+        }
         hasher.update(data);
         hasher.update('\0');
     }
