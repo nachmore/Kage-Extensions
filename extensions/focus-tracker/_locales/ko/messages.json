@@ -179,6 +179,12 @@
     "_machine_translated": true,
     "_source_hash": "30eaab4dbb8d7641"
   },
+  "result.month.no_apps": {
+    "message": "이번 달의 앱 데이터가 없습니다",
+    "description": "Fallback description on a month row when the rollup has no per-app detail",
+    "_machine_translated": true,
+    "_source_hash": "bfebe9aab495d404"
+  },
   "keyword.focus.label": {
     "message": "집중 리포트",
     "description": "Keyword hint for focus-tracker",

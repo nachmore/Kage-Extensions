@@ -179,6 +179,12 @@
     "_machine_translated": true,
     "_source_hash": "30eaab4dbb8d7641"
   },
+  "result.month.no_apps": {
+    "message": "Нет данных о приложениях за этот месяц",
+    "description": "Fallback description on a month row when the rollup has no per-app detail",
+    "_machine_translated": true,
+    "_source_hash": "bfebe9aab495d404"
+  },
   "keyword.focus.label": {
     "message": "Отчёт о фокусе",
     "description": "Keyword hint for focus-tracker",

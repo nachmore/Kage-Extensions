@@ -179,6 +179,12 @@
     "_machine_translated": true,
     "_source_hash": "30eaab4dbb8d7641"
   },
+  "result.month.no_apps": {
+    "message": "Ingen app-data för denna månad",
+    "description": "Fallback description on a month row when the rollup has no per-app detail",
+    "_machine_translated": true,
+    "_source_hash": "bfebe9aab495d404"
+  },
   "keyword.focus.label": {
     "message": "Fokusrapport",
     "description": "Keyword hint for focus-tracker",

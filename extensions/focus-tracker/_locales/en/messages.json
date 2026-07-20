@@ -37,6 +37,10 @@
     "message": "Other periods",
     "description": "Label on the discoverability row listing the other report periods (focus week / month / year / all); Enter swaps the query to a period"
   },
+  "result.month.no_apps": {
+    "message": "No app data for this month",
+    "description": "Fallback description on a month row when the rollup has no per-app detail"
+  },
   "result.loading.description": {
     "message": "Fetching activity data",
     "description": "Description shown while activity report loads"

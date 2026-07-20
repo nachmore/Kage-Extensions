@@ -264,8 +264,40 @@ export default class FocusTrackerSearchProvider {
             },
         });
 
-        // Top apps (max 5)
-        const showApps = this.config.track_screen_time !== false;
+        // Per-month rollup (year / all-time): one compact line per month,
+        // newest first. When present it REPLACES the flat app table —
+        // a long range reads as a handful of month summaries, not a wall
+        // of app rows (top apps for the whole range are still in the
+        // summary card's data and the AI prompt).
+        const months = Array.isArray(report.months) ? report.months : [];
+        if (months.length > 0) {
+            const newestFirst = [...months].reverse();
+            for (let i = 0; i < newestFirst.length; i++) {
+                const m = newestFirst[i];
+                const mTime = _fmtSecs(m.total_seconds);
+                const tops = (m.top_apps || [])
+                    .map((a) => `${a.display_name} ${a.percentage.toFixed(0)}%`)
+                    .join(' · ');
+                results.push({
+                    id: `focus-month-${period}-${m.month}`,
+                    type: 'focus-tracker',
+                    label: `${m.label}: ${mTime}`,
+                    description: tops || this.t('result.month.no_apps'),
+                    icon: '🗓️',
+                    score: 85 - i * 0.01,
+                    tooltip: `${m.label}: ${mTime} — ${tops}`,
+                    data: {
+                        type: 'month-row',
+                        month: m.month,
+                        copyText: `${m.label}: ${mTime} (${tops})`,
+                    },
+                });
+            }
+        }
+
+        // Top apps (max 5) — skipped when the month rollup rendered; the
+        // flat table would just repeat what the month lines already say.
+        const showApps = months.length === 0 && this.config.track_screen_time !== false;
         if (showApps) {
             for (let i = 0; i < Math.min(report.apps.length, 5); i++) {
                 const app = report.apps[i];
@@ -391,18 +423,32 @@ export default class FocusTrackerSearchProvider {
     }
 
     _formatReportForPrompt(report) {
-        const totalMin = Math.round(report.total_seconds / 60);
-        const timeStr = report.total_seconds >= 3600 ? `${(report.total_seconds/3600).toFixed(1)}h` : `${totalMin}m`;
+        const timeStr = _fmtSecs(report.total_seconds);
         const streakMin = Math.round(report.longest_streak_seconds / 60);
 
         let text = `Total: ${timeStr} tracked, ${report.context_switches} context switches, ${streakMin}m longest streak (${report.longest_streak_app})\n`;
-        text += `Apps:\n`;
+
+        // Month breakdown for multi-month ranges (year / all). Compact:
+        // one line per month with the total + top 3 apps so the LLM can
+        // identify trends without drowning in per-app rows.
+        const months = Array.isArray(report.months) ? report.months : [];
+        if (months.length > 0) {
+            text += `\nMonthly:\n`;
+            for (const m of months) {
+                const tops = (m.top_apps || [])
+                    .map((a) => `${a.display_name} ${a.percentage.toFixed(0)}%`)
+                    .join(', ');
+                text += `- ${m.label}: ${_fmtSecs(m.total_seconds)} (${tops})\n`;
+            }
+        }
+
+        text += `\nTop apps (overall):\n`;
         for (const app of report.apps.slice(0, 10)) {
-            const t = app.seconds >= 3600 ? `${(app.seconds/3600).toFixed(1)}h` : `${Math.round(app.seconds/60)}m`;
+            const t = _fmtSecs(app.seconds);
             text += `- ${app.display_name}: ${t} (${app.percentage.toFixed(0)}%), ${app.switches_to} sessions\n`;
             if (app.sites) {
                 for (const site of app.sites.slice(0, 3)) {
-                    const st = site.seconds >= 3600 ? `${(site.seconds/3600).toFixed(1)}h` : `${Math.round(site.seconds/60)}m`;
+                    const st = _fmtSecs(site.seconds);
                     text += `  - ${site.site}: ${st} (${site.percentage.toFixed(0)}% of ${app.display_name})\n`;
                 }
             }
@@ -410,6 +456,10 @@ export default class FocusTrackerSearchProvider {
         return text;
     }
 
+}
+
+function _fmtSecs(s) {
+    return s >= 3600 ? `${(s / 3600).toFixed(1)}h` : `${Math.round(s / 60)}m`;
 }
 
 function _appEmoji(processName) {
