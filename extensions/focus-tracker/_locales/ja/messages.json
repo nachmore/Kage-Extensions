@@ -179,6 +179,36 @@
     "_machine_translated": true,
     "_source_hash": "30eaab4dbb8d7641"
   },
+  "result.menu.today": {
+    "message": "今日のアクティビティ",
+    "description": "Period menu row: today",
+    "_machine_translated": true,
+    "_source_hash": "a99815c58426a407"
+  },
+  "result.menu.week": {
+    "message": "今週",
+    "description": "Period menu row: week",
+    "_machine_translated": true,
+    "_source_hash": "82a622e711c987b5"
+  },
+  "result.menu.month": {
+    "message": "今月",
+    "description": "Period menu row: month",
+    "_machine_translated": true,
+    "_source_hash": "7b95ee2ef8ba5280"
+  },
+  "result.menu.year": {
+    "message": "今年（月別内訳）",
+    "description": "Period menu row: year",
+    "_machine_translated": true,
+    "_source_hash": "8de8f27430bef4dd"
+  },
+  "result.menu.all": {
+    "message": "全期間（月別内訳）",
+    "description": "Period menu row: all",
+    "_machine_translated": true,
+    "_source_hash": "88037a2559e88f3f"
+  },
   "result.month.no_apps": {
     "message": "今月のアプリデータがありません",
     "description": "Fallback description on a month row when the rollup has no per-app detail",

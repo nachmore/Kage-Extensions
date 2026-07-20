@@ -72,6 +72,9 @@ export default class FocusTrackerSearchProvider {
         const parsed = this._parseQuery(query);
         if (!parsed) return [];
 
+        // "focus " / "focus w" → the period picker, not a report.
+        if (parsed.menu) return this._periodMenu(parsed.filter);
+
         // Return cached report if available
         const cached = this._cache.get(parsed.period);
         if (cached && Date.now() - cached.time < 10000) {
@@ -97,6 +100,9 @@ export default class FocusTrackerSearchProvider {
     async matchAsync(query) {
         const parsed = this._parseQuery(query);
         if (!parsed) return [];
+
+        // Menu is fully served by the sync match() — nothing to fetch.
+        if (parsed.menu) return [];
 
         await this._ensureStarted();
 
@@ -150,7 +156,7 @@ export default class FocusTrackerSearchProvider {
         if (result.data?.type === 'insight') {
             return { type: 'prompt', value: result.data.prompt };
         }
-        if (result.data?.type === 'period-hint') {
+        if (result.data?.type === 'period-hint' || result.data?.type === 'period-menu') {
             // Swap the input to a period query so the report re-runs —
             // discoverability affordance, not a report row.
             return { type: 'replace_input', value: result.data.input };
@@ -180,18 +186,51 @@ export default class FocusTrackerSearchProvider {
 
         const rest = trimmed.slice(trigger.length).trim();
 
-        // "focus" alone defaults to "today". `explicit: false` lets the
-        // formatter append the period-hint row only on the bare trigger.
-        if (!rest) return { period: 'today', explicit: false };
+        if (!rest) {
+            // Trailing space after the bare trigger ("focus ") is intent:
+            // the user paused to see what can come next. Show the period
+            // menu instead of today's report so the options are explicit.
+            if (/\s$/.test(query)) return { menu: true, filter: '' };
+            // "focus" alone defaults to "today". `explicit: false` lets the
+            // formatter append the period-hint row only on the bare trigger.
+            return { period: 'today', explicit: false };
+        }
 
-        // Match period
+        // Complete period token → that report.
         for (const [key, value] of Object.entries(PERIODS)) {
             if (rest === key || rest.startsWith(key)) {
                 return { period: value, explicit: true };
             }
         }
 
+        // Partial period prefix ("focus w") → menu filtered to matching
+        // periods, completion-style.
+        if (Object.keys(PERIODS).some((k) => k.startsWith(rest))) {
+            return { menu: true, filter: rest };
+        }
+
         return null;
+    }
+
+    /**
+     * The period picker shown for `focus ` (trailing space) and partial
+     * period text (`focus w`). One row per period, spelled as the exact
+     * query to type; Enter completes the input via replace_input, which
+     * re-runs the search and loads that report.
+     */
+    _periodMenu(filter) {
+        const trigger = (this.config.trigger ?? 'focus').trim().toLowerCase();
+        const periods = Object.keys(PERIODS).filter((p) => !filter || p.startsWith(filter));
+        // i18n-keys: result.menu.today, result.menu.week, result.menu.month, result.menu.year, result.menu.all
+        return periods.map((p, i) => ({
+            id: `focus-menu-${p}`,
+            type: 'focus-tracker',
+            label: `${trigger} ${p}`,
+            description: this.t(`result.menu.${p}`),
+            icon: '📅',
+            score: 88 - i * 0.01,
+            data: { type: 'period-menu', input: `${trigger} ${p}` },
+        }));
     }
 
     async _ensureStarted() {

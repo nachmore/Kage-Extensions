@@ -47,6 +47,15 @@ describe('FocusTracker — query parsing', () => {
         expect(p._parseQuery('focus')).toEqual({ period: 'today', explicit: false });
     });
 
+    it('trailing space shows the period menu', () => {
+        expect(p._parseQuery('focus ')).toEqual({ menu: true, filter: '' });
+    });
+
+    it('partial period prefix shows filtered menu', () => {
+        expect(p._parseQuery('focus w')).toEqual({ menu: true, filter: 'w' });
+        expect(p._parseQuery('focus mo')).toEqual({ menu: true, filter: 'mo' });
+    });
+
     it('parses each period keyword', () => {
         expect(p._parseQuery('focus week')).toEqual({ period: 'week', explicit: true });
         expect(p._parseQuery('focus month')).toEqual({ period: 'month', explicit: true });
@@ -111,6 +120,33 @@ describe('FocusTracker — match()', () => {
         const rows = p.match('focus');
         expect(rows.length).toBeGreaterThan(0);
         expect(rows.every((r) => r.data?.type !== 'loading')).toBe(true);
+    });
+});
+
+describe('FocusTracker — period menu (trailing space / partial prefix)', () => {
+    it('"focus " shows all periods as selectable rows', () => {
+        const rows = setup().match('focus ');
+        expect(rows.length).toBe(5); // today, week, month, year, all
+        expect(rows.every((r) => r.data?.type === 'period-menu')).toBe(true);
+        expect(rows[0].label).toBe('focus today');
+        expect(rows[4].label).toBe('focus all');
+    });
+
+    it('partial prefix filters to matching periods', () => {
+        const rows = setup().match('focus w');
+        expect(rows.length).toBe(1);
+        expect(rows[0].label).toBe('focus week');
+    });
+
+    it('Enter on a menu row replaces input with that query', () => {
+        const p = setup();
+        const row = p.match('focus ')[1]; // 'focus week'
+        expect(p.execute(row)).toEqual({ type: 'replace_input', value: 'focus week' });
+    });
+
+    it('custom trigger flows through to menu labels', () => {
+        const rows = setup({ trigger: 'time' }).match('time ');
+        expect(rows[0].label).toBe('time today');
     });
 });
 

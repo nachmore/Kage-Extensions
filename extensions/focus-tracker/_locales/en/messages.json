@@ -37,6 +37,26 @@
     "message": "Other periods",
     "description": "Label on the discoverability row listing the other report periods (focus week / month / year / all); Enter swaps the query to a period"
   },
+  "result.menu.today": {
+    "message": "Today's activity",
+    "description": "Period menu row: today"
+  },
+  "result.menu.week": {
+    "message": "This week",
+    "description": "Period menu row: week"
+  },
+  "result.menu.month": {
+    "message": "This month",
+    "description": "Period menu row: month"
+  },
+  "result.menu.year": {
+    "message": "This year (monthly breakdown)",
+    "description": "Period menu row: year"
+  },
+  "result.menu.all": {
+    "message": "All time (monthly breakdown)",
+    "description": "Period menu row: all"
+  },
   "result.month.no_apps": {
     "message": "No app data for this month",
     "description": "Fallback description on a month row when the rollup has no per-app detail"
