@@ -23,16 +23,31 @@ export default class FocusTrackerSearchProvider {
         // show real app logos instead of the emoji fallback.
         this._iconCache = new Map();
 
-        // Auto-start tracker if configured
-        if (this.config.auto_start !== false) {
+        // Enabled = tracking. There is no separate auto-start toggle: if
+        // the extension is on, the host-side tracker runs; the standard
+        // extension disable switch is the "stop tracking" affordance
+        // (handled in onConfigUpdate — the sandbox stays loaded across a
+        // disable, so we get the config change and stop the tracker).
+        if (this.config.enabled !== false) {
             this._ensureStarted();
         }
     }
 
     onConfigUpdate(config) {
+        const wasEnabled = this.config?.enabled !== false;
         this.config = config || {};
         this._cache.clear();
-        if (this.config.auto_start !== false && !this._started) {
+        const isEnabled = this.config.enabled !== false;
+        if (wasEnabled && !isEnabled) {
+            // Extension switched off — stop the host-side poller so
+            // "disabled" genuinely means "not tracking". Multi-instance
+            // note: every window's instance sends this; stop is
+            // idempotent so the duplicates are harmless.
+            this._started = false;
+            this.invoke('stop_activity_tracker').catch((e) => {
+                this.log?.warn?.('focus-tracker: stop failed: ' + (e?.message || e));
+            });
+        } else if (!wasEnabled && isEnabled) {
             this._ensureStarted();
         }
     }

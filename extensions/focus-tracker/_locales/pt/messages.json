@@ -95,18 +95,6 @@
     "_machine_translated": true,
     "_source_hash": "2f7d98036a3c54d9"
   },
-  "settings.auto_start.label": {
-    "message": "Iniciar rastreio automaticamente",
-    "description": "Settings: auto-start toggle label",
-    "_machine_translated": true,
-    "_source_hash": "4234006ff6820f4f"
-  },
-  "settings.auto_start.description": {
-    "message": "Iniciar rastreio automaticamente quando a aplicação arranca",
-    "description": "Settings: auto-start toggle description",
-    "_machine_translated": true,
-    "_source_hash": "2b2bb02ec327371d"
-  },
   "settings.section.data_to_track": {
     "message": "Dados a rastrear",
     "description": "Settings section heading",

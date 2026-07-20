@@ -9,16 +9,32 @@ import FocusTrackerSearchProvider from './search.js';
 import { makeContext } from '../../test-helpers/mock-context.mjs';
 
 function setup(config = {}) {
-    // The provider auto-starts the activity tracker in initialize(); stub those
+    // Enabled = tracking: initialize() starts the activity tracker
+    // unconditionally (there is no auto_start toggle). Stub the tracker
     // invokes so the mock doesn't log a "no handler" warning during setup.
     const invokes = {
         is_activity_tracker_running: true,
         start_activity_tracker: undefined,
+        stop_activity_tracker: undefined,
     };
     const { context } = makeContext({ config, invokes });
     const provider = new FocusTrackerSearchProvider();
     provider.initialize(context);
     return provider;
+}
+
+// Like setup(), but returns the mock invoke too so tests can assert
+// tracker lifecycle calls (start/stop).
+function setupWithInvoke(config = {}) {
+    const invokes = {
+        is_activity_tracker_running: false,
+        start_activity_tracker: undefined,
+        stop_activity_tracker: undefined,
+    };
+    const { context } = makeContext({ config, invokes });
+    const provider = new FocusTrackerSearchProvider();
+    provider.initialize(context);
+    return { provider, invoke: context.invoke };
 }
 
 describe('FocusTracker — query parsing', () => {
@@ -107,5 +123,39 @@ describe('FocusTrackerSearchProvider — getKeywords', () => {
 
     it('tracks a custom trigger', () => {
         expect(setup({ trigger: 'time' }).getKeywords().map((k) => k.keyword)).toEqual(['time']);
+    });
+});
+
+describe('FocusTrackerSearchProvider — tracker lifecycle (enabled = tracking)', () => {
+    it('starts the tracker on initialize', async () => {
+        const { invoke } = setupWithInvoke();
+        // initialize()'s start is fire-and-forget; let it settle.
+        await new Promise((r) => setTimeout(r, 0));
+        expect(invoke).toHaveBeenCalledWith('start_activity_tracker', expect.anything());
+    });
+
+    it('does not start when the extension is disabled', async () => {
+        const { invoke } = setupWithInvoke({ enabled: false });
+        await new Promise((r) => setTimeout(r, 0));
+        expect(invoke).not.toHaveBeenCalledWith('start_activity_tracker', expect.anything());
+    });
+
+    it('stops the tracker when the extension is disabled via config', async () => {
+        const { provider, invoke } = setupWithInvoke();
+        await new Promise((r) => setTimeout(r, 0));
+        provider.onConfigUpdate({ enabled: false });
+        await new Promise((r) => setTimeout(r, 0));
+        expect(invoke).toHaveBeenCalledWith('stop_activity_tracker');
+    });
+
+    it('restarts the tracker when the extension is re-enabled', async () => {
+        const { provider, invoke } = setupWithInvoke();
+        await new Promise((r) => setTimeout(r, 0));
+        provider.onConfigUpdate({ enabled: false });
+        await new Promise((r) => setTimeout(r, 0));
+        invoke.mockClear();
+        provider.onConfigUpdate({ enabled: true });
+        await new Promise((r) => setTimeout(r, 0));
+        expect(invoke).toHaveBeenCalledWith('start_activity_tracker', expect.anything());
     });
 });

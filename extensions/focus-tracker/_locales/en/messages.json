@@ -81,14 +81,6 @@
     "message": "How often to check the active window. Lower = more accurate but uses more resources.",
     "description": "Settings: poll interval description"
   },
-  "settings.auto_start.label": {
-    "message": "Auto-start Tracking",
-    "description": "Settings: auto-start toggle label"
-  },
-  "settings.auto_start.description": {
-    "message": "Start tracking automatically when the app launches",
-    "description": "Settings: auto-start toggle description"
-  },
   "settings.section.data_to_track": {
     "message": "Data to Track",
     "description": "Settings section heading"

@@ -95,18 +95,6 @@
     "_machine_translated": true,
     "_source_hash": "2f7d98036a3c54d9"
   },
-  "settings.auto_start.label": {
-    "message": "İzlemeyi otomatik başlat",
-    "description": "Settings: auto-start toggle label",
-    "_machine_translated": true,
-    "_source_hash": "4234006ff6820f4f"
-  },
-  "settings.auto_start.description": {
-    "message": "Uygulama açıldığında izlemeyi otomatik olarak başlat",
-    "description": "Settings: auto-start toggle description",
-    "_machine_translated": true,
-    "_source_hash": "2b2bb02ec327371d"
-  },
   "settings.section.data_to_track": {
     "message": "İzlenecek veriler",
     "description": "Settings section heading",

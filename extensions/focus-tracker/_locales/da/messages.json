@@ -95,18 +95,6 @@
     "_machine_translated": true,
     "_source_hash": "2f7d98036a3c54d9"
   },
-  "settings.auto_start.label": {
-    "message": "Autostart sporing",
-    "description": "Settings: auto-start toggle label",
-    "_machine_translated": true,
-    "_source_hash": "4234006ff6820f4f"
-  },
-  "settings.auto_start.description": {
-    "message": "Start sporing automatisk, når appen åbnes",
-    "description": "Settings: auto-start toggle description",
-    "_machine_translated": true,
-    "_source_hash": "2b2bb02ec327371d"
-  },
   "settings.section.data_to_track": {
     "message": "Data der skal spores",
     "description": "Settings section heading",

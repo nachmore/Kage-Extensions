@@ -34,13 +34,6 @@ export default class FocusTrackerSettingsProvider {
                             max: 60,
                             maxWidth: 80,
                         },
-                        {
-                            type: 'checkbox',
-                            id: 'auto_start',
-                            label: t('settings.auto_start.label'),
-                            description: t('settings.auto_start.description'),
-                            default: true,
-                        },
                     ],
                 },
                 {
