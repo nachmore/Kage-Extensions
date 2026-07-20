@@ -7,6 +7,7 @@ const PERIODS = {
     'today': 'today',
     'week': 'week',
     'month': 'month',
+    'year': 'year',
     'all': 'all',
 };
 
@@ -74,13 +75,13 @@ export default class FocusTrackerSearchProvider {
         // Return cached report if available
         const cached = this._cache.get(parsed.period);
         if (cached && Date.now() - cached.time < 10000) {
-            return this._formatReport(cached.data, parsed.period);
+            return this._formatReport(cached.data, parsed.period, parsed);
         }
 
         // Valid trigger but no cache yet — show placeholder so Enter doesn't send to agent.
         // Period-specific keys read as natural English ("Loading today's report…")
         // instead of splicing the raw period token ("Loading today report…").
-        // i18n-keys: result.loading.today, result.loading.week, result.loading.month, result.loading.all
+        // i18n-keys: result.loading.today, result.loading.week, result.loading.month, result.loading.year, result.loading.all
         const loadingKey = `result.loading.${parsed.period}`;
         return [{
             id: `focus-loading-${parsed.period}`,
@@ -123,7 +124,7 @@ export default class FocusTrackerSearchProvider {
             // rows render with the actual icon instead of an emoji fallback.
             await this._ensureIcons(report);
 
-            return this._formatReport(report, parsed.period);
+            return this._formatReport(report, parsed.period, parsed);
         } catch (e) {
             console.warn('[FocusTracker] Report failed:', e);
             return [{
@@ -148,6 +149,11 @@ export default class FocusTrackerSearchProvider {
         }
         if (result.data?.type === 'insight') {
             return { type: 'prompt', value: result.data.prompt };
+        }
+        if (result.data?.type === 'period-hint') {
+            // Swap the input to a period query so the report re-runs —
+            // discoverability affordance, not a report row.
+            return { type: 'replace_input', value: result.data.input };
         }
         if (result.data?.type === 'summary' && result.data.report) {
             return this._buildPromptAction(result.data.report, result.data.report.period);
@@ -174,13 +180,14 @@ export default class FocusTrackerSearchProvider {
 
         const rest = trimmed.slice(trigger.length).trim();
 
-        // "focus" alone defaults to "today"
-        if (!rest) return { period: 'today' };
+        // "focus" alone defaults to "today". `explicit: false` lets the
+        // formatter append the period-hint row only on the bare trigger.
+        if (!rest) return { period: 'today', explicit: false };
 
         // Match period
         for (const [key, value] of Object.entries(PERIODS)) {
             if (rest === key || rest.startsWith(key)) {
-                return { period: value };
+                return { period: value, explicit: true };
             }
         }
 
@@ -228,7 +235,7 @@ export default class FocusTrackerSearchProvider {
         }));
     }
 
-    _formatReport(report, period) {
+    _formatReport(report, period, parsed = null) {
         const results = [];
 
         // Summary card
@@ -337,11 +344,30 @@ export default class FocusTrackerSearchProvider {
             });
         }
 
+        // Period-hint row: on the bare trigger, surface the other periods
+        // so users discover `focus week` / `month` / `year` / `all` without
+        // reading docs. Enter swaps the input to the period so the report
+        // re-runs (`replace_input`), same as typing it. Lowest score in the
+        // group so it renders at the bottom of the block.
+        if (parsed && parsed.explicit === false) {
+            const trigger = (this.config.trigger ?? 'focus').trim().toLowerCase();
+            const others = Object.keys(PERIODS).filter((p) => p !== period);
+            results.push({
+                id: 'focus-period-hint',
+                type: 'focus-tracker',
+                label: this.t('result.periods.label'),
+                description: others.map((p) => `${trigger} ${p}`).join(' · '),
+                icon: '📅',
+                score: 79,
+                data: { type: 'period-hint', input: `${trigger} week` },
+            });
+        }
+
         return results;
     }
 
     _getComparisonPeriod(period) {
-        const map = { 'today': 'week', 'week': 'month', 'month': 'all' };
+        const map = { 'today': 'week', 'week': 'month', 'month': 'year', 'year': 'all' };
         return map[period] || null;
     }
 

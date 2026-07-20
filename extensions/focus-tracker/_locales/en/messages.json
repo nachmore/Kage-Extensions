@@ -25,9 +25,17 @@
     "message": "📊 Loading this month's report…",
     "description": "Label shown while this month's activity report loads"
   },
+  "result.loading.year": {
+    "message": "📊 Loading this year's report…",
+    "description": "Label shown while this year's activity report loads"
+  },
   "result.loading.all": {
     "message": "📊 Loading all-time report…",
     "description": "Label shown while the all-time activity report loads"
+  },
+  "result.periods.label": {
+    "message": "Other periods",
+    "description": "Label on the discoverability row listing the other report periods (focus week / month / year / all); Enter swaps the query to a period"
   },
   "result.loading.description": {
     "message": "Fetching activity data",

@@ -43,14 +43,15 @@ describe('FocusTracker — query parsing', () => {
         p = setup();
     });
 
-    it('defaults the bare trigger to "today"', () => {
-        expect(p._parseQuery('focus')).toEqual({ period: 'today' });
+    it('defaults the bare trigger to "today" (implicit — hint row eligible)', () => {
+        expect(p._parseQuery('focus')).toEqual({ period: 'today', explicit: false });
     });
 
     it('parses each period keyword', () => {
-        expect(p._parseQuery('focus week')).toEqual({ period: 'week' });
-        expect(p._parseQuery('focus month')).toEqual({ period: 'month' });
-        expect(p._parseQuery('focus all')).toEqual({ period: 'all' });
+        expect(p._parseQuery('focus week')).toEqual({ period: 'week', explicit: true });
+        expect(p._parseQuery('focus month')).toEqual({ period: 'month', explicit: true });
+        expect(p._parseQuery('focus year')).toEqual({ period: 'year', explicit: true });
+        expect(p._parseQuery('focus all')).toEqual({ period: 'all', explicit: true });
     });
 
     it('returns null for a non-trigger query', () => {
@@ -59,7 +60,7 @@ describe('FocusTracker — query parsing', () => {
 
     it('honours a custom trigger', () => {
         const c = setup({ trigger: 'time' });
-        expect(c._parseQuery('time week')).toEqual({ period: 'week' });
+        expect(c._parseQuery('time week')).toEqual({ period: 'week', explicit: true });
         expect(c._parseQuery('focus week')).toBeNull();
     });
 });
@@ -70,10 +71,11 @@ describe('FocusTracker — comparison period ladder', () => {
         p = setup();
     });
 
-    it('steps today→week→month→all', () => {
+    it('steps today→week→month→year→all', () => {
         expect(p._getComparisonPeriod('today')).toBe('week');
         expect(p._getComparisonPeriod('week')).toBe('month');
-        expect(p._getComparisonPeriod('month')).toBe('all');
+        expect(p._getComparisonPeriod('month')).toBe('year');
+        expect(p._getComparisonPeriod('year')).toBe('all');
     });
 
     it('returns null past the end of the ladder', () => {
@@ -109,6 +111,51 @@ describe('FocusTracker — match()', () => {
         const rows = p.match('focus');
         expect(rows.length).toBeGreaterThan(0);
         expect(rows.every((r) => r.data?.type !== 'loading')).toBe(true);
+    });
+});
+
+describe('FocusTracker — period-hint row (discoverability)', () => {
+    const CACHED_REPORT = {
+        period: 'Today',
+        total_seconds: 3600,
+        context_switches: 3,
+        longest_streak_seconds: 1200,
+        longest_streak_app: 'Code.exe',
+        apps: [{ process_name: 'Code.exe', display_name: 'Code', seconds: 3600, percentage: 100, switches_to: 3 }],
+    };
+
+    function withCache(p, period = 'today') {
+        p._cache.set(period, { time: Date.now(), data: { ...CACHED_REPORT } });
+        return p;
+    }
+
+    it('bare trigger appends the hint row listing the other periods', () => {
+        const rows = withCache(setup()).match('focus');
+        const hint = rows.find((r) => r.data?.type === 'period-hint');
+        expect(hint).toBeDefined();
+        // All non-today periods, spelled as typeable queries.
+        expect(hint.description).toBe('focus week · focus month · focus year · focus all');
+        // Renders below every report row.
+        expect(Math.max(...rows.filter((r) => r !== hint).map((r) => r.score))).toBeGreaterThan(hint.score);
+    });
+
+    it('explicit period query does NOT get the hint row', () => {
+        const p = setup();
+        p._cache.set('week', { time: Date.now(), data: { ...CACHED_REPORT, period: 'This Week' } });
+        const rows = p.match('focus week');
+        expect(rows.find((r) => r.data?.type === 'period-hint')).toBeUndefined();
+    });
+
+    it('hint row respects a custom trigger', () => {
+        const rows = withCache(setup({ trigger: 'time' })).match('time');
+        const hint = rows.find((r) => r.data?.type === 'period-hint');
+        expect(hint.description).toBe('time week · time month · time year · time all');
+    });
+
+    it('Enter on the hint row swaps the input to a period query', () => {
+        const p = withCache(setup());
+        const hint = p.match('focus').find((r) => r.data?.type === 'period-hint');
+        expect(p.execute(hint)).toEqual({ type: 'replace_input', value: 'focus week' });
     });
 });
 

@@ -1,7 +1,7 @@
 {
   "id": "focus-tracker",
   "name": "__MSG_manifest.name__",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "type": "extension",
   "description": "__MSG_manifest.description__",
   "icon": "📊",

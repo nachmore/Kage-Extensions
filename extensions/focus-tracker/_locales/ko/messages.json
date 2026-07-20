@@ -161,11 +161,23 @@
     "_machine_translated": true,
     "_source_hash": "b71c2c38e62f7bb1"
   },
+  "result.loading.year": {
+    "message": "📊 올해 보고서 로드 중…",
+    "description": "Label shown while this year's activity report loads",
+    "_machine_translated": true,
+    "_source_hash": "3bdfd4e17ed09ad5"
+  },
   "result.loading.all": {
     "message": "📊 전체 기간 보고서를 불러오는 중…",
     "description": "Label shown while the all-time activity report loads",
     "_machine_translated": true,
     "_source_hash": "8073e994c571a83a"
+  },
+  "result.periods.label": {
+    "message": "다른 기간",
+    "description": "Label on the discoverability row listing the other report periods (focus week / month / year / all); Enter swaps the query to a period",
+    "_machine_translated": true,
+    "_source_hash": "30eaab4dbb8d7641"
   },
   "keyword.focus.label": {
     "message": "집중 리포트",
