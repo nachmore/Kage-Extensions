@@ -172,7 +172,8 @@ export default class SpotifyNowPlayingWidget {
     /**
      * The "disconnected — reconnect" bar. Shown only after repeated auth
      * failures (see render()'s catch). Deliberately minimal: an icon, a
-     * short message, and a Reconnect button that kicks off the sign-in flow.
+     * short message, and a refresh-glyph button (localized "Reconnect"
+     * lives in the tooltip — text overflows the square bar buttons).
      */
     _renderDisconnected() {
         const msg = this.t('widget.disconnected.message');
@@ -183,7 +184,7 @@ export default class SpotifyNowPlayingWidget {
                 <span class="spotify-track">${escapeHtml(msg)}</span>
             </span>
             <div class="extension-bar-controls spotify-controls">
-                <button data-ext-action="reconnect" class="extension-bar-btn spotify-reconnect">${escapeHtml(reconnect)}</button>
+                <button data-ext-action="reconnect" class="extension-bar-btn spotify-reconnect" title="${escapeHtml(reconnect)}">↻</button>
             </div>
         `;
         return {

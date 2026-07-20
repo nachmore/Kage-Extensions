@@ -109,6 +109,9 @@ describe('Spotify widget — disconnected affordance', () => {
         expect(out.className).toMatch(/spotify-bar-disconnected/);
         expect(out.html).toMatch(/Spotify disconnected/);
         expect(out.actions).toEqual([{ id: 'reconnect', rpc: 'reconnect' }]);
+        // The button is a glyph — localized "Reconnect" text overflows the
+        // square bar buttons, so it lives in the tooltip instead.
+        expect(out.html).toMatch(/title="Reconnect"[^>]*>↻</);
     });
 
     it('never shows the affordance for repeated network failures', async () => {

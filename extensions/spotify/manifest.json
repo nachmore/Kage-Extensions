@@ -1,7 +1,7 @@
 {
   "id": "spotify",
   "name": "__MSG_manifest.name__",
-  "version": "0.3.8",
+  "version": "0.3.9",
   "type": "extension",
   "description": "__MSG_manifest.description__",
   "icon": "🎧",
