@@ -29,13 +29,22 @@ const SPOTIFY_API_BASE = 'https://api.spotify.com/v1';
 // a second, so this timeout never fires when Spotify is reachable.
 const FETCH_TIMEOUT_MS = 4000;
 
+// The token endpoint gets a much longer leash than regular API calls.
+// Aborting a token-refresh POST that Spotify has already processed is
+// UNRECOVERABLE under refresh-token rotation: the rotation happened
+// server-side (our stored token is now dead) but the new token died
+// with the aborted response. A slow /me/player poll, by contrast, can
+// simply be retried next cycle. 15s trades a rare slow beat for never
+// self-destructing the session.
+const TOKEN_FETCH_TIMEOUT_MS = 15000;
+
 /**
  * `fetch` with a hard timeout. Aborts via `AbortSignal.timeout`, so a
- * hung connect can't outlive `FETCH_TIMEOUT_MS`. Composes with any
+ * hung connect can't outlive the deadline. Composes with any
  * caller-supplied `signal` so existing abort semantics still work.
  */
-async function fetchWithTimeout(url, init = {}) {
-    const timeoutSignal = AbortSignal.timeout(FETCH_TIMEOUT_MS);
+async function fetchWithTimeout(url, init = {}, timeoutMs = FETCH_TIMEOUT_MS) {
+    const timeoutSignal = AbortSignal.timeout(timeoutMs);
     const signal = init.signal
         ? AbortSignal.any([init.signal, timeoutSignal])
         : timeoutSignal;
@@ -94,8 +103,11 @@ let _stateDirty = false;
 export function init(context) {
     _ctx = context;
     // New context may mean a different backing store (fresh sandbox,
-    // tests) — the write-dedup's memory of "what I last wrote" no
-    // longer describes it. Reset to read-through.
+    // tests) — in-memory state derived from the OLD store no longer
+    // describes it. Reset the token cache, any in-flight refresh, and
+    // the revoked-marker write-dedup to read-through.
+    _cachedToken = null;
+    _refreshing = null;
     _revokedWritten = null;
 }
 
@@ -446,6 +458,101 @@ export async function startSignIn() {
 }
 
 // ---- Token refresh + access ----
+//
+// MULTI-INSTANCE WARNING (see CONTRIBUTING.md "multiple concurrent
+// instances"): every Kage window runs its own copy of this module, all
+// sharing one creds.json. Spotify ROTATES the refresh token on every
+// PKCE refresh and applies reuse detection — if two windows refresh
+// concurrently with the same token, the loser presents an
+// already-rotated token, which Spotify may answer by revoking the
+// entire grant ("keeps getting logged out"). Three defences, layered:
+//
+//   1. A cross-window refresh mutex in extension-data (TTL'd — a dead
+//      holder can't wedge everyone). The in-memory `_refreshing`
+//      promise still dedupes within a window; the lock serialises
+//      across windows.
+//   2. Lost-race healing: on a 4xx refresh failure, re-read creds from
+//      disk. If the stored refresh token differs from the one we
+//      presented, a sibling won the race and rotated it — use the
+//      sibling's result instead of failing.
+//   3. A generous token-endpoint timeout (TOKEN_FETCH_TIMEOUT_MS): an
+//      aborted-but-server-processed rotation loses the new token
+//      irrecoverably, so this call gets patience the data-plane calls
+//      don't.
+
+// Lock TTL. Longer than TOKEN_FETCH_TIMEOUT_MS so the lock outlives the
+// slowest legitimate refresh; short enough that a crashed holder only
+// stalls siblings briefly (they fail one poll cycle and retry).
+const REFRESH_LOCK_TTL_MS = 20000;
+// How long a non-holding instance waits for the holder to finish before
+// reading through (holder likely completed) or grabbing the lock itself
+// (holder likely died).
+const REFRESH_LOCK_POLL_MS = 500;
+
+// Instance tag for lock ownership. Random per module instance — two
+// windows can't collide, and rechecking ownership after the write
+// catches near-simultaneous grabs (extension-data writes are
+// last-writer-wins, no compare-and-swap).
+const _instanceId = base64Url(randomBytes(8));
+
+async function _readRefreshLock() {
+    const raw = await _ctx.invoke('load_extension_data', { key: 'refresh_lock' });
+    if (!raw) return null;
+    try {
+        const lock = JSON.parse(raw);
+        if (!lock.holder || !lock.expires_at || lock.expires_at < Date.now()) return null;
+        return lock;
+    } catch {
+        return null;
+    }
+}
+
+async function _acquireRefreshLock() {
+    const existing = await _readRefreshLock();
+    if (existing && existing.holder !== _instanceId) return false;
+    await _ctx.invoke('save_extension_data', {
+        key: 'refresh_lock',
+        data: JSON.stringify({ holder: _instanceId, expires_at: Date.now() + REFRESH_LOCK_TTL_MS }),
+    });
+    // Re-read: with last-writer-wins storage two instances can both pass
+    // the check above; the second write clobbers the first, so whoever
+    // reads their own id back owns the lock. (The two storage RPCs are
+    // serialized through the host, so this read observes any write that
+    // landed before ours.)
+    const check = await _readRefreshLock();
+    return check?.holder === _instanceId;
+}
+
+async function _releaseRefreshLock() {
+    const lock = await _readRefreshLock();
+    if (lock && lock.holder !== _instanceId) return; // not ours to release
+    await _ctx.invoke('delete_extension_data', { key: 'refresh_lock' });
+}
+
+/** The actual token-endpoint round trip. Throws on non-OK. */
+async function _refreshRoundTrip(refreshToken, clientId) {
+    const body = new URLSearchParams({
+        grant_type: 'refresh_token',
+        refresh_token: refreshToken,
+        client_id: clientId,
+    });
+    const resp = await fetchWithTimeout(
+        `${SPOTIFY_AUTH_BASE}/api/token`,
+        {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: body.toString(),
+        },
+        TOKEN_FETCH_TIMEOUT_MS
+    );
+    if (!resp.ok) {
+        const text = await resp.text();
+        const err = new Error(`Token refresh failed: ${resp.status} ${text.slice(0, 200)}`);
+        err.status = resp.status;
+        throw err;
+    }
+    return resp.json();
+}
 
 async function refreshAccessToken() {
     const creds = await readCreds();
@@ -456,35 +563,73 @@ async function refreshAccessToken() {
     if (!clientId) {
         throw new Error('No Spotify client_id configured.');
     }
-    const body = new URLSearchParams({
-        grant_type: 'refresh_token',
-        refresh_token: creds.refresh_token,
-        client_id: clientId,
-    });
-    const resp = await fetchWithTimeout(`${SPOTIFY_AUTH_BASE}/api/token`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: body.toString(),
-    });
-    if (!resp.ok) {
-        const text = await resp.text();
-        throw new Error(`Token refresh failed: ${resp.status} ${text.slice(0, 200)}`);
+
+    // Serialise across windows. If a sibling holds the lock, wait it out
+    // and use whatever it wrote instead of racing it.
+    if (!(await _acquireRefreshLock())) {
+        const deadline = Date.now() + REFRESH_LOCK_TTL_MS;
+        while (Date.now() < deadline) {
+            await new Promise((r) => setTimeout(r, REFRESH_LOCK_POLL_MS));
+            const lock = await _readRefreshLock();
+            if (!lock) break; // holder finished (or died and TTL'd out)
+        }
+        const refreshed = await readCreds();
+        if (refreshed?.access_token && refreshed.expires_at > Date.now() + 5000) {
+            _cachedToken = {
+                accessToken: refreshed.access_token,
+                expiresAt: refreshed.expires_at,
+            };
+            return refreshed.access_token;
+        }
+        // Holder vanished without writing a fresh token — fall through and
+        // refresh ourselves (best effort; the lock is gone or expired).
     }
-    const tok = await resp.json();
-    const expiresAt = Date.now() + (tok.expires_in - 30) * 1000;
-    // Spotify sometimes rotates the refresh_token (newer SDK versions do).
-    const next = {
-        refresh_token: tok.refresh_token || creds.refresh_token,
-        access_token: tok.access_token,
-        expires_at: expiresAt,
-        scopes: tok.scope || creds.scopes || SCOPES.join(' '),
-    };
-    await writeCreds(next);
-    _cachedToken = { accessToken: tok.access_token, expiresAt };
-    // A refresh Spotify just accepted is the strongest proof the session
-    // is alive — retract any revoked marker another surface recorded.
-    await clearAuthRevoked();
-    return tok.access_token;
+
+    try {
+        let tok;
+        try {
+            tok = await _refreshRoundTrip(creds.refresh_token, clientId);
+        } catch (e) {
+            // Lost-race healing: a 4xx here usually means the token we
+            // presented was already rotated by a sibling window. If the
+            // creds on disk changed while we were trying, trust the
+            // sibling's rotation — retry once with the stored token.
+            const isAuthShaped = e?.status >= 400 && e?.status < 500;
+            if (!isAuthShaped) throw e;
+            const latest = await readCreds();
+            if (!latest?.refresh_token || latest.refresh_token === creds.refresh_token) {
+                throw e; // nothing changed — genuinely dead
+            }
+            if (latest.access_token && latest.expires_at > Date.now() + 5000) {
+                // Sibling already wrote a live access token; no round trip needed.
+                _cachedToken = {
+                    accessToken: latest.access_token,
+                    expiresAt: latest.expires_at,
+                };
+                return latest.access_token;
+            }
+            tok = await _refreshRoundTrip(latest.refresh_token, clientId);
+            creds.refresh_token = latest.refresh_token;
+            creds.scopes = latest.scopes || creds.scopes;
+        }
+
+        const expiresAt = Date.now() + (tok.expires_in - 30) * 1000;
+        // Spotify sometimes rotates the refresh_token (newer SDK versions do).
+        const next = {
+            refresh_token: tok.refresh_token || creds.refresh_token,
+            access_token: tok.access_token,
+            expires_at: expiresAt,
+            scopes: tok.scope || creds.scopes || SCOPES.join(' '),
+        };
+        await writeCreds(next);
+        _cachedToken = { accessToken: tok.access_token, expiresAt };
+        // A refresh Spotify just accepted is the strongest proof the session
+        // is alive — retract any revoked marker another surface recorded.
+        await clearAuthRevoked();
+        return tok.access_token;
+    } finally {
+        await _releaseRefreshLock();
+    }
 }
 
 async function getAccessToken() {

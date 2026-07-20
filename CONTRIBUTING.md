@@ -287,6 +287,45 @@ else falls back to the built-in defaults — see
 [`shared-kage-tokens.css`](https://github.com/nachmore/Kage/blob/main/ui/css/shared-kage-tokens.css) for the
 catalogue.
 
+## MUST: your extension runs as multiple concurrent instances
+
+Every Kage window that uses one of your contribution points (floating
+bar, chat, settings, peer chat windows) hosts its **own sandbox with
+its own copy of your modules**. There is no "the extension singleton".
+This is the most common source of subtle production bugs, so treat the
+following as requirements, not suggestions:
+
+- **Module-level variables are per-window.** A cached token, an
+  in-flight-promise single-flight guard, a "did I already migrate?"
+  boolean — none of them exist in the other windows.
+- **Instances race each other on shared side effects.** The canonical
+  failure: two windows both see an expired OAuth access token and both
+  refresh concurrently. Providers that rotate refresh tokens (Spotify,
+  Google, Microsoft) may treat the loser's now-stale token as theft
+  and **revoke the whole grant** — the user "keeps getting logged
+  out" and nobody can reproduce it in a one-window dev setup.
+- **The only cross-instance state is `extension-data`**
+  (`save_extension_data` / `load_extension_data` /
+  `delete_extension_data`). If two instances must agree, the agreement
+  lives there — never in module scope.
+
+Required patterns for non-idempotent side effects (token rotation,
+one-shot migrations, write-behind caches):
+
+1. **Re-read before failing**: on a credential error, reload stored
+   state — a sibling instance may have already renewed it; retry with
+   the stored value before surfacing "signed out".
+2. **Serialize the side effect**: elect a leader instance, or take a
+   TTL'd mutex through extension-data. Never assume your in-memory
+   guard protects you.
+3. **Read through for shared state**: anything another instance can
+   change (auth status, credentials) must be re-read from
+   extension-data, not trusted from a module cache.
+
+`extensions/spotify/auth.js` is the reference implementation. The host
+contract is documented in the Kage repo's `docs/EXTENSIONS.md`
+("Your extension runs as MULTIPLE instances").
+
 ## OAuth-using extensions
 
 Several extensions (Spotify, GitHub, etc.) need OAuth. Kage supports
