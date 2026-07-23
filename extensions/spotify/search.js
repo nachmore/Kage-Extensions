@@ -404,6 +404,9 @@ export default class SpotifySearchProvider {
 
     _wrapPlayerError(e) {
         const code = e?.code;
+        // Launcher context: the user is NOT in settings, so tell them
+        // where to go (unlike settings.js, which says "above").
+        if (code === 'no_client_id') return new Error(this.t('error.no_client_id'));
         if (code === 'no_devices') return new Error(this.t('error.no_devices'));
         if (code === 'multiple_devices') {
             // Spell out the available device names so the user can

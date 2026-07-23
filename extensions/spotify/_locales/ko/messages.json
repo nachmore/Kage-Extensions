@@ -592,5 +592,11 @@
     "description": "HTML body listing supported launcher commands (HTML allowed). {trigger} is the configured trigger word.",
     "_machine_translated": true,
     "_source_hash": "ca8161f663aa319a"
+  },
+  "error.no_client_id": {
+    "message": "Spotify가 아직 설정되지 않았습니다. 설정 → 확장 → Spotify에서 Client ID를 추가한 후 다시 시도하십시오.",
+    "description": "Launcher-facing error when a Spotify command runs before a Client ID has been saved. Avoids the raw 'client_id' identifier (log-only jargon) and points at the settings path; the settings window itself uses action.check_connection.no_client_id ('paste one above').",
+    "_machine_translated": true,
+    "_source_hash": "eb02f1d2309fbbf9"
   }
 }

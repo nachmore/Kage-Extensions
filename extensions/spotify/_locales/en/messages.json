@@ -125,6 +125,10 @@
     "message": "Not signed in to Spotify. Type \"sp connect\" to sign in.",
     "description": "Error message when no Spotify session"
   },
+  "error.no_client_id": {
+    "message": "Spotify isn't set up yet. Add your Client ID in Settings → Extensions → Spotify, then try again.",
+    "description": "Launcher-facing error when a Spotify command runs before a Client ID has been saved. Avoids the raw 'client_id' identifier (log-only jargon) and points at the settings path; the settings window itself uses action.check_connection.no_client_id ('paste one above')."
+  },
   "error.nothing_playing": {
     "message": "Nothing is playing right now.",
     "description": "Error when like is invoked with no track"

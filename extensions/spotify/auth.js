@@ -357,9 +357,13 @@ export async function checkConnection() {
 export async function startSignIn() {
     const clientId = await getClientId();
     if (!clientId) {
-        throw new Error(
-            'No Spotify client_id configured. Open the extension settings to paste one in.'
-        );
+        // Coded so callers can surface a contextual, localised message
+        // (settings says "paste one in above"; the launcher points at
+        // settings). This message is the log-facing fallback only —
+        // client_id is fine in a log, not in UI copy.
+        const err = new Error('No Spotify client_id configured.');
+        err.code = 'no_client_id';
+        throw err;
     }
 
     // 1. Reserve the loopback listener — this gives us back a fixed
@@ -561,7 +565,9 @@ async function refreshAccessToken() {
     }
     const clientId = await getClientId();
     if (!clientId) {
-        throw new Error('No Spotify client_id configured.');
+        const err = new Error('No Spotify client_id configured.');
+        err.code = 'no_client_id';
+        throw err;
     }
 
     // Serialise across windows. If a sibling holds the lock, wait it out

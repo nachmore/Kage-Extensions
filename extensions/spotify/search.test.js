@@ -209,3 +209,17 @@ describe('SpotifySearchProvider — widget refresh after state change', () => {
         }
     });
 });
+
+describe('SpotifySearchProvider — connect without a Client ID', () => {
+    it('surfaces a plain-language pointer to settings, not client_id jargon', async () => {
+        // Empty store: no client.json saved. `sp connect` from the launcher
+        // must say where to add the Client ID (the user is NOT in settings
+        // here) and never leak the raw client_id identifier into UI copy.
+        const { provider } = setupExec({});
+        const out = await provider.execute(row('connect'));
+        expect(out.type).toBe('custom');
+        expect(out.data.error).toMatch(/Settings → Extensions → Spotify/);
+        expect(out.data.error).toMatch(/Client ID/);
+        expect(out.data.error).not.toMatch(/client_id/);
+    });
+});

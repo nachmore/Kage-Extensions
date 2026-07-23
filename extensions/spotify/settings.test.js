@@ -213,3 +213,26 @@ describe('Spotify settings — getSettings reflects connection state', () => {
         expect(info.html).toMatch(/Not signed in/i);
     });
 });
+
+describe('Spotify settings — connect action without a Client ID', () => {
+    beforeEach(() => {
+        vi.useFakeTimers();
+        vi.setSystemTime(1_000_000);
+    });
+    afterEach(() => {
+        vi.useRealTimers();
+        vi.restoreAllMocks();
+    });
+
+    it('points at the field above, in plain language', async () => {
+        // The user is LOOKING at the settings panel — the old message told
+        // them to "open the extension settings", and said "client_id"
+        // (log jargon) instead of the field's visible "Client ID" label.
+        const { provider } = setup({});
+        const res = await provider.runAction('connect', {});
+        expect(res.status).toMatch(/paste one above/i);
+        expect(res.status).toMatch(/Client ID/);
+        expect(res.status).not.toMatch(/client_id/);
+        expect(res.status).not.toMatch(/open the extension settings/i);
+    });
+});

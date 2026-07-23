@@ -178,6 +178,12 @@ export default class SpotifySettingsProvider {
                 // all reflect it.
                 return { status: t('action.connect.success'), host: { type: 'refresh' } };
             } catch (e) {
+                // The user is LOOKING at the Client ID field — point at
+                // it ("above"), don't send them to the settings they're
+                // already in. Same key check_connection uses.
+                if (e?.code === 'no_client_id') {
+                    return { status: t('action.check_connection.no_client_id') };
+                }
                 return { status: t('action.connect.error', { message: e?.message || e }) };
             }
         }

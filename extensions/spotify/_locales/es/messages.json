@@ -592,5 +592,11 @@
     "description": "HTML body listing supported launcher commands (HTML allowed). {trigger} is the configured trigger word.",
     "_machine_translated": true,
     "_source_hash": "ca8161f663aa319a"
+  },
+  "error.no_client_id": {
+    "message": "Spotify aún no está configurado. Añade tu Client ID en Ajustes → Extensiones → Spotify e inténtalo de nuevo.",
+    "description": "Launcher-facing error when a Spotify command runs before a Client ID has been saved. Avoids the raw 'client_id' identifier (log-only jargon) and points at the settings path; the settings window itself uses action.check_connection.no_client_id ('paste one above').",
+    "_machine_translated": true,
+    "_source_hash": "eb02f1d2309fbbf9"
   }
 }
