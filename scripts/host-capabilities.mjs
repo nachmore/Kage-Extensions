@@ -21,14 +21,18 @@
  */
 export const COMMAND_CAPABILITIES = Object.freeze({
     // --- storage --------------------------------------------------------
-    get_config: 'storage',
+    // Never extension-callable: returns the ENTIRE app config (other
+    // extensions' data, grants, connection commands). See the host file
+    // for the full rationale.
+    get_config: null,
     get_extension_config: 'storage',
     save_extension_config: 'storage',
     save_extension_data: 'storage',
     load_extension_data: 'storage',
     delete_extension_data: 'storage',
-    save_frecency: 'storage',
-    load_frecency: 'storage',
+    // Kage-internal global launcher state — not identity-scoped.
+    save_frecency: null,
+    load_frecency: null,
 
     // --- clipboard ------------------------------------------------------
     read_clipboard: 'clipboard',
@@ -85,6 +89,7 @@ export const COMMAND_CAPABILITIES = Object.freeze({
     load_session: 'session',
     get_window_session: 'session',
     get_sessions_directory: 'session',
+    get_session_stream_snapshot: 'session',
 
     // --- agent ---------------------------------------------------------
     send_message_streaming: 'agent',
@@ -193,6 +198,12 @@ export const COMMAND_CAPABILITIES = Object.freeze({
     kage_desktop_workspaces: null,
     open_chat_window: null,
     open_settings_window: null,
+    // Host-internal surfaces added upstream — never extension-callable.
+    generate_script: null,
+    get_hotkey_registration_failures: null,
+    kiro_desktop_delete_session: null,
+    kiro_desktop_open_folder: null,
+    kiro_desktop_workspaces: null,
     open_welcome_window: null,
     open_store_window: null,
     open_auto_steering_file: null,

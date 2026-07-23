@@ -304,6 +304,16 @@ export default class SpotifySearchProvider {
                 const trigger = (this.config.trigger || 'sp').toLowerCase();
                 return { type: 'replace_input', value: `${trigger} device ` };
             }
+            // Connect before a Client ID is saved: don't make the user
+            // navigate from an error message — take them to this
+            // extension's settings page, whose status line already says
+            // "Paste a Client ID above first, then come back here to
+            // connect." (Other commands keep the textual error via
+            // _wrapPlayerError; opening a window mid-`sp play` would be
+            // jarring.)
+            if (id === 'connect' && e?.code === 'no_client_id') {
+                return { type: 'open_extension_settings' };
+            }
             const wrapped = this._wrapPlayerError(e);
             this.log?.warn?.('Spotify action failed: ' + (wrapped?.message || wrapped));
             return {

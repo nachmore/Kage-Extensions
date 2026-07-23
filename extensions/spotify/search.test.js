@@ -210,13 +210,25 @@ describe('SpotifySearchProvider — widget refresh after state change', () => {
     });
 });
 
-describe('SpotifySearchProvider — connect without a Client ID', () => {
-    it('surfaces a plain-language pointer to settings, not client_id jargon', async () => {
-        // Empty store: no client.json saved. `sp connect` from the launcher
-        // must say where to add the Client ID (the user is NOT in settings
-        // here) and never leak the raw client_id identifier into UI copy.
+describe('SpotifySearchProvider — no Client ID saved', () => {
+    it('`sp connect` deep-links into the extension settings page', async () => {
+        // Empty store: no client.json saved. Instead of an error telling
+        // the user where to navigate, take them there — the settings page's
+        // status line explains the next step.
         const { provider } = setupExec({});
         const out = await provider.execute(row('connect'));
+        expect(out).toEqual({ type: 'open_extension_settings' });
+    });
+
+    it('other commands keep a plain-language error, no client_id jargon', async () => {
+        // A playback command mid-flow shouldn't yank a settings window
+        // open — it errors with a pointer instead. The copy must use the
+        // visible "Client ID" label, never the raw client_id identifier.
+        // Expired token + no client id forces the refresh path, which is
+        // where no_client_id surfaces for non-connect commands.
+        const expired = JSON.stringify({ ...JSON.parse(CREDS), expires_at: 0 });
+        const { provider } = setupExec({ creds: expired });
+        const out = await provider.execute(row('pause'));
         expect(out.type).toBe('custom');
         expect(out.data.error).toMatch(/Settings → Extensions → Spotify/);
         expect(out.data.error).toMatch(/Client ID/);
