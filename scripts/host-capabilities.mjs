@@ -37,7 +37,9 @@ export const COMMAND_CAPABILITIES = Object.freeze({
     // --- clipboard ------------------------------------------------------
     read_clipboard: 'clipboard',
     get_clipboard_history: 'clipboard',
-    paste_clipboard_item: 'clipboard',
+    // Host-only: writes text + synthesises Ctrl+V into the focused app
+    // (keystroke injection), so the host maps it to null.
+    paste_clipboard_item: null,
 
     // --- urls / launch (the post-`shell` split) ------------------------
     open_url: 'urls',
@@ -56,7 +58,9 @@ export const COMMAND_CAPABILITIES = Object.freeze({
     // --- filesystem ----------------------------------------------------
     pick_folder: 'filesystem',
     scan_folder: 'filesystem',
-    execute_folder_plan: 'filesystem',
+    // Host-only: moves/renames/trashes files — beyond `filesystem`'s
+    // discovery promise. Only the agent's MCP path uses it.
+    execute_folder_plan: null,
     get_common_folders: 'filesystem',
     search_files: 'filesystem',
     resolve_directories: 'filesystem',
@@ -79,6 +83,8 @@ export const COMMAND_CAPABILITIES = Object.freeze({
 
     // --- notifications -------------------------------------------------
     notify_frontend_ready: 'notifications',
+    // App-internal completion toast — never extension-callable.
+    notify_response_ready: null,
 
     // --- calendar ------------------------------------------------------
     get_calendar_events: 'calendar',
@@ -95,7 +101,9 @@ export const COMMAND_CAPABILITIES = Object.freeze({
     send_message_streaming: 'agent',
     cancel_generation: 'agent',
     send_steering_message: 'agent',
-    send_extension_tool_steering: 'agent',
+    // Host-only: the backend replays the latest block into every
+    // session, so only the host's extension-tool-controller sends it.
+    send_extension_tool_steering: null,
     extension_tool_response: 'agent',
     open_chat_with_message: 'agent',
     get_available_models: 'agent',
@@ -193,9 +201,6 @@ export const COMMAND_CAPABILITIES = Object.freeze({
     agent_list_sessions: null,
     agent_load_session: null,
     agent_check_session_updated: null,
-    kage_desktop_delete_session: null,
-    kage_desktop_open_folder: null,
-    kage_desktop_workspaces: null,
     open_chat_window: null,
     open_settings_window: null,
     // Host-internal surfaces added upstream — never extension-callable.
