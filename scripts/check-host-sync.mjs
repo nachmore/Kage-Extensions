@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // Drift check: compare our vendored host-capabilities.mjs against the
-// upstream Kage permissions table.
+// upstream Kage permissions table, plus the sandbox host's closed mascot
+// activity vocabulary.
 //
 // Why we vendor at all: every PR check should run offline (no network
 // dependency that could slow CI or fail flakily), and Kage-Extensions
@@ -20,15 +21,76 @@
 //     reference for forward-compat).
 //   - exit 1 with a diff summary otherwise.
 
-import { COMMAND_CAPABILITIES, CAPABILITIES } from './host-capabilities.mjs';
+import { COMMAND_CAPABILITIES, CAPABILITIES, MASCOT_ACTIVITIES } from './host-capabilities.mjs';
 
 const UPSTREAM_URL =
     'https://raw.githubusercontent.com/nachmore/Kage/main/ui/js/shared/extension-permissions.js';
 
-async function fetchUpstream() {
-    const r = await fetch(UPSTREAM_URL);
-    if (!r.ok) throw new Error(`HTTP ${r.status} from ${UPSTREAM_URL}`);
+// The mascot activity vocabulary lives in a different host file (the sandbox
+// host, which is what actually enforces it), so it needs its own fetch.
+const UPSTREAM_SANDBOX_HOST_URL =
+    'https://raw.githubusercontent.com/nachmore/Kage/main/ui/js/shared/extension-sandbox-host.js';
+
+async function fetchText(url) {
+    const r = await fetch(url);
+    if (!r.ok) throw new Error(`HTTP ${r.status} from ${url}`);
     return await r.text();
+}
+
+async function fetchUpstream() {
+    return await fetchText(UPSTREAM_URL);
+}
+
+/**
+ * Extract a flat `export const NAME = Object.freeze(['a', 'b'])` string array
+ * from upstream source. Returns null when the constant isn't there at all —
+ * which is the expected state while a host-side addition hasn't landed on
+ * main yet, so the caller treats it as a skip rather than drift.
+ */
+function extractStringArray(src, name) {
+    const re = new RegExp(
+        `export const ${name}\\s*=\\s*Object\\.freeze\\(\\s*\\[([^\\]]*)\\]`,
+        's'
+    );
+    const m = re.exec(src);
+    if (!m) return null;
+    return [...m[1].matchAll(/'([^']*)'|"([^"]*)"/g)].map((x) => x[1] ?? x[2]);
+}
+
+/**
+ * Drift-check the vendored mascot activity vocabulary. Non-fatal when the
+ * upstream constant is missing (host change not pushed yet) or the file can't
+ * be fetched; a real mismatch is an issue like any other.
+ */
+async function mascotActivityIssues() {
+    let src;
+    try {
+        src = await fetchText(UPSTREAM_SANDBOX_HOST_URL);
+    } catch (e) {
+        console.error(
+            `Could not fetch ${UPSTREAM_SANDBOX_HOST_URL} — skipping mascot-activity drift check: ${e.message}`
+        );
+        return [];
+    }
+    const upstream = extractStringArray(src, 'MASCOT_ACTIVITIES');
+    if (upstream === null) {
+        console.log(
+            'MASCOT_ACTIVITIES not found upstream — skipping (the host-side change may not have landed on main yet).'
+        );
+        return [];
+    }
+    const issues = [];
+    for (const a of upstream) {
+        if (!MASCOT_ACTIVITIES.includes(a)) {
+            issues.push(`MASCOT-MISSING: upstream activity '${a}' is not in our vendored MASCOT_ACTIVITIES`);
+        }
+    }
+    for (const a of MASCOT_ACTIVITIES) {
+        if (!upstream.includes(a)) {
+            issues.push(`MASCOT-STALE: vendored activity '${a}' no longer exists upstream`);
+        }
+    }
+    return issues;
 }
 
 /**
@@ -127,15 +189,18 @@ async function main() {
         }
     }
 
+    issues.push(...(await mascotActivityIssues()));
+
     if (issues.length > 0) {
         console.error(`Host capability drift detected (${issues.length} issue(s)):`);
         for (const i of issues) console.error(`  - ${i}`);
         console.error(
-            `\nSync scripts/host-capabilities.mjs against ${UPSTREAM_URL} and re-run.`
+            `\nSync scripts/host-capabilities.mjs against ${UPSTREAM_URL}` +
+                ` (and ${UPSTREAM_SANDBOX_HOST_URL} for MASCOT_ACTIVITIES) and re-run.`
         );
         process.exit(1);
     }
-    console.log('Host capability table is in sync with upstream.');
+    console.log('Host capability + mascot activity tables are in sync with upstream.');
 }
 
 main().catch((e) => {

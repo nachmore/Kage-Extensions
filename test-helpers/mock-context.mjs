@@ -11,6 +11,7 @@
  *                                  pooled Worker, with `lib.<name>` set to each
  *                                  requested vendor global (e.g. lib.math = mathjs)
  *   - i18n {t, language, isRtl}  → ICU-subset translator
+ *   - mascot {setActivity, clearActivity} → generic mascot activity hints
  *
  * These mocks reproduce that surface closely enough for functional tests
  * while staying synchronous-friendly and inspectable:
@@ -22,6 +23,10 @@
  *   - `log` records calls so tests can assert "this failure was logged".
  *   - `i18n.t` returns the catalog value or echoes the key, mirroring the
  *     runtime's fallback so a missing translation never throws.
+ *   - `mascot.setActivity` / `clearActivity` are vi.fn()s so a test can assert
+ *     the activity lease is asserted and released at the right moments. Pass
+ *     `mascot: null` to simulate an OLDER HOST that has no mascot API at all —
+ *     every extension must keep working in that case.
  */
 
 import { vi } from 'vitest';
@@ -38,11 +43,21 @@ import { vi } from 'vitest';
  * @param {object} [opts.catalog]  - i18n catalog: { key: { message } } or { key: string }.
  * @param {string} [opts.language] - active language (default 'en').
  * @param {boolean}[opts.rtl]      - RTL flag (default false).
- * @returns {{context: object, log: object, invoke: import('vitest').Mock}}
- *          `context` to hand to initialize(); `log` and `invoke` exposed for assertions.
+ * @param {object|null} [opts.mascot] - pass `null` to omit `context.mascot`
+ *                                    entirely (simulates a pre-mascot host).
+ * @returns {{context: object, log: object, invoke: import('vitest').Mock, mascot: object|null}}
+ *          `context` to hand to initialize(); `log`, `invoke` and `mascot` exposed for assertions.
  */
 export function makeContext(opts = {}) {
-    const { config = {}, invokes = {}, lib = {}, catalog = {}, language = 'en', rtl = false } = opts;
+    const {
+        config = {},
+        invokes = {},
+        lib = {},
+        catalog = {},
+        language = 'en',
+        rtl = false,
+        mascot: mascotOpt,
+    } = opts;
 
     const invoke = vi.fn(async (command, args) => {
         if (!(command in invokes)) {
@@ -80,6 +95,18 @@ export function makeContext(opts = {}) {
         return formatIcuSubset(tpl, vars || {});
     };
 
+    // Generic mascot activity hints. The real surface is fire-and-forget (the
+    // runtime just posts a message), so these return nothing — an extension
+    // must not depend on a return value. `mascot: null` drops the whole object
+    // so tests can prove the extension survives an older host.
+    const mascot =
+        mascotOpt === null
+            ? null
+            : mascotOpt || {
+                setActivity: vi.fn(),
+                clearActivity: vi.fn(),
+            };
+
     const context = {
         invoke,
         config,
@@ -87,8 +114,9 @@ export function makeContext(opts = {}) {
         runSandboxed,
         i18n: { t, language: () => language, isRtl: () => rtl },
     };
+    if (mascot) context.mascot = mascot;
 
-    return { context, log, invoke };
+    return { context, log, invoke, mascot };
 }
 
 /**

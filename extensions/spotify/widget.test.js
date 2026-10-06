@@ -53,12 +53,16 @@ function makeStore(initial = {}) {
     };
 }
 
-function setup(storeSeed = { client: CLIENT, creds: CREDS }, config = { show_now_playing_bar: true }) {
+function setup(
+    storeSeed = { client: CLIENT, creds: CREDS },
+    config = { show_now_playing_bar: true },
+    ctxOpts = {}
+) {
     const { store, invokes } = makeStore(storeSeed);
-    const { context } = makeContext({ invokes, catalog: EN_CATALOG, config });
+    const { context, mascot } = makeContext({ invokes, catalog: EN_CATALOG, config, ...ctxOpts });
     const widget = new SpotifyNowPlayingWidget();
     widget.initialize(context);
-    return { widget, store };
+    return { widget, store, mascot };
 }
 
 // fetch stub: each call throws `err` (failure case) or returns the queued
@@ -75,6 +79,21 @@ function okPlayerFetch() {
         statusText: 'OK',
         text: async () => JSON.stringify({ is_playing: true, item: { id: 't1', name: 'Song', artists: [{ name: 'A' }], album: { images: [] } } }),
         json: async () => ({ is_playing: true, item: { id: 't1' } }),
+    }));
+}
+// Like okPlayerFetch but with an explicit is_playing — the mascot hint turns
+// on exactly this field, so the paused case needs its own stub.
+function playerFetch(isPlaying) {
+    const body = {
+        is_playing: isPlaying,
+        item: { id: 't1', name: 'Song', artists: [{ name: 'A' }], album: { images: [] } },
+    };
+    globalThis.fetch = vi.fn(async () => ({
+        ok: true,
+        status: 200,
+        statusText: 'OK',
+        text: async () => JSON.stringify(body),
+        json: async () => body,
     }));
 }
 
@@ -224,5 +243,96 @@ describe('Spotify widget — dirty-flag like-cache invalidation', () => {
         auth.markStateDirty();
         const refreshed = await widget.render();
         expect(refreshed.html).toContain('♥'); // heart now filled
+    });
+});
+
+/**
+ * Mascot activity hints.
+ *
+ * The contract: while audio is actually playing the widget holds a LEASE on
+ * the generic 'music' activity — generic because the mascot deliberately
+ * knows nothing about Spotify specifically. The lease expires on its own, so
+ * it must be re-asserted on every poll with a TTL comfortably longer than the
+ * poll interval, and released the moment playback stops. A host without the
+ * API (`context.mascot === undefined`) must still work.
+ */
+describe('Spotify widget — mascot activity lease', () => {
+    beforeEach(() => {
+        vi.stubGlobal('navigator', { onLine: true });
+    });
+    afterEach(() => {
+        vi.restoreAllMocks();
+        vi.unstubAllGlobals();
+        delete globalThis.fetch;
+    });
+
+    it("asserts the generic 'music' activity while a track is playing", async () => {
+        const { widget, mascot } = setup();
+        playerFetch(true);
+        await widget.render();
+        expect(mascot.setActivity).toHaveBeenCalledTimes(1);
+        const [name, opts] = mascot.setActivity.mock.calls[0];
+        expect(name).toBe('music');
+        // 3x the default 15s cadence — never shorter than the poll interval,
+        // or the mascot would flicker between ticks.
+        expect(opts.ttlMs).toBe(45_000);
+        expect(mascot.clearActivity).not.toHaveBeenCalled();
+    });
+
+    it('re-asserts the lease on every poll', async () => {
+        const { widget, mascot } = setup();
+        playerFetch(true);
+        await widget.render();
+        await widget.render();
+        await widget.render();
+        expect(mascot.setActivity).toHaveBeenCalledTimes(3);
+    });
+
+    it('never lets the TTL fall under the floor on a fast poll cadence', async () => {
+        const { widget, mascot } = setup({ client: CLIENT, creds: CREDS }, {
+            show_now_playing_bar: true,
+            refresh_seconds: 2, // the configurable minimum
+        });
+        playerFetch(true);
+        await widget.render();
+        expect(mascot.setActivity.mock.calls[0][1].ttlMs).toBe(20_000);
+    });
+
+    it('releases the lease when playback is paused', async () => {
+        const { widget, mascot } = setup();
+        playerFetch(true);
+        await widget.render();
+        playerFetch(false);
+        await widget.render();
+        expect(mascot.setActivity).toHaveBeenCalledTimes(1);
+        expect(mascot.clearActivity).toHaveBeenCalled();
+    });
+
+    it('releases the lease when the bar renders nothing at all', async () => {
+        // Not signed in → render() bails before the first fetch. Still has to
+        // let go, otherwise a stale hint sits there until the TTL lapses.
+        const { widget, mascot } = setup({});
+        const out = await widget.render();
+        expect(out).toBeNull();
+        expect(mascot.clearActivity).toHaveBeenCalled();
+        expect(mascot.setActivity).not.toHaveBeenCalled();
+    });
+
+    it('releases the lease when a poll fails', async () => {
+        const { widget, mascot } = setup();
+        playerFetch(true);
+        await widget.render();
+        failFetch(networkError);
+        await widget.render();
+        expect(mascot.clearActivity).toHaveBeenCalled();
+    });
+
+    it('works on a host with no mascot API', async () => {
+        // Older hosts have no context.mascot — every call site is optional, so
+        // the bar must render exactly as before rather than throwing.
+        const { widget } = setup({ client: CLIENT, creds: CREDS }, { show_now_playing_bar: true }, { mascot: null });
+        playerFetch(true);
+        const out = await widget.render();
+        expect(out?.html).toContain('Song');
     });
 });

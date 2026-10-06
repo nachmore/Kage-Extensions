@@ -296,6 +296,32 @@ export const CAPABILITIES = Object.freeze({
 export const KNOWN_CAPABILITIES = Object.freeze(Object.keys(CAPABILITIES));
 
 /**
+ * Closed vocabulary of mascot activity hints.
+ *
+ * An extension tells the mascot what KIND of thing is happening via
+ * `context.mascot?.setActivity?.(name, { ttlMs })`, and must declare every
+ * name it may emit in `contributes.mascotActivities` — the host drops
+ * undeclared ones. The names are deliberately generic: Spotify emits
+ * `music`, not `spotify`, because the mascot knows nothing about individual
+ * extensions. Anything outside this list is ignored at runtime.
+ *
+ * SYNC SOURCE:
+ *   https://github.com/nachmore/Kage/blob/main/ui/js/shared/extension-sandbox-host.js
+ *   (`MASCOT_ACTIVITIES`)
+ */
+export const MASCOT_ACTIVITIES = Object.freeze(['music', 'meeting', 'timer']);
+
+/**
+ * Bounds the host clamps `setActivity`'s `ttlMs` into. The hint is a LEASE:
+ * it expires, so an extension re-asserts it on every refresh cycle while the
+ * state holds and calls `clearActivity()` when it stops. That's what makes a
+ * crashed, disabled or hidden extension unable to pin the mascot. Vendored
+ * here so docs and checks can quote the real numbers.
+ */
+export const MASCOT_TTL_MIN_MS = 15_000;
+export const MASCOT_TTL_MAX_MS = 600_000;
+
+/**
  * Compute the minimal capability set an extension actually uses, given
  * the set of `invoke('cmd', ...)` command names found in its source.
  * Unknown / null-mapped commands are silently dropped — they're either

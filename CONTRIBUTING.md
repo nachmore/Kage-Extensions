@@ -131,6 +131,54 @@ and is mirrored in [`docs/EXTENSIONS.md`](https://github.com/nachmore/Kage/blob/
 validator in this repo enforces a known-set check: unknown capability
 names fail CI before merge.
 
+### Mascot activity hints
+
+Kage's mascot can react to what's going on. Your extension tells it
+**what kind of thing** is happening — never who is doing it:
+
+```js
+// in initialize(context)
+this._mascot = context.mascot;   // undefined on older hosts
+
+// on every refresh cycle, while the state holds
+this._mascot?.setActivity?.('music', { ttlMs: 45_000 });
+
+// as soon as it stops
+this._mascot?.clearActivity?.();
+```
+
+Four rules:
+
+1. **The vocabulary is closed and generic.** `music`, `meeting`,
+   `timer`. Spotify emits `music`, **not** `"spotify"` — the mascot
+   deliberately knows nothing about individual extensions, so anything
+   that plays audio sends the same hint. The list is vendored in
+   [`scripts/host-capabilities.mjs`](scripts/host-capabilities.mjs)
+   (`MASCOT_ACTIVITIES`); unknown names fail CI and are dropped at
+   runtime.
+2. **Declare what you emit** in the manifest, or the host rejects it:
+   ```json
+   "contributes": { "mascotActivities": ["music"] }
+   ```
+3. **It's a lease, not a switch.** The host clamps `ttlMs` to ~15s–10min
+   and the activity *expires*. Re-assert it from your existing refresh
+   cycle (widget poll, timer tick) while the state holds, with a TTL
+   comfortably longer than that cycle — 3x the poll interval is a good
+   default — so it never flickers between ticks. This is deliberate: a
+   crashed, disabled or hidden extension can never pin the mascot.
+4. **Always call it optionally.** `context.mascot` doesn't exist on
+   older hosts, so `context.mascot?.setActivity?.(…)` — a missing API
+   must never throw, and the extension must work unchanged without it.
+
+Call `clearActivity()` on every path that *isn't* the active state,
+including the ones where your widget renders nothing — otherwise a
+stale hint lingers until the lease lapses. `extensions/spotify/widget.js`
+(playing vs. paused) and `extensions/calendar/widget.js` (the few
+minutes either side of a meeting start) are the reference
+implementations; `makeContext({ mascot })` in
+[`test-helpers/mock-context.mjs`](test-helpers/mock-context.mjs) mocks
+the API, and `mascot: null` simulates a host that lacks it.
+
 ## Internationalisation (i18n)
 
 Every extension MUST ship `_locales/en/messages.json`. The Kage host's

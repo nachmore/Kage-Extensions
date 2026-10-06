@@ -14,6 +14,21 @@ import * as auth from './auth.js';
 // 15s cadence, 2 means the bar appears ~30s after a genuine revocation.
 const AUTH_FAIL_THRESHOLD = 2;
 
+// Generic mascot activity we emit while audio is actually playing. The
+// vocabulary is the host's, not ours: 'music' — never 'spotify'. The mascot
+// deliberately knows nothing about individual extensions, so anything that
+// makes sound emits the same hint. Declared in manifest.json as
+// `contributes.mascotActivities`; the host rejects undeclared names.
+const MASCOT_ACTIVITY = 'music';
+
+// Floor for the activity lease. The hint is a LEASE that expires (the host
+// clamps it to ~15s..10min), so we must re-assert it on every poll that
+// still finds playback — that's what keeps a crashed, disabled or hidden
+// widget from pinning the mascot forever. The TTL has to comfortably outlive
+// the poll interval or the mascot would flicker between ticks; we use 3x the
+// refresh cadence, never under this floor (the cadence can be as low as 2s).
+const MASCOT_TTL_FLOOR_MS = 20_000;
+
 function escapeHtml(s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({
         '&': '&amp;',
@@ -31,6 +46,8 @@ export default class SpotifyNowPlayingWidget {
         this.log = context.log;
         this.config = context.config || {};
         this.t = context.i18n?.t?.bind(context.i18n) || ((k) => k);
+        // Optional on older hosts — every call site is optional-chained.
+        this._mascot = context.mascot;
         this._lastTrackId = null;
         this._liked = null;
         // Consecutive critical (auth) poll failures. We only surface the
@@ -59,20 +76,54 @@ export default class SpotifyNowPlayingWidget {
         return Number.isFinite(s) && s >= 2 ? s * 1000 : 15000;
     }
 
+    /**
+     * Tell the host's mascot whether something musical is happening.
+     *
+     * `playing === true` re-asserts the lease (called from every poll that
+     * finds audio playing, so it never lapses between ticks); anything else
+     * releases it immediately. Entirely best-effort: `context.mascot` is
+     * absent on older hosts, and a hint is never worth failing a render
+     * over — so both the sync and the async failure paths are swallowed.
+     */
+    _mascotActivity(playing) {
+        try {
+            const ttlMs = Math.max(MASCOT_TTL_FLOOR_MS, this.getRefreshInterval() * 3);
+            const p = playing
+                ? this._mascot?.setActivity?.(MASCOT_ACTIVITY, { ttlMs })
+                : this._mascot?.clearActivity?.();
+            p?.catch?.(() => {});
+        } catch {
+            /* no mascot, or the host rejected the hint — ignore */
+        }
+    }
+
     async render() {
-        if (!this.config.show_now_playing_bar) return null;
+        // Every path that doesn't end in "audio is playing" releases the
+        // mascot lease — we only ever hold it while we can see playback.
+        if (!this.config.show_now_playing_bar) {
+            this._mascotActivity(false);
+            return null;
+        }
         // Fail fast when the browser knows it's offline — skip the network
         // attempt entirely rather than burning a connect timeout. A false
         // `onLine` (captive portal, VPN flap) just means the api() call
         // below times out via fetchWithTimeout, which is still fast.
-        if (typeof navigator !== 'undefined' && navigator.onLine === false) return null;
-        if (!(await auth.isConnected())) return null;
+        if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+            this._mascotActivity(false);
+            return null;
+        }
+        if (!(await auth.isConnected())) {
+            this._mascotActivity(false);
+            return null;
+        }
 
         let state;
         try {
             state = await auth.api('GET', '/me/player');
         } catch (e) {
             this.log?.warn?.('Spotify widget fetch failed: ' + (e?.message || e));
+            // We can't see playback any more, so stop claiming it.
+            this._mascotActivity(false);
             // Only a *critical* auth failure (revoked/expired token) warrants
             // an affordance — and only after it repeats, so a transient blip
             // never flashes the bar. Network/unknown errors are left silent:
@@ -102,11 +153,18 @@ export default class SpotifyNowPlayingWidget {
         this._authFailStreak = 0;
         auth.clearAuthRevoked().catch(() => {});
 
-        if (!state || !state.item) return null;
+        if (!state || !state.item) {
+            this._mascotActivity(false);
+            return null;
+        }
 
         const track = state.item;
         const trackId = track.id;
         const isPlaying = !!state.is_playing;
+
+        // Re-assert (or release) the lease on every poll: held while the
+        // track is actually playing, dropped the moment it's paused.
+        this._mascotActivity(isPlaying);
 
         // A search command (e.g. `sp like`) mutated state we render since the
         // last paint. Drop the per-track like cache so the block below re-reads

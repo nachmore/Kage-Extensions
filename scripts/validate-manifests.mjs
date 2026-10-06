@@ -20,6 +20,8 @@
 //     out their layout.
 //   - `tags` is array of strings if present.
 //   - `contributes.*` paths exist on disk and start with './'.
+//   - `contributes.mascotActivities` (if present): array of strings, all
+//     from the host's closed activity vocabulary, no duplicates.
 //   - No unknown top-level fields (catches typos like `permission`).
 //   - Required fields for the catalog: `author`.
 //
@@ -30,7 +32,7 @@
 import { readdir, readFile, stat } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { KNOWN_CAPABILITIES } from './host-capabilities.mjs';
+import { KNOWN_CAPABILITIES, MASCOT_ACTIVITIES } from './host-capabilities.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -246,6 +248,34 @@ async function validateManifest(manifestPath, expectedKind, dirName) {
                         if (typeof w?.module === 'string') {
                             await checkRel(loc, manifestPath, w.module);
                         }
+                    }
+                }
+            }
+            // Mascot activity hints. The host only honours a name the
+            // manifest declares here AND that's in its closed vocabulary, so
+            // a typo means the hint is silently dropped at runtime — exactly
+            // the class of mistake worth failing CI over.
+            if (m.contributes.mascotActivities !== undefined) {
+                if (!Array.isArray(m.contributes.mascotActivities)) {
+                    note(loc, `'contributes.mascotActivities' must be an array of activity names`);
+                } else {
+                    const seenActivities = new Set();
+                    for (const a of m.contributes.mascotActivities) {
+                        if (typeof a !== 'string') {
+                            note(loc, `'contributes.mascotActivities' entries must be strings; got ${typeof a}`);
+                            continue;
+                        }
+                        if (!MASCOT_ACTIVITIES.includes(a)) {
+                            note(
+                                loc,
+                                `unknown mascot activity '${a}' — the vocabulary is closed and generic ` +
+                                    `(${MASCOT_ACTIVITIES.join(', ')}); see scripts/host-capabilities.mjs`
+                            );
+                        }
+                        if (seenActivities.has(a)) {
+                            note(loc, `duplicate mascot activity '${a}'`);
+                        }
+                        seenActivities.add(a);
                     }
                 }
             }

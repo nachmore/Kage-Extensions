@@ -18,17 +18,21 @@ import { invalidate } from './cache.js';
 
 const minutesFromNow = (m) => new Date(Date.now() + m * 60000).toISOString();
 
-function setup({ config = {}, events = [], slowFetch = false } = {}) {
+function setup({ config = {}, events = [], slowFetch = false, mascot } = {}) {
     // The shared cache memoises across tests; clear it so each test's
     // events are actually re-fetched.
     invalidate();
     const get_calendar_events = slowFetch
         ? () => new Promise((resolve) => setTimeout(() => resolve(events), 10_000))
         : () => events;
-    const { context, invoke } = makeContext({ config, invokes: { get_calendar_events } });
+    const { context, invoke, mascot: mascotMock } = makeContext({
+        config,
+        invokes: { get_calendar_events },
+        mascot,
+    });
     const widget = new CalendarNextMeetingWidget();
     widget.initialize(context);
-    return { widget, invoke };
+    return { widget, invoke, mascot: mascotMock };
 }
 
 describe('CalendarNextMeetingWidget — _recomputeNextEvent', () => {
@@ -164,3 +168,98 @@ describe('CalendarNextMeetingWidget — render', () => {
         }
     });
 });
+
+/**
+ * Mascot activity hints.
+ *
+ * The contract: around a meeting the widget holds a LEASE on the generic
+ * 'meeting' activity — generic because the mascot deliberately knows nothing
+ * about the calendar extension specifically. The window matches what the bar
+ * calls imminent (5 minutes before the start through 5 minutes after it), the
+ * lease is re-asserted on every 60s poll with a longer TTL so it never lapses
+ * mid-meeting, and it is released outside that window. A host without the API
+ * (`context.mascot === undefined`) must still paint.
+ *
+ * Driven from the local snapshot (`widget._events`), like the first render
+ * test: render() reads it without awaiting a fetch, which keeps these
+ * assertions synchronous and independent of the shared cache.
+ */
+describe('CalendarNextMeetingWidget — mascot activity lease', () => {
+    const meeting = (minutes, extra = {}) => [
+        { id: 'a', subject: 'Standup', start_time: minutesFromNow(minutes), duration_minutes: 60, ...extra },
+    ];
+
+    it("asserts the generic 'meeting' activity shortly before the start", async () => {
+        const { widget, mascot } = setup();
+        widget._events = meeting(3);
+        await widget.render();
+        expect(mascot.setActivity).toHaveBeenCalledWith('meeting', { ttlMs: 180_000 });
+        expect(mascot.clearActivity).not.toHaveBeenCalled();
+    });
+
+    it('still holds it just after the start', async () => {
+        const { widget, mascot } = setup();
+        widget._events = meeting(-2);
+        await widget.render();
+        expect(mascot.setActivity).toHaveBeenCalledWith('meeting', { ttlMs: 180_000 });
+    });
+
+    it('re-asserts the lease on every poll', async () => {
+        const { widget, mascot } = setup();
+        widget._events = meeting(-1);
+        await widget.render();
+        await widget.render();
+        expect(mascot.setActivity).toHaveBeenCalledTimes(2);
+    });
+
+    it('stays quiet while the meeting is still far off', async () => {
+        const { widget, mascot } = setup();
+        widget._events = meeting(30);
+        await widget.render();
+        expect(mascot.setActivity).not.toHaveBeenCalled();
+        expect(mascot.clearActivity).toHaveBeenCalled();
+    });
+
+    it('releases the lease well into a long meeting', async () => {
+        // The bar still shows a 3-hour block that started an hour ago; the
+        // mascot shouldn't be stuck in meeting mode all afternoon.
+        const { widget, mascot } = setup();
+        widget._events = [
+            { id: 'a', subject: 'Workshop', start_time: minutesFromNow(-60), duration_minutes: 180 },
+        ];
+        const out = await widget.render();
+        expect(out).not.toBeNull(); // bar is still up...
+        expect(mascot.setActivity).not.toHaveBeenCalled(); // ...but the hint isn't
+        expect(mascot.clearActivity).toHaveBeenCalled();
+    });
+
+    it('releases the lease when nothing is upcoming', async () => {
+        const { widget, mascot } = setup();
+        // Snapshot is warm but everything in it has already ended, so the bar
+        // paints nothing — and must not leave a hint behind.
+        widget._events = [
+            { id: 'a', subject: 'Done', start_time: minutesFromNow(-120), duration_minutes: 30 },
+        ];
+        expect(await widget.render()).toBeNull();
+        expect(mascot.clearActivity).toHaveBeenCalled();
+        expect(mascot.setActivity).not.toHaveBeenCalled();
+    });
+
+    it('releases the lease when the overlay is switched off', async () => {
+        const { widget, mascot } = setup({ config: { show_overlay: false } });
+        widget._events = meeting(1);
+        expect(await widget.render()).toBeNull();
+        expect(mascot.clearActivity).toHaveBeenCalled();
+    });
+
+    it('works on a host with no mascot API', async () => {
+        // Older hosts have no context.mascot — every call site is optional, so
+        // the bar must paint exactly as before rather than throwing.
+        const { widget } = setup({ mascot: null });
+        widget._events = meeting(-1);
+        const out = await widget.render();
+        expect(out?.html).toContain('Standup');
+    });
+});
+
+

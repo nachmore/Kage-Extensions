@@ -26,6 +26,35 @@ const COLD_LOAD_WAIT_MS = 3_000;
 const MOUNT_WARMUP_DELAY_MS = 2_000;
 
 /**
+ * Generic mascot activity we emit around a meeting. The vocabulary is the
+ * host's and is deliberately extension-agnostic: 'meeting' — anything that
+ * puts the user in a meeting emits the same hint, and the mascot never
+ * learns that "calendar" exists. Declared in manifest.json as
+ * `contributes.mascotActivities`; the host rejects undeclared names.
+ */
+const MASCOT_ACTIVITY = 'meeting';
+
+/**
+ * The window in which a meeting counts as "happening": from 5 minutes
+ * before the start until 5 minutes after it. The lead edge matches the bar's
+ * "in 5m" framing and the trigger provider's `calendar:meeting_starting`
+ * signal; the trailing edge covers `meeting_started` and the first few
+ * minutes of people joining. Deliberately NOT the whole meeting — a 3-hour
+ * block shouldn't hold the mascot hostage all afternoon.
+ */
+const MASCOT_LEAD_MS = 5 * 60_000;
+const MASCOT_TRAIL_MS = 5 * 60_000;
+
+/**
+ * TTL for the mascot activity lease. The hint expires on its own (the host
+ * clamps it to ~15s..10min), so we re-assert it on every 60s poll while the
+ * window holds and release it as soon as it doesn't — a crashed, disabled or
+ * hidden widget can therefore never pin the mascot. 3x the poll interval, so
+ * one skipped tick doesn't make the hint flicker.
+ */
+const MASCOT_TTL_MS = 180_000;
+
+/**
  * Calendar next-meeting overlay widget.
  * Mounts into the floating-bottom slot. Re-renders every 60 seconds.
  */
@@ -47,6 +76,8 @@ export default class CalendarNextMeetingWidget {
         this._events = [];
         this._fetchInFlight = false;
         this.t = context.i18n?.t?.bind(context.i18n) || ((k) => k);
+        // Optional on older hosts — every call site is optional-chained.
+        this._mascot = context.mascot;
         // Warm the snapshot a couple of seconds after mount (not AT mount) so
         // a reload storm that mounts→destroys this widget rapidly never gets
         // to spawn a PowerShell query — destroy() cancels the timer first.
@@ -68,7 +99,10 @@ export default class CalendarNextMeetingWidget {
     }
 
     async render() {
-        if (this._config.show_overlay === false) return null;
+        if (this._config.show_overlay === false) {
+            this._updateMascotActivity(null);
+            return null;
+        }
         // Warm path: render instantly from the local snapshot and refresh
         // in the background — never block a paint on the Outlook query.
         //
@@ -86,11 +120,16 @@ export default class CalendarNextMeetingWidget {
         }
         this._recomputeNextEvent();
         const event = this._cachedEvent;
-        if (!event) return null;
+        if (!event) {
+            this._updateMascotActivity(null);
+            return null;
+        }
 
         const concurrent = this._cachedConcurrent;
         const start = new Date(event.start_time);
         const now = new Date();
+        // Re-assert (or release) the mascot lease on every poll.
+        this._updateMascotActivity(start, now);
         const diffMin = Math.round((start - now) / 60000);
         const dayPrefix = this._dayPrefix(start, now);
 
@@ -163,6 +202,36 @@ export default class CalendarNextMeetingWidget {
     }
 
     // --- Internals ---
+
+    /**
+     * Tell the host's mascot whether a meeting is happening right now.
+     *
+     * Holds the lease only inside the imminent window (MASCOT_LEAD_MS before
+     * the start through MASCOT_TRAIL_MS after it) — the same stretch the bar
+     * treats as "starting soon / Now" — and releases it otherwise. Called
+     * from every render, which is how the lease stays alive across the 60s
+     * poll without ever outliving the meeting.
+     *
+     * Pass `null` for "no meeting in view" (overlay off, nothing upcoming).
+     * Entirely best-effort: `context.mascot` is absent on older hosts, and a
+     * hint is never worth failing a paint over, so both the sync and the
+     * async failure paths are swallowed.
+     */
+    _updateMascotActivity(start, now = new Date()) {
+        try {
+            const untilStart = start ? start.getTime() - now.getTime() : null;
+            const imminent =
+                untilStart !== null &&
+                untilStart <= MASCOT_LEAD_MS &&
+                untilStart >= -MASCOT_TRAIL_MS;
+            const p = imminent
+                ? this._mascot?.setActivity?.(MASCOT_ACTIVITY, { ttlMs: MASCOT_TTL_MS })
+                : this._mascot?.clearActivity?.();
+            p?.catch?.(() => {});
+        } catch {
+            /* no mascot, or the host rejected the hint — ignore */
+        }
+    }
 
     /**
      * Refresh the local event snapshot from the shared cache, off the
