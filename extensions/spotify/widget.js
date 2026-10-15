@@ -29,6 +29,13 @@ const MASCOT_ACTIVITY = 'music';
 // refresh cadence, never under this floor (the cadence can be as low as 2s).
 const MASCOT_TTL_FLOOR_MS = 20_000;
 
+// How long the bar keeps showing the last track through polls that fail or
+// come back empty. Spotify briefly answers 204 / no `item` mid track change,
+// and a poll can stall outright; hiding on the first one made the bar vanish
+// until the window was reopened. Long enough to ride out a few bad polls,
+// short enough that closing Spotify still clears the bar promptly.
+const HOLD_LAST_TRACK_MIN_MS = 45_000;
+
 function escapeHtml(s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({
         '&': '&amp;',
@@ -55,6 +62,26 @@ export default class SpotifyNowPlayingWidget {
         // so a single transient hiccup that happens to classify as auth
         // never flashes the bar. Reset to 0 on any successful poll.
         this._authFailStreak = 0;
+        // Last now-playing bar we rendered, re-shown through transient misses.
+        this._lastOutput = null;
+        this._lastOutputAt = 0;
+    }
+
+    /**
+     * A poll failed or came back empty: keep showing the last track for a
+     * short grace period instead of hiding the bar, then give up.
+     */
+    _holdLastTrack() {
+        const grace = Math.max(HOLD_LAST_TRACK_MIN_MS, this.getRefreshInterval() * 2);
+        if (this._lastOutput && Date.now() - this._lastOutputAt <= grace) return this._lastOutput;
+        this._lastOutput = null;
+        return null;
+    }
+
+    /** Definitive "nothing to show" (signed out, bar off, offline): no grace. */
+    _hide() {
+        this._lastOutput = null;
+        return null;
     }
 
     onConfigUpdate(config) {
@@ -102,7 +129,7 @@ export default class SpotifyNowPlayingWidget {
         // mascot lease — we only ever hold it while we can see playback.
         if (!this.config.show_now_playing_bar) {
             this._mascotActivity(false);
-            return null;
+            return this._hide();
         }
         // Fail fast when the browser knows it's offline — skip the network
         // attempt entirely rather than burning a connect timeout. A false
@@ -110,11 +137,11 @@ export default class SpotifyNowPlayingWidget {
         // below times out via fetchWithTimeout, which is still fast.
         if (typeof navigator !== 'undefined' && navigator.onLine === false) {
             this._mascotActivity(false);
-            return null;
+            return this._hide();
         }
         if (!(await auth.isConnected())) {
             this._mascotActivity(false);
-            return null;
+            return this._hide();
         }
 
         let state;
@@ -139,12 +166,15 @@ export default class SpotifyNowPlayingWidget {
                     // otherwise keep saying "Signed in" off the mere
                     // existence of the (dead) creds blob.
                     auth.markAuthRevoked().catch(() => {});
+                    this._lastOutput = null;
                     return this._renderDisconnected();
                 }
+                // Below threshold: render nothing and let the next poll confirm.
+                return null;
             }
-            // Below threshold, or a non-critical error: render nothing and
-            // wait for the next poll to confirm.
-            return null;
+            // A network/unknown error is usually momentary: keep the last
+            // track up rather than blinking the bar out.
+            return this._holdLastTrack();
         }
 
         // A successful poll means we're connected — clear any failure streak
@@ -154,8 +184,9 @@ export default class SpotifyNowPlayingWidget {
         auth.clearAuthRevoked().catch(() => {});
 
         if (!state || !state.item) {
+            // Mid track change Spotify can briefly report nothing playing.
             this._mascotActivity(false);
-            return null;
+            return this._holdLastTrack();
         }
 
         const track = state.item;
@@ -220,7 +251,7 @@ export default class SpotifyNowPlayingWidget {
             </div>
         `;
 
-        return {
+        const output = {
             className: 'extension-bar spotify-bar',
             html,
             actions: [
@@ -232,6 +263,9 @@ export default class SpotifyNowPlayingWidget {
                 { id: 'unlike', rpc: 'unlike' },
             ],
         };
+        this._lastOutput = output;
+        this._lastOutputAt = Date.now();
+        return output;
     }
 
     /**

@@ -336,3 +336,77 @@ describe('Spotify widget — mascot activity lease', () => {
         expect(out?.html).toContain('Song');
     });
 });
+
+describe('Spotify widget — last-track holdover', () => {
+    // The incident: a poll failed or came back empty mid track change, render
+    // returned null, and the bar vanished until the window was reopened.
+    beforeEach(() => {
+        vi.stubGlobal('navigator', { onLine: true });
+    });
+    afterEach(() => {
+        vi.restoreAllMocks();
+        vi.unstubAllGlobals();
+        vi.useRealTimers();
+        delete globalThis.fetch;
+    });
+
+    function emptyPlayerFetch() {
+        // Spotify answers 204 No Content when it has nothing to report.
+        globalThis.fetch = vi.fn(async () => ({
+            ok: true,
+            status: 204,
+            statusText: 'No Content',
+            text: async () => '',
+        }));
+    }
+
+    it('keeps the last track through a network failure', async () => {
+        const { widget } = setup();
+        okPlayerFetch();
+        const shown = await widget.render();
+        expect(shown?.html).toMatch(/Song/);
+        failFetch(networkError);
+        expect(await widget.render()).toBe(shown);
+    });
+
+    it('keeps the last track through an empty poll mid track change', async () => {
+        const { widget } = setup();
+        okPlayerFetch();
+        const shown = await widget.render();
+        emptyPlayerFetch();
+        expect(await widget.render()).toBe(shown);
+    });
+
+    it('gives up after the grace period', async () => {
+        vi.useFakeTimers({ toFake: ['Date'] });
+        vi.setSystemTime(new Date('2026-10-15T12:00:00Z'));
+        const { widget } = setup();
+        okPlayerFetch();
+        await widget.render();
+        emptyPlayerFetch();
+        vi.setSystemTime(new Date('2026-10-15T12:00:30Z'));
+        expect(await widget.render()).not.toBeNull();
+        vi.setSystemTime(new Date('2026-10-15T12:01:00Z'));
+        expect(await widget.render()).toBeNull();
+    });
+
+    it('does not hold the bar when the user turns it off', async () => {
+        const { widget } = setup();
+        okPlayerFetch();
+        await widget.render();
+        widget.onConfigUpdate({ show_now_playing_bar: false });
+        expect(await widget.render()).toBeNull();
+        widget.onConfigUpdate({ show_now_playing_bar: true });
+        failFetch(networkError);
+        expect(await widget.render()).toBeNull(); // nothing left to hold
+    });
+
+    it('releases the mascot lease while holding (playback is unconfirmed)', async () => {
+        const { widget, mascot } = setup();
+        okPlayerFetch();
+        await widget.render();
+        failFetch(networkError);
+        await widget.render();
+        expect(mascot.clearActivity).toHaveBeenCalled();
+    });
+});
