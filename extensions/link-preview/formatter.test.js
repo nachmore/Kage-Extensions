@@ -11,7 +11,7 @@
  * (hero vs compact vs fallback).
  */
 
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import LinkPreviewFormatter from './formatter.js';
 import { makeContext } from '../../test-helpers/mock-context.mjs';
 
@@ -150,5 +150,77 @@ describe('LinkPreviewFormatter — _hashToHue', () => {
     it('differs across distinct domains (usually)', () => {
         const f = setup();
         expect(f._hashToHue('github.com')).not.toBe(f._hashToHue('gitlab.com'));
+    });
+});
+
+describe('LinkPreviewFormatter — progressive loading (hosts with context.formatter)', () => {
+    function setupProgressive(fetchImpl) {
+        const requestReformat = vi.fn();
+        const { context } = makeContext({
+            config: { enabled: true },
+            invokes: { fetch_link_metadata: fetchImpl },
+            formatter: { requestReformat },
+        });
+        const formatter = new LinkPreviewFormatter();
+        formatter.initialize(context);
+        return { formatter, requestReformat };
+    }
+
+    it('renders fast results directly, without a loading card or reformat', async () => {
+        const { formatter, requestReformat } = setupProgressive(() => ({ title: 'Fast' }));
+        const out = await formatter.format('<p><a href="https://fast.example">f</a></p>', {});
+        const card = parse(out).querySelector('.link-preview-card');
+        expect(card.classList.contains('link-preview-card-loading')).toBe(false);
+        expect(card.querySelector('.link-preview-title').textContent).toBe('Fast');
+        expect(requestReformat).not.toHaveBeenCalled();
+    });
+
+    it('shows a loading card for slow links, then upgrades it in place', async () => {
+        let release;
+        const gate = new Promise((r) => {
+            release = r;
+        });
+        const { formatter, requestReformat } = setupProgressive(async () => {
+            await gate;
+            return { title: 'Slow page', favicon: 'data:image/png;base64,AA==' };
+        });
+        const first = await formatter.format('<p><a href="https://slow.example/a">s</a></p>', {});
+        const loading = parse(first).querySelectorAll('.link-preview-card');
+        expect(loading).toHaveLength(1);
+        expect(loading[0].classList.contains('link-preview-card-loading')).toBe(true);
+        expect(loading[0].querySelector('.link-preview-domain').textContent).toBe('slow.example');
+        expect(loading[0].querySelectorAll('.link-preview-skeleton')).toHaveLength(2);
+
+        release();
+        await vi.waitFor(() => expect(requestReformat).toHaveBeenCalledTimes(1));
+
+        // The host re-runs format() on the message's current HTML.
+        const second = await formatter.format(first, {});
+        const cards = parse(second).querySelectorAll('.link-preview-card');
+        expect(cards).toHaveLength(1);
+        expect(cards[0].classList.contains('link-preview-card-loading')).toBe(false);
+        expect(cards[0].querySelector('.link-preview-title').textContent).toBe('Slow page');
+        expect(cards[0].querySelector('img.link-preview-favicon').getAttribute('src')).toBe(
+            'data:image/png;base64,AA=='
+        );
+
+        // Idempotent: a third pass changes nothing.
+        expect(await formatter.format(second, {})).toBeNull();
+    });
+
+    it('shares one fetch between concurrent passes', async () => {
+        let release;
+        const gate = new Promise((r) => {
+            release = r;
+        });
+        const fetch = vi.fn(async () => {
+            await gate;
+            return { title: 'T' };
+        });
+        const { formatter } = setupProgressive(fetch);
+        const html = '<p><a href="https://one.example">x</a></p>';
+        await Promise.all([formatter.format(html, {}), formatter.format(html, {})]);
+        release();
+        expect(fetch).toHaveBeenCalledTimes(1);
     });
 });

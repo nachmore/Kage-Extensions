@@ -127,6 +127,36 @@
     font-style: italic;
 }
 
+/* Loading variant — metadata still on its way. The header is real (so
+ * the card doesn't jump when content lands); the title / description
+ * are shimmering placeholder bars. */
+.link-preview-skeleton {
+    display: block;
+    height: 10px;
+    width: 70%;
+    border-radius: 4px;
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.06) 25%,
+        rgba(255, 255, 255, 0.16) 50%,
+        rgba(255, 255, 255, 0.06) 75%
+    );
+    background-size: 200% 100%;
+    animation: link-preview-shimmer 1.2s ease-in-out infinite;
+}
+.link-preview-skeleton-short {
+    width: 45%;
+    height: 8px;
+}
+@keyframes link-preview-shimmer {
+    from {
+        background-position: 200% 0;
+    }
+    to {
+        background-position: -200% 0;
+    }
+}
+
 /* Light theme overrides — match the existing app palette. */
 body.light-theme .link-preview-card {
     background: rgba(0, 0, 0, 0.03);
@@ -138,6 +168,15 @@ body.light-theme .link-preview-card:hover {
 body.light-theme .link-preview-title {
     color: var(--kage-accent, #7138cc);
 }
+body.light-theme .link-preview-skeleton {
+    background: linear-gradient(
+        90deg,
+        rgba(0, 0, 0, 0.05) 25%,
+        rgba(0, 0, 0, 0.11) 50%,
+        rgba(0, 0, 0, 0.05) 75%
+    );
+    background-size: 200% 100%;
+}
 body.light-theme .link-preview-hero {
     background: rgba(0, 0, 0, 0.05);
 }
@@ -145,5 +184,8 @@ body.light-theme .link-preview-hero {
 @media (prefers-reduced-motion: reduce) {
     .link-preview-card {
         transition: none;
+    }
+    .link-preview-skeleton {
+        animation: none;
     }
 }

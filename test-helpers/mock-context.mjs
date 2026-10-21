@@ -12,6 +12,7 @@
  *                                  requested vendor global (e.g. lib.math = mathjs)
  *   - i18n {t, language, isRtl}  → ICU-subset translator
  *   - mascot {setActivity, clearActivity} → generic mascot activity hints
+ *   - formatter {requestReformat} → ask the host to re-run a message formatter
  *
  * These mocks reproduce that surface closely enough for functional tests
  * while staying synchronous-friendly and inspectable:
@@ -45,6 +46,9 @@ import { vi } from 'vitest';
  * @param {boolean}[opts.rtl]      - RTL flag (default false).
  * @param {object|null} [opts.mascot] - pass `null` to omit `context.mascot`
  *                                    entirely (simulates a pre-mascot host).
+ * @param {object} [opts.formatter] - `context.formatter` (e.g.
+ *                                    `{ requestReformat: vi.fn() }`). Omitted by
+ *                                    default, which simulates an older host.
  * @returns {{context: object, log: object, invoke: import('vitest').Mock, mascot: object|null}}
  *          `context` to hand to initialize(); `log`, `invoke` and `mascot` exposed for assertions.
  */
@@ -57,6 +61,7 @@ export function makeContext(opts = {}) {
         language = 'en',
         rtl = false,
         mascot: mascotOpt,
+        formatter,
     } = opts;
 
     const invoke = vi.fn(async (command, args) => {
@@ -115,6 +120,7 @@ export function makeContext(opts = {}) {
         i18n: { t, language: () => language, isRtl: () => rtl },
     };
     if (mascot) context.mascot = mascot;
+    if (formatter) context.formatter = formatter;
 
     return { context, log, invoke, mascot };
 }

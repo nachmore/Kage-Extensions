@@ -106,5 +106,11 @@
     "description": "Confirmation prompt before clearing cache",
     "_machine_translated": true,
     "_source_hash": "f0b0851ffc83c81e"
+  },
+  "card.loading_aria_label": {
+    "message": "Memuat pratinjau tautan untuk {domain}",
+    "description": "Aria label on a link-preview card whose content is still loading; {domain} is the site's domain",
+    "_machine_translated": true,
+    "_source_hash": "ab2af2e267fa5c2f"
   }
 }

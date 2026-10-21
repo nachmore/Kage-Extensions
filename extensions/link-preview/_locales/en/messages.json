@@ -17,6 +17,10 @@
     "message": "Link preview: {title}",
     "description": "Aria label on a link-preview card"
   },
+  "card.loading_aria_label": {
+    "message": "Loading link preview for {domain}",
+    "description": "Aria label on a link-preview card whose content is still loading; {domain} is the site's domain"
+  },
   "settings.description": {
     "message": "Shows inline preview cards for URLs in AI responses.",
     "description": "Settings page description"
