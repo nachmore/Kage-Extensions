@@ -525,6 +525,10 @@
     "message": "❌ Spotify rejected the Redirect URI. Click Back twice, make sure your Spotify app lists {uri} exactly, click Save in Spotify, and try again.",
     "description": "Setup step 4: Spotify rejected the Redirect URI. {uri} is the address to register. 'Back' is a button label."
   },
+  "setup.connect.error.not_registered": {
+    "message": "❌ Spotify signed you in, but won't let this Spotify account use your app. In the Spotify dashboard, open your app's Settings, go to User Management and add this account's name and email, then click Connect to Spotify again. Or use the Spotify account you created the app with: log out of Spotify in your browser first, then connect.",
+    "description": "Setup step 4: the sign-in worked, but Spotify answered 403 because the account isn't the app's owner and isn't on its User Management list (apps in development mode). 'Settings' and 'User Management' are Spotify dashboard labels; 'Connect to Spotify' is a button label."
+  },
   "setup.done.title": {
     "message": "All set!",
     "description": "Heading of the final setup screen"

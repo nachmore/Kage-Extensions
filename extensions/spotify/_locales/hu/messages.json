@@ -844,5 +844,11 @@
     "description": "Sign-in failed for an unexpected reason. {message} is a technical detail, in English.",
     "_machine_translated": true,
     "_source_hash": "8c87addbb62d1c4b"
+  },
+  "setup.connect.error.not_registered": {
+    "message": "❌ A Spotify bejelentkeztette Önt, de nem engedi, hogy ez a Spotify-fiók használja az alkalmazását. A Spotify dashboardon nyissa meg az alkalmazása Settings oldalát, lépjen a User Management részre, és adja hozzá ennek a fióknak a nevét és e-mail-címét, majd kattintson ismét a „Csatlakozás a Spotifyhoz” gombra. Vagy használja azt a Spotify-fiókot, amellyel az alkalmazást létrehozta: előbb jelentkezzen ki a Spotifyból a böngészőjében, majd csatlakozzon.",
+    "description": "Setup step 4: the sign-in worked, but Spotify answered 403 because the account isn't the app's owner and isn't on its User Management list (apps in development mode). 'Settings' and 'User Management' are Spotify dashboard labels; 'Connect to Spotify' is a button label.",
+    "_machine_translated": true,
+    "_source_hash": "686cfbaedd502257"
   }
 }

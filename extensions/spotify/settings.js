@@ -399,7 +399,12 @@ export default class SpotifySettingsProvider {
     async runAction(action, values) {
         const target = STEP_ACTIONS[action];
         if (target) {
-            this._abortSignIn();
+            // A pending sign-in keeps running across Back/Next. Its consent
+            // tab is still open, and if the user clicks Agree there, Kage's
+            // loopback page says "Spotify is now connected", so Kage must
+            // finish connecting (landing on "All set"). It is abandoned only
+            // once it can't be valid any more: a different Client ID
+            // (_saveClientId), Cancel setup, Sign out, or a new Connect.
             await this._setStep(target);
             return { host: REFRESH };
         }
@@ -487,29 +492,52 @@ export default class SpotifySettingsProvider {
 
     async _setupConnect() {
         const controller = this._beginSignIn();
+        const { signal } = controller;
         try {
-            await auth.startSignIn({ signal: controller.signal });
-        } catch (e) {
-            // The user moved on (Back / Cancel setup); the page already
-            // shows something else, so there's nothing to report.
-            if (controller.signal.aborted || e?.code === 'cancelled') return {};
-            this.log?.warn?.('Spotify setup: sign-in failed: ' + (e?.message || e));
-            return { status: this._signInErrorStatus(e, { inSetup: true }) };
+            try {
+                await auth.startSignIn({ signal });
+            } catch (e) {
+                // Abandoned (a different Client ID, Cancel setup, Sign out,
+                // or a newer Connect): the page already shows something
+                // else, so there's nothing to report.
+                if (signal.aborted || e?.code === 'cancelled') return {};
+                this.log?.warn?.('Spotify setup: sign-in failed: ' + (e?.message || e));
+                return { status: this._signInErrorStatus(e, { inSetup: true }) };
+            }
+            // Signed in. Ask who as: that's the name on the "done" screen,
+            // and the first call that shows whether Spotify will actually
+            // serve this account.
+            let name = '';
+            let notRegistered = false;
+            try {
+                const me = await auth.api('GET', '/me');
+                name = me?.display_name || me?.id || '';
+            } catch (e) {
+                // 403 right after a successful sign-in: the app is in
+                // Spotify's development mode and the account that signed in
+                // isn't its owner or on its User Management list (Spotify:
+                // "the user may not be registered"). Every call would fail
+                // the same way, so this is not "connected".
+                if (e?.status === 403) notRegistered = true;
+                // Anything else (offline, rate-limited) is left for later:
+                // the name is a nicety, and the sign-in itself succeeded.
+            }
+            if (signal.aborted) return {};
+            if (notRegistered) {
+                this.log?.warn?.('Spotify setup: signed in, but GET /me answered 403');
+                // Drop the unusable session so nothing claims "Signed in"
+                // (the regular settings, the widget), and stay on (or come
+                // back to) the connect step so the message is next to the
+                // button that retries.
+                await auth.clearCreds();
+                await this._saveSetupState({ step: 'connect' });
+                return { status: this.t('setup.connect.error.not_registered'), host: REFRESH };
+            }
+            await this._saveSetupState({ step: 'done', name });
+            return { host: REFRESH };
         } finally {
             if (this._signIn === controller) this._signIn = null;
         }
-        // Signed in, but the user navigated away while the token exchange
-        // finished: don't yank them to the "done" screen.
-        if (controller.signal.aborted) return {};
-        let name = '';
-        try {
-            const me = await auth.api('GET', '/me');
-            name = me?.display_name || me?.id || '';
-        } catch {
-            /* the name is a nicety; the sign-in itself succeeded */
-        }
-        await this._saveSetupState({ step: 'done', name });
-        return { host: REFRESH };
     }
 
     async _reconnect() {

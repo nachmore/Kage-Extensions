@@ -449,9 +449,11 @@ function untilAborted(promise, signal) {
  * listener gave up, i.e. timed out). Messages stay English: they're for logs.
  *
  * @param {object} [opts]
- * @param {AbortSignal} [opts.signal] Abandons the wait for the browser
- *   redirect, rejecting with code 'cancelled'. The settings page aborts
- *   when the user navigates away from the connect step mid-sign-in.
+ * @param {AbortSignal} [opts.signal] Abandons the sign-in: stops waiting
+ *   for the browser redirect, never stores tokens, and rejects with code
+ *   'cancelled'. The settings page aborts once a pending sign-in can't be
+ *   valid any more (a different Client ID saved, Cancel setup, Sign out, or
+ *   a newer Connect), not on plain Back/Next navigation.
  */
 export async function startSignIn({ signal } = {}) {
     if (signal?.aborted) throw cancelledError();
@@ -583,6 +585,10 @@ export async function startSignIn({ signal } = {}) {
         );
     }
     const tok = await tokenResp.json();
+    // Abandoned while the code was being redeemed (e.g. a different Client
+    // ID was saved meanwhile): these tokens belong to the old app, so don't
+    // let them land on top of whatever the user switched to.
+    if (signal?.aborted) throw cancelledError();
     const expiresAt = Date.now() + (tok.expires_in - 30) * 1000;
     await writeCreds({
         refresh_token: tok.refresh_token,

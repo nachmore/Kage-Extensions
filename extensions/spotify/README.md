@@ -117,6 +117,15 @@ save.
 the saved Client ID. Settings → Extensions → Spotify → **Run setup again**
 and paste the Client ID from the app's Settings page.
 
+**"Spotify signed you in, but won't let this Spotify account use your
+app"** — a new Spotify app is in development mode, where only the account
+that created it and the accounts listed under its **User Management**
+can use it. Anyone else can sign in, but Spotify refuses every request
+afterwards (HTTP 403, "the user may not be registered"). Either add the
+account in the dashboard (app → Settings → User Management), or sign in
+with the account that owns the app: log out of Spotify in your browser
+first, or it signs you straight back in with the same account.
+
 **Buttons do nothing** — Spotify's API only controls an *active*
 device. Make sure Spotify is open and playing on at least one device
 (desktop / phone / web player). The "device" shortcut can transfer

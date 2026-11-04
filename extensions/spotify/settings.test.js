@@ -544,26 +544,177 @@ describe('Spotify settings — setup errors explain the fix', () => {
 });
 
 describe('Spotify settings — leaving the connect step mid-sign-in', () => {
-    it('Back abandons the pending sign-in instead of finishing it behind the user', async () => {
-        let answer;
-        const { provider, store, invoke } = setupSignIn(
-            { client: CLIENT, setup: JSON.stringify({ step: 'connect' }) },
-            () => new Promise((resolve) => (answer = resolve))
+    /**
+     * Start a sign-in on the connect step whose browser step answers only
+     * when the test calls `agree()` (as if the user clicked Agree in the
+     * still-open consent tab), and wait until it's blocked on that.
+     */
+    async function pendingSignIn(storeSeed) {
+        let agree;
+        const ctx = setupSignIn(
+            storeSeed,
+            (state) =>
+                new Promise((resolve) => {
+                    agree = () => resolve({ params: { code: 'c0de', state } });
+                })
         );
-        const pending = provider.runAction('setup_connect', {});
+        const pending = ctx.provider.runAction('setup_connect', {});
         await vi.waitFor(() =>
-            expect(invoke).toHaveBeenCalledWith('oauth_loopback_await', expect.anything())
+            expect(ctx.invoke).toHaveBeenCalledWith('oauth_loopback_await', expect.anything())
         );
+        return { ...ctx, pending, agree: () => agree() };
+    }
+    const cancelled = (invoke) =>
+        invoke.mock.calls.some(([cmd]) => cmd === 'oauth_loopback_cancel');
+
+    it('Back keeps the sign-in: agreeing in the browser afterwards still finishes setup', async () => {
+        // Kage's loopback page tells the user "Spotify is now connected"
+        // whenever the browser comes back, so a late Agree must connect.
+        const { provider, store, invoke, pending, agree } = await pendingSignIn({
+            client: CLIENT,
+            setup: JSON.stringify({ step: 'connect' }),
+        });
 
         const back = await provider.runAction('setup_step_client_id', {});
         expect(back.host).toEqual(REFRESH);
+        expect(screenOf(await provider.getSettings())).toBe('client_id');
+        expect(cancelled(invoke)).toBe(false);
+
+        stubFetch([TOKEN_OK, { status: 200, body: { display_name: 'Ada' } }]);
+        agree();
+        expect(await pending).toEqual({ host: REFRESH });
+        expect(JSON.parse(store.creds).refresh_token).toBe('rt-new');
+        const schema = await provider.getSettings();
+        expect(screenOf(schema)).toBe('done');
+        expect(infoHtml(schema)).toMatch(/Connected to Spotify as Ada/);
+    });
+
+    it('saving a different Client ID abandons it, so a late Agree redeems nothing', async () => {
+        const { provider, store, invoke, pending, agree } = await pendingSignIn({
+            client: CLIENT,
+            setup: JSON.stringify({ step: 'connect' }),
+        });
+        await provider.runAction('setup_step_client_id', {});
+
+        const other = 'ffffeeee0000111122223333aaaabbbb';
+        stubFetch([PROBE_KNOWN_CLIENT]);
+        const res = await provider.runAction('setup_save_client_id', { __setup_client_id: other });
+        expect(res.host).toEqual(REFRESH);
         expect(await pending).toEqual({});
         expect(invoke).toHaveBeenCalledWith('oauth_loopback_cancel', { args: { listener_id: 'L1' } });
 
-        // Even if the browser answers late, nothing is redeemed.
-        answer?.({ params: { code: 'late', state: 'x' } });
+        stubFetch([TOKEN_OK]);
+        agree();
+        await Promise.resolve();
         expect(store.creds).toBeUndefined();
-        expect(setupState(store).step).toBe('client_id');
+        expect(JSON.parse(store.client).client_id).toBe(other);
+        expect(setupState(store).step).toBe('connect');
+    });
+
+    it('Cancel setup abandons it and leaves the existing connection as it was', async () => {
+        const { provider, store, pending } = await pendingSignIn({
+            client: CLIENT,
+            creds: CREDS,
+            setup: JSON.stringify({ step: 'connect', rerun: true }),
+        });
+        const res = await provider.runAction('setup_cancel', {});
+        expect(res.host).toEqual(REFRESH);
+        expect(await pending).toEqual({});
+        expect(store.creds).toBe(CREDS);
+        expect(store.setup).toBeUndefined();
+    });
+
+    it('a Client ID change while the code is being redeemed keeps the old app\'s tokens out', async () => {
+        // The browser already answered; the token exchange is in flight
+        // when the user saves a different Client ID.
+        const { provider, store } = setupSignIn({ client: CLIENT }, (state) => ({
+            params: { code: 'c0de', state },
+        }));
+        let finishExchange;
+        const reply = (r) => ({
+            ok: r.status >= 200 && r.status < 300,
+            status: r.status,
+            text: async () => JSON.stringify(r.body),
+            json: async () => r.body,
+        });
+        globalThis.fetch = vi.fn(async (url, init) => {
+            if (String(init?.body).includes('code=c0de')) {
+                return new Promise((resolve) => (finishExchange = () => resolve(reply(TOKEN_OK))));
+            }
+            return reply(PROBE_KNOWN_CLIENT);
+        });
+
+        const pending = provider.runAction('setup_connect', {});
+        await vi.waitFor(() => expect(finishExchange).toBeTypeOf('function'));
+        const other = 'ffffeeee0000111122223333aaaabbbb';
+        await provider.runAction('setup_save_client_id', { __setup_client_id: other });
+        finishExchange();
+
+        expect(await pending).toEqual({});
+        expect(store.creds).toBeUndefined();
+        expect(JSON.parse(store.client).client_id).toBe(other);
+    });
+});
+
+describe('Spotify settings — signed in, but Spotify refuses the account', () => {
+    // Development-mode apps only serve their owner and the accounts on the
+    // app's User Management list. Anyone else signs in fine, then gets 403
+    // from every Web API call.
+    const NOT_REGISTERED = {
+        status: 403,
+        body: 'Check settings on developer.spotify.com/dashboard, the user may not be registered.',
+    };
+
+    it('a 403 from /me after signing in keeps the wizard on the connect step and says why', async () => {
+        const { provider, store } = setupSignIn(
+            { client: CLIENT, setup: JSON.stringify({ step: 'connect' }) },
+            (state) => ({ params: { code: 'c0de', state } })
+        );
+        stubFetch([TOKEN_OK, NOT_REGISTERED]);
+        const res = await provider.runAction('setup_connect', {});
+
+        expect(res.status).toBe(msg('setup.connect.error.not_registered'));
+        expect(res.status).toMatch(/User Management/);
+        expect(res.host).toEqual(REFRESH);
+        // Not "connected": the unusable session is dropped, the Client ID kept.
+        expect(store.creds).toBeUndefined();
+        expect(store.client).toBe(CLIENT);
+        expect(setupState(store)).toEqual({ step: 'connect' });
+        // The refresh lands on the connect step, where the status shows
+        // next to the Connect button (same action id).
+        const schema = await provider.getSettings();
+        expect(screenOf(schema)).toBe('connect');
+        expect(byId(schema, 'setup_connect')).toBeTruthy();
+        // ...and so does reopening the window.
+        expect(screenOf(await setup({ ...store }).provider.getSettings())).toBe('connect');
+    });
+
+    it('in a re-run, the refused session is dropped too (no Cancel back to it)', async () => {
+        const { provider, store } = setupSignIn(
+            { client: CLIENT, creds: CREDS, setup: JSON.stringify({ step: 'connect', rerun: true }) },
+            (state) => ({ params: { code: 'c0de', state } })
+        );
+        stubFetch([TOKEN_OK, NOT_REGISTERED]);
+        const res = await provider.runAction('setup_connect', {});
+        expect(res.status).toBe(msg('setup.connect.error.not_registered'));
+        expect(store.creds).toBeUndefined();
+        const schema = await provider.getSettings();
+        expect(screenOf(schema)).toBe('connect');
+        expect(byId(schema, 'setup_cancel')).toBeUndefined();
+    });
+
+    it('other /me failures (offline) still count as connected: the name is a nicety', async () => {
+        const { provider, store } = setupSignIn(
+            { client: CLIENT, setup: JSON.stringify({ step: 'connect' }) },
+            (state) => ({ params: { code: 'c0de', state } })
+        );
+        stubFetch([TOKEN_OK, { status: 503, body: '' }]);
+        const res = await provider.runAction('setup_connect', {});
+        expect(res).toEqual({ host: REFRESH });
+        expect(JSON.parse(store.creds).refresh_token).toBe('rt-new');
+        const schema = await provider.getSettings();
+        expect(screenOf(schema)).toBe('done');
+        expect(infoHtml(schema)).toContain(msg('setup.done.connected_html'));
     });
 });
 

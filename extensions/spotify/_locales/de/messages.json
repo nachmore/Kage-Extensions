@@ -844,5 +844,11 @@
     "description": "Sign-in failed for an unexpected reason. {message} is a technical detail, in English.",
     "_machine_translated": true,
     "_source_hash": "8c87addbb62d1c4b"
+  },
+  "setup.connect.error.not_registered": {
+    "message": "❌ Spotify hat Sie angemeldet, erlaubt diesem Spotify-Konto aber nicht, Ihre App zu verwenden. Öffnen Sie im Spotify-Dashboard die „Settings“ Ihrer App, gehen Sie zu „User Management“ und fügen Sie den Namen und die E-Mail-Adresse dieses Kontos hinzu. Klicken Sie dann erneut auf „Mit Spotify verbinden“. Oder verwenden Sie das Spotify-Konto, mit dem Sie die App erstellt haben: Melden Sie sich zuerst in Ihrem Browser bei Spotify ab und verbinden Sie sich dann.",
+    "description": "Setup step 4: the sign-in worked, but Spotify answered 403 because the account isn't the app's owner and isn't on its User Management list (apps in development mode). 'Settings' and 'User Management' are Spotify dashboard labels; 'Connect to Spotify' is a button label.",
+    "_machine_translated": true,
+    "_source_hash": "686cfbaedd502257"
   }
 }
