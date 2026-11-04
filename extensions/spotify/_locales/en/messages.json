@@ -126,8 +126,8 @@
     "description": "Error message when no Spotify session"
   },
   "error.no_client_id": {
-    "message": "Spotify isn't set up yet. Add your Client ID in Settings → Extensions → Spotify, then try again.",
-    "description": "Launcher-facing error when a Spotify command runs before a Client ID has been saved. Avoids the raw 'client_id' identifier (log-only jargon) and points at the settings path; the settings window itself uses action.check_connection.no_client_id ('paste one above')."
+    "message": "Spotify isn't set up yet. Open Settings → Extensions → Spotify and follow the setup steps, then try again.",
+    "description": "Launcher-facing error when a Spotify command runs before setup is done. Points at the extension's settings page, which walks the user through setup. Avoids the raw 'client_id' identifier (log-only jargon)."
   },
   "error.nothing_playing": {
     "message": "Nothing is playing right now.",
@@ -273,26 +273,6 @@
     "message": "Spotify app",
     "description": "Settings section: spotify app"
   },
-  "settings.app.intro_html": {
-    "message": "Spotify asks every app to register its own <strong>Client ID</strong>. Create a free one at <a href=\"https://developer.spotify.com/dashboard\">developer.spotify.com/dashboard</a> (click <em>Create app</em>, name it anything, tick <em>Web API</em>). Add <code>http://127.0.0.1:8080/spotify/callback</code> as the Redirect URI — any port works, Spotify just needs one to be present. Copy the Client ID it gives you and paste it below.",
-    "description": "Settings: app setup instructions"
-  },
-  "settings.client_id.label": {
-    "message": "Client ID",
-    "description": "Settings: Client ID input label"
-  },
-  "settings.client_id.placeholder": {
-    "message": "Paste your Spotify client_id here",
-    "description": "Settings: Client ID placeholder"
-  },
-  "settings.client_id.description": {
-    "message": "Saved on this computer only. Sent to Spotify when you sign in, nowhere else.",
-    "description": "Settings: Client ID description"
-  },
-  "settings.save_client_id.label": {
-    "message": "Save Client ID",
-    "description": "Settings: save client id button"
-  },
   "settings.section.connection": {
     "message": "Connection",
     "description": "Settings section: connection"
@@ -304,18 +284,6 @@
   "settings.connection.revoked": {
     "message": "<strong>Session expired.</strong> Spotify no longer accepts the saved sign-in — click <strong>Reconnect</strong> to sign in again.",
     "description": "Settings: stored credentials exist but Spotify has revoked them (detected by the now-playing widget's polls)"
-  },
-  "settings.connection.not_connected": {
-    "message": "Not signed in yet. Click <strong>Connect</strong> to sign in to Spotify.",
-    "description": "Settings: not connected text"
-  },
-  "settings.connection.no_client_id": {
-    "message": "Paste a Client ID above first, then come back here to connect.",
-    "description": "Settings: needs client ID first"
-  },
-  "settings.connect.label_connect": {
-    "message": "Connect",
-    "description": "Settings: connect button"
   },
   "settings.connect.label_reconnect": {
     "message": "Reconnect",
@@ -330,8 +298,28 @@
     "description": "Settings: sign-out button"
   },
   "settings.disconnect.confirm": {
-    "message": "Sign out of Spotify? You'll need to sign in again to use playback shortcuts.",
-    "description": "Confirmation prompt before signing out"
+    "message": "Sign out of Spotify? Kage also forgets your Client ID, so you'll go through setup again to reconnect.",
+    "description": "Confirmation prompt before signing out. Signing out also deletes the saved Client ID, so the settings page returns to the guided setup."
+  },
+  "settings.app.client_id_html": {
+    "message": "Connected through your Spotify app with Client ID <code>{client_id}</code>.",
+    "description": "Regular settings, 'Spotify app' section. {client_id} is the user's Client ID. Keep the <code> tags."
+  },
+  "settings.rerun_setup.label": {
+    "message": "Run setup again",
+    "description": "Button that restarts the guided setup, e.g. to switch to a different Spotify app"
+  },
+  "settings.rerun_setup.description": {
+    "message": "Go through the setup steps again — for example, to switch to a different Spotify app.",
+    "description": "Help text above the 'Run setup again' button"
+  },
+  "settings.connect.error.timeout": {
+    "message": "⚠️ Spotify didn't send you back to Kage within 5 minutes. If your browser showed an INVALID_CLIENT error, click Run setup again to check your app's Client ID and Redirect URI.",
+    "description": "Reconnect (regular settings) gave up waiting for the browser. INVALID_CLIENT is Spotify's literal error text and must stay in English; 'Run setup again' is a button label."
+  },
+  "settings.connect.error.app": {
+    "message": "❌ Spotify rejected your app's settings. Click Run setup again to check the Client ID and Redirect URI.",
+    "description": "Reconnect (regular settings) failed because Spotify doesn't accept the Client ID or Redirect URI. 'Run setup again' is a button label."
   },
   "settings.validate.trigger_required": {
     "message": "Trigger word is required.",
@@ -341,25 +329,9 @@
     "message": "Trigger must be letters, digits, or hyphens.",
     "description": "Validation error for invalid trigger characters"
   },
-  "action.save_client_id.empty": {
-    "message": "⚠️ Paste a Client ID first.",
-    "description": "Status when Client ID input is empty"
-  },
-  "action.save_client_id.invalid": {
-    "message": "⚠️ That doesn't look like a valid Spotify Client ID.",
-    "description": "Status when Client ID format invalid"
-  },
-  "action.save_client_id.success": {
-    "message": "✅ Client ID saved.",
-    "description": "Status when Client ID is saved"
-  },
   "action.connect.success": {
     "message": "✅ Connected. Now-playing bar will appear when something is playing.",
     "description": "Status after a successful connect"
-  },
-  "action.connect.error": {
-    "message": "⚠️ {message}",
-    "description": "Status with error after a failed connect"
   },
   "action.disconnect.success": {
     "message": "✅ Signed out.",
@@ -374,8 +346,8 @@
     "description": "Status when the live connection check succeeds and a display name is known"
   },
   "action.check_connection.no_client_id": {
-    "message": "⚠️ No Client ID saved yet. Paste one above first.",
-    "description": "Status when checking connection without a client_id"
+    "message": "⚠️ No Client ID saved yet, so setup needs to run first.",
+    "description": "Status when a settings action needs a Client ID but none is saved (for example after signing out from the launcher). The page then switches to the guided setup."
   },
   "action.check_connection.not_signed_in": {
     "message": "⚠️ Not signed in. Click Connect to sign in to Spotify.",
@@ -400,5 +372,197 @@
   "keyword.spotify.description": {
     "message": "Control playback — try 'play', 'pause', 'next', 'vol 50'",
     "description": "Keyword hint description for the Spotify trigger"
+  },
+  "setup.description": {
+    "message": "Spotify needs a one-time setup before this extension can do anything: you register a free Spotify app, then sign in. It takes about three minutes, and your progress is saved if you close this window.",
+    "description": "Intro shown above the guided setup steps"
+  },
+  "setup.description_rerun": {
+    "message": "You're running setup again. Your current connection keeps working until you connect again — or click Cancel setup to leave everything as it was.",
+    "description": "Intro shown above the guided setup when the user chose 'Run setup again' while connected. 'Cancel setup' is a button label."
+  },
+  "setup.step_label": {
+    "message": "Step {number} of {total}: {title}",
+    "description": "Heading of a setup step, e.g. 'Step 2 of 4: Create a Spotify app'. {title} is one of the setup.*.title strings."
+  },
+  "setup.next.label": {
+    "message": "Next",
+    "description": "Button that moves to the next setup step"
+  },
+  "setup.back.label": {
+    "message": "Back",
+    "description": "Button that returns to the previous setup step"
+  },
+  "setup.cancel.label": {
+    "message": "Cancel setup",
+    "description": "Button that leaves a re-run of the setup and returns to the regular settings, changing nothing"
+  },
+  "setup.open_dashboard_again.label": {
+    "message": "Open dashboard again",
+    "description": "Secondary button that reopens the Spotify Developer Dashboard in the browser"
+  },
+  "setup.not_using_html": {
+    "message": "Not using Spotify? You can switch this extension off with the button at the top of this page.",
+    "description": "Hint on the first setup step for users who don't want the extension"
+  },
+  "setup.dashboard.title": {
+    "message": "Open the Spotify Developer Dashboard",
+    "description": "Title of setup step 1"
+  },
+  "setup.dashboard.body_html": {
+    "message": "<p>Spotify only lets apps like Kage control your music through an app <em>you</em> register with them. It's free, you only do it once, and all you need is your Spotify login.</p><p>Click <strong>Open Spotify Dashboard</strong>. Log in in your browser, and accept the developer terms if Spotify asks. Then come back here for the next step.</p>",
+    "description": "Body of setup step 1. 'Open Spotify Dashboard' is the button label below it. Keep the HTML tags."
+  },
+  "setup.dashboard.premium_html": {
+    "message": "Good to know: Spotify only allows playback control (play, pause, skip) for Premium accounts. Seeing what's playing works with any account.",
+    "description": "Note on setup step 1 about Spotify's Premium requirement for playback control"
+  },
+  "setup.dashboard.open.label": {
+    "message": "Open Spotify Dashboard",
+    "description": "Primary button on setup step 1; opens developer.spotify.com/dashboard in the system browser"
+  },
+  "setup.dashboard.opened": {
+    "message": "✅ Opened in your browser.",
+    "description": "Status after the Spotify Developer Dashboard was opened in the browser"
+  },
+  "setup.dashboard.open_failed": {
+    "message": "⚠️ Couldn't open your browser. Go to {url} yourself, then click Next.",
+    "description": "Status when opening the dashboard failed. {url} is the dashboard address; 'Next' is a button label."
+  },
+  "setup.create_app.title": {
+    "message": "Create a Spotify app",
+    "description": "Title of setup step 2"
+  },
+  "setup.create_app.body_html": {
+    "message": "<p>In the dashboard, click <strong>Create app</strong> and fill in the form:</p><ol><li><strong>App name</strong> and <strong>App description</strong>: anything you like, for example “Kage”.</li><li><strong>Redirect URIs</strong>: paste the address below and click <strong>Add</strong>.</li><li>Under <strong>Which API/SDKs are you planning to use?</strong>, tick <strong>Web API</strong>.</li><li>Accept Spotify's terms and click <strong>Save</strong>.</li></ol><p>Already have an app? Add the address below to its Redirect URIs (in its <strong>Settings</strong>), save, and click <strong>Next</strong>.</p>",
+    "description": "Body of setup step 2. Bold names in the list (Create app, App name, App description, Redirect URIs, Add, Which API/SDKs are you planning to use?, Web API, Save, Settings) are labels on Spotify's English-only dashboard: keep them in English. 'Next' is a Kage button label. Keep the HTML tags."
+  },
+  "setup.create_app.redirect_label": {
+    "message": "Redirect URI",
+    "description": "Label above the address the user must register in their Spotify app"
+  },
+  "setup.create_app.redirect_hint_html": {
+    "message": "Copy it exactly: <code>http</code> (not https), <code>127.0.0.1</code> (not localhost), ending in <code>/spotify/callback</code>. The port number doesn't have to match anything — Kage picks a free one each time you connect, and Spotify allows that for 127.0.0.1.",
+    "description": "Hint below the Redirect URI. Keep the <code> parts exactly as they are."
+  },
+  "setup.client_id.title": {
+    "message": "Copy your Client ID",
+    "description": "Title of setup step 3"
+  },
+  "setup.client_id.body_html": {
+    "message": "<p>Spotify now shows your app. Open its <strong>Settings</strong> and copy the <strong>Client ID</strong> — a 32-character code of letters and numbers — then paste it below.</p><p>You don't need the <strong>Client secret</strong>, so leave it hidden.</p>",
+    "description": "Body of setup step 3. Settings, Client ID and Client secret are labels on Spotify's English-only dashboard: keep them in English. Keep the HTML tags."
+  },
+  "setup.client_id.label": {
+    "message": "Client ID",
+    "description": "Label of the Client ID field (Spotify's term; keep in English if your language commonly does)"
+  },
+  "setup.client_id.placeholder": {
+    "message": "Paste your Client ID here",
+    "description": "Placeholder in the empty Client ID field"
+  },
+  "setup.client_id.description": {
+    "message": "Saved on this computer only, and sent to nobody but Spotify.",
+    "description": "Help text under the Client ID field"
+  },
+  "setup.client_id.description_connected": {
+    "message": "Saved on this computer only. Saving a different Client ID signs you out of your current Spotify connection.",
+    "description": "Help text under the Client ID field when setup is re-run while connected"
+  },
+  "setup.client_id.save.label": {
+    "message": "Save and continue",
+    "description": "Primary button on setup step 3: checks and saves the Client ID"
+  },
+  "setup.client_id.error.empty": {
+    "message": "⚠️ Paste your Client ID first. It's on your app's Settings page in the Spotify dashboard.",
+    "description": "Validation error: the Client ID field is empty"
+  },
+  "setup.client_id.error.url": {
+    "message": "⚠️ That's a web address, not a Client ID. On your app's Settings page, copy the code shown under Client ID.",
+    "description": "Validation error: the user pasted a URL instead of the Client ID"
+  },
+  "setup.client_id.error.format": {
+    "message": "⚠️ That doesn't look like a Client ID. It's a 32-character code of letters and numbers — check you copied all of it, with no spaces.",
+    "description": "Validation error: the pasted text has the wrong shape for a Spotify Client ID"
+  },
+  "setup.client_id.error.unknown_client": {
+    "message": "❌ Spotify doesn't recognise this Client ID. Copy the Client ID (not the Client secret) from your app's Settings page and try again.",
+    "description": "Error: Spotify confirmed that no app has this Client ID (typo, or the Client secret was pasted)"
+  },
+  "setup.connect.title": {
+    "message": "Connect your Spotify account",
+    "description": "Title of setup step 4"
+  },
+  "setup.connect.body_html": {
+    "message": "<p>Click <strong>Connect to Spotify</strong>. Your browser opens Spotify's permission page: log in if asked, then click <strong>Agree</strong>. Come back here afterwards — Kage finishes on its own.</p>",
+    "description": "Body of setup step 4. 'Connect to Spotify' is the button below; 'Agree' is the button on Spotify's page. Keep the HTML tags."
+  },
+  "setup.connect.notice_revoked_html": {
+    "message": "<strong>Your Spotify sign-in expired or was revoked.</strong> Your app details are still saved — just connect again.",
+    "description": "Shown on setup step 4 when the user was sent back there because Spotify no longer accepts the saved sign-in"
+  },
+  "setup.connect.button": {
+    "message": "Connect to Spotify",
+    "description": "Primary button on setup step 4: starts the browser sign-in"
+  },
+  "setup.connect.trouble_label": {
+    "message": "If your browser shows an error",
+    "description": "Label of the troubleshooting list on setup step 4"
+  },
+  "setup.connect.trouble_html": {
+    "message": "<ul><li><strong>INVALID_CLIENT: Invalid redirect URI</strong> — your app doesn't list Kage's Redirect URI. Click <strong>Back</strong> twice, add <code>{uri}</code> to your app in Spotify, and click Save there.</li><li><strong>INVALID_CLIENT: Invalid client</strong> — Spotify doesn't know this Client ID. Click <strong>Back</strong> and paste it again.</li></ul>",
+    "description": "Troubleshooting list on setup step 4. The bold INVALID_CLIENT lines are Spotify's literal English error texts: keep them unchanged. 'Back' is a button label. {uri} is the Redirect URI. Keep the HTML tags."
+  },
+  "setup.connect.error.timeout": {
+    "message": "⚠️ Spotify didn't send you back to Kage within 5 minutes. If your browser showed “Invalid redirect URI”, click Back twice and fix the Redirect URI in your Spotify app; if it showed “Invalid client”, click Back and check the Client ID. Otherwise, click Connect to Spotify to try again.",
+    "description": "Setup step 4: the sign-in gave up waiting for the browser. 'Invalid redirect URI' and 'Invalid client' are Spotify's literal English error texts. 'Back' and 'Connect to Spotify' are button labels."
+  },
+  "setup.connect.error.bad_client": {
+    "message": "❌ Spotify doesn't recognise this Client ID. Click Back and paste the Client ID from your app's Settings page (not the Client secret).",
+    "description": "Setup step 4: Spotify rejected the Client ID. 'Back' is a button label."
+  },
+  "setup.connect.error.redirect": {
+    "message": "❌ Spotify rejected the Redirect URI. Click Back twice, make sure your Spotify app lists {uri} exactly, click Save in Spotify, and try again.",
+    "description": "Setup step 4: Spotify rejected the Redirect URI. {uri} is the address to register. 'Back' is a button label."
+  },
+  "setup.done.title": {
+    "message": "All set!",
+    "description": "Heading of the final setup screen"
+  },
+  "setup.done.connected_named_html": {
+    "message": "<p><strong>Connected to Spotify as {name}.</strong></p>",
+    "description": "Final setup screen headline. {name} is the user's Spotify display name."
+  },
+  "setup.done.connected_html": {
+    "message": "<p><strong>Spotify is connected.</strong></p>",
+    "description": "Final setup screen headline when the Spotify display name is unknown"
+  },
+  "setup.done.tips_html": {
+    "message": "<p>Type <code>{trigger}</code> in Kage's floating window to see what's playing, or <code>{trigger} play</code> and a song name to play it. You can also just ask the assistant, for example “play some lofi beats”. The now-playing bar shows up in the floating window whenever music is playing.</p>",
+    "description": "Tips on the final setup screen. {trigger} is the user's trigger word (default 'sp'); keep the <code> parts unchanged."
+  },
+  "setup.done.finish.label": {
+    "message": "Finish",
+    "description": "Button on the final setup screen; shows the regular settings"
+  },
+  "signin.error.denied": {
+    "message": "⚠️ Access wasn't allowed on Spotify's page, so Kage can't connect. Try again and click Agree.",
+    "description": "Sign-in failed because the user clicked Cancel on Spotify's permission page. 'Agree' is the button on that page."
+  },
+  "signin.error.state": {
+    "message": "⚠️ That sign-in reply didn't match this request (it may be from an older attempt). Please try again.",
+    "description": "Sign-in failed: the browser redirect didn't belong to the current attempt"
+  },
+  "signin.error.network": {
+    "message": "⚠️ Couldn't reach Spotify. Check your internet connection and try again.",
+    "description": "Sign-in failed: network error"
+  },
+  "signin.error.oauth": {
+    "message": "⚠️ Spotify reported a problem ({error}). Please try again.",
+    "description": "Sign-in failed with an error from Spotify. {error} is Spotify's error code, in English."
+  },
+  "signin.error.unknown": {
+    "message": "⚠️ Couldn't connect: {message}",
+    "description": "Sign-in failed for an unexpected reason. {message} is a technical detail, in English."
   }
 }

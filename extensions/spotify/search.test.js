@@ -222,8 +222,8 @@ describe('SpotifySearchProvider — no Client ID saved', () => {
 
     it('other commands keep a plain-language error, no client_id jargon', async () => {
         // A playback command mid-flow shouldn't yank a settings window
-        // open — it errors with a pointer instead. The copy must use the
-        // visible "Client ID" label, never the raw client_id identifier.
+        // open — it errors with a pointer instead: to the settings page,
+        // which runs the guided setup. Never the raw client_id identifier.
         // Expired token + no client id forces the refresh path, which is
         // where no_client_id surfaces for non-connect commands.
         const expired = JSON.stringify({ ...JSON.parse(CREDS), expires_at: 0 });
@@ -231,7 +231,7 @@ describe('SpotifySearchProvider — no Client ID saved', () => {
         const out = await provider.execute(row('pause'));
         expect(out.type).toBe('custom');
         expect(out.data.error).toMatch(/Settings → Extensions → Spotify/);
-        expect(out.data.error).toMatch(/Client ID/);
+        expect(out.data.error).toMatch(/setup/i);
         expect(out.data.error).not.toMatch(/client_id/);
     });
 });

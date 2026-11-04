@@ -293,36 +293,6 @@
     "_machine_translated": true,
     "_source_hash": "d0fcd903dec290c3"
   },
-  "settings.app.intro_html": {
-    "message": "يطلب Spotify من كل تطبيق تسجيل <strong>Client ID</strong> خاص به. أنشئ واحدًا مجانًا من <a href=\"https://developer.spotify.com/dashboard\">developer.spotify.com/dashboard</a> (انقر <em>Create app</em>، سمِّه بأي اسم، وفعّل <em>Web API</em>). أضف <code>http://127.0.0.1:8080/spotify/callback</code> كـ Redirect URI — أي منفذ يصلح، لكن Spotify يحتاج إلى وجود واحد. انسخ الـ Client ID الذي يعطيه لك والصقه أدناه.",
-    "description": "Settings: app setup instructions",
-    "_machine_translated": true,
-    "_source_hash": "177c4bb9f2055193"
-  },
-  "settings.client_id.label": {
-    "message": "Client ID",
-    "description": "Settings: Client ID input label",
-    "_machine_translated": true,
-    "_source_hash": "88c50480decaca58"
-  },
-  "settings.client_id.placeholder": {
-    "message": "ألصق client_id الخاص بـ Spotify هنا",
-    "description": "Settings: Client ID placeholder",
-    "_machine_translated": true,
-    "_source_hash": "00365c0104e05fb3"
-  },
-  "settings.client_id.description": {
-    "message": "محفوظ على هذا الكمبيوتر فقط. يُرسَل إلى Spotify عند تسجيل الدخول، ولا يُرسَل إلى أي مكان آخر.",
-    "description": "Settings: Client ID description",
-    "_machine_translated": true,
-    "_source_hash": "74280ec7c0552793"
-  },
-  "settings.save_client_id.label": {
-    "message": "حفظ معرّف العميل",
-    "description": "Settings: save client id button",
-    "_machine_translated": true,
-    "_source_hash": "1b31bf8b9640a2bc"
-  },
   "settings.section.connection": {
     "message": "الاتصال",
     "description": "Settings section: connection",
@@ -341,24 +311,6 @@
     "_machine_translated": true,
     "_source_hash": "fdc13580729a4adc"
   },
-  "settings.connection.not_connected": {
-    "message": "لم يتم تسجيل الدخول بعد. انقر <strong>اتصال</strong> لتسجيل الدخول إلى Spotify.",
-    "description": "Settings: not connected text",
-    "_machine_translated": true,
-    "_source_hash": "210fcedbc5081420"
-  },
-  "settings.connection.no_client_id": {
-    "message": "ألصق Client ID أعلاه أولًا، ثم عُد إلى هنا للاتصال.",
-    "description": "Settings: needs client ID first",
-    "_machine_translated": true,
-    "_source_hash": "3316be227daf1055"
-  },
-  "settings.connect.label_connect": {
-    "message": "اتصال",
-    "description": "Settings: connect button",
-    "_machine_translated": true,
-    "_source_hash": "f2e6d94ff6eceff2"
-  },
   "settings.connect.label_reconnect": {
     "message": "إعادة الاتصال",
     "description": "Settings: reconnect button",
@@ -372,10 +324,10 @@
     "_source_hash": "ccc6a1247a0bc31c"
   },
   "settings.disconnect.confirm": {
-    "message": "تسجيل الخروج من Spotify؟ ستحتاج إلى تسجيل الدخول مجددًا لاستخدام اختصارات التشغيل.",
-    "description": "Confirmation prompt before signing out",
+    "message": "هل تريد تسجيل الخروج من Spotify؟ سيحذف Kage أيضًا معرّف Client ID الخاص بك، لذا ستحتاج إلى إجراء الإعداد مجددًا لإعادة الاتصال.",
+    "description": "Confirmation prompt before signing out. Signing out also deletes the saved Client ID, so the settings page returns to the guided setup.",
     "_machine_translated": true,
-    "_source_hash": "9dd32ff7ac62f6bb"
+    "_source_hash": "c9ddd7027ee62344"
   },
   "settings.validate.trigger_required": {
     "message": "كلمة التشغيل مطلوبة.",
@@ -389,35 +341,11 @@
     "_machine_translated": true,
     "_source_hash": "69d9b6a61cce96e9"
   },
-  "action.save_client_id.empty": {
-    "message": "⚠️ ألصق معرّف العميل أولاً.",
-    "description": "Status when Client ID input is empty",
-    "_machine_translated": true,
-    "_source_hash": "dae11461665c6476"
-  },
-  "action.save_client_id.invalid": {
-    "message": "⚠️ هذا لا يبدو معرّف عميل Spotify صالحاً.",
-    "description": "Status when Client ID format invalid",
-    "_machine_translated": true,
-    "_source_hash": "e696470bcef2160e"
-  },
-  "action.save_client_id.success": {
-    "message": "✅ تم حفظ معرّف العميل.",
-    "description": "Status when Client ID is saved",
-    "_machine_translated": true,
-    "_source_hash": "f75eefe56c7a28c0"
-  },
   "action.connect.success": {
     "message": "✅ تم الاتصال. سيظهر شريط «قيد التشغيل الآن» عند تشغيل شيء ما.",
     "description": "Status after a successful connect",
     "_machine_translated": true,
     "_source_hash": "31fe35562a8c271b"
-  },
-  "action.connect.error": {
-    "message": "⚠️ {message}",
-    "description": "Status with error after a failed connect",
-    "_machine_translated": true,
-    "_source_hash": "b0d53e592dd2232c"
   },
   "action.disconnect.success": {
     "message": "✅ تم تسجيل الخروج.",
@@ -534,10 +462,10 @@
     "_source_hash": "3f096cf0735591ab"
   },
   "action.check_connection.no_client_id": {
-    "message": "⚠️ لم يتم حفظ أي Client ID بعد. الصق واحدًا في الأعلى أولًا.",
-    "description": "Status when checking connection without a client_id",
+    "message": "⚠️ لم يتم حفظ أي Client ID بعد، لذا يجب تشغيل الإعداد أولًا.",
+    "description": "Status when a settings action needs a Client ID but none is saved (for example after signing out from the launcher). The page then switches to the guided setup.",
     "_machine_translated": true,
-    "_source_hash": "30500a2d3fcb5cbf"
+    "_source_hash": "9b299672f973aeb2"
   },
   "action.check_connection.not_signed_in": {
     "message": "⚠️ لم يتم تسجيل الدخول. انقر على «اتصال» لتسجيل الدخول إلى Spotify.",
@@ -594,9 +522,327 @@
     "_source_hash": "ca8161f663aa319a"
   },
   "error.no_client_id": {
-    "message": "لم يتم إعداد Spotify بعد. أضف معرّف العميل (Client ID) في الإعدادات ← الملحقات ← Spotify، ثم حاول مرة أخرى.",
-    "description": "Launcher-facing error when a Spotify command runs before a Client ID has been saved. Avoids the raw 'client_id' identifier (log-only jargon) and points at the settings path; the settings window itself uses action.check_connection.no_client_id ('paste one above').",
+    "message": "لم يتم إعداد Spotify بعد. افتح الإعدادات ← الإضافات ← Spotify واتبع خطوات الإعداد، ثم أعد المحاولة.",
+    "description": "Launcher-facing error when a Spotify command runs before setup is done. Points at the extension's settings page, which walks the user through setup. Avoids the raw 'client_id' identifier (log-only jargon).",
     "_machine_translated": true,
-    "_source_hash": "eb02f1d2309fbbf9"
+    "_source_hash": "1114823827e8c35d"
+  },
+  "settings.app.client_id_html": {
+    "message": "متصل عبر تطبيق Spotify الخاص بك باستخدام Client ID <code>{client_id}</code>.",
+    "description": "Regular settings, 'Spotify app' section. {client_id} is the user's Client ID. Keep the <code> tags.",
+    "_machine_translated": true,
+    "_source_hash": "bc6dd833c27471c4"
+  },
+  "settings.rerun_setup.label": {
+    "message": "إعادة تشغيل الإعداد",
+    "description": "Button that restarts the guided setup, e.g. to switch to a different Spotify app",
+    "_machine_translated": true,
+    "_source_hash": "5bf792a7c650c79a"
+  },
+  "settings.rerun_setup.description": {
+    "message": "اتبع خطوات الإعداد مرة أخرى، على سبيل المثال للتبديل إلى تطبيق Spotify آخر.",
+    "description": "Help text above the 'Run setup again' button",
+    "_machine_translated": true,
+    "_source_hash": "c9897b5b9cc86d49"
+  },
+  "settings.connect.error.timeout": {
+    "message": "⚠️ لم يُعِدك Spotify إلى Kage خلال 5 دقائق. إذا عرض متصفحك الخطأ INVALID_CLIENT، فانقر على «إعادة تشغيل الإعداد» للتحقق من Client ID وRedirect URI الخاصين بتطبيقك.",
+    "description": "Reconnect (regular settings) gave up waiting for the browser. INVALID_CLIENT is Spotify's literal error text and must stay in English; 'Run setup again' is a button label.",
+    "_machine_translated": true,
+    "_source_hash": "4c4d4f3339062e1a"
+  },
+  "settings.connect.error.app": {
+    "message": "❌ رفض Spotify إعدادات تطبيقك. انقر على «إعادة تشغيل الإعداد» للتحقق من Client ID وRedirect URI.",
+    "description": "Reconnect (regular settings) failed because Spotify doesn't accept the Client ID or Redirect URI. 'Run setup again' is a button label.",
+    "_machine_translated": true,
+    "_source_hash": "34fa3a0b99fb931e"
+  },
+  "setup.description": {
+    "message": "يحتاج Spotify إلى إعداد لمرة واحدة قبل أن تتمكن هذه الإضافة من القيام بأي شيء: ستسجّل تطبيق Spotify مجانيًا، ثم تسجّل الدخول. يستغرق ذلك نحو ثلاث دقائق، ويُحفظ تقدّمك إذا أغلقت هذه النافذة.",
+    "description": "Intro shown above the guided setup steps",
+    "_machine_translated": true,
+    "_source_hash": "92e5caea000cacc3"
+  },
+  "setup.description_rerun": {
+    "message": "أنت تعيد تشغيل الإعداد. سيظل اتصالك الحالي يعمل حتى تتصل مجددًا، أو انقر على «إلغاء الإعداد» لإبقاء كل شيء كما كان.",
+    "description": "Intro shown above the guided setup when the user chose 'Run setup again' while connected. 'Cancel setup' is a button label.",
+    "_machine_translated": true,
+    "_source_hash": "85fb57762131caf2"
+  },
+  "setup.step_label": {
+    "message": "الخطوة {number} من {total}: {title}",
+    "description": "Heading of a setup step, e.g. 'Step 2 of 4: Create a Spotify app'. {title} is one of the setup.*.title strings.",
+    "_machine_translated": true,
+    "_source_hash": "06f136ef91f0abee"
+  },
+  "setup.next.label": {
+    "message": "التالي",
+    "description": "Button that moves to the next setup step",
+    "_machine_translated": true,
+    "_source_hash": "1319443c427dbb68"
+  },
+  "setup.back.label": {
+    "message": "رجوع",
+    "description": "Button that returns to the previous setup step",
+    "_machine_translated": true,
+    "_source_hash": "2140f60e13dff227"
+  },
+  "setup.cancel.label": {
+    "message": "إلغاء الإعداد",
+    "description": "Button that leaves a re-run of the setup and returns to the regular settings, changing nothing",
+    "_machine_translated": true,
+    "_source_hash": "d36bfa990adfdd2d"
+  },
+  "setup.open_dashboard_again.label": {
+    "message": "فتح لوحة التحكم مجددًا",
+    "description": "Secondary button that reopens the Spotify Developer Dashboard in the browser",
+    "_machine_translated": true,
+    "_source_hash": "d9aed20416235e11"
+  },
+  "setup.not_using_html": {
+    "message": "لا تستخدم Spotify؟ يمكنك إيقاف هذه الإضافة باستخدام الزر الموجود أعلى هذه الصفحة.",
+    "description": "Hint on the first setup step for users who don't want the extension",
+    "_machine_translated": true,
+    "_source_hash": "bc30130633af556a"
+  },
+  "setup.dashboard.title": {
+    "message": "افتح لوحة تحكم المطوّرين في Spotify",
+    "description": "Title of setup step 1",
+    "_machine_translated": true,
+    "_source_hash": "eeb134b835a4e3c3"
+  },
+  "setup.dashboard.body_html": {
+    "message": "<p>لا يسمح Spotify لتطبيقات مثل Kage بالتحكم في موسيقاك إلا عبر تطبيق تسجّله <em>أنت</em> لديه. التسجيل مجاني، ولا تحتاج إليه إلا مرة واحدة، وكل ما يلزمك هو بيانات تسجيل الدخول إلى Spotify.</p><p>انقر على <strong>فتح لوحة تحكم Spotify</strong>. سجّل الدخول في متصفحك، ووافق على شروط المطوّرين إذا طلب Spotify ذلك. ثم عُد إلى هنا للخطوة التالية.</p>",
+    "description": "Body of setup step 1. 'Open Spotify Dashboard' is the button label below it. Keep the HTML tags.",
+    "_machine_translated": true,
+    "_source_hash": "f91342798ceefb2b"
+  },
+  "setup.dashboard.premium_html": {
+    "message": "معلومة مفيدة: لا يسمح Spotify بالتحكم في التشغيل (تشغيل، إيقاف مؤقت، تخطٍّ) إلا لحسابات Premium. أما معرفة ما يُشغَّل حاليًا فتعمل مع أي حساب.",
+    "description": "Note on setup step 1 about Spotify's Premium requirement for playback control",
+    "_machine_translated": true,
+    "_source_hash": "eac6664d79f9bb4f"
+  },
+  "setup.dashboard.open.label": {
+    "message": "فتح لوحة تحكم Spotify",
+    "description": "Primary button on setup step 1; opens developer.spotify.com/dashboard in the system browser",
+    "_machine_translated": true,
+    "_source_hash": "af4f9f9115a1ce99"
+  },
+  "setup.dashboard.opened": {
+    "message": "✅ تم الفتح في متصفحك.",
+    "description": "Status after the Spotify Developer Dashboard was opened in the browser",
+    "_machine_translated": true,
+    "_source_hash": "84e23af093aa0b4b"
+  },
+  "setup.dashboard.open_failed": {
+    "message": "⚠️ تعذّر فتح متصفحك. انتقل إلى {url} بنفسك، ثم انقر على «التالي».",
+    "description": "Status when opening the dashboard failed. {url} is the dashboard address; 'Next' is a button label.",
+    "_machine_translated": true,
+    "_source_hash": "ca8541c8056ea9f3"
+  },
+  "setup.create_app.title": {
+    "message": "أنشئ تطبيق Spotify",
+    "description": "Title of setup step 2",
+    "_machine_translated": true,
+    "_source_hash": "c3b189ea7f1eca82"
+  },
+  "setup.create_app.body_html": {
+    "message": "<p>في لوحة التحكم، انقر على <strong>Create app</strong> واملأ النموذج:</p><ol><li><strong>App name</strong> و<strong>App description</strong>: أي شيء تريده، على سبيل المثال «Kage».</li><li><strong>Redirect URIs</strong>: الصق العنوان أدناه وانقر على <strong>Add</strong>.</li><li>ضمن <strong>Which API/SDKs are you planning to use?</strong>، حدّد <strong>Web API</strong>.</li><li>وافق على شروط Spotify وانقر على <strong>Save</strong>.</li></ol><p>هل لديك تطبيق بالفعل؟ أضف العنوان أدناه إلى Redirect URIs الخاصة به (في <strong>Settings</strong>)، واحفظ، ثم انقر على <strong>التالي</strong>.</p>",
+    "description": "Body of setup step 2. Bold names in the list (Create app, App name, App description, Redirect URIs, Add, Which API/SDKs are you planning to use?, Web API, Save, Settings) are labels on Spotify's English-only dashboard: keep them in English. 'Next' is a Kage button label. Keep the HTML tags.",
+    "_machine_translated": true,
+    "_source_hash": "2011669f77118e24"
+  },
+  "setup.create_app.redirect_label": {
+    "message": "Redirect URI",
+    "description": "Label above the address the user must register in their Spotify app",
+    "_machine_translated": true,
+    "_source_hash": "287ef0973c0892c2"
+  },
+  "setup.create_app.redirect_hint_html": {
+    "message": "انسخه كما هو تمامًا: <code>http</code> (وليس https)، و<code>127.0.0.1</code> (وليس localhost)، وينتهي بـ <code>/spotify/callback</code>. لا يلزم أن يطابق رقم المنفذ أي شيء، إذ يختار Kage منفذًا متاحًا في كل مرة تتصل فيها، ويسمح Spotify بذلك مع 127.0.0.1.",
+    "description": "Hint below the Redirect URI. Keep the <code> parts exactly as they are.",
+    "_machine_translated": true,
+    "_source_hash": "62cde7988d0fbad2"
+  },
+  "setup.client_id.title": {
+    "message": "انسخ Client ID الخاص بك",
+    "description": "Title of setup step 3",
+    "_machine_translated": true,
+    "_source_hash": "ae642f912622632f"
+  },
+  "setup.client_id.body_html": {
+    "message": "<p>يعرض Spotify الآن تطبيقك. افتح <strong>Settings</strong> الخاصة به وانسخ <strong>Client ID</strong>، وهو رمز من 32 حرفًا ورقمًا، ثم الصقه أدناه.</p><p>لا تحتاج إلى <strong>Client secret</strong>، لذا اتركه مخفيًا.</p>",
+    "description": "Body of setup step 3. Settings, Client ID and Client secret are labels on Spotify's English-only dashboard: keep them in English. Keep the HTML tags.",
+    "_machine_translated": true,
+    "_source_hash": "8311c80fb529d1ef"
+  },
+  "setup.client_id.label": {
+    "message": "Client ID",
+    "description": "Label of the Client ID field (Spotify's term; keep in English if your language commonly does)",
+    "_machine_translated": true,
+    "_source_hash": "eace6d2899ea7b28"
+  },
+  "setup.client_id.placeholder": {
+    "message": "الصق Client ID هنا",
+    "description": "Placeholder in the empty Client ID field",
+    "_machine_translated": true,
+    "_source_hash": "3291ed3d93c259a6"
+  },
+  "setup.client_id.description": {
+    "message": "يُحفظ على هذا الكمبيوتر فقط، ولا يُرسل إلى أي جهة سوى Spotify.",
+    "description": "Help text under the Client ID field",
+    "_machine_translated": true,
+    "_source_hash": "d8dd5f8b2422eb1f"
+  },
+  "setup.client_id.description_connected": {
+    "message": "يُحفظ على هذا الكمبيوتر فقط. سيؤدي حفظ Client ID مختلف إلى تسجيل خروجك من اتصالك الحالي بـ Spotify.",
+    "description": "Help text under the Client ID field when setup is re-run while connected",
+    "_machine_translated": true,
+    "_source_hash": "7e2190b8a34854aa"
+  },
+  "setup.client_id.save.label": {
+    "message": "حفظ ومتابعة",
+    "description": "Primary button on setup step 3: checks and saves the Client ID",
+    "_machine_translated": true,
+    "_source_hash": "a7d9d9aa42e69094"
+  },
+  "setup.client_id.error.empty": {
+    "message": "⚠️ الصق Client ID أولًا. تجده في صفحة Settings الخاصة بتطبيقك في لوحة تحكم Spotify.",
+    "description": "Validation error: the Client ID field is empty",
+    "_machine_translated": true,
+    "_source_hash": "12060da5725dba1e"
+  },
+  "setup.client_id.error.url": {
+    "message": "⚠️ هذا عنوان ويب وليس Client ID. في صفحة Settings الخاصة بتطبيقك، انسخ الرمز الظاهر أسفل Client ID.",
+    "description": "Validation error: the user pasted a URL instead of the Client ID",
+    "_machine_translated": true,
+    "_source_hash": "3d53548a3bb46dd2"
+  },
+  "setup.client_id.error.format": {
+    "message": "⚠️ لا يبدو هذا Client ID. إنه رمز من 32 حرفًا ورقمًا، فتأكد من أنك نسخته كاملًا دون مسافات.",
+    "description": "Validation error: the pasted text has the wrong shape for a Spotify Client ID",
+    "_machine_translated": true,
+    "_source_hash": "ec948ab3f15a7f4d"
+  },
+  "setup.client_id.error.unknown_client": {
+    "message": "❌ لا يتعرّف Spotify على Client ID هذا. انسخ Client ID (وليس Client secret) من صفحة Settings الخاصة بتطبيقك وحاول مرة أخرى.",
+    "description": "Error: Spotify confirmed that no app has this Client ID (typo, or the Client secret was pasted)",
+    "_machine_translated": true,
+    "_source_hash": "c579dd476cef5580"
+  },
+  "setup.connect.title": {
+    "message": "اربط حسابك في Spotify",
+    "description": "Title of setup step 4",
+    "_machine_translated": true,
+    "_source_hash": "1059715fa8499342"
+  },
+  "setup.connect.body_html": {
+    "message": "<p>انقر على <strong>الاتصال بـ Spotify</strong>. سيفتح متصفحك صفحة الأذونات في Spotify: سجّل الدخول إذا طُلب منك، ثم انقر على <strong>Agree</strong>. عُد إلى هنا بعد ذلك، وسيُكمل Kage الأمر تلقائيًا.</p>",
+    "description": "Body of setup step 4. 'Connect to Spotify' is the button below; 'Agree' is the button on Spotify's page. Keep the HTML tags.",
+    "_machine_translated": true,
+    "_source_hash": "a8684f238d748e79"
+  },
+  "setup.connect.notice_revoked_html": {
+    "message": "<strong>انتهت صلاحية تسجيل دخولك إلى Spotify أو أُلغي.</strong> لا تزال تفاصيل تطبيقك محفوظة، فقط اتصل مرة أخرى.",
+    "description": "Shown on setup step 4 when the user was sent back there because Spotify no longer accepts the saved sign-in",
+    "_machine_translated": true,
+    "_source_hash": "dde800c3b8753aee"
+  },
+  "setup.connect.button": {
+    "message": "الاتصال بـ Spotify",
+    "description": "Primary button on setup step 4: starts the browser sign-in",
+    "_machine_translated": true,
+    "_source_hash": "0208cc013489fada"
+  },
+  "setup.connect.trouble_label": {
+    "message": "إذا عرض متصفحك خطأً",
+    "description": "Label of the troubleshooting list on setup step 4",
+    "_machine_translated": true,
+    "_source_hash": "d7c61792fcd6fed2"
+  },
+  "setup.connect.trouble_html": {
+    "message": "<ul><li><strong>INVALID_CLIENT: Invalid redirect URI</strong> — لا يتضمن تطبيقك Redirect URI الخاص بـ Kage. انقر على <strong>رجوع</strong> مرتين، وأضف <code>{uri}</code> إلى تطبيقك في Spotify، ثم انقر على Save هناك.</li><li><strong>INVALID_CLIENT: Invalid client</strong> — لا يتعرّف Spotify على Client ID هذا. انقر على <strong>رجوع</strong> والصقه مرة أخرى.</li></ul>",
+    "description": "Troubleshooting list on setup step 4. The bold INVALID_CLIENT lines are Spotify's literal English error texts: keep them unchanged. 'Back' is a button label. {uri} is the Redirect URI. Keep the HTML tags.",
+    "_machine_translated": true,
+    "_source_hash": "73a86ddcd20e361e"
+  },
+  "setup.connect.error.timeout": {
+    "message": "⚠️ لم يُعِدك Spotify إلى Kage خلال 5 دقائق. إذا عرض متصفحك «Invalid redirect URI»، فانقر على رجوع مرتين وصحّح Redirect URI في تطبيقك على Spotify؛ وإذا عرض «Invalid client»، فانقر على رجوع وتحقق من Client ID. وإلا، فانقر على الاتصال بـ Spotify للمحاولة مرة أخرى.",
+    "description": "Setup step 4: the sign-in gave up waiting for the browser. 'Invalid redirect URI' and 'Invalid client' are Spotify's literal English error texts. 'Back' and 'Connect to Spotify' are button labels.",
+    "_machine_translated": true,
+    "_source_hash": "eb849ba902ab7a4a"
+  },
+  "setup.connect.error.bad_client": {
+    "message": "❌ لا يتعرّف Spotify على Client ID هذا. انقر على رجوع والصق Client ID من صفحة Settings الخاصة بتطبيقك (وليس Client secret).",
+    "description": "Setup step 4: Spotify rejected the Client ID. 'Back' is a button label.",
+    "_machine_translated": true,
+    "_source_hash": "46d13b9a734ea338"
+  },
+  "setup.connect.error.redirect": {
+    "message": "❌ رفض Spotify عنوان Redirect URI. انقر على رجوع مرتين، وتأكد من أن تطبيقك في Spotify يتضمن {uri} تمامًا، ثم انقر على Save في Spotify وحاول مرة أخرى.",
+    "description": "Setup step 4: Spotify rejected the Redirect URI. {uri} is the address to register. 'Back' is a button label.",
+    "_machine_translated": true,
+    "_source_hash": "520c92aabf30b5b9"
+  },
+  "setup.done.title": {
+    "message": "كل شيء جاهز!",
+    "description": "Heading of the final setup screen",
+    "_machine_translated": true,
+    "_source_hash": "420d0b876f5f7bba"
+  },
+  "setup.done.connected_named_html": {
+    "message": "<p><strong>تم الاتصال بـ Spotify باسم {name}.</strong></p>",
+    "description": "Final setup screen headline. {name} is the user's Spotify display name.",
+    "_machine_translated": true,
+    "_source_hash": "1fc1cc8c237e8033"
+  },
+  "setup.done.connected_html": {
+    "message": "<p><strong>تم الاتصال بـ Spotify.</strong></p>",
+    "description": "Final setup screen headline when the Spotify display name is unknown",
+    "_machine_translated": true,
+    "_source_hash": "25a68bfc97e2ba65"
+  },
+  "setup.done.tips_html": {
+    "message": "<p>اكتب <code>{trigger}</code> في نافذة Kage العائمة لمعرفة ما يُشغَّل الآن، أو <code>{trigger} play</code> متبوعًا باسم أغنية لتشغيلها. يمكنك أيضًا أن تطلب من المساعد مباشرةً، مثل «شغّل بعض موسيقى lofi». يظهر شريط التشغيل الحالي في النافذة العائمة كلما كانت هناك موسيقى قيد التشغيل.</p>",
+    "description": "Tips on the final setup screen. {trigger} is the user's trigger word (default 'sp'); keep the <code> parts unchanged.",
+    "_machine_translated": true,
+    "_source_hash": "dd8850638e22b0b1"
+  },
+  "setup.done.finish.label": {
+    "message": "إنهاء",
+    "description": "Button on the final setup screen; shows the regular settings",
+    "_machine_translated": true,
+    "_source_hash": "8d1ced20b0446717"
+  },
+  "signin.error.denied": {
+    "message": "⚠️ لم يتم منح الإذن على صفحة Spotify، لذا لا يمكن لـ Kage الاتصال. حاول مرة أخرى وانقر على «أوافق» (Agree).",
+    "description": "Sign-in failed because the user clicked Cancel on Spotify's permission page. 'Agree' is the button on that page.",
+    "_machine_translated": true,
+    "_source_hash": "3066f9decce65547"
+  },
+  "signin.error.state": {
+    "message": "⚠️ لا يتطابق رد تسجيل الدخول هذا مع هذا الطلب (ربما يكون من محاولة سابقة). يُرجى المحاولة مرة أخرى.",
+    "description": "Sign-in failed: the browser redirect didn't belong to the current attempt",
+    "_machine_translated": true,
+    "_source_hash": "3258d45a40ada774"
+  },
+  "signin.error.network": {
+    "message": "⚠️ تعذّر الوصول إلى Spotify. تحقّق من اتصالك بالإنترنت وحاول مرة أخرى.",
+    "description": "Sign-in failed: network error",
+    "_machine_translated": true,
+    "_source_hash": "b316c47263b356d2"
+  },
+  "signin.error.oauth": {
+    "message": "⚠️ أبلغت Spotify عن مشكلة ({error}). يُرجى المحاولة مرة أخرى.",
+    "description": "Sign-in failed with an error from Spotify. {error} is Spotify's error code, in English.",
+    "_machine_translated": true,
+    "_source_hash": "2eddcefc790336f6"
+  },
+  "signin.error.unknown": {
+    "message": "⚠️ تعذّر الاتصال: {message}",
+    "description": "Sign-in failed for an unexpected reason. {message} is a technical detail, in English.",
+    "_machine_translated": true,
+    "_source_hash": "8c87addbb62d1c4b"
   }
 }

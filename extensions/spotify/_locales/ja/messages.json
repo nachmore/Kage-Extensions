@@ -293,36 +293,6 @@
     "_machine_translated": true,
     "_source_hash": "d0fcd903dec290c3"
   },
-  "settings.app.intro_html": {
-    "message": "Spotifyはすべてのアプリに独自の<strong>Client ID</strong>の登録を求めています。<a href=\"https://developer.spotify.com/dashboard\">developer.spotify.com/dashboard</a>で無料で作成できます（<em>Create app</em>をクリックし、任意の名前を付けて、<em>Web API</em>にチェックを入れます）。Redirect URIに<code>http://127.0.0.1:8080/spotify/callback</code>を追加してください——ポートは何でも構いません、Spotifyは存在することだけを確認します。発行されたClient IDをコピーして、下に貼り付けてください。",
-    "description": "Settings: app setup instructions",
-    "_machine_translated": true,
-    "_source_hash": "177c4bb9f2055193"
-  },
-  "settings.client_id.label": {
-    "message": "Client ID",
-    "description": "Settings: Client ID input label",
-    "_machine_translated": true,
-    "_source_hash": "88c50480decaca58"
-  },
-  "settings.client_id.placeholder": {
-    "message": "ここに Spotify の client_id を貼り付けてください",
-    "description": "Settings: Client ID placeholder",
-    "_machine_translated": true,
-    "_source_hash": "00365c0104e05fb3"
-  },
-  "settings.client_id.description": {
-    "message": "このコンピューターにのみ保存されます。サインイン時にSpotifyに送信されますが、それ以外には送信されません。",
-    "description": "Settings: Client ID description",
-    "_machine_translated": true,
-    "_source_hash": "74280ec7c0552793"
-  },
-  "settings.save_client_id.label": {
-    "message": "クライアント ID を保存",
-    "description": "Settings: save client id button",
-    "_machine_translated": true,
-    "_source_hash": "1b31bf8b9640a2bc"
-  },
   "settings.section.connection": {
     "message": "接続",
     "description": "Settings section: connection",
@@ -341,24 +311,6 @@
     "_machine_translated": true,
     "_source_hash": "fdc13580729a4adc"
   },
-  "settings.connection.not_connected": {
-    "message": "まだサインインしていません。<strong>接続</strong>をクリックしてSpotifyにサインインしてください。",
-    "description": "Settings: not connected text",
-    "_machine_translated": true,
-    "_source_hash": "210fcedbc5081420"
-  },
-  "settings.connection.no_client_id": {
-    "message": "まず上にClient IDを貼り付けてから、ここに戻って接続してください。",
-    "description": "Settings: needs client ID first",
-    "_machine_translated": true,
-    "_source_hash": "3316be227daf1055"
-  },
-  "settings.connect.label_connect": {
-    "message": "接続",
-    "description": "Settings: connect button",
-    "_machine_translated": true,
-    "_source_hash": "f2e6d94ff6eceff2"
-  },
   "settings.connect.label_reconnect": {
     "message": "再接続",
     "description": "Settings: reconnect button",
@@ -372,10 +324,10 @@
     "_source_hash": "ccc6a1247a0bc31c"
   },
   "settings.disconnect.confirm": {
-    "message": "Spotifyからサインアウトしますか？再生ショートカットを使用するには、再度サインインする必要があります。",
-    "description": "Confirmation prompt before signing out",
+    "message": "Spotify からサインアウトしますか？Kage に保存された Client ID も削除されるため、再接続するにはもう一度セットアップが必要です。",
+    "description": "Confirmation prompt before signing out. Signing out also deletes the saved Client ID, so the settings page returns to the guided setup.",
     "_machine_translated": true,
-    "_source_hash": "9dd32ff7ac62f6bb"
+    "_source_hash": "c9ddd7027ee62344"
   },
   "settings.validate.trigger_required": {
     "message": "トリガーワードは必須です。",
@@ -389,35 +341,11 @@
     "_machine_translated": true,
     "_source_hash": "69d9b6a61cce96e9"
   },
-  "action.save_client_id.empty": {
-    "message": "⚠️ 先にクライアント ID を貼り付けてください。",
-    "description": "Status when Client ID input is empty",
-    "_machine_translated": true,
-    "_source_hash": "dae11461665c6476"
-  },
-  "action.save_client_id.invalid": {
-    "message": "⚠️ 有効な Spotify クライアント ID ではないようです。",
-    "description": "Status when Client ID format invalid",
-    "_machine_translated": true,
-    "_source_hash": "e696470bcef2160e"
-  },
-  "action.save_client_id.success": {
-    "message": "✅ クライアント ID を保存しました。",
-    "description": "Status when Client ID is saved",
-    "_machine_translated": true,
-    "_source_hash": "f75eefe56c7a28c0"
-  },
   "action.connect.success": {
     "message": "✅ 接続しました。再生中の項目があると、再生中バーが表示されます。",
     "description": "Status after a successful connect",
     "_machine_translated": true,
     "_source_hash": "31fe35562a8c271b"
-  },
-  "action.connect.error": {
-    "message": "⚠️ {message}",
-    "description": "Status with error after a failed connect",
-    "_machine_translated": true,
-    "_source_hash": "b0d53e592dd2232c"
   },
   "action.disconnect.success": {
     "message": "✅ サインアウトしました。",
@@ -534,10 +462,10 @@
     "_source_hash": "3f096cf0735591ab"
   },
   "action.check_connection.no_client_id": {
-    "message": "⚠️ Client ID がまだ保存されていません。まず上に貼り付けてください。",
-    "description": "Status when checking connection without a client_id",
+    "message": "⚠️ Client ID がまだ保存されていないため、先にセットアップを行う必要があります。",
+    "description": "Status when a settings action needs a Client ID but none is saved (for example after signing out from the launcher). The page then switches to the guided setup.",
     "_machine_translated": true,
-    "_source_hash": "30500a2d3fcb5cbf"
+    "_source_hash": "9b299672f973aeb2"
   },
   "action.check_connection.not_signed_in": {
     "message": "⚠️ サインインしていません。「接続」をクリックして Spotify にサインインしてください。",
@@ -594,9 +522,327 @@
     "_source_hash": "ca8161f663aa319a"
   },
   "error.no_client_id": {
-    "message": "Spotify はまだ設定されていません。設定 → 拡張機能 → Spotify で Client ID を追加してから、もう一度お試しください。",
-    "description": "Launcher-facing error when a Spotify command runs before a Client ID has been saved. Avoids the raw 'client_id' identifier (log-only jargon) and points at the settings path; the settings window itself uses action.check_connection.no_client_id ('paste one above').",
+    "message": "Spotify はまだセットアップされていません。設定 → 拡張機能 → Spotify を開いてセットアップ手順に従ってから、もう一度お試しください。",
+    "description": "Launcher-facing error when a Spotify command runs before setup is done. Points at the extension's settings page, which walks the user through setup. Avoids the raw 'client_id' identifier (log-only jargon).",
     "_machine_translated": true,
-    "_source_hash": "eb02f1d2309fbbf9"
+    "_source_hash": "1114823827e8c35d"
+  },
+  "settings.app.client_id_html": {
+    "message": "Client ID <code>{client_id}</code> の Spotify アプリを使用して接続しています。",
+    "description": "Regular settings, 'Spotify app' section. {client_id} is the user's Client ID. Keep the <code> tags.",
+    "_machine_translated": true,
+    "_source_hash": "bc6dd833c27471c4"
+  },
+  "settings.rerun_setup.label": {
+    "message": "セットアップをやり直す",
+    "description": "Button that restarts the guided setup, e.g. to switch to a different Spotify app",
+    "_machine_translated": true,
+    "_source_hash": "5bf792a7c650c79a"
+  },
+  "settings.rerun_setup.description": {
+    "message": "セットアップ手順をもう一度行います。たとえば、別の Spotify アプリに切り替える場合に使用します。",
+    "description": "Help text above the 'Run setup again' button",
+    "_machine_translated": true,
+    "_source_hash": "c9897b5b9cc86d49"
+  },
+  "settings.connect.error.timeout": {
+    "message": "⚠️ 5 分以内に Spotify から Kage に戻りませんでした。ブラウザーに INVALID_CLIENT エラーが表示された場合は、「セットアップをやり直す」をクリックして、アプリの Client ID と Redirect URI を確認してください。",
+    "description": "Reconnect (regular settings) gave up waiting for the browser. INVALID_CLIENT is Spotify's literal error text and must stay in English; 'Run setup again' is a button label.",
+    "_machine_translated": true,
+    "_source_hash": "4c4d4f3339062e1a"
+  },
+  "settings.connect.error.app": {
+    "message": "❌ Spotify がアプリの設定を拒否しました。「セットアップをやり直す」をクリックして、Client ID と Redirect URI を確認してください。",
+    "description": "Reconnect (regular settings) failed because Spotify doesn't accept the Client ID or Redirect URI. 'Run setup again' is a button label.",
+    "_machine_translated": true,
+    "_source_hash": "34fa3a0b99fb931e"
+  },
+  "setup.description": {
+    "message": "この拡張機能を使用するには、Spotify の初回セットアップが必要です。無料の Spotify アプリを登録してから、サインインします。所要時間は約 3 分で、このウィンドウを閉じても進行状況は保存されます。",
+    "description": "Intro shown above the guided setup steps",
+    "_machine_translated": true,
+    "_source_hash": "92e5caea000cacc3"
+  },
+  "setup.description_rerun": {
+    "message": "セットアップをやり直しています。再接続するまでは現在の接続をそのまま使用できます。何も変更しない場合は、「セットアップをキャンセル」をクリックしてください。",
+    "description": "Intro shown above the guided setup when the user chose 'Run setup again' while connected. 'Cancel setup' is a button label.",
+    "_machine_translated": true,
+    "_source_hash": "85fb57762131caf2"
+  },
+  "setup.step_label": {
+    "message": "ステップ {number}/{total}：{title}",
+    "description": "Heading of a setup step, e.g. 'Step 2 of 4: Create a Spotify app'. {title} is one of the setup.*.title strings.",
+    "_machine_translated": true,
+    "_source_hash": "06f136ef91f0abee"
+  },
+  "setup.next.label": {
+    "message": "次へ",
+    "description": "Button that moves to the next setup step",
+    "_machine_translated": true,
+    "_source_hash": "1319443c427dbb68"
+  },
+  "setup.back.label": {
+    "message": "戻る",
+    "description": "Button that returns to the previous setup step",
+    "_machine_translated": true,
+    "_source_hash": "2140f60e13dff227"
+  },
+  "setup.cancel.label": {
+    "message": "セットアップをキャンセル",
+    "description": "Button that leaves a re-run of the setup and returns to the regular settings, changing nothing",
+    "_machine_translated": true,
+    "_source_hash": "d36bfa990adfdd2d"
+  },
+  "setup.open_dashboard_again.label": {
+    "message": "ダッシュボードをもう一度開く",
+    "description": "Secondary button that reopens the Spotify Developer Dashboard in the browser",
+    "_machine_translated": true,
+    "_source_hash": "d9aed20416235e11"
+  },
+  "setup.not_using_html": {
+    "message": "Spotify を使用していませんか？このページ上部のボタンで、この拡張機能をオフにできます。",
+    "description": "Hint on the first setup step for users who don't want the extension",
+    "_machine_translated": true,
+    "_source_hash": "bc30130633af556a"
+  },
+  "setup.dashboard.title": {
+    "message": "Spotify Developer Dashboard を開く",
+    "description": "Title of setup step 1",
+    "_machine_translated": true,
+    "_source_hash": "eeb134b835a4e3c3"
+  },
+  "setup.dashboard.body_html": {
+    "message": "<p>Spotify では、Kage のようなアプリが音楽を操作するには、<em>ご自身</em>で Spotify に登録したアプリを経由する必要があります。登録は無料で一度だけ行えばよく、必要なのは Spotify のログイン情報だけです。</p><p><strong>Spotify ダッシュボードを開く</strong>をクリックします。ブラウザーでログインし、求められた場合は開発者規約に同意してください。その後、ここに戻って次のステップに進みます。</p>",
+    "description": "Body of setup step 1. 'Open Spotify Dashboard' is the button label below it. Keep the HTML tags.",
+    "_machine_translated": true,
+    "_source_hash": "f91342798ceefb2b"
+  },
+  "setup.dashboard.premium_html": {
+    "message": "補足：Spotify で再生操作（再生、一時停止、スキップ）ができるのは Premium アカウントのみです。再生中の曲の確認はどのアカウントでも可能です。",
+    "description": "Note on setup step 1 about Spotify's Premium requirement for playback control",
+    "_machine_translated": true,
+    "_source_hash": "eac6664d79f9bb4f"
+  },
+  "setup.dashboard.open.label": {
+    "message": "Spotify ダッシュボードを開く",
+    "description": "Primary button on setup step 1; opens developer.spotify.com/dashboard in the system browser",
+    "_machine_translated": true,
+    "_source_hash": "af4f9f9115a1ce99"
+  },
+  "setup.dashboard.opened": {
+    "message": "✅ ブラウザーで開きました。",
+    "description": "Status after the Spotify Developer Dashboard was opened in the browser",
+    "_machine_translated": true,
+    "_source_hash": "84e23af093aa0b4b"
+  },
+  "setup.dashboard.open_failed": {
+    "message": "⚠️ ブラウザーを開けませんでした。{url} に手動でアクセスしてから、「次へ」をクリックしてください。",
+    "description": "Status when opening the dashboard failed. {url} is the dashboard address; 'Next' is a button label.",
+    "_machine_translated": true,
+    "_source_hash": "ca8541c8056ea9f3"
+  },
+  "setup.create_app.title": {
+    "message": "Spotify アプリを作成する",
+    "description": "Title of setup step 2",
+    "_machine_translated": true,
+    "_source_hash": "c3b189ea7f1eca82"
+  },
+  "setup.create_app.body_html": {
+    "message": "<p>ダッシュボードで <strong>Create app</strong> をクリックし、フォームに入力します。</p><ol><li><strong>App name</strong> と <strong>App description</strong>：任意の内容を入力します（例：「Kage」）。</li><li><strong>Redirect URIs</strong>：下のアドレスを貼り付けて <strong>Add</strong> をクリックします。</li><li><strong>Which API/SDKs are you planning to use?</strong> で <strong>Web API</strong> にチェックを入れます。</li><li>Spotify の規約に同意して <strong>Save</strong> をクリックします。</li></ol><p>すでにアプリをお持ちの場合は、そのアプリの <strong>Settings</strong> で Redirect URIs に下のアドレスを追加して保存し、<strong>次へ</strong>をクリックしてください。</p>",
+    "description": "Body of setup step 2. Bold names in the list (Create app, App name, App description, Redirect URIs, Add, Which API/SDKs are you planning to use?, Web API, Save, Settings) are labels on Spotify's English-only dashboard: keep them in English. 'Next' is a Kage button label. Keep the HTML tags.",
+    "_machine_translated": true,
+    "_source_hash": "2011669f77118e24"
+  },
+  "setup.create_app.redirect_label": {
+    "message": "Redirect URI",
+    "description": "Label above the address the user must register in their Spotify app",
+    "_machine_translated": true,
+    "_source_hash": "287ef0973c0892c2"
+  },
+  "setup.create_app.redirect_hint_html": {
+    "message": "正確にコピーしてください：<code>http</code>（https ではありません）、<code>127.0.0.1</code>（localhost ではありません）、末尾は <code>/spotify/callback</code> です。ポート番号は何かに合わせる必要はありません。Kage は接続のたびに空いているポートを選び、Spotify は 127.0.0.1 に対してそれを許可しています。",
+    "description": "Hint below the Redirect URI. Keep the <code> parts exactly as they are.",
+    "_machine_translated": true,
+    "_source_hash": "62cde7988d0fbad2"
+  },
+  "setup.client_id.title": {
+    "message": "Client ID をコピー",
+    "description": "Title of setup step 3",
+    "_machine_translated": true,
+    "_source_hash": "ae642f912622632f"
+  },
+  "setup.client_id.body_html": {
+    "message": "<p>Spotify にアプリが表示されます。アプリの <strong>Settings</strong> を開いて <strong>Client ID</strong>（英数字 32 文字のコード）をコピーし、下に貼り付けてください。</p><p><strong>Client secret</strong> は不要なので、非表示のままにしてください。</p>",
+    "description": "Body of setup step 3. Settings, Client ID and Client secret are labels on Spotify's English-only dashboard: keep them in English. Keep the HTML tags.",
+    "_machine_translated": true,
+    "_source_hash": "8311c80fb529d1ef"
+  },
+  "setup.client_id.label": {
+    "message": "Client ID",
+    "description": "Label of the Client ID field (Spotify's term; keep in English if your language commonly does)",
+    "_machine_translated": true,
+    "_source_hash": "eace6d2899ea7b28"
+  },
+  "setup.client_id.placeholder": {
+    "message": "ここに Client ID を貼り付け",
+    "description": "Placeholder in the empty Client ID field",
+    "_machine_translated": true,
+    "_source_hash": "3291ed3d93c259a6"
+  },
+  "setup.client_id.description": {
+    "message": "このコンピューターにのみ保存され、Spotify 以外には送信されません。",
+    "description": "Help text under the Client ID field",
+    "_machine_translated": true,
+    "_source_hash": "d8dd5f8b2422eb1f"
+  },
+  "setup.client_id.description_connected": {
+    "message": "このコンピューターにのみ保存されます。別の Client ID を保存すると、現在の Spotify 接続からサインアウトされます。",
+    "description": "Help text under the Client ID field when setup is re-run while connected",
+    "_machine_translated": true,
+    "_source_hash": "7e2190b8a34854aa"
+  },
+  "setup.client_id.save.label": {
+    "message": "保存して続行",
+    "description": "Primary button on setup step 3: checks and saves the Client ID",
+    "_machine_translated": true,
+    "_source_hash": "a7d9d9aa42e69094"
+  },
+  "setup.client_id.error.empty": {
+    "message": "⚠️ まず Client ID を貼り付けてください。Spotify ダッシュボードのアプリの Settings ページにあります。",
+    "description": "Validation error: the Client ID field is empty",
+    "_machine_translated": true,
+    "_source_hash": "12060da5725dba1e"
+  },
+  "setup.client_id.error.url": {
+    "message": "⚠️ これは Web アドレスで、Client ID ではありません。アプリの Settings ページで、Client ID の下に表示されているコードをコピーしてください。",
+    "description": "Validation error: the user pasted a URL instead of the Client ID",
+    "_machine_translated": true,
+    "_source_hash": "3d53548a3bb46dd2"
+  },
+  "setup.client_id.error.format": {
+    "message": "⚠️ Client ID の形式ではないようです。Client ID は英数字 32 文字のコードです。スペースを含めず、すべてコピーしたか確認してください。",
+    "description": "Validation error: the pasted text has the wrong shape for a Spotify Client ID",
+    "_machine_translated": true,
+    "_source_hash": "ec948ab3f15a7f4d"
+  },
+  "setup.client_id.error.unknown_client": {
+    "message": "❌ Spotify はこの Client ID を認識できません。アプリの Settings ページから Client ID（Client secret ではありません）をコピーして、もう一度お試しください。",
+    "description": "Error: Spotify confirmed that no app has this Client ID (typo, or the Client secret was pasted)",
+    "_machine_translated": true,
+    "_source_hash": "c579dd476cef5580"
+  },
+  "setup.connect.title": {
+    "message": "Spotify アカウントを接続",
+    "description": "Title of setup step 4",
+    "_machine_translated": true,
+    "_source_hash": "1059715fa8499342"
+  },
+  "setup.connect.body_html": {
+    "message": "<p><strong>Spotify に接続</strong>をクリックしてください。ブラウザーで Spotify の許可ページが開きます。求められたらログインし、<strong>Agree</strong> をクリックしてください。その後こちらに戻ってください。Kage が自動的に完了します。</p>",
+    "description": "Body of setup step 4. 'Connect to Spotify' is the button below; 'Agree' is the button on Spotify's page. Keep the HTML tags.",
+    "_machine_translated": true,
+    "_source_hash": "a8684f238d748e79"
+  },
+  "setup.connect.notice_revoked_html": {
+    "message": "<strong>Spotify のサインインの有効期限が切れたか、取り消されました。</strong>アプリの情報は保存されたままです。もう一度接続してください。",
+    "description": "Shown on setup step 4 when the user was sent back there because Spotify no longer accepts the saved sign-in",
+    "_machine_translated": true,
+    "_source_hash": "dde800c3b8753aee"
+  },
+  "setup.connect.button": {
+    "message": "Spotify に接続",
+    "description": "Primary button on setup step 4: starts the browser sign-in",
+    "_machine_translated": true,
+    "_source_hash": "0208cc013489fada"
+  },
+  "setup.connect.trouble_label": {
+    "message": "ブラウザーにエラーが表示された場合",
+    "description": "Label of the troubleshooting list on setup step 4",
+    "_machine_translated": true,
+    "_source_hash": "d7c61792fcd6fed2"
+  },
+  "setup.connect.trouble_html": {
+    "message": "<ul><li><strong>INVALID_CLIENT: Invalid redirect URI</strong> — アプリに Kage の Redirect URI が登録されていません。<strong>戻る</strong>を 2 回クリックし、Spotify のアプリに <code>{uri}</code> を追加して、そこで Save をクリックしてください。</li><li><strong>INVALID_CLIENT: Invalid client</strong> — Spotify がこの Client ID を認識できません。<strong>戻る</strong>をクリックして、もう一度貼り付けてください。</li></ul>",
+    "description": "Troubleshooting list on setup step 4. The bold INVALID_CLIENT lines are Spotify's literal English error texts: keep them unchanged. 'Back' is a button label. {uri} is the Redirect URI. Keep the HTML tags.",
+    "_machine_translated": true,
+    "_source_hash": "73a86ddcd20e361e"
+  },
+  "setup.connect.error.timeout": {
+    "message": "⚠️ 5 分以内に Spotify から Kage に戻りませんでした。ブラウザーに「Invalid redirect URI」と表示された場合は、戻るを 2 回クリックして Spotify アプリの Redirect URI を修正してください。「Invalid client」と表示された場合は、戻るをクリックして Client ID を確認してください。それ以外の場合は、Spotify に接続をクリックしてもう一度お試しください。",
+    "description": "Setup step 4: the sign-in gave up waiting for the browser. 'Invalid redirect URI' and 'Invalid client' are Spotify's literal English error texts. 'Back' and 'Connect to Spotify' are button labels.",
+    "_machine_translated": true,
+    "_source_hash": "eb849ba902ab7a4a"
+  },
+  "setup.connect.error.bad_client": {
+    "message": "❌ Spotify はこの Client ID を認識できません。戻るをクリックし、アプリの Settings ページから Client ID（Client secret ではありません）を貼り付けてください。",
+    "description": "Setup step 4: Spotify rejected the Client ID. 'Back' is a button label.",
+    "_machine_translated": true,
+    "_source_hash": "46d13b9a734ea338"
+  },
+  "setup.connect.error.redirect": {
+    "message": "❌ Spotify が Redirect URI を拒否しました。戻るを 2 回クリックし、Spotify アプリに {uri} が正確に登録されていることを確認して Spotify で Save をクリックし、もう一度お試しください。",
+    "description": "Setup step 4: Spotify rejected the Redirect URI. {uri} is the address to register. 'Back' is a button label.",
+    "_machine_translated": true,
+    "_source_hash": "520c92aabf30b5b9"
+  },
+  "setup.done.title": {
+    "message": "準備完了です！",
+    "description": "Heading of the final setup screen",
+    "_machine_translated": true,
+    "_source_hash": "420d0b876f5f7bba"
+  },
+  "setup.done.connected_named_html": {
+    "message": "<p><strong>{name} として Spotify に接続しました。</strong></p>",
+    "description": "Final setup screen headline. {name} is the user's Spotify display name.",
+    "_machine_translated": true,
+    "_source_hash": "1fc1cc8c237e8033"
+  },
+  "setup.done.connected_html": {
+    "message": "<p><strong>Spotify に接続しました。</strong></p>",
+    "description": "Final setup screen headline when the Spotify display name is unknown",
+    "_machine_translated": true,
+    "_source_hash": "25a68bfc97e2ba65"
+  },
+  "setup.done.tips_html": {
+    "message": "<p>Kage のフローティングウィンドウで <code>{trigger}</code> と入力すると再生中の曲を確認できます。<code>{trigger} play</code> に続けて曲名を入力すると、その曲を再生します。「lofi beats をかけて」のように、アシスタントに頼むこともできます。音楽の再生中は、フローティングウィンドウに再生中バーが表示されます。</p>",
+    "description": "Tips on the final setup screen. {trigger} is the user's trigger word (default 'sp'); keep the <code> parts unchanged.",
+    "_machine_translated": true,
+    "_source_hash": "dd8850638e22b0b1"
+  },
+  "setup.done.finish.label": {
+    "message": "完了",
+    "description": "Button on the final setup screen; shows the regular settings",
+    "_machine_translated": true,
+    "_source_hash": "8d1ced20b0446717"
+  },
+  "signin.error.denied": {
+    "message": "⚠️ Spotify のページでアクセスが許可されなかったため、Kage は接続できません。もう一度お試しいただき、「同意する」をクリックしてください。",
+    "description": "Sign-in failed because the user clicked Cancel on Spotify's permission page. 'Agree' is the button on that page.",
+    "_machine_translated": true,
+    "_source_hash": "3066f9decce65547"
+  },
+  "signin.error.state": {
+    "message": "⚠️ サインインの応答がこのリクエストと一致しませんでした（以前の試行によるものである可能性があります）。もう一度お試しください。",
+    "description": "Sign-in failed: the browser redirect didn't belong to the current attempt",
+    "_machine_translated": true,
+    "_source_hash": "3258d45a40ada774"
+  },
+  "signin.error.network": {
+    "message": "⚠️ Spotify に接続できませんでした。インターネット接続を確認して、もう一度お試しください。",
+    "description": "Sign-in failed: network error",
+    "_machine_translated": true,
+    "_source_hash": "b316c47263b356d2"
+  },
+  "signin.error.oauth": {
+    "message": "⚠️ Spotify から問題が報告されました（{error}）。もう一度お試しください。",
+    "description": "Sign-in failed with an error from Spotify. {error} is Spotify's error code, in English.",
+    "_machine_translated": true,
+    "_source_hash": "2eddcefc790336f6"
+  },
+  "signin.error.unknown": {
+    "message": "⚠️ 接続できませんでした: {message}",
+    "description": "Sign-in failed for an unexpected reason. {message} is a technical detail, in English.",
+    "_machine_translated": true,
+    "_source_hash": "8c87addbb62d1c4b"
   }
 }

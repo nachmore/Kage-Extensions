@@ -293,36 +293,6 @@
     "_machine_translated": true,
     "_source_hash": "d0fcd903dec290c3"
   },
-  "settings.app.intro_html": {
-    "message": "Spotify 要求每個應用程式註冊自己的 <strong>Client ID</strong>。請至 <a href=\"https://developer.spotify.com/dashboard\">developer.spotify.com/dashboard</a> 免費建立一個（點選 <em>Create app</em>，取任意名稱，並勾選 <em>Web API</em>）。將 <code>http://127.0.0.1:8080/spotify/callback</code> 加入為 Redirect URI——任何連接埠都可以，Spotify 只需要其中一個存在即可。複製它提供給你的 Client ID，並貼到下方。",
-    "description": "Settings: app setup instructions",
-    "_machine_translated": true,
-    "_source_hash": "177c4bb9f2055193"
-  },
-  "settings.client_id.label": {
-    "message": "Client ID",
-    "description": "Settings: Client ID input label",
-    "_machine_translated": true,
-    "_source_hash": "88c50480decaca58"
-  },
-  "settings.client_id.placeholder": {
-    "message": "在此貼上您的 Spotify client_id",
-    "description": "Settings: Client ID placeholder",
-    "_machine_translated": true,
-    "_source_hash": "00365c0104e05fb3"
-  },
-  "settings.client_id.description": {
-    "message": "僅儲存在這台電腦上。只有在你登入時才會傳送給 Spotify，不會傳到其他地方。",
-    "description": "Settings: Client ID description",
-    "_machine_translated": true,
-    "_source_hash": "74280ec7c0552793"
-  },
-  "settings.save_client_id.label": {
-    "message": "儲存 Client ID",
-    "description": "Settings: save client id button",
-    "_machine_translated": true,
-    "_source_hash": "1b31bf8b9640a2bc"
-  },
   "settings.section.connection": {
     "message": "連線",
     "description": "Settings section: connection",
@@ -341,24 +311,6 @@
     "_machine_translated": true,
     "_source_hash": "fdc13580729a4adc"
   },
-  "settings.connection.not_connected": {
-    "message": "尚未登入。點選 <strong>連線</strong> 以登入 Spotify。",
-    "description": "Settings: not connected text",
-    "_machine_translated": true,
-    "_source_hash": "210fcedbc5081420"
-  },
-  "settings.connection.no_client_id": {
-    "message": "請先在上方貼上 Client ID，再回到這裡進行連線。",
-    "description": "Settings: needs client ID first",
-    "_machine_translated": true,
-    "_source_hash": "3316be227daf1055"
-  },
-  "settings.connect.label_connect": {
-    "message": "連線",
-    "description": "Settings: connect button",
-    "_machine_translated": true,
-    "_source_hash": "f2e6d94ff6eceff2"
-  },
   "settings.connect.label_reconnect": {
     "message": "重新連線",
     "description": "Settings: reconnect button",
@@ -372,10 +324,10 @@
     "_source_hash": "ccc6a1247a0bc31c"
   },
   "settings.disconnect.confirm": {
-    "message": "要登出 Spotify 嗎？你將需要再次登入才能使用播放快捷鍵。",
-    "description": "Confirmation prompt before signing out",
+    "message": "要登出 Spotify 嗎？Kage 也會清除您的 Client ID，因此重新連線時需要再次完成設定。",
+    "description": "Confirmation prompt before signing out. Signing out also deletes the saved Client ID, so the settings page returns to the guided setup.",
     "_machine_translated": true,
-    "_source_hash": "9dd32ff7ac62f6bb"
+    "_source_hash": "c9ddd7027ee62344"
   },
   "settings.validate.trigger_required": {
     "message": "必須輸入觸發字詞。",
@@ -389,35 +341,11 @@
     "_machine_translated": true,
     "_source_hash": "69d9b6a61cce96e9"
   },
-  "action.save_client_id.empty": {
-    "message": "⚠️ 請先貼上 Client ID。",
-    "description": "Status when Client ID input is empty",
-    "_machine_translated": true,
-    "_source_hash": "dae11461665c6476"
-  },
-  "action.save_client_id.invalid": {
-    "message": "⚠️ 這看起來不像有效的 Spotify Client ID。",
-    "description": "Status when Client ID format invalid",
-    "_machine_translated": true,
-    "_source_hash": "e696470bcef2160e"
-  },
-  "action.save_client_id.success": {
-    "message": "✅ 已儲存 Client ID。",
-    "description": "Status when Client ID is saved",
-    "_machine_translated": true,
-    "_source_hash": "f75eefe56c7a28c0"
-  },
   "action.connect.success": {
     "message": "✅ 已連線。播放中時將顯示正在播放列。",
     "description": "Status after a successful connect",
     "_machine_translated": true,
     "_source_hash": "31fe35562a8c271b"
-  },
-  "action.connect.error": {
-    "message": "⚠️ {message}",
-    "description": "Status with error after a failed connect",
-    "_machine_translated": true,
-    "_source_hash": "b0d53e592dd2232c"
   },
   "action.disconnect.success": {
     "message": "✅ 已登出。",
@@ -534,10 +462,10 @@
     "_source_hash": "3f096cf0735591ab"
   },
   "action.check_connection.no_client_id": {
-    "message": "⚠️ 尚未儲存 Client ID。請先在上方貼上一個。",
-    "description": "Status when checking connection without a client_id",
+    "message": "⚠️ 尚未儲存 Client ID，因此需要先執行設定。",
+    "description": "Status when a settings action needs a Client ID but none is saved (for example after signing out from the launcher). The page then switches to the guided setup.",
     "_machine_translated": true,
-    "_source_hash": "30500a2d3fcb5cbf"
+    "_source_hash": "9b299672f973aeb2"
   },
   "action.check_connection.not_signed_in": {
     "message": "⚠️ 尚未登入。請按「Connect」登入 Spotify。",
@@ -594,9 +522,327 @@
     "_source_hash": "ca8161f663aa319a"
   },
   "error.no_client_id": {
-    "message": "Spotify 尚未設定完成。請在「設定 → 擴充功能 → Spotify」中新增你的 Client ID，然後再試一次。",
-    "description": "Launcher-facing error when a Spotify command runs before a Client ID has been saved. Avoids the raw 'client_id' identifier (log-only jargon) and points at the settings path; the settings window itself uses action.check_connection.no_client_id ('paste one above').",
+    "message": "尚未設定 Spotify。請開啟「設定 → 擴充功能 → Spotify」並依照設定步驟操作，然後再試一次。",
+    "description": "Launcher-facing error when a Spotify command runs before setup is done. Points at the extension's settings page, which walks the user through setup. Avoids the raw 'client_id' identifier (log-only jargon).",
     "_machine_translated": true,
-    "_source_hash": "eb02f1d2309fbbf9"
+    "_source_hash": "1114823827e8c35d"
+  },
+  "settings.app.client_id_html": {
+    "message": "已透過您的 Spotify 應用程式連線，Client ID 為 <code>{client_id}</code>。",
+    "description": "Regular settings, 'Spotify app' section. {client_id} is the user's Client ID. Keep the <code> tags.",
+    "_machine_translated": true,
+    "_source_hash": "bc6dd833c27471c4"
+  },
+  "settings.rerun_setup.label": {
+    "message": "重新執行設定",
+    "description": "Button that restarts the guided setup, e.g. to switch to a different Spotify app",
+    "_machine_translated": true,
+    "_source_hash": "5bf792a7c650c79a"
+  },
+  "settings.rerun_setup.description": {
+    "message": "再次完成設定步驟，例如切換到其他 Spotify 應用程式。",
+    "description": "Help text above the 'Run setup again' button",
+    "_machine_translated": true,
+    "_source_hash": "c9897b5b9cc86d49"
+  },
+  "settings.connect.error.timeout": {
+    "message": "⚠️ Spotify 未在 5 分鐘內將您導回 Kage。如果瀏覽器顯示 INVALID_CLIENT 錯誤，請按一下「重新執行設定」，檢查應用程式的 Client ID 和 Redirect URI。",
+    "description": "Reconnect (regular settings) gave up waiting for the browser. INVALID_CLIENT is Spotify's literal error text and must stay in English; 'Run setup again' is a button label.",
+    "_machine_translated": true,
+    "_source_hash": "4c4d4f3339062e1a"
+  },
+  "settings.connect.error.app": {
+    "message": "❌ Spotify 拒絕了您的應用程式設定。請按一下「重新執行設定」，檢查 Client ID 和 Redirect URI。",
+    "description": "Reconnect (regular settings) failed because Spotify doesn't accept the Client ID or Redirect URI. 'Run setup again' is a button label.",
+    "_machine_translated": true,
+    "_source_hash": "34fa3a0b99fb931e"
+  },
+  "setup.description": {
+    "message": "此擴充功能需要先完成一次性的 Spotify 設定才能使用：您需要註冊一個免費的 Spotify 應用程式，然後登入。整個過程約需三分鐘，即使關閉此視窗，進度也會保留。",
+    "description": "Intro shown above the guided setup steps",
+    "_machine_translated": true,
+    "_source_hash": "92e5caea000cacc3"
+  },
+  "setup.description_rerun": {
+    "message": "您正在重新執行設定。在您重新連線之前，目前的連線仍會繼續運作；您也可以按一下「取消設定」，讓一切維持原狀。",
+    "description": "Intro shown above the guided setup when the user chose 'Run setup again' while connected. 'Cancel setup' is a button label.",
+    "_machine_translated": true,
+    "_source_hash": "85fb57762131caf2"
+  },
+  "setup.step_label": {
+    "message": "第 {number} 步，共 {total} 步：{title}",
+    "description": "Heading of a setup step, e.g. 'Step 2 of 4: Create a Spotify app'. {title} is one of the setup.*.title strings.",
+    "_machine_translated": true,
+    "_source_hash": "06f136ef91f0abee"
+  },
+  "setup.next.label": {
+    "message": "下一步",
+    "description": "Button that moves to the next setup step",
+    "_machine_translated": true,
+    "_source_hash": "1319443c427dbb68"
+  },
+  "setup.back.label": {
+    "message": "上一步",
+    "description": "Button that returns to the previous setup step",
+    "_machine_translated": true,
+    "_source_hash": "2140f60e13dff227"
+  },
+  "setup.cancel.label": {
+    "message": "取消設定",
+    "description": "Button that leaves a re-run of the setup and returns to the regular settings, changing nothing",
+    "_machine_translated": true,
+    "_source_hash": "d36bfa990adfdd2d"
+  },
+  "setup.open_dashboard_again.label": {
+    "message": "再次開啟 Dashboard",
+    "description": "Secondary button that reopens the Spotify Developer Dashboard in the browser",
+    "_machine_translated": true,
+    "_source_hash": "d9aed20416235e11"
+  },
+  "setup.not_using_html": {
+    "message": "沒有使用 Spotify 嗎？您可以使用此頁面頂端的按鈕停用此擴充功能。",
+    "description": "Hint on the first setup step for users who don't want the extension",
+    "_machine_translated": true,
+    "_source_hash": "bc30130633af556a"
+  },
+  "setup.dashboard.title": {
+    "message": "開啟 Spotify Developer Dashboard",
+    "description": "Title of setup step 1",
+    "_machine_translated": true,
+    "_source_hash": "eeb134b835a4e3c3"
+  },
+  "setup.dashboard.body_html": {
+    "message": "<p>Spotify 只允許 Kage 這類應用程式透過<em>您自己</em>向 Spotify 註冊的應用程式來控制您的音樂。註冊免費、只需進行一次，而且只需要您的 Spotify 帳號。</p><p>請按一下<strong>開啟 Spotify Dashboard</strong>。在瀏覽器中登入，如果 Spotify 要求，請接受開發人員條款。接著回到這裡進行下一步。</p>",
+    "description": "Body of setup step 1. 'Open Spotify Dashboard' is the button label below it. Keep the HTML tags.",
+    "_machine_translated": true,
+    "_source_hash": "f91342798ceefb2b"
+  },
+  "setup.dashboard.premium_html": {
+    "message": "提醒您：Spotify 僅允許 Premium 帳號控制播放（播放、暫停、跳過）。查看目前播放的內容則適用於所有帳號。",
+    "description": "Note on setup step 1 about Spotify's Premium requirement for playback control",
+    "_machine_translated": true,
+    "_source_hash": "eac6664d79f9bb4f"
+  },
+  "setup.dashboard.open.label": {
+    "message": "開啟 Spotify Dashboard",
+    "description": "Primary button on setup step 1; opens developer.spotify.com/dashboard in the system browser",
+    "_machine_translated": true,
+    "_source_hash": "af4f9f9115a1ce99"
+  },
+  "setup.dashboard.opened": {
+    "message": "✅ 已在瀏覽器中開啟。",
+    "description": "Status after the Spotify Developer Dashboard was opened in the browser",
+    "_machine_translated": true,
+    "_source_hash": "84e23af093aa0b4b"
+  },
+  "setup.dashboard.open_failed": {
+    "message": "⚠️ 無法開啟瀏覽器。請自行前往 {url}，然後按一下「下一步」。",
+    "description": "Status when opening the dashboard failed. {url} is the dashboard address; 'Next' is a button label.",
+    "_machine_translated": true,
+    "_source_hash": "ca8541c8056ea9f3"
+  },
+  "setup.create_app.title": {
+    "message": "建立 Spotify 應用程式",
+    "description": "Title of setup step 2",
+    "_machine_translated": true,
+    "_source_hash": "c3b189ea7f1eca82"
+  },
+  "setup.create_app.body_html": {
+    "message": "<p>在 Dashboard 中，按一下 <strong>Create app</strong> 並填寫表單：</p><ol><li><strong>App name</strong> 和 <strong>App description</strong>：可自由填寫，例如「Kage」。</li><li><strong>Redirect URIs</strong>：貼上下方的網址，然後按一下 <strong>Add</strong>。</li><li>在 <strong>Which API/SDKs are you planning to use?</strong> 下方，勾選 <strong>Web API</strong>。</li><li>接受 Spotify 的條款，然後按一下 <strong>Save</strong>。</li></ol><p>已經有應用程式了嗎？請將下方網址新增至該應用程式的 Redirect URIs（位於其 <strong>Settings</strong> 中），儲存後按一下<strong>下一步</strong>。</p>",
+    "description": "Body of setup step 2. Bold names in the list (Create app, App name, App description, Redirect URIs, Add, Which API/SDKs are you planning to use?, Web API, Save, Settings) are labels on Spotify's English-only dashboard: keep them in English. 'Next' is a Kage button label. Keep the HTML tags.",
+    "_machine_translated": true,
+    "_source_hash": "2011669f77118e24"
+  },
+  "setup.create_app.redirect_label": {
+    "message": "Redirect URI",
+    "description": "Label above the address the user must register in their Spotify app",
+    "_machine_translated": true,
+    "_source_hash": "287ef0973c0892c2"
+  },
+  "setup.create_app.redirect_hint_html": {
+    "message": "請完全照樣複製：<code>http</code>（不是 https）、<code>127.0.0.1</code>（不是 localhost），並以 <code>/spotify/callback</code> 結尾。連接埠號碼不需要與任何設定相符——Kage 每次連線時都會選用一個可用的連接埠，而 Spotify 允許 127.0.0.1 這樣做。",
+    "description": "Hint below the Redirect URI. Keep the <code> parts exactly as they are.",
+    "_machine_translated": true,
+    "_source_hash": "62cde7988d0fbad2"
+  },
+  "setup.client_id.title": {
+    "message": "複製您的 Client ID",
+    "description": "Title of setup step 3",
+    "_machine_translated": true,
+    "_source_hash": "ae642f912622632f"
+  },
+  "setup.client_id.body_html": {
+    "message": "<p>Spotify 現在會顯示您的應用程式。開啟其 <strong>Settings</strong>，複製 <strong>Client ID</strong>（由 32 個英文字母和數字組成的代碼），然後貼到下方。</p><p>您不需要 <strong>Client secret</strong>，請保持隱藏即可。</p>",
+    "description": "Body of setup step 3. Settings, Client ID and Client secret are labels on Spotify's English-only dashboard: keep them in English. Keep the HTML tags.",
+    "_machine_translated": true,
+    "_source_hash": "8311c80fb529d1ef"
+  },
+  "setup.client_id.label": {
+    "message": "Client ID",
+    "description": "Label of the Client ID field (Spotify's term; keep in English if your language commonly does)",
+    "_machine_translated": true,
+    "_source_hash": "eace6d2899ea7b28"
+  },
+  "setup.client_id.placeholder": {
+    "message": "在此貼上您的 Client ID",
+    "description": "Placeholder in the empty Client ID field",
+    "_machine_translated": true,
+    "_source_hash": "3291ed3d93c259a6"
+  },
+  "setup.client_id.description": {
+    "message": "僅儲存在這台電腦上，且只會傳送給 Spotify。",
+    "description": "Help text under the Client ID field",
+    "_machine_translated": true,
+    "_source_hash": "d8dd5f8b2422eb1f"
+  },
+  "setup.client_id.description_connected": {
+    "message": "僅儲存在這台電腦上。儲存不同的 Client ID 會讓您登出目前的 Spotify 連線。",
+    "description": "Help text under the Client ID field when setup is re-run while connected",
+    "_machine_translated": true,
+    "_source_hash": "7e2190b8a34854aa"
+  },
+  "setup.client_id.save.label": {
+    "message": "儲存並繼續",
+    "description": "Primary button on setup step 3: checks and saves the Client ID",
+    "_machine_translated": true,
+    "_source_hash": "a7d9d9aa42e69094"
+  },
+  "setup.client_id.error.empty": {
+    "message": "⚠️ 請先貼上您的 Client ID。它位於 Spotify 資訊主頁中您應用程式的 Settings 頁面。",
+    "description": "Validation error: the Client ID field is empty",
+    "_machine_translated": true,
+    "_source_hash": "12060da5725dba1e"
+  },
+  "setup.client_id.error.url": {
+    "message": "⚠️ 這是網址，不是 Client ID。請在您應用程式的 Settings 頁面中，複製 Client ID 下方顯示的代碼。",
+    "description": "Validation error: the user pasted a URL instead of the Client ID",
+    "_machine_translated": true,
+    "_source_hash": "3d53548a3bb46dd2"
+  },
+  "setup.client_id.error.format": {
+    "message": "⚠️ 這看起來不像 Client ID。Client ID 是由 32 個英文字母和數字組成的代碼，請確認您已完整複製且沒有空格。",
+    "description": "Validation error: the pasted text has the wrong shape for a Spotify Client ID",
+    "_machine_translated": true,
+    "_source_hash": "ec948ab3f15a7f4d"
+  },
+  "setup.client_id.error.unknown_client": {
+    "message": "❌ Spotify 無法識別此 Client ID。請從您應用程式的 Settings 頁面複製 Client ID（不是 Client secret），然後再試一次。",
+    "description": "Error: Spotify confirmed that no app has this Client ID (typo, or the Client secret was pasted)",
+    "_machine_translated": true,
+    "_source_hash": "c579dd476cef5580"
+  },
+  "setup.connect.title": {
+    "message": "連結您的 Spotify 帳號",
+    "description": "Title of setup step 4",
+    "_machine_translated": true,
+    "_source_hash": "1059715fa8499342"
+  },
+  "setup.connect.body_html": {
+    "message": "<p>按一下<strong>連結 Spotify</strong>。瀏覽器會開啟 Spotify 的授權頁面：如有要求請登入，然後按一下 <strong>Agree</strong>。完成後回到這裡——Kage 會自動完成設定。</p>",
+    "description": "Body of setup step 4. 'Connect to Spotify' is the button below; 'Agree' is the button on Spotify's page. Keep the HTML tags.",
+    "_machine_translated": true,
+    "_source_hash": "a8684f238d748e79"
+  },
+  "setup.connect.notice_revoked_html": {
+    "message": "<strong>您的 Spotify 登入已過期或已被撤銷。</strong>您的應用程式資料仍已儲存，只需重新連結即可。",
+    "description": "Shown on setup step 4 when the user was sent back there because Spotify no longer accepts the saved sign-in",
+    "_machine_translated": true,
+    "_source_hash": "dde800c3b8753aee"
+  },
+  "setup.connect.button": {
+    "message": "連結 Spotify",
+    "description": "Primary button on setup step 4: starts the browser sign-in",
+    "_machine_translated": true,
+    "_source_hash": "0208cc013489fada"
+  },
+  "setup.connect.trouble_label": {
+    "message": "如果瀏覽器顯示錯誤",
+    "description": "Label of the troubleshooting list on setup step 4",
+    "_machine_translated": true,
+    "_source_hash": "d7c61792fcd6fed2"
+  },
+  "setup.connect.trouble_html": {
+    "message": "<ul><li><strong>INVALID_CLIENT: Invalid redirect URI</strong>——您的應用程式未列出 Kage 的 Redirect URI。請按兩次<strong>返回</strong>，在 Spotify 中將 <code>{uri}</code> 加入您的應用程式，然後在該處按一下 Save。</li><li><strong>INVALID_CLIENT: Invalid client</strong>——Spotify 無法識別此 Client ID。請按一下<strong>返回</strong>並重新貼上。</li></ul>",
+    "description": "Troubleshooting list on setup step 4. The bold INVALID_CLIENT lines are Spotify's literal English error texts: keep them unchanged. 'Back' is a button label. {uri} is the Redirect URI. Keep the HTML tags.",
+    "_machine_translated": true,
+    "_source_hash": "73a86ddcd20e361e"
+  },
+  "setup.connect.error.timeout": {
+    "message": "⚠️ Spotify 未在 5 分鐘內將您導回 Kage。如果瀏覽器顯示「Invalid redirect URI」，請按兩次「返回」並修正 Spotify 應用程式中的 Redirect URI；如果顯示「Invalid client」，請按一下「返回」並檢查 Client ID。否則，請按一下「連結 Spotify」再試一次。",
+    "description": "Setup step 4: the sign-in gave up waiting for the browser. 'Invalid redirect URI' and 'Invalid client' are Spotify's literal English error texts. 'Back' and 'Connect to Spotify' are button labels.",
+    "_machine_translated": true,
+    "_source_hash": "eb849ba902ab7a4a"
+  },
+  "setup.connect.error.bad_client": {
+    "message": "❌ Spotify 無法識別此 Client ID。請按一下「返回」，然後貼上您應用程式 Settings 頁面中的 Client ID（不是 Client secret）。",
+    "description": "Setup step 4: Spotify rejected the Client ID. 'Back' is a button label.",
+    "_machine_translated": true,
+    "_source_hash": "46d13b9a734ea338"
+  },
+  "setup.connect.error.redirect": {
+    "message": "❌ Spotify 拒絕了 Redirect URI。請按兩次「返回」，確認您的 Spotify 應用程式完全照樣列出 {uri}，在 Spotify 中按一下 Save，然後再試一次。",
+    "description": "Setup step 4: Spotify rejected the Redirect URI. {uri} is the address to register. 'Back' is a button label.",
+    "_machine_translated": true,
+    "_source_hash": "520c92aabf30b5b9"
+  },
+  "setup.done.title": {
+    "message": "設定完成！",
+    "description": "Heading of the final setup screen",
+    "_machine_translated": true,
+    "_source_hash": "420d0b876f5f7bba"
+  },
+  "setup.done.connected_named_html": {
+    "message": "<p><strong>已以 {name} 的身分連結 Spotify。</strong></p>",
+    "description": "Final setup screen headline. {name} is the user's Spotify display name.",
+    "_machine_translated": true,
+    "_source_hash": "1fc1cc8c237e8033"
+  },
+  "setup.done.connected_html": {
+    "message": "<p><strong>已連結 Spotify。</strong></p>",
+    "description": "Final setup screen headline when the Spotify display name is unknown",
+    "_machine_translated": true,
+    "_source_hash": "25a68bfc97e2ba65"
+  },
+  "setup.done.tips_html": {
+    "message": "<p>在 Kage 的浮動視窗中輸入 <code>{trigger}</code> 即可查看正在播放的內容，或輸入 <code>{trigger} play</code> 加上歌曲名稱來播放。您也可以直接詢問助理，例如「播放一些 lofi beats」。只要有音樂在播放，浮動視窗中就會顯示正在播放列。</p>",
+    "description": "Tips on the final setup screen. {trigger} is the user's trigger word (default 'sp'); keep the <code> parts unchanged.",
+    "_machine_translated": true,
+    "_source_hash": "dd8850638e22b0b1"
+  },
+  "setup.done.finish.label": {
+    "message": "完成",
+    "description": "Button on the final setup screen; shows the regular settings",
+    "_machine_translated": true,
+    "_source_hash": "8d1ced20b0446717"
+  },
+  "signin.error.denied": {
+    "message": "⚠️ 您未在 Spotify 頁面上允許存取，因此 Kage 無法連線。請再試一次，並點選「同意」。",
+    "description": "Sign-in failed because the user clicked Cancel on Spotify's permission page. 'Agree' is the button on that page.",
+    "_machine_translated": true,
+    "_source_hash": "3066f9decce65547"
+  },
+  "signin.error.state": {
+    "message": "⚠️ 此登入回應與目前的請求不符（可能來自先前的嘗試）。請再試一次。",
+    "description": "Sign-in failed: the browser redirect didn't belong to the current attempt",
+    "_machine_translated": true,
+    "_source_hash": "3258d45a40ada774"
+  },
+  "signin.error.network": {
+    "message": "⚠️ 無法連線至 Spotify。請檢查您的網際網路連線，然後再試一次。",
+    "description": "Sign-in failed: network error",
+    "_machine_translated": true,
+    "_source_hash": "b316c47263b356d2"
+  },
+  "signin.error.oauth": {
+    "message": "⚠️ Spotify 回報了問題（{error}）。請再試一次。",
+    "description": "Sign-in failed with an error from Spotify. {error} is Spotify's error code, in English.",
+    "_machine_translated": true,
+    "_source_hash": "2eddcefc790336f6"
+  },
+  "signin.error.unknown": {
+    "message": "⚠️ 無法連線：{message}",
+    "description": "Sign-in failed for an unexpected reason. {message} is a technical detail, in English.",
+    "_machine_translated": true,
+    "_source_hash": "8c87addbb62d1c4b"
   }
 }

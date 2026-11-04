@@ -293,36 +293,6 @@
     "_machine_translated": true,
     "_source_hash": "d0fcd903dec290c3"
   },
-  "settings.app.intro_html": {
-    "message": "Spotify her uygulamanın kendi <strong>Client ID</strong>'sini kaydetmesini ister. <a href=\"https://developer.spotify.com/dashboard\">developer.spotify.com/dashboard</a> üzerinden ücretsiz olarak oluşturun (<em>Create app</em>'a tıklayın, herhangi bir ad verin, <em>Web API</em>'yi işaretleyin). Redirect URI olarak <code>http://127.0.0.1:8080/spotify/callback</code> ekleyin — herhangi bir port işe yarar, Spotify yalnızca bir tane olmasını ister. Size verilen Client ID'yi kopyalayıp aşağıya yapıştırın.",
-    "description": "Settings: app setup instructions",
-    "_machine_translated": true,
-    "_source_hash": "177c4bb9f2055193"
-  },
-  "settings.client_id.label": {
-    "message": "Client ID",
-    "description": "Settings: Client ID input label",
-    "_machine_translated": true,
-    "_source_hash": "88c50480decaca58"
-  },
-  "settings.client_id.placeholder": {
-    "message": "Spotify client_id'nizi buraya yapıştırın",
-    "description": "Settings: Client ID placeholder",
-    "_machine_translated": true,
-    "_source_hash": "00365c0104e05fb3"
-  },
-  "settings.client_id.description": {
-    "message": "Yalnızca bu bilgisayarda kaydedilir. Oturum açtığınızda Spotify'a gönderilir, başka hiçbir yere gitmez.",
-    "description": "Settings: Client ID description",
-    "_machine_translated": true,
-    "_source_hash": "74280ec7c0552793"
-  },
-  "settings.save_client_id.label": {
-    "message": "Client ID'yi kaydet",
-    "description": "Settings: save client id button",
-    "_machine_translated": true,
-    "_source_hash": "1b31bf8b9640a2bc"
-  },
   "settings.section.connection": {
     "message": "Bağlantı",
     "description": "Settings section: connection",
@@ -341,24 +311,6 @@
     "_machine_translated": true,
     "_source_hash": "fdc13580729a4adc"
   },
-  "settings.connection.not_connected": {
-    "message": "Henüz oturum açılmadı. Spotify'a giriş yapmak için <strong>Bağlan</strong>'a tıklayın.",
-    "description": "Settings: not connected text",
-    "_machine_translated": true,
-    "_source_hash": "210fcedbc5081420"
-  },
-  "settings.connection.no_client_id": {
-    "message": "Önce yukarıya bir Client ID yapıştırın, sonra bağlanmak için buraya geri dönün.",
-    "description": "Settings: needs client ID first",
-    "_machine_translated": true,
-    "_source_hash": "3316be227daf1055"
-  },
-  "settings.connect.label_connect": {
-    "message": "Bağlan",
-    "description": "Settings: connect button",
-    "_machine_translated": true,
-    "_source_hash": "f2e6d94ff6eceff2"
-  },
   "settings.connect.label_reconnect": {
     "message": "Yeniden bağlan",
     "description": "Settings: reconnect button",
@@ -372,10 +324,10 @@
     "_source_hash": "ccc6a1247a0bc31c"
   },
   "settings.disconnect.confirm": {
-    "message": "Spotify'dan çıkış yapılsın mı? Oynatma kısayollarını kullanmak için tekrar oturum açmanız gerekecek.",
-    "description": "Confirmation prompt before signing out",
+    "message": "Spotify oturumu kapatılsın mı? Kage, Client ID'nizi de unutur; yeniden bağlanmak için kurulumu tekrar yapmanız gerekir.",
+    "description": "Confirmation prompt before signing out. Signing out also deletes the saved Client ID, so the settings page returns to the guided setup.",
     "_machine_translated": true,
-    "_source_hash": "9dd32ff7ac62f6bb"
+    "_source_hash": "c9ddd7027ee62344"
   },
   "settings.validate.trigger_required": {
     "message": "Tetikleyici sözcük gereklidir.",
@@ -389,35 +341,11 @@
     "_machine_translated": true,
     "_source_hash": "69d9b6a61cce96e9"
   },
-  "action.save_client_id.empty": {
-    "message": "⚠️ Önce bir Client ID yapıştırın.",
-    "description": "Status when Client ID input is empty",
-    "_machine_translated": true,
-    "_source_hash": "dae11461665c6476"
-  },
-  "action.save_client_id.invalid": {
-    "message": "⚠️ Bu, geçerli bir Spotify Client ID gibi görünmüyor.",
-    "description": "Status when Client ID format invalid",
-    "_machine_translated": true,
-    "_source_hash": "e696470bcef2160e"
-  },
-  "action.save_client_id.success": {
-    "message": "✅ Client ID kaydedildi.",
-    "description": "Status when Client ID is saved",
-    "_machine_translated": true,
-    "_source_hash": "f75eefe56c7a28c0"
-  },
   "action.connect.success": {
     "message": "✅ Bağlandı. Bir şey çalmaya başladığında şimdi çalınıyor çubuğu görünecek.",
     "description": "Status after a successful connect",
     "_machine_translated": true,
     "_source_hash": "31fe35562a8c271b"
-  },
-  "action.connect.error": {
-    "message": "⚠️ {message}",
-    "description": "Status with error after a failed connect",
-    "_machine_translated": true,
-    "_source_hash": "b0d53e592dd2232c"
   },
   "action.disconnect.success": {
     "message": "✅ Oturum kapatıldı.",
@@ -534,10 +462,10 @@
     "_source_hash": "3f096cf0735591ab"
   },
   "action.check_connection.no_client_id": {
-    "message": "⚠️ Henüz kayıtlı bir Client ID yok. Önce yukarıya bir tane yapıştırın.",
-    "description": "Status when checking connection without a client_id",
+    "message": "⚠️ Henüz kayıtlı bir Client ID yok; önce kurulumun yapılması gerekiyor.",
+    "description": "Status when a settings action needs a Client ID but none is saved (for example after signing out from the launcher). The page then switches to the guided setup.",
     "_machine_translated": true,
-    "_source_hash": "30500a2d3fcb5cbf"
+    "_source_hash": "9b299672f973aeb2"
   },
   "action.check_connection.not_signed_in": {
     "message": "⚠️ Oturum açılmadı. Spotify'da oturum açmak için Bağlan'a tıklayın.",
@@ -594,9 +522,327 @@
     "_source_hash": "ca8161f663aa319a"
   },
   "error.no_client_id": {
-    "message": "Spotify henüz kurulmadı. Ayarlar → Uzantılar → Spotify bölümünde Client ID'nizi ekleyin, ardından tekrar deneyin.",
-    "description": "Launcher-facing error when a Spotify command runs before a Client ID has been saved. Avoids the raw 'client_id' identifier (log-only jargon) and points at the settings path; the settings window itself uses action.check_connection.no_client_id ('paste one above').",
+    "message": "Spotify henüz kurulmadı. Ayarlar → Uzantılar → Spotify bölümünü açıp kurulum adımlarını izleyin, ardından tekrar deneyin.",
+    "description": "Launcher-facing error when a Spotify command runs before setup is done. Points at the extension's settings page, which walks the user through setup. Avoids the raw 'client_id' identifier (log-only jargon).",
     "_machine_translated": true,
-    "_source_hash": "eb02f1d2309fbbf9"
+    "_source_hash": "1114823827e8c35d"
+  },
+  "settings.app.client_id_html": {
+    "message": "Client ID'si <code>{client_id}</code> olan Spotify uygulamanız üzerinden bağlı.",
+    "description": "Regular settings, 'Spotify app' section. {client_id} is the user's Client ID. Keep the <code> tags.",
+    "_machine_translated": true,
+    "_source_hash": "bc6dd833c27471c4"
+  },
+  "settings.rerun_setup.label": {
+    "message": "Kurulumu yeniden çalıştır",
+    "description": "Button that restarts the guided setup, e.g. to switch to a different Spotify app",
+    "_machine_translated": true,
+    "_source_hash": "5bf792a7c650c79a"
+  },
+  "settings.rerun_setup.description": {
+    "message": "Kurulum adımlarını yeniden uygulayın; örneğin farklı bir Spotify uygulamasına geçmek için.",
+    "description": "Help text above the 'Run setup again' button",
+    "_machine_translated": true,
+    "_source_hash": "c9897b5b9cc86d49"
+  },
+  "settings.connect.error.timeout": {
+    "message": "⚠️ Spotify sizi 5 dakika içinde Kage'e geri yönlendirmedi. Tarayıcınızda INVALID_CLIENT hatası gösterildiyse, uygulamanızın Client ID ve Redirect URI değerlerini kontrol etmek için Kurulumu yeniden çalıştır düğmesine tıklayın.",
+    "description": "Reconnect (regular settings) gave up waiting for the browser. INVALID_CLIENT is Spotify's literal error text and must stay in English; 'Run setup again' is a button label.",
+    "_machine_translated": true,
+    "_source_hash": "4c4d4f3339062e1a"
+  },
+  "settings.connect.error.app": {
+    "message": "❌ Spotify, uygulamanızın ayarlarını reddetti. Client ID ve Redirect URI değerlerini kontrol etmek için Kurulumu yeniden çalıştır düğmesine tıklayın.",
+    "description": "Reconnect (regular settings) failed because Spotify doesn't accept the Client ID or Redirect URI. 'Run setup again' is a button label.",
+    "_machine_translated": true,
+    "_source_hash": "34fa3a0b99fb931e"
+  },
+  "setup.description": {
+    "message": "Bu uzantının çalışabilmesi için Spotify'ın tek seferlik bir kurulumu gerekir: ücretsiz bir Spotify uygulaması kaydeder, ardından oturum açarsınız. Yaklaşık üç dakika sürer ve bu pencereyi kapatırsanız ilerlemeniz kaydedilir.",
+    "description": "Intro shown above the guided setup steps",
+    "_machine_translated": true,
+    "_source_hash": "92e5caea000cacc3"
+  },
+  "setup.description_rerun": {
+    "message": "Kurulumu yeniden çalıştırıyorsunuz. Mevcut bağlantınız siz yeniden bağlanana kadar çalışmaya devam eder. Her şeyi olduğu gibi bırakmak için Kurulumu iptal et düğmesine tıklayın.",
+    "description": "Intro shown above the guided setup when the user chose 'Run setup again' while connected. 'Cancel setup' is a button label.",
+    "_machine_translated": true,
+    "_source_hash": "85fb57762131caf2"
+  },
+  "setup.step_label": {
+    "message": "Adım {number}/{total}: {title}",
+    "description": "Heading of a setup step, e.g. 'Step 2 of 4: Create a Spotify app'. {title} is one of the setup.*.title strings.",
+    "_machine_translated": true,
+    "_source_hash": "06f136ef91f0abee"
+  },
+  "setup.next.label": {
+    "message": "İleri",
+    "description": "Button that moves to the next setup step",
+    "_machine_translated": true,
+    "_source_hash": "1319443c427dbb68"
+  },
+  "setup.back.label": {
+    "message": "Geri",
+    "description": "Button that returns to the previous setup step",
+    "_machine_translated": true,
+    "_source_hash": "2140f60e13dff227"
+  },
+  "setup.cancel.label": {
+    "message": "Kurulumu iptal et",
+    "description": "Button that leaves a re-run of the setup and returns to the regular settings, changing nothing",
+    "_machine_translated": true,
+    "_source_hash": "d36bfa990adfdd2d"
+  },
+  "setup.open_dashboard_again.label": {
+    "message": "Dashboard'u yeniden aç",
+    "description": "Secondary button that reopens the Spotify Developer Dashboard in the browser",
+    "_machine_translated": true,
+    "_source_hash": "d9aed20416235e11"
+  },
+  "setup.not_using_html": {
+    "message": "Spotify kullanmıyor musunuz? Bu uzantıyı sayfanın üst kısmındaki düğmeyle kapatabilirsiniz.",
+    "description": "Hint on the first setup step for users who don't want the extension",
+    "_machine_translated": true,
+    "_source_hash": "bc30130633af556a"
+  },
+  "setup.dashboard.title": {
+    "message": "Spotify Developer Dashboard'u açın",
+    "description": "Title of setup step 1",
+    "_machine_translated": true,
+    "_source_hash": "eeb134b835a4e3c3"
+  },
+  "setup.dashboard.body_html": {
+    "message": "<p>Spotify, Kage gibi uygulamaların müziğinizi yalnızca <em>sizin</em> Spotify'a kaydettiğiniz bir uygulama üzerinden kontrol etmesine izin verir. Ücretsizdir, yalnızca bir kez yaparsınız ve tek ihtiyacınız Spotify giriş bilgilerinizdir.</p><p><strong>Spotify Dashboard'u aç</strong> düğmesine tıklayın. Tarayıcınızda oturum açın ve Spotify isterse geliştirici koşullarını kabul edin. Ardından sonraki adım için buraya dönün.</p>",
+    "description": "Body of setup step 1. 'Open Spotify Dashboard' is the button label below it. Keep the HTML tags.",
+    "_machine_translated": true,
+    "_source_hash": "f91342798ceefb2b"
+  },
+  "setup.dashboard.premium_html": {
+    "message": "Bilmekte fayda var: Spotify, oynatma kontrolüne (oynatma, duraklatma, atlama) yalnızca Premium hesaplarda izin verir. Çalan içeriği görmek her hesapla çalışır.",
+    "description": "Note on setup step 1 about Spotify's Premium requirement for playback control",
+    "_machine_translated": true,
+    "_source_hash": "eac6664d79f9bb4f"
+  },
+  "setup.dashboard.open.label": {
+    "message": "Spotify Dashboard'u aç",
+    "description": "Primary button on setup step 1; opens developer.spotify.com/dashboard in the system browser",
+    "_machine_translated": true,
+    "_source_hash": "af4f9f9115a1ce99"
+  },
+  "setup.dashboard.opened": {
+    "message": "✅ Tarayıcınızda açıldı.",
+    "description": "Status after the Spotify Developer Dashboard was opened in the browser",
+    "_machine_translated": true,
+    "_source_hash": "84e23af093aa0b4b"
+  },
+  "setup.dashboard.open_failed": {
+    "message": "⚠️ Tarayıcınız açılamadı. {url} adresine kendiniz gidin, ardından İleri düğmesine tıklayın.",
+    "description": "Status when opening the dashboard failed. {url} is the dashboard address; 'Next' is a button label.",
+    "_machine_translated": true,
+    "_source_hash": "ca8541c8056ea9f3"
+  },
+  "setup.create_app.title": {
+    "message": "Bir Spotify uygulaması oluşturun",
+    "description": "Title of setup step 2",
+    "_machine_translated": true,
+    "_source_hash": "c3b189ea7f1eca82"
+  },
+  "setup.create_app.body_html": {
+    "message": "<p>Dashboard'da <strong>Create app</strong> düğmesine tıklayın ve formu doldurun:</p><ol><li><strong>App name</strong> ve <strong>App description</strong>: istediğiniz herhangi bir şey, örneğin “Kage”.</li><li><strong>Redirect URIs</strong>: aşağıdaki adresi yapıştırın ve <strong>Add</strong> düğmesine tıklayın.</li><li><strong>Which API/SDKs are you planning to use?</strong> bölümünde <strong>Web API</strong> seçeneğini işaretleyin.</li><li>Spotify'ın koşullarını kabul edin ve <strong>Save</strong> düğmesine tıklayın.</li></ol><p>Zaten bir uygulamanız var mı? Aşağıdaki adresi uygulamanın Redirect URIs listesine (<strong>Settings</strong> bölümünde) ekleyin, kaydedin ve <strong>İleri</strong> düğmesine tıklayın.</p>",
+    "description": "Body of setup step 2. Bold names in the list (Create app, App name, App description, Redirect URIs, Add, Which API/SDKs are you planning to use?, Web API, Save, Settings) are labels on Spotify's English-only dashboard: keep them in English. 'Next' is a Kage button label. Keep the HTML tags.",
+    "_machine_translated": true,
+    "_source_hash": "2011669f77118e24"
+  },
+  "setup.create_app.redirect_label": {
+    "message": "Redirect URI",
+    "description": "Label above the address the user must register in their Spotify app",
+    "_machine_translated": true,
+    "_source_hash": "287ef0973c0892c2"
+  },
+  "setup.create_app.redirect_hint_html": {
+    "message": "Tam olarak aynen kopyalayın: <code>http</code> (https değil), <code>127.0.0.1</code> (localhost değil) ve sonu <code>/spotify/callback</code> ile bitmeli. Port numarasının herhangi bir şeyle eşleşmesi gerekmez. Kage her bağlandığınızda boş bir port seçer ve Spotify, 127.0.0.1 için buna izin verir.",
+    "description": "Hint below the Redirect URI. Keep the <code> parts exactly as they are.",
+    "_machine_translated": true,
+    "_source_hash": "62cde7988d0fbad2"
+  },
+  "setup.client_id.title": {
+    "message": "Client ID'nizi kopyalayın",
+    "description": "Title of setup step 3",
+    "_machine_translated": true,
+    "_source_hash": "ae642f912622632f"
+  },
+  "setup.client_id.body_html": {
+    "message": "<p>Spotify artık uygulamanızı gösteriyor. Uygulamanın <strong>Settings</strong> sayfasını açın ve <strong>Client ID</strong> değerini kopyalayın (harf ve rakamlardan oluşan 32 karakterlik bir kod), ardından aşağıya yapıştırın.</p><p><strong>Client secret</strong> değerine ihtiyacınız yok, gizli kalabilir.</p>",
+    "description": "Body of setup step 3. Settings, Client ID and Client secret are labels on Spotify's English-only dashboard: keep them in English. Keep the HTML tags.",
+    "_machine_translated": true,
+    "_source_hash": "8311c80fb529d1ef"
+  },
+  "setup.client_id.label": {
+    "message": "Client ID",
+    "description": "Label of the Client ID field (Spotify's term; keep in English if your language commonly does)",
+    "_machine_translated": true,
+    "_source_hash": "eace6d2899ea7b28"
+  },
+  "setup.client_id.placeholder": {
+    "message": "Client ID'nizi buraya yapıştırın",
+    "description": "Placeholder in the empty Client ID field",
+    "_machine_translated": true,
+    "_source_hash": "3291ed3d93c259a6"
+  },
+  "setup.client_id.description": {
+    "message": "Yalnızca bu bilgisayara kaydedilir ve Spotify dışında kimseye gönderilmez.",
+    "description": "Help text under the Client ID field",
+    "_machine_translated": true,
+    "_source_hash": "d8dd5f8b2422eb1f"
+  },
+  "setup.client_id.description_connected": {
+    "message": "Yalnızca bu bilgisayara kaydedilir. Farklı bir Client ID kaydederseniz mevcut Spotify bağlantınızdan çıkış yapılır.",
+    "description": "Help text under the Client ID field when setup is re-run while connected",
+    "_machine_translated": true,
+    "_source_hash": "7e2190b8a34854aa"
+  },
+  "setup.client_id.save.label": {
+    "message": "Kaydet ve devam et",
+    "description": "Primary button on setup step 3: checks and saves the Client ID",
+    "_machine_translated": true,
+    "_source_hash": "a7d9d9aa42e69094"
+  },
+  "setup.client_id.error.empty": {
+    "message": "⚠️ Önce Client ID'nizi yapıştırın. Spotify panelinde uygulamanızın Settings sayfasında bulunur.",
+    "description": "Validation error: the Client ID field is empty",
+    "_machine_translated": true,
+    "_source_hash": "12060da5725dba1e"
+  },
+  "setup.client_id.error.url": {
+    "message": "⚠️ Bu bir Client ID değil, web adresi. Uygulamanızın Settings sayfasında Client ID altında gösterilen kodu kopyalayın.",
+    "description": "Validation error: the user pasted a URL instead of the Client ID",
+    "_machine_translated": true,
+    "_source_hash": "3d53548a3bb46dd2"
+  },
+  "setup.client_id.error.format": {
+    "message": "⚠️ Bu bir Client ID'ye benzemiyor. Client ID, harf ve rakamlardan oluşan 32 karakterlik bir koddur. Tamamını boşluksuz kopyaladığınızdan emin olun.",
+    "description": "Validation error: the pasted text has the wrong shape for a Spotify Client ID",
+    "_machine_translated": true,
+    "_source_hash": "ec948ab3f15a7f4d"
+  },
+  "setup.client_id.error.unknown_client": {
+    "message": "❌ Spotify bu Client ID'yi tanımıyor. Uygulamanızın Settings sayfasından Client ID'yi (Client secret'ı değil) kopyalayıp tekrar deneyin.",
+    "description": "Error: Spotify confirmed that no app has this Client ID (typo, or the Client secret was pasted)",
+    "_machine_translated": true,
+    "_source_hash": "c579dd476cef5580"
+  },
+  "setup.connect.title": {
+    "message": "Spotify hesabınızı bağlayın",
+    "description": "Title of setup step 4",
+    "_machine_translated": true,
+    "_source_hash": "1059715fa8499342"
+  },
+  "setup.connect.body_html": {
+    "message": "<p><strong>Spotify'a bağlan</strong> düğmesine tıklayın. Tarayıcınızda Spotify'ın izin sayfası açılır: istenirse giriş yapın, ardından <strong>Agree</strong> düğmesine tıklayın. Sonra buraya dönün, Kage işlemi kendisi tamamlar.</p>",
+    "description": "Body of setup step 4. 'Connect to Spotify' is the button below; 'Agree' is the button on Spotify's page. Keep the HTML tags.",
+    "_machine_translated": true,
+    "_source_hash": "a8684f238d748e79"
+  },
+  "setup.connect.notice_revoked_html": {
+    "message": "<strong>Spotify oturumunuzun süresi doldu veya iptal edildi.</strong> Uygulama bilgileriniz hâlâ kayıtlı, yeniden bağlanmanız yeterli.",
+    "description": "Shown on setup step 4 when the user was sent back there because Spotify no longer accepts the saved sign-in",
+    "_machine_translated": true,
+    "_source_hash": "dde800c3b8753aee"
+  },
+  "setup.connect.button": {
+    "message": "Spotify'a bağlan",
+    "description": "Primary button on setup step 4: starts the browser sign-in",
+    "_machine_translated": true,
+    "_source_hash": "0208cc013489fada"
+  },
+  "setup.connect.trouble_label": {
+    "message": "Tarayıcınız bir hata gösterirse",
+    "description": "Label of the troubleshooting list on setup step 4",
+    "_machine_translated": true,
+    "_source_hash": "d7c61792fcd6fed2"
+  },
+  "setup.connect.trouble_html": {
+    "message": "<ul><li><strong>INVALID_CLIENT: Invalid redirect URI</strong>: Uygulamanızda Kage'in Redirect URI'si listelenmiyor. İki kez <strong>Geri</strong> düğmesine tıklayın, Spotify'daki uygulamanıza <code>{uri}</code> adresini ekleyin ve orada Save düğmesine tıklayın.</li><li><strong>INVALID_CLIENT: Invalid client</strong>: Spotify bu Client ID'yi tanımıyor. <strong>Geri</strong> düğmesine tıklayıp yeniden yapıştırın.</li></ul>",
+    "description": "Troubleshooting list on setup step 4. The bold INVALID_CLIENT lines are Spotify's literal English error texts: keep them unchanged. 'Back' is a button label. {uri} is the Redirect URI. Keep the HTML tags.",
+    "_machine_translated": true,
+    "_source_hash": "73a86ddcd20e361e"
+  },
+  "setup.connect.error.timeout": {
+    "message": "⚠️ Spotify sizi 5 dakika içinde Kage'e geri yönlendirmedi. Tarayıcınız “Invalid redirect URI” gösterdiyse iki kez Geri düğmesine tıklayın ve Spotify uygulamanızdaki Redirect URI'yi düzeltin; “Invalid client” gösterdiyse Geri düğmesine tıklayıp Client ID'yi kontrol edin. Aksi halde tekrar denemek için Spotify'a bağlan düğmesine tıklayın.",
+    "description": "Setup step 4: the sign-in gave up waiting for the browser. 'Invalid redirect URI' and 'Invalid client' are Spotify's literal English error texts. 'Back' and 'Connect to Spotify' are button labels.",
+    "_machine_translated": true,
+    "_source_hash": "eb849ba902ab7a4a"
+  },
+  "setup.connect.error.bad_client": {
+    "message": "❌ Spotify bu Client ID'yi tanımıyor. Geri düğmesine tıklayın ve uygulamanızın Settings sayfasındaki Client ID'yi (Client secret'ı değil) yapıştırın.",
+    "description": "Setup step 4: Spotify rejected the Client ID. 'Back' is a button label.",
+    "_machine_translated": true,
+    "_source_hash": "46d13b9a734ea338"
+  },
+  "setup.connect.error.redirect": {
+    "message": "❌ Spotify, Redirect URI'yi reddetti. İki kez Geri düğmesine tıklayın, Spotify uygulamanızda tam olarak şu adresin listelendiğinden emin olun: {uri}. Ardından Spotify'da Save düğmesine tıklayıp tekrar deneyin.",
+    "description": "Setup step 4: Spotify rejected the Redirect URI. {uri} is the address to register. 'Back' is a button label.",
+    "_machine_translated": true,
+    "_source_hash": "520c92aabf30b5b9"
+  },
+  "setup.done.title": {
+    "message": "Her şey hazır!",
+    "description": "Heading of the final setup screen",
+    "_machine_translated": true,
+    "_source_hash": "420d0b876f5f7bba"
+  },
+  "setup.done.connected_named_html": {
+    "message": "<p><strong>Spotify'a {name} olarak bağlanıldı.</strong></p>",
+    "description": "Final setup screen headline. {name} is the user's Spotify display name.",
+    "_machine_translated": true,
+    "_source_hash": "1fc1cc8c237e8033"
+  },
+  "setup.done.connected_html": {
+    "message": "<p><strong>Spotify bağlandı.</strong></p>",
+    "description": "Final setup screen headline when the Spotify display name is unknown",
+    "_machine_translated": true,
+    "_source_hash": "25a68bfc97e2ba65"
+  },
+  "setup.done.tips_html": {
+    "message": "<p>Neyin çaldığını görmek için Kage'in kayan penceresine <code>{trigger}</code> yazın; bir şarkıyı çalmak için <code>{trigger} play</code> ve ardından şarkının adını yazın. Asistana doğrudan da sorabilirsiniz, örneğin “biraz lofi müzik çal”. Müzik çalarken kayan pencerede şu an çalan çubuğu görünür.</p>",
+    "description": "Tips on the final setup screen. {trigger} is the user's trigger word (default 'sp'); keep the <code> parts unchanged.",
+    "_machine_translated": true,
+    "_source_hash": "dd8850638e22b0b1"
+  },
+  "setup.done.finish.label": {
+    "message": "Bitir",
+    "description": "Button on the final setup screen; shows the regular settings",
+    "_machine_translated": true,
+    "_source_hash": "8d1ced20b0446717"
+  },
+  "signin.error.denied": {
+    "message": "⚠️ Spotify sayfasında erişime izin verilmediği için Kage bağlanamıyor. Tekrar deneyin ve Kabul et'e tıklayın.",
+    "description": "Sign-in failed because the user clicked Cancel on Spotify's permission page. 'Agree' is the button on that page.",
+    "_machine_translated": true,
+    "_source_hash": "3066f9decce65547"
+  },
+  "signin.error.state": {
+    "message": "⚠️ Bu oturum açma yanıtı bu istekle eşleşmedi (daha eski bir denemeye ait olabilir). Lütfen tekrar deneyin.",
+    "description": "Sign-in failed: the browser redirect didn't belong to the current attempt",
+    "_machine_translated": true,
+    "_source_hash": "3258d45a40ada774"
+  },
+  "signin.error.network": {
+    "message": "⚠️ Spotify'a ulaşılamadı. İnternet bağlantınızı kontrol edip tekrar deneyin.",
+    "description": "Sign-in failed: network error",
+    "_machine_translated": true,
+    "_source_hash": "b316c47263b356d2"
+  },
+  "signin.error.oauth": {
+    "message": "⚠️ Spotify bir sorun bildirdi ({error}). Lütfen tekrar deneyin.",
+    "description": "Sign-in failed with an error from Spotify. {error} is Spotify's error code, in English.",
+    "_machine_translated": true,
+    "_source_hash": "2eddcefc790336f6"
+  },
+  "signin.error.unknown": {
+    "message": "⚠️ Bağlanılamadı: {message}",
+    "description": "Sign-in failed for an unexpected reason. {message} is a technical detail, in English.",
+    "_machine_translated": true,
+    "_source_hash": "8c87addbb62d1c4b"
   }
 }

@@ -293,36 +293,6 @@
     "_machine_translated": true,
     "_source_hash": "d0fcd903dec290c3"
   },
-  "settings.app.intro_html": {
-    "message": "Spotify ขอให้ทุกแอปลงทะเบียน <strong>Client ID</strong> ของตัวเอง สร้างฟรีได้ที่ <a href=\"https://developer.spotify.com/dashboard\">developer.spotify.com/dashboard</a> (คลิก <em>Create app</em>, ตั้งชื่ออะไรก็ได้, ติ๊ก <em>Web API</em>) เพิ่ม <code>http://127.0.0.1:8080/spotify/callback</code> เป็น Redirect URI — พอร์ตใดก็ใช้ได้ Spotify เพียงแค่ต้องมีค่าหนึ่ง คัดลอก Client ID ที่ได้แล้ววางด้านล่าง",
-    "description": "Settings: app setup instructions",
-    "_machine_translated": true,
-    "_source_hash": "177c4bb9f2055193"
-  },
-  "settings.client_id.label": {
-    "message": "Client ID",
-    "description": "Settings: Client ID input label",
-    "_machine_translated": true,
-    "_source_hash": "88c50480decaca58"
-  },
-  "settings.client_id.placeholder": {
-    "message": "วาง client_id ของ Spotify ของคุณที่นี่",
-    "description": "Settings: Client ID placeholder",
-    "_machine_translated": true,
-    "_source_hash": "00365c0104e05fb3"
-  },
-  "settings.client_id.description": {
-    "message": "บันทึกบนคอมพิวเตอร์เครื่องนี้เท่านั้น ส่งไปยัง Spotify เมื่อคุณลงชื่อเข้าใช้ ไม่ส่งไปที่อื่น",
-    "description": "Settings: Client ID description",
-    "_machine_translated": true,
-    "_source_hash": "74280ec7c0552793"
-  },
-  "settings.save_client_id.label": {
-    "message": "บันทึก Client ID",
-    "description": "Settings: save client id button",
-    "_machine_translated": true,
-    "_source_hash": "1b31bf8b9640a2bc"
-  },
   "settings.section.connection": {
     "message": "การเชื่อมต่อ",
     "description": "Settings section: connection",
@@ -341,24 +311,6 @@
     "_machine_translated": true,
     "_source_hash": "fdc13580729a4adc"
   },
-  "settings.connection.not_connected": {
-    "message": "ยังไม่ได้ลงชื่อเข้าใช้ คลิก <strong>Connect</strong> เพื่อลงชื่อเข้าใช้ Spotify",
-    "description": "Settings: not connected text",
-    "_machine_translated": true,
-    "_source_hash": "210fcedbc5081420"
-  },
-  "settings.connection.no_client_id": {
-    "message": "วาง Client ID ด้านบนก่อน แล้วกลับมาที่นี่เพื่อเชื่อมต่อ",
-    "description": "Settings: needs client ID first",
-    "_machine_translated": true,
-    "_source_hash": "3316be227daf1055"
-  },
-  "settings.connect.label_connect": {
-    "message": "เชื่อมต่อ",
-    "description": "Settings: connect button",
-    "_machine_translated": true,
-    "_source_hash": "f2e6d94ff6eceff2"
-  },
   "settings.connect.label_reconnect": {
     "message": "เชื่อมต่อใหม่",
     "description": "Settings: reconnect button",
@@ -372,10 +324,10 @@
     "_source_hash": "ccc6a1247a0bc31c"
   },
   "settings.disconnect.confirm": {
-    "message": "ออกจากระบบ Spotify หรือไม่ คุณจะต้องลงชื่อเข้าใช้อีกครั้งเพื่อใช้ทางลัดการเล่น",
-    "description": "Confirmation prompt before signing out",
+    "message": "ออกจากระบบ Spotify หรือไม่ Kage จะลบ Client ID ของคุณด้วย คุณจึงต้องตั้งค่าใหม่อีกครั้งเพื่อเชื่อมต่อ",
+    "description": "Confirmation prompt before signing out. Signing out also deletes the saved Client ID, so the settings page returns to the guided setup.",
     "_machine_translated": true,
-    "_source_hash": "9dd32ff7ac62f6bb"
+    "_source_hash": "c9ddd7027ee62344"
   },
   "settings.validate.trigger_required": {
     "message": "ต้องระบุคำกระตุ้น",
@@ -389,35 +341,11 @@
     "_machine_translated": true,
     "_source_hash": "69d9b6a61cce96e9"
   },
-  "action.save_client_id.empty": {
-    "message": "⚠️ วาง Client ID ก่อน",
-    "description": "Status when Client ID input is empty",
-    "_machine_translated": true,
-    "_source_hash": "dae11461665c6476"
-  },
-  "action.save_client_id.invalid": {
-    "message": "⚠️ รูปแบบนี้ดูไม่เหมือน Client ID ของ Spotify ที่ถูกต้อง",
-    "description": "Status when Client ID format invalid",
-    "_machine_translated": true,
-    "_source_hash": "e696470bcef2160e"
-  },
-  "action.save_client_id.success": {
-    "message": "✅ บันทึก Client ID แล้ว",
-    "description": "Status when Client ID is saved",
-    "_machine_translated": true,
-    "_source_hash": "f75eefe56c7a28c0"
-  },
   "action.connect.success": {
     "message": "✅ เชื่อมต่อแล้ว แถบกำลังเล่นจะปรากฏเมื่อมีการเล่นเพลง",
     "description": "Status after a successful connect",
     "_machine_translated": true,
     "_source_hash": "31fe35562a8c271b"
-  },
-  "action.connect.error": {
-    "message": "⚠️ {message}",
-    "description": "Status with error after a failed connect",
-    "_machine_translated": true,
-    "_source_hash": "b0d53e592dd2232c"
   },
   "action.disconnect.success": {
     "message": "✅ ออกจากระบบแล้ว",
@@ -534,10 +462,10 @@
     "_source_hash": "3f096cf0735591ab"
   },
   "action.check_connection.no_client_id": {
-    "message": "⚠️ ยังไม่ได้บันทึก Client ID กรุณาวางไว้ด้านบนก่อน",
-    "description": "Status when checking connection without a client_id",
+    "message": "⚠️ ยังไม่มี Client ID ที่บันทึกไว้ จึงต้องทำการตั้งค่าก่อน",
+    "description": "Status when a settings action needs a Client ID but none is saved (for example after signing out from the launcher). The page then switches to the guided setup.",
     "_machine_translated": true,
-    "_source_hash": "30500a2d3fcb5cbf"
+    "_source_hash": "9b299672f973aeb2"
   },
   "action.check_connection.not_signed_in": {
     "message": "⚠️ ยังไม่ได้ลงชื่อเข้าใช้ คลิกเชื่อมต่อเพื่อลงชื่อเข้าใช้ Spotify",
@@ -594,9 +522,327 @@
     "_source_hash": "ca8161f663aa319a"
   },
   "error.no_client_id": {
-    "message": "ยังไม่ได้ตั้งค่า Spotify กรุณาเพิ่ม Client ID ของคุณใน การตั้งค่า → ส่วนขยาย → Spotify แล้วลองอีกครั้ง",
-    "description": "Launcher-facing error when a Spotify command runs before a Client ID has been saved. Avoids the raw 'client_id' identifier (log-only jargon) and points at the settings path; the settings window itself uses action.check_connection.no_client_id ('paste one above').",
+    "message": "ยังไม่ได้ตั้งค่า Spotify โปรดเปิด การตั้งค่า → ส่วนขยาย → Spotify แล้วทำตามขั้นตอนการตั้งค่า จากนั้นลองอีกครั้ง",
+    "description": "Launcher-facing error when a Spotify command runs before setup is done. Points at the extension's settings page, which walks the user through setup. Avoids the raw 'client_id' identifier (log-only jargon).",
     "_machine_translated": true,
-    "_source_hash": "eb02f1d2309fbbf9"
+    "_source_hash": "1114823827e8c35d"
+  },
+  "settings.app.client_id_html": {
+    "message": "เชื่อมต่อผ่านแอป Spotify ของคุณด้วย Client ID <code>{client_id}</code>",
+    "description": "Regular settings, 'Spotify app' section. {client_id} is the user's Client ID. Keep the <code> tags.",
+    "_machine_translated": true,
+    "_source_hash": "bc6dd833c27471c4"
+  },
+  "settings.rerun_setup.label": {
+    "message": "เริ่มการตั้งค่าอีกครั้ง",
+    "description": "Button that restarts the guided setup, e.g. to switch to a different Spotify app",
+    "_machine_translated": true,
+    "_source_hash": "5bf792a7c650c79a"
+  },
+  "settings.rerun_setup.description": {
+    "message": "ทำตามขั้นตอนการตั้งค่าอีกครั้ง เช่น เพื่อเปลี่ยนไปใช้แอป Spotify อื่น",
+    "description": "Help text above the 'Run setup again' button",
+    "_machine_translated": true,
+    "_source_hash": "c9897b5b9cc86d49"
+  },
+  "settings.connect.error.timeout": {
+    "message": "⚠️ Spotify ไม่ได้ส่งคุณกลับมาที่ Kage ภายใน 5 นาที หากเบราว์เซอร์แสดงข้อผิดพลาด INVALID_CLIENT ให้คลิก เริ่มการตั้งค่าอีกครั้ง เพื่อตรวจสอบ Client ID และ Redirect URI ของแอป",
+    "description": "Reconnect (regular settings) gave up waiting for the browser. INVALID_CLIENT is Spotify's literal error text and must stay in English; 'Run setup again' is a button label.",
+    "_machine_translated": true,
+    "_source_hash": "4c4d4f3339062e1a"
+  },
+  "settings.connect.error.app": {
+    "message": "❌ Spotify ปฏิเสธการตั้งค่าแอปของคุณ คลิก เริ่มการตั้งค่าอีกครั้ง เพื่อตรวจสอบ Client ID และ Redirect URI",
+    "description": "Reconnect (regular settings) failed because Spotify doesn't accept the Client ID or Redirect URI. 'Run setup again' is a button label.",
+    "_machine_translated": true,
+    "_source_hash": "34fa3a0b99fb931e"
+  },
+  "setup.description": {
+    "message": "Spotify ต้องตั้งค่าเพียงครั้งเดียวก่อนที่ส่วนขยายนี้จะใช้งานได้ โดยคุณต้องลงทะเบียนแอป Spotify แบบฟรี แล้วลงชื่อเข้าใช้ ใช้เวลาประมาณสามนาที และความคืบหน้าจะถูกบันทึกไว้หากคุณปิดหน้าต่างนี้",
+    "description": "Intro shown above the guided setup steps",
+    "_machine_translated": true,
+    "_source_hash": "92e5caea000cacc3"
+  },
+  "setup.description_rerun": {
+    "message": "คุณกำลังตั้งค่าอีกครั้ง การเชื่อมต่อปัจจุบันจะยังใช้งานได้จนกว่าคุณจะเชื่อมต่อใหม่ หรือคลิก ยกเลิกการตั้งค่า เพื่อคงทุกอย่างไว้ตามเดิม",
+    "description": "Intro shown above the guided setup when the user chose 'Run setup again' while connected. 'Cancel setup' is a button label.",
+    "_machine_translated": true,
+    "_source_hash": "85fb57762131caf2"
+  },
+  "setup.step_label": {
+    "message": "ขั้นตอนที่ {number} จาก {total}: {title}",
+    "description": "Heading of a setup step, e.g. 'Step 2 of 4: Create a Spotify app'. {title} is one of the setup.*.title strings.",
+    "_machine_translated": true,
+    "_source_hash": "06f136ef91f0abee"
+  },
+  "setup.next.label": {
+    "message": "ถัดไป",
+    "description": "Button that moves to the next setup step",
+    "_machine_translated": true,
+    "_source_hash": "1319443c427dbb68"
+  },
+  "setup.back.label": {
+    "message": "ย้อนกลับ",
+    "description": "Button that returns to the previous setup step",
+    "_machine_translated": true,
+    "_source_hash": "2140f60e13dff227"
+  },
+  "setup.cancel.label": {
+    "message": "ยกเลิกการตั้งค่า",
+    "description": "Button that leaves a re-run of the setup and returns to the regular settings, changing nothing",
+    "_machine_translated": true,
+    "_source_hash": "d36bfa990adfdd2d"
+  },
+  "setup.open_dashboard_again.label": {
+    "message": "เปิดแดชบอร์ดอีกครั้ง",
+    "description": "Secondary button that reopens the Spotify Developer Dashboard in the browser",
+    "_machine_translated": true,
+    "_source_hash": "d9aed20416235e11"
+  },
+  "setup.not_using_html": {
+    "message": "ไม่ได้ใช้ Spotify ใช่ไหม คุณสามารถปิดส่วนขยายนี้ได้ด้วยปุ่มที่ด้านบนของหน้านี้",
+    "description": "Hint on the first setup step for users who don't want the extension",
+    "_machine_translated": true,
+    "_source_hash": "bc30130633af556a"
+  },
+  "setup.dashboard.title": {
+    "message": "เปิด Spotify Developer Dashboard",
+    "description": "Title of setup step 1",
+    "_machine_translated": true,
+    "_source_hash": "eeb134b835a4e3c3"
+  },
+  "setup.dashboard.body_html": {
+    "message": "<p>Spotify อนุญาตให้แอปอย่าง Kage ควบคุมเพลงของคุณได้ผ่านแอปที่<em>คุณ</em>ลงทะเบียนกับ Spotify เท่านั้น ไม่มีค่าใช้จ่าย ทำเพียงครั้งเดียว และใช้เพียงบัญชี Spotify ของคุณ</p><p>คลิก <strong>เปิดแดชบอร์ด Spotify</strong> เข้าสู่ระบบในเบราว์เซอร์ และยอมรับข้อกำหนดสำหรับนักพัฒนาหาก Spotify ขอให้ยอมรับ จากนั้นกลับมาที่นี่เพื่อทำขั้นตอนถัดไป</p>",
+    "description": "Body of setup step 1. 'Open Spotify Dashboard' is the button label below it. Keep the HTML tags.",
+    "_machine_translated": true,
+    "_source_hash": "f91342798ceefb2b"
+  },
+  "setup.dashboard.premium_html": {
+    "message": "ข้อควรรู้: Spotify อนุญาตให้ควบคุมการเล่น (เล่น หยุดชั่วคราว ข้าม) ได้เฉพาะบัญชี Premium เท่านั้น ส่วนการดูเพลงที่กำลังเล่นใช้ได้กับทุกบัญชี",
+    "description": "Note on setup step 1 about Spotify's Premium requirement for playback control",
+    "_machine_translated": true,
+    "_source_hash": "eac6664d79f9bb4f"
+  },
+  "setup.dashboard.open.label": {
+    "message": "เปิดแดชบอร์ด Spotify",
+    "description": "Primary button on setup step 1; opens developer.spotify.com/dashboard in the system browser",
+    "_machine_translated": true,
+    "_source_hash": "af4f9f9115a1ce99"
+  },
+  "setup.dashboard.opened": {
+    "message": "✅ เปิดในเบราว์เซอร์แล้ว",
+    "description": "Status after the Spotify Developer Dashboard was opened in the browser",
+    "_machine_translated": true,
+    "_source_hash": "84e23af093aa0b4b"
+  },
+  "setup.dashboard.open_failed": {
+    "message": "⚠️ ไม่สามารถเปิดเบราว์เซอร์ได้ โปรดไปที่ {url} ด้วยตนเอง แล้วคลิก ถัดไป",
+    "description": "Status when opening the dashboard failed. {url} is the dashboard address; 'Next' is a button label.",
+    "_machine_translated": true,
+    "_source_hash": "ca8541c8056ea9f3"
+  },
+  "setup.create_app.title": {
+    "message": "สร้างแอป Spotify",
+    "description": "Title of setup step 2",
+    "_machine_translated": true,
+    "_source_hash": "c3b189ea7f1eca82"
+  },
+  "setup.create_app.body_html": {
+    "message": "<p>ในแดชบอร์ด คลิก <strong>Create app</strong> แล้วกรอกแบบฟอร์ม:</p><ol><li><strong>App name</strong> และ <strong>App description</strong>: ใส่อะไรก็ได้ เช่น “Kage”</li><li><strong>Redirect URIs</strong>: วางที่อยู่ด้านล่าง แล้วคลิก <strong>Add</strong></li><li>ใต้ <strong>Which API/SDKs are you planning to use?</strong> ให้เลือก <strong>Web API</strong></li><li>ยอมรับข้อกำหนดของ Spotify แล้วคลิก <strong>Save</strong></li></ol><p>มีแอปอยู่แล้วใช่ไหม เพิ่มที่อยู่ด้านล่างลงใน Redirect URIs ของแอปนั้น (ใน <strong>Settings</strong>) บันทึก แล้วคลิก <strong>ถัดไป</strong></p>",
+    "description": "Body of setup step 2. Bold names in the list (Create app, App name, App description, Redirect URIs, Add, Which API/SDKs are you planning to use?, Web API, Save, Settings) are labels on Spotify's English-only dashboard: keep them in English. 'Next' is a Kage button label. Keep the HTML tags.",
+    "_machine_translated": true,
+    "_source_hash": "2011669f77118e24"
+  },
+  "setup.create_app.redirect_label": {
+    "message": "Redirect URI",
+    "description": "Label above the address the user must register in their Spotify app",
+    "_machine_translated": true,
+    "_source_hash": "287ef0973c0892c2"
+  },
+  "setup.create_app.redirect_hint_html": {
+    "message": "คัดลอกให้ตรงทุกตัวอักษร: <code>http</code> (ไม่ใช่ https), <code>127.0.0.1</code> (ไม่ใช่ localhost) และลงท้ายด้วย <code>/spotify/callback</code> หมายเลขพอร์ตไม่จำเป็นต้องตรงกับค่าใด เพราะ Kage จะเลือกพอร์ตที่ว่างทุกครั้งที่เชื่อมต่อ และ Spotify อนุญาตให้ทำเช่นนี้ได้สำหรับ 127.0.0.1",
+    "description": "Hint below the Redirect URI. Keep the <code> parts exactly as they are.",
+    "_machine_translated": true,
+    "_source_hash": "62cde7988d0fbad2"
+  },
+  "setup.client_id.title": {
+    "message": "คัดลอก Client ID ของคุณ",
+    "description": "Title of setup step 3",
+    "_machine_translated": true,
+    "_source_hash": "ae642f912622632f"
+  },
+  "setup.client_id.body_html": {
+    "message": "<p>ตอนนี้ Spotify จะแสดงแอปของคุณ เปิด <strong>Settings</strong> ของแอป แล้วคัดลอก <strong>Client ID</strong> ซึ่งเป็นรหัสตัวอักษรและตัวเลข 32 ตัว จากนั้นวางลงด้านล่าง</p><p>คุณไม่จำเป็นต้องใช้ <strong>Client secret</strong> จึงไม่ต้องเปิดดู</p>",
+    "description": "Body of setup step 3. Settings, Client ID and Client secret are labels on Spotify's English-only dashboard: keep them in English. Keep the HTML tags.",
+    "_machine_translated": true,
+    "_source_hash": "8311c80fb529d1ef"
+  },
+  "setup.client_id.label": {
+    "message": "Client ID",
+    "description": "Label of the Client ID field (Spotify's term; keep in English if your language commonly does)",
+    "_machine_translated": true,
+    "_source_hash": "eace6d2899ea7b28"
+  },
+  "setup.client_id.placeholder": {
+    "message": "วาง Client ID ของคุณที่นี่",
+    "description": "Placeholder in the empty Client ID field",
+    "_machine_translated": true,
+    "_source_hash": "3291ed3d93c259a6"
+  },
+  "setup.client_id.description": {
+    "message": "บันทึกไว้ในคอมพิวเตอร์เครื่องนี้เท่านั้น และส่งให้ Spotify เท่านั้น",
+    "description": "Help text under the Client ID field",
+    "_machine_translated": true,
+    "_source_hash": "d8dd5f8b2422eb1f"
+  },
+  "setup.client_id.description_connected": {
+    "message": "บันทึกไว้ในคอมพิวเตอร์เครื่องนี้เท่านั้น การบันทึก Client ID อื่นจะทำให้คุณออกจากระบบการเชื่อมต่อ Spotify ปัจจุบัน",
+    "description": "Help text under the Client ID field when setup is re-run while connected",
+    "_machine_translated": true,
+    "_source_hash": "7e2190b8a34854aa"
+  },
+  "setup.client_id.save.label": {
+    "message": "บันทึกและดำเนินการต่อ",
+    "description": "Primary button on setup step 3: checks and saves the Client ID",
+    "_machine_translated": true,
+    "_source_hash": "a7d9d9aa42e69094"
+  },
+  "setup.client_id.error.empty": {
+    "message": "⚠️ โปรดวาง Client ID ก่อน ซึ่งอยู่ในหน้า Settings ของแอปคุณในแดชบอร์ดของ Spotify",
+    "description": "Validation error: the Client ID field is empty",
+    "_machine_translated": true,
+    "_source_hash": "12060da5725dba1e"
+  },
+  "setup.client_id.error.url": {
+    "message": "⚠️ นั่นคือที่อยู่เว็บ ไม่ใช่ Client ID ในหน้า Settings ของแอป ให้คัดลอกรหัสที่แสดงอยู่ใต้ Client ID",
+    "description": "Validation error: the user pasted a URL instead of the Client ID",
+    "_machine_translated": true,
+    "_source_hash": "3d53548a3bb46dd2"
+  },
+  "setup.client_id.error.format": {
+    "message": "⚠️ ข้อความนี้ดูไม่เหมือน Client ID ซึ่งเป็นรหัสตัวอักษรและตัวเลข 32 ตัว โปรดตรวจสอบว่าคุณคัดลอกมาครบทั้งหมดและไม่มีช่องว่าง",
+    "description": "Validation error: the pasted text has the wrong shape for a Spotify Client ID",
+    "_machine_translated": true,
+    "_source_hash": "ec948ab3f15a7f4d"
+  },
+  "setup.client_id.error.unknown_client": {
+    "message": "❌ Spotify ไม่รู้จัก Client ID นี้ โปรดคัดลอก Client ID (ไม่ใช่ Client secret) จากหน้า Settings ของแอป แล้วลองอีกครั้ง",
+    "description": "Error: Spotify confirmed that no app has this Client ID (typo, or the Client secret was pasted)",
+    "_machine_translated": true,
+    "_source_hash": "c579dd476cef5580"
+  },
+  "setup.connect.title": {
+    "message": "เชื่อมต่อบัญชี Spotify ของคุณ",
+    "description": "Title of setup step 4",
+    "_machine_translated": true,
+    "_source_hash": "1059715fa8499342"
+  },
+  "setup.connect.body_html": {
+    "message": "<p>คลิก <strong>เชื่อมต่อกับ Spotify</strong> เบราว์เซอร์จะเปิดหน้าขออนุญาตของ Spotify ให้เข้าสู่ระบบหากระบบขอ แล้วคลิก <strong>Agree</strong> (ยอมรับ) จากนั้นกลับมาที่นี่ Kage จะดำเนินการที่เหลือให้เอง</p>",
+    "description": "Body of setup step 4. 'Connect to Spotify' is the button below; 'Agree' is the button on Spotify's page. Keep the HTML tags.",
+    "_machine_translated": true,
+    "_source_hash": "a8684f238d748e79"
+  },
+  "setup.connect.notice_revoked_html": {
+    "message": "<strong>การลงชื่อเข้าใช้ Spotify ของคุณหมดอายุหรือถูกเพิกถอน</strong> รายละเอียดแอปของคุณยังคงบันทึกไว้ เพียงเชื่อมต่ออีกครั้ง",
+    "description": "Shown on setup step 4 when the user was sent back there because Spotify no longer accepts the saved sign-in",
+    "_machine_translated": true,
+    "_source_hash": "dde800c3b8753aee"
+  },
+  "setup.connect.button": {
+    "message": "เชื่อมต่อกับ Spotify",
+    "description": "Primary button on setup step 4: starts the browser sign-in",
+    "_machine_translated": true,
+    "_source_hash": "0208cc013489fada"
+  },
+  "setup.connect.trouble_label": {
+    "message": "หากเบราว์เซอร์แสดงข้อผิดพลาด",
+    "description": "Label of the troubleshooting list on setup step 4",
+    "_machine_translated": true,
+    "_source_hash": "d7c61792fcd6fed2"
+  },
+  "setup.connect.trouble_html": {
+    "message": "<ul><li><strong>INVALID_CLIENT: Invalid redirect URI</strong> — แอปของคุณไม่มี Redirect URI ของ Kage คลิก <strong>ย้อนกลับ</strong> สองครั้ง เพิ่ม <code>{uri}</code> ลงในแอปของคุณใน Spotify แล้วคลิก Save ที่นั่น</li><li><strong>INVALID_CLIENT: Invalid client</strong> — Spotify ไม่รู้จัก Client ID นี้ คลิก <strong>ย้อนกลับ</strong> แล้ววางอีกครั้ง</li></ul>",
+    "description": "Troubleshooting list on setup step 4. The bold INVALID_CLIENT lines are Spotify's literal English error texts: keep them unchanged. 'Back' is a button label. {uri} is the Redirect URI. Keep the HTML tags.",
+    "_machine_translated": true,
+    "_source_hash": "73a86ddcd20e361e"
+  },
+  "setup.connect.error.timeout": {
+    "message": "⚠️ Spotify ไม่ได้ส่งคุณกลับมาที่ Kage ภายใน 5 นาที หากเบราว์เซอร์แสดง “Invalid redirect URI” ให้คลิก ย้อนกลับ สองครั้งแล้วแก้ไข Redirect URI ในแอป Spotify ของคุณ หากแสดง “Invalid client” ให้คลิก ย้อนกลับ แล้วตรวจสอบ Client ID มิฉะนั้น ให้คลิก เชื่อมต่อกับ Spotify เพื่อลองอีกครั้ง",
+    "description": "Setup step 4: the sign-in gave up waiting for the browser. 'Invalid redirect URI' and 'Invalid client' are Spotify's literal English error texts. 'Back' and 'Connect to Spotify' are button labels.",
+    "_machine_translated": true,
+    "_source_hash": "eb849ba902ab7a4a"
+  },
+  "setup.connect.error.bad_client": {
+    "message": "❌ Spotify ไม่รู้จัก Client ID นี้ คลิก ย้อนกลับ แล้ววาง Client ID จากหน้า Settings ของแอป (ไม่ใช่ Client secret)",
+    "description": "Setup step 4: Spotify rejected the Client ID. 'Back' is a button label.",
+    "_machine_translated": true,
+    "_source_hash": "46d13b9a734ea338"
+  },
+  "setup.connect.error.redirect": {
+    "message": "❌ Spotify ปฏิเสธ Redirect URI คลิก ย้อนกลับ สองครั้ง ตรวจสอบให้แน่ใจว่าแอป Spotify ของคุณมี {uri} ตรงทุกตัวอักษร คลิก Save ใน Spotify แล้วลองอีกครั้ง",
+    "description": "Setup step 4: Spotify rejected the Redirect URI. {uri} is the address to register. 'Back' is a button label.",
+    "_machine_translated": true,
+    "_source_hash": "520c92aabf30b5b9"
+  },
+  "setup.done.title": {
+    "message": "เรียบร้อยแล้ว!",
+    "description": "Heading of the final setup screen",
+    "_machine_translated": true,
+    "_source_hash": "420d0b876f5f7bba"
+  },
+  "setup.done.connected_named_html": {
+    "message": "<p><strong>เชื่อมต่อกับ Spotify ในชื่อ {name} แล้ว</strong></p>",
+    "description": "Final setup screen headline. {name} is the user's Spotify display name.",
+    "_machine_translated": true,
+    "_source_hash": "1fc1cc8c237e8033"
+  },
+  "setup.done.connected_html": {
+    "message": "<p><strong>เชื่อมต่อ Spotify แล้ว</strong></p>",
+    "description": "Final setup screen headline when the Spotify display name is unknown",
+    "_machine_translated": true,
+    "_source_hash": "25a68bfc97e2ba65"
+  },
+  "setup.done.tips_html": {
+    "message": "<p>พิมพ์ <code>{trigger}</code> ในหน้าต่างลอยของ Kage เพื่อดูเพลงที่กำลังเล่น หรือพิมพ์ <code>{trigger} play</code> ตามด้วยชื่อเพลงเพื่อเล่นเพลงนั้น คุณยังสามารถขอผู้ช่วยได้โดยตรง เช่น “เปิดเพลง lofi beats หน่อย” แถบกำลังเล่นจะแสดงในหน้าต่างลอยทุกครั้งที่มีเพลงเล่นอยู่</p>",
+    "description": "Tips on the final setup screen. {trigger} is the user's trigger word (default 'sp'); keep the <code> parts unchanged.",
+    "_machine_translated": true,
+    "_source_hash": "dd8850638e22b0b1"
+  },
+  "setup.done.finish.label": {
+    "message": "เสร็จสิ้น",
+    "description": "Button on the final setup screen; shows the regular settings",
+    "_machine_translated": true,
+    "_source_hash": "8d1ced20b0446717"
+  },
+  "signin.error.denied": {
+    "message": "⚠️ ไม่ได้อนุญาตการเข้าถึงในหน้าของ Spotify ทำให้ Kage เชื่อมต่อไม่ได้ โปรดลองอีกครั้งแล้วคลิก \"ยอมรับ\" (Agree)",
+    "description": "Sign-in failed because the user clicked Cancel on Spotify's permission page. 'Agree' is the button on that page.",
+    "_machine_translated": true,
+    "_source_hash": "3066f9decce65547"
+  },
+  "signin.error.state": {
+    "message": "⚠️ การตอบกลับการลงชื่อเข้าใช้นี้ไม่ตรงกับคำขอปัจจุบัน (อาจมาจากการลองครั้งก่อน) โปรดลองอีกครั้ง",
+    "description": "Sign-in failed: the browser redirect didn't belong to the current attempt",
+    "_machine_translated": true,
+    "_source_hash": "3258d45a40ada774"
+  },
+  "signin.error.network": {
+    "message": "⚠️ ติดต่อ Spotify ไม่ได้ โปรดตรวจสอบการเชื่อมต่ออินเทอร์เน็ตแล้วลองอีกครั้ง",
+    "description": "Sign-in failed: network error",
+    "_machine_translated": true,
+    "_source_hash": "b316c47263b356d2"
+  },
+  "signin.error.oauth": {
+    "message": "⚠️ Spotify แจ้งว่าเกิดปัญหา ({error}) โปรดลองอีกครั้ง",
+    "description": "Sign-in failed with an error from Spotify. {error} is Spotify's error code, in English.",
+    "_machine_translated": true,
+    "_source_hash": "2eddcefc790336f6"
+  },
+  "signin.error.unknown": {
+    "message": "⚠️ เชื่อมต่อไม่ได้: {message}",
+    "description": "Sign-in failed for an unexpected reason. {message} is a technical detail, in English.",
+    "_machine_translated": true,
+    "_source_hash": "8c87addbb62d1c4b"
   }
 }

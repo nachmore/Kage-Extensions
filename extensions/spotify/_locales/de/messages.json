@@ -293,36 +293,6 @@
     "_machine_translated": true,
     "_source_hash": "d0fcd903dec290c3"
   },
-  "settings.app.intro_html": {
-    "message": "Spotify verlangt von jeder App, eine eigene <strong>Client ID</strong> zu registrieren. Erstellen Sie eine kostenlose unter <a href=\"https://developer.spotify.com/dashboard\">developer.spotify.com/dashboard</a> (klicken Sie auf <em>Create app</em>, geben Sie ihr einen beliebigen Namen, aktivieren Sie <em>Web API</em>). Fügen Sie <code>http://127.0.0.1:8080/spotify/callback</code> als Redirect URI hinzu – jeder Port funktioniert, Spotify benötigt nur einen Eintrag. Kopieren Sie die angezeigte Client ID und fügen Sie sie unten ein.",
-    "description": "Settings: app setup instructions",
-    "_machine_translated": true,
-    "_source_hash": "177c4bb9f2055193"
-  },
-  "settings.client_id.label": {
-    "message": "Client ID",
-    "description": "Settings: Client ID input label",
-    "_machine_translated": true,
-    "_source_hash": "88c50480decaca58"
-  },
-  "settings.client_id.placeholder": {
-    "message": "Fügen Sie hier Ihre Spotify-client_id ein",
-    "description": "Settings: Client ID placeholder",
-    "_machine_translated": true,
-    "_source_hash": "00365c0104e05fb3"
-  },
-  "settings.client_id.description": {
-    "message": "Wird nur auf diesem Computer gespeichert. Bei der Anmeldung an Spotify gesendet, sonst nirgendwohin.",
-    "description": "Settings: Client ID description",
-    "_machine_translated": true,
-    "_source_hash": "74280ec7c0552793"
-  },
-  "settings.save_client_id.label": {
-    "message": "Client-ID speichern",
-    "description": "Settings: save client id button",
-    "_machine_translated": true,
-    "_source_hash": "1b31bf8b9640a2bc"
-  },
   "settings.section.connection": {
     "message": "Verbindung",
     "description": "Settings section: connection",
@@ -341,24 +311,6 @@
     "_machine_translated": true,
     "_source_hash": "fdc13580729a4adc"
   },
-  "settings.connection.not_connected": {
-    "message": "Noch nicht angemeldet. Klicken Sie auf <strong>Verbinden</strong>, um sich bei Spotify anzumelden.",
-    "description": "Settings: not connected text",
-    "_machine_translated": true,
-    "_source_hash": "210fcedbc5081420"
-  },
-  "settings.connection.no_client_id": {
-    "message": "Fügen Sie zuerst oben eine Client ID ein und kehren Sie dann hierher zurück, um sich zu verbinden.",
-    "description": "Settings: needs client ID first",
-    "_machine_translated": true,
-    "_source_hash": "3316be227daf1055"
-  },
-  "settings.connect.label_connect": {
-    "message": "Verbinden",
-    "description": "Settings: connect button",
-    "_machine_translated": true,
-    "_source_hash": "f2e6d94ff6eceff2"
-  },
   "settings.connect.label_reconnect": {
     "message": "Erneut verbinden",
     "description": "Settings: reconnect button",
@@ -372,10 +324,10 @@
     "_source_hash": "ccc6a1247a0bc31c"
   },
   "settings.disconnect.confirm": {
-    "message": "Von Spotify abmelden? Sie müssen sich erneut anmelden, um Wiedergabe-Shortcuts zu verwenden.",
-    "description": "Confirmation prompt before signing out",
+    "message": "Von Spotify abmelden? Kage vergisst dabei auch Ihre Client ID, sodass Sie die Einrichtung für eine erneute Verbindung noch einmal durchlaufen müssen.",
+    "description": "Confirmation prompt before signing out. Signing out also deletes the saved Client ID, so the settings page returns to the guided setup.",
     "_machine_translated": true,
-    "_source_hash": "9dd32ff7ac62f6bb"
+    "_source_hash": "c9ddd7027ee62344"
   },
   "settings.validate.trigger_required": {
     "message": "Auslösewort ist erforderlich.",
@@ -389,35 +341,11 @@
     "_machine_translated": true,
     "_source_hash": "69d9b6a61cce96e9"
   },
-  "action.save_client_id.empty": {
-    "message": "⚠️ Fügen Sie zuerst eine Client-ID ein.",
-    "description": "Status when Client ID input is empty",
-    "_machine_translated": true,
-    "_source_hash": "dae11461665c6476"
-  },
-  "action.save_client_id.invalid": {
-    "message": "⚠️ Das sieht nicht nach einer gültigen Spotify-Client-ID aus.",
-    "description": "Status when Client ID format invalid",
-    "_machine_translated": true,
-    "_source_hash": "e696470bcef2160e"
-  },
-  "action.save_client_id.success": {
-    "message": "✅ Client-ID gespeichert.",
-    "description": "Status when Client ID is saved",
-    "_machine_translated": true,
-    "_source_hash": "f75eefe56c7a28c0"
-  },
   "action.connect.success": {
     "message": "✅ Verbunden. Die Wiedergabeleiste erscheint, sobald etwas abgespielt wird.",
     "description": "Status after a successful connect",
     "_machine_translated": true,
     "_source_hash": "31fe35562a8c271b"
-  },
-  "action.connect.error": {
-    "message": "⚠️ {message}",
-    "description": "Status with error after a failed connect",
-    "_machine_translated": true,
-    "_source_hash": "b0d53e592dd2232c"
   },
   "action.disconnect.success": {
     "message": "✅ Abgemeldet.",
@@ -534,10 +462,10 @@
     "_source_hash": "3f096cf0735591ab"
   },
   "action.check_connection.no_client_id": {
-    "message": "⚠️ Noch keine Client ID gespeichert. Fügen Sie zunächst oben eine ein.",
-    "description": "Status when checking connection without a client_id",
+    "message": "⚠️ Es ist noch keine Client ID gespeichert, daher muss zuerst die Einrichtung ausgeführt werden.",
+    "description": "Status when a settings action needs a Client ID but none is saved (for example after signing out from the launcher). The page then switches to the guided setup.",
     "_machine_translated": true,
-    "_source_hash": "30500a2d3fcb5cbf"
+    "_source_hash": "9b299672f973aeb2"
   },
   "action.check_connection.not_signed_in": {
     "message": "⚠️ Nicht angemeldet. Klicken Sie auf „Verbinden“, um sich bei Spotify anzumelden.",
@@ -594,9 +522,327 @@
     "_source_hash": "ca8161f663aa319a"
   },
   "error.no_client_id": {
-    "message": "Spotify ist noch nicht eingerichtet. Fügen Sie Ihre Client-ID unter Einstellungen → Erweiterungen → Spotify hinzu und versuchen Sie es dann erneut.",
-    "description": "Launcher-facing error when a Spotify command runs before a Client ID has been saved. Avoids the raw 'client_id' identifier (log-only jargon) and points at the settings path; the settings window itself uses action.check_connection.no_client_id ('paste one above').",
+    "message": "Spotify ist noch nicht eingerichtet. Öffnen Sie Einstellungen → Erweiterungen → Spotify, folgen Sie den Einrichtungsschritten und versuchen Sie es dann erneut.",
+    "description": "Launcher-facing error when a Spotify command runs before setup is done. Points at the extension's settings page, which walks the user through setup. Avoids the raw 'client_id' identifier (log-only jargon).",
     "_machine_translated": true,
-    "_source_hash": "eb02f1d2309fbbf9"
+    "_source_hash": "1114823827e8c35d"
+  },
+  "settings.app.client_id_html": {
+    "message": "Verbunden über Ihre Spotify-App mit der Client ID <code>{client_id}</code>.",
+    "description": "Regular settings, 'Spotify app' section. {client_id} is the user's Client ID. Keep the <code> tags.",
+    "_machine_translated": true,
+    "_source_hash": "bc6dd833c27471c4"
+  },
+  "settings.rerun_setup.label": {
+    "message": "Einrichtung erneut ausführen",
+    "description": "Button that restarts the guided setup, e.g. to switch to a different Spotify app",
+    "_machine_translated": true,
+    "_source_hash": "5bf792a7c650c79a"
+  },
+  "settings.rerun_setup.description": {
+    "message": "Durchlaufen Sie die Einrichtungsschritte noch einmal – zum Beispiel, um zu einer anderen Spotify-App zu wechseln.",
+    "description": "Help text above the 'Run setup again' button",
+    "_machine_translated": true,
+    "_source_hash": "c9897b5b9cc86d49"
+  },
+  "settings.connect.error.timeout": {
+    "message": "⚠️ Spotify hat Sie nicht innerhalb von 5 Minuten zu Kage zurückgeleitet. Falls Ihr Browser den Fehler INVALID_CLIENT angezeigt hat, klicken Sie auf „Einrichtung erneut ausführen“, um die Client ID und die Redirect URI Ihrer App zu prüfen.",
+    "description": "Reconnect (regular settings) gave up waiting for the browser. INVALID_CLIENT is Spotify's literal error text and must stay in English; 'Run setup again' is a button label.",
+    "_machine_translated": true,
+    "_source_hash": "4c4d4f3339062e1a"
+  },
+  "settings.connect.error.app": {
+    "message": "❌ Spotify hat die Einstellungen Ihrer App abgelehnt. Klicken Sie auf „Einrichtung erneut ausführen“, um die Client ID und die Redirect URI zu prüfen.",
+    "description": "Reconnect (regular settings) failed because Spotify doesn't accept the Client ID or Redirect URI. 'Run setup again' is a button label.",
+    "_machine_translated": true,
+    "_source_hash": "34fa3a0b99fb931e"
+  },
+  "setup.description": {
+    "message": "Spotify erfordert eine einmalige Einrichtung, bevor diese Erweiterung etwas tun kann: Sie registrieren eine kostenlose Spotify-App und melden sich dann an. Das dauert etwa drei Minuten, und Ihr Fortschritt bleibt gespeichert, wenn Sie dieses Fenster schließen.",
+    "description": "Intro shown above the guided setup steps",
+    "_machine_translated": true,
+    "_source_hash": "92e5caea000cacc3"
+  },
+  "setup.description_rerun": {
+    "message": "Sie führen die Einrichtung erneut aus. Ihre aktuelle Verbindung funktioniert weiter, bis Sie sich neu verbinden – oder klicken Sie auf „Einrichtung abbrechen“, um alles unverändert zu lassen.",
+    "description": "Intro shown above the guided setup when the user chose 'Run setup again' while connected. 'Cancel setup' is a button label.",
+    "_machine_translated": true,
+    "_source_hash": "85fb57762131caf2"
+  },
+  "setup.step_label": {
+    "message": "Schritt {number} von {total}: {title}",
+    "description": "Heading of a setup step, e.g. 'Step 2 of 4: Create a Spotify app'. {title} is one of the setup.*.title strings.",
+    "_machine_translated": true,
+    "_source_hash": "06f136ef91f0abee"
+  },
+  "setup.next.label": {
+    "message": "Weiter",
+    "description": "Button that moves to the next setup step",
+    "_machine_translated": true,
+    "_source_hash": "1319443c427dbb68"
+  },
+  "setup.back.label": {
+    "message": "Zurück",
+    "description": "Button that returns to the previous setup step",
+    "_machine_translated": true,
+    "_source_hash": "2140f60e13dff227"
+  },
+  "setup.cancel.label": {
+    "message": "Einrichtung abbrechen",
+    "description": "Button that leaves a re-run of the setup and returns to the regular settings, changing nothing",
+    "_machine_translated": true,
+    "_source_hash": "d36bfa990adfdd2d"
+  },
+  "setup.open_dashboard_again.label": {
+    "message": "Dashboard erneut öffnen",
+    "description": "Secondary button that reopens the Spotify Developer Dashboard in the browser",
+    "_machine_translated": true,
+    "_source_hash": "d9aed20416235e11"
+  },
+  "setup.not_using_html": {
+    "message": "Sie nutzen Spotify nicht? Sie können diese Erweiterung mit der Schaltfläche oben auf dieser Seite deaktivieren.",
+    "description": "Hint on the first setup step for users who don't want the extension",
+    "_machine_translated": true,
+    "_source_hash": "bc30130633af556a"
+  },
+  "setup.dashboard.title": {
+    "message": "Spotify Developer Dashboard öffnen",
+    "description": "Title of setup step 1",
+    "_machine_translated": true,
+    "_source_hash": "eeb134b835a4e3c3"
+  },
+  "setup.dashboard.body_html": {
+    "message": "<p>Spotify erlaubt Apps wie Kage nur dann, Ihre Musik zu steuern, wenn <em>Sie</em> dafür eine App bei Spotify registrieren. Das ist kostenlos, Sie müssen es nur einmal tun, und Sie benötigen lediglich Ihre Spotify-Anmeldedaten.</p><p>Klicken Sie auf <strong>Spotify Dashboard öffnen</strong>. Melden Sie sich in Ihrem Browser an und akzeptieren Sie die Entwicklerbedingungen, falls Spotify danach fragt. Kehren Sie dann für den nächsten Schritt hierher zurück.</p>",
+    "description": "Body of setup step 1. 'Open Spotify Dashboard' is the button label below it. Keep the HTML tags.",
+    "_machine_translated": true,
+    "_source_hash": "f91342798ceefb2b"
+  },
+  "setup.dashboard.premium_html": {
+    "message": "Gut zu wissen: Spotify erlaubt die Wiedergabesteuerung (Abspielen, Pausieren, Überspringen) nur für Premium-Konten. Die Anzeige der aktuellen Wiedergabe funktioniert mit jedem Konto.",
+    "description": "Note on setup step 1 about Spotify's Premium requirement for playback control",
+    "_machine_translated": true,
+    "_source_hash": "eac6664d79f9bb4f"
+  },
+  "setup.dashboard.open.label": {
+    "message": "Spotify Dashboard öffnen",
+    "description": "Primary button on setup step 1; opens developer.spotify.com/dashboard in the system browser",
+    "_machine_translated": true,
+    "_source_hash": "af4f9f9115a1ce99"
+  },
+  "setup.dashboard.opened": {
+    "message": "✅ In Ihrem Browser geöffnet.",
+    "description": "Status after the Spotify Developer Dashboard was opened in the browser",
+    "_machine_translated": true,
+    "_source_hash": "84e23af093aa0b4b"
+  },
+  "setup.dashboard.open_failed": {
+    "message": "⚠️ Ihr Browser konnte nicht geöffnet werden. Rufen Sie {url} selbst auf und klicken Sie dann auf „Weiter“.",
+    "description": "Status when opening the dashboard failed. {url} is the dashboard address; 'Next' is a button label.",
+    "_machine_translated": true,
+    "_source_hash": "ca8541c8056ea9f3"
+  },
+  "setup.create_app.title": {
+    "message": "Spotify-App erstellen",
+    "description": "Title of setup step 2",
+    "_machine_translated": true,
+    "_source_hash": "c3b189ea7f1eca82"
+  },
+  "setup.create_app.body_html": {
+    "message": "<p>Klicken Sie im Dashboard auf <strong>Create app</strong> und füllen Sie das Formular aus:</p><ol><li><strong>App name</strong> und <strong>App description</strong>: beliebig, zum Beispiel „Kage“.</li><li><strong>Redirect URIs</strong>: Fügen Sie die Adresse unten ein und klicken Sie auf <strong>Add</strong>.</li><li>Aktivieren Sie unter <strong>Which API/SDKs are you planning to use?</strong> die Option <strong>Web API</strong>.</li><li>Akzeptieren Sie die Bedingungen von Spotify und klicken Sie auf <strong>Save</strong>.</li></ol><p>Sie haben bereits eine App? Fügen Sie die Adresse unten zu deren Redirect URIs hinzu (unter <strong>Settings</strong>), speichern Sie und klicken Sie auf <strong>Weiter</strong>.</p>",
+    "description": "Body of setup step 2. Bold names in the list (Create app, App name, App description, Redirect URIs, Add, Which API/SDKs are you planning to use?, Web API, Save, Settings) are labels on Spotify's English-only dashboard: keep them in English. 'Next' is a Kage button label. Keep the HTML tags.",
+    "_machine_translated": true,
+    "_source_hash": "2011669f77118e24"
+  },
+  "setup.create_app.redirect_label": {
+    "message": "Redirect URI",
+    "description": "Label above the address the user must register in their Spotify app",
+    "_machine_translated": true,
+    "_source_hash": "287ef0973c0892c2"
+  },
+  "setup.create_app.redirect_hint_html": {
+    "message": "Kopieren Sie sie exakt: <code>http</code> (nicht https), <code>127.0.0.1</code> (nicht localhost), endend auf <code>/spotify/callback</code>. Die Portnummer muss mit nichts übereinstimmen – Kage wählt bei jeder Verbindung einen freien Port, und Spotify erlaubt das für 127.0.0.1.",
+    "description": "Hint below the Redirect URI. Keep the <code> parts exactly as they are.",
+    "_machine_translated": true,
+    "_source_hash": "62cde7988d0fbad2"
+  },
+  "setup.client_id.title": {
+    "message": "Client ID kopieren",
+    "description": "Title of setup step 3",
+    "_machine_translated": true,
+    "_source_hash": "ae642f912622632f"
+  },
+  "setup.client_id.body_html": {
+    "message": "<p>Spotify zeigt jetzt Ihre App an. Öffnen Sie deren <strong>Settings</strong> und kopieren Sie die <strong>Client ID</strong> – einen 32-stelligen Code aus Buchstaben und Zahlen. Fügen Sie ihn dann unten ein.</p><p>Das <strong>Client secret</strong> benötigen Sie nicht, lassen Sie es also verborgen.</p>",
+    "description": "Body of setup step 3. Settings, Client ID and Client secret are labels on Spotify's English-only dashboard: keep them in English. Keep the HTML tags.",
+    "_machine_translated": true,
+    "_source_hash": "8311c80fb529d1ef"
+  },
+  "setup.client_id.label": {
+    "message": "Client ID",
+    "description": "Label of the Client ID field (Spotify's term; keep in English if your language commonly does)",
+    "_machine_translated": true,
+    "_source_hash": "eace6d2899ea7b28"
+  },
+  "setup.client_id.placeholder": {
+    "message": "Client ID hier einfügen",
+    "description": "Placeholder in the empty Client ID field",
+    "_machine_translated": true,
+    "_source_hash": "3291ed3d93c259a6"
+  },
+  "setup.client_id.description": {
+    "message": "Wird nur auf diesem Computer gespeichert und ausschließlich an Spotify gesendet.",
+    "description": "Help text under the Client ID field",
+    "_machine_translated": true,
+    "_source_hash": "d8dd5f8b2422eb1f"
+  },
+  "setup.client_id.description_connected": {
+    "message": "Wird nur auf diesem Computer gespeichert. Wenn Sie eine andere Client ID speichern, wird Ihre aktuelle Spotify-Verbindung abgemeldet.",
+    "description": "Help text under the Client ID field when setup is re-run while connected",
+    "_machine_translated": true,
+    "_source_hash": "7e2190b8a34854aa"
+  },
+  "setup.client_id.save.label": {
+    "message": "Speichern und weiter",
+    "description": "Primary button on setup step 3: checks and saves the Client ID",
+    "_machine_translated": true,
+    "_source_hash": "a7d9d9aa42e69094"
+  },
+  "setup.client_id.error.empty": {
+    "message": "⚠️ Fügen Sie zuerst Ihre Client ID ein. Sie finden sie auf der Settings-Seite Ihrer App im Spotify-Dashboard.",
+    "description": "Validation error: the Client ID field is empty",
+    "_machine_translated": true,
+    "_source_hash": "12060da5725dba1e"
+  },
+  "setup.client_id.error.url": {
+    "message": "⚠️ Das ist eine Webadresse, keine Client ID. Kopieren Sie auf der Settings-Seite Ihrer App den Code, der unter Client ID angezeigt wird.",
+    "description": "Validation error: the user pasted a URL instead of the Client ID",
+    "_machine_translated": true,
+    "_source_hash": "3d53548a3bb46dd2"
+  },
+  "setup.client_id.error.format": {
+    "message": "⚠️ Das sieht nicht nach einer Client ID aus. Sie ist ein 32-stelliger Code aus Buchstaben und Zahlen – prüfen Sie, ob Sie alles ohne Leerzeichen kopiert haben.",
+    "description": "Validation error: the pasted text has the wrong shape for a Spotify Client ID",
+    "_machine_translated": true,
+    "_source_hash": "ec948ab3f15a7f4d"
+  },
+  "setup.client_id.error.unknown_client": {
+    "message": "❌ Spotify erkennt diese Client ID nicht. Kopieren Sie die Client ID (nicht das Client secret) von der Settings-Seite Ihrer App und versuchen Sie es erneut.",
+    "description": "Error: Spotify confirmed that no app has this Client ID (typo, or the Client secret was pasted)",
+    "_machine_translated": true,
+    "_source_hash": "c579dd476cef5580"
+  },
+  "setup.connect.title": {
+    "message": "Spotify-Konto verbinden",
+    "description": "Title of setup step 4",
+    "_machine_translated": true,
+    "_source_hash": "1059715fa8499342"
+  },
+  "setup.connect.body_html": {
+    "message": "<p>Klicken Sie auf <strong>Mit Spotify verbinden</strong>. Ihr Browser öffnet die Berechtigungsseite von Spotify: Melden Sie sich bei Bedarf an und klicken Sie dann auf <strong>Zustimmen</strong>. Kehren Sie anschließend hierher zurück – Kage schließt den Vorgang selbstständig ab.</p>",
+    "description": "Body of setup step 4. 'Connect to Spotify' is the button below; 'Agree' is the button on Spotify's page. Keep the HTML tags.",
+    "_machine_translated": true,
+    "_source_hash": "a8684f238d748e79"
+  },
+  "setup.connect.notice_revoked_html": {
+    "message": "<strong>Ihre Spotify-Anmeldung ist abgelaufen oder wurde widerrufen.</strong> Ihre App-Daten sind weiterhin gespeichert – verbinden Sie sich einfach erneut.",
+    "description": "Shown on setup step 4 when the user was sent back there because Spotify no longer accepts the saved sign-in",
+    "_machine_translated": true,
+    "_source_hash": "dde800c3b8753aee"
+  },
+  "setup.connect.button": {
+    "message": "Mit Spotify verbinden",
+    "description": "Primary button on setup step 4: starts the browser sign-in",
+    "_machine_translated": true,
+    "_source_hash": "0208cc013489fada"
+  },
+  "setup.connect.trouble_label": {
+    "message": "Falls Ihr Browser einen Fehler anzeigt",
+    "description": "Label of the troubleshooting list on setup step 4",
+    "_machine_translated": true,
+    "_source_hash": "d7c61792fcd6fed2"
+  },
+  "setup.connect.trouble_html": {
+    "message": "<ul><li><strong>INVALID_CLIENT: Invalid redirect URI</strong> – Ihre App enthält die Redirect URI von Kage nicht. Klicken Sie zweimal auf <strong>Zurück</strong>, fügen Sie <code>{uri}</code> zu Ihrer App in Spotify hinzu und klicken Sie dort auf Save.</li><li><strong>INVALID_CLIENT: Invalid client</strong> – Spotify kennt diese Client ID nicht. Klicken Sie auf <strong>Zurück</strong> und fügen Sie sie erneut ein.</li></ul>",
+    "description": "Troubleshooting list on setup step 4. The bold INVALID_CLIENT lines are Spotify's literal English error texts: keep them unchanged. 'Back' is a button label. {uri} is the Redirect URI. Keep the HTML tags.",
+    "_machine_translated": true,
+    "_source_hash": "73a86ddcd20e361e"
+  },
+  "setup.connect.error.timeout": {
+    "message": "⚠️ Spotify hat Sie nicht innerhalb von 5 Minuten zu Kage zurückgeleitet. Falls Ihr Browser „Invalid redirect URI“ angezeigt hat, klicken Sie zweimal auf Zurück und korrigieren Sie die Redirect URI in Ihrer Spotify-App; falls „Invalid client“ angezeigt wurde, klicken Sie auf Zurück und prüfen Sie die Client ID. Andernfalls klicken Sie auf Mit Spotify verbinden, um es erneut zu versuchen.",
+    "description": "Setup step 4: the sign-in gave up waiting for the browser. 'Invalid redirect URI' and 'Invalid client' are Spotify's literal English error texts. 'Back' and 'Connect to Spotify' are button labels.",
+    "_machine_translated": true,
+    "_source_hash": "eb849ba902ab7a4a"
+  },
+  "setup.connect.error.bad_client": {
+    "message": "❌ Spotify erkennt diese Client ID nicht. Klicken Sie auf Zurück und fügen Sie die Client ID von der Settings-Seite Ihrer App ein (nicht das Client secret).",
+    "description": "Setup step 4: Spotify rejected the Client ID. 'Back' is a button label.",
+    "_machine_translated": true,
+    "_source_hash": "46d13b9a734ea338"
+  },
+  "setup.connect.error.redirect": {
+    "message": "❌ Spotify hat die Redirect URI abgelehnt. Klicken Sie zweimal auf Zurück, stellen Sie sicher, dass Ihre Spotify-App exakt {uri} enthält, klicken Sie in Spotify auf Save und versuchen Sie es erneut.",
+    "description": "Setup step 4: Spotify rejected the Redirect URI. {uri} is the address to register. 'Back' is a button label.",
+    "_machine_translated": true,
+    "_source_hash": "520c92aabf30b5b9"
+  },
+  "setup.done.title": {
+    "message": "Fertig!",
+    "description": "Heading of the final setup screen",
+    "_machine_translated": true,
+    "_source_hash": "420d0b876f5f7bba"
+  },
+  "setup.done.connected_named_html": {
+    "message": "<p><strong>Mit Spotify verbunden als {name}.</strong></p>",
+    "description": "Final setup screen headline. {name} is the user's Spotify display name.",
+    "_machine_translated": true,
+    "_source_hash": "1fc1cc8c237e8033"
+  },
+  "setup.done.connected_html": {
+    "message": "<p><strong>Spotify ist verbunden.</strong></p>",
+    "description": "Final setup screen headline when the Spotify display name is unknown",
+    "_machine_translated": true,
+    "_source_hash": "25a68bfc97e2ba65"
+  },
+  "setup.done.tips_html": {
+    "message": "<p>Geben Sie <code>{trigger}</code> im schwebenden Fenster von Kage ein, um zu sehen, was gerade läuft, oder <code>{trigger} play</code> und einen Songtitel, um ihn abzuspielen. Sie können auch einfach den Assistenten fragen, zum Beispiel „spiel ein paar Lofi-Beats“. Die Wiedergabeleiste erscheint im schwebenden Fenster, sobald Musik läuft.</p>",
+    "description": "Tips on the final setup screen. {trigger} is the user's trigger word (default 'sp'); keep the <code> parts unchanged.",
+    "_machine_translated": true,
+    "_source_hash": "dd8850638e22b0b1"
+  },
+  "setup.done.finish.label": {
+    "message": "Fertig",
+    "description": "Button on the final setup screen; shows the regular settings",
+    "_machine_translated": true,
+    "_source_hash": "8d1ced20b0446717"
+  },
+  "signin.error.denied": {
+    "message": "⚠️ Der Zugriff wurde auf der Spotify-Seite nicht erlaubt, daher kann Kage keine Verbindung herstellen. Versuchen Sie es erneut und klicken Sie auf „Zustimmen“.",
+    "description": "Sign-in failed because the user clicked Cancel on Spotify's permission page. 'Agree' is the button on that page.",
+    "_machine_translated": true,
+    "_source_hash": "3066f9decce65547"
+  },
+  "signin.error.state": {
+    "message": "⚠️ Diese Anmeldeantwort passt nicht zu dieser Anfrage (sie stammt möglicherweise von einem früheren Versuch). Bitte versuchen Sie es erneut.",
+    "description": "Sign-in failed: the browser redirect didn't belong to the current attempt",
+    "_machine_translated": true,
+    "_source_hash": "3258d45a40ada774"
+  },
+  "signin.error.network": {
+    "message": "⚠️ Spotify ist nicht erreichbar. Überprüfen Sie Ihre Internetverbindung und versuchen Sie es erneut.",
+    "description": "Sign-in failed: network error",
+    "_machine_translated": true,
+    "_source_hash": "b316c47263b356d2"
+  },
+  "signin.error.oauth": {
+    "message": "⚠️ Spotify hat ein Problem gemeldet ({error}). Bitte versuchen Sie es erneut.",
+    "description": "Sign-in failed with an error from Spotify. {error} is Spotify's error code, in English.",
+    "_machine_translated": true,
+    "_source_hash": "2eddcefc790336f6"
+  },
+  "signin.error.unknown": {
+    "message": "⚠️ Verbindung fehlgeschlagen: {message}",
+    "description": "Sign-in failed for an unexpected reason. {message} is a technical detail, in English.",
+    "_machine_translated": true,
+    "_source_hash": "8c87addbb62d1c4b"
   }
 }

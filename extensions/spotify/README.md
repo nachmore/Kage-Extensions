@@ -36,28 +36,32 @@ from Kage's floating window — without leaving the keyboard.
 
 Spotify requires every native client to be registered, and they don't
 let us ship a shared client_id with this extension because rate limits
-are per-app. You make a free developer app once and paste the Client ID
-into the settings:
+are per-app. So you make a free developer app once. You don't have to
+follow this by hand: until the extension is set up, **Kage → Settings →
+Extensions → Spotify** walks you through it step by step (and remembers
+where you were if you close the window):
 
-1. Open <https://developer.spotify.com/dashboard> and click
-   **Create app**.
-2. Set:
-   - **App name**: Kage Spotify (or anything)
-   - **App description**: Personal Kage integration
+1. **Open the Spotify Developer Dashboard** — the button opens
+   <https://developer.spotify.com/dashboard> in your browser.
+2. **Create an app** — click **Create app** and set:
+   - **App name** / **App description**: anything (e.g. "Kage")
    - **Redirect URIs**: `http://127.0.0.1:8080/spotify/callback` — the
      port is required at registration. Per [Spotify's redirect-URI
      rules](https://developer.spotify.com/documentation/web-api/concepts/redirect_uri)
-     the form refuses port-less loopback entries. Pick any port you
-     like (8080 is just an example); Spotify treats `127.0.0.1` as
-     the IETF-blessed loopback address and lets the actual runtime
-     port differ from the registered one, so Kage's ephemeral
-     listener still works regardless of what number you typed.
-   - Tick the box for **Web API**.
-3. Save. Copy the **Client ID**.
-4. In Kage → Settings → Extensions → Spotify, paste the Client ID and
-   click **Save Client ID**, then **Connect**. Your browser opens to
-   Spotify's consent screen; approve and the extension picks up the
-   redirect automatically.
+     the form refuses port-less loopback entries. Spotify treats
+     `127.0.0.1` as the IETF-blessed loopback address and lets the
+     actual runtime port differ from the registered one, so Kage's
+     ephemeral listener works regardless of the number. Use `http`
+     and `127.0.0.1` exactly — not `https`, not `localhost`.
+   - Tick **Web API**, accept the terms, and **Save**.
+3. **Copy your Client ID** from the app's **Settings** page and paste it.
+   Kage checks with Spotify that the ID exists before moving on, so a typo
+   or a pasted Client secret is caught right there.
+4. **Connect** — your browser opens Spotify's consent screen; approve and
+   the extension picks up the redirect automatically.
+
+Once connected, the page shows the regular settings, with **Run setup
+again** (e.g. to switch apps) and **Sign out**.
 
 ## How auth works
 
@@ -86,7 +90,7 @@ The listener:
 | Capability | Why                                                     |
 |------------|---------------------------------------------------------|
 | `storage`  | Saves your Spotify Client ID + refresh token locally.   |
-| `shell`    | Opens the Spotify authorize URL in your browser.        |
+| `urls`     | Opens the Spotify dashboard and authorize page in your browser. |
 | `oauth`    | Binds the one-shot loopback listener for the redirect.  |
 
 The extension makes its own outbound HTTPS calls to `api.spotify.com`
@@ -104,10 +108,14 @@ headers.
 
 ## Troubleshooting
 
-**"Spotify rejected the request" / "INVALID_CLIENT"** — your Client ID
-isn't registered, or your registered redirect URI doesn't include
-`http://127.0.0.1/spotify/callback`. Open the Spotify dashboard and
-double-check.
+**"INVALID_CLIENT: Invalid redirect URI"** in the browser — your app's
+Redirect URIs don't include `http://127.0.0.1:8080/spotify/callback`
+(any port). Add it in the Spotify dashboard (app → Settings → Edit) and
+save.
+
+**"INVALID_CLIENT: Invalid client"** in the browser — Spotify doesn't know
+the saved Client ID. Settings → Extensions → Spotify → **Run setup again**
+and paste the Client ID from the app's Settings page.
 
 **Buttons do nothing** — Spotify's API only controls an *active*
 device. Make sure Spotify is open and playing on at least one device

@@ -306,11 +306,10 @@ export default class SpotifySearchProvider {
             }
             // Connect before a Client ID is saved: don't make the user
             // navigate from an error message — take them to this
-            // extension's settings page, whose status line already says
-            // "Paste a Client ID above first, then come back here to
-            // connect." (Other commands keep the textual error via
-            // _wrapPlayerError; opening a window mid-`sp play` would be
-            // jarring.)
+            // extension's settings page, which walks them through the
+            // setup (Client ID, then connect). (Other commands keep the
+            // textual error via _wrapPlayerError; opening a window
+            // mid-`sp play` would be jarring.)
             if (id === 'connect' && e?.code === 'no_client_id') {
                 return { type: 'open_extension_settings' };
             }
@@ -415,7 +414,7 @@ export default class SpotifySearchProvider {
     _wrapPlayerError(e) {
         const code = e?.code;
         // Launcher context: the user is NOT in settings, so tell them
-        // where to go (unlike settings.js, which says "above").
+        // where to go (settings.js shows the guided setup instead).
         if (code === 'no_client_id') return new Error(this.t('error.no_client_id'));
         if (code === 'no_devices') return new Error(this.t('error.no_devices'));
         if (code === 'multiple_devices') {

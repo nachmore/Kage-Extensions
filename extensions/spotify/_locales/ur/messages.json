@@ -293,36 +293,6 @@
     "_machine_translated": true,
     "_source_hash": "d0fcd903dec290c3"
   },
-  "settings.app.intro_html": {
-    "message": "Spotify ہر ایپ سے اپنا <strong>Client ID</strong> رجسٹر کرنے کو کہتا ہے۔ <a href=\"https://developer.spotify.com/dashboard\">developer.spotify.com/dashboard</a> پر مفت میں بنائیں (<em>Create app</em> پر کلک کریں، کوئی بھی نام دیں، <em>Web API</em> پر ٹِک کریں)۔ Redirect URI کے طور پر <code>http://127.0.0.1:8080/spotify/callback</code> شامل کریں — کوئی بھی پورٹ کام کرتا ہے، Spotify کو صرف ایک کا موجود ہونا چاہیے۔ جو Client ID ملے اسے کاپی کریں اور نیچے پیسٹ کریں۔",
-    "description": "Settings: app setup instructions",
-    "_machine_translated": true,
-    "_source_hash": "177c4bb9f2055193"
-  },
-  "settings.client_id.label": {
-    "message": "Client ID",
-    "description": "Settings: Client ID input label",
-    "_machine_translated": true,
-    "_source_hash": "88c50480decaca58"
-  },
-  "settings.client_id.placeholder": {
-    "message": "اپنا Spotify client_id یہاں پیسٹ کریں",
-    "description": "Settings: Client ID placeholder",
-    "_machine_translated": true,
-    "_source_hash": "00365c0104e05fb3"
-  },
-  "settings.client_id.description": {
-    "message": "صرف اس کمپیوٹر پر محفوظ ہے۔ سائن ان کرتے وقت Spotify کو بھیجا جاتا ہے، کہیں اور نہیں۔",
-    "description": "Settings: Client ID description",
-    "_machine_translated": true,
-    "_source_hash": "74280ec7c0552793"
-  },
-  "settings.save_client_id.label": {
-    "message": "کلائنٹ ID محفوظ کریں",
-    "description": "Settings: save client id button",
-    "_machine_translated": true,
-    "_source_hash": "1b31bf8b9640a2bc"
-  },
   "settings.section.connection": {
     "message": "کنکشن",
     "description": "Settings section: connection",
@@ -341,24 +311,6 @@
     "_machine_translated": true,
     "_source_hash": "fdc13580729a4adc"
   },
-  "settings.connection.not_connected": {
-    "message": "ابھی سائن ان نہیں ہوئے۔ Spotify میں سائن ان کرنے کے لیے <strong>Connect</strong> پر کلک کریں۔",
-    "description": "Settings: not connected text",
-    "_machine_translated": true,
-    "_source_hash": "210fcedbc5081420"
-  },
-  "settings.connection.no_client_id": {
-    "message": "پہلے اوپر Client ID پیسٹ کریں، پھر کنیکٹ کرنے کے لیے یہاں واپس آئیں۔",
-    "description": "Settings: needs client ID first",
-    "_machine_translated": true,
-    "_source_hash": "3316be227daf1055"
-  },
-  "settings.connect.label_connect": {
-    "message": "جوڑیں",
-    "description": "Settings: connect button",
-    "_machine_translated": true,
-    "_source_hash": "f2e6d94ff6eceff2"
-  },
   "settings.connect.label_reconnect": {
     "message": "دوبارہ جوڑیں",
     "description": "Settings: reconnect button",
@@ -372,10 +324,10 @@
     "_source_hash": "ccc6a1247a0bc31c"
   },
   "settings.disconnect.confirm": {
-    "message": "Spotify سے سائن آؤٹ کریں؟ پلے بیک شارٹ کٹس استعمال کرنے کے لیے آپ کو دوبارہ سائن ان کرنا ہوگا۔",
-    "description": "Confirmation prompt before signing out",
+    "message": "Spotify سے سائن آؤٹ کریں؟ Kage آپ کا Client ID بھی بھول جائے گا، اس لیے دوبارہ جڑنے کے لیے آپ کو سیٹ اپ پھر سے کرنا ہوگا۔",
+    "description": "Confirmation prompt before signing out. Signing out also deletes the saved Client ID, so the settings page returns to the guided setup.",
     "_machine_translated": true,
-    "_source_hash": "9dd32ff7ac62f6bb"
+    "_source_hash": "c9ddd7027ee62344"
   },
   "settings.validate.trigger_required": {
     "message": "ٹرگر ورڈ درکار ہے۔",
@@ -389,35 +341,11 @@
     "_machine_translated": true,
     "_source_hash": "69d9b6a61cce96e9"
   },
-  "action.save_client_id.empty": {
-    "message": "⚠️ پہلے کلائنٹ ID پیسٹ کریں۔",
-    "description": "Status when Client ID input is empty",
-    "_machine_translated": true,
-    "_source_hash": "dae11461665c6476"
-  },
-  "action.save_client_id.invalid": {
-    "message": "⚠️ یہ درست Spotify کلائنٹ ID معلوم نہیں ہوتا۔",
-    "description": "Status when Client ID format invalid",
-    "_machine_translated": true,
-    "_source_hash": "e696470bcef2160e"
-  },
-  "action.save_client_id.success": {
-    "message": "✅ کلائنٹ ID محفوظ ہو گیا۔",
-    "description": "Status when Client ID is saved",
-    "_machine_translated": true,
-    "_source_hash": "f75eefe56c7a28c0"
-  },
   "action.connect.success": {
     "message": "✅ منسلک ہو گیا۔ جب کچھ چل رہا ہوگا تو ناؤ پلیئنگ بار ظاہر ہوگا۔",
     "description": "Status after a successful connect",
     "_machine_translated": true,
     "_source_hash": "31fe35562a8c271b"
-  },
-  "action.connect.error": {
-    "message": "⚠️ {message}",
-    "description": "Status with error after a failed connect",
-    "_machine_translated": true,
-    "_source_hash": "b0d53e592dd2232c"
   },
   "action.disconnect.success": {
     "message": "✅ سائن آؤٹ ہو گیا۔",
@@ -534,10 +462,10 @@
     "_source_hash": "3f096cf0735591ab"
   },
   "action.check_connection.no_client_id": {
-    "message": "⚠️ ابھی تک کوئی Client ID محفوظ نہیں ہوا۔ پہلے اوپر ایک پیسٹ کریں۔",
-    "description": "Status when checking connection without a client_id",
+    "message": "⚠️ ابھی تک کوئی Client ID محفوظ نہیں، اس لیے پہلے سیٹ اپ چلانا ضروری ہے۔",
+    "description": "Status when a settings action needs a Client ID but none is saved (for example after signing out from the launcher). The page then switches to the guided setup.",
     "_machine_translated": true,
-    "_source_hash": "30500a2d3fcb5cbf"
+    "_source_hash": "9b299672f973aeb2"
   },
   "action.check_connection.not_signed_in": {
     "message": "⚠️ سائن ان نہیں ہیں۔ Spotify میں سائن ان کرنے کے لیے Connect پر کلک کریں۔",
@@ -594,9 +522,327 @@
     "_source_hash": "ca8161f663aa319a"
   },
   "error.no_client_id": {
-    "message": "Spotify ابھی سیٹ اپ نہیں ہوا۔ ترتیبات ← ایکسٹینشنز ← Spotify میں اپنی Client ID شامل کریں، پھر دوبارہ کوشش کریں۔",
-    "description": "Launcher-facing error when a Spotify command runs before a Client ID has been saved. Avoids the raw 'client_id' identifier (log-only jargon) and points at the settings path; the settings window itself uses action.check_connection.no_client_id ('paste one above').",
+    "message": "Spotify ابھی سیٹ اپ نہیں ہوا۔ ترتیبات ← ایکسٹینشنز ← Spotify کھولیں اور سیٹ اپ کے مراحل مکمل کریں، پھر دوبارہ کوشش کریں۔",
+    "description": "Launcher-facing error when a Spotify command runs before setup is done. Points at the extension's settings page, which walks the user through setup. Avoids the raw 'client_id' identifier (log-only jargon).",
     "_machine_translated": true,
-    "_source_hash": "eb02f1d2309fbbf9"
+    "_source_hash": "1114823827e8c35d"
+  },
+  "settings.app.client_id_html": {
+    "message": "آپ کی Spotify ایپ کے ذریعے Client ID <code>{client_id}</code> کے ساتھ منسلک ہے۔",
+    "description": "Regular settings, 'Spotify app' section. {client_id} is the user's Client ID. Keep the <code> tags.",
+    "_machine_translated": true,
+    "_source_hash": "bc6dd833c27471c4"
+  },
+  "settings.rerun_setup.label": {
+    "message": "سیٹ اپ دوبارہ چلائیں",
+    "description": "Button that restarts the guided setup, e.g. to switch to a different Spotify app",
+    "_machine_translated": true,
+    "_source_hash": "5bf792a7c650c79a"
+  },
+  "settings.rerun_setup.description": {
+    "message": "سیٹ اپ کے مراحل دوبارہ مکمل کریں — مثلاً کسی دوسری Spotify ایپ پر جانے کے لیے۔",
+    "description": "Help text above the 'Run setup again' button",
+    "_machine_translated": true,
+    "_source_hash": "c9897b5b9cc86d49"
+  },
+  "settings.connect.error.timeout": {
+    "message": "⚠️ Spotify نے آپ کو 5 منٹ کے اندر Kage پر واپس نہیں بھیجا۔ اگر آپ کے براؤزر میں INVALID_CLIENT کی خرابی دکھائی دی تھی، تو اپنی ایپ کا Client ID اور Redirect URI جانچنے کے لیے \"سیٹ اپ دوبارہ چلائیں\" پر کلک کریں۔",
+    "description": "Reconnect (regular settings) gave up waiting for the browser. INVALID_CLIENT is Spotify's literal error text and must stay in English; 'Run setup again' is a button label.",
+    "_machine_translated": true,
+    "_source_hash": "4c4d4f3339062e1a"
+  },
+  "settings.connect.error.app": {
+    "message": "❌ Spotify نے آپ کی ایپ کی ترتیبات مسترد کر دیں۔ Client ID اور Redirect URI جانچنے کے لیے \"سیٹ اپ دوبارہ چلائیں\" پر کلک کریں۔",
+    "description": "Reconnect (regular settings) failed because Spotify doesn't accept the Client ID or Redirect URI. 'Run setup again' is a button label.",
+    "_machine_translated": true,
+    "_source_hash": "34fa3a0b99fb931e"
+  },
+  "setup.description": {
+    "message": "اس ایکسٹینشن کے کام کرنے سے پہلے Spotify کا ایک بار کا سیٹ اپ ضروری ہے: آپ ایک مفت Spotify ایپ رجسٹر کرتے ہیں، پھر سائن ان کرتے ہیں۔ اس میں تقریباً تین منٹ لگتے ہیں، اور اگر آپ یہ ونڈو بند کر دیں تو آپ کی پیش رفت محفوظ رہتی ہے۔",
+    "description": "Intro shown above the guided setup steps",
+    "_machine_translated": true,
+    "_source_hash": "92e5caea000cacc3"
+  },
+  "setup.description_rerun": {
+    "message": "آپ سیٹ اپ دوبارہ چلا رہے ہیں۔ آپ کا موجودہ کنکشن دوبارہ جڑنے تک کام کرتا رہے گا — یا سب کچھ پہلے جیسا رکھنے کے لیے \"سیٹ اپ منسوخ کریں\" پر کلک کریں۔",
+    "description": "Intro shown above the guided setup when the user chose 'Run setup again' while connected. 'Cancel setup' is a button label.",
+    "_machine_translated": true,
+    "_source_hash": "85fb57762131caf2"
+  },
+  "setup.step_label": {
+    "message": "مرحلہ {number} از {total}: {title}",
+    "description": "Heading of a setup step, e.g. 'Step 2 of 4: Create a Spotify app'. {title} is one of the setup.*.title strings.",
+    "_machine_translated": true,
+    "_source_hash": "06f136ef91f0abee"
+  },
+  "setup.next.label": {
+    "message": "اگلا",
+    "description": "Button that moves to the next setup step",
+    "_machine_translated": true,
+    "_source_hash": "1319443c427dbb68"
+  },
+  "setup.back.label": {
+    "message": "واپس",
+    "description": "Button that returns to the previous setup step",
+    "_machine_translated": true,
+    "_source_hash": "2140f60e13dff227"
+  },
+  "setup.cancel.label": {
+    "message": "سیٹ اپ منسوخ کریں",
+    "description": "Button that leaves a re-run of the setup and returns to the regular settings, changing nothing",
+    "_machine_translated": true,
+    "_source_hash": "d36bfa990adfdd2d"
+  },
+  "setup.open_dashboard_again.label": {
+    "message": "ڈیش بورڈ دوبارہ کھولیں",
+    "description": "Secondary button that reopens the Spotify Developer Dashboard in the browser",
+    "_machine_translated": true,
+    "_source_hash": "d9aed20416235e11"
+  },
+  "setup.not_using_html": {
+    "message": "Spotify استعمال نہیں کرتے؟ آپ اس صفحے کے اوپر موجود بٹن سے یہ ایکسٹینشن بند کر سکتے ہیں۔",
+    "description": "Hint on the first setup step for users who don't want the extension",
+    "_machine_translated": true,
+    "_source_hash": "bc30130633af556a"
+  },
+  "setup.dashboard.title": {
+    "message": "Spotify Developer Dashboard کھولیں",
+    "description": "Title of setup step 1",
+    "_machine_translated": true,
+    "_source_hash": "eeb134b835a4e3c3"
+  },
+  "setup.dashboard.body_html": {
+    "message": "<p>Spotify، Kage جیسی ایپس کو صرف اسی ایپ کے ذریعے آپ کی موسیقی کنٹرول کرنے دیتا ہے جو <em>آپ</em> ان کے پاس رجسٹر کریں۔ یہ مفت ہے، صرف ایک بار کرنا ہوتا ہے، اور اس کے لیے صرف آپ کا Spotify لاگ ان درکار ہے۔</p><p><strong>Spotify ڈیش بورڈ کھولیں</strong> پر کلک کریں۔ اپنے براؤزر میں لاگ ان کریں، اور اگر Spotify کہے تو ڈویلپر شرائط قبول کریں۔ پھر اگلے مرحلے کے لیے یہاں واپس آئیں۔</p>",
+    "description": "Body of setup step 1. 'Open Spotify Dashboard' is the button label below it. Keep the HTML tags.",
+    "_machine_translated": true,
+    "_source_hash": "f91342798ceefb2b"
+  },
+  "setup.dashboard.premium_html": {
+    "message": "جاننا مفید ہے: Spotify پلے بیک کنٹرول (چلائیں، روکیں، آگے بڑھیں) صرف Premium اکاؤنٹس کے لیے دیتا ہے۔ کیا چل رہا ہے یہ دیکھنا کسی بھی اکاؤنٹ کے ساتھ کام کرتا ہے۔",
+    "description": "Note on setup step 1 about Spotify's Premium requirement for playback control",
+    "_machine_translated": true,
+    "_source_hash": "eac6664d79f9bb4f"
+  },
+  "setup.dashboard.open.label": {
+    "message": "Spotify ڈیش بورڈ کھولیں",
+    "description": "Primary button on setup step 1; opens developer.spotify.com/dashboard in the system browser",
+    "_machine_translated": true,
+    "_source_hash": "af4f9f9115a1ce99"
+  },
+  "setup.dashboard.opened": {
+    "message": "✅ آپ کے براؤزر میں کھول دیا گیا۔",
+    "description": "Status after the Spotify Developer Dashboard was opened in the browser",
+    "_machine_translated": true,
+    "_source_hash": "84e23af093aa0b4b"
+  },
+  "setup.dashboard.open_failed": {
+    "message": "⚠️ آپ کا براؤزر نہیں کھل سکا۔ خود {url} پر جائیں، پھر \"اگلا\" پر کلک کریں۔",
+    "description": "Status when opening the dashboard failed. {url} is the dashboard address; 'Next' is a button label.",
+    "_machine_translated": true,
+    "_source_hash": "ca8541c8056ea9f3"
+  },
+  "setup.create_app.title": {
+    "message": "Spotify ایپ بنائیں",
+    "description": "Title of setup step 2",
+    "_machine_translated": true,
+    "_source_hash": "c3b189ea7f1eca82"
+  },
+  "setup.create_app.body_html": {
+    "message": "<p>ڈیش بورڈ میں <strong>Create app</strong> پر کلک کریں اور فارم پُر کریں:</p><ol><li><strong>App name</strong> اور <strong>App description</strong>: جو چاہیں لکھیں، مثلاً “Kage”۔</li><li><strong>Redirect URIs</strong>: نیچے دیا گیا پتہ پیسٹ کریں اور <strong>Add</strong> پر کلک کریں۔</li><li><strong>Which API/SDKs are you planning to use?</strong> کے تحت <strong>Web API</strong> پر نشان لگائیں۔</li><li>Spotify کی شرائط قبول کریں اور <strong>Save</strong> پر کلک کریں۔</li></ol><p>پہلے سے کوئی ایپ موجود ہے؟ نیچے دیا گیا پتہ اس کے Redirect URIs میں شامل کریں (اس کی <strong>Settings</strong> میں)، محفوظ کریں، اور <strong>اگلا</strong> پر کلک کریں۔</p>",
+    "description": "Body of setup step 2. Bold names in the list (Create app, App name, App description, Redirect URIs, Add, Which API/SDKs are you planning to use?, Web API, Save, Settings) are labels on Spotify's English-only dashboard: keep them in English. 'Next' is a Kage button label. Keep the HTML tags.",
+    "_machine_translated": true,
+    "_source_hash": "2011669f77118e24"
+  },
+  "setup.create_app.redirect_label": {
+    "message": "Redirect URI",
+    "description": "Label above the address the user must register in their Spotify app",
+    "_machine_translated": true,
+    "_source_hash": "287ef0973c0892c2"
+  },
+  "setup.create_app.redirect_hint_html": {
+    "message": "اسے بالکل ویسے ہی کاپی کریں: <code>http</code> (https نہیں)، <code>127.0.0.1</code> (localhost نہیں)، اور آخر میں <code>/spotify/callback</code>۔ پورٹ نمبر کا کسی چیز سے ملنا ضروری نہیں — Kage ہر بار کنیکٹ کرتے وقت ایک خالی پورٹ منتخب کرتا ہے، اور Spotify ‏127.0.0.1 کے لیے اس کی اجازت دیتا ہے۔",
+    "description": "Hint below the Redirect URI. Keep the <code> parts exactly as they are.",
+    "_machine_translated": true,
+    "_source_hash": "62cde7988d0fbad2"
+  },
+  "setup.client_id.title": {
+    "message": "اپنی Client ID کاپی کریں",
+    "description": "Title of setup step 3",
+    "_machine_translated": true,
+    "_source_hash": "ae642f912622632f"
+  },
+  "setup.client_id.body_html": {
+    "message": "<p>اب Spotify آپ کی ایپ دکھا رہا ہے۔ اس کی <strong>Settings</strong> کھولیں اور <strong>Client ID</strong> کاپی کریں — یہ حروف اور اعداد پر مشتمل 32 حروف کا کوڈ ہے — پھر اسے نیچے پیسٹ کریں۔</p><p>آپ کو <strong>Client secret</strong> کی ضرورت نہیں، اس لیے اسے پوشیدہ رہنے دیں۔</p>",
+    "description": "Body of setup step 3. Settings, Client ID and Client secret are labels on Spotify's English-only dashboard: keep them in English. Keep the HTML tags.",
+    "_machine_translated": true,
+    "_source_hash": "8311c80fb529d1ef"
+  },
+  "setup.client_id.label": {
+    "message": "Client ID",
+    "description": "Label of the Client ID field (Spotify's term; keep in English if your language commonly does)",
+    "_machine_translated": true,
+    "_source_hash": "eace6d2899ea7b28"
+  },
+  "setup.client_id.placeholder": {
+    "message": "اپنی Client ID یہاں پیسٹ کریں",
+    "description": "Placeholder in the empty Client ID field",
+    "_machine_translated": true,
+    "_source_hash": "3291ed3d93c259a6"
+  },
+  "setup.client_id.description": {
+    "message": "صرف اسی کمپیوٹر پر محفوظ کی جاتی ہے، اور Spotify کے سوا کسی کو نہیں بھیجی جاتی۔",
+    "description": "Help text under the Client ID field",
+    "_machine_translated": true,
+    "_source_hash": "d8dd5f8b2422eb1f"
+  },
+  "setup.client_id.description_connected": {
+    "message": "صرف اسی کمپیوٹر پر محفوظ کی جاتی ہے۔ کوئی دوسری Client ID محفوظ کرنے سے آپ اپنے موجودہ Spotify کنکشن سے سائن آؤٹ ہو جائیں گے۔",
+    "description": "Help text under the Client ID field when setup is re-run while connected",
+    "_machine_translated": true,
+    "_source_hash": "7e2190b8a34854aa"
+  },
+  "setup.client_id.save.label": {
+    "message": "محفوظ کریں اور جاری رکھیں",
+    "description": "Primary button on setup step 3: checks and saves the Client ID",
+    "_machine_translated": true,
+    "_source_hash": "a7d9d9aa42e69094"
+  },
+  "setup.client_id.error.empty": {
+    "message": "⚠️ پہلے اپنی Client ID پیسٹ کریں۔ یہ Spotify ڈیش بورڈ میں آپ کی ایپ کے Settings صفحے پر موجود ہے۔",
+    "description": "Validation error: the Client ID field is empty",
+    "_machine_translated": true,
+    "_source_hash": "12060da5725dba1e"
+  },
+  "setup.client_id.error.url": {
+    "message": "⚠️ یہ ویب ایڈریس ہے، Client ID نہیں۔ اپنی ایپ کے Settings صفحے پر Client ID کے نیچے دکھایا گیا کوڈ کاپی کریں۔",
+    "description": "Validation error: the user pasted a URL instead of the Client ID",
+    "_machine_translated": true,
+    "_source_hash": "3d53548a3bb46dd2"
+  },
+  "setup.client_id.error.format": {
+    "message": "⚠️ یہ Client ID نہیں لگتی۔ یہ حروف اور اعداد پر مشتمل 32 حروف کا کوڈ ہے — تسلی کر لیں کہ آپ نے پورا کوڈ بغیر خالی جگہوں کے کاپی کیا ہے۔",
+    "description": "Validation error: the pasted text has the wrong shape for a Spotify Client ID",
+    "_machine_translated": true,
+    "_source_hash": "ec948ab3f15a7f4d"
+  },
+  "setup.client_id.error.unknown_client": {
+    "message": "❌ Spotify اس Client ID کو نہیں پہچانتا۔ اپنی ایپ کے Settings صفحے سے Client ID (نہ کہ Client secret) کاپی کریں اور دوبارہ کوشش کریں۔",
+    "description": "Error: Spotify confirmed that no app has this Client ID (typo, or the Client secret was pasted)",
+    "_machine_translated": true,
+    "_source_hash": "c579dd476cef5580"
+  },
+  "setup.connect.title": {
+    "message": "اپنا Spotify اکاؤنٹ کنیکٹ کریں",
+    "description": "Title of setup step 4",
+    "_machine_translated": true,
+    "_source_hash": "1059715fa8499342"
+  },
+  "setup.connect.body_html": {
+    "message": "<p><strong>Connect to Spotify</strong> پر کلک کریں۔ آپ کا براؤزر Spotify کا اجازت کا صفحہ کھولے گا: اگر کہا جائے تو لاگ اِن کریں، پھر <strong>Agree</strong> پر کلک کریں۔ اس کے بعد یہاں واپس آ جائیں — Kage باقی کام خود مکمل کر لے گا۔</p>",
+    "description": "Body of setup step 4. 'Connect to Spotify' is the button below; 'Agree' is the button on Spotify's page. Keep the HTML tags.",
+    "_machine_translated": true,
+    "_source_hash": "a8684f238d748e79"
+  },
+  "setup.connect.notice_revoked_html": {
+    "message": "<strong>آپ کا Spotify سائن اِن ختم ہو گیا ہے یا منسوخ کر دیا گیا ہے۔</strong> آپ کی ایپ کی تفصیلات اب بھی محفوظ ہیں — بس دوبارہ کنیکٹ کریں۔",
+    "description": "Shown on setup step 4 when the user was sent back there because Spotify no longer accepts the saved sign-in",
+    "_machine_translated": true,
+    "_source_hash": "dde800c3b8753aee"
+  },
+  "setup.connect.button": {
+    "message": "Connect to Spotify",
+    "description": "Primary button on setup step 4: starts the browser sign-in",
+    "_machine_translated": true,
+    "_source_hash": "0208cc013489fada"
+  },
+  "setup.connect.trouble_label": {
+    "message": "اگر آپ کا براؤزر کوئی خرابی دکھائے",
+    "description": "Label of the troubleshooting list on setup step 4",
+    "_machine_translated": true,
+    "_source_hash": "d7c61792fcd6fed2"
+  },
+  "setup.connect.trouble_html": {
+    "message": "<ul><li><strong>INVALID_CLIENT: Invalid redirect URI</strong> — آپ کی ایپ میں Kage کی Redirect URI درج نہیں ہے۔ دو بار <strong>واپس</strong> پر کلک کریں، Spotify میں اپنی ایپ میں <code>{uri}</code> شامل کریں، اور وہاں Save پر کلک کریں۔</li><li><strong>INVALID_CLIENT: Invalid client</strong> — Spotify اس Client ID کو نہیں جانتا۔ <strong>واپس</strong> پر کلک کریں اور اسے دوبارہ پیسٹ کریں۔</li></ul>",
+    "description": "Troubleshooting list on setup step 4. The bold INVALID_CLIENT lines are Spotify's literal English error texts: keep them unchanged. 'Back' is a button label. {uri} is the Redirect URI. Keep the HTML tags.",
+    "_machine_translated": true,
+    "_source_hash": "73a86ddcd20e361e"
+  },
+  "setup.connect.error.timeout": {
+    "message": "⚠️ Spotify نے آپ کو 5 منٹ کے اندر Kage پر واپس نہیں بھیجا۔ اگر آپ کے براؤزر نے “Invalid redirect URI” دکھایا تھا تو دو بار واپس پر کلک کریں اور اپنی Spotify ایپ میں Redirect URI درست کریں؛ اگر “Invalid client” دکھایا تھا تو واپس پر کلک کریں اور Client ID چیک کریں۔ ورنہ دوبارہ کوشش کے لیے Connect to Spotify پر کلک کریں۔",
+    "description": "Setup step 4: the sign-in gave up waiting for the browser. 'Invalid redirect URI' and 'Invalid client' are Spotify's literal English error texts. 'Back' and 'Connect to Spotify' are button labels.",
+    "_machine_translated": true,
+    "_source_hash": "eb849ba902ab7a4a"
+  },
+  "setup.connect.error.bad_client": {
+    "message": "❌ Spotify اس Client ID کو نہیں پہچانتا۔ واپس پر کلک کریں اور اپنی ایپ کے Settings صفحے سے Client ID (نہ کہ Client secret) پیسٹ کریں۔",
+    "description": "Setup step 4: Spotify rejected the Client ID. 'Back' is a button label.",
+    "_machine_translated": true,
+    "_source_hash": "46d13b9a734ea338"
+  },
+  "setup.connect.error.redirect": {
+    "message": "❌ Spotify نے Redirect URI مسترد کر دی۔ دو بار واپس پر کلک کریں، یقینی بنائیں کہ آپ کی Spotify ایپ میں بالکل {uri} درج ہے، Spotify میں Save پر کلک کریں، اور دوبارہ کوشش کریں۔",
+    "description": "Setup step 4: Spotify rejected the Redirect URI. {uri} is the address to register. 'Back' is a button label.",
+    "_machine_translated": true,
+    "_source_hash": "520c92aabf30b5b9"
+  },
+  "setup.done.title": {
+    "message": "سب تیار ہے!",
+    "description": "Heading of the final setup screen",
+    "_machine_translated": true,
+    "_source_hash": "420d0b876f5f7bba"
+  },
+  "setup.done.connected_named_html": {
+    "message": "<p><strong>Spotify سے بطور {name} کنیکٹ ہو گیا۔</strong></p>",
+    "description": "Final setup screen headline. {name} is the user's Spotify display name.",
+    "_machine_translated": true,
+    "_source_hash": "1fc1cc8c237e8033"
+  },
+  "setup.done.connected_html": {
+    "message": "<p><strong>Spotify کنیکٹ ہو گیا ہے۔</strong></p>",
+    "description": "Final setup screen headline when the Spotify display name is unknown",
+    "_machine_translated": true,
+    "_source_hash": "25a68bfc97e2ba65"
+  },
+  "setup.done.tips_html": {
+    "message": "<p>جو چل رہا ہے وہ دیکھنے کے لیے Kage کی فلوٹنگ ونڈو میں <code>{trigger}</code> ٹائپ کریں، یا کوئی گانا چلانے کے لیے <code>{trigger} play</code> کے ساتھ گانے کا نام لکھیں۔ آپ اسسٹنٹ سے براہِ راست بھی کہہ سکتے ہیں، مثلاً “کچھ lofi beats چلاؤ”۔ جب بھی موسیقی چل رہی ہو، فلوٹنگ ونڈو میں ناؤ پلیئنگ بار نظر آتی ہے۔</p>",
+    "description": "Tips on the final setup screen. {trigger} is the user's trigger word (default 'sp'); keep the <code> parts unchanged.",
+    "_machine_translated": true,
+    "_source_hash": "dd8850638e22b0b1"
+  },
+  "setup.done.finish.label": {
+    "message": "مکمل کریں",
+    "description": "Button on the final setup screen; shows the regular settings",
+    "_machine_translated": true,
+    "_source_hash": "8d1ced20b0446717"
+  },
+  "signin.error.denied": {
+    "message": "⚠️ Spotify کے صفحے پر رسائی کی اجازت نہیں دی گئی، اس لیے Kage منسلک نہیں ہو سکتا۔ دوبارہ کوشش کریں اور Agree پر کلک کریں۔",
+    "description": "Sign-in failed because the user clicked Cancel on Spotify's permission page. 'Agree' is the button on that page.",
+    "_machine_translated": true,
+    "_source_hash": "3066f9decce65547"
+  },
+  "signin.error.state": {
+    "message": "⚠️ سائن ان کا یہ جواب اس درخواست سے مطابقت نہیں رکھتا (ممکن ہے یہ کسی پرانی کوشش کا ہو)۔ براہ کرم دوبارہ کوشش کریں۔",
+    "description": "Sign-in failed: the browser redirect didn't belong to the current attempt",
+    "_machine_translated": true,
+    "_source_hash": "3258d45a40ada774"
+  },
+  "signin.error.network": {
+    "message": "⚠️ Spotify سے رابطہ نہیں ہو سکا۔ اپنا انٹرنیٹ کنکشن چیک کریں اور دوبارہ کوشش کریں۔",
+    "description": "Sign-in failed: network error",
+    "_machine_translated": true,
+    "_source_hash": "b316c47263b356d2"
+  },
+  "signin.error.oauth": {
+    "message": "⚠️ Spotify نے ایک مسئلے کی اطلاع دی ({error})۔ براہ کرم دوبارہ کوشش کریں۔",
+    "description": "Sign-in failed with an error from Spotify. {error} is Spotify's error code, in English.",
+    "_machine_translated": true,
+    "_source_hash": "2eddcefc790336f6"
+  },
+  "signin.error.unknown": {
+    "message": "⚠️ منسلک نہیں ہو سکا: {message}",
+    "description": "Sign-in failed for an unexpected reason. {message} is a technical detail, in English.",
+    "_machine_translated": true,
+    "_source_hash": "8c87addbb62d1c4b"
   }
 }

@@ -293,36 +293,6 @@
     "_machine_translated": true,
     "_source_hash": "d0fcd903dec290c3"
   },
-  "settings.app.intro_html": {
-    "message": "Spotify는 모든 앱에 자체 <strong>Client ID</strong>를 등록하도록 요구합니다. <a href=\"https://developer.spotify.com/dashboard\">developer.spotify.com/dashboard</a>에서 무료로 생성하세요(<em>Create app</em>을 클릭하고 이름을 자유롭게 지정한 뒤 <em>Web API</em>를 체크합니다). Redirect URI로 <code>http://127.0.0.1:8080/spotify/callback</code>을 추가하세요. 포트는 무엇이든 상관없으며, Spotify는 하나가 있기만 하면 됩니다. 발급된 Client ID를 복사하여 아래에 붙여넣으세요.",
-    "description": "Settings: app setup instructions",
-    "_machine_translated": true,
-    "_source_hash": "177c4bb9f2055193"
-  },
-  "settings.client_id.label": {
-    "message": "Client ID",
-    "description": "Settings: Client ID input label",
-    "_machine_translated": true,
-    "_source_hash": "88c50480decaca58"
-  },
-  "settings.client_id.placeholder": {
-    "message": "여기에 Spotify client_id를 붙여 넣으세요",
-    "description": "Settings: Client ID placeholder",
-    "_machine_translated": true,
-    "_source_hash": "00365c0104e05fb3"
-  },
-  "settings.client_id.description": {
-    "message": "이 컴퓨터에만 저장됩니다. 로그인할 때 Spotify로만 전송되며 다른 곳으로는 전송되지 않습니다.",
-    "description": "Settings: Client ID description",
-    "_machine_translated": true,
-    "_source_hash": "74280ec7c0552793"
-  },
-  "settings.save_client_id.label": {
-    "message": "Client ID 저장",
-    "description": "Settings: save client id button",
-    "_machine_translated": true,
-    "_source_hash": "1b31bf8b9640a2bc"
-  },
   "settings.section.connection": {
     "message": "연결",
     "description": "Settings section: connection",
@@ -341,24 +311,6 @@
     "_machine_translated": true,
     "_source_hash": "fdc13580729a4adc"
   },
-  "settings.connection.not_connected": {
-    "message": "아직 로그인되지 않았습니다. <strong>Connect</strong>를 클릭하여 Spotify에 로그인하세요.",
-    "description": "Settings: not connected text",
-    "_machine_translated": true,
-    "_source_hash": "210fcedbc5081420"
-  },
-  "settings.connection.no_client_id": {
-    "message": "먼저 위에 Client ID를 붙여넣은 후 여기로 돌아와 연결하세요.",
-    "description": "Settings: needs client ID first",
-    "_machine_translated": true,
-    "_source_hash": "3316be227daf1055"
-  },
-  "settings.connect.label_connect": {
-    "message": "연결",
-    "description": "Settings: connect button",
-    "_machine_translated": true,
-    "_source_hash": "f2e6d94ff6eceff2"
-  },
   "settings.connect.label_reconnect": {
     "message": "다시 연결",
     "description": "Settings: reconnect button",
@@ -372,10 +324,10 @@
     "_source_hash": "ccc6a1247a0bc31c"
   },
   "settings.disconnect.confirm": {
-    "message": "Spotify에서 로그아웃하시겠습니까? 재생 단축키를 사용하려면 다시 로그인해야 합니다.",
-    "description": "Confirmation prompt before signing out",
+    "message": "Spotify에서 로그아웃하시겠습니까? Kage에 저장된 Client ID도 삭제되므로 다시 연결하려면 설정을 처음부터 진행해야 합니다.",
+    "description": "Confirmation prompt before signing out. Signing out also deletes the saved Client ID, so the settings page returns to the guided setup.",
     "_machine_translated": true,
-    "_source_hash": "9dd32ff7ac62f6bb"
+    "_source_hash": "c9ddd7027ee62344"
   },
   "settings.validate.trigger_required": {
     "message": "트리거 단어는 필수입니다.",
@@ -389,35 +341,11 @@
     "_machine_translated": true,
     "_source_hash": "69d9b6a61cce96e9"
   },
-  "action.save_client_id.empty": {
-    "message": "⚠️ 먼저 Client ID를 붙여넣으세요.",
-    "description": "Status when Client ID input is empty",
-    "_machine_translated": true,
-    "_source_hash": "dae11461665c6476"
-  },
-  "action.save_client_id.invalid": {
-    "message": "⚠️ 유효한 Spotify Client ID가 아닌 것 같습니다.",
-    "description": "Status when Client ID format invalid",
-    "_machine_translated": true,
-    "_source_hash": "e696470bcef2160e"
-  },
-  "action.save_client_id.success": {
-    "message": "✅ Client ID가 저장되었습니다.",
-    "description": "Status when Client ID is saved",
-    "_machine_translated": true,
-    "_source_hash": "f75eefe56c7a28c0"
-  },
   "action.connect.success": {
     "message": "✅ 연결되었습니다. 재생 중일 때 현재 재생 바가 표시됩니다.",
     "description": "Status after a successful connect",
     "_machine_translated": true,
     "_source_hash": "31fe35562a8c271b"
-  },
-  "action.connect.error": {
-    "message": "⚠️ {message}",
-    "description": "Status with error after a failed connect",
-    "_machine_translated": true,
-    "_source_hash": "b0d53e592dd2232c"
   },
   "action.disconnect.success": {
     "message": "✅ 로그아웃되었습니다.",
@@ -534,10 +462,10 @@
     "_source_hash": "3f096cf0735591ab"
   },
   "action.check_connection.no_client_id": {
-    "message": "⚠️ 아직 저장된 Client ID가 없습니다. 먼저 위에 붙여넣으십시오.",
-    "description": "Status when checking connection without a client_id",
+    "message": "⚠️ 저장된 Client ID가 없으므로 먼저 설정을 실행해야 합니다.",
+    "description": "Status when a settings action needs a Client ID but none is saved (for example after signing out from the launcher). The page then switches to the guided setup.",
     "_machine_translated": true,
-    "_source_hash": "30500a2d3fcb5cbf"
+    "_source_hash": "9b299672f973aeb2"
   },
   "action.check_connection.not_signed_in": {
     "message": "⚠️ 로그인되어 있지 않습니다. 연결을 클릭하여 Spotify에 로그인하십시오.",
@@ -594,9 +522,327 @@
     "_source_hash": "ca8161f663aa319a"
   },
   "error.no_client_id": {
-    "message": "Spotify가 아직 설정되지 않았습니다. 설정 → 확장 → Spotify에서 Client ID를 추가한 후 다시 시도하십시오.",
-    "description": "Launcher-facing error when a Spotify command runs before a Client ID has been saved. Avoids the raw 'client_id' identifier (log-only jargon) and points at the settings path; the settings window itself uses action.check_connection.no_client_id ('paste one above').",
+    "message": "Spotify가 아직 설정되지 않았습니다. 설정 → 확장 프로그램 → Spotify에서 설정 단계를 완료한 후 다시 시도하십시오.",
+    "description": "Launcher-facing error when a Spotify command runs before setup is done. Points at the extension's settings page, which walks the user through setup. Avoids the raw 'client_id' identifier (log-only jargon).",
     "_machine_translated": true,
-    "_source_hash": "eb02f1d2309fbbf9"
+    "_source_hash": "1114823827e8c35d"
+  },
+  "settings.app.client_id_html": {
+    "message": "Client ID <code>{client_id}</code>의 Spotify 앱을 통해 연결되어 있습니다.",
+    "description": "Regular settings, 'Spotify app' section. {client_id} is the user's Client ID. Keep the <code> tags.",
+    "_machine_translated": true,
+    "_source_hash": "bc6dd833c27471c4"
+  },
+  "settings.rerun_setup.label": {
+    "message": "설정 다시 실행",
+    "description": "Button that restarts the guided setup, e.g. to switch to a different Spotify app",
+    "_machine_translated": true,
+    "_source_hash": "5bf792a7c650c79a"
+  },
+  "settings.rerun_setup.description": {
+    "message": "설정 단계를 다시 진행합니다. 예를 들어 다른 Spotify 앱으로 전환할 때 사용합니다.",
+    "description": "Help text above the 'Run setup again' button",
+    "_machine_translated": true,
+    "_source_hash": "c9897b5b9cc86d49"
+  },
+  "settings.connect.error.timeout": {
+    "message": "⚠️ 5분 이내에 Spotify에서 Kage로 돌아오지 않았습니다. 브라우저에 INVALID_CLIENT 오류가 표시되었다면 설정 다시 실행을 클릭하여 앱의 Client ID와 Redirect URI를 확인하십시오.",
+    "description": "Reconnect (regular settings) gave up waiting for the browser. INVALID_CLIENT is Spotify's literal error text and must stay in English; 'Run setup again' is a button label.",
+    "_machine_translated": true,
+    "_source_hash": "4c4d4f3339062e1a"
+  },
+  "settings.connect.error.app": {
+    "message": "❌ Spotify가 앱 설정을 거부했습니다. 설정 다시 실행을 클릭하여 Client ID와 Redirect URI를 확인하십시오.",
+    "description": "Reconnect (regular settings) failed because Spotify doesn't accept the Client ID or Redirect URI. 'Run setup again' is a button label.",
+    "_machine_translated": true,
+    "_source_hash": "34fa3a0b99fb931e"
+  },
+  "setup.description": {
+    "message": "이 확장 프로그램을 사용하려면 Spotify 초기 설정이 한 번 필요합니다. 무료 Spotify 앱을 등록한 다음 로그인하면 됩니다. 약 3분 정도 소요되며, 이 창을 닫아도 진행 상황이 저장됩니다.",
+    "description": "Intro shown above the guided setup steps",
+    "_machine_translated": true,
+    "_source_hash": "92e5caea000cacc3"
+  },
+  "setup.description_rerun": {
+    "message": "설정을 다시 실행하고 있습니다. 다시 연결할 때까지 현재 연결은 계속 작동합니다. 모든 것을 그대로 두려면 설정 취소를 클릭하십시오.",
+    "description": "Intro shown above the guided setup when the user chose 'Run setup again' while connected. 'Cancel setup' is a button label.",
+    "_machine_translated": true,
+    "_source_hash": "85fb57762131caf2"
+  },
+  "setup.step_label": {
+    "message": "{total}단계 중 {number}단계: {title}",
+    "description": "Heading of a setup step, e.g. 'Step 2 of 4: Create a Spotify app'. {title} is one of the setup.*.title strings.",
+    "_machine_translated": true,
+    "_source_hash": "06f136ef91f0abee"
+  },
+  "setup.next.label": {
+    "message": "다음",
+    "description": "Button that moves to the next setup step",
+    "_machine_translated": true,
+    "_source_hash": "1319443c427dbb68"
+  },
+  "setup.back.label": {
+    "message": "뒤로",
+    "description": "Button that returns to the previous setup step",
+    "_machine_translated": true,
+    "_source_hash": "2140f60e13dff227"
+  },
+  "setup.cancel.label": {
+    "message": "설정 취소",
+    "description": "Button that leaves a re-run of the setup and returns to the regular settings, changing nothing",
+    "_machine_translated": true,
+    "_source_hash": "d36bfa990adfdd2d"
+  },
+  "setup.open_dashboard_again.label": {
+    "message": "대시보드 다시 열기",
+    "description": "Secondary button that reopens the Spotify Developer Dashboard in the browser",
+    "_machine_translated": true,
+    "_source_hash": "d9aed20416235e11"
+  },
+  "setup.not_using_html": {
+    "message": "Spotify를 사용하지 않으십니까? 이 페이지 상단의 버튼으로 이 확장 프로그램을 끌 수 있습니다.",
+    "description": "Hint on the first setup step for users who don't want the extension",
+    "_machine_translated": true,
+    "_source_hash": "bc30130633af556a"
+  },
+  "setup.dashboard.title": {
+    "message": "Spotify Developer Dashboard 열기",
+    "description": "Title of setup step 1",
+    "_machine_translated": true,
+    "_source_hash": "eeb134b835a4e3c3"
+  },
+  "setup.dashboard.body_html": {
+    "message": "<p>Spotify는 <em>사용자가 직접</em> 등록한 앱을 통해서만 Kage 같은 앱이 음악을 제어할 수 있도록 허용합니다. 무료이며 한 번만 하면 되고, Spotify 로그인 정보만 있으면 됩니다.</p><p><strong>Spotify Dashboard 열기</strong>를 클릭하십시오. 브라우저에서 로그인하고, Spotify가 요청하면 개발자 약관에 동의하십시오. 그런 다음 여기로 돌아와 다음 단계를 진행하십시오.</p>",
+    "description": "Body of setup step 1. 'Open Spotify Dashboard' is the button label below it. Keep the HTML tags.",
+    "_machine_translated": true,
+    "_source_hash": "f91342798ceefb2b"
+  },
+  "setup.dashboard.premium_html": {
+    "message": "참고: Spotify는 Premium 계정에서만 재생 제어(재생, 일시 정지, 건너뛰기)를 허용합니다. 현재 재생 중인 항목 확인은 모든 계정에서 가능합니다.",
+    "description": "Note on setup step 1 about Spotify's Premium requirement for playback control",
+    "_machine_translated": true,
+    "_source_hash": "eac6664d79f9bb4f"
+  },
+  "setup.dashboard.open.label": {
+    "message": "Spotify Dashboard 열기",
+    "description": "Primary button on setup step 1; opens developer.spotify.com/dashboard in the system browser",
+    "_machine_translated": true,
+    "_source_hash": "af4f9f9115a1ce99"
+  },
+  "setup.dashboard.opened": {
+    "message": "✅ 브라우저에서 열었습니다.",
+    "description": "Status after the Spotify Developer Dashboard was opened in the browser",
+    "_machine_translated": true,
+    "_source_hash": "84e23af093aa0b4b"
+  },
+  "setup.dashboard.open_failed": {
+    "message": "⚠️ 브라우저를 열 수 없습니다. {url}(으)로 직접 이동한 후 다음을 클릭하십시오.",
+    "description": "Status when opening the dashboard failed. {url} is the dashboard address; 'Next' is a button label.",
+    "_machine_translated": true,
+    "_source_hash": "ca8541c8056ea9f3"
+  },
+  "setup.create_app.title": {
+    "message": "Spotify 앱 만들기",
+    "description": "Title of setup step 2",
+    "_machine_translated": true,
+    "_source_hash": "c3b189ea7f1eca82"
+  },
+  "setup.create_app.body_html": {
+    "message": "<p>대시보드에서 <strong>Create app</strong>을 클릭하고 양식을 작성하십시오.</p><ol><li><strong>App name</strong> 및 <strong>App description</strong>: 원하는 내용을 입력합니다(예: “Kage”).</li><li><strong>Redirect URIs</strong>: 아래 주소를 붙여 넣고 <strong>Add</strong>를 클릭합니다.</li><li><strong>Which API/SDKs are you planning to use?</strong>에서 <strong>Web API</strong>를 선택합니다.</li><li>Spotify 약관에 동의하고 <strong>Save</strong>를 클릭합니다.</li></ol><p>이미 앱이 있으십니까? 앱의 <strong>Settings</strong>에서 Redirect URIs에 아래 주소를 추가하고 저장한 다음 <strong>다음</strong>을 클릭하십시오.</p>",
+    "description": "Body of setup step 2. Bold names in the list (Create app, App name, App description, Redirect URIs, Add, Which API/SDKs are you planning to use?, Web API, Save, Settings) are labels on Spotify's English-only dashboard: keep them in English. 'Next' is a Kage button label. Keep the HTML tags.",
+    "_machine_translated": true,
+    "_source_hash": "2011669f77118e24"
+  },
+  "setup.create_app.redirect_label": {
+    "message": "Redirect URI",
+    "description": "Label above the address the user must register in their Spotify app",
+    "_machine_translated": true,
+    "_source_hash": "287ef0973c0892c2"
+  },
+  "setup.create_app.redirect_hint_html": {
+    "message": "정확히 그대로 복사하십시오. <code>http</code>(https 아님), <code>127.0.0.1</code>(localhost 아님)를 사용하고 <code>/spotify/callback</code>으로 끝나야 합니다. 포트 번호는 일치하지 않아도 됩니다. Kage는 연결할 때마다 사용 가능한 포트를 선택하며, Spotify는 127.0.0.1에 대해 이를 허용합니다.",
+    "description": "Hint below the Redirect URI. Keep the <code> parts exactly as they are.",
+    "_machine_translated": true,
+    "_source_hash": "62cde7988d0fbad2"
+  },
+  "setup.client_id.title": {
+    "message": "Client ID 복사",
+    "description": "Title of setup step 3",
+    "_machine_translated": true,
+    "_source_hash": "ae642f912622632f"
+  },
+  "setup.client_id.body_html": {
+    "message": "<p>이제 Spotify에 앱이 표시됩니다. 앱의 <strong>Settings</strong>를 열고 영문자와 숫자로 이루어진 32자리 코드인 <strong>Client ID</strong>를 복사한 다음 아래에 붙여 넣으십시오.</p><p><strong>Client secret</strong>은 필요하지 않으므로 숨겨 둔 채로 두십시오.</p>",
+    "description": "Body of setup step 3. Settings, Client ID and Client secret are labels on Spotify's English-only dashboard: keep them in English. Keep the HTML tags.",
+    "_machine_translated": true,
+    "_source_hash": "8311c80fb529d1ef"
+  },
+  "setup.client_id.label": {
+    "message": "Client ID",
+    "description": "Label of the Client ID field (Spotify's term; keep in English if your language commonly does)",
+    "_machine_translated": true,
+    "_source_hash": "eace6d2899ea7b28"
+  },
+  "setup.client_id.placeholder": {
+    "message": "여기에 Client ID를 붙여 넣으십시오",
+    "description": "Placeholder in the empty Client ID field",
+    "_machine_translated": true,
+    "_source_hash": "3291ed3d93c259a6"
+  },
+  "setup.client_id.description": {
+    "message": "이 컴퓨터에만 저장되며 Spotify 외에는 어디에도 전송되지 않습니다.",
+    "description": "Help text under the Client ID field",
+    "_machine_translated": true,
+    "_source_hash": "d8dd5f8b2422eb1f"
+  },
+  "setup.client_id.description_connected": {
+    "message": "이 컴퓨터에만 저장됩니다. 다른 Client ID를 저장하면 현재 Spotify 연결에서 로그아웃됩니다.",
+    "description": "Help text under the Client ID field when setup is re-run while connected",
+    "_machine_translated": true,
+    "_source_hash": "7e2190b8a34854aa"
+  },
+  "setup.client_id.save.label": {
+    "message": "저장 후 계속",
+    "description": "Primary button on setup step 3: checks and saves the Client ID",
+    "_machine_translated": true,
+    "_source_hash": "a7d9d9aa42e69094"
+  },
+  "setup.client_id.error.empty": {
+    "message": "⚠️ 먼저 Client ID를 붙여 넣으십시오. Spotify 대시보드에서 앱의 Settings 페이지에 있습니다.",
+    "description": "Validation error: the Client ID field is empty",
+    "_machine_translated": true,
+    "_source_hash": "12060da5725dba1e"
+  },
+  "setup.client_id.error.url": {
+    "message": "⚠️ Client ID가 아니라 웹 주소입니다. 앱의 Settings 페이지에서 Client ID 아래에 표시된 코드를 복사하십시오.",
+    "description": "Validation error: the user pasted a URL instead of the Client ID",
+    "_machine_translated": true,
+    "_source_hash": "3d53548a3bb46dd2"
+  },
+  "setup.client_id.error.format": {
+    "message": "⚠️ Client ID 형식이 아닌 것 같습니다. Client ID는 영문자와 숫자로 이루어진 32자리 코드입니다. 공백 없이 전체를 복사했는지 확인하십시오.",
+    "description": "Validation error: the pasted text has the wrong shape for a Spotify Client ID",
+    "_machine_translated": true,
+    "_source_hash": "ec948ab3f15a7f4d"
+  },
+  "setup.client_id.error.unknown_client": {
+    "message": "❌ Spotify에서 이 Client ID를 인식하지 못합니다. 앱의 Settings 페이지에서 Client ID(Client secret 아님)를 복사한 후 다시 시도하십시오.",
+    "description": "Error: Spotify confirmed that no app has this Client ID (typo, or the Client secret was pasted)",
+    "_machine_translated": true,
+    "_source_hash": "c579dd476cef5580"
+  },
+  "setup.connect.title": {
+    "message": "Spotify 계정 연결",
+    "description": "Title of setup step 4",
+    "_machine_translated": true,
+    "_source_hash": "1059715fa8499342"
+  },
+  "setup.connect.body_html": {
+    "message": "<p><strong>Spotify에 연결</strong>을 클릭하십시오. 브라우저에서 Spotify 권한 페이지가 열립니다. 요청 시 로그인한 다음 <strong>Agree</strong>를 클릭하십시오. 이후 이 화면으로 돌아오면 Kage가 자동으로 설정을 완료합니다.</p>",
+    "description": "Body of setup step 4. 'Connect to Spotify' is the button below; 'Agree' is the button on Spotify's page. Keep the HTML tags.",
+    "_machine_translated": true,
+    "_source_hash": "a8684f238d748e79"
+  },
+  "setup.connect.notice_revoked_html": {
+    "message": "<strong>Spotify 로그인이 만료되었거나 취소되었습니다.</strong> 앱 정보는 그대로 저장되어 있으므로 다시 연결하기만 하면 됩니다.",
+    "description": "Shown on setup step 4 when the user was sent back there because Spotify no longer accepts the saved sign-in",
+    "_machine_translated": true,
+    "_source_hash": "dde800c3b8753aee"
+  },
+  "setup.connect.button": {
+    "message": "Spotify에 연결",
+    "description": "Primary button on setup step 4: starts the browser sign-in",
+    "_machine_translated": true,
+    "_source_hash": "0208cc013489fada"
+  },
+  "setup.connect.trouble_label": {
+    "message": "브라우저에 오류가 표시되는 경우",
+    "description": "Label of the troubleshooting list on setup step 4",
+    "_machine_translated": true,
+    "_source_hash": "d7c61792fcd6fed2"
+  },
+  "setup.connect.trouble_html": {
+    "message": "<ul><li><strong>INVALID_CLIENT: Invalid redirect URI</strong> — 앱에 Kage의 Redirect URI가 등록되어 있지 않습니다. <strong>뒤로</strong>를 두 번 클릭하고 Spotify의 앱에 <code>{uri}</code>를 추가한 다음 그곳에서 Save를 클릭하십시오.</li><li><strong>INVALID_CLIENT: Invalid client</strong> — Spotify에서 이 Client ID를 알 수 없습니다. <strong>뒤로</strong>를 클릭하고 다시 붙여 넣으십시오.</li></ul>",
+    "description": "Troubleshooting list on setup step 4. The bold INVALID_CLIENT lines are Spotify's literal English error texts: keep them unchanged. 'Back' is a button label. {uri} is the Redirect URI. Keep the HTML tags.",
+    "_machine_translated": true,
+    "_source_hash": "73a86ddcd20e361e"
+  },
+  "setup.connect.error.timeout": {
+    "message": "⚠️ 5분 이내에 Spotify에서 Kage로 돌아오지 않았습니다. 브라우저에 “Invalid redirect URI”가 표시되었다면 뒤로를 두 번 클릭하고 Spotify 앱의 Redirect URI를 수정하십시오. “Invalid client”가 표시되었다면 뒤로를 클릭하고 Client ID를 확인하십시오. 그 밖의 경우에는 Spotify에 연결을 클릭하여 다시 시도하십시오.",
+    "description": "Setup step 4: the sign-in gave up waiting for the browser. 'Invalid redirect URI' and 'Invalid client' are Spotify's literal English error texts. 'Back' and 'Connect to Spotify' are button labels.",
+    "_machine_translated": true,
+    "_source_hash": "eb849ba902ab7a4a"
+  },
+  "setup.connect.error.bad_client": {
+    "message": "❌ Spotify에서 이 Client ID를 인식하지 못합니다. 뒤로를 클릭하고 앱의 Settings 페이지에서 Client ID(Client secret 아님)를 붙여 넣으십시오.",
+    "description": "Setup step 4: Spotify rejected the Client ID. 'Back' is a button label.",
+    "_machine_translated": true,
+    "_source_hash": "46d13b9a734ea338"
+  },
+  "setup.connect.error.redirect": {
+    "message": "❌ Spotify에서 Redirect URI를 거부했습니다. 뒤로를 두 번 클릭하고 Spotify 앱에 {uri}가 정확히 등록되어 있는지 확인한 다음, Spotify에서 Save를 클릭하고 다시 시도하십시오.",
+    "description": "Setup step 4: Spotify rejected the Redirect URI. {uri} is the address to register. 'Back' is a button label.",
+    "_machine_translated": true,
+    "_source_hash": "520c92aabf30b5b9"
+  },
+  "setup.done.title": {
+    "message": "설정 완료!",
+    "description": "Heading of the final setup screen",
+    "_machine_translated": true,
+    "_source_hash": "420d0b876f5f7bba"
+  },
+  "setup.done.connected_named_html": {
+    "message": "<p><strong>{name}(으)로 Spotify에 연결되었습니다.</strong></p>",
+    "description": "Final setup screen headline. {name} is the user's Spotify display name.",
+    "_machine_translated": true,
+    "_source_hash": "1fc1cc8c237e8033"
+  },
+  "setup.done.connected_html": {
+    "message": "<p><strong>Spotify가 연결되었습니다.</strong></p>",
+    "description": "Final setup screen headline when the Spotify display name is unknown",
+    "_machine_translated": true,
+    "_source_hash": "25a68bfc97e2ba65"
+  },
+  "setup.done.tips_html": {
+    "message": "<p>Kage의 플로팅 창에 <code>{trigger}</code>를 입력하면 현재 재생 중인 곡을 확인할 수 있고, <code>{trigger} play</code>와 노래 제목을 입력하면 해당 곡을 재생할 수 있습니다. “lofi 음악 틀어 줘”처럼 어시스턴트에게 직접 요청할 수도 있습니다. 음악이 재생 중일 때는 플로팅 창에 재생 정보 표시줄이 나타납니다.</p>",
+    "description": "Tips on the final setup screen. {trigger} is the user's trigger word (default 'sp'); keep the <code> parts unchanged.",
+    "_machine_translated": true,
+    "_source_hash": "dd8850638e22b0b1"
+  },
+  "setup.done.finish.label": {
+    "message": "완료",
+    "description": "Button on the final setup screen; shows the regular settings",
+    "_machine_translated": true,
+    "_source_hash": "8d1ced20b0446717"
+  },
+  "signin.error.denied": {
+    "message": "⚠️ Spotify 페이지에서 액세스가 허용되지 않아 Kage를 연결할 수 없습니다. 다시 시도한 후 동의를 클릭하십시오.",
+    "description": "Sign-in failed because the user clicked Cancel on Spotify's permission page. 'Agree' is the button on that page.",
+    "_machine_translated": true,
+    "_source_hash": "3066f9decce65547"
+  },
+  "signin.error.state": {
+    "message": "⚠️ 로그인 응답이 현재 요청과 일치하지 않습니다(이전 시도의 응답일 수 있습니다). 다시 시도하십시오.",
+    "description": "Sign-in failed: the browser redirect didn't belong to the current attempt",
+    "_machine_translated": true,
+    "_source_hash": "3258d45a40ada774"
+  },
+  "signin.error.network": {
+    "message": "⚠️ Spotify에 연결할 수 없습니다. 인터넷 연결을 확인한 후 다시 시도하십시오.",
+    "description": "Sign-in failed: network error",
+    "_machine_translated": true,
+    "_source_hash": "b316c47263b356d2"
+  },
+  "signin.error.oauth": {
+    "message": "⚠️ Spotify에서 문제가 보고되었습니다({error}). 다시 시도하십시오.",
+    "description": "Sign-in failed with an error from Spotify. {error} is Spotify's error code, in English.",
+    "_machine_translated": true,
+    "_source_hash": "2eddcefc790336f6"
+  },
+  "signin.error.unknown": {
+    "message": "⚠️ 연결할 수 없습니다: {message}",
+    "description": "Sign-in failed for an unexpected reason. {message} is a technical detail, in English.",
+    "_machine_translated": true,
+    "_source_hash": "8c87addbb62d1c4b"
   }
 }

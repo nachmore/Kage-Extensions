@@ -8,6 +8,7 @@
 // Storage keys (extension-data, sandboxed):
 //   creds.json    — { refresh_token, expires_at, access_token, scopes }
 //   client.json   — { client_id }   (user-pasted; never logged)
+//   setup.json    — guided-setup progress (owned by settings.js / setup.js)
 //
 // We never store the client_id in the manifest because Spotify's PKCE
 // flow allows public client_ids (no secret). Each user creates their own
@@ -147,6 +148,9 @@ export async function clearAll() {
     await _ctx.invoke('delete_extension_data', { key: 'creds' });
     await _ctx.invoke('delete_extension_data', { key: 'client' });
     await _ctx.invoke('delete_extension_data', { key: 'device' });
+    // Half-finished setup progress goes too: with the Client ID gone, the
+    // settings page restarts the guided setup from step 1.
+    await _ctx.invoke('delete_extension_data', { key: 'setup' });
     _cachedToken = null;
     // No creds → nothing to be revoked; a stale marker would make the
     // settings panel say "session expired" instead of "not signed in".
@@ -354,7 +358,103 @@ export async function checkConnection() {
 
 // ---- Sign-in flow ----
 
-export async function startSignIn() {
+/**
+ * Ask Spotify whether a Client ID exists, without signing in.
+ *
+ * Posts an authorization-code exchange with a deliberately bogus code.
+ * Spotify identifies the client before it looks at the code, so the reply
+ * tells the two cases apart (verified against accounts.spotify.com):
+ *   - unknown client → 400 {"error":"invalid_client"}
+ *   - known client   → 400 {"error":"invalid_grant"} (the bogus code)
+ * This lets the setup wizard reject a mistyped Client ID, or a pasted Client
+ * secret, before the user goes to the browser. Otherwise the mistake only
+ * shows up as an "INVALID_CLIENT" page there, which never redirects back.
+ * Nothing is granted or stored. The call only fails closed on a definitive
+ * `invalid_client`; offline or any other reply returns 'unverified', so a
+ * Spotify outage can never block setup.
+ *
+ * @returns {Promise<'ok'|'unknown_client'|'unverified'>}
+ */
+export async function verifyClientId(clientId) {
+    const body = new URLSearchParams({
+        grant_type: 'authorization_code',
+        code: 'kage-client-id-check',
+        redirect_uri: 'http://127.0.0.1:8080/spotify/callback',
+        client_id: clientId,
+        code_verifier: makeVerifier(),
+    });
+    let text;
+    try {
+        const resp = await fetchWithTimeout(`${SPOTIFY_AUTH_BASE}/api/token`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: body.toString(),
+        });
+        text = await resp.text();
+    } catch {
+        return 'unverified';
+    }
+    let parsed = null;
+    try {
+        parsed = JSON.parse(text);
+    } catch {
+        return 'unverified';
+    }
+    if (parsed?.error === 'invalid_client') return 'unknown_client';
+    return parsed?.error ? 'ok' : 'unverified';
+}
+
+function signInError(message, code, extra = {}) {
+    const err = new Error(message);
+    err.code = code;
+    Object.assign(err, extra);
+    return err;
+}
+
+function cancelledError() {
+    return signInError('Spotify sign-in cancelled.', 'cancelled');
+}
+
+/** Resolve/reject with `promise`, or reject as cancelled once `signal` aborts. */
+function untilAborted(promise, signal) {
+    if (!signal) return promise;
+    return new Promise((resolve, reject) => {
+        const onAbort = () => reject(cancelledError());
+        if (signal.aborted) {
+            onAbort();
+            return;
+        }
+        signal.addEventListener('abort', onAbort, { once: true });
+        promise.then(
+            (v) => {
+                signal.removeEventListener('abort', onAbort);
+                resolve(v);
+            },
+            (e) => {
+                signal.removeEventListener('abort', onAbort);
+                reject(e);
+            }
+        );
+    });
+}
+
+/**
+ * Run the PKCE + loopback sign-in. Resolves true once creds are stored.
+ *
+ * Failures carry a `code` so callers can explain them (see
+ * setup.classifySignInError): 'no_client_id', 'cancelled', 'oauth_denied'
+ * (the user clicked Cancel on Spotify's page), 'oauth_error' (`oauthError`
+ * holds Spotify's error), 'state_mismatch', 'no_code', 'token_exchange'
+ * (`status`, `oauthError`, `oauthDescription`) and 'loopback' (Kage's
+ * listener gave up, i.e. timed out). Messages stay English: they're for logs.
+ *
+ * @param {object} [opts]
+ * @param {AbortSignal} [opts.signal] Abandons the wait for the browser
+ *   redirect, rejecting with code 'cancelled'. The settings page aborts
+ *   when the user navigates away from the connect step mid-sign-in.
+ */
+export async function startSignIn({ signal } = {}) {
+    if (signal?.aborted) throw cancelledError();
     const clientId = await getClientId();
     if (!clientId) {
         // Coded so callers can surface a contextual, localised message
@@ -371,11 +471,24 @@ export async function startSignIn() {
     //    that we register with Spotify on this attempt.
     const start = await _ctx.invoke('oauth_loopback_start', {
         args: {
+            // Must match setup.js REDIRECT_PATH (the URI users register).
             redirect_path: '/spotify/callback',
+            // The setup wizard's timeout message says "5 minutes".
             timeout_secs: 300,
             success_label: 'Spotify',
         },
     });
+    const cancelListener = async () => {
+        try {
+            await _ctx.invoke('oauth_loopback_cancel', {
+                args: { listener_id: start.listener_id },
+            });
+        } catch {}
+    };
+    if (signal?.aborted) {
+        await cancelListener();
+        throw cancelledError();
+    }
 
     // 2. Build the auth URL. PKCE: hash the verifier into the challenge,
     //    keep the verifier locally so we can redeem the code later.
@@ -402,32 +515,39 @@ export async function startSignIn() {
     //    here even from a fresh tab.
     let result;
     try {
-        result = await _ctx.invoke('oauth_loopback_await', {
-            args: { listener_id: start.listener_id },
-        });
+        result = await untilAborted(
+            _ctx.invoke('oauth_loopback_await', {
+                args: { listener_id: start.listener_id },
+            }),
+            signal
+        );
     } catch (e) {
         // Cancel just in case the start succeeded but the await failed —
         // makes the error surface cleanly without leaking listeners.
-        try {
-            await _ctx.invoke('oauth_loopback_cancel', {
-                args: { listener_id: start.listener_id },
-            });
-        } catch {}
+        await cancelListener();
+        if (e?.code === 'cancelled') throw e;
+        if (e && typeof e === 'object' && !e.code) e.code = 'loopback';
         throw e;
     }
 
     const params2 = result.params || {};
     if (params2.error) {
-        throw new Error(`Spotify rejected the request: ${params2.error}`);
+        const oauthError = String(params2.error);
+        throw signInError(
+            `Spotify rejected the request: ${oauthError}`,
+            oauthError === 'access_denied' ? 'oauth_denied' : 'oauth_error',
+            { oauthError }
+        );
     }
     if (params2.state !== state) {
-        throw new Error(
-            'OAuth state mismatch — refusing to redeem the code. Try connecting again.'
+        throw signInError(
+            'OAuth state mismatch — refusing to redeem the code. Try connecting again.',
+            'state_mismatch'
         );
     }
     const code = params2.code;
     if (!code) {
-        throw new Error('Spotify redirect arrived without a code.');
+        throw signInError('Spotify redirect arrived without a code.', 'no_code');
     }
 
     // 5. Exchange code for refresh + access token.
@@ -445,7 +565,22 @@ export async function startSignIn() {
     });
     if (!tokenResp.ok) {
         const text = await tokenResp.text();
-        throw new Error(`Token exchange failed: ${tokenResp.status} ${text.slice(0, 200)}`);
+        let parsed = null;
+        try {
+            parsed = JSON.parse(text);
+        } catch {
+            /* not JSON */
+        }
+        throw signInError(
+            `Token exchange failed: ${tokenResp.status} ${text.slice(0, 200)}`,
+            'token_exchange',
+            {
+                status: tokenResp.status,
+                oauthError: typeof parsed?.error === 'string' ? parsed.error : '',
+                oauthDescription:
+                    typeof parsed?.error_description === 'string' ? parsed.error_description : '',
+            }
+        );
     }
     const tok = await tokenResp.json();
     const expiresAt = Date.now() + (tok.expires_in - 30) * 1000;
