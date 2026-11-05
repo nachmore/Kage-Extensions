@@ -16,9 +16,15 @@ import { DEFAULTS } from './defaults.js';
 
 const STORAGE_KEY = 'kage-todos';
 
-// How long a "Delete …?" question stays up for its query. Past this, the
-// query shows its list again (the question was abandoned).
-const CONFIRM_TTL_MS = 2 * 60_000;
+// How long the query a "Delete …?" question was asked from keeps
+// answering with that question; past it the query shows its list again.
+// The host re-runs the query about 100 ms after the Enter, so this only
+// needs to cover that. Keep it short: nothing tells the provider a
+// question was abandoned (hiding the window with Esc never calls
+// match()), so until it runs out, reopening and typing the same query
+// brings the old question back. Rows already on screen don't depend on
+// it: Enter on "Delete …?" deletes however long it has been up.
+const CONFIRM_TTL_MS = 15_000;
 
 const normQuery = (q) => String(q ?? '').trim().toLowerCase();
 

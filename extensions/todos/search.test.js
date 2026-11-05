@@ -262,12 +262,25 @@ describe('TodosSearchProvider — confirm_delete', () => {
             expect(provider.match('todo-').some((r) => r.data?.action === 'confirm_delete')).toBe(false);
         });
 
-        it('an abandoned question expires', async () => {
+        it('an abandoned question expires after 15 s', async () => {
             vi.useFakeTimers();
             const { provider } = await ready();
             provider.execute(deleteRow(provider, 'todo-', 'a'));
-            vi.advanceTimersByTime(3 * 60_000);
+            vi.advanceTimersByTime(14_000);
+            expect(provider.match('todo-')[0].data.action).toBe('confirm_delete');
+            vi.advanceTimersByTime(2_000);
             expect(provider.match('todo-').some((r) => r.data?.action === 'confirm_delete')).toBe(false);
+        });
+
+        it('the question rows still answer after it expires', async () => {
+            vi.useFakeTimers();
+            const { provider, saved } = await ready();
+            provider.execute(deleteRow(provider, 'todo-', 'a'));
+            const yes = top(provider.match('todo-'));
+            // Read the question for a minute, then press Enter on it.
+            vi.advanceTimersByTime(60_000);
+            provider.execute(yes);
+            expect(saved()).toEqual(['b', 'c', 'd']);
         });
 
         it('a todo removed meanwhile drops the question', async () => {
