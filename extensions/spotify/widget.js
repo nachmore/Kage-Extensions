@@ -89,7 +89,9 @@ export default class SpotifyNowPlayingWidget {
     }
 
     getRefreshInterval() {
-        if (!this.config.show_now_playing_bar) return 0;
+        // `=== false`, not falsy: a config saved without this key (older
+        // version) must keep the manifest default (on), not hide the bar.
+        if (this.config.show_now_playing_bar === false) return 0;
         const s = Number(this.config.refresh_seconds);
         // Default 15s — a balance between "feels live" and "doesn't
         // hammer Spotify's rate limit." Spotify doesn't publish exact
@@ -127,7 +129,7 @@ export default class SpotifyNowPlayingWidget {
     async render() {
         // Every path that doesn't end in "audio is playing" releases the
         // mascot lease — we only ever hold it while we can see playback.
-        if (!this.config.show_now_playing_bar) {
+        if (this.config.show_now_playing_bar === false) {
             this._mascotActivity(false);
             return this._hide();
         }

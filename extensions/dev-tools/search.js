@@ -59,13 +59,17 @@ export default class DevToolsSearchProvider {
 
 function matchDevTool(input, config, t) {
     const lower = input.toLowerCase().trim();
+    // Every tool defaults to on (manifest `config`). Test `!== false` rather
+    // than truthiness so a key missing from a saved config (e.g. saved by an
+    // older version) keeps the default instead of silently turning off.
+    const on = (key) => config[key] !== false;
 
-    if (config.uuid && (lower === 'uuid' || lower === 'guid' || lower === 'uuid4')) {
+    if (on('uuid') && (lower === 'uuid' || lower === 'guid' || lower === 'uuid4')) {
         const uuid = crypto.randomUUID();
         return { type: 'devtool', label: t('result.uuid.label'), icon: '🔑', value: uuid, description: t('result.copy_hint') };
     }
 
-    if (config.base64 && /^(base64|b64)\s+.+/i.test(lower)) {
+    if (on('base64') && /^(base64|b64)\s+.+/i.test(lower)) {
         const text = input.replace(/^(base64|b64)\s+/i, '');
         try {
             const encoded = btoa(unescape(encodeURIComponent(text)));
@@ -73,7 +77,7 @@ function matchDevTool(input, config, t) {
         } catch { return null; }
     }
 
-    if (config.base64 && /^(base64d|b64d|decode)\s+.+/i.test(lower)) {
+    if (on('base64') && /^(base64d|b64d|decode)\s+.+/i.test(lower)) {
         const text = input.replace(/^(base64d|b64d|decode)\s+/i, '').trim();
         try {
             const decoded = decodeURIComponent(escape(atob(text)));
@@ -81,7 +85,7 @@ function matchDevTool(input, config, t) {
         } catch { return null; }
     }
 
-    if (config.hash && /^(md5|sha1|sha256|sha512)\s+.+/i.test(lower)) {
+    if (on('hash') && /^(md5|sha1|sha256|sha512)\s+.+/i.test(lower)) {
         const match = input.match(/^(md5|sha1|sha256|sha512)\s+(.+)/i);
         if (match) {
             const algo = match[1].toLowerCase();
@@ -90,7 +94,7 @@ function matchDevTool(input, config, t) {
         }
     }
 
-    if (config.epoch && /^\d{10,13}$/.test(lower)) {
+    if (on('epoch') && /^\d{10,13}$/.test(lower)) {
         const ts = lower.length === 13 ? parseInt(lower) : parseInt(lower) * 1000;
         const date = new Date(ts);
         if (!isNaN(date.getTime())) {
@@ -100,14 +104,14 @@ function matchDevTool(input, config, t) {
         }
     }
 
-    if (config.epoch && (lower === 'now' || lower === 'epoch' || lower === 'timestamp')) {
+    if (on('epoch') && (lower === 'now' || lower === 'epoch' || lower === 'timestamp')) {
         const now = Date.now();
         const secs = Math.floor(now / 1000);
         const local = new Date(now).toLocaleString();
         return { type: 'devtool', label: t('result.epoch_now.label'), icon: '🕐', value: secs.toString(), description: `${secs} (${local})` };
     }
 
-    if (config.json_format && (lower.startsWith('{') || lower.startsWith('['))) {
+    if (on('json_format') && (lower.startsWith('{') || lower.startsWith('['))) {
         try {
             const parsed = JSON.parse(input);
             const formatted = JSON.stringify(parsed, null, 2);

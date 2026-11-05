@@ -410,3 +410,50 @@ describe('Spotify widget — last-track holdover', () => {
         expect(mascot.clearActivity).toHaveBeenCalled();
     });
 });
+
+describe('SpotifyNowPlayingWidget — config defaults', () => {
+    beforeEach(() => {
+        vi.stubGlobal('navigator', { onLine: true });
+    });
+    afterEach(() => {
+        vi.restoreAllMocks();
+        vi.unstubAllGlobals();
+        delete globalThis.fetch;
+    });
+
+    const MANIFEST = JSON.parse(
+        readFileSync(fileURLToPath(new URL('./manifest.json', import.meta.url)), 'utf8')
+    );
+    // What the host passes a never-saved extension: the manifest defaults.
+    const manifestDefaults = () =>
+        Object.fromEntries(Object.entries(MANIFEST.config).map(([k, v]) => [k, v.default]));
+
+    // The manifest said 5s while Settings and the widget's fallback said 15s,
+    // so anyone who never saved Spotify settings polled 3x as often as the
+    // UI showed (and as the rate-limit budget in getRefreshInterval assumes).
+    it('never-saved settings poll every 15s, the interval Settings shows', () => {
+        const { widget } = setup(undefined, manifestDefaults());
+        expect(widget.getRefreshInterval()).toBe(15_000);
+    });
+
+    it('a config without show_now_playing_bar keeps the bar on (manifest default)', () => {
+        const { widget } = setup(undefined, { refresh_seconds: 15 });
+        expect(widget.getRefreshInterval()).toBe(15_000);
+    });
+
+    it('turning the bar off stops polling', () => {
+        const { widget } = setup(undefined, { show_now_playing_bar: false });
+        expect(widget.getRefreshInterval()).toBe(0);
+    });
+
+    it('honours a configured interval down to the 2s floor', () => {
+        expect(setup(undefined, { refresh_seconds: 2 }).widget.getRefreshInterval()).toBe(2_000);
+        expect(setup(undefined, { refresh_seconds: 1 }).widget.getRefreshInterval()).toBe(15_000);
+    });
+
+    it('a config without show_now_playing_bar still renders the bar', async () => {
+        const { widget } = setup(undefined, {});
+        okPlayerFetch();
+        expect(await widget.render()).not.toBeNull();
+    });
+});

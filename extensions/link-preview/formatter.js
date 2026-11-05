@@ -67,7 +67,9 @@ export default class LinkPreviewFormatter {
      * the existing HTML unchanged.
      */
     async format(html, context) {
-        if (!this.config?.enabled) return null;
+        // `=== false`, not falsy: the manifest defaults this on, and a config
+        // saved without the key must keep that default.
+        if (this.config?.enabled === false) return null;
         // Streaming chunks contain URLs mid-write; resolving against
         // them is wasteful and produces flicker. Wait for the final
         // pass.

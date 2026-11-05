@@ -37,6 +37,12 @@ describe('LinkPreviewFormatter — short-circuits', () => {
         expect(await f.format('<a href="https://example.com">x</a>', {})).toBeNull();
     });
 
+    it('treats a config without `enabled` as enabled (the manifest default)', async () => {
+        const f = setup({ config: {} });
+        const out = await f.format('<a href="https://example.com">x</a>', {});
+        expect(parse(out).querySelectorAll('.link-preview-card')).toHaveLength(1);
+    });
+
     it('returns null during streaming', async () => {
         const f = setup();
         expect(await f.format('<a href="https://example.com">x</a>', { streaming: true })).toBeNull();

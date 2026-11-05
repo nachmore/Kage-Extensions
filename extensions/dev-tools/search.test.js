@@ -39,6 +39,26 @@ describe('DevTools — UUID', () => {
     });
 });
 
+describe('DevTools — config defaults', () => {
+    // Every tool defaults to on in the manifest. A key missing from a saved
+    // config must keep that default, not read as "off".
+    it('treats a missing key as enabled', () => {
+        const p = setup({});
+        expect(row(p.match('uuid'))).not.toBeNull();
+        expect(row(p.match('b64 hi')).data.value).toBe('aGk=');
+        expect(row(p.match('1700000000'))).not.toBeNull();
+        expect(row(p.match('{"a":1}'))).not.toBeNull();
+    });
+
+    it('still honours an explicit false for each tool', () => {
+        const p = setup({ base64: false, epoch: false, json_format: false });
+        expect(p.match('b64 hi')).toEqual([]);
+        expect(p.match('1700000000')).toEqual([]);
+        expect(p.match('{"a":1}')).toEqual([]);
+        expect(row(p.match('uuid'))).not.toBeNull();
+    });
+});
+
 describe('DevTools — base64', () => {
     it('encodes text', () => {
         expect(row(setup().match('base64 hello')).data.value).toBe('aGVsbG8=');
