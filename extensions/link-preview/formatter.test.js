@@ -17,7 +17,7 @@ import { makeContext } from '../../test-helpers/mock-context.mjs';
 
 // `context.hostFeatures` of a host where `config.enabled` is the Settings
 // header's Disable/Enable switch. Without it (the default here) the host
-// predates that.
+// predates that, and `enabled` is only ever a saved value.
 const CURRENT_HOST = ['settings.copy_action', 'invoke.error_kind', 'config.manifest_defaults'];
 
 function setup({ config = {}, meta = {}, hostFeatures } = {}) {
@@ -50,12 +50,14 @@ describe('LinkPreviewFormatter — short-circuits', () => {
         }
     });
 
-    it("ignores an older host's saved enabled: false (from the removed Enable checkbox)", async () => {
-        // There, `enabled` is just a saved value, and nothing on the page
-        // can change it any more. The header switch turns previews off.
+    it("honours an older host's saved enabled: false (from the removed Enable checkbox)", async () => {
+        // The user turned previews off there, and current hosts keep the
+        // extension off for the same saved value. Nothing is fetched.
+        const invoke = vi.fn();
         const f = setup({ config: { enabled: false } });
-        const out = await f.format('<a href="https://example.com">x</a>', {});
-        expect(parse(out).querySelectorAll('.link-preview-card')).toHaveLength(1);
+        f.invoke = invoke;
+        expect(await f.format('<a href="https://example.com">x</a>', {})).toBeNull();
+        expect(invoke).not.toHaveBeenCalled();
     });
 
     it('returns null during streaming', async () => {

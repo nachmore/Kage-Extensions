@@ -100,5 +100,11 @@
     "description": "Aria label on a link-preview card whose content is still loading; {domain} is the site's domain",
     "_machine_translated": true,
     "_source_hash": "ab2af2e267fa5c2f"
+  },
+  "settings.legacy_disabled.info_html": {
+    "message": "이전 버전의 이 페이지에 있던 ‘링크 미리보기 활성화’ 체크박스가 꺼진 상태로 저장되어 있어 링크 미리보기가 꺼져 있습니다. 다시 켜려면 여기에서 아무 설정이나 변경한 후 저장하세요.",
+    "description": "Settings: shown on older Kage hosts while the \"Enable Link Previews\" checkbox that earlier versions had is still saved as off. Saving the page clears it.",
+    "_machine_translated": true,
+    "_source_hash": "79d3f7337902d852"
   }
 }

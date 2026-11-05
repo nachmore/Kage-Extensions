@@ -100,5 +100,11 @@
     "description": "Aria label on a link-preview card whose content is still loading; {domain} is the site's domain",
     "_machine_translated": true,
     "_source_hash": "ab2af2e267fa5c2f"
+  },
+  "settings.legacy_disabled.info_html": {
+    "message": "链接预览已关闭，因为此页面早期版本中的“启用链接预览”复选框仍保存为关闭状态。要重新开启，请在此更改任意设置并保存。",
+    "description": "Settings: shown on older Kage hosts while the \"Enable Link Previews\" checkbox that earlier versions had is still saved as off. Saving the page clears it.",
+    "_machine_translated": true,
+    "_source_hash": "79d3f7337902d852"
   }
 }

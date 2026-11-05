@@ -15,7 +15,9 @@ import {
     checkDefaultsModule,
     checkExtension,
     currentHostConfig,
+    localModuleGraph,
     scanCodeFallbacks,
+    scanEnabledControls,
     scanDefaultsRefs,
     shownDefault,
     storedValue,
@@ -40,7 +42,10 @@ function fixture({ config, settings, files = {}, catalog }) {
         mkdirSync(path.join(dir, '_locales', 'en'), { recursive: true });
         writeFileSync(path.join(dir, '_locales', 'en', 'messages.json'), JSON.stringify(catalog));
     }
-    for (const [rel, src] of Object.entries(files)) writeFileSync(path.join(dir, rel), src);
+    for (const [rel, src] of Object.entries(files)) {
+        mkdirSync(path.dirname(path.join(dir, rel)), { recursive: true });
+        writeFileSync(path.join(dir, rel), src);
+    }
     return dir;
 }
 
@@ -341,7 +346,7 @@ describe('check-defaults — `enabled` belongs to the host', () => {
         ]);
     });
 
-    it('flags a settings control with that id, once, whether or not the manifest declares it', async () => {
+    it('flags a settings control with that id, once, at its line', async () => {
         const dir = fixture({
             config: { trigger: { type: 'string', default: 'bm' } },
             settings: provider(`[
@@ -349,15 +354,66 @@ describe('check-defaults — `enabled` belongs to the host', () => {
                 { type: 'text', id: 'trigger', label: 'T', default: 'bm' },
             ]`),
         });
-        expect((await checkExtension(dir)).map((i) => `${i.file}: ${i.message}`)).toEqual([
-            expect.stringMatching(/^settings\.js: 'enabled': no settings control may use the id "enabled"/),
+        expect((await checkExtension(dir)).map((i) => `${i.file}:${i.line}: ${i.message}`)).toEqual([
+            expect.stringMatching(/^settings\.js:11: 'enabled': no settings control that holds a value may use the id "enabled"/),
         ]);
+    });
 
-        const action = fixture({
+    it('flags one whose id is computed (the schema check, without a line)', async () => {
+        const dir = fixture({
             config: {},
-            settings: provider(`[{ type: 'action', id: 'enabled', label: 'Go', action: 'go' }]`),
+            settings: provider(`[{ type: 'checkbox', id: ['en', 'abled'].join(''), label: 'Enable', default: true }]`),
         });
-        expect(await messages(action)).toEqual([expect.stringMatching(/no settings control may use the id "enabled"/)]);
+        expect((await checkExtension(dir)).map((i) => `${i.file}:${i.line}: ${i.message}`)).toEqual([
+            expect.stringMatching(/^settings\.js:undefined: 'enabled': no settings control that holds a value/),
+        ]);
+    });
+
+    it('accepts an action or info control with that id, which the host shows as usual', async () => {
+        const dir = fixture({
+            config: {},
+            settings: provider(`[
+                { type: 'action', id: 'enabled', label: 'Go', action: 'go' },
+                { type: 'info', id: "enabled", html: 'hi' },
+            ]`),
+        });
+        expect(await checkExtension(dir)).toEqual([]);
+    });
+
+    it('flags a control only a later state shows, in the provider or a module it imports', async () => {
+        // A fresh install (invoke() resolving null) gets a setup step, so the
+        // schema check never sees the connected page.
+        const dir = fixture({
+            config: {},
+            settings: `
+import { connectedControls } from './pages/connected.js';
+export default class P {
+    initialize(context) { this.invoke = context.invoke; }
+    async getSettings() {
+        const connected = await this.invoke('load_extension_data', { key: 'creds' });
+        if (!connected) return { sections: [{ controls: [{ type: 'action', id: 'connect', label: 'C', action: 'c' }] }] };
+        return { sections: [{ controls: [
+            { type: 'checkbox', id: 'enabled', label: 'Enable', default: true },
+            ...connectedControls(),
+        ] }] };
+    }
+}`,
+            files: {
+                'pages/connected.js': `import { X } from '../shared.js';
+export const connectedControls = () => [
+    {
+        id: 'enabled',
+        type: 'text',
+        label: X,
+    },
+];`,
+                'shared.js': `export const X = 'x';`,
+            },
+        });
+        expect((await checkExtension(dir)).map((i) => `${i.file}:${i.line}: ${i.message}`)).toEqual([
+            expect.stringMatching(/^settings\.js:9: 'enabled': no settings control that holds a value/),
+            expect.stringMatching(/^pages\/connected\.js:4: 'enabled': no settings control that holds a value/),
+        ]);
     });
 
     it('flags code that turns a missing `enabled` off', () => {
@@ -384,12 +440,64 @@ describe('check-defaults — `enabled` belongs to the host', () => {
             scanCodeFallbacks(
                 [
                     'if (this.config.enabled !== false) start();',
-                    'if (this._hostOwnsEnabled && this.config?.enabled === false) return null;',
+                    'if (this.config?.enabled === false) return null;',
                     'const on = this.config.enabled ?? true;',
                 ].join('\n'),
                 {}
             )
         ).toEqual([]);
+    });
+});
+
+describe('check-defaults — static scan for `enabled` controls', () => {
+    const lines = (src) => scanEnabledControls(src).map((f) => f.line);
+
+    it('flags value controls with that id, however the key is quoted', () => {
+        expect(
+            lines(
+                [
+                    "const a = { type: 'checkbox', id: 'enabled', label: 'A' };",
+                    'const b = { "type": "number", "id": "enabled" };',
+                    'const c = { ...base, id: `enabled` };',
+                    "const d = { type: 'select', id: 'enabled', options: [{ value: 'x', label: 'X' }] };",
+                ].join('\n')
+            )
+        ).toEqual([1, 2, 3, 4]);
+    });
+
+    it('skips showWhen clauses, action and info controls, comments and ignored lines', () => {
+        expect(
+            lines(
+                [
+                    "const a = { type: 'text', id: 'x', showWhen: { id: 'enabled', equals: true } };",
+                    "const ON = Object.freeze({ id: 'enabled', oneOf: [true] });",
+                    "const b = { type: 'action', id: 'enabled', action: 'go', showWhen: { id: 'y', equals: 1 } };",
+                    "const c = { id: 'enabled', type: 'info', html: `${t('x')}` };",
+                    "// { type: 'checkbox', id: 'enabled' }",
+                    "const d = { type: 'checkbox', id: 'enabled' }; // check-defaults: ignore",
+                    "const e = { type: 'checkbox', id: 'enabledish', label: 'enabled' };",
+                ].join('\n')
+            )
+        ).toEqual([]);
+    });
+
+    it("reads the module graph from the provider, staying inside the extension", async () => {
+        const dir = fixture({
+            config: {},
+            files: {
+                'settings.js': "import a from './a.js';\nexport { b } from './lib/b.js';\nimport '../../outside.js';",
+                'a.js': "import './settings.js';\nconst c = () => import('./lib/c.js');",
+                'lib/b.js': "import { a } from '../a.js';",
+                'lib/c.js': '',
+                'unused.js': '',
+            },
+        });
+        expect((await localModuleGraph(dir, 'settings.js')).map((m) => m.rel.split(path.sep).join('/'))).toEqual([
+            'settings.js',
+            'a.js',
+            'lib/b.js',
+            'lib/c.js',
+        ]);
     });
 });
 
@@ -462,7 +570,8 @@ export default class P {
     });
 
     it('flags an `enabled` control that only one generation gets', async () => {
-        const enabled = `{ type: 'checkbox', id: 'enabled', label: 'Enable', default: true }`;
+        // A computed id, so this is the schema check and not the static scan.
+        const enabled = `{ type: 'checkbox', id: ['en', 'abled'].join(''), label: 'Enable', default: true }`;
         for (const [older, current] of [
             [`[${enabled}, ${TRIGGER}]`, `[${TRIGGER}]`],
             [`[${TRIGGER}]`, `[${enabled}, ${TRIGGER}]`],
@@ -471,7 +580,9 @@ export default class P {
                 config: { trigger: { type: 'string', default: 'sp' } },
                 settings: branching({ older, current }),
             });
-            expect(await messages(dir)).toEqual([expect.stringMatching(/^'enabled': no settings control may use the id "enabled"/)]);
+            expect(await messages(dir)).toEqual([
+                expect.stringMatching(/^'enabled': no settings control that holds a value may use the id "enabled"/),
+            ]);
         }
     });
 

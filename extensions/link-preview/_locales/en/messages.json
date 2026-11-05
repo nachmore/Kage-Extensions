@@ -68,5 +68,9 @@
   "settings.cache_clear.confirm": {
     "message": "Clear all cached link previews? URLs will be re-fetched the next time they appear.",
     "description": "Confirmation prompt before clearing cache"
+  },
+  "settings.legacy_disabled.info_html": {
+    "message": "Link previews are off because “Enable Link Previews”, a checkbox earlier versions of this page had, is still saved as off. To turn them back on, change any setting here and save.",
+    "description": "Settings: shown on older Kage hosts while the \"Enable Link Previews\" checkbox that earlier versions had is still saved as off. Saving the page clears it."
   }
 }

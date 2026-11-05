@@ -100,5 +100,11 @@
     "description": "Aria label on a link-preview card whose content is still loading; {domain} is the site's domain",
     "_machine_translated": true,
     "_source_hash": "ab2af2e267fa5c2f"
+  },
+  "settings.legacy_disabled.info_html": {
+    "message": "Linkforhåndsvisninger er slået fra, fordi afkrydsningsfeltet »Aktivér linkforhåndsvisninger«, som tidligere versioner af denne side havde, stadig er gemt som slået fra. Slå dem til igen ved at ændre en indstilling her og gemme.",
+    "description": "Settings: shown on older Kage hosts while the \"Enable Link Previews\" checkbox that earlier versions had is still saved as off. Saving the page clears it.",
+    "_machine_translated": true,
+    "_source_hash": "79d3f7337902d852"
   }
 }

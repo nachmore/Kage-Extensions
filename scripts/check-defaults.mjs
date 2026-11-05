@@ -16,7 +16,8 @@
 // own (2), and Save stores only the page's values that differ from the
 // manifest default, keeping every other saved key. `enabled` is the host's:
 // it is the Settings header's Disable/Enable switch, a saved value is
-// ignored, and a settings control with that id is hidden and never saved.
+// ignored, and a settings control with that id is hidden and never saved
+// (unless it's an `action` or `info` control, which hold no value).
 //
 // Older hosts give the extension the saved object as it is whenever one
 // exists (the manifest defaults only when nothing was ever saved), so a key
@@ -51,7 +52,9 @@
 //   unsaved extension) and no hostFeatures; the current host's has the
 //   manifest defaults plus `enabled: true` as config and hostFeatures
 //   including 'config.manifest_defaults'. For each value control:
-//     - its id isn't `enabled`, in either schema;
+//     - its id isn't `enabled`, in either schema (see below for the pages
+//       these schemas don't cover). `action` and `info` controls may use
+//       it, as the host shows those as usual;
 //     - the manifest declares the id, with the same type;
 //     - older hosts: what Save stores for an untouched control equals the
 //       manifest default. That's the control default, coerced the way the
@@ -67,6 +70,14 @@
 //   getSettings() also runs under a pseudo-locale on the older host: a
 //   translated default can't equal one fixed manifest value in every
 //   language. (Current hosts show the manifest default instead.)
+//   These schemas are only the page a fresh install gets. A provider whose
+//   page depends on saved state (spotify's settings appear only once it's
+//   connected; until then it shows a setup step) is checked on that first
+//   page alone, so controls only a later state shows aren't compared. For
+//   `enabled` there's a static backstop: every object literal with
+//   `id: 'enabled'` in the settings provider and the local modules it
+//   imports is flagged, unless it's an `action` or `info` control or a
+//   `showWhen` clause.
 // - Code fallbacks (3), a best-effort static scan of every non-test .js
 //   file. A literal fallback (`config.x ?? 5`, `config.x || 'gh'`) must
 //   equal the manifest default. A boolean that defaults to true must not be
@@ -289,6 +300,13 @@ function allControls(schema) {
     return out;
 }
 
+/**
+ * Kage's isValueControl: what the host treats as holding a value, and so
+ * hides when its id is `enabled`. Wider than valueControls: any type but
+ * `info` and `action`.
+ */
+const isHostValueControl = (ctrl) => !!ctrl?.id && ctrl.type !== 'info' && ctrl.type !== 'action';
+
 function valueControls(schema) {
     return allControls(schema).filter(
         (ctrl) => typeof ctrl.id === 'string' && ctrl.type in CONTROL_VALUE_TYPE // not info, action, unknown
@@ -298,11 +316,11 @@ function valueControls(schema) {
 const fmt = (v) => (v === undefined ? 'undefined' : JSON.stringify(v));
 
 const ENABLED_CONTROL_ISSUE =
-    `'${ENABLED_KEY}': no settings control may use the id "${ENABLED_KEY}", which belongs to the ` +
-    `host. Current hosts hide such a control and never save it. Older hosts show it, and ` +
-    `its value does nothing unless your code reads it. Users switch an extension off with ` +
-    `the Disable/Enable button in its Settings header, so remove the control. (If it meant ` +
-    `something else, give it another id.)`;
+    `'${ENABLED_KEY}': no settings control that holds a value may use the id ` +
+    `"${ENABLED_KEY}", which belongs to the host. Current hosts hide such a control and never ` +
+    `save it. Older hosts show it, and its value does nothing unless your code reads it. ` +
+    `Users switch an extension off with the Disable/Enable button in its Settings header, ` +
+    `so remove the control. (If it meant something else, give it another id.)`;
 
 /**
  * normalize(values).values, or null when there's no normalize() or it
@@ -333,6 +351,9 @@ function savedValue(ctrl, shown, normalized) {
 }
 
 const isSchema = (s) => !!s && typeof s === 'object' && Array.isArray(s.sections);
+
+const hasEnabledControl = (schema) =>
+    allControls(schema).some((ctrl) => ctrl.id === ENABLED_KEY && isHostValueControl(ctrl));
 
 /** Value controls that hold config: all but an `enabled` one (reported on its own). */
 const configControls = (schema) => valueControls(schema).filter((ctrl) => ctrl.id !== ENABLED_KEY);
@@ -407,9 +428,7 @@ export function compareSchemaToManifest(schema, manifestConfig, opts = {}) {
         );
         return issues;
     }
-    if ([schema, currentSchema].some((s) => allControls(s).some((ctrl) => ctrl.id === ENABLED_KEY))) {
-        issues.push(ENABLED_CONTROL_ISSUE);
-    }
+    if ([schema, currentSchema].some((s) => hasEnabledControl(s))) issues.push(ENABLED_CONTROL_ISSUE);
 
     // Older hosts: Settings shows each control's own default, and Save hands
     // normalize() every control's value.
@@ -742,6 +761,109 @@ export function scanDefaultsRefs(source, defaults) {
     return findings;
 }
 
+// --- Static backstop for `enabled` controls ---------------------------------
+// The schemas above are only a fresh install's page (see the header), so an
+// `enabled` control that only a later state shows would get past them.
+
+// `id: 'enabled'` as an object-literal property, any quotes.
+const ENABLED_ID_RE = new RegExp(
+    String.raw`(?<![\w$])(['"]?)id\1\s*:\s*(['"\`])${ENABLED_KEY}\2`,
+    'g'
+);
+const OWN_TYPE_RE = /(?<![\w$])type\s*:\s*(['"`])(\w+)\1/;
+// The other keys of a showWhen clause (`{ id: 'enabled', equals: true }`).
+const SHOW_WHEN_KEY_RE = /(?<![\w$])(?:equals|oneOf)\s*:/;
+
+/** The text inside the `{ … }` literal around `index`, found by brace depth, or null. */
+function enclosingObject(source, index) {
+    let depth = 0;
+    let start = -1;
+    for (let i = index - 1; i >= 0 && start < 0; i--) {
+        if (source[i] === '}') depth++;
+        else if (source[i] === '{' && depth-- === 0) start = i;
+    }
+    if (start < 0) return null;
+    depth = 0;
+    for (let i = index; i < source.length; i++) {
+        if (source[i] === '{') depth++;
+        else if (source[i] === '}' && depth-- === 0) return { start, text: source.slice(start + 1, i) };
+    }
+    return null;
+}
+
+/** `text` without its nested `{ … }` and `[ … ]`: an object literal's own keys. */
+function ownKeysText(text) {
+    let out = text;
+    for (let prev = null; prev !== out; ) {
+        prev = out;
+        out = out.replace(/\{[^{}]*\}|\[[^[\]]*\]/g, '');
+    }
+    return out;
+}
+
+/**
+ * Object literals in `source` that look like a settings control with the
+ * id `enabled` and hold a value: not an `action` or `info` control (the
+ * host shows those as usual) and not a showWhen clause.
+ *
+ * @param {string} source
+ * @returns {Array<{line: number, message: string}>}
+ */
+export function scanEnabledControls(source) {
+    const findings = [];
+    const lines = source.split(/\r?\n/);
+    for (const m of source.matchAll(ENABLED_ID_RE)) {
+        const lineNo = source.slice(0, m.index).split('\n').length;
+        const line = lines[lineNo - 1];
+        if (isCommentLine(line) || line.includes(IGNORE_MARKER)) continue;
+        const obj = enclosingObject(source, m.index);
+        if (obj) {
+            const own = ownKeysText(obj.text);
+            const type = own.match(OWN_TYPE_RE)?.[2];
+            if (type === 'action' || type === 'info') continue;
+            const before = source.slice(Math.max(0, obj.start - 64), obj.start);
+            const inShowWhen = /(?<![\w$])showWhen\s*:\s*$/.test(before);
+            if (inShowWhen || (type === undefined && SHOW_WHEN_KEY_RE.test(own))) continue;
+        }
+        findings.push({ line: lineNo, message: ENABLED_CONTROL_ISSUE });
+    }
+    return findings;
+}
+
+// `import … from './x.js'`, `export … from './x.js'`, `import './x.js'`, `import('./x.js')`.
+const LOCAL_IMPORT_RE = /\b(?:from|import)\s*\(?\s*(['"])(\.\.?\/[^'"\n]+)\1/g;
+
+/**
+ * `entry` and the modules it imports from inside `dir`, transitively.
+ *
+ * @param {string} dir - the extension directory
+ * @param {string} entry - path relative to `dir`
+ * @returns {Promise<Array<{rel: string, source: string}>>}
+ */
+export async function localModuleGraph(dir, entry) {
+    const out = [];
+    const seen = new Set();
+    const queue = [path.normalize(entry)];
+    while (queue.length > 0) {
+        const rel = queue.shift();
+        if (seen.has(rel)) continue;
+        seen.add(rel);
+        let source;
+        try {
+            source = await readFile(path.join(dir, rel), 'utf8');
+        } catch {
+            continue; // missing: the import itself fails, and that's reported elsewhere
+        }
+        out.push({ rel, source });
+        for (const m of source.matchAll(LOCAL_IMPORT_RE)) {
+            const next = path.normalize(path.join(path.dirname(rel), m[2]));
+            if (next === '..' || next.startsWith(`..${path.sep}`) || path.isAbsolute(next)) continue;
+            queue.push(next);
+        }
+    }
+    return out;
+}
+
 // --- Per-extension driver ---------------------------------------------------
 
 async function readJsonIfExists(p) {
@@ -810,6 +932,13 @@ export async function checkExtension(dir, opts = {}) {
     if (typeof settingsRel === 'string' && settingsRel) {
         const file = settingsRel.replace(/^\.\//, '');
         const catalog = (await readJsonIfExists(path.join(dir, '_locales', 'en', 'messages.json'))) || {};
+        // Reported with a location; the schema check below then doesn't repeat it.
+        const enabledControls = [];
+        for (const { rel, source } of await localModuleGraph(dir, file)) {
+            for (const f of scanEnabledControls(source)) {
+                enabledControls.push({ file: rel.replace(/\\/g, '/'), line: f.line, message: f.message });
+            }
+        }
         try {
             const mod = await import(pathToFileURL(path.join(dir, file)).href);
             const Cls = mod?.default;
@@ -831,6 +960,7 @@ export async function checkExtension(dir, opts = {}) {
                         currentSchema: current.schema,
                         currentNormalize: normalizeOf(current),
                     })) {
+                        if (message === ENABLED_CONTROL_ISSUE && enabledControls.length > 0) continue;
                         issues.push({ file, message });
                     }
                 }
@@ -844,6 +974,7 @@ export async function checkExtension(dir, opts = {}) {
                     `without a DOM, given a context whose invoke() resolves null.`,
             });
         }
+        issues.push(...enabledControls);
     }
 
     for (const rel of await listCodeFiles(dir)) {

@@ -29,7 +29,7 @@ npm run build              # produce dist/ (catalog.json + per-id zips)
 | `npm run check:security`   | Forbids `eval`, `new Function`, `setTimeout(string)`, `import('http...')`, `<script src=http...>`, `document.write`. Flags `innerHTML +=`-shaped XSS smell.              |
 | `npm run check:i18n`       | Every `__MSG_*__` token in manifest + every `t('key')` call in code must resolve in `_locales/en/messages.json`. Non-EN catalogs flagged for empty / TODO strings.       |
 | `npm run check:bundle`     | Forbids OS junk (`.DS_Store`, `Thumbs.db`), env files, `node_modules/`, sourcemaps, lock files, secrets. Per-file size cap 5MB; per-extension cap 10MB.                  |
-| `npm run check:defaults`   | The copies of each setting's default agree (see [Settings defaults and `enabled`](#settings-defaults-and-enabled)): every settings control's `default`, the `DEFAULTS` in `defaults.js`, and literal code fallbacks (`config.x ?? 0`) must equal the manifest `config` default. Loads each settings provider in Node as a fresh install twice: on an older host, where the control default is what Settings shows and Save stores, and on a current one (`context.hostFeatures` with `config.manifest_defaults`), where Settings shows the manifest default and `normalize()` must leave it as it is. Fails on a manifest that declares `enabled`, a settings control with id `enabled`, and code that reads a missing `enabled` (or a default-true boolean) as off. Controls whose id starts with `__` are inputs for action buttons, not config, and are skipped. Runs on every extension. |
+| `npm run check:defaults`   | The copies of each setting's default agree (see [Settings defaults and `enabled`](#settings-defaults-and-enabled)): every settings control's `default`, the `DEFAULTS` in `defaults.js`, and literal code fallbacks (`config.x ?? 0`) must equal the manifest `config` default. Loads each settings provider in Node as a fresh install twice: on an older host, where the control default is what Settings shows and Save stores, and on a current one (`context.hostFeatures` with `config.manifest_defaults`), where Settings shows the manifest default and `normalize()` must leave it as it is. It sees only the page a fresh install gets, so controls that only a later state shows (spotify's connected page) aren't compared. Fails on a manifest that declares `enabled`, a settings control that holds a value with id `enabled` (found in those schemas, and by a static scan of the settings provider and the modules it imports), and code that reads a missing `enabled` (or a default-true boolean) as off. Controls whose id starts with `__` are inputs for action buttons, not config, and are skipped. Runs on every extension. |
 
 ### Affected-paths scoping (CI)
 
@@ -216,12 +216,17 @@ extension's Settings header, on every host. Don't add an "Enable"
 checkbox (current hosts hide it; older ones show one that does nothing
 unless your code reads it), and don't declare `enabled` in `config`.
 Where code needs it, read `config.enabled !== false`: current hosts set
-it from the header, and older ones don't set it. `check:defaults` fails on
-all three. If your extension used to have an "Enable" checkbox, an older
-host still hands you whatever it saved, with nothing left on the page to
-change it, so only honour `config.enabled` when `context.hostFeatures`
-includes `config.manifest_defaults` (see
-`extensions/link-preview/formatter.js`).
+it from the header, and older ones pass on only what your own page saved
+(usually nothing). `check:defaults` fails on all three. If your
+extension used to have an "Enable" checkbox that your code read, an
+older host still hands you whatever it saved. Keep honouring a saved
+`false`: the user turned the extension off, and current hosts keep it
+off for that value too. Nothing on the page shows that value any more,
+so on older hosts (no `config.manifest_defaults` in
+`context.hostFeatures`) say so in an `info` control, with how to clear
+it: change any setting on the page and save, which stores only the
+page's controls and so drops `enabled` (see
+`extensions/link-preview/settings.js`).
 
 ## Internationalisation (i18n)
 
