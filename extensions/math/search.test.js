@@ -144,6 +144,23 @@ describe('MathSearchProvider — precision config', () => {
         expect((await evalQuery(provider, '7/2')).data.value).toBe('4');
     });
 
+    it('a negative result that rounds to zero shows no minus sign', async () => {
+        const { provider } = setup();
+        const row = await evalQuery(provider, '-1/1000');
+        expect(row.label).toBe('= 0.00');
+        expect(row.data.value).toBe('0.00');
+        expect(provider.execute(row)).toEqual({ type: 'copy', value: '0.00' });
+        // Still signed when it doesn't round to zero.
+        expect((await evalQuery(provider, '-1/100')).data.value).toBe('-0.01');
+        expect((await evalQuery(provider, '-1/3')).data.value).toBe('-0.33');
+    });
+
+    it('precision 0: a negative fraction that rounds to zero shows "0"', async () => {
+        const { provider } = setup({ config: { precision: 0 } });
+        expect((await evalQuery(provider, '-1/3')).data.value).toBe('0');
+        expect((await evalQuery(provider, '-2/3')).data.value).toBe('-1');
+    });
+
     it('precision -1 (auto) uses full significant-figure output', async () => {
         const { provider } = setup({ config: { precision: -1 } });
         expect((await evalQuery(provider, '29/34')).data.value).toBe('0.852941176470588');

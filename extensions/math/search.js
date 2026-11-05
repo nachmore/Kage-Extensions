@@ -135,6 +135,9 @@ async function evaluateMath(runSandboxed, input, precision = DEFAULTS.precision)
     let display;
     if (precision >= 0) {
         display = num.toFixed(precision);
+        // toFixed keeps the sign of a negative value that rounds to zero
+        // (-1/1000 → "-0.00"). Show and copy "0.00" instead.
+        if (/^-0(\.0+)?$/.test(display)) display = display.slice(1);
     } else {
         display = String(parseFloat(num.toPrecision(15)));
     }
