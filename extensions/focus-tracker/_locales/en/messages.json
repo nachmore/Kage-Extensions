@@ -77,6 +77,18 @@
     "message": "{switches} switches · {streak}m best streak ({app}) · Enter for AI summary",
     "description": "Activity summary description"
   },
+  "result.summary.description_switches": {
+    "message": "{switches} switches · Enter for AI summary",
+    "description": "Activity summary description when Focus Streaks tracking is off"
+  },
+  "result.summary.description_streak": {
+    "message": "{streak}m best streak ({app}) · Enter for AI summary",
+    "description": "Activity summary description when Context Switches tracking is off"
+  },
+  "result.summary.description_plain": {
+    "message": "Enter for AI summary",
+    "description": "Activity summary description when both Context Switches and Focus Streaks tracking are off"
+  },
   "result.app.description": {
     "message": "{count} sessions",
     "description": "App row description"
@@ -130,7 +142,7 @@
     "description": "Settings: context switches toggle label"
   },
   "settings.track_switches.description": {
-    "message": "Count how often you switch between apps",
+    "message": "Count how often you switch between apps. When off, reports, copied text and AI summaries leave switches and per-app sessions out.",
     "description": "Settings: context switches toggle description"
   },
   "settings.track_streaks.label": {
@@ -138,7 +150,7 @@
     "description": "Settings: focus streaks toggle label"
   },
   "settings.track_streaks.description": {
-    "message": "Track longest uninterrupted focus periods",
+    "message": "Track longest uninterrupted focus periods. When off, reports, copied text and AI summaries leave streaks out.",
     "description": "Settings: focus streaks toggle description"
   },
   "settings.validate.poll_interval_range": {

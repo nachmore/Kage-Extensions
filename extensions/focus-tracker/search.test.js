@@ -5,8 +5,11 @@
  */
 
 import { describe, it, expect, beforeEach } from 'vitest';
+import { readFileSync } from 'node:fs';
 import FocusTrackerSearchProvider from './search.js';
 import { makeContext } from '../../test-helpers/mock-context.mjs';
+
+const EN = JSON.parse(readFileSync(new URL('./_locales/en/messages.json', import.meta.url), 'utf8'));
 
 function setup(config = {}) {
     // Enabled = tracking: initialize() starts the activity tracker
@@ -240,5 +243,189 @@ describe('FocusTrackerSearchProvider — tracker lifecycle (enabled = tracking)'
         provider.onConfigUpdate({ enabled: true });
         await new Promise((r) => setTimeout(r, 0));
         expect(invoke).toHaveBeenCalledWith('start_activity_tracker', expect.anything());
+    });
+});
+
+describe('FocusTracker — track_switches / track_streaks', () => {
+    // A busy day: enough switches for the AI insight row.
+    const REPORT = Object.freeze({
+        period: 'Today',
+        total_seconds: 7200,
+        context_switches: 42,
+        longest_streak_seconds: 1500,
+        longest_streak_app: 'Code',
+        apps: [
+            { process_name: 'Code.exe', display_name: 'Code', seconds: 3600, percentage: 50, switches_to: 12 },
+            { process_name: 'Slack.exe', display_name: 'Slack', seconds: 2400, percentage: 33.3, switches_to: 20 },
+            { process_name: 'Outlook.exe', display_name: 'Outlook', seconds: 1200, percentage: 16.7, switches_to: 10 },
+        ],
+    });
+
+    function make(config = {}) {
+        const invokes = {
+            is_activity_tracker_running: true,
+            start_activity_tracker: undefined,
+            stop_activity_tracker: undefined,
+            get_activity_report: () => structuredClone(REPORT),
+            get_app_icon: null,
+        };
+        const { context, invoke } = makeContext({ config, invokes, catalog: EN });
+        const provider = new FocusTrackerSearchProvider();
+        provider.initialize(context);
+        return { provider, invoke };
+    }
+
+    /** Rows for "focus week" through the real fetch path (no hint row). */
+    const rowsFor = (provider) => provider.matchAsync('focus week');
+    const byType = (rows, type) => rows.filter((r) => r.data?.type === type);
+    const summaryOf = (rows) => byType(rows, 'summary')[0];
+    const promptOf = (provider, rows) => provider.execute(summaryOf(rows)).value;
+
+    describe('both on (the default)', () => {
+        it('shows switches and the best streak, and copies both', async () => {
+            const { provider } = make();
+            const s = summaryOf(await rowsFor(provider));
+            expect(s.description).toBe('42 switches · 25m best streak (Code) · Enter for AI summary');
+            expect(s.data.copyText).toBe('Today: 2.0h tracked, 42 switches, 25m best streak (Code)');
+        });
+
+        it('never-saved config (neither key) tracks both', async () => {
+            const { provider } = make({});
+            const rows = await rowsFor(provider);
+            expect(summaryOf(rows).description).toMatch(/42 switches · 25m best streak/);
+            expect(byType(rows, 'app-row')[0].description).toBe('12 sessions');
+        });
+
+        it('per-app sessions, the insight row and the AI prompt carry them', async () => {
+            const { provider } = make();
+            const rows = await rowsFor(provider);
+            expect(byType(rows, 'app-row').map((r) => r.description)).toEqual(['12 sessions', '20 sessions', '10 sessions']);
+            const insight = byType(rows, 'insight')[0];
+            expect(insight.data.prompt).toContain('Context switches: 42');
+            expect(insight.data.prompt).toContain('Longest focus streak: 25 minutes (Code)');
+            const prompt = promptOf(provider, rows);
+            expect(prompt).toContain('42 context switches');
+            expect(prompt).toContain('25m longest streak (Code)');
+            expect(prompt).toContain('12 sessions');
+        });
+    });
+
+    describe('track_switches off', () => {
+        it('the summary shows only the streak, and copies no switches', async () => {
+            const { provider } = make({ track_switches: false });
+            const s = summaryOf(await rowsFor(provider));
+            expect(s.description).toBe('25m best streak (Code) · Enter for AI summary');
+            expect(s.data.copyText).toBe('Today: 2.0h tracked, 25m best streak (Code)');
+            expect(s.data).not.toHaveProperty('switches');
+        });
+
+        it('app rows drop their session counts', async () => {
+            const { provider } = make({ track_switches: false });
+            const apps = byType(await rowsFor(provider), 'app-row');
+            expect(apps).toHaveLength(3);
+            for (const r of apps) {
+                expect(r.description).toBe('');
+                expect(r.tooltip).not.toMatch(/sessions/);
+                expect(r.data.copyText).not.toMatch(/sessions/);
+                expect(r.data).not.toHaveProperty('sessions');
+            }
+        });
+
+        it('no switch-driven insight row, and the AI prompt has no switches', async () => {
+            const { provider } = make({ track_switches: false });
+            const rows = await rowsFor(provider);
+            expect(byType(rows, 'insight')).toEqual([]);
+            const prompt = promptOf(provider, rows);
+            expect(prompt).not.toMatch(/switch|sessions/i);
+            expect(prompt).toContain('25m longest streak (Code)');
+        });
+
+        it('the cached report (and the row payload) keep no switch counts', async () => {
+            const { provider } = make({ track_switches: false });
+            const s = summaryOf(await rowsFor(provider));
+            for (const report of [provider._cache.get('week').data, s.data.report]) {
+                expect(report).not.toHaveProperty('context_switches');
+                expect(report.apps.every((a) => !('switches_to' in a))).toBe(true);
+                expect(report.longest_streak_seconds).toBe(1500);
+            }
+        });
+
+        it('the comparison report used for the AI summary is trimmed too', async () => {
+            const { provider } = make({ track_switches: false });
+            await rowsFor(provider);
+            await new Promise((r) => setTimeout(r, 0)); // the month pre-fetch
+            expect(provider._cache.get('month').data).not.toHaveProperty('context_switches');
+        });
+    });
+
+    describe('track_streaks off', () => {
+        it('the summary shows only switches, and copies no streak', async () => {
+            const { provider } = make({ track_streaks: false });
+            const s = summaryOf(await rowsFor(provider));
+            expect(s.description).toBe('42 switches · Enter for AI summary');
+            expect(s.data.copyText).toBe('Today: 2.0h tracked, 42 switches');
+            expect(s.data).not.toHaveProperty('streakMin');
+            expect(s.data).not.toHaveProperty('streakApp');
+        });
+
+        it('the insight row and the AI prompt have no streak', async () => {
+            const { provider } = make({ track_streaks: false });
+            const rows = await rowsFor(provider);
+            const insight = byType(rows, 'insight')[0];
+            expect(insight.data.prompt).toContain('Context switches: 42');
+            expect(insight.data.prompt).not.toMatch(/streak/i);
+            const prompt = promptOf(provider, rows);
+            expect(prompt).not.toMatch(/streak/i);
+            expect(prompt).toContain('42 context switches');
+        });
+
+        it('the cached report keeps no streak', async () => {
+            const { provider } = make({ track_streaks: false });
+            await rowsFor(provider);
+            const report = provider._cache.get('week').data;
+            expect(report).not.toHaveProperty('longest_streak_seconds');
+            expect(report).not.toHaveProperty('longest_streak_app');
+            expect(report.context_switches).toBe(42);
+        });
+    });
+
+    describe('both off', () => {
+        it('the summary is just time tracked', async () => {
+            const { provider } = make({ track_switches: false, track_streaks: false });
+            const rows = await rowsFor(provider);
+            const s = summaryOf(rows);
+            expect(s.description).toBe('Enter for AI summary');
+            expect(s.data.copyText).toBe('Today: 2.0h tracked');
+            expect(promptOf(provider, rows)).toContain('Total: 2.0h tracked\n');
+        });
+
+        it('screen time still lists the apps', async () => {
+            const { provider } = make({ track_switches: false, track_streaks: false });
+            expect(byType(await rowsFor(provider), 'app-row').map((r) => r.label))
+                .toEqual(['Code: 1.0h (50%)', 'Slack: 40m (33%)', 'Outlook: 20m (17%)']);
+        });
+    });
+
+    describe('toggling', () => {
+        it('turning switches back on shows them again from the host, with nothing re-stored', async () => {
+            const { provider, invoke } = make({ track_switches: false });
+            expect(summaryOf(await rowsFor(provider)).description).not.toMatch(/switches/);
+            provider.onConfigUpdate({ track_switches: true });
+            expect(provider._cache.size).toBe(0);
+            expect(summaryOf(await rowsFor(provider)).description).toMatch(/^42 switches/);
+            // Only reads: the host's activity data is never written or cleared.
+            const calls = invoke.mock.calls.map((c) => c[0]);
+            expect(calls.filter((c) => !['is_activity_tracker_running', 'get_activity_report', 'get_app_icon'].includes(c)))
+                .toEqual([]);
+        });
+
+        it('a cached report is re-rendered under the new setting', () => {
+            const { provider } = make();
+            provider._cache.set('today', { time: Date.now(), data: structuredClone(REPORT) });
+            expect(summaryOf(provider.match('focus')).description).toMatch(/42 switches/);
+            provider.onConfigUpdate({ track_streaks: false });
+            provider._cache.set('today', { time: Date.now(), data: structuredClone(REPORT) });
+            expect(summaryOf(provider.match('focus')).description).toBe('42 switches · Enter for AI summary');
+        });
     });
 });

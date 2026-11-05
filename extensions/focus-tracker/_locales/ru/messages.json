@@ -120,10 +120,10 @@
     "_source_hash": "b004389d12cd1499"
   },
   "settings.track_switches.description": {
-    "message": "Подсчёт переключений между приложениями",
+    "message": "Подсчитывать, как часто вы переключаетесь между приложениями. Если выключено, отчёты, скопированный текст и сводки ИИ не включают переключения и сеансы по приложениям.",
     "description": "Settings: context switches toggle description",
     "_machine_translated": true,
-    "_source_hash": "287c0d0a0f24b68e"
+    "_source_hash": "3c7f0fd21816db0a"
   },
   "settings.track_streaks.label": {
     "message": "Серии фокусировки",
@@ -132,10 +132,10 @@
     "_source_hash": "5ce25266a7b929f2"
   },
   "settings.track_streaks.description": {
-    "message": "Отслеживание самых долгих периодов непрерывной фокусировки",
+    "message": "Отслеживать самые длинные периоды непрерывной концентрации. Если выключено, отчёты, скопированный текст и сводки ИИ не включают серии.",
     "description": "Settings: focus streaks toggle description",
     "_machine_translated": true,
-    "_source_hash": "78ee2f56696d0840"
+    "_source_hash": "ec9d6acaab4d66fa"
   },
   "settings.validate.poll_interval_range": {
     "message": "Интервал опроса должен быть от 2 до 60 секунд",
@@ -226,5 +226,23 @@
     "description": "Keyword hint for focus-tracker",
     "_machine_translated": true,
     "_source_hash": "28b192b16740b6b3"
+  },
+  "result.summary.description_switches": {
+    "message": "Переключений: {switches} · Enter — сводка от ИИ",
+    "description": "Activity summary description when Focus Streaks tracking is off",
+    "_machine_translated": true,
+    "_source_hash": "9930815ea049508b"
+  },
+  "result.summary.description_streak": {
+    "message": "Лучшая серия: {streak} мин ({app}) · Enter — сводка от ИИ",
+    "description": "Activity summary description when Context Switches tracking is off",
+    "_machine_translated": true,
+    "_source_hash": "a699dff2bde85b54"
+  },
+  "result.summary.description_plain": {
+    "message": "Enter — сводка от ИИ",
+    "description": "Activity summary description when both Context Switches and Focus Streaks tracking are off",
+    "_machine_translated": true,
+    "_source_hash": "395003db54c3b155"
   }
 }

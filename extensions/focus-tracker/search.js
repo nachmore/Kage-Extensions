@@ -115,14 +115,15 @@ export default class FocusTrackerSearchProvider {
         }
 
         try {
-            const report = await this.invoke('get_activity_report', { period: parsed.period });
+            const report = this._withoutUntracked(
+                await this.invoke('get_activity_report', { period: parsed.period }));
             this._cache.set(parsed.period, { data: report, time: Date.now() });
 
             // Pre-fetch comparison period so it's cached for the AI summary on Enter
             const compPeriod = this._getComparisonPeriod(parsed.period);
             if (compPeriod && !this._cache.has(compPeriod)) {
                 this.invoke('get_activity_report', { period: compPeriod }).then(compReport => {
-                    this._cache.set(compPeriod, { data: compReport, time: Date.now() });
+                    this._cache.set(compPeriod, { data: this._withoutUntracked(compReport), time: Date.now() });
                 }).catch((e) => {
                     this.log?.debug?.(`focus-tracker: comparison pre-fetch for '${compPeriod}' failed: ` + (e?.message || e));
                 });
@@ -178,6 +179,42 @@ export default class FocusTrackerSearchProvider {
     }
 
     // --- Private ---
+
+    /**
+     * Which of the derived measures the user tracks. The host counts
+     * switches and streaks from the same foreground-window samples screen
+     * time uses, when it builds a report; neither is stored separately.
+     * So "off" means this extension never keeps, shows, copies or sends
+     * them to the AI. The host's samples stay as they are, so turning one
+     * back on shows it for the whole history again.
+     */
+    _tracking() {
+        return {
+            switches: this.config.track_switches ?? DEFAULTS.track_switches,
+            streaks: this.config.track_streaks ?? DEFAULTS.track_streaks,
+        };
+    }
+
+    /**
+     * A report as the host sent it, minus the measures that aren't tracked,
+     * for the cache. Rows and prompts are built from the cache, so what's
+     * dropped here can't reach them. onConfigUpdate clears the cache, so a
+     * toggle takes effect on the next report.
+     */
+    _withoutUntracked(report) {
+        const { switches, streaks } = this._tracking();
+        if (!report || (switches && streaks)) return report;
+        const out = { ...report };
+        if (!switches) {
+            delete out.context_switches;
+            out.apps = (report.apps || []).map(({ switches_to: _s, ...app }) => app);
+        }
+        if (!streaks) {
+            delete out.longest_streak_seconds;
+            delete out.longest_streak_app;
+        }
+        return out;
+    }
 
     _parseQuery(query) {
         const trigger = (this.config.trigger ?? DEFAULTS.trigger).trim().toLowerCase();
@@ -278,31 +315,44 @@ export default class FocusTrackerSearchProvider {
 
     _formatReport(report, period, parsed = null) {
         const results = [];
+        const tracking = this._tracking();
 
         // Summary card
         const totalHrs = (report.total_seconds / 3600).toFixed(1);
         const totalMin = Math.round(report.total_seconds / 60);
         const timeStr = report.total_seconds >= 3600 ? `${totalHrs}h` : `${totalMin}m`;
-        const streakMin = Math.round(report.longest_streak_seconds / 60);
+        const switches = report.context_switches ?? 0;
+        const streakMin = Math.round((report.longest_streak_seconds ?? 0) / 60);
+        const streakApp = report.longest_streak_app ?? '';
+
+        // i18n-keys: result.summary.description, result.summary.description_switches, result.summary.description_streak, result.summary.description_plain
+        const summaryKey = tracking.switches && tracking.streaks ? 'result.summary.description'
+            : tracking.switches ? 'result.summary.description_switches'
+            : tracking.streaks ? 'result.summary.description_streak'
+            : 'result.summary.description_plain';
+        const copyParts = [`${report.period}: ${timeStr} tracked`];
+        if (tracking.switches) copyParts.push(`${switches} switches`);
+        if (tracking.streaks) copyParts.push(`${streakMin}m best streak (${streakApp})`);
+
+        const summaryData = {
+            type: 'summary',
+            period: report.period,
+            timeStr,
+            appCount: report.apps.length,
+            report, // full report for display on Enter
+            copyText: copyParts.join(', '),
+        };
+        if (tracking.switches) summaryData.switches = switches;
+        if (tracking.streaks) Object.assign(summaryData, { streakMin, streakApp });
 
         results.push({
             id: `focus-summary-${period}`,
             type: 'focus-tracker',
             label: this.t('result.summary.label', { period: report.period, time: timeStr }),
-            description: this.t('result.summary.description', { switches: report.context_switches, streak: streakMin, app: report.longest_streak_app }),
+            description: this.t(summaryKey, { switches, streak: streakMin, app: streakApp }),
             icon: '📊',
             score: 86,
-            data: {
-                type: 'summary',
-                period: report.period,
-                timeStr,
-                switches: report.context_switches,
-                streakMin,
-                streakApp: report.longest_streak_app,
-                appCount: report.apps.length,
-                report, // full report for display on Enter
-                copyText: `${report.period}: ${timeStr} tracked, ${report.context_switches} switches, ${streakMin}m best streak (${report.longest_streak_app})`,
-            },
+            data: summaryData,
         });
 
         // Per-month rollup (year / all-time): one compact line per month,
@@ -346,24 +396,29 @@ export default class FocusTrackerSearchProvider {
                 const appHrs = (app.seconds / 3600).toFixed(1);
                 const appTime = app.seconds >= 3600 ? `${appHrs}h` : `${appMin}m`;
                 const pct = app.percentage.toFixed(0);
+                // Sessions = how often you switched to the app: a switch count.
+                const sessions = tracking.switches ? `, ${app.switches_to ?? 0} sessions` : '';
+                const appData = {
+                    type: 'app-row',
+                    name: app.display_name,
+                    time: appTime,
+                    pct: parseFloat(pct),
+                    copyText: `${app.display_name}: ${appTime} (${pct}%)${sessions}`,
+                };
+                if (tracking.switches) appData.sessions = app.switches_to ?? 0;
                 results.push({
                     id: `focus-app-${period}-${app.process_name}`,
                     type: 'focus-tracker',
                     label: `${app.display_name}: ${appTime} (${pct}%)`,
-                    description: this.t('result.app.description', { count: app.switches_to }),
+                    description: tracking.switches
+                        ? this.t('result.app.description', { count: app.switches_to ?? 0 })
+                        : '',
                     icon: this._iconCache.get(app.process_name.toLowerCase()) || _appEmoji(app.process_name),
                     // Use high base score minus a small fraction per app to maintain order
                     // Sites use the same base minus smaller fractions to stay under their parent
                     score: 85 - (i * 0.01),
-                    tooltip: `${app.display_name}: ${appTime} (${pct}%), ${app.switches_to} sessions`,
-                    data: {
-                        type: 'app-row',
-                        name: app.display_name,
-                        time: appTime,
-                        pct: parseFloat(pct),
-                        sessions: app.switches_to,
-                        copyText: `${app.display_name}: ${appTime} (${pct}%), ${app.switches_to} sessions`,
-                    },
+                    tooltip: `${app.display_name}: ${appTime} (${pct}%)${sessions}`,
+                    data: appData,
                 });
 
                 // Browser site breakdown
@@ -395,9 +450,10 @@ export default class FocusTrackerSearchProvider {
             }
         }
 
-        // AI insight suggestion
-        if (report.context_switches > 10 && report.apps.length > 2) {
-            const topApps = report.apps.slice(0, 3).map(a => a.display_name).join(', ');
+        // AI insight suggestion — offered when you switch a lot, so only
+        // while switches are counted. (The summary row's Enter still asks
+        // the AI about the report.)
+        if (tracking.switches && switches > 10 && report.apps.length > 2) {
             results.push({
                 id: `focus-insight-${period}`,
                 type: 'focus-tracker',
@@ -409,8 +465,8 @@ export default class FocusTrackerSearchProvider {
                     type: 'insight',
                     prompt: `Here's my app usage for ${report.period.toLowerCase()}:\n\n` +
                         `Total tracked time: ${timeStr}\n` +
-                        `Context switches: ${report.context_switches}\n` +
-                        `Longest focus streak: ${streakMin} minutes (${report.longest_streak_app})\n` +
+                        `Context switches: ${switches}\n` +
+                        (tracking.streaks ? `Longest focus streak: ${streakMin} minutes (${streakApp})\n` : '') +
                         `Top apps: ${report.apps.slice(0, 5).map(a => `${a.display_name}: ${Math.round(a.seconds/60)}m (${a.percentage.toFixed(0)}%)`).join(', ')}\n\n` +
                         `Based on this data, give me 2-3 specific, actionable suggestions to improve my focus and reduce context switching. Be concise.`,
                 },
@@ -464,10 +520,14 @@ export default class FocusTrackerSearchProvider {
     }
 
     _formatReportForPrompt(report) {
+        const tracking = this._tracking();
         const timeStr = _fmtSecs(report.total_seconds);
-        const streakMin = Math.round(report.longest_streak_seconds / 60);
+        const streakMin = Math.round((report.longest_streak_seconds ?? 0) / 60);
 
-        let text = `Total: ${timeStr} tracked, ${report.context_switches} context switches, ${streakMin}m longest streak (${report.longest_streak_app})\n`;
+        const totals = [`${timeStr} tracked`];
+        if (tracking.switches) totals.push(`${report.context_switches ?? 0} context switches`);
+        if (tracking.streaks) totals.push(`${streakMin}m longest streak (${report.longest_streak_app ?? ''})`);
+        let text = `Total: ${totals.join(', ')}\n`;
 
         // Month breakdown for multi-month ranges (year / all). Compact:
         // one line per month with the total + top 3 apps so the LLM can
@@ -486,7 +546,8 @@ export default class FocusTrackerSearchProvider {
         text += `\nTop apps (overall):\n`;
         for (const app of report.apps.slice(0, 10)) {
             const t = _fmtSecs(app.seconds);
-            text += `- ${app.display_name}: ${t} (${app.percentage.toFixed(0)}%), ${app.switches_to} sessions\n`;
+            const sessions = tracking.switches ? `, ${app.switches_to ?? 0} sessions` : '';
+            text += `- ${app.display_name}: ${t} (${app.percentage.toFixed(0)}%)${sessions}\n`;
             if (app.sites) {
                 for (const site of app.sites.slice(0, 3)) {
                     const st = _fmtSecs(site.seconds);

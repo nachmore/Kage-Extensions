@@ -120,10 +120,10 @@
     "_source_hash": "b004389d12cd1499"
   },
   "settings.track_switches.description": {
-    "message": "アプリ間の切り替え回数をカウントします",
+    "message": "アプリを切り替えた回数をカウントします。オフにすると、レポート、コピーしたテキスト、AI 要約から切り替えとアプリごとのセッションが除外されます。",
     "description": "Settings: context switches toggle description",
     "_machine_translated": true,
-    "_source_hash": "287c0d0a0f24b68e"
+    "_source_hash": "3c7f0fd21816db0a"
   },
   "settings.track_streaks.label": {
     "message": "集中の連続記録",
@@ -132,10 +132,10 @@
     "_source_hash": "5ce25266a7b929f2"
   },
   "settings.track_streaks.description": {
-    "message": "中断なしの最長集中時間を記録します",
+    "message": "途切れずに集中できた最長時間を記録します。オフにすると、レポート、コピーしたテキスト、AI 要約から集中時間が除外されます。",
     "description": "Settings: focus streaks toggle description",
     "_machine_translated": true,
-    "_source_hash": "78ee2f56696d0840"
+    "_source_hash": "ec9d6acaab4d66fa"
   },
   "settings.validate.poll_interval_range": {
     "message": "ポーリング間隔は2〜60秒の範囲で指定してください",
@@ -226,5 +226,23 @@
     "description": "Keyword hint for focus-tracker",
     "_machine_translated": true,
     "_source_hash": "28b192b16740b6b3"
+  },
+  "result.summary.description_switches": {
+    "message": "{switches} 回の切り替え · Enter で AI 要約",
+    "description": "Activity summary description when Focus Streaks tracking is off",
+    "_machine_translated": true,
+    "_source_hash": "9930815ea049508b"
+  },
+  "result.summary.description_streak": {
+    "message": "最長集中 {streak} 分（{app}） · Enter で AI 要約",
+    "description": "Activity summary description when Context Switches tracking is off",
+    "_machine_translated": true,
+    "_source_hash": "a699dff2bde85b54"
+  },
+  "result.summary.description_plain": {
+    "message": "Enter で AI 要約",
+    "description": "Activity summary description when both Context Switches and Focus Streaks tracking are off",
+    "_machine_translated": true,
+    "_source_hash": "395003db54c3b155"
   }
 }

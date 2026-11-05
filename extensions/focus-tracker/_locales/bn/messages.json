@@ -120,10 +120,10 @@
     "_source_hash": "b004389d12cd1499"
   },
   "settings.track_switches.description": {
-    "message": "আপনি কত বার অ্যাপের মধ্যে স্যুইচ করেন তা গণনা করুন",
+    "message": "আপনি কত ঘন ঘন অ্যাপ পরিবর্তন করেন তা গণনা করুন। বন্ধ থাকলে রিপোর্ট, কপি করা টেক্সট এবং AI সারাংশে অ্যাপ পরিবর্তন ও প্রতি-অ্যাপ সেশন অন্তর্ভুক্ত হবে না।",
     "description": "Settings: context switches toggle description",
     "_machine_translated": true,
-    "_source_hash": "287c0d0a0f24b68e"
+    "_source_hash": "3c7f0fd21816db0a"
   },
   "settings.track_streaks.label": {
     "message": "ফোকাস স্ট্রিক",
@@ -132,10 +132,10 @@
     "_source_hash": "5ce25266a7b929f2"
   },
   "settings.track_streaks.description": {
-    "message": "দীর্ঘতম নিরবচ্ছিন্ন ফোকাস সময় ট্র্যাক করুন",
+    "message": "দীর্ঘতম নিরবচ্ছিন্ন মনোযোগের সময় ট্র্যাক করুন। বন্ধ থাকলে রিপোর্ট, কপি করা টেক্সট এবং AI সারাংশে একটানা মনোযোগের সময় অন্তর্ভুক্ত হবে না।",
     "description": "Settings: focus streaks toggle description",
     "_machine_translated": true,
-    "_source_hash": "78ee2f56696d0840"
+    "_source_hash": "ec9d6acaab4d66fa"
   },
   "settings.validate.poll_interval_range": {
     "message": "পোল ইন্টারভাল ২ থেকে ৬০ সেকেন্ডের মধ্যে হতে হবে",
@@ -226,5 +226,23 @@
     "description": "Keyword hint for focus-tracker",
     "_machine_translated": true,
     "_source_hash": "28b192b16740b6b3"
+  },
+  "result.summary.description_switches": {
+    "message": "{switches}টি অ্যাপ পরিবর্তন · AI সারাংশের জন্য Enter চাপুন",
+    "description": "Activity summary description when Focus Streaks tracking is off",
+    "_machine_translated": true,
+    "_source_hash": "9930815ea049508b"
+  },
+  "result.summary.description_streak": {
+    "message": "সেরা একটানা মনোযোগ {streak} মিনিট ({app}) · AI সারাংশের জন্য Enter চাপুন",
+    "description": "Activity summary description when Context Switches tracking is off",
+    "_machine_translated": true,
+    "_source_hash": "a699dff2bde85b54"
+  },
+  "result.summary.description_plain": {
+    "message": "AI সারাংশের জন্য Enter চাপুন",
+    "description": "Activity summary description when both Context Switches and Focus Streaks tracking are off",
+    "_machine_translated": true,
+    "_source_hash": "395003db54c3b155"
   }
 }

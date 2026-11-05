@@ -120,10 +120,10 @@
     "_source_hash": "b004389d12cd1499"
   },
   "settings.track_switches.description": {
-    "message": "गिनें कि आप कितनी बार ऐप्स के बीच स्विच करते हैं",
+    "message": "गिनें कि आप कितनी बार ऐप्स के बीच स्विच करते हैं। बंद होने पर, रिपोर्ट, कॉपी किए गए टेक्स्ट और AI सारांश में स्विच और प्रति-ऐप सत्र शामिल नहीं किए जाते।",
     "description": "Settings: context switches toggle description",
     "_machine_translated": true,
-    "_source_hash": "287c0d0a0f24b68e"
+    "_source_hash": "3c7f0fd21816db0a"
   },
   "settings.track_streaks.label": {
     "message": "फोकस स्ट्रीक्स",
@@ -132,10 +132,10 @@
     "_source_hash": "5ce25266a7b929f2"
   },
   "settings.track_streaks.description": {
-    "message": "सबसे लंबी निर्बाध फोकस अवधियों को ट्रैक करें",
+    "message": "बिना रुकावट के फ़ोकस की सबसे लंबी अवधियों को ट्रैक करें। बंद होने पर, रिपोर्ट, कॉपी किए गए टेक्स्ट और AI सारांश में स्ट्रीक शामिल नहीं की जातीं।",
     "description": "Settings: focus streaks toggle description",
     "_machine_translated": true,
-    "_source_hash": "78ee2f56696d0840"
+    "_source_hash": "ec9d6acaab4d66fa"
   },
   "settings.validate.poll_interval_range": {
     "message": "पोल अंतराल 2 से 60 सेकंड के बीच होना चाहिए",
@@ -226,5 +226,23 @@
     "description": "Keyword hint for focus-tracker",
     "_machine_translated": true,
     "_source_hash": "28b192b16740b6b3"
+  },
+  "result.summary.description_switches": {
+    "message": "{switches} स्विच · AI सारांश के लिए Enter दबाएँ",
+    "description": "Activity summary description when Focus Streaks tracking is off",
+    "_machine_translated": true,
+    "_source_hash": "9930815ea049508b"
+  },
+  "result.summary.description_streak": {
+    "message": "{streak} मिनट की सबसे लंबी स्ट्रीक ({app}) · AI सारांश के लिए Enter दबाएँ",
+    "description": "Activity summary description when Context Switches tracking is off",
+    "_machine_translated": true,
+    "_source_hash": "a699dff2bde85b54"
+  },
+  "result.summary.description_plain": {
+    "message": "AI सारांश के लिए Enter दबाएँ",
+    "description": "Activity summary description when both Context Switches and Focus Streaks tracking are off",
+    "_machine_translated": true,
+    "_source_hash": "395003db54c3b155"
   }
 }

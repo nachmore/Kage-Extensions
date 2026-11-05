@@ -120,10 +120,10 @@
     "_source_hash": "b004389d12cd1499"
   },
   "settings.track_switches.description": {
-    "message": "นับจำนวนครั้งที่คุณสลับไปมาระหว่างแอป",
+    "message": "นับจำนวนครั้งที่คุณสลับไปมาระหว่างแอป เมื่อปิดไว้ รายงาน ข้อความที่คัดลอก และสรุปจาก AI จะไม่รวมการสลับแอปและเซสชันของแต่ละแอป",
     "description": "Settings: context switches toggle description",
     "_machine_translated": true,
-    "_source_hash": "287c0d0a0f24b68e"
+    "_source_hash": "3c7f0fd21816db0a"
   },
   "settings.track_streaks.label": {
     "message": "ช่วงโฟกัสต่อเนื่อง",
@@ -132,10 +132,10 @@
     "_source_hash": "5ce25266a7b929f2"
   },
   "settings.track_streaks.description": {
-    "message": "ติดตามช่วงเวลาโฟกัสต่อเนื่องที่ยาวที่สุด",
+    "message": "ติดตามช่วงเวลาที่โฟกัสต่อเนื่องได้นานที่สุดโดยไม่ถูกขัดจังหวะ เมื่อปิดไว้ รายงาน ข้อความที่คัดลอก และสรุปจาก AI จะไม่รวมช่วงโฟกัสต่อเนื่อง",
     "description": "Settings: focus streaks toggle description",
     "_machine_translated": true,
-    "_source_hash": "78ee2f56696d0840"
+    "_source_hash": "ec9d6acaab4d66fa"
   },
   "settings.validate.poll_interval_range": {
     "message": "ช่วงเวลาการตรวจสอบต้องอยู่ระหว่าง 2 ถึง 60 วินาที",
@@ -226,5 +226,23 @@
     "description": "Keyword hint for focus-tracker",
     "_machine_translated": true,
     "_source_hash": "28b192b16740b6b3"
+  },
+  "result.summary.description_switches": {
+    "message": "สลับแอป {switches} ครั้ง · กด Enter เพื่อดูสรุปจาก AI",
+    "description": "Activity summary description when Focus Streaks tracking is off",
+    "_machine_translated": true,
+    "_source_hash": "9930815ea049508b"
+  },
+  "result.summary.description_streak": {
+    "message": "โฟกัสต่อเนื่องนานสุด {streak} นาที ({app}) · กด Enter เพื่อดูสรุปจาก AI",
+    "description": "Activity summary description when Context Switches tracking is off",
+    "_machine_translated": true,
+    "_source_hash": "a699dff2bde85b54"
+  },
+  "result.summary.description_plain": {
+    "message": "กด Enter เพื่อดูสรุปจาก AI",
+    "description": "Activity summary description when both Context Switches and Focus Streaks tracking are off",
+    "_machine_translated": true,
+    "_source_hash": "395003db54c3b155"
   }
 }
