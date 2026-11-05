@@ -48,10 +48,10 @@
     "_source_hash": "d6ca34a24bd63a0b"
   },
   "settings.auto_copy.description": {
-    "message": "Sao chép kết quả vào bảng nhớ tạm khi bạn nhấn Enter. Khi tắt, Enter sẽ đưa kết quả vào thanh nhập để bạn có thể tiếp tục tính toán.",
+    "message": "Sao chép kết quả vào bảng nhớ tạm khi bạn nhấn Enter. Khi tắt, Enter sẽ hiển thị kết quả mà không sao chép.",
     "description": "Helper for the auto-copy toggle",
     "_machine_translated": true,
-    "_source_hash": "b618182aa537abd2"
+    "_source_hash": "9143c7a7f75ecb98"
   },
   "settings.thousands.label": {
     "message": "Sử dụng dấu phân cách hàng nghìn",
@@ -71,10 +71,10 @@
     "_machine_translated": true,
     "_source_hash": "f8c4a655091ad748"
   },
-  "result.insert_hint": {
-    "message": "Nhấn Enter để đưa kết quả vào thanh nhập",
-    "description": "Description shown on a math result row when Auto-copy Result is off: Enter replaces the typed expression with its answer instead of copying it",
+  "result.show_hint": {
+    "message": "Nhấn Enter để hiển thị kết quả",
+    "description": "Description shown on a math result row when Auto-copy Result is off: Enter shows the answer without copying it",
     "_machine_translated": true,
-    "_source_hash": "5a4c247cb0475894"
+    "_source_hash": "d22e223c1c3c2717"
   }
 }

@@ -48,10 +48,10 @@
     "_source_hash": "d6ca34a24bd63a0b"
   },
   "settings.auto_copy.description": {
-    "message": "Copia a resposta para a área de transferência quando prime Enter. Quando desativado, Enter coloca a resposta na barra de entrada, para que possa continuar a calcular.",
+    "message": "Copia a resposta para a área de transferência quando prime Enter. Quando desativado, Enter mostra a resposta sem a copiar.",
     "description": "Helper for the auto-copy toggle",
     "_machine_translated": true,
-    "_source_hash": "b618182aa537abd2"
+    "_source_hash": "9143c7a7f75ecb98"
   },
   "settings.thousands.label": {
     "message": "Usar separador de milhares",
@@ -71,10 +71,10 @@
     "_machine_translated": true,
     "_source_hash": "f8c4a655091ad748"
   },
-  "result.insert_hint": {
-    "message": "Prima Enter para colocar o resultado na barra de entrada",
-    "description": "Description shown on a math result row when Auto-copy Result is off: Enter replaces the typed expression with its answer instead of copying it",
+  "result.show_hint": {
+    "message": "Prima Enter para mostrar o resultado",
+    "description": "Description shown on a math result row when Auto-copy Result is off: Enter shows the answer without copying it",
     "_machine_translated": true,
-    "_source_hash": "5a4c247cb0475894"
+    "_source_hash": "d22e223c1c3c2717"
   }
 }

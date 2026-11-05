@@ -37,25 +37,27 @@ export default class MathSearchProvider {
             id: 'math',
             type: 'math',
             label: '= ' + display,
-            description: this._autoCopy() ? this.t('result.copy_hint') : this.t('result.insert_hint'),
+            description: this._autoCopy() ? this.t('result.copy_hint') : this.t('result.show_hint'),
             icon: '🧮',
             score: 93,
-            // `plain` is the answer without thousands separators: what goes
-            // back into the input bar, where mathjs can't read "1,000".
-            data: { value: display, plain: mathResult.display, raw: mathResult.result },
+            data: { value: display, raw: mathResult.result },
         }];
     }
 
     /**
      * Enter (or a click) on the result. With auto_copy on, the answer goes
-     * to the clipboard as shown. With it off, nothing is copied: the answer
-     * replaces the input, so you can keep calculating with it.
+     * to the clipboard as shown. With it off, the clipboard is left alone:
+     * the host shows the answer instead (the floating window's response
+     * area, or a message in the chat window), where it can still be copied.
+     * Either way the input clears. This is what the setting meant when Kage
+     * itself ran the calculator: Enter showed the answer, and auto-copy
+     * also copied it.
      */
     execute(result) {
         if (this._autoCopy()) {
             return { type: 'copy', value: result.data.value };
         }
-        return { type: 'replace_input', value: result.data.plain ?? result.data.value };
+        return { type: 'display', value: result.data.value };
     }
 
     _autoCopy() {

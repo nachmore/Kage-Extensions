@@ -48,10 +48,10 @@
     "_source_hash": "d6ca34a24bd63a0b"
   },
   "settings.auto_copy.description": {
-    "message": "Kopiér svaret til udklipsholderen, når du trykker på Enter. Når funktionen er slået fra, indsætter Enter i stedet svaret i inputfeltet, så du kan regne videre.",
+    "message": "Kopiér svaret til udklipsholderen, når du trykker på Enter. Når funktionen er slået fra, viser Enter svaret uden at kopiere det.",
     "description": "Helper for the auto-copy toggle",
     "_machine_translated": true,
-    "_source_hash": "b618182aa537abd2"
+    "_source_hash": "9143c7a7f75ecb98"
   },
   "settings.thousands.label": {
     "message": "Brug tusindtalsseparator",
@@ -71,10 +71,10 @@
     "_machine_translated": true,
     "_source_hash": "f8c4a655091ad748"
   },
-  "result.insert_hint": {
-    "message": "Tryk på Enter for at indsætte resultatet i inputfeltet",
-    "description": "Description shown on a math result row when Auto-copy Result is off: Enter replaces the typed expression with its answer instead of copying it",
+  "result.show_hint": {
+    "message": "Tryk på Enter for at vise resultatet",
+    "description": "Description shown on a math result row when Auto-copy Result is off: Enter shows the answer without copying it",
     "_machine_translated": true,
-    "_source_hash": "5a4c247cb0475894"
+    "_source_hash": "d22e223c1c3c2717"
   }
 }

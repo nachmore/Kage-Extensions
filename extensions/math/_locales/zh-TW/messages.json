@@ -48,10 +48,10 @@
     "_source_hash": "d6ca34a24bd63a0b"
   },
   "settings.auto_copy.description": {
-    "message": "按下 Enter 時將答案複製到剪貼簿。關閉時，按下 Enter 會改為將答案填入輸入列，讓您繼續計算。",
+    "message": "按下 Enter 時將答案複製到剪貼簿。關閉時，按下 Enter 只會顯示答案，不會複製。",
     "description": "Helper for the auto-copy toggle",
     "_machine_translated": true,
-    "_source_hash": "b618182aa537abd2"
+    "_source_hash": "9143c7a7f75ecb98"
   },
   "settings.thousands.label": {
     "message": "使用千位分隔符號",
@@ -71,10 +71,10 @@
     "_machine_translated": true,
     "_source_hash": "f8c4a655091ad748"
   },
-  "result.insert_hint": {
-    "message": "按下 Enter 將結果填入輸入列",
-    "description": "Description shown on a math result row when Auto-copy Result is off: Enter replaces the typed expression with its answer instead of copying it",
+  "result.show_hint": {
+    "message": "按 Enter 顯示結果",
+    "description": "Description shown on a math result row when Auto-copy Result is off: Enter shows the answer without copying it",
     "_machine_translated": true,
-    "_source_hash": "5a4c247cb0475894"
+    "_source_hash": "d22e223c1c3c2717"
   }
 }

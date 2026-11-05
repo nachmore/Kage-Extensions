@@ -48,10 +48,10 @@
     "_source_hash": "d6ca34a24bd63a0b"
   },
   "settings.auto_copy.description": {
-    "message": "Enter दबाने पर उत्तर को क्लिपबोर्ड पर कॉपी करें। बंद होने पर, Enter उत्तर को इनपुट बार में डाल देता है, ताकि आप गणना जारी रख सकें।",
+    "message": "Enter दबाने पर उत्तर को क्लिपबोर्ड पर कॉपी करें। बंद होने पर, Enter उत्तर को कॉपी किए बिना दिखाता है।",
     "description": "Helper for the auto-copy toggle",
     "_machine_translated": true,
-    "_source_hash": "b618182aa537abd2"
+    "_source_hash": "9143c7a7f75ecb98"
   },
   "settings.thousands.label": {
     "message": "हज़ार विभाजक का उपयोग करें",
@@ -71,10 +71,10 @@
     "_machine_translated": true,
     "_source_hash": "f8c4a655091ad748"
   },
-  "result.insert_hint": {
-    "message": "परिणाम को इनपुट बार में डालने के लिए Enter दबाएँ",
-    "description": "Description shown on a math result row when Auto-copy Result is off: Enter replaces the typed expression with its answer instead of copying it",
+  "result.show_hint": {
+    "message": "परिणाम दिखाने के लिए Enter दबाएँ",
+    "description": "Description shown on a math result row when Auto-copy Result is off: Enter shows the answer without copying it",
     "_machine_translated": true,
-    "_source_hash": "5a4c247cb0475894"
+    "_source_hash": "d22e223c1c3c2717"
   }
 }

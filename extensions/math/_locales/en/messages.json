@@ -17,9 +17,9 @@
     "message": "Press Enter to copy result",
     "description": "Description shown on a math result row"
   },
-  "result.insert_hint": {
-    "message": "Press Enter to put the result in the input bar",
-    "description": "Description shown on a math result row when Auto-copy Result is off: Enter replaces the typed expression with its answer instead of copying it"
+  "result.show_hint": {
+    "message": "Press Enter to show result",
+    "description": "Description shown on a math result row when Auto-copy Result is off: Enter shows the answer without copying it"
   },
   "settings.description": {
     "message": "Evaluate math expressions directly in the input bar without sending them to the agent.",
@@ -38,7 +38,7 @@
     "description": "Toggle: copy math result to clipboard on Enter"
   },
   "settings.auto_copy.description": {
-    "message": "Copy the answer to the clipboard when you press Enter. When off, Enter puts the answer in the input bar instead, so you can keep calculating.",
+    "message": "Copy the answer to the clipboard when you press Enter. When off, Enter shows the answer without copying it.",
     "description": "Helper for the auto-copy toggle"
   },
   "settings.thousands.label": {
