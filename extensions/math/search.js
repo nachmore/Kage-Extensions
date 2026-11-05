@@ -134,9 +134,16 @@ async function evaluateMath(runSandboxed, input, precision = DEFAULTS.precision)
     _lastFailedPrefix = '';
     let display;
     if (precision >= 0) {
+        // At most `precision` decimals: round, then drop trailing zeros
+        // (1+1 → "2", 1/2 → "0.5", 29/34 → "0.85") — the same rule unit
+        // results already use. toFixed switches to exponent form past
+        // 1e21; leave that alone.
         display = num.toFixed(precision);
+        if (display.includes('.') && !/e/i.test(display)) {
+            display = display.replace(/\.?0+$/, '');
+        }
         // toFixed keeps the sign of a negative value that rounds to zero
-        // (-1/1000 → "-0.00"). Show and copy "0.00" instead.
+        // (-1/1000 → "-0"). Show and copy "0" instead.
         if (/^-0(\.0+)?$/.test(display)) display = display.slice(1);
     } else {
         display = String(parseFloat(num.toPrecision(15)));

@@ -63,12 +63,13 @@ describe('MathSearchProvider — detection & evaluation', () => {
     });
 
     it('evaluates basic arithmetic', async () => {
-        // Default precision is 2 decimal places (see defaults.js).
+        // Default precision is at most 2 decimal places (see defaults.js);
+        // trailing zeros are dropped.
         const row = await evalQuery(provider, '1+1');
         expect(row).toBeTruthy();
         expect(row.type).toBe('math');
-        expect(row.label).toBe('= 2.00');
-        expect(row.data.value).toBe('2.00');
+        expect(row.label).toBe('= 2');
+        expect(row.data.value).toBe('2');
     });
 
     it('evaluates division to the default 2dp precision', async () => {
@@ -78,12 +79,12 @@ describe('MathSearchProvider — detection & evaluation', () => {
     });
 
     it('evaluates multiplication and subtraction', async () => {
-        expect((await evalQuery(provider, '6*7')).data.value).toBe('42.00');
-        expect((await evalQuery(provider, '10-4')).data.value).toBe('6.00');
+        expect((await evalQuery(provider, '6*7')).data.value).toBe('42');
+        expect((await evalQuery(provider, '10-4')).data.value).toBe('6');
     });
 
     it('evaluates function calls like sqrt()', async () => {
-        expect((await evalQuery(provider, 'sqrt(16)')).data.value).toBe('4.00');
+        expect((await evalQuery(provider, 'sqrt(16)')).data.value).toBe('4');
     });
 
     it('exposes the raw numeric result in data.raw', async () => {
@@ -147,9 +148,9 @@ describe('MathSearchProvider — precision config', () => {
     it('a negative result that rounds to zero shows no minus sign', async () => {
         const { provider } = setup();
         const row = await evalQuery(provider, '-1/1000');
-        expect(row.label).toBe('= 0.00');
-        expect(row.data.value).toBe('0.00');
-        expect(provider.execute(row)).toEqual({ type: 'copy', value: '0.00' });
+        expect(row.label).toBe('= 0');
+        expect(row.data.value).toBe('0');
+        expect(provider.execute(row)).toEqual({ type: 'copy', value: '0' });
         // Still signed when it doesn't round to zero.
         expect((await evalQuery(provider, '-1/100')).data.value).toBe('-0.01');
         expect((await evalQuery(provider, '-1/3')).data.value).toBe('-0.33');
@@ -207,12 +208,12 @@ describe('MathSearchProvider — thousands separator', () => {
 
     it('is off by default', async () => {
         const { provider } = setup({ config: {} });
-        expect((await evalQuery(provider, '1000*1000')).data.value).toBe('1000000.00');
+        expect((await evalQuery(provider, '1000*1000')).data.value).toBe('1000000');
     });
 
     it('groups only the integer part at the default precision', async () => {
         const { provider } = setup({ config: { thousands_separator: true } });
-        expect((await evalQuery(provider, '1000*1000')).data.value).toBe('1,000,000.00');
+        expect((await evalQuery(provider, '1000*1000')).data.value).toBe('1,000,000');
         expect((await evalQuery(provider, '1234567/8')).data.value).toBe('154,320.88');
     });
 });
@@ -237,7 +238,7 @@ describe('MathSearchProvider — execute (copy action)', () => {
         const { provider } = setup();
         const row = await evalQuery(provider, '2+2');
         const action = provider.execute(row);
-        expect(action).toEqual({ type: 'copy', value: '4.00' });
+        expect(action).toEqual({ type: 'copy', value: '4' });
     });
 });
 
@@ -249,5 +250,15 @@ describe('MathSearchProvider — missing vendor lib (regression shape)', () => {
         // "not math" rather than blowing up the search.
         const { provider } = setup({ lib: {} });
         await expect(provider.match('1+1')).resolves.toEqual([]);
+    });
+});
+
+describe('MathSearchProvider — trailing zeros', () => {
+    it('shows at most `precision` decimals without padding zeros', async () => {
+        const { provider } = setup({ config: {} });
+        expect((await evalQuery(provider, '1/2')).label).toBe('= 0.5');
+        expect((await evalQuery(provider, '29/34')).label).toBe('= 0.85');
+        expect((await evalQuery(provider, '1+1')).label).toBe('= 2');
+        expect((await evalQuery(provider, '10/4')).label).toBe('= 2.5');
     });
 });
