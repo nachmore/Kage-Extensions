@@ -124,6 +124,37 @@ export function parseClientId(raw) {
 }
 
 /**
+ * Optional Kage host behaviour this extension feature-detects through
+ * `context.hostFeatures` (hosts that predate the list don't set it).
+ */
+export const HOST_FEATURE_COPY_ACTION = 'settings.copy_action';
+
+/** Whether the host's `context.hostFeatures` lists `feature`. */
+export function hostHasFeature(hostFeatures, feature) {
+    return Array.isArray(hostFeatures) && hostFeatures.includes(feature);
+}
+
+/**
+ * Why Kage's loopback listener rejected `oauth_loopback_await`:
+ * 'timeout', 'cancelled', or null for anything else.
+ *
+ * Current hosts put a stable `kind` on the error and translate its message,
+ * so the kind decides. Older hosts set no kind, always answer in English,
+ * and reported a timeout as "OAuth listener was cancelled before a callback
+ * arrived" (they couldn't cancel an await in flight, so that text always
+ * meant a timeout). The message is only matched when there's no kind.
+ *
+ * @returns {'timeout'|'cancelled'|null}
+ */
+export function loopbackFailure(e) {
+    const kind = e?.kind;
+    if (kind === 'timeout' || kind === 'cancelled') return kind;
+    if (typeof kind === 'string' && kind) return null;
+    if (/callback arrived|timed out/i.test(String(e?.message || e || ''))) return 'timeout';
+    return null;
+}
+
+/**
  * Map a failed auth.startSignIn() onto a reason the settings page can
  * explain with a fix.
  *
@@ -132,6 +163,9 @@ export function parseClientId(raw) {
  * "INVALID_CLIENT" page in the browser and never redirects back, so the
  * loopback listener just times out. That's why `timeout` gets its own
  * reason, and why its message points at both fixes.
+ *
+ * `cancelled` covers both an abandoned sign-in (auth.js code 'cancelled')
+ * and a listener Kage reports as cancelled; callers show nothing for it.
  *
  * @returns {{reason: string, error?: string, message?: string}}
  *   reason: 'cancelled' | 'no_client_id' | 'denied' | 'oauth' | 'state'
@@ -152,12 +186,12 @@ export function classifySignInError(e) {
         if (e.oauthError === 'invalid_client') return { reason: 'bad_client' };
         return { reason: 'oauth', error: String(e.oauthError || `HTTP ${e.status}`).slice(0, 80) };
     }
-    const msg = String(e?.message || e || '');
-    // Kage's loopback listener rejects with "...before a callback arrived"
-    // both when it times out and when it's cancelled.
-    if (code === 'loopback' && /callback arrived|timed out/i.test(msg)) {
-        return { reason: 'timeout' };
+    if (code === 'loopback') {
+        const failure = loopbackFailure(e);
+        if (failure === 'timeout') return { reason: 'timeout' };
+        if (failure === 'cancelled') return { reason: 'cancelled' };
     }
+    const msg = String(e?.message || e || '');
     if (
         e?.name === 'TimeoutError' ||
         e?.name === 'AbortError' ||

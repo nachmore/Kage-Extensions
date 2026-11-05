@@ -15,7 +15,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import SpotifySettingsProvider from './settings.js';
-import { DASHBOARD_URL, REDIRECT_PATH, REDIRECT_URI } from './setup.js';
+import { DASHBOARD_URL, REDIRECT_PATH, REDIRECT_URI, hostHasFeature, loopbackFailure } from './setup.js';
 import { makeContext } from '../../test-helpers/mock-context.mjs';
 
 // Real EN catalog so status assertions match the shipped message text
@@ -35,6 +35,13 @@ const CREDS = JSON.stringify({
     scopes: 'user-read-playback-state',
 });
 const REFRESH = { type: 'refresh' };
+
+// `context.hostFeatures` of a current Kage host. Leaving it out (the default
+// in these tests) is a host that predates feature detection.
+const CURRENT_HOST = { hostFeatures: ['settings.copy_action', 'invoke.error_kind'] };
+
+/** The Error a current host's invoke() rejects with for a backend AppError. */
+const hostError = (kind, key, message) => Object.assign(new Error(message), { kind, key });
 
 // In-memory extension-data store backing load/save/delete_extension_data.
 function makeStore(initial = {}) {
@@ -58,9 +65,10 @@ function makeStore(initial = {}) {
 /**
  * Provider over a seeded store. `extraInvokes` adds host commands
  * (open_url, oauth_loopback_*). `opened` records every URL handed to
- * open_url, which is how a test reads the OAuth `state` back.
+ * open_url, which is how a test reads the OAuth `state` back. `host` is
+ * what the host context offers on top (e.g. CURRENT_HOST).
  */
-function setup(storeSeed = {}, extraInvokes = {}, config = {}) {
+function setup(storeSeed = {}, extraInvokes = {}, config = {}, host = {}) {
     const { store, invokes } = makeStore(storeSeed);
     const opened = [];
     const { context, invoke, log } = makeContext({
@@ -74,6 +82,7 @@ function setup(storeSeed = {}, extraInvokes = {}, config = {}) {
         },
         catalog: EN_CATALOG,
         config,
+        ...host,
     });
     const provider = new SpotifySettingsProvider();
     provider.initialize(context);
@@ -127,15 +136,20 @@ function oauthInvokes(reply, opened) {
 }
 
 /** Provider wired for a sign-in whose browser step answers via `reply`. */
-function setupSignIn(storeSeed, reply) {
+function setupSignIn(storeSeed, reply, host = {}) {
     const opened = [];
-    const ctx = setup(storeSeed, {
-        ...oauthInvokes(reply, opened),
-        open_url: ({ url }) => {
-            opened.push(url);
-            return null;
+    const ctx = setup(
+        storeSeed,
+        {
+            ...oauthInvokes(reply, opened),
+            open_url: ({ url }) => {
+                opened.push(url);
+                return null;
+            },
         },
-    });
+        {},
+        host
+    );
     return { ...ctx, opened };
 }
 
@@ -176,7 +190,10 @@ function screenOf(schema) {
     return 'unknown';
 }
 
-/** The host rejects a schema that breaks these rules (validateSchema). */
+/**
+ * The host rejects a schema that breaks these rules (validateSchema), on
+ * current and older hosts alike.
+ */
 function expectHostValid(schema) {
     const types = ['checkbox', 'text', 'number', 'select', 'range', 'action', 'info'];
     const seen = new Set();
@@ -189,8 +206,27 @@ function expectHostValid(schema) {
             expect(seen.has(c.id), `duplicate id ${c.id}`).toBe(false);
             seen.add(c.id);
         }
+        // Current hosts make `action` optional on a copy action; older ones
+        // ignore `copy` and still require it.
         if (c.type === 'action') expect(c.action).toMatch(/\S/);
+        if (c.copy !== undefined) expectValidCopy(c, schema);
         if (c.type === 'info') expect(typeof c.html).toBe('string');
+    }
+}
+
+/** A current host's rules for an action's `copy` (Kage settings-schema.js). */
+function expectValidCopy(c, schema) {
+    expect(c.type).toBe('action');
+    const { copy } = c;
+    expect(Object.hasOwn(copy, 'value') !== Object.hasOwn(copy, 'from'), 'exactly one of value/from').toBe(true);
+    if (Object.hasOwn(copy, 'value')) {
+        expect(typeof copy.value).toBe('string');
+        expect(copy.value.length).toBeGreaterThan(0);
+        expect(copy.value.length).toBeLessThanOrEqual(2048);
+        // No control characters except tab/CR/LF, no bidi overrides.
+        expect(copy.value).not.toMatch(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f-\u009f\u202a-\u202e\u2066-\u2069]/);
+    } else {
+        expect(['text', 'number', 'select']).toContain(byId(schema, copy.from)?.type);
     }
 }
 
@@ -457,6 +493,74 @@ describe('Spotify settings — setup resumes where the user left off', () => {
     });
 });
 
+// --- Step 2: copying the Redirect URI ---------------------------------------
+
+describe('Spotify settings — step 2 Copy Redirect URI button', () => {
+    const atStep2 = (host) => setup({ setup: JSON.stringify({ step: 'create_app' }) }, {}, {}, host);
+    const copyControls = (schema) => controlsOf(schema).filter((c) => c.copy !== undefined);
+
+    it('a host with copy actions gets a button that copies exactly the URI to register', async () => {
+        const { provider } = atStep2(CURRENT_HOST);
+        const schema = await provider.getSettings();
+        expectHostValid(schema);
+        expect(screenOf(schema)).toBe('create_app');
+
+        const btn = byId(schema, 'setup_copy_redirect');
+        expect(btn).toMatchObject({
+            type: 'action',
+            label: msg('setup.create_app.copy.label'),
+            copy: { value: REDIRECT_URI },
+        });
+        expect(visibleIds(schema)).toContain('setup_copy_redirect');
+        // Right under the URI, before Next.
+        const controls = controlsOf(schema);
+        const uriBlock = controls.findIndex((c) => c.type === 'info' && c.html.includes(REDIRECT_URI));
+        expect(controls.indexOf(btn)).toBe(uriBlock + 1);
+        expect(controls.indexOf(btn)).toBeLessThan(controls.indexOf(byId(schema, 'setup_next')));
+        // The selectable <code> line stays.
+        expect(infoHtml(schema)).toContain(`<code>${REDIRECT_URI}</code>`);
+    });
+
+    it('an older host gets step 2 as before: no button, the URI on its own selectable line', async () => {
+        // Older hosts ignore `copy`, so the button would do nothing useful;
+        // the page must still render (an invalid schema drops all of it).
+        for (const host of [{}, { hostFeatures: ['invoke.error_kind'] }]) {
+            const { provider } = atStep2(host);
+            const schema = await provider.getSettings();
+            expectHostValid(schema);
+            expect(screenOf(schema)).toBe('create_app');
+            expect(byId(schema, 'setup_copy_redirect')).toBeUndefined();
+            expect(copyControls(schema)).toEqual([]);
+            expect(infoHtml(schema)).toContain(`<div><code>${REDIRECT_URI}</code></div>`);
+        }
+    });
+
+    it('feature detection needs a real list naming the feature', () => {
+        expect(hostHasFeature(['settings.copy_action'], 'settings.copy_action')).toBe(true);
+        expect(hostHasFeature(undefined, 'settings.copy_action')).toBe(false);
+        expect(hostHasFeature('settings.copy_action', 'settings.copy_action')).toBe(false);
+        expect(hostHasFeature(['invoke.error_kind'], 'settings.copy_action')).toBe(false);
+    });
+
+    it('no other screen has a copy button', async () => {
+        for (const step of ['dashboard', 'client_id', 'connect', 'done']) {
+            const { provider } = setup({ client: CLIENT, setup: JSON.stringify({ step }) }, {}, {}, CURRENT_HOST);
+            expect(copyControls(await provider.getSettings()), step).toEqual([]);
+        }
+        const { provider } = setup({ client: CLIENT, creds: CREDS }, {}, {}, CURRENT_HOST);
+        expect(copyControls(await provider.getSettings())).toEqual([]);
+    });
+
+    it('a click that reaches runAction anyway shows the URI and stays on step 2', async () => {
+        // Current hosts copy without calling runAction; this is the
+        // fallback RPC an older host would call.
+        const { provider, store } = atStep2(CURRENT_HOST);
+        const res = await provider.runAction(byId(await provider.getSettings(), 'setup_copy_redirect').action, {});
+        expect(res).toEqual({ status: msg('setup.create_app.copy.fallback').replace('{uri}', REDIRECT_URI) });
+        expect(setupState(store)).toEqual({ step: 'create_app' });
+    });
+});
+
 // --- Errors, each with its fix -----------------------------------------------
 
 describe('Spotify settings — setup errors explain the fix', () => {
@@ -505,6 +609,7 @@ describe('Spotify settings — setup errors explain the fix', () => {
     it('a sign-in that never comes back explains the two browser-side setup mistakes', async () => {
         // Bad redirect URI / unknown client: Spotify shows INVALID_CLIENT in
         // the browser and never redirects, so the loopback listener gives up.
+        // This is how an older host reports it: no `kind`, English text.
         const { provider } = setupSignIn({ client: CLIENT, setup: JSON.stringify({ step: 'connect' }) }, () => {
             throw new Error('OAuth listener was cancelled before a callback arrived');
         });
@@ -540,6 +645,74 @@ describe('Spotify settings — setup errors explain the fix', () => {
         const { provider } = setupSignIn({ client: CLIENT }, (state) => ({ params: { code: 'c0de', state } }));
         const res = await provider.runAction('setup_connect', {}); // default fetch = offline
         expect(res.status).toBe(msg('signin.error.network'));
+    });
+});
+
+describe('Spotify settings — sign-in failures from current hosts carry a kind', () => {
+    const atConnect = (fail) =>
+        setupSignIn({ client: CLIENT, setup: JSON.stringify({ step: 'connect' }) }, () => {
+            throw fail;
+        }, CURRENT_HOST);
+    const reconnecting = (fail) =>
+        setupSignIn({ client: CLIENT, creds: CREDS }, () => {
+            throw fail;
+        }, CURRENT_HOST);
+    // Current hosts translate the message, so it can't be matched on.
+    const TIMED_OUT_JA = hostError(
+        'timeout',
+        'errors.oauth.timed_out',
+        'コールバックを受け取る前に OAuth フローがタイムアウトしました'
+    );
+
+    it('a timeout is recognised by its kind in any language', async () => {
+        let res = await atConnect(TIMED_OUT_JA).provider.runAction('setup_connect', {});
+        expect(res.status).toBe(msg('setup.connect.error.timeout'));
+
+        res = await reconnecting(TIMED_OUT_JA).provider.runAction('connect', {});
+        expect(res.status).toBe(msg('settings.connect.error.timeout'));
+    });
+
+    it('a listener Kage reports as cancelled ends quietly, even with the old timeout wording', async () => {
+        // Current hosts keep the old English text for `cancelled`; on its own
+        // it used to mean a timeout. The kind says otherwise.
+        const cancelled = () =>
+            hostError('cancelled', 'errors.oauth.cancelled', 'OAuth listener was cancelled before a callback arrived');
+
+        const setupCtx = atConnect(cancelled());
+        expect(await setupCtx.provider.runAction('setup_connect', {})).toEqual({});
+        expect(setupState(setupCtx.store)).toEqual({ step: 'connect' });
+        expect(setupCtx.store.creds).toBeUndefined();
+
+        const settingsCtx = reconnecting(cancelled());
+        expect(await settingsCtx.provider.runAction('connect', {})).toEqual({});
+        expect(settingsCtx.store.creds).toBe(CREDS);
+
+        expect(setupCtx.log.warn).not.toHaveBeenCalled();
+        expect(settingsCtx.log.warn).not.toHaveBeenCalled();
+    });
+
+    it('any other kind is reported as it is, never as a timeout', async () => {
+        const failed = hostError(
+            'internal',
+            'errors.oauth.listener_failed',
+            'OAuth listener failed before a callback arrived: connection reset'
+        );
+        const res = await atConnect(failed).provider.runAction('setup_connect', {});
+        expect(res.status).toBe(
+            msg('signin.error.unknown').replace('{message}', 'OAuth listener failed before a callback arrived: connection reset')
+        );
+    });
+
+    it('the kind decides; the English text only counts when there is none (older hosts)', () => {
+        const OLD_HOST_TIMEOUT = 'OAuth listener was cancelled before a callback arrived';
+        expect(loopbackFailure(TIMED_OUT_JA)).toBe('timeout');
+        expect(loopbackFailure(hostError('cancelled', 'errors.oauth.cancelled', OLD_HOST_TIMEOUT))).toBe('cancelled');
+        expect(loopbackFailure(hostError('internal', 'errors.oauth.unknown_listener', OLD_HOST_TIMEOUT))).toBeNull();
+        // Older hosts: no kind, always English.
+        expect(loopbackFailure(new Error(OLD_HOST_TIMEOUT))).toBe('timeout');
+        expect(loopbackFailure(new Error('OAuth flow timed out before a callback arrived'))).toBe('timeout');
+        expect(loopbackFailure(new Error('Unknown listener'))).toBeNull();
+        expect(loopbackFailure(undefined)).toBeNull();
     });
 });
 

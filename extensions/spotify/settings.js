@@ -20,10 +20,12 @@
 import * as auth from './auth.js';
 import {
     DASHBOARD_URL,
+    HOST_FEATURE_COPY_ACTION,
     REDIRECT_URI,
     SETUP_STEPS,
     classifySignInError,
     escapeHtml,
+    hostHasFeature,
     normalizeSetupState,
     parseClientId,
     resolveSetupView,
@@ -56,6 +58,8 @@ export default class SpotifySettingsProvider {
         this.log = context.log;
         this.config = context.config || {};
         this.t = context.i18n?.t?.bind(context.i18n) || ((k) => k);
+        /** Whether the host copies `copy` actions itself (see _copyRedirectControls). */
+        this._canCopy = hostHasFeature(context.hostFeatures, HOST_FEATURE_COPY_ACTION);
         /** AbortController of the sign-in this page is waiting on, if any. */
         this._signIn = null;
     }
@@ -291,11 +295,11 @@ export default class SpotifySettingsProvider {
                         type: 'info',
                         label: t('setup.create_app.redirect_label'),
                         // Its own block so a triple-click selects just the URI.
-                        // No copy button: the host's settings schema has no
-                        // clipboard-write control or effect, and the sandbox
-                        // can't write the clipboard itself.
+                        // That's the only way to copy it on hosts without
+                        // copy actions.
                         html: `<div><code>${escapeHtml(REDIRECT_URI)}</code></div><p>${t('setup.create_app.redirect_hint_html')}</p>`,
                     },
+                    ...this._copyRedirectControls(),
                     {
                         type: 'action',
                         id: 'setup_next',
@@ -351,6 +355,33 @@ export default class SpotifySettingsProvider {
                     back('client_id'),
                 ];
         }
+    }
+
+    /**
+     * The "Copy Redirect URI" button on step 2, or nothing on hosts that
+     * can't copy.
+     *
+     * The sandbox can't write the clipboard, so this is a host copy action:
+     * the host copies `copy.value` inside the click and never calls
+     * runAction. Hosts that predate copy actions ignore `copy`, so the
+     * button is only offered when the host lists `settings.copy_action`;
+     * elsewhere the selectable <code> line above is how the URI gets copied.
+     * The `action` RPC is set anyway: those older hosts reject an action
+     * control without one, which would drop the whole page, so the schema
+     * stays valid everywhere, and a click that does reach runAction still
+     * shows the URI.
+     */
+    _copyRedirectControls() {
+        if (!this._canCopy) return [];
+        return [
+            {
+                type: 'action',
+                id: 'setup_copy_redirect',
+                label: this.t('setup.create_app.copy.label'),
+                copy: { value: REDIRECT_URI },
+                action: 'setup_copy_redirect',
+            },
+        ];
     }
 
     _doneControls(view) {
@@ -411,6 +442,10 @@ export default class SpotifySettingsProvider {
         switch (action) {
             case 'setup_open_dashboard':
                 return this._openDashboard();
+            case 'setup_copy_redirect':
+                // Only reached if the host didn't copy (see
+                // _copyRedirectControls): say what to copy instead.
+                return { status: this.t('setup.create_app.copy.fallback', { uri: REDIRECT_URI }) };
             case 'setup_save_client_id':
                 return this._saveClientId(values || {});
             case 'setup_connect':
@@ -500,9 +535,11 @@ export default class SpotifySettingsProvider {
                 // Abandoned (a different Client ID, Cancel setup, Sign out,
                 // or a newer Connect): the page already shows something
                 // else, so there's nothing to report.
-                if (signal.aborted || e?.code === 'cancelled') return {};
+                if (signal.aborted) return {};
+                const failure = classifySignInError(e);
+                if (failure.reason === 'cancelled') return {};
                 this.log?.warn?.('Spotify setup: sign-in failed: ' + (e?.message || e));
-                return { status: this._signInErrorStatus(e, { inSetup: true }) };
+                return { status: this._signInErrorStatus(failure, { inSetup: true }) };
             }
             // Signed in. Ask who as: that's the name on the "done" screen,
             // and the first call that shows whether Spotify will actually
@@ -549,13 +586,15 @@ export default class SpotifySettingsProvider {
             // reflects the new session.
             return { status: t('action.connect.success'), host: REFRESH };
         } catch (e) {
-            if (controller.signal.aborted || e?.code === 'cancelled') return {};
-            if (e?.code === 'no_client_id') {
+            if (controller.signal.aborted) return {};
+            const failure = classifySignInError(e);
+            if (failure.reason === 'cancelled') return {};
+            if (failure.reason === 'no_client_id') {
                 // Signed out from elsewhere meanwhile: show the setup.
                 return { status: t('action.check_connection.no_client_id'), host: REFRESH };
             }
             this.log?.warn?.('Spotify reconnect failed: ' + (e?.message || e));
-            return { status: this._signInErrorStatus(e, { inSetup: false }) };
+            return { status: this._signInErrorStatus(failure, { inSetup: false }) };
         } finally {
             if (this._signIn === controller) this._signIn = null;
         }
@@ -594,9 +633,9 @@ export default class SpotifySettingsProvider {
         }
     }
 
-    _signInErrorStatus(e, { inSetup }) {
+    /** Status text for a classified sign-in failure (classifySignInError). */
+    _signInErrorStatus(c, { inSetup }) {
         const t = this.t;
-        const c = classifySignInError(e);
         switch (c.reason) {
             case 'no_client_id':
                 return t('action.check_connection.no_client_id');

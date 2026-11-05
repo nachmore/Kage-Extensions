@@ -13,6 +13,8 @@
  *   - i18n {t, language, isRtl}  → ICU-subset translator
  *   - mascot {setActivity, clearActivity} → generic mascot activity hints
  *   - formatter {requestReformat} → ask the host to re-run a message formatter
+ *   - hostFeatures               → frozen string array of optional host behaviour
+ *                                  (e.g. 'settings.copy_action'); unset on older hosts
  *
  * These mocks reproduce that surface closely enough for functional tests
  * while staying synchronous-friendly and inspectable:
@@ -28,6 +30,8 @@
  *     the activity lease is asserted and released at the right moments. Pass
  *     `mascot: null` to simulate an OLDER HOST that has no mascot API at all —
  *     every extension must keep working in that case.
+ *   - `hostFeatures` is left off unless you pass it, which simulates a host
+ *     that predates feature detection.
  */
 
 import { vi } from 'vitest';
@@ -49,6 +53,9 @@ import { vi } from 'vitest';
  * @param {object} [opts.formatter] - `context.formatter` (e.g.
  *                                    `{ requestReformat: vi.fn() }`). Omitted by
  *                                    default, which simulates an older host.
+ * @param {string[]} [opts.hostFeatures] - `context.hostFeatures` (e.g.
+ *                                    `['settings.copy_action']`). Omitted by
+ *                                    default, which simulates an older host.
  * @returns {{context: object, log: object, invoke: import('vitest').Mock, mascot: object|null}}
  *          `context` to hand to initialize(); `log`, `invoke` and `mascot` exposed for assertions.
  */
@@ -62,6 +69,7 @@ export function makeContext(opts = {}) {
         rtl = false,
         mascot: mascotOpt,
         formatter,
+        hostFeatures,
     } = opts;
 
     const invoke = vi.fn(async (command, args) => {
@@ -121,6 +129,7 @@ export function makeContext(opts = {}) {
     };
     if (mascot) context.mascot = mascot;
     if (formatter) context.formatter = formatter;
+    if (hostFeatures) context.hostFeatures = Object.freeze([...hostFeatures]);
 
     return { context, log, invoke, mascot };
 }

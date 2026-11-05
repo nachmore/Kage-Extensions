@@ -850,5 +850,17 @@
     "description": "Setup step 4: the sign-in worked, but Spotify answered 403 because the account isn't the app's owner and isn't on its User Management list (apps in development mode). 'Settings' and 'User Management' are Spotify dashboard labels; 'Connect to Spotify' is a button label.",
     "_machine_translated": true,
     "_source_hash": "686cfbaedd502257"
+  },
+  "setup.create_app.copy.label": {
+    "message": "Redirect URI 복사",
+    "description": "Button on setup step 2 that copies the Redirect URI to the clipboard. 'Redirect URI' is the name of the field on Spotify's form.",
+    "_machine_translated": true,
+    "_source_hash": "ef709febdb94fdef"
+  },
+  "setup.create_app.copy.fallback": {
+    "message": "위의 주소를 선택하여 복사하십시오: {uri}",
+    "description": "Shown next to the Copy Redirect URI button if Kage couldn't copy it automatically. {uri} is the address, keep it as is.",
+    "_machine_translated": true,
+    "_source_hash": "0aa8372accaf9502"
   }
 }

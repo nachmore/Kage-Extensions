@@ -445,6 +445,14 @@
     "message": "Copy it exactly: <code>http</code> (not https), <code>127.0.0.1</code> (not localhost), ending in <code>/spotify/callback</code>. The port number doesn't have to match anything — Kage picks a free one each time you connect, and Spotify allows that for 127.0.0.1.",
     "description": "Hint below the Redirect URI. Keep the <code> parts exactly as they are."
   },
+  "setup.create_app.copy.label": {
+    "message": "Copy Redirect URI",
+    "description": "Button on setup step 2 that copies the Redirect URI to the clipboard. 'Redirect URI' is the name of the field on Spotify's form."
+  },
+  "setup.create_app.copy.fallback": {
+    "message": "Select the address above and copy it: {uri}",
+    "description": "Shown next to the Copy Redirect URI button if Kage couldn't copy it automatically. {uri} is the address, keep it as is."
+  },
   "setup.client_id.title": {
     "message": "Copy your Client ID",
     "description": "Title of setup step 3"

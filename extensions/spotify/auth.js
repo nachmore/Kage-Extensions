@@ -446,7 +446,10 @@ function untilAborted(promise, signal) {
  * (the user clicked Cancel on Spotify's page), 'oauth_error' (`oauthError`
  * holds Spotify's error), 'state_mismatch', 'no_code', 'token_exchange'
  * (`status`, `oauthError`, `oauthDescription`) and 'loopback' (Kage's
- * listener gave up, i.e. timed out). Messages stay English: they're for logs.
+ * listener failed; current hosts say why in the host error's `kind`, e.g.
+ * 'timeout' or 'cancelled', see setup.loopbackFailure). The messages
+ * written here stay English: they're for logs. A 'loopback' error keeps
+ * the host's message, which current hosts translate.
  *
  * @param {object} [opts]
  * @param {AbortSignal} [opts.signal] Abandons the sign-in: stops waiting
@@ -528,6 +531,7 @@ export async function startSignIn({ signal } = {}) {
         // makes the error surface cleanly without leaking listeners.
         await cancelListener();
         if (e?.code === 'cancelled') throw e;
+        // The host's own error: keep it (and its `kind` / `key`), just tag it.
         if (e && typeof e === 'object' && !e.code) e.code = 'loopback';
         throw e;
     }
