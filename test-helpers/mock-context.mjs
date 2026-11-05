@@ -14,7 +14,8 @@
  *   - mascot {setActivity, clearActivity} → generic mascot activity hints
  *   - formatter {requestReformat} → ask the host to re-run a message formatter
  *   - hostFeatures               → frozen string array of optional host behaviour
- *                                  (e.g. 'settings.copy_action'); unset on older hosts
+ *                                  (e.g. 'settings.copy_action', 'date-picker');
+ *                                  unset on older hosts
  *
  * These mocks reproduce that surface closely enough for functional tests
  * while staying synchronous-friendly and inspectable:
@@ -54,8 +55,9 @@ import { vi } from 'vitest';
  *                                    `{ requestReformat: vi.fn() }`). Omitted by
  *                                    default, which simulates an older host.
  * @param {string[]} [opts.hostFeatures] - `context.hostFeatures` (e.g.
- *                                    `['settings.copy_action']`). Omitted by
- *                                    default, which simulates an older host.
+ *                                    `['settings.copy_action', 'date-picker']`).
+ *                                    Omitted by default, which simulates an
+ *                                    older host.
  * @returns {{context: object, log: object, invoke: import('vitest').Mock, mascot: object|null}}
  *          `context` to hand to initialize(); `log`, `invoke` and `mascot` exposed for assertions.
  */

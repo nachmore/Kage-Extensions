@@ -45,9 +45,17 @@
     "message": "No meetings on {label}",
     "description": "Result label when a specific date has no events"
   },
-  "result.day.tomorrow": {
-    "message": "[Tomorrow]",
-    "description": "Bracketed prefix for tomorrow's events in time labels"
+  "day.today": {
+    "message": "Today",
+    "description": "Name of the current day in a meeting's time label, e.g. 'Today 10:00'"
+  },
+  "day.tomorrow": {
+    "message": "Tomorrow",
+    "description": "Name of the next day in a meeting's time label, e.g. 'Tomorrow 10:00'"
+  },
+  "day.yesterday": {
+    "message": "Yesterday",
+    "description": "Name of the previous day in a meeting's time label"
   },
   "result.duration.minutes": {
     "message": "{minutes}m",

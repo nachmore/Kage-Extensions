@@ -262,4 +262,49 @@ describe('CalendarNextMeetingWidget — mascot activity lease', () => {
     });
 });
 
+/**
+ * The bar's day ("[Tomorrow 10:00]") is a host date-picker opener on hosts
+ * that offer it, and plain text everywhere else.
+ */
+describe('CalendarNextMeetingWidget — date picker opener', () => {
+    const tomorrowAt10 = () => {
+        const d = new Date();
+        d.setDate(d.getDate() + 1);
+        d.setHours(10, 0, 0, 0);
+        return d;
+    };
+    const iso = (d) =>
+        `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
+    function widgetWith(hostFeatures) {
+        invalidate();
+        const { context } = makeContext({
+            invokes: { get_calendar_events: () => [] },
+            hostFeatures,
+            config: { lookahead_hours: 48 },
+        });
+        const widget = new CalendarNextMeetingWidget();
+        widget.initialize(context);
+        const start = tomorrowAt10();
+        widget._events = [{ id: 'x', subject: 'Fake review', start_time: start.toISOString(), duration_minutes: 30 }];
+        return { widget, start };
+    }
+
+    it('marks the day as an opener for that date', async () => {
+        const { widget, start } = widgetWith(['date-picker']);
+        const out = await widget.render();
+        widget.destroy();
+        expect(out.html).toContain(`<button type="button" data-kage-date="${iso(start)}">day.tomorrow</button>`);
+    });
+
+    it('stays plain text on an older host, with a single pair of brackets', async () => {
+        const { widget } = widgetWith(undefined);
+        const out = await widget.render();
+        widget.destroy();
+        expect(out.html).not.toContain('data-kage-date');
+        // Used to paint "[[Tomorrow] 10:00]".
+        expect(out.html).toMatch(/<strong>\[day\.tomorrow [^\]]+\]<\/strong>/);
+    });
+});
+
 

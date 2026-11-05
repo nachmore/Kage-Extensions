@@ -30,12 +30,13 @@ const EVENTS = [
     },
 ];
 
-function setup({ config = {}, upcoming = EVENTS, forDate = EVENTS } = {}) {
+function setup({ config = {}, upcoming = EVENTS, forDate = EVENTS, busyDays = [], hostFeatures, catalog } = {}) {
     const invokes = {
         get_calendar_events: () => upcoming,
         get_calendar_events_for_date: () => forDate,
+        get_calendar_busy_days: typeof busyDays === 'function' ? busyDays : () => busyDays,
     };
-    const { context, invoke } = makeContext({ config, invokes });
+    const { context, invoke } = makeContext({ config, invokes, hostFeatures, catalog });
     const provider = new CalendarSearchProvider();
     provider.initialize(context);
     return { provider, invoke };
@@ -260,5 +261,114 @@ describe('CalendarSearchProvider — renderCustom', () => {
         const { html } = provider.renderCustom(event);
         expect(html).toContain('Standup');
         expect(html).not.toContain('undefined');
+    });
+});
+
+/**
+ * Host date picker. Newer hosts pass `context.hostFeatures: ['date-picker']`;
+ * the provider then answers busy-day lookups, routes picked days to its own
+ * `cal <date>` listing, and marks dates in its rows as picker openers. On an
+ * older host (no hostFeatures) the rows must render exactly as plain text.
+ */
+describe('CalendarSearchProvider — date picker', () => {
+    const PICKER = ['date-picker'];
+    // A fake event 20 days out, so its row shows a full date label.
+    const far = new Date();
+    far.setDate(far.getDate() + 20);
+    far.setHours(10, 0, 0, 0);
+    const farIso = `${far.getFullYear()}-${String(far.getMonth() + 1).padStart(2, '0')}-${String(far.getDate()).padStart(2, '0')}`;
+    const FAR_EVENT = { id: 'f', subject: 'Fake planning', start_time: far.toISOString(), duration_minutes: 30 };
+
+    it('routes a picked day to its own cal <date> listing', () => {
+        const { provider } = setup({ hostFeatures: PICKER });
+        expect(provider.onDateSelected('2026-11-26')).toEqual({ query: 'cal 2026-11-26' });
+        expect(provider.onDateSelected('2026-02-30')).toBeNull();
+        expect(provider.onDateSelected('not a date')).toBeNull();
+    });
+
+    it('the routed query lands back on the day listing', async () => {
+        const { provider, invoke } = setup({ hostFeatures: PICKER });
+        const { query } = provider.onDateSelected('2026-11-26');
+        await provider.matchAsync(query);
+        expect(invoke).toHaveBeenCalledWith('get_calendar_events_for_date', { date: '2026-11-26' });
+    });
+
+    it('answers busy-day lookups with one range call, passing counts through', async () => {
+        const busyDays = vi.fn(() => [{ date: '2026-11-05', count: 2 }]);
+        const { provider, invoke } = setup({ hostFeatures: PICKER, busyDays });
+        const out = await provider.getDateMarkers('2026-10-26', '2026-12-07');
+        expect(out).toEqual({ status: 'ok', days: [{ date: '2026-11-05', count: 2 }] });
+        expect(invoke).toHaveBeenCalledTimes(1);
+        expect(invoke).toHaveBeenCalledWith('get_calendar_busy_days', { start: '2026-10-26', end: '2026-12-07' });
+    });
+
+    it('turns a denied OS permission into the permission status (by error key)', async () => {
+        const busyDays = () => {
+            const e = new Error('Calendar access denied');
+            e.key = 'errors.calendar.access_denied';
+            throw e;
+        };
+        const { provider } = setup({ hostFeatures: PICKER, busyDays });
+        expect(await provider.getDateMarkers('2026-10-26', '2026-12-07')).toEqual({
+            status: 'permission_denied',
+            days: [],
+        });
+    });
+
+    it('degrades any other failure (or a bad range) to no dots', async () => {
+        const busyDays = () => {
+            throw new Error('Outlook not running');
+        };
+        const { provider } = setup({ hostFeatures: PICKER, busyDays });
+        expect(await provider.getDateMarkers('2026-10-26', '2026-12-07')).toEqual({ status: 'error', days: [] });
+        expect(await provider.getDateMarkers('2026-10-26"', '2026-12-07')).toEqual({ status: 'error', days: [] });
+    });
+
+    it('day listings pin the date on every row and mark it as a picker opener', async () => {
+        const { provider } = setup({ hostFeatures: PICKER, forDate: [FAR_EVENT] });
+        const [row] = await provider.matchAsync(`cal ${farIso}`);
+        expect(row.pinDate).toBe(true);
+        const { html } = provider.renderCustom(row);
+        expect(html).toContain(`data-kage-date="${farIso}"`);
+        expect(html).toContain('Fake planning');
+    });
+
+    it("a day listing's today rows still carry a date opener", async () => {
+        const soon = new Date();
+        soon.setHours(23, 59, 0, 0);
+        const todayEvent = { id: 't', subject: 'Fake sync', start_time: soon.toISOString(), duration_minutes: 1 };
+        const { provider } = setup({ hostFeatures: PICKER, forDate: [todayEvent] });
+        const [row] = await provider.matchAsync('cal today');
+        const { html } = provider.renderCustom(row);
+        expect(html).toMatch(/\[<button type="button" data-kage-date="\d{4}-\d{2}-\d{2}">day\.today<\/button>\]/);
+    });
+
+    it('the empty state for a picked day makes the day itself the opener', async () => {
+        const catalog = { 'result.no_date.label': 'No meetings on {label}' };
+        const { provider } = setup({ hostFeatures: PICKER, forDate: [], catalog });
+        const [row] = await provider.matchAsync('cal 2026-11-26');
+        expect(row.id).toBe('cal:no-date:2026-11-26');
+        expect(row.dateView).toBe('2026-11-26');
+        const { html } = provider.renderCustom(row);
+        expect(html).toMatch(/No meetings on <button type="button" data-kage-date="2026-11-26">[^<]+<\/button>/);
+    });
+
+    it('older hosts get plain text: no data-kage-date anywhere', async () => {
+        const { provider } = setup({ forDate: [FAR_EVENT] });
+        const [row] = await provider.matchAsync(`cal ${farIso}`);
+        expect(provider.renderCustom(row).html).not.toContain('data-kage-date');
+        const { provider: p2 } = setup({ forDate: [] });
+        const [empty] = await p2.matchAsync('cal 2026-11-26');
+        expect(p2.renderCustom(empty).html).not.toContain('data-kage-date');
+    });
+
+    it('escapes a hostile subject but keeps the opener intact', async () => {
+        const evil = { ...FAR_EVENT, subject: '<img src=x onerror=alert(1)>' };
+        const { provider } = setup({ hostFeatures: PICKER, forDate: [evil] });
+        const [row] = await provider.matchAsync(`cal ${farIso}`);
+        const { html } = provider.renderCustom(row);
+        expect(html).not.toContain('<img');
+        expect(html).toContain('&lt;img');
+        expect(html).toContain(`data-kage-date="${farIso}"`);
     });
 });

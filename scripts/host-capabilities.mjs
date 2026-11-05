@@ -89,6 +89,8 @@ export const COMMAND_CAPABILITIES = Object.freeze({
     // --- calendar ------------------------------------------------------
     get_calendar_events: 'calendar',
     get_calendar_events_for_date: 'calendar',
+    // Per-day event counts for the host date picker's busy-day dots.
+    get_calendar_busy_days: 'calendar',
 
     // --- session -------------------------------------------------------
     list_sessions: 'session',

@@ -1,8 +1,22 @@
 import { initCache, getEvents } from './cache.js';
+import {
+    dateChip,
+    dayLabel,
+    isIsoDate,
+    isoToLocalDate,
+    localIsoDate,
+    supportsDatePicker,
+} from './dates.js';
 
 /**
  * Calendar search provider.
  * Runs in the sandbox. Overlay logic lives in widget.js now.
+ *
+ * On hosts that offer the month-calendar date picker
+ * (`context.hostFeatures` includes 'date-picker') it is also the picker's
+ * data source: getDateMarkers() answers which days are busy, and
+ * onDateSelected() routes a picked day to `cal <date>` — so the day's
+ * meetings render through this provider's normal result rows.
  */
 export default class CalendarSearchProvider {
     async initialize(context) {
@@ -11,6 +25,10 @@ export default class CalendarSearchProvider {
         initCache(context.invoke);
         this._config = context.config || {};
         this.t = context.i18n?.t?.bind(context.i18n) || ((k) => k);
+        this._locale = context.i18n?.language?.() || undefined;
+        // Date labels become host date-picker openers only where the host
+        // supports them; older hosts get the plain text they always did.
+        this._datePicker = supportsDatePicker(context);
     }
 
     async onConfigUpdate(config) {
@@ -157,12 +175,12 @@ export default class CalendarSearchProvider {
             return {
                 html: `<div class="app-icon">${escape(result?.icon || '📅')}</div>
                        <div class="app-info" style="flex:1;">
-                           <div class="app-name">${escape(result?.label || '')}</div>
+                           <div class="app-name">${this._labelHtml(result)}</div>
                            <div class="app-description">${escape(result?.description || '')}</div>
                        </div>`,
             };
         }
-        const time = this._formatTimeWithDay(e.start_time);
+        const time = this._timeWithDayHtml(e.start_time, { pinDate: result.pinDate === true });
         const dur = this._formatDuration(e.duration_minutes);
         const provider = e.online_url ? this._meetingProvider(e.online_url) : '';
         // Remember the event's URL so onResultAction('join') can open it
@@ -181,10 +199,41 @@ export default class CalendarSearchProvider {
             html: `<div class="app-icon">📅</div>
                    <div class="app-info" style="flex:1;">
                        <div class="app-name">${escape(e.subject)}</div>
-                       <div class="app-description">${escape(time)}${dur ? ' · ' + escape(dur) : ''}${provider ? ' · ' + escape(provider) : ''}${locSuffix}</div>
+                       <div class="app-description">${time}${dur ? ' · ' + escape(dur) : ''}${provider ? ' · ' + escape(provider) : ''}${locSuffix}</div>
                    </div>
                    ${joinBtn}`,
         };
+    }
+
+    /**
+     * Host date picker: which days in [start, end) have events. One
+     * get_calendar_busy_days call per visible month; only dates and counts
+     * come back (never titles). The host validates and caches the answer;
+     * a denied OS permission becomes the picker's "allow access" hint.
+     */
+    async getDateMarkers(start, end) {
+        if (!isIsoDate(start) || !isIsoDate(end) || !this._invoke) {
+            return { status: 'error', days: [] };
+        }
+        try {
+            const days = await this._invoke('get_calendar_busy_days', { start, end });
+            return { status: 'ok', days: Array.isArray(days) ? days : [] };
+        } catch (e) {
+            if (e?.key === 'errors.calendar.access_denied') {
+                return { status: 'permission_denied', days: [] };
+            }
+            this.log?.warn?.('calendar: busy-day lookup failed: ' + (e?.message || e));
+            return { status: 'error', days: [] };
+        }
+    }
+
+    /**
+     * The user picked a day in the host date picker. Route it to this
+     * provider's own date listing, so the day's meetings (or its "No
+     * meetings" row) render through the normal result rows.
+     */
+    onDateSelected(date) {
+        return isIsoDate(date) ? { query: `cal ${date}` } : null;
     }
 
     async onResultAction(actionId) {
@@ -252,9 +301,14 @@ export default class CalendarSearchProvider {
                     icon: '📅',
                     score: 85,
                     data: null,
+                    // The day this empty state is for — renderCustom makes
+                    // its date a picker opener so the user can keep browsing.
+                    dateView: dateStr,
                 }];
             }
-            return events.slice(0, 10).map(e => this._eventToResult(e));
+            // pinDate: a day listing always shows its day (even "Today"),
+            // so every row carries a date to reopen the picker from.
+            return events.slice(0, 10).map(e => this._eventToResult(e, { pinDate: true }));
         } catch (e) {
             console.warn('[Calendar] Failed to fetch events for date:', e);
             return [];
@@ -262,19 +316,37 @@ export default class CalendarSearchProvider {
     }
 
     _formatDateLabel(dateStr) {
+        if (!isIsoDate(dateStr)) return dateStr;
+        const d = isoToLocalDate(dateStr);
+        const opts = { weekday: 'long', month: 'short', day: 'numeric' };
+        if (d.getFullYear() !== new Date().getFullYear()) opts.year = 'numeric';
         try {
-            const d = new Date(dateStr + 'T00:00:00');
-            return d.toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' });
-        } catch { return dateStr; }
+            return d.toLocaleDateString(this._locale, opts);
+        } catch {
+            return dateStr;
+        }
     }
 
-    _eventToResult(event) {
-        const timeStr = this._formatTimeWithDay(event.start_time);
+    /**
+     * Label HTML for a non-event row. The "No meetings on <day>" empty state
+     * gets its day as a date-picker opener; everything else is plain text.
+     */
+    _labelHtml(result) {
+        const day = result?.dateView;
+        if (!isIsoDate(day)) return escape(result?.label || '');
+        const MARK = '\u0001';
+        const shell = escape(this.t('result.no_date.label', { label: MARK }));
+        const chip = dateChip(this._datePicker, day, escape(this._formatDateLabel(day)));
+        return shell.includes(MARK) ? shell.replace(MARK, chip) : escape(result?.label || '');
+    }
+
+    _eventToResult(event, { pinDate = false } = {}) {
+        const timeStr = this._formatTimeWithDay(event.start_time, { pinDate });
         const dur = this._formatDuration(event.duration_minutes);
         const provider = event.online_url ? this._meetingProvider(event.online_url) : '';
         const loc = event.location && !/^https?:\/\//i.test(event.location.trim()) ? event.location : '';
         const parts = [timeStr, dur, provider, loc].filter(Boolean);
-        return {
+        const result = {
             id: 'cal:' + (event.id || event.subject + ':' + event.start_time),
             type: 'calendar_event',
             label: event.subject,
@@ -283,25 +355,32 @@ export default class CalendarSearchProvider {
             score: 85,
             data: event,
         };
+        if (pinDate) result.pinDate = true;
+        return result;
     }
 
-    _formatTimeWithDay(isoString) {
-        try {
-            const d = new Date(isoString);
-            const now = new Date();
-            const time = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            const prefix = this._dayPrefix(d, now);
-            return prefix ? `${prefix} ${time}` : time;
-        } catch { return ''; }
+    /** `{ iso, day, time }` for an event start; `day` is "Tomorrow"-style or null for today. */
+    _timeParts(isoString, { pinDate = false } = {}) {
+        const d = new Date(isoString);
+        if (Number.isNaN(d.getTime())) return null;
+        const time = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const day = dayLabel(this.t, d, new Date(), { locale: this._locale, includeToday: pinDate });
+        return { iso: localIsoDate(d), day, time };
     }
 
-    _dayPrefix(eventDate, now) {
-        const todayStart = new Date(now); todayStart.setHours(0,0,0,0);
-        const eventDay = new Date(eventDate); eventDay.setHours(0,0,0,0);
-        const diffDays = Math.round((eventDay - todayStart) / 86400000);
-        if (diffDays === 0) return null;
-        if (diffDays === 1) return this.t('result.day.tomorrow');
-        return '[' + eventDate.toLocaleDateString(undefined, { weekday: 'long' }) + ']';
+    /** "[Tomorrow] 10:00" (plain text; today's events show just the time). */
+    _formatTimeWithDay(isoString, opts) {
+        const p = this._timeParts(isoString, opts);
+        if (!p) return '';
+        return p.day ? `[${p.day}] ${p.time}` : p.time;
+    }
+
+    /** Same as _formatTimeWithDay, as HTML with the day as a date-picker opener. */
+    _timeWithDayHtml(isoString, opts) {
+        const p = this._timeParts(isoString, opts);
+        if (!p) return '';
+        if (!p.day) return escape(p.time);
+        return `[${dateChip(this._datePicker, p.iso, escape(p.day))}] ${escape(p.time)}`;
     }
 
     _formatDuration(minutes) {

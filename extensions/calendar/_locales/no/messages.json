@@ -65,12 +65,6 @@
     "_machine_translated": true,
     "_source_hash": "2ec823dbfc847027"
   },
-  "result.day.tomorrow": {
-    "message": "[I morgen]",
-    "description": "Bracketed prefix for tomorrow's events in time labels",
-    "_machine_translated": true,
-    "_source_hash": "e01bba2eec41bce1"
-  },
   "result.duration.minutes": {
     "message": "{minutes}m",
     "description": "Duration: minutes",
@@ -256,5 +250,23 @@
     "description": "Keyword hint description for the cal-refresh trigger",
     "_machine_translated": true,
     "_source_hash": "7fa31d9f3b6aa747"
+  },
+  "day.today": {
+    "message": "I dag",
+    "description": "Name of the current day in a meeting's time label, e.g. 'Today 10:00'",
+    "_machine_translated": true,
+    "_source_hash": "93317488153fa83a"
+  },
+  "day.tomorrow": {
+    "message": "I morgen",
+    "description": "Name of the next day in a meeting's time label, e.g. 'Tomorrow 10:00'",
+    "_machine_translated": true,
+    "_source_hash": "9cd0ec95da576300"
+  },
+  "day.yesterday": {
+    "message": "I går",
+    "description": "Name of the previous day in a meeting's time label",
+    "_machine_translated": true,
+    "_source_hash": "6d3e5f06b1a47ddf"
   }
 }

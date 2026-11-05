@@ -1,4 +1,5 @@
 import { initCache, getEvents } from './cache.js';
+import { dateChip, dayLabel, localIsoDate, supportsDatePicker } from './dates.js';
 
 /**
  * How long the FIRST render (cold cache) will wait on the Outlook query
@@ -76,6 +77,10 @@ export default class CalendarNextMeetingWidget {
         this._events = [];
         this._fetchInFlight = false;
         this.t = context.i18n?.t?.bind(context.i18n) || ((k) => k);
+        this._locale = context.i18n?.language?.() || undefined;
+        // Host month-calendar popup (newer hosts): the day in the bar becomes
+        // an opener. Older hosts get plain text.
+        this._datePicker = supportsDatePicker(context);
         // Optional on older hosts — every call site is optional-chained.
         this._mascot = context.mascot;
         // Warm the snapshot a couple of seconds after mount (not AT mount) so
@@ -133,14 +138,18 @@ export default class CalendarNextMeetingWidget {
         const diffMin = Math.round((start - now) / 60000);
         const dayPrefix = this._dayPrefix(start, now);
 
-        let timeLabel;
+        // HTML (escaped): the day part is a host date-picker opener where the
+        // host supports it, so "[Tomorrow 10:00]" opens the month calendar.
+        let timeHtml;
         if (diffMin <= 0) {
-            timeLabel = this.t('widget.now');
+            timeHtml = escape(this.t('widget.now'));
         } else if (diffMin < 60 && !dayPrefix) {
-            timeLabel = this.t('widget.in_minutes', { minutes: diffMin });
+            timeHtml = escape(this.t('widget.in_minutes', { minutes: diffMin }));
         } else {
-            const time = start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            timeLabel = dayPrefix ? `${dayPrefix} ${time}` : time;
+            const time = escape(start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+            timeHtml = dayPrefix
+                ? `${dateChip(this._datePicker, localIsoDate(start), escape(dayPrefix))} ${time}`
+                : time;
         }
 
         const concurrentHtml = concurrent > 1
@@ -157,7 +166,7 @@ export default class CalendarNextMeetingWidget {
             html: `
                 <span class="extension-bar-icon">📅</span>
                 <span class="extension-bar-text" style="flex:1;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
-                    <strong>[${escape(timeLabel)}]</strong> ${escape(event.subject)}${concurrentHtml}
+                    <strong>[${timeHtml}]</strong> ${escape(event.subject)}${concurrentHtml}
                 </span>
                 <div class="extension-bar-controls">
                     ${joinHtml}
@@ -323,13 +332,14 @@ export default class CalendarNextMeetingWidget {
         this._cachedConcurrent = concurrent;
     }
 
+    /**
+     * The meeting's day when it isn't today ("Tomorrow", "Friday",
+     * "Thu, Nov 26"), else null. Unbracketed: render() puts the whole time
+     * label in one pair of brackets (this used to return "[Tomorrow]",
+     * which painted as "[[Tomorrow] 10:00]").
+     */
     _dayPrefix(eventDate, now) {
-        const todayStart = new Date(now); todayStart.setHours(0,0,0,0);
-        const eventDay = new Date(eventDate); eventDay.setHours(0,0,0,0);
-        const diffDays = Math.round((eventDay - todayStart) / 86400000);
-        if (diffDays === 0) return null;
-        if (diffDays === 1) return '[Tomorrow]';
-        return '[' + eventDate.toLocaleDateString(undefined, { weekday: 'long' }) + ']';
+        return dayLabel(this.t, eventDate, now, { locale: this._locale });
     }
 }
 
