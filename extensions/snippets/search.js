@@ -5,6 +5,8 @@
 // "snip+ <name> <body>" -> save (body is everything after the first space)
 // "snip- <name>"  -> delete
 
+import { DEFAULTS } from './defaults.js';
+
 const KEY = 'snippets';
 
 function fuzzy(haystack, q) {
@@ -39,7 +41,7 @@ export default class SnippetsSearchProvider {
      */
     getKeywords() {
         // i18n-keys: keyword.snip.label, keyword.snip.description, keyword.add.label, keyword.add.description, keyword.del.label, keyword.del.description
-        const trigger = (this.config.trigger || 'snip').toLowerCase();
+        const trigger = (this.config.trigger || DEFAULTS.trigger).toLowerCase();
         return [
             { keyword: trigger, labelKey: 'keyword.snip.label', descriptionKey: 'keyword.snip.description', icon: '📋', acceptsArgs: true },
             { keyword: trigger + '+', labelKey: 'keyword.add.label', descriptionKey: 'keyword.add.description', icon: '➕', acceptsArgs: true },
@@ -61,7 +63,7 @@ export default class SnippetsSearchProvider {
     }
 
     match(query) {
-        const trigger = (this.config.trigger || 'snip').toLowerCase();
+        const trigger = (this.config.trigger || DEFAULTS.trigger).toLowerCase();
         const t = query.trim();
         if (!t.toLowerCase().startsWith(trigger)) return [];
         const rest = t.slice(trigger.length);
@@ -106,7 +108,7 @@ export default class SnippetsSearchProvider {
     }
 
     async matchAsync(query) {
-        const trigger = (this.config.trigger || 'snip').toLowerCase();
+        const trigger = (this.config.trigger || DEFAULTS.trigger).toLowerCase();
         const t = query.trim();
         if (!t.toLowerCase().startsWith(trigger)) return [];
         const rest = t.slice(trigger.length);

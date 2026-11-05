@@ -8,6 +8,8 @@
  * within the 500ms window-list cache hit the icon cache and return instantly.
  */
 
+import { DEFAULTS } from './defaults.js';
+
 const ICON_CACHE_MAX = 64;
 
 export default class WindowWalkerSearchProvider {
@@ -34,7 +36,7 @@ export default class WindowWalkerSearchProvider {
      */
     getKeywords() {
         // i18n-keys: keyword.w.label, keyword.w.description
-        const trigger = (this.config.trigger || 'w ').trim().toLowerCase();
+        const trigger = (this.config.trigger || DEFAULTS.trigger).trim().toLowerCase();
         if (!trigger) return [];
         return [
             { keyword: trigger, labelKey: 'keyword.w.label', descriptionKey: 'keyword.w.description', icon: '🪟', acceptsArgs: true },
@@ -47,7 +49,7 @@ export default class WindowWalkerSearchProvider {
     }
 
     async matchAsync(query) {
-        const trigger = this.config.trigger || 'w ';
+        const trigger = this.config.trigger || DEFAULTS.trigger;
         const lower = query.toLowerCase();
 
         // Must start with the trigger
@@ -83,7 +85,7 @@ export default class WindowWalkerSearchProvider {
         return windows.map((w, i) => {
             const cachedIcon = this._iconCache.get(w.handle);
             let icon = '🪟';
-            if (this.config.show_icons !== false && cachedIcon) {
+            if ((this.config.show_icons ?? DEFAULTS.show_icons) && cachedIcon) {
                 icon = cachedIcon;
             }
             // Hide description if it's the same as the title (common when

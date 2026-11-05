@@ -3,6 +3,8 @@
  * Subcommands: focus today, focus week, focus month, focus all
  */
 
+import { DEFAULTS } from './defaults.js';
+
 const PERIODS = {
     'today': 'today',
     'week': 'week',
@@ -61,7 +63,7 @@ export default class FocusTrackerSearchProvider {
      */
     getKeywords() {
         // i18n-keys: keyword.focus.label, keyword.focus.description
-        const trigger = (this.config.trigger ?? 'focus').trim().toLowerCase();
+        const trigger = (this.config.trigger ?? DEFAULTS.trigger).trim().toLowerCase();
         if (!trigger) return [];
         return [
             { keyword: trigger, labelKey: 'keyword.focus.label', descriptionKey: 'keyword.focus.description', icon: '📊', acceptsArgs: true },
@@ -178,7 +180,7 @@ export default class FocusTrackerSearchProvider {
     // --- Private ---
 
     _parseQuery(query) {
-        const trigger = (this.config.trigger ?? 'focus').trim().toLowerCase();
+        const trigger = (this.config.trigger ?? DEFAULTS.trigger).trim().toLowerCase();
         const trimmed = query.trim().toLowerCase();
 
         if (!trigger) return null;
@@ -219,7 +221,7 @@ export default class FocusTrackerSearchProvider {
      * re-runs the search and loads that report.
      */
     _periodMenu(filter) {
-        const trigger = (this.config.trigger ?? 'focus').trim().toLowerCase();
+        const trigger = (this.config.trigger ?? DEFAULTS.trigger).trim().toLowerCase();
         const periods = Object.keys(PERIODS).filter((p) => !filter || p.startsWith(filter));
         // i18n-keys: result.menu.today, result.menu.week, result.menu.month, result.menu.year, result.menu.all
         return periods.map((p, i) => ({
@@ -238,7 +240,7 @@ export default class FocusTrackerSearchProvider {
         try {
             const running = await this.invoke('is_activity_tracker_running');
             if (!running) {
-                const interval = this.config.poll_interval || 5;
+                const interval = this.config.poll_interval || DEFAULTS.poll_interval;
                 await this.invoke('start_activity_tracker', { pollInterval: interval });
             }
             this._started = true;
@@ -336,7 +338,7 @@ export default class FocusTrackerSearchProvider {
 
         // Top apps (max 5) — skipped when the month rollup rendered; the
         // flat table would just repeat what the month lines already say.
-        const showApps = months.length === 0 && this.config.track_screen_time !== false;
+        const showApps = months.length === 0 && (this.config.track_screen_time ?? DEFAULTS.track_screen_time);
         if (showApps) {
             for (let i = 0; i < Math.min(report.apps.length, 5); i++) {
                 const app = report.apps[i];
@@ -421,7 +423,7 @@ export default class FocusTrackerSearchProvider {
         // re-runs (`replace_input`), same as typing it. Lowest score in the
         // group so it renders at the bottom of the block.
         if (parsed && parsed.explicit === false) {
-            const trigger = (this.config.trigger ?? 'focus').trim().toLowerCase();
+            const trigger = (this.config.trigger ?? DEFAULTS.trigger).trim().toLowerCase();
             const others = Object.keys(PERIODS).filter((p) => p !== period);
             results.push({
                 id: 'focus-period-hint',

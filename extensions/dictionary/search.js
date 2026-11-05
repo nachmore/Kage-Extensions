@@ -3,6 +3,8 @@
  * Uses match() for instant "loading" feedback and matchAsync() for the actual API call.
  */
 
+import { DEFAULTS } from './defaults.js';
+
 const API_BASE = 'https://freedictionaryapi.com/api/v1/entries';
 const SUGGEST_API = 'https://api.datamuse.com/sug';
 const MIN_WORD_LENGTH = 2;
@@ -46,7 +48,7 @@ export default class DictionarySearchProvider {
      */
     getKeywords() {
         // i18n-keys: keyword.dict.label, keyword.dict.description
-        const trigger = (this.config.trigger ?? 'dict').trim().toLowerCase();
+        const trigger = (this.config.trigger ?? DEFAULTS.trigger).trim().toLowerCase();
         if (!trigger) return []; // content matcher — needs every keystroke
         return [
             { keyword: trigger, labelKey: 'keyword.dict.label', descriptionKey: 'keyword.dict.description', icon: '📖', acceptsArgs: true },
@@ -57,7 +59,7 @@ export default class DictionarySearchProvider {
         const word = this._extractWord(query);
         if (!word || !this._isLookupCandidate(word)) return [];
 
-        const lang = this.config.language || 'auto';
+        const lang = this.config.language || DEFAULTS.language;
 
         if (lang === 'auto') {
             // Check if any language has this word cached
@@ -92,7 +94,7 @@ export default class DictionarySearchProvider {
         if (!this._isLookupCandidate(word)) return [];
 
         // Resolve language: auto-detect or use configured
-        let lang = this.config.language || 'auto';
+        let lang = this.config.language || DEFAULTS.language;
         if (lang === 'auto') {
             const detect = await _getDetector();
             if (detect) {
@@ -154,7 +156,7 @@ export default class DictionarySearchProvider {
         }
         if (result.data?.type === 'suggestion') {
             // Replace input with trigger + suggested word so it triggers a new lookup
-            const trigger = (this.config.trigger ?? 'dict').trim();
+            const trigger = (this.config.trigger ?? DEFAULTS.trigger).trim();
             const newInput = trigger ? `${trigger} ${result.data.word}` : result.data.word;
             return { type: 'replace_input', value: newInput };
         }
@@ -190,7 +192,7 @@ export default class DictionarySearchProvider {
 
     _extractWord(query) {
         const trimmed = query.trim();
-        const trigger = (this.config.trigger ?? 'dict').trim().toLowerCase();
+        const trigger = (this.config.trigger ?? DEFAULTS.trigger).trim().toLowerCase();
 
         if (!trigger) {
             return trimmed.toLowerCase();
@@ -293,15 +295,15 @@ export default class DictionarySearchProvider {
             const firstSense = entry.senses?.[0];
             if (!firstSense?.definition) continue;
 
-            const pronunciation = this.config.show_pronunciation !== false
+            const pronunciation = (this.config.show_pronunciation ?? DEFAULTS.show_pronunciation)
                 ? (entry.pronunciations?.[0]?.text || '')
                 : '';
 
-            const synonyms = this.config.show_synonyms !== false
+            const synonyms = (this.config.show_synonyms ?? DEFAULTS.show_synonyms)
                 ? (firstSense.synonyms || entry.synonyms || []).slice(0, 4)
                 : [];
 
-            const examples = this.config.show_examples !== false
+            const examples = (this.config.show_examples ?? DEFAULTS.show_examples)
                 ? (firstSense.examples || []).slice(0, 1)
                 : [];
 

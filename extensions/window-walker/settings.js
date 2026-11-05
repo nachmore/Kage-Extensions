@@ -5,6 +5,9 @@
  * activation delimiter). The UI shows it trimmed to avoid exposing
  * that implementation detail to the user.
  */
+
+import { DEFAULTS } from './defaults.js';
+
 export default class WindowWalkerSettingsProvider {
     initialize(context) {
         this.config = context.config || {};
@@ -17,7 +20,7 @@ export default class WindowWalkerSettingsProvider {
 
     getSettings() {
         const t = this.t;
-        const storedTrigger = (this.config.trigger ?? 'w ').replace(/\s+$/, '');
+        const storedTrigger = (this.config.trigger ?? DEFAULTS.trigger).replace(/\s+$/, '');
         return {
             description: t('settings.description'),
             sections: [
@@ -29,7 +32,7 @@ export default class WindowWalkerSettingsProvider {
                             label: t('settings.trigger.label'),
                             description: t('settings.trigger.description'),
                             default: storedTrigger,
-                            placeholder: 'w',
+                            placeholder: DEFAULTS.trigger.trim(),
                             maxWidth: 120,
                         },
                         {
@@ -37,14 +40,14 @@ export default class WindowWalkerSettingsProvider {
                             id: 'show_icons',
                             label: t('settings.show_icons.label'),
                             description: t('settings.show_icons.description'),
-                            default: true,
+                            default: DEFAULTS.show_icons,
                         },
                         {
                             type: 'checkbox',
                             id: 'hide_minimized',
                             label: t('settings.hide_minimized.label'),
                             description: t('settings.hide_minimized.description'),
-                            default: false,
+                            default: DEFAULTS.hide_minimized,
                         },
                     ],
                 },

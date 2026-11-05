@@ -3,6 +3,7 @@
 // private repos.
 
 import { setToken } from './search.js';
+import { DEFAULTS } from './defaults.js';
 
 export default class GitHubSettingsProvider {
     initialize(context) {
@@ -23,7 +24,7 @@ export default class GitHubSettingsProvider {
             sections: [
                 {
                     controls: [
-                        { type: 'text', id: 'trigger', label: t('settings.trigger.label'), default: 'gh', maxWidth: 80 },
+                        { type: 'text', id: 'trigger', label: t('settings.trigger.label'), default: DEFAULTS.trigger, maxWidth: 80 },
                     ],
                 },
                 {
@@ -52,7 +53,7 @@ export default class GitHubSettingsProvider {
 
     normalize(values) {
         const { __token_input, ...rest } = values;
-        return { values: { ...rest, trigger: (rest.trigger || 'gh').trim().toLowerCase() } };
+        return { values: { ...rest, trigger: (rest.trigger || DEFAULTS.trigger).trim().toLowerCase() } };
     }
 
     async runAction(action, values) {

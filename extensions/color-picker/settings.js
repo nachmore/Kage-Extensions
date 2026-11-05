@@ -1,6 +1,9 @@
 /**
  * Color Picker settings provider (sandboxed).
  */
+
+import { DEFAULTS } from './defaults.js';
+
 export default class ColorPickerSettingsProvider {
     initialize(context) {
         this.config = context.config || {};
@@ -20,7 +23,7 @@ export default class ColorPickerSettingsProvider {
                             id: 'copy_format',
                             label: t('settings.copy_format.label'),
                             description: t('settings.copy_format.description'),
-                            default: 'all',
+                            default: DEFAULTS.copy_format,
                             maxWidth: 200,
                             options: [
                                 { value: 'all', label: t('settings.copy_format.option_all') },

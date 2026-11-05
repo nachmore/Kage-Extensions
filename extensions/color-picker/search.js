@@ -3,6 +3,8 @@
  * Detects hex, rgb, hsl, named colors and provides preview with format conversions.
  */
 
+import { DEFAULTS } from './defaults.js';
+
 export default class ColorPickerSearchProvider {
     initialize(context) {
         this.config = context.config || {};
@@ -32,7 +34,7 @@ export default class ColorPickerSearchProvider {
     execute(result) {
         const { r, g, b } = result.data;
         const formats = formatAllColors(r, g, b);
-        const fmt = this.config.copy_format || 'all';
+        const fmt = this.config.copy_format || DEFAULTS.copy_format;
         if (fmt === 'hex') return { type: 'copy', value: formats.hex };
         if (fmt === 'rgb') return { type: 'copy', value: formats.rgb };
         if (fmt === 'hsl') return { type: 'copy', value: formats.hsl };

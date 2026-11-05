@@ -2,6 +2,8 @@
  * Dictionary settings provider (sandboxed).
  */
 
+import { DEFAULTS } from './defaults.js';
+
 const LANGUAGES = [
     { code: 'auto', name: null }, // localized below
     { code: 'en', name: 'English' },
@@ -55,8 +57,8 @@ export default class DictionarySettingsProvider {
                             id: 'trigger',
                             label: t('settings.trigger.label'),
                             description: t('settings.trigger.description'),
-                            default: 'dict',
-                            placeholder: 'dict',
+                            default: DEFAULTS.trigger,
+                            placeholder: DEFAULTS.trigger,
                             maxWidth: 100,
                         },
                         {
@@ -64,15 +66,15 @@ export default class DictionarySettingsProvider {
                             id: 'language',
                             label: t('settings.language.label'),
                             description: t('settings.language.description'),
-                            default: 'auto',
+                            default: DEFAULTS.language,
                             options: LANGUAGES.map(l => ({
                                 value: l.code,
                                 label: l.code === 'auto' ? t('settings.language.auto') : l.name,
                             })),
                         },
-                        { type: 'checkbox', id: 'show_pronunciation', label: t('settings.show_pronunciation.label'), description: t('settings.show_pronunciation.description'), default: true },
-                        { type: 'checkbox', id: 'show_examples',      label: t('settings.show_examples.label'),      description: t('settings.show_examples.description'),      default: true },
-                        { type: 'checkbox', id: 'show_synonyms',      label: t('settings.show_synonyms.label'),      description: t('settings.show_synonyms.description'),      default: true },
+                        { type: 'checkbox', id: 'show_pronunciation', label: t('settings.show_pronunciation.label'), description: t('settings.show_pronunciation.description'), default: DEFAULTS.show_pronunciation },
+                        { type: 'checkbox', id: 'show_examples',      label: t('settings.show_examples.label'),      description: t('settings.show_examples.description'),      default: DEFAULTS.show_examples },
+                        { type: 'checkbox', id: 'show_synonyms',      label: t('settings.show_synonyms.label'),      description: t('settings.show_synonyms.description'),      default: DEFAULTS.show_synonyms },
                         {
                             type: 'info',
                             html: t('settings.attribution.html'),

@@ -3,6 +3,8 @@
  * Provides UUID generation, base64 encode/decode, hashing, epoch conversion, JSON formatting.
  */
 
+import { DEFAULTS } from './defaults.js';
+
 export default class DevToolsSearchProvider {
     initialize(context) {
         this.config = context.config || {};
@@ -59,10 +61,9 @@ export default class DevToolsSearchProvider {
 
 function matchDevTool(input, config, t) {
     const lower = input.toLowerCase().trim();
-    // Every tool defaults to on (manifest `config`). Test `!== false` rather
-    // than truthiness so a key missing from a saved config (e.g. saved by an
-    // older version) keeps the default instead of silently turning off.
-    const on = (key) => config[key] !== false;
+    // A key missing from a saved config (e.g. saved by an older version)
+    // keeps its default (every tool is on) instead of silently turning off.
+    const on = (key) => config[key] ?? DEFAULTS[key];
 
     if (on('uuid') && (lower === 'uuid' || lower === 'guid' || lower === 'uuid4')) {
         const uuid = crypto.randomUUID();

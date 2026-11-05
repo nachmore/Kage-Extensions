@@ -6,16 +6,17 @@
 // "pw word 6"      -> N-word passphrase
 
 import { WORDS } from './wordlist.js';
+import { DEFAULTS } from './defaults.js';
 
 const AMBIGUOUS = new Set('Il1O0|`\'"');
 
 function pool(config) {
     let s = '';
-    if (config.include_lowercase !== false) s += 'abcdefghijklmnopqrstuvwxyz';
-    if (config.include_uppercase !== false) s += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    if (config.include_numbers !== false) s += '0123456789';
-    if (config.include_symbols !== false) s += '!@#$%^&*()-_=+[]{};:,.<>?';
-    if (config.exclude_ambiguous !== false) {
+    if (config.include_lowercase ?? DEFAULTS.include_lowercase) s += 'abcdefghijklmnopqrstuvwxyz';
+    if (config.include_uppercase ?? DEFAULTS.include_uppercase) s += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    if (config.include_numbers ?? DEFAULTS.include_numbers) s += '0123456789';
+    if (config.include_symbols ?? DEFAULTS.include_symbols) s += '!@#$%^&*()-_=+[]{};:,.<>?';
+    if (config.exclude_ambiguous ?? DEFAULTS.exclude_ambiguous) {
         s = [...s].filter((c) => !AMBIGUOUS.has(c)).join('');
     }
     return s || 'abcdefghijklmnopqrstuvwxyz';
@@ -60,7 +61,7 @@ export default class PasswordSearchProvider {
     onConfigUpdate(config) { this.config = config || {}; }
 
     match(query) {
-        const trigger = (this.config.trigger || 'pw').toLowerCase();
+        const trigger = (this.config.trigger || DEFAULTS.trigger).toLowerCase();
         const t = query.trim();
         const lower = t.toLowerCase();
         if (lower !== trigger && !lower.startsWith(trigger + ' ')) return [];
@@ -85,7 +86,7 @@ export default class PasswordSearchProvider {
 
         // Numeric password
         let length = parseInt(rest, 10);
-        if (!Number.isFinite(length)) length = this.config.default_length || 20;
+        if (!Number.isFinite(length)) length = this.config.default_length || DEFAULTS.default_length;
         length = Math.max(4, Math.min(128, length));
         const password = genPassword(length, this.config);
         const bits = entropyBits(length, pool(this.config).length);
@@ -114,7 +115,7 @@ export default class PasswordSearchProvider {
             // Re-emitting the same trigger word kicks off a fresh `match()` with a
             // newly-rolled password.
             const rest = result.data.rest || '';
-            const trigger = (this.config.trigger || 'pw');
+            const trigger = (this.config.trigger || DEFAULTS.trigger);
             return { type: 'replace_input', value: rest ? `${trigger} ${rest}` : trigger };
         }
         return { type: 'copy', value: result?.data?.value || '' };

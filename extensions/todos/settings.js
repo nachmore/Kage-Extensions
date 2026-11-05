@@ -1,6 +1,9 @@
 /**
  * Todos & Reminders settings provider (sandboxed).
  */
+
+import { DEFAULTS } from './defaults.js';
+
 const STORAGE_KEY = 'kage-todos';
 
 export default class TodosSettingsProvider {
@@ -25,7 +28,7 @@ export default class TodosSettingsProvider {
                             id: 'default_category',
                             label: t('settings.default_category.label'),
                             description: t('settings.default_category.description'),
-                            default: '',
+                            default: DEFAULTS.default_category,
                             placeholder: t('settings.default_category.placeholder'),
                             maxWidth: 200,
                         },
@@ -34,7 +37,7 @@ export default class TodosSettingsProvider {
                             id: 'sort_by',
                             label: t('settings.sort_by.label'),
                             description: t('settings.sort_by.description'),
-                            default: 'created',
+                            default: DEFAULTS.sort_by,
                             maxWidth: 200,
                             options: [
                                 { value: 'created', label: t('settings.sort_by.option_created') },
@@ -48,7 +51,7 @@ export default class TodosSettingsProvider {
                             id: 'show_completed',
                             label: t('settings.show_completed.label'),
                             description: t('settings.show_completed.description'),
-                            default: true,
+                            default: DEFAULTS.show_completed,
                         },
                     ],
                 },
@@ -60,14 +63,14 @@ export default class TodosSettingsProvider {
                             id: 'confirm_delete',
                             label: t('settings.confirm_delete.label'),
                             description: t('settings.confirm_delete.description'),
-                            default: true,
+                            default: DEFAULTS.confirm_delete,
                         },
                         {
                             type: 'checkbox',
                             id: 'show_due_banner',
                             label: t('settings.show_due_banner.label'),
                             description: t('settings.show_due_banner.description'),
-                            default: true,
+                            default: DEFAULTS.show_due_banner,
                         },
                     ],
                 },

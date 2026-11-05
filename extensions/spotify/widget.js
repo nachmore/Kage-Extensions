@@ -7,6 +7,7 @@
 // instead, so the bar doesn't nag).
 
 import * as auth from './auth.js';
+import { DEFAULTS } from './defaults.js';
 
 // How many consecutive auth-classified poll failures before the widget
 // shows the "disconnected — reconnect" affordance. >1 so a lone blip that
@@ -89,9 +90,7 @@ export default class SpotifyNowPlayingWidget {
     }
 
     getRefreshInterval() {
-        // `=== false`, not falsy: a config saved without this key (older
-        // version) must keep the manifest default (on), not hide the bar.
-        if (this.config.show_now_playing_bar === false) return 0;
+        if (!(this.config.show_now_playing_bar ?? DEFAULTS.show_now_playing_bar)) return 0;
         const s = Number(this.config.refresh_seconds);
         // Default 15s — a balance between "feels live" and "doesn't
         // hammer Spotify's rate limit." Spotify doesn't publish exact
@@ -102,7 +101,7 @@ export default class SpotifyNowPlayingWidget {
         // halves that to ~240, leaving headroom for the actual
         // user-driven calls. Lower if you want snappier track-change
         // updates; the floor is 2s.
-        return Number.isFinite(s) && s >= 2 ? s * 1000 : 15000;
+        return Number.isFinite(s) && s >= 2 ? s * 1000 : DEFAULTS.refresh_seconds * 1000;
     }
 
     /**
@@ -129,7 +128,7 @@ export default class SpotifyNowPlayingWidget {
     async render() {
         // Every path that doesn't end in "audio is playing" releases the
         // mascot lease — we only ever hold it while we can see playback.
-        if (this.config.show_now_playing_bar === false) {
+        if (!(this.config.show_now_playing_bar ?? DEFAULTS.show_now_playing_bar)) {
             this._mascotActivity(false);
             return this._hide();
         }

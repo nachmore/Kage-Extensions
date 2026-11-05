@@ -17,6 +17,7 @@
 // the input feeling responsive.
 
 import * as auth from './auth.js';
+import { DEFAULTS } from './defaults.js';
 
 const ICON = '🎧';
 
@@ -40,7 +41,7 @@ export default class SpotifySearchProvider {
      */
     getKeywords() {
         // i18n-keys: keyword.spotify.label, keyword.spotify.description
-        const trigger = (this.config.trigger || 'sp').toLowerCase();
+        const trigger = (this.config.trigger || DEFAULTS.trigger).toLowerCase();
         return [
             {
                 keyword: trigger,
@@ -53,7 +54,7 @@ export default class SpotifySearchProvider {
     }
 
     match(query) {
-        const trigger = (this.config.trigger || 'sp').toLowerCase();
+        const trigger = (this.config.trigger || DEFAULTS.trigger).toLowerCase();
         const trimmed = query.trim();
         if (!trimmed) return [];
         const lower = trimmed.toLowerCase();
@@ -155,7 +156,7 @@ export default class SpotifySearchProvider {
      * the live device list from Spotify.
      */
     async matchAsync(query) {
-        const trigger = (this.config.trigger || 'sp').toLowerCase();
+        const trigger = (this.config.trigger || DEFAULTS.trigger).toLowerCase();
         const trimmed = query.trim();
         const lower = trimmed.toLowerCase();
         // Whole-word trigger only — see match() for why a bare prefix
@@ -301,7 +302,7 @@ export default class SpotifySearchProvider {
             // device is saved as preferred and the next attempt at
             // the original command works without prompting again.
             if (e?.code === 'multiple_devices') {
-                const trigger = (this.config.trigger || 'sp').toLowerCase();
+                const trigger = (this.config.trigger || DEFAULTS.trigger).toLowerCase();
                 return { type: 'replace_input', value: `${trigger} device ` };
             }
             // Connect before a Client ID is saved: don't make the user
@@ -344,7 +345,7 @@ export default class SpotifySearchProvider {
      * markdown in the chat/response area by the "Commands" row.
      */
     _commandsCheatSheet() {
-        const trigger = (this.config.trigger || 'sp').toLowerCase();
+        const trigger = (this.config.trigger || DEFAULTS.trigger).toLowerCase();
         return this.t('help.commands_markdown', { trigger });
     }
 

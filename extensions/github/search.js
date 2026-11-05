@@ -9,6 +9,8 @@
 // "gh #<q>"     -> search issues
 // "gh me"       -> open the GitHub home page
 
+import { DEFAULTS } from './defaults.js';
+
 const TOKEN_KEY = 'token';
 
 let _ctx = null;
@@ -56,7 +58,7 @@ export default class GitHubSearchProvider {
     onConfigUpdate(config) { this.config = config || {}; }
 
     match(query) {
-        const trigger = (this.config.trigger || 'gh').toLowerCase();
+        const trigger = (this.config.trigger || DEFAULTS.trigger).toLowerCase();
         const t = query.trim();
         const lower = t.toLowerCase();
         if (lower !== trigger && !lower.startsWith(trigger + ' ')) return [];
@@ -89,7 +91,7 @@ export default class GitHubSearchProvider {
     }
 
     async matchAsync(query) {
-        const trigger = (this.config.trigger || 'gh').toLowerCase();
+        const trigger = (this.config.trigger || DEFAULTS.trigger).toLowerCase();
         const t = query.trim();
         const lower = t.toLowerCase();
         if (lower !== trigger && !lower.startsWith(trigger + ' ')) return [];

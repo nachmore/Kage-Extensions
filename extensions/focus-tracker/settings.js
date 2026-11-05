@@ -1,6 +1,9 @@
 /**
  * Focus Tracker settings provider (sandboxed).
  */
+
+import { DEFAULTS } from './defaults.js';
+
 export default class FocusTrackerSettingsProvider {
     initialize(context) {
         this.config = context.config || {};
@@ -20,8 +23,8 @@ export default class FocusTrackerSettingsProvider {
                             id: 'trigger',
                             label: t('settings.trigger.label'),
                             description: t('settings.trigger.description'),
-                            default: 'focus',
-                            placeholder: 'focus',
+                            default: DEFAULTS.trigger,
+                            placeholder: DEFAULTS.trigger,
                             maxWidth: 120,
                         },
                         {
@@ -29,7 +32,7 @@ export default class FocusTrackerSettingsProvider {
                             id: 'poll_interval',
                             label: t('settings.poll_interval.label'),
                             description: t('settings.poll_interval.description'),
-                            default: 5,
+                            default: DEFAULTS.poll_interval,
                             min: 2,
                             max: 60,
                             maxWidth: 80,
@@ -39,9 +42,9 @@ export default class FocusTrackerSettingsProvider {
                 {
                     label: t('settings.section.data_to_track'),
                     controls: [
-                        { type: 'checkbox', id: 'track_screen_time', label: t('settings.track_screen_time.label'), description: t('settings.track_screen_time.description'), default: true },
-                        { type: 'checkbox', id: 'track_switches',    label: t('settings.track_switches.label'),    description: t('settings.track_switches.description'),    default: true },
-                        { type: 'checkbox', id: 'track_streaks',     label: t('settings.track_streaks.label'),     description: t('settings.track_streaks.description'),     default: true },
+                        { type: 'checkbox', id: 'track_screen_time', label: t('settings.track_screen_time.label'), description: t('settings.track_screen_time.description'), default: DEFAULTS.track_screen_time },
+                        { type: 'checkbox', id: 'track_switches',    label: t('settings.track_switches.label'),    description: t('settings.track_switches.description'),    default: DEFAULTS.track_switches },
+                        { type: 'checkbox', id: 'track_streaks',     label: t('settings.track_streaks.label'),     description: t('settings.track_streaks.description'),     default: DEFAULTS.track_streaks },
                     ],
                 },
             ],

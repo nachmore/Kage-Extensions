@@ -32,6 +32,8 @@
  * `data-*` attributes.
  */
 
+import { DEFAULTS } from './defaults.js';
+
 const MAX_URL_LENGTH = 2048;
 const DESC_TRUNCATE_AT = 140;
 // How long a pass waits for metadata before falling back to a loading
@@ -87,8 +89,8 @@ export default class LinkPreviewFormatter {
         // pass.
         if (context?.streaming) return null;
 
-        const maxPreviews = Number(this.config?.max_previews) || 5;
-        const showImages = this.config?.show_images !== false;
+        const maxPreviews = Number(this.config?.max_previews) || DEFAULTS.max_previews;
+        const showImages = this.config?.show_images ?? DEFAULTS.show_images;
 
         const doc = new DOMParser().parseFromString(
             `<!doctype html><body>${html}</body>`,

@@ -2,6 +2,9 @@
  * Todos toolbar provider (sandboxed).
  * Shows a task summary as an ephemeral chat bubble on click.
  */
+
+import { DEFAULTS } from './defaults.js';
+
 const STORAGE_KEY = 'kage-todos';
 
 export default class TodosToolbarProvider {
@@ -116,7 +119,7 @@ export default class TodosToolbarProvider {
             lines.push('</ul>');
         }
 
-        if (completed.length > 0 && this.config?.show_completed !== false) {
+        if (completed.length > 0 && (this.config?.show_completed ?? DEFAULTS.show_completed)) {
             const shown = completed.slice(0, 5);
             lines.push(this.t('toolbar.recently_completed_html') + '<ul>');
             for (const t of shown) lines.push(`<li><s>${escape(t.text)}</s></li>`);

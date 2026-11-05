@@ -1,3 +1,5 @@
+import { DEFAULTS } from './defaults.js';
+
 export default class EmojiSettingsProvider {
     initialize(context) {
         this.config = context.config || {};
@@ -14,12 +16,12 @@ export default class EmojiSettingsProvider {
                     controls: [
                         {
                             type: 'text', id: 'trigger', label: t('settings.trigger.label'),
-                            default: 'emoji', maxWidth: 140,
+                            default: DEFAULTS.trigger, maxWidth: 140,
                         },
                         {
                             type: 'checkbox', id: 'shortcode_trigger',
                             label: t('settings.shortcode_trigger.label'),
-                            default: true,
+                            default: DEFAULTS.shortcode_trigger,
                         },
                     ],
                 },

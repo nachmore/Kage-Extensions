@@ -6,6 +6,7 @@
 //                              (only when shortcode_trigger is enabled)
 
 import { EMOJIS } from './data.js';
+import { DEFAULTS } from './defaults.js';
 
 // Build a flat searchable index once.
 const INDEX = EMOJIS.map(([emoji, ...names]) => ({
@@ -43,12 +44,12 @@ export default class EmojiSearchProvider {
     onConfigUpdate(config) { this.config = config || {}; }
 
     match(query) {
-        const trigger = (this.config.trigger || 'emoji').toLowerCase();
+        const trigger = (this.config.trigger || DEFAULTS.trigger).toLowerCase();
         const trimmed = query.trim();
         const lower = trimmed.toLowerCase();
 
         // Shortcode form: ":fire" / ":fire:" / ":+1:"
-        if (this.config.shortcode_trigger !== false && lower.startsWith(':') && lower.length >= 3) {
+        if ((this.config.shortcode_trigger ?? DEFAULTS.shortcode_trigger) && lower.startsWith(':') && lower.length >= 3) {
             const inner = lower.replace(/^:|:$/g, '');
             if (inner.length >= 2 && /^[a-z0-9_+-]+$/i.test(inner)) {
                 const hits = search(inner, 5);

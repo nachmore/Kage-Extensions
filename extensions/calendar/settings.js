@@ -1,6 +1,9 @@
 /**
  * Calendar settings provider (sandboxed).
  */
+
+import { DEFAULTS } from './defaults.js';
+
 export default class CalendarSettingsProvider {
     initialize(context) {
         this.config = context.config || {};
@@ -24,14 +27,14 @@ export default class CalendarSettingsProvider {
                             id: 'show_overlay',
                             label: t('settings.show_overlay.label'),
                             description: t('settings.show_overlay.description'),
-                            default: true,
+                            default: DEFAULTS.show_overlay,
                         },
                         {
                             type: 'number',
                             id: 'lookahead_hours',
                             label: t('settings.lookahead.label'),
                             description: t('settings.lookahead.description'),
-                            default: 8,
+                            default: DEFAULTS.lookahead_hours,
                             min: 1,
                             max: 72,
                             maxWidth: 80,

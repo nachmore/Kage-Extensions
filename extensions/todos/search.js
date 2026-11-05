@@ -12,6 +12,8 @@
  * Items due today or overdue show a banner bar in the floating window.
  */
 
+import { DEFAULTS } from './defaults.js';
+
 const STORAGE_KEY = 'kage-todos';
 
 export default class TodosSearchProvider {
@@ -210,7 +212,7 @@ export default class TodosSearchProvider {
     // --- Sorting ---
 
     _sortTodos(todos) {
-        const sortBy = this.config.sort_by || 'created';
+        const sortBy = this.config.sort_by || DEFAULTS.sort_by;
         const priorityOrder = { 'high': 0, 'medium': 1, 'low': 2 };
 
         return [...todos].sort((a, b) => {
@@ -385,7 +387,7 @@ export default class TodosSearchProvider {
 
     _buildQuickAdd(rawText) {
         let text = rawText;
-        let category = this.config.default_category || '';
+        let category = this.config.default_category || DEFAULTS.default_category;
         let priority = 'medium';
         let dueDate = null;
 
@@ -414,7 +416,7 @@ export default class TodosSearchProvider {
 
     _buildTodoList(filterFn) {
         let filtered = filterFn ? this.todos.filter(filterFn) : this.todos;
-        const showCompleted = this.config.show_completed !== false;
+        const showCompleted = this.config.show_completed ?? DEFAULTS.show_completed;
         if (!showCompleted && !filterFn) filtered = filtered.filter(t => t.status !== 'complete');
 
         const sorted = this._sortTodos(filtered);

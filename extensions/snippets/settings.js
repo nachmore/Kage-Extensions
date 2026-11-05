@@ -1,3 +1,5 @@
+import { DEFAULTS } from './defaults.js';
+
 export default class SnippetsSettingsProvider {
     initialize(context) {
         this.invoke = context.invoke;
@@ -26,7 +28,7 @@ export default class SnippetsSettingsProvider {
             sections: [
                 {
                     controls: [
-                        { type: 'text', id: 'trigger', label: t('settings.trigger.label'), default: 'snip', maxWidth: 120 },
+                        { type: 'text', id: 'trigger', label: t('settings.trigger.label'), default: DEFAULTS.trigger, maxWidth: 120 },
                         {
                             type: 'info',
                             html: countHtml + bodyHtml + t('settings.info.usage_html'),

@@ -1,3 +1,5 @@
+import { DEFAULTS } from './defaults.js';
+
 export default class BookmarksSettingsProvider {
     initialize(context) {
         this.invoke = context.invoke;
@@ -20,7 +22,7 @@ export default class BookmarksSettingsProvider {
                     controls: [
                         {
                             type: 'text', id: 'trigger', label: 'Trigger word',
-                            default: 'bm', maxWidth: 100,
+                            default: DEFAULTS.trigger, maxWidth: 100,
                             description: 'Type this in the floating window to search bookmarks.',
                         },
                         {

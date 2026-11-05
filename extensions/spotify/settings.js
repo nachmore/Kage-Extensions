@@ -30,6 +30,7 @@ import {
     parseClientId,
     resolveSetupView,
 } from './setup.js';
+import { DEFAULTS } from './defaults.js';
 
 const SETUP_KEY = 'setup';
 const REFRESH = Object.freeze({ type: 'refresh' });
@@ -84,13 +85,13 @@ export default class SpotifySettingsProvider {
                 type: 'checkbox',
                 id: 'show_now_playing_bar',
                 label: t('settings.show_now_playing_bar.label'),
-                default: true,
+                default: DEFAULTS.show_now_playing_bar,
             },
             {
                 type: 'number',
                 id: 'refresh_seconds',
                 label: t('settings.refresh_seconds.label'),
-                default: 15,
+                default: DEFAULTS.refresh_seconds,
                 min: 2,
                 max: 60,
                 description: t('settings.refresh_seconds.description'),
@@ -99,8 +100,8 @@ export default class SpotifySettingsProvider {
                 type: 'text',
                 id: 'trigger',
                 label: t('settings.trigger.label'),
-                default: 'sp',
-                placeholder: 'sp',
+                default: DEFAULTS.trigger,
+                placeholder: DEFAULTS.trigger,
                 maxWidth: 100,
                 description: t('settings.trigger.description'),
             },
@@ -108,7 +109,7 @@ export default class SpotifySettingsProvider {
     }
 
     _trigger() {
-        return (this.config.trigger || 'sp').toLowerCase();
+        return (this.config.trigger || DEFAULTS.trigger).toLowerCase();
     }
 
     /** The regular settings. Only shown while connected. */
@@ -418,7 +419,7 @@ export default class SpotifySettingsProvider {
         for (const [k, v] of Object.entries(values || {})) {
             if (!k.startsWith('__')) rest[k] = v;
         }
-        rest.trigger = (rest.trigger || 'sp').trim().toLowerCase();
+        rest.trigger = (rest.trigger || DEFAULTS.trigger).trim().toLowerCase();
         return { values: rest };
     }
 

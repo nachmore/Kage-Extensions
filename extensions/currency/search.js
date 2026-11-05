@@ -3,6 +3,8 @@
 // update once per business day; we still poll on demand for the first
 // query of a session.
 
+import { DEFAULTS } from './defaults.js';
+
 const CACHE_KEY = 'rate_cache';
 const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
 
@@ -33,7 +35,7 @@ export default class CurrencySearchProvider {
         const amount = parseFloat(m[1].replace(/,/g, ''));
         if (!Number.isFinite(amount)) return [];
         const from = m[2].toUpperCase();
-        const to = (m[3] || (this.config.default_target || 'EUR')).toUpperCase();
+        const to = (m[3] || (this.config.default_target || DEFAULTS.default_target)).toUpperCase();
         if (!COMMON_CCYS.has(from)) return [];
         if (!COMMON_CCYS.has(to)) return [];
         if (from === to) {
@@ -49,7 +51,7 @@ export default class CurrencySearchProvider {
         const amount = parseFloat(m[1].replace(/,/g, ''));
         if (!Number.isFinite(amount)) return [];
         const from = m[2].toUpperCase();
-        const to = (m[3] || (this.config.default_target || 'EUR')).toUpperCase();
+        const to = (m[3] || (this.config.default_target || DEFAULTS.default_target)).toUpperCase();
         if (!COMMON_CCYS.has(from) || !COMMON_CCYS.has(to)) return [];
         if (from === to) return [];
         try {

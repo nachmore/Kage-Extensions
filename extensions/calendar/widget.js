@@ -1,5 +1,6 @@
 import { initCache, getEvents } from './cache.js';
 import { dateChip, dayLabel, localIsoDate, supportsDatePicker } from './dates.js';
+import { DEFAULTS } from './defaults.js';
 
 /**
  * How long the FIRST render (cold cache) will wait on the Outlook query
@@ -100,11 +101,11 @@ export default class CalendarNextMeetingWidget {
 
     getRefreshInterval() {
         // Poll once a minute so the "in Nm" countdown stays fresh.
-        return this._config.show_overlay !== false ? 60_000 : 0;
+        return (this._config.show_overlay ?? DEFAULTS.show_overlay) ? 60_000 : 0;
     }
 
     async render() {
-        if (this._config.show_overlay === false) {
+        if (!(this._config.show_overlay ?? DEFAULTS.show_overlay)) {
             this._updateMascotActivity(null);
             return null;
         }
@@ -256,7 +257,7 @@ export default class CalendarNextMeetingWidget {
         // same promise rather than starting a second one.
         if (this._fetchInFlight) return this._inFlightPromise;
         this._fetchInFlight = true;
-        const hours = this._config.lookahead_hours || 8;
+        const hours = this._config.lookahead_hours || DEFAULTS.lookahead_hours;
         this._inFlightPromise = Promise.resolve(getEvents({ hours }))
             .then((events) => {
                 if (Array.isArray(events)) this._events = events;
@@ -289,7 +290,7 @@ export default class CalendarNextMeetingWidget {
      * awaiting anything.
      */
     _recomputeNextEvent() {
-        const hours = this._config.lookahead_hours || 8;
+        const hours = this._config.lookahead_hours || DEFAULTS.lookahead_hours;
         const events = this._events;
         const now = new Date();
         const cutoff = new Date(now.getTime() + hours * 3600_000);

@@ -7,6 +7,9 @@
  * renderer recognises it and runs the corresponding Tauri command.
  * The extension itself doesn't need any new capability.
  */
+
+import { DEFAULTS } from './defaults.js';
+
 export default class LinkPreviewSettingsProvider {
     initialize(context) {
         this.config = context.config || {};
@@ -28,14 +31,14 @@ export default class LinkPreviewSettingsProvider {
                             id: 'show_images',
                             label: t('settings.show_images.label'),
                             description: t('settings.show_images.description'),
-                            default: true,
+                            default: DEFAULTS.show_images,
                         },
                         {
                             type: 'number',
                             id: 'max_previews',
                             label: t('settings.max_previews.label'),
                             description: t('settings.max_previews.description'),
-                            default: 5,
+                            default: DEFAULTS.max_previews,
                             min: 1,
                             max: 20,
                             maxWidth: 80,

@@ -4,6 +4,8 @@
 // Names are unique and case-insensitive; we keep the original casing
 // for display but match lower-cased.
 
+import { DEFAULTS } from './defaults.js';
+
 const KEY = 'bookmarks';
 
 function fuzzyScore(name, query) {
@@ -40,7 +42,7 @@ export default class BookmarksSearchProvider {
      */
     getKeywords() {
         // i18n-keys: keyword.bm.label, keyword.bm.description, keyword.add.label, keyword.add.description, keyword.del.label, keyword.del.description
-        const trigger = (this.config.trigger || 'bm').toLowerCase();
+        const trigger = (this.config.trigger || DEFAULTS.trigger).toLowerCase();
         return [
             { keyword: trigger, labelKey: 'keyword.bm.label', descriptionKey: 'keyword.bm.description', icon: '🔖', acceptsArgs: true },
             { keyword: trigger + '+', labelKey: 'keyword.add.label', descriptionKey: 'keyword.add.description', icon: '➕', acceptsArgs: true },
@@ -64,7 +66,7 @@ export default class BookmarksSearchProvider {
     }
 
     match(query) {
-        const trigger = (this.config.trigger || 'bm').toLowerCase();
+        const trigger = (this.config.trigger || DEFAULTS.trigger).toLowerCase();
         const t = query.trim();
         if (!t.toLowerCase().startsWith(trigger)) return [];
         const rest = t.slice(trigger.length);
@@ -121,7 +123,7 @@ export default class BookmarksSearchProvider {
     }
 
     async matchAsync(query) {
-        const trigger = (this.config.trigger || 'bm').toLowerCase();
+        const trigger = (this.config.trigger || DEFAULTS.trigger).toLowerCase();
         const t = query.trim();
         if (!t.toLowerCase().startsWith(trigger)) return [];
         const rest = t.slice(trigger.length);

@@ -1,4 +1,5 @@
 import { initCache, getEvents } from './cache.js';
+import { DEFAULTS } from './defaults.js';
 
 /**
  * Calendar Tool Provider — exposes calendar data to the LLM agent.
@@ -23,7 +24,7 @@ export default class CalendarToolProvider {
                     hours_ahead: {
                         type: 'number',
                         description: 'Hours to look ahead from now',
-                        default: 8,
+                        default: DEFAULTS.lookahead_hours,
                     },
                 },
             },
@@ -47,7 +48,7 @@ export default class CalendarToolProvider {
     }
 
     async _listAppointments(params) {
-        const hoursAhead = params.hours_ahead ?? this.config?.lookahead_hours ?? 8;
+        const hoursAhead = params.hours_ahead ?? this.config?.lookahead_hours ?? DEFAULTS.lookahead_hours;
         try {
             const events = await getEvents({ hours: hoursAhead });
             return { result: { appointments: this._mapEvents(events), count: events?.length || 0 } };

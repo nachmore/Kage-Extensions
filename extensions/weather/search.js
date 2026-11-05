@@ -7,6 +7,8 @@
 // repeated queries don't hammer Nominatim. Forecasts are cached for
 // 10 minutes.
 
+import { DEFAULTS } from './defaults.js';
+
 const GEO_CACHE_KEY = 'geocode_cache';
 const FCAST_CACHE_KEY = 'forecast_cache';
 const FCAST_TTL_MS = 10 * 60 * 1000;
@@ -46,11 +48,11 @@ export default class WeatherSearchProvider {
     onConfigUpdate(config) { this.config = config || {}; }
 
     match(query) {
-        const trigger = (this.config.trigger || 'weather').toLowerCase();
+        const trigger = (this.config.trigger || DEFAULTS.trigger).toLowerCase();
         const trimmed = query.trim();
         if (!trimmed.toLowerCase().startsWith(trigger)) return [];
         const rest = trimmed.slice(trigger.length).trim();
-        const place = rest || (this.config.home_location || '').trim();
+        const place = rest || (this.config.home_location || DEFAULTS.home_location).trim();
         if (!place) {
             return [{
                 id: 'weather:no-location',
@@ -74,11 +76,11 @@ export default class WeatherSearchProvider {
     }
 
     async matchAsync(query) {
-        const trigger = (this.config.trigger || 'weather').toLowerCase();
+        const trigger = (this.config.trigger || DEFAULTS.trigger).toLowerCase();
         const trimmed = query.trim();
         if (!trimmed.toLowerCase().startsWith(trigger)) return [];
         const rest = trimmed.slice(trigger.length).trim();
-        const place = rest || (this.config.home_location || '').trim();
+        const place = rest || (this.config.home_location || DEFAULTS.home_location).trim();
         if (!place) return [];
 
         try {
@@ -95,7 +97,7 @@ export default class WeatherSearchProvider {
                 }];
             }
             const fcast = await this._forecast(geo);
-            const units = this.config.units || 'metric';
+            const units = this.config.units || DEFAULTS.units;
             const tempUnit = units === 'imperial' ? '°F' : '°C';
             const cur = fcast.current;
             const code = cur.weather_code;

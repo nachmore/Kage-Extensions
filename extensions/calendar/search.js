@@ -8,6 +8,7 @@ import {
     localIsoDate,
     supportsDatePicker,
 } from './dates.js';
+import { DEFAULTS } from './defaults.js';
 
 /**
  * Calendar search provider.
@@ -113,7 +114,7 @@ export default class CalendarSearchProvider {
                 type: 'calendar_event',
                 label: this.t('result.no_upcoming.label'),
                 description: this.t('result.no_upcoming.description', {
-                    count: this._config.lookahead_hours || 8,
+                    count: this._config.lookahead_hours || DEFAULTS.lookahead_hours,
                 }),
                 icon: '📅',
                 score: 85,
@@ -251,7 +252,7 @@ export default class CalendarSearchProvider {
     // --- Helpers ---
 
     async _fetchEvents(forceRefresh = false) {
-        const hours = this._config.lookahead_hours || 8;
+        const hours = this._config.lookahead_hours || DEFAULTS.lookahead_hours;
         return getEvents({ hours, force: forceRefresh });
     }
 

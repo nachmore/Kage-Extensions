@@ -3,6 +3,9 @@
  * Mounts into the floating-bottom slot. Shows the next due-today /
  * overdue item with navigation + mark-done + dismiss actions.
  */
+
+import { DEFAULTS } from './defaults.js';
+
 const STORAGE_KEY = 'kage-todos';
 
 export default class TodosDueWidget {
@@ -22,11 +25,11 @@ export default class TodosDueWidget {
     getRefreshInterval() {
         // Reload + re-render every 5 minutes. That's frequent enough to
         // catch newly-added due-today items without hammering storage.
-        return this.config?.show_due_banner === false ? 0 : 5 * 60_000;
+        return (this.config?.show_due_banner ?? DEFAULTS.show_due_banner) ? 5 * 60_000 : 0;
     }
 
     async render() {
-        if (this.config?.show_due_banner === false) return null;
+        if (!(this.config?.show_due_banner ?? DEFAULTS.show_due_banner)) return null;
         await this._reloadDue();
         if (this._dueItems.length === 0) return null;
 
