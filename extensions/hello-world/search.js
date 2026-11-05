@@ -9,6 +9,9 @@
  * active language with EN fallback. See docs/I18N.md (in the main Kage
  * repo) for the full contract.
  */
+
+import { DEFAULTS } from './defaults.js';
+
 export default class HelloWorldSearchProvider {
     initialize(context) {
         this.config = context.config || {};
@@ -41,7 +44,7 @@ export default class HelloWorldSearchProvider {
         // overridden it. That way a Japanese user who hasn't touched settings
         // sees a Japanese greeting rather than "Hello World".
         const greeting = this.config.greeting || this.t('settings.greeting.default');
-        const timestamp = this.config.show_timestamp
+        const timestamp = (this.config.show_timestamp ?? DEFAULTS.show_timestamp)
             ? ` (${new Date().toLocaleTimeString()})`
             : '';
 

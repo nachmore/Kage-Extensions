@@ -1,6 +1,9 @@
 /**
  * Timer settings provider (sandboxed).
  */
+
+import { DEFAULTS } from './defaults.js';
+
 export default class TimerSettingsProvider {
     initialize(context) {
         this.config = context.config || {};
@@ -21,21 +24,21 @@ export default class TimerSettingsProvider {
                             id: 'notify_on_complete',
                             label: t('settings.notify_on_complete.label'),
                             description: t('settings.notify_on_complete.description'),
-                            default: true,
+                            default: DEFAULTS.notify_on_complete,
                         },
                         {
                             type: 'checkbox',
                             id: 'sound_on_complete',
                             label: t('settings.sound_on_complete.label'),
                             description: t('settings.sound_on_complete.description'),
-                            default: true,
+                            default: DEFAULTS.sound_on_complete,
                         },
                         {
                             type: 'select',
                             id: 'sound_id',
                             label: t('settings.sound_id.label'),
                             description: t('settings.sound_id.description'),
-                            default: 'two-tone',
+                            default: DEFAULTS.sound_id,
                             maxWidth: 200,
                             showWhen: { id: 'sound_on_complete', equals: true },
                             options: [
@@ -53,7 +56,7 @@ export default class TimerSettingsProvider {
                             id: 'custom_sound_path',
                             label: t('settings.custom_sound_path.label'),
                             description: t('settings.custom_sound_path.description'),
-                            default: '',
+                            default: DEFAULTS.custom_sound_path,
                             placeholder: 'C:\\path\\to\\sound.wav',
                             maxWidth: 350,
                             showWhen: { id: 'sound_id', equals: 'custom' },
@@ -62,7 +65,7 @@ export default class TimerSettingsProvider {
                             type: 'range',
                             id: 'sound_repeats',
                             label: t('settings.sound_repeats.label'),
-                            default: 3,
+                            default: DEFAULTS.sound_repeats,
                             min: 1,
                             max: 10,
                             step: 1,
@@ -81,7 +84,7 @@ export default class TimerSettingsProvider {
                             id: 'show_window_on_complete',
                             label: t('settings.show_window_on_complete.label'),
                             description: t('settings.show_window_on_complete.description'),
-                            default: true,
+                            default: DEFAULTS.show_window_on_complete,
                         },
                     ],
                 },
@@ -96,9 +99,9 @@ export default class TimerSettingsProvider {
             return {
                 host: {
                     type: 'play_timer_sound',
-                    soundId: values.sound_id || 'two-tone',
-                    customPath: values.custom_sound_path || '',
-                    repeats: values.sound_repeats || 3,
+                    soundId: values.sound_id || DEFAULTS.sound_id,
+                    customPath: values.custom_sound_path || DEFAULTS.custom_sound_path,
+                    repeats: values.sound_repeats || DEFAULTS.sound_repeats,
                 },
             };
         }

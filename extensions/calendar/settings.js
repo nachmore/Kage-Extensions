@@ -67,7 +67,7 @@ export default class CalendarSettingsProvider {
     async runAction(action, values) {
         if (action === 'test') {
             try {
-                const hours = Number(values.lookahead_hours) || 8;
+                const hours = Number(values.lookahead_hours) || DEFAULTS.lookahead_hours;
                 const events = await this.invoke('get_calendar_events', { hours });
                 const count = events?.length || 0;
                 return {
