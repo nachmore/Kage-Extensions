@@ -26,8 +26,13 @@
 // and i18n.t backed by the extension's EN catalog. Each value control's
 // default is coerced the way the host renderer coerces it, then passed through
 // the provider's normalize(), which the host runs before saving. (window-walker
-// shows "w" but stores "w ".) Controls that normalize() drops are action
-// inputs, not config, so they're skipped.
+// shows "w" but stores "w ".) The host saves every value control, not just
+// the keys normalize() returns: it writes the returned keys back into their
+// controls, then save() reads all controls (Kage RenderedSettings.validate /
+// save). So a control normalize() leaves out is stored as shown, and is
+// compared like any other. The one exemption is a helper field: an input for
+// an action button (github's token box), whose id starts with `__` and which
+// the manifest doesn't declare.
 //
 // Per control, the check requires that the manifest declares the id, the
 // types agree, the defaults are equal, and a select's default is one of its
@@ -69,6 +74,14 @@ const CONTROL_VALUE_TYPE = Object.freeze({
 const MANIFEST_TYPES = new Set(['boolean', 'string', 'number']);
 
 const IGNORE_MARKER = 'check-defaults: ignore';
+
+/**
+ * Id prefix for helper fields: inputs read by an action button (github's
+ * `__token_input`, spotify's `__setup_client_id`), not config the extension
+ * runs with. The repo's normalize() implementations strip them.
+ */
+const HELPER_PREFIX = '__';
+const isHelperField = (id) => id.startsWith(HELPER_PREFIX);
 
 // --- Host value semantics ---------------------------------------------------
 // Mirrors Kage ui/js/shared/settings-renderer.js. Keep in sync.
@@ -225,13 +238,16 @@ export function compareSchemaToManifest(schema, manifestConfig, opts = {}) {
 
     for (const ctrl of controls) {
         const id = ctrl.id;
-        // normalize() dropped it: an action input (e.g. a token field), not config.
-        if (normalized && !Object.hasOwn(normalized, id)) continue;
+        const spec = manifestConfig?.[id];
+        // A helper field: input for an action button (e.g. a token box), not config.
+        if (isHelperField(id) && !spec) continue;
 
         const shownValue = shown[id];
-        const stored = storedValue(ctrl, normalized ? normalized[id] : shownValue);
+        // The host writes back only the keys normalize() returned; Save then
+        // reads every control, so a key it left out is stored as shown.
+        const normalizedIt = normalized !== null && Object.hasOwn(normalized, id);
+        const stored = normalizedIt ? storedValue(ctrl, normalized[id]) : shownValue;
         const valueType = CONTROL_VALUE_TYPE[ctrl.type];
-        const spec = manifestConfig?.[id];
 
         if (Object.hasOwn(pseudoShown, id) && !Object.is(pseudoShown[id], shownValue)) {
             issues.push(
@@ -258,7 +274,8 @@ export function compareSchemaToManifest(schema, manifestConfig, opts = {}) {
                 `'${id}': settings control has no manifest config entry, so a never-saved ` +
                     `extension gets undefined while Settings shows ${fmt(shownValue)}. Add ` +
                     `"${id}": { "type": "${valueType}", "default": ${fmt(stored)} } to the ` +
-                    `manifest's config.`
+                    `manifest's config. (If it's an input for an action button rather than ` +
+                    `config, give it an id starting with "${HELPER_PREFIX}".)`
             );
             continue;
         }

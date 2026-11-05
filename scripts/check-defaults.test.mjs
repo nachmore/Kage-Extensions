@@ -157,18 +157,98 @@ describe('check-defaults — settings control vs manifest default', () => {
         ]);
     });
 
-    it('skips controls that normalize() drops (action inputs, not config)', async () => {
-        const dir = fixture({
+    it('skips __ helper fields (action inputs, not config)', async () => {
+        const controls = `[
+            { type: 'text', id: 'trigger', label: 'T', default: 'gh' },
+            { type: 'text', id: '__token_input', label: 'Token', default: '' },
+        ]`;
+        const stripped = fixture({
             config: { trigger: { type: 'string', default: 'gh' } },
             settings: provider(
-                `[
-                    { type: 'text', id: 'trigger', label: 'T', default: 'gh' },
-                    { type: 'text', id: '__token_input', label: 'Token', default: '' },
-                ]`,
+                controls,
                 `normalize(values) { const { __token_input, ...rest } = values; return { values: rest }; }`
             ),
         });
-        expect(await checkExtension(dir)).toEqual([]);
+        expect(await checkExtension(stripped)).toEqual([]);
+
+        // Skipped by its id, whether or not normalize() strips it.
+        const noNormalize = fixture({
+            config: { trigger: { type: 'string', default: 'gh' } },
+            settings: provider(controls),
+        });
+        expect(await checkExtension(noNormalize)).toEqual([]);
+    });
+
+    it('compares a __ field the manifest declares', async () => {
+        const dir = fixture({
+            config: { __mode: { type: 'string', default: 'a' } },
+            settings: provider(`[{ type: 'text', id: '__mode', label: 'M', default: 'b' }]`),
+        });
+        expect(await messages(dir)).toEqual([
+            expect.stringMatching(/'__mode'.*Settings shows "b".*manifest default "a"/),
+        ]);
+    });
+
+    // The host writes back only the keys normalize() returns, then Save reads
+    // every control, so a key normalize() leaves out is still stored as shown.
+    describe('a normalize() that returns only some keys', () => {
+        const partial = `normalize(values) {
+            return { values: { trigger: String(values.trigger || '').trim() + ' ' } };
+        }`;
+
+        it('still compares the controls it left out', async () => {
+            const dir = fixture({
+                config: {
+                    trigger: { type: 'string', default: 'w ' },
+                    show_icons: { type: 'boolean', default: true },
+                },
+                settings: provider(
+                    `[
+                        { type: 'text', id: 'trigger', label: 'T', default: 'w' },
+                        { type: 'checkbox', id: 'show_icons', label: 'S', default: false },
+                    ]`,
+                    partial
+                ),
+            });
+            expect(await messages(dir)).toEqual([
+                expect.stringMatching(/'show_icons'.*Settings shows false for.*manifest default true/),
+            ]);
+        });
+
+        it('still flags a left-out control the manifest does not declare', async () => {
+            const dir = fixture({
+                config: { trigger: { type: 'string', default: 'w ' } },
+                settings: provider(
+                    `[
+                        { type: 'text', id: 'trigger', label: 'T', default: 'w' },
+                        { type: 'checkbox', id: 'show_icons', label: 'S', default: true },
+                    ]`,
+                    partial
+                ),
+            });
+            expect(await messages(dir)).toEqual([
+                expect.stringMatching(/'show_icons'.*no manifest config entry.*starting with "__"/),
+            ]);
+        });
+
+        it('passes when the left-out controls match the manifest', async () => {
+            const dir = fixture({
+                config: {
+                    trigger: { type: 'string', default: 'w ' },
+                    show_icons: { type: 'boolean', default: true },
+                    limit: { type: 'number', default: 3 },
+                },
+                settings: provider(
+                    `[
+                        { type: 'text', id: 'trigger', label: 'T', default: 'w' },
+                        { type: 'checkbox', id: 'show_icons', label: 'S', default: true },
+                        { type: 'number', id: 'limit', label: 'L', default: 3 },
+                    ]`,
+                    partial
+                ),
+            });
+            expect(await checkExtension(dir)).toEqual([]);
+        });
     });
 
     it('flags a translated default even when the EN text matches the manifest', async () => {
