@@ -81,6 +81,20 @@ describe('dayLabel', () => {
         expect(dayLabel(t, at(2026, 10, 20), now, { locale: 'en-US' })).toBe('Tue, Oct 20');
         expect(dayLabel(t, at(2027, 1, 7), now, { locale: 'en-US' })).toBe('Thu, Jan 7, 2027');
     });
+
+    it('dates are Gregorian even where the locale defaults to another calendar', () => {
+        // fa defaults to the Persian calendar (Nov 26 2026 = 5 Azar 1405);
+        // the host picker these labels open is Gregorian.
+        const fa = dayLabel(t, at(2026, 11, 26), now, { locale: 'fa' });
+        const gregorian = at(2026, 11, 26).toLocaleDateString('fa', {
+            calendar: 'gregory',
+            weekday: 'short',
+            month: 'short',
+            day: 'numeric',
+        });
+        expect(fa).toBe(gregorian);
+        expect(fa).toContain('۲۶');
+    });
 });
 
 describe('dateChip', () => {

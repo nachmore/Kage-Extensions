@@ -47,6 +47,14 @@ export function dayDiff(date, now) {
 }
 
 /**
+ * Month/day labels are Gregorian in every locale. These labels open the
+ * host's month calendar, whose grid is Gregorian (event dates are); a
+ * Persian-calendar label (fa → "۱۳ آبان") over a grid that highlights
+ * "۴ نوامبر" reads as the wrong day. Digits still follow the locale.
+ */
+export const GREGORIAN = Object.freeze({ calendar: 'gregory' });
+
+/**
  * Human label for the day `date` falls on, relative to `now`:
  *   today → null (or "Today" with `includeToday`), ±1 → Tomorrow/Yesterday,
  *   the next 6 days → weekday name, anything else → a short date
@@ -60,7 +68,7 @@ export function dayLabel(t, date, now, { locale, includeToday = false } = {}) {
     if (diff === 1) return t('day.tomorrow');
     if (diff === -1) return t('day.yesterday');
     if (diff > 1 && diff < 7) return date.toLocaleDateString(locale, { weekday: 'long' });
-    const opts = { weekday: 'short', month: 'short', day: 'numeric' };
+    const opts = { ...GREGORIAN, weekday: 'short', month: 'short', day: 'numeric' };
     if (date.getFullYear() !== now.getFullYear()) opts.year = 'numeric';
     return date.toLocaleDateString(locale, opts);
 }

@@ -1,5 +1,6 @@
 import { initCache, getEvents } from './cache.js';
 import {
+    GREGORIAN,
     dateChip,
     dayLabel,
     isIsoDate,
@@ -318,7 +319,8 @@ export default class CalendarSearchProvider {
     _formatDateLabel(dateStr) {
         if (!isIsoDate(dateStr)) return dateStr;
         const d = isoToLocalDate(dateStr);
-        const opts = { weekday: 'long', month: 'short', day: 'numeric' };
+        // Gregorian like the picker it opens (see GREGORIAN in dates.js).
+        const opts = { ...GREGORIAN, weekday: 'long', month: 'short', day: 'numeric' };
         if (d.getFullYear() !== new Date().getFullYear()) opts.year = 'numeric';
         try {
             return d.toLocaleDateString(this._locale, opts);
