@@ -9,6 +9,8 @@
  * it out-of-thread where we can terminate it.
  */
 
+import { DEFAULTS } from './defaults.js';
+
 export default class MathSearchProvider {
     initialize(context) {
         this.config = context.config || {};
@@ -21,11 +23,11 @@ export default class MathSearchProvider {
     }
 
     async match(query) {
-        const mathResult = await evaluateMath(this._runSandboxed, query, this.config.precision ?? 0);
+        const mathResult = await evaluateMath(this._runSandboxed, query, this.config.precision ?? DEFAULTS.precision);
         if (!mathResult) return [];
 
         let display = mathResult.display;
-        if (this.config.thousands_separator) {
+        if (this.config.thousands_separator ?? DEFAULTS.thousands_separator) {
             const parts = display.split('.');
             parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
             display = parts.join('.');
@@ -72,7 +74,7 @@ function couldBeMath(input) {
     return true;
 }
 
-async function evaluateMath(runSandboxed, input, precision = 0) {
+async function evaluateMath(runSandboxed, input, precision = DEFAULTS.precision) {
     const trimmed = input.trim();
     if (!couldBeMath(trimmed)) return null;
     if (typeof runSandboxed !== 'function') return null;

@@ -4,6 +4,8 @@
  * Runs inside the extension sandbox iframe. Returns a declarative schema;
  * the host renders and wires everything up. No DOM access from here.
  */
+import { DEFAULTS } from './defaults.js';
+
 export default class MathSettingsProvider {
     initialize(context) {
         this.config = context.config || {};
@@ -26,7 +28,7 @@ export default class MathSettingsProvider {
                             id: 'precision',
                             label: t('settings.precision.label'),
                             description: t('settings.precision.description'),
-                            default: 2,
+                            default: DEFAULTS.precision,
                             min: -1,
                             max: 15,
                             maxWidth: 80,
@@ -36,14 +38,14 @@ export default class MathSettingsProvider {
                             id: 'auto_copy',
                             label: t('settings.auto_copy.label'),
                             description: t('settings.auto_copy.description'),
-                            default: true,
+                            default: DEFAULTS.auto_copy,
                         },
                         {
                             type: 'checkbox',
                             id: 'thousands_separator',
                             label: t('settings.thousands.label'),
                             description: t('settings.thousands.description'),
-                            default: false,
+                            default: DEFAULTS.thousands_separator,
                         },
                     ],
                 },
