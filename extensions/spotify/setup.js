@@ -128,6 +128,11 @@ export function parseClientId(raw) {
  * `context.hostFeatures` (hosts that predate the list don't set it).
  */
 export const HOST_FEATURE_COPY_ACTION = 'settings.copy_action';
+/**
+ * Among other things: saving a settings page stores only that page's keys
+ * and keeps every other saved value.
+ */
+export const HOST_FEATURE_MANIFEST_DEFAULTS = 'config.manifest_defaults';
 
 /** Whether the host's `context.hostFeatures` lists `feature`. */
 export function hostHasFeature(hostFeatures, feature) {

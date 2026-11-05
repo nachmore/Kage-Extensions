@@ -38,7 +38,12 @@ const REFRESH = { type: 'refresh' };
 
 // `context.hostFeatures` of a current Kage host. Leaving it out (the default
 // in these tests) is a host that predates feature detection.
-const CURRENT_HOST = { hostFeatures: ['settings.copy_action', 'invoke.error_kind'] };
+const CURRENT_HOST = {
+    hostFeatures: ['settings.copy_action', 'invoke.error_kind', 'config.manifest_defaults'],
+};
+// A host from before 'config.manifest_defaults': Save replaces the whole
+// stored config with the page's value controls.
+const PRE_MANIFEST_DEFAULTS_HOST = { hostFeatures: ['settings.copy_action', 'invoke.error_kind'] };
 
 /** The Error a current host's invoke() rejects with for a backend AppError. */
 const hostError = (kind, key, message) => Object.assign(new Error(message), { kind, key });
@@ -178,6 +183,15 @@ function visibleControls(schema) {
 }
 const visibleIds = (schema) => visibleControls(schema).map((c) => c.id).filter(Boolean);
 
+/** id → default of every value control: what Save reads from an untouched page. */
+function valueControlDefaults(schema) {
+    const values = {};
+    for (const c of controlsOf(schema)) {
+        if (['checkbox', 'text', 'number', 'select', 'range'].includes(c.type)) values[c.id] = c.default;
+    }
+    return values;
+}
+
 /** Which screen a schema is, read off the controls it shows. */
 function screenOf(schema) {
     const ids = new Set(visibleIds(schema));
@@ -262,18 +276,56 @@ describe('Spotify settings — not set up shows the guided setup', () => {
         }
     });
 
-    it('keeps the display settings in the schema, hidden, so a Save mid-setup keeps them', async () => {
-        // The host saves exactly the value controls of the schema on screen.
-        // Dropping them would wipe a customised trigger on Save, and
-        // validate() would reject the "missing" trigger.
-        const { provider } = setup({});
-        const schema = await provider.getSettings();
-        for (const id of ['show_now_playing_bar', 'refresh_seconds', 'trigger']) {
-            expect(byId(schema, id), id).toBeTruthy();
+    it('on older hosts, keeps the display settings in the schema, hidden, so a Save mid-setup keeps them', async () => {
+        // Those hosts replace the stored config with the value controls of
+        // the schema on screen. Dropping them would wipe a customised
+        // trigger on Save.
+        for (const host of [{}, PRE_MANIFEST_DEFAULTS_HOST]) {
+            for (const step of ['dashboard', 'create_app', 'client_id', 'connect', 'done']) {
+                const { provider } = setup({ client: CLIENT, setup: JSON.stringify({ step }) }, {}, {}, host);
+                const schema = await provider.getSettings();
+                expectHostValid(schema);
+                for (const id of ['show_now_playing_bar', 'refresh_seconds', 'trigger']) {
+                    expect(byId(schema, id), `${step}: ${id}`).toBeTruthy();
+                    expect(visibleIds(schema), `${step}: ${id}`).not.toContain(id);
+                }
+                const values = valueControlDefaults(schema);
+                const normalized = provider.normalize(values).values;
+                expect(normalized.trigger).toBe('sp');
+                expect(provider.validate(normalized)).toEqual({ valid: true });
+            }
         }
-        const values = {};
-        for (const c of controlsOf(schema)) if (c.id && 'default' in c) values[c.id] = c.default;
-        expect(provider.validate(values)).toEqual({ valid: true });
+    });
+
+    it('on hosts with config.manifest_defaults, setup steps have no copies of the display settings', async () => {
+        // Those hosts save only the page's own keys and keep every other
+        // stored value, so the copies would do nothing.
+        for (const step of ['dashboard', 'create_app', 'client_id', 'connect', 'done']) {
+            const { provider } = setup({ client: CLIENT, setup: JSON.stringify({ step }) }, {}, {}, CURRENT_HOST);
+            const schema = await provider.getSettings();
+            expectHostValid(schema);
+            for (const id of ['show_now_playing_bar', 'refresh_seconds', 'trigger']) {
+                expect(byId(schema, id), `${step}: ${id}`).toBeUndefined();
+            }
+            // Nothing on the page is config, so a Save stores nothing...
+            const values = valueControlDefaults(schema);
+            expect(Object.keys(values).filter((id) => !id.startsWith('__')), step).toEqual([]);
+            // ...and validate() and normalize() don't ask for the absent trigger.
+            const normalized = provider.normalize(values).values;
+            expect(normalized, step).toEqual({});
+            expect(provider.validate(normalized), step).toEqual({ valid: true });
+        }
+    });
+
+    it('the regular settings show the display settings on every host', async () => {
+        for (const host of [{}, PRE_MANIFEST_DEFAULTS_HOST, CURRENT_HOST]) {
+            const { provider } = setup({ client: CLIENT, creds: CREDS }, {}, {}, host);
+            const schema = await provider.getSettings();
+            expect(screenOf(schema)).toBe('settings');
+            for (const id of ['show_now_playing_bar', 'refresh_seconds', 'trigger']) {
+                expect(visibleIds(schema)).toContain(id);
+            }
+        }
     });
 
     it('with a Client ID but no sign-in: resumes at the connect step', async () => {
@@ -971,6 +1023,14 @@ describe('Spotify settings — re-run setup and sign out', () => {
         const { provider } = setup({});
         const out = provider.normalize({ trigger: ' SP ', show_now_playing_bar: true, __setup_client_id: 'x', __client_id_input: 'y' });
         expect(out).toEqual({ values: { trigger: 'sp', show_now_playing_bar: true } });
+    });
+
+    it('a trigger control on the page is still normalized and validated', () => {
+        const { provider } = setup({});
+        expect(provider.normalize({ trigger: '' }).values.trigger).toBe('sp');
+        expect(provider.normalize({ trigger: '  ' }).values.trigger).toBe('');
+        expect(provider.validate({ trigger: '' }).valid).toBe(false);
+        expect(provider.validate({ trigger: 'no spaces' }).valid).toBe(false);
     });
 });
 

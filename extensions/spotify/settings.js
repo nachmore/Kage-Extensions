@@ -21,6 +21,7 @@ import * as auth from './auth.js';
 import {
     DASHBOARD_URL,
     HOST_FEATURE_COPY_ACTION,
+    HOST_FEATURE_MANIFEST_DEFAULTS,
     REDIRECT_URI,
     SETUP_STEPS,
     classifySignInError,
@@ -44,12 +45,13 @@ const STEP_ACTIONS = Object.freeze({
     setup_step_connect: 'connect',
 });
 
-// The display controls are on every setup step too, but always hidden: an
-// empty `oneOf` never matches. They have to be there because the host saves
-// exactly the value controls of the schema on screen (and carries their
-// values through an in-place refresh). Without them, a Save during setup
-// would drop the user's trigger word and refresh interval, and validate()
-// would reject the "missing" trigger.
+// On older hosts the display controls are on every setup step too, but
+// always hidden: an empty `oneOf` never matches. Those hosts replace the
+// whole stored config with the value controls of the page on screen when
+// it's saved, so without these copies a Save during setup would drop the
+// user's trigger word and refresh interval. Hosts with
+// 'config.manifest_defaults' save only the page's own keys and keep the
+// rest, so they don't get the copies.
 const NEVER_SHOWN = Object.freeze({ id: 'trigger', oneOf: [] });
 
 export default class SpotifySettingsProvider {
@@ -61,6 +63,8 @@ export default class SpotifySettingsProvider {
         this.t = context.i18n?.t?.bind(context.i18n) || ((k) => k);
         /** Whether the host copies `copy` actions itself (see _copyRedirectControls). */
         this._canCopy = hostHasFeature(context.hostFeatures, HOST_FEATURE_COPY_ACTION);
+        /** Whether a Save keeps the saved keys of controls not on the page (see NEVER_SHOWN). */
+        this._saveKeepsOtherKeys = hostHasFeature(context.hostFeatures, HOST_FEATURE_MANIFEST_DEFAULTS);
         /** AbortController of the sign-in this page is waiting on, if any. */
         this._signIn = null;
     }
@@ -220,9 +224,11 @@ export default class SpotifySettingsProvider {
                 });
             }
         }
-        sections.push({
-            controls: this._displayControls().map((c) => ({ ...c, showWhen: NEVER_SHOWN })),
-        });
+        if (!this._saveKeepsOtherKeys) {
+            sections.push({
+                controls: this._displayControls().map((c) => ({ ...c, showWhen: NEVER_SHOWN })),
+            });
+        }
         return {
             description:
                 view.view === 'done'
@@ -406,6 +412,8 @@ export default class SpotifySettingsProvider {
 
     validate(values) {
         const t = this.t;
+        // Setup steps on current hosts have no trigger control.
+        if (!Object.hasOwn(values || {}, 'trigger')) return { valid: true };
         const trig = (values.trigger || '').trim();
         if (!trig) return { valid: false, error: t('settings.validate.trigger_required') };
         if (!/^[a-z0-9-]+$/i.test(trig))
@@ -419,7 +427,9 @@ export default class SpotifySettingsProvider {
         for (const [k, v] of Object.entries(values || {})) {
             if (!k.startsWith('__')) rest[k] = v;
         }
-        rest.trigger = (rest.trigger || DEFAULTS.trigger).trim().toLowerCase();
+        if (Object.hasOwn(rest, 'trigger')) {
+            rest.trigger = (rest.trigger || DEFAULTS.trigger).trim().toLowerCase();
+        }
         return { values: rest };
     }
 
