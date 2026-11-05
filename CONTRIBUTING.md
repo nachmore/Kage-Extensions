@@ -16,7 +16,7 @@ sandbox model are spec'd there.
 git clone https://github.com/nachmore/Kage-Extensions.git
 cd Kage-Extensions
 npm install
-npm run check:all          # full CI gate (manifest schema + permissions + security + i18n + bundle)
+npm run check:all          # full CI gate (manifest schema + permissions + security + i18n + bundle + tests + defaults + versions)
 npm run build              # produce dist/ (catalog.json + per-id zips)
 ```
 
@@ -29,6 +29,7 @@ npm run build              # produce dist/ (catalog.json + per-id zips)
 | `npm run check:security`   | Forbids `eval`, `new Function`, `setTimeout(string)`, `import('http...')`, `<script src=http...>`, `document.write`. Flags `innerHTML +=`-shaped XSS smell.              |
 | `npm run check:i18n`       | Every `__MSG_*__` token in manifest + every `t('key')` call in code must resolve in `_locales/en/messages.json`. Non-EN catalogs flagged for empty / TODO strings.       |
 | `npm run check:bundle`     | Forbids OS junk (`.DS_Store`, `Thumbs.db`), env files, `node_modules/`, sourcemaps, lock files, secrets. Per-file size cap 5MB; per-extension cap 10MB.                  |
+| `npm run check:defaults`   | Every settings control's `default` must equal the manifest `config` default for the same id: Settings shows the control default for a never-saved value, while the extension runs with the manifest default. Loads each settings provider in Node with a fresh-install stub context. Also checks literal code fallbacks (`config.x ?? 0`) and truthiness reads of default-true booleans. Runs on every extension. |
 
 ### Affected-paths scoping (CI)
 

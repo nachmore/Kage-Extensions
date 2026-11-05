@@ -90,6 +90,16 @@ jobs:
             - name: Test presence
               run: npm run check:tests
 
+            # Settings-default drift: the Settings page shows a control's
+            # `default` for a never-saved value, but the extension runs with
+            # the manifest `config` default until the user saves. They must
+            # match (Math showed precision 2 and computed with 0). Also checks
+            # literal code fallbacks (`config.x ?? 0`) against the manifest.
+            # Imports each settings provider in Node with a fresh-install stub
+            # context. Runs against all extensions; it's quick.
+            - name: Settings defaults agree with manifest
+              run: npm run check:defaults
+
             # Version-bump gate: an extension whose source changed but whose
             # manifest version didn't will never reach installed clients
             # (Kage only pulls a higher semver). Compares each extension's
