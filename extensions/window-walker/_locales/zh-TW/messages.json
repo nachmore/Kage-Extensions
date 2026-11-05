@@ -60,10 +60,10 @@
     "_source_hash": "583f54293cdc6323"
   },
   "settings.hide_minimized.description": {
-    "message": "從清單中排除已最小化的視窗。在 macOS 上，只有在 Kage 具有「輔助使用」權限時，才會列出已最小化的視窗。",
+    "message": "從清單中排除已最小化的視窗。在 macOS 上，只有在 Kage 具有「輔助使用」權限時，才會列出已最小化的視窗。在 Linux 上，Kage 無法判斷哪些視窗已最小化，因此會列出所有視窗。",
     "description": "Helper for hide-minimized toggle",
     "_machine_translated": true,
-    "_source_hash": "bd90f4c78c49366e"
+    "_source_hash": "da971d379556e48e"
   },
   "keyword.w.label": {
     "message": "切換視窗",

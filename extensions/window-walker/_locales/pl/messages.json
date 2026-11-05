@@ -60,10 +60,10 @@
     "_source_hash": "583f54293cdc6323"
   },
   "settings.hide_minimized.description": {
-    "message": "Wyklucz zminimalizowane okna z listy. W systemie macOS zminimalizowane okna są wyświetlane tylko wtedy, gdy Kage ma uprawnienie Dostępność.",
+    "message": "Wyklucz zminimalizowane okna z listy. W systemie macOS zminimalizowane okna są wyświetlane tylko wtedy, gdy Kage ma uprawnienie Dostępność. W systemie Linux Kage nie potrafi rozpoznać, które okna są zminimalizowane, więc wyświetlane są wszystkie.",
     "description": "Helper for hide-minimized toggle",
     "_machine_translated": true,
-    "_source_hash": "bd90f4c78c49366e"
+    "_source_hash": "da971d379556e48e"
   },
   "keyword.w.label": {
     "message": "Przełącz okno",

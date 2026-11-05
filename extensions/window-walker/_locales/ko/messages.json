@@ -60,10 +60,10 @@
     "_source_hash": "583f54293cdc6323"
   },
   "settings.hide_minimized.description": {
-    "message": "최소화된 창을 목록에서 제외합니다. macOS에서는 Kage에 손쉬운 사용 권한이 있는 경우에만 최소화된 창이 목록에 표시됩니다.",
+    "message": "최소화된 창을 목록에서 제외합니다. macOS에서는 Kage에 손쉬운 사용 권한이 있는 경우에만 최소화된 창이 목록에 표시됩니다. Linux에서는 Kage가 어떤 창이 최소화되었는지 알 수 없으므로 모든 창이 목록에 표시됩니다.",
     "description": "Helper for hide-minimized toggle",
     "_machine_translated": true,
-    "_source_hash": "bd90f4c78c49366e"
+    "_source_hash": "da971d379556e48e"
   },
   "keyword.w.label": {
     "message": "창 전환",

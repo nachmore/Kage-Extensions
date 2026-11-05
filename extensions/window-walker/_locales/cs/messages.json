@@ -60,10 +60,10 @@
     "_source_hash": "583f54293cdc6323"
   },
   "settings.hide_minimized.description": {
-    "message": "Vyřadit minimalizovaná okna ze seznamu. V systému macOS se minimalizovaná okna zobrazují pouze tehdy, když má Kage oprávnění Zpřístupnění.",
+    "message": "Vyřadit minimalizovaná okna ze seznamu. V systému macOS se minimalizovaná okna zobrazují pouze tehdy, když má Kage oprávnění Zpřístupnění. V systému Linux Kage nedokáže rozpoznat, která okna jsou minimalizovaná, proto se zobrazují všechna.",
     "description": "Helper for hide-minimized toggle",
     "_machine_translated": true,
-    "_source_hash": "bd90f4c78c49366e"
+    "_source_hash": "da971d379556e48e"
   },
   "keyword.w.label": {
     "message": "Přepnout okno",

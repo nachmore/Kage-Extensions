@@ -60,10 +60,10 @@
     "_source_hash": "583f54293cdc6323"
   },
   "settings.hide_minimized.description": {
-    "message": "Не показувати згорнуті вікна у списку. У macOS згорнуті вікна відображаються лише тоді, коли Kage має дозвіл «Універсальний доступ».",
+    "message": "Не показувати згорнуті вікна у списку. У macOS згорнуті вікна відображаються лише тоді, коли Kage має дозвіл «Універсальний доступ». У Linux Kage не може визначити, які вікна згорнуті, тому у списку показано всі.",
     "description": "Helper for hide-minimized toggle",
     "_machine_translated": true,
-    "_source_hash": "bd90f4c78c49366e"
+    "_source_hash": "da971d379556e48e"
   },
   "keyword.w.label": {
     "message": "Перемкнути вікно",

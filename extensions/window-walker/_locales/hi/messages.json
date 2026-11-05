@@ -60,10 +60,10 @@
     "_source_hash": "583f54293cdc6323"
   },
   "settings.hide_minimized.description": {
-    "message": "मिनिमाइज़ की गई विंडो को सूची से बाहर रखें। macOS पर, मिनिमाइज़ की गई विंडो सूची में तभी दिखती हैं जब Kage के पास Accessibility अनुमति हो।",
+    "message": "मिनिमाइज़ की गई विंडो को सूची से बाहर रखें। macOS पर, मिनिमाइज़ की गई विंडो सूची में तभी दिखती हैं जब Kage के पास Accessibility अनुमति हो। Linux पर, Kage यह नहीं पहचान सकता कि कौन-सी विंडो मिनिमाइज़ हैं, इसलिए सभी विंडो सूची में दिखती हैं।",
     "description": "Helper for hide-minimized toggle",
     "_machine_translated": true,
-    "_source_hash": "bd90f4c78c49366e"
+    "_source_hash": "da971d379556e48e"
   },
   "keyword.w.label": {
     "message": "विंडो बदलें",
