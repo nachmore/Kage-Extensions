@@ -11,10 +11,15 @@ import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import {
+    CURRENT_HOST_FEATURES,
+    checkDefaultsModule,
     checkExtension,
+    currentHostConfig,
     scanCodeFallbacks,
+    scanDefaultsRefs,
     shownDefault,
     storedValue,
+    withManifestDefault,
 } from './check-defaults.mjs';
 
 const root = mkdtempSync(path.join(tmpdir(), 'kage-check-defaults-'));
@@ -154,6 +159,21 @@ describe('check-defaults — settings control vs manifest default', () => {
         });
         expect(await messages(drift)).toEqual([
             expect.stringMatching(/'trigger'.*Settings shows "w" \(stored as "w " after normalize\(\)\).*"x "/),
+        ]);
+    });
+
+    it('flags a normalize() that changes the manifest default (current hosts save it as an override)', async () => {
+        // Fine on older hosts: they show "w" and store "w ". Current hosts
+        // show the manifest default "w ", which this turns into "w  ".
+        const dir = fixture({
+            config: { trigger: { type: 'string', default: 'w ' } },
+            settings: provider(
+                `[{ type: 'text', id: 'trigger', label: 'T', default: 'w' }]`,
+                `normalize(values) { return { values: { ...values, trigger: values.trigger + ' ' } }; }`
+            ),
+        });
+        expect(await messages(dir)).toEqual([
+            expect.stringMatching(/'trigger': on current hosts .*"w ", and normalize\(\) turns it into "w  "/),
         ]);
     });
 
@@ -313,6 +333,273 @@ export default class P {
     });
 });
 
+describe('check-defaults — `enabled` belongs to the host', () => {
+    it('flags a manifest that declares it', async () => {
+        const dir = fixture({ config: { enabled: { type: 'boolean', default: true } } });
+        expect((await checkExtension(dir)).map((i) => `${i.file}: ${i.message}`)).toEqual([
+            expect.stringMatching(/^manifest\.json: config\.enabled: don't declare "enabled", it belongs to the host/),
+        ]);
+    });
+
+    it('flags a settings control with that id, once, whether or not the manifest declares it', async () => {
+        const dir = fixture({
+            config: { trigger: { type: 'string', default: 'bm' } },
+            settings: provider(`[
+                { type: 'checkbox', id: 'enabled', label: 'Enable', default: true },
+                { type: 'text', id: 'trigger', label: 'T', default: 'bm' },
+            ]`),
+        });
+        expect((await checkExtension(dir)).map((i) => `${i.file}: ${i.message}`)).toEqual([
+            expect.stringMatching(/^settings\.js: 'enabled': no settings control may use the id "enabled"/),
+        ]);
+
+        const action = fixture({
+            config: {},
+            settings: provider(`[{ type: 'action', id: 'enabled', label: 'Go', action: 'go' }]`),
+        });
+        expect(await messages(action)).toEqual([expect.stringMatching(/no settings control may use the id "enabled"/)]);
+    });
+
+    it('flags code that turns a missing `enabled` off', () => {
+        const scan = (src) => scanCodeFallbacks(src, {}).map((f) => `${f.line}: ${f.message}`);
+        expect(
+            scan(
+                [
+                    'if (!this.config.enabled) return null;',
+                    'if (this.config?.enabled === true) go();',
+                    'const on = this.config.enabled ?? false;',
+                    'if (this.config.enabled && x) go();',
+                ].join('\n')
+            )
+        ).toEqual([
+            expect.stringMatching(/^1: config\.enabled is read by truthiness .*the host's on\/off switch, and older hosts leave it unset/),
+            expect.stringMatching(/^2: config\.enabled is read by truthiness \(or compared with true\)/),
+            expect.stringMatching(/^3: config\.enabled \?\? false falls back to false, but `enabled` is the host's/),
+            expect.stringMatching(/^4: config\.enabled/),
+        ]);
+    });
+
+    it('accepts code that treats a missing `enabled` as on', () => {
+        expect(
+            scanCodeFallbacks(
+                [
+                    'if (this.config.enabled !== false) start();',
+                    'if (this._hostOwnsEnabled && this.config?.enabled === false) return null;',
+                    'const on = this.config.enabled ?? true;',
+                ].join('\n'),
+                {}
+            )
+        ).toEqual([]);
+    });
+});
+
+describe('check-defaults — the schema each host generation gets', () => {
+    // A provider that branches on context.hostFeatures, like spotify's setup.
+    const branching = ({ older, current, extra = '' }) => `
+const MANIFEST_DEFAULTS = 'config.manifest_defaults';
+export default class P {
+    initialize(context) {
+        this.context = context;
+        this.current = (context.hostFeatures || []).includes(MANIFEST_DEFAULTS);
+    }
+    getSettings() {
+        return { sections: [{ controls: this.current ? ${current} : ${older} }] };
+    }
+    ${extra}
+}
+`;
+    const TRIGGER = `{ type: 'text', id: 'trigger', label: 'T', default: 'sp' }`;
+
+    it('gives a current host the manifest defaults, `enabled` and config.manifest_defaults', () => {
+        expect(
+            currentHostConfig({
+                trigger: { type: 'string', default: 'sp' },
+                __scratch: { type: 'string', default: 'x' },
+                enabled: { type: 'boolean', default: false },
+                bad: 'nope',
+            })
+        ).toEqual({ trigger: 'sp', enabled: true });
+        expect(currentHostConfig(undefined)).toEqual({ enabled: true });
+        expect(CURRENT_HOST_FEATURES).toContain('config.manifest_defaults');
+    });
+
+    it('runs the provider as each host does: config {} on older ones, the manifest defaults on current ones', async () => {
+        // Each branch adds an undeclared control only when it sees the
+        // context that host generation passes.
+        const dir = fixture({
+            config: { trigger: { type: 'string', default: 'sp' } },
+            settings: `
+export default class P {
+    initialize(context) { this.context = context; }
+    getSettings() {
+        const { config, hostFeatures } = this.context;
+        const controls = [{ type: 'text', id: 'trigger', label: 'T', default: 'sp' }];
+        if (hostFeatures === undefined && Object.keys(config).length === 0) {
+            controls.push({ type: 'checkbox', id: 'older_only', label: 'O', default: true });
+        }
+        if (hostFeatures?.includes('config.manifest_defaults') && config.trigger === 'sp' && config.enabled === true) { // check-defaults: ignore
+            controls.push({ type: 'checkbox', id: 'current_only', label: 'C', default: true });
+        }
+        return { sections: [{ controls }] };
+    }
+}`,
+        });
+        expect(await messages(dir)).toEqual([
+            expect.stringMatching(/^'older_only': settings control has no manifest config entry/),
+            expect.stringMatching(/^'current_only': settings control has no manifest config entry.*\(Only on current hosts\.\)$/),
+        ]);
+    });
+
+    it('accepts hidden copies that only older hosts get (spotify setup steps)', async () => {
+        const dir = fixture({
+            config: { trigger: { type: 'string', default: 'sp' } },
+            settings: branching({
+                older: `[{ ...${TRIGGER}, showWhen: { id: 'trigger', oneOf: [] } }]`,
+                current: `[]`,
+            }),
+        });
+        expect(await checkExtension(dir)).toEqual([]);
+    });
+
+    it('flags an `enabled` control that only one generation gets', async () => {
+        const enabled = `{ type: 'checkbox', id: 'enabled', label: 'Enable', default: true }`;
+        for (const [older, current] of [
+            [`[${enabled}, ${TRIGGER}]`, `[${TRIGGER}]`],
+            [`[${TRIGGER}]`, `[${enabled}, ${TRIGGER}]`],
+        ]) {
+            const dir = fixture({
+                config: { trigger: { type: 'string', default: 'sp' } },
+                settings: branching({ older, current }),
+            });
+            expect(await messages(dir)).toEqual([expect.stringMatching(/^'enabled': no settings control may use the id "enabled"/)]);
+        }
+    });
+
+    it("checks a current host's schema with that provider's normalize()", async () => {
+        const dir = fixture({
+            config: { trigger: { type: 'string', default: 'sp' } },
+            settings: branching({
+                older: `[${TRIGGER}]`,
+                current: `[${TRIGGER}]`,
+                extra: `normalize(values) {
+                    return { values: this.current ? { ...values, trigger: values.trigger.toUpperCase() } : values };
+                }`,
+            }),
+        });
+        expect(await messages(dir)).toEqual([
+            expect.stringMatching(/^'trigger': on current hosts .*"sp", and normalize\(\) turns it into "SP"/),
+        ]);
+    });
+
+    it("checks a select's options against the manifest default it shows on a current host", async () => {
+        const dir = fixture({
+            config: { units: { type: 'string', default: 'metric' } },
+            settings: branching({
+                older: `[{ type: 'select', id: 'units', label: 'U', default: 'metric',
+                    options: [{ value: 'metric', label: 'M' }] }]`,
+                current: `[{ type: 'select', id: 'units', label: 'U', default: 'imperial',
+                    options: [{ value: 'imperial', label: 'I' }] }]`,
+            }),
+        });
+        expect(await messages(dir)).toEqual([expect.stringMatching(/^'units': select default "metric" isn't one of its options \("imperial"\)/)]);
+    });
+
+    it('reports a provider whose current-host getSettings() returns no schema', async () => {
+        const dir = fixture({
+            config: { trigger: { type: 'string', default: 'sp' } },
+            settings: `
+export default class P {
+    initialize(context) { this.current = !!context.hostFeatures; }
+    getSettings() { return this.current ? null : { sections: [{ controls: [${TRIGGER}] }] }; }
+}`,
+        });
+        expect(await messages(dir)).toEqual([expect.stringMatching(/sections array on a current host/)]);
+    });
+});
+
+describe('check-defaults — defaults.js', () => {
+    const CONFIG = {
+        trigger: { type: 'string', default: 'bm' },
+        limit: { type: 'number', default: 3 },
+        token: { type: 'string', default: '' },
+    };
+    const DEFAULTS_JS = `export const DEFAULTS = Object.freeze({ trigger: 'bm', limit: 3 });\n`;
+    const SETTINGS = `import { DEFAULTS } from './defaults.js';
+${provider(`[
+    { type: 'text', id: 'trigger', label: 'T', default: DEFAULTS.trigger },
+    { type: 'number', id: 'limit', label: 'L', default: DEFAULTS.limit },
+]`)}`;
+
+    it('passes when DEFAULTS matches the manifest and code reads keys it has', async () => {
+        const dir = fixture({
+            config: CONFIG,
+            settings: SETTINGS,
+            files: {
+                'defaults.js': DEFAULTS_JS,
+                'search.js': `import { DEFAULTS } from './defaults.js';
+export const trigger = (c) => (c.config.trigger || DEFAULTS.trigger).toLowerCase();
+`,
+            },
+        });
+        // `token` isn't in DEFAULTS: nothing uses it, so it needn't be.
+        expect(await checkExtension(dir)).toEqual([]);
+    });
+
+    it('flags a DEFAULTS value that differs from the manifest', async () => {
+        const dir = fixture({
+            config: { ...CONFIG, limit: { type: 'number', default: 5 } },
+            files: { 'defaults.js': DEFAULTS_JS },
+        });
+        expect((await checkExtension(dir)).map((i) => `${i.file}: ${i.message}`)).toEqual([
+            expect.stringMatching(/^defaults\.js: DEFAULTS\.limit is 3, but the manifest default is 5/),
+        ]);
+    });
+
+    it('flags a DEFAULTS key the manifest does not declare, and `enabled`', () => {
+        expect(checkDefaultsModule({ trigger: 'bm', extra: 1, enabled: true }, CONFIG)).toEqual([
+            expect.stringMatching(/^DEFAULTS\.extra has no manifest config entry/),
+            expect.stringMatching(/^DEFAULTS\.enabled: "enabled" belongs to the host/),
+        ]);
+    });
+
+    it('flags a defaults.js without a DEFAULTS object', async () => {
+        const dir = fixture({ config: CONFIG, files: { 'defaults.js': 'export const DEFAULT = {};\n' } });
+        expect(await messages(dir)).toEqual([expect.stringMatching(/must export a DEFAULTS object/)]);
+    });
+
+    it('flags code that reads a DEFAULTS key that does not exist', async () => {
+        const dir = fixture({
+            config: CONFIG,
+            files: {
+                'defaults.js': DEFAULTS_JS,
+                'search.js': `import { DEFAULTS } from './defaults.js';
+// DEFAULTS.nope in a comment is fine
+export const t = (c) => c.config.trigger || DEFAULTS.tigger;
+`,
+            },
+        });
+        expect(await checkExtension(dir)).toEqual([
+            expect.objectContaining({
+                file: 'search.js',
+                line: 3,
+                message: expect.stringMatching(/DEFAULTS\.tigger isn't in defaults\.js/),
+            }),
+        ]);
+        expect(scanDefaultsRefs('x = DEFAULTS?.limit;', { limit: 3 })).toEqual([]);
+    });
+
+    it('catches a control default that drifted from the manifest through DEFAULTS', async () => {
+        const dir = fixture({
+            config: { ...CONFIG, trigger: { type: 'string', default: 'bk' } },
+            settings: SETTINGS,
+            files: { 'defaults.js': DEFAULTS_JS },
+        });
+        const found = await messages(dir);
+        expect(found).toContainEqual(expect.stringMatching(/DEFAULTS\.trigger is "bm", but the manifest default is "bk"/));
+        expect(found).toContainEqual(expect.stringMatching(/'trigger': on older hosts Settings shows "bm"/));
+    });
+});
+
 describe('check-defaults — manifest config sanity', () => {
     it('flags an unsupported type and a default of the wrong type', async () => {
         const dir = fixture({
@@ -379,6 +666,13 @@ describe('check-defaults — code fallbacks', () => {
         expect(scan(lines.join('\n')).map((s) => s.split(':')[0])).toEqual(['1', '2', '3', '4', '5', '6']);
     });
 
+    it('flags a default-true boolean compared with true', () => {
+        expect(scan('if (this.config.on === true) go();')).toEqual([
+            expect.stringMatching(/config\.on is read by truthiness \(or compared with true\).*manifest default is true.*DEFAULTS\.on/),
+        ]);
+        expect(scan('if (this.config.off === true) go();')).toEqual([]);
+    });
+
     it('accepts explicit comparisons for a default-true boolean', () => {
         expect(
             scan(
@@ -386,6 +680,8 @@ describe('check-defaults — code fallbacks', () => {
                     'if (this.config.on !== false) go();',
                     'if (this.config.on === false) return;',
                     'const on = this.config.on ?? true;',
+                    'if (this.config.on ?? DEFAULTS.on) go();',
+                    'if (!(this.config.on ?? DEFAULTS.on)) return;',
                 ].join('\n')
             )
         ).toEqual([]);
@@ -434,6 +730,19 @@ describe('check-defaults — host value coercion', () => {
         expect(shownDefault({ type: 'number' })).toBe(0);
         expect(shownDefault({ type: 'range', min: 1, max: 10 })).toBe(1);
         expect(shownDefault({ type: 'number', default: 2 })).toBe(2);
+    });
+
+    it("takes a declared id's default from the manifest, like a current host", () => {
+        const config = {
+            n: { type: 'number', default: 5 },
+            __x: { type: 'string', default: 'm' },
+            enabled: { type: 'boolean', default: false },
+        };
+        expect(withManifestDefault({ type: 'number', id: 'n', default: 2 }, config).default).toBe(5);
+        // The host's manifestConfigDefaults leaves scratch ids and `enabled` out.
+        expect(withManifestDefault({ type: 'text', id: '__x', default: 'c' }, config).default).toBe('c');
+        expect(withManifestDefault({ type: 'checkbox', id: 'enabled', default: true }, config).default).toBe(true);
+        expect(withManifestDefault({ type: 'text', id: 'other', default: 'o' }, config).default).toBe('o');
     });
 
     it('round-trips stored values through the control', () => {

@@ -29,7 +29,7 @@ npm run build              # produce dist/ (catalog.json + per-id zips)
 | `npm run check:security`   | Forbids `eval`, `new Function`, `setTimeout(string)`, `import('http...')`, `<script src=http...>`, `document.write`. Flags `innerHTML +=`-shaped XSS smell.              |
 | `npm run check:i18n`       | Every `__MSG_*__` token in manifest + every `t('key')` call in code must resolve in `_locales/en/messages.json`. Non-EN catalogs flagged for empty / TODO strings.       |
 | `npm run check:bundle`     | Forbids OS junk (`.DS_Store`, `Thumbs.db`), env files, `node_modules/`, sourcemaps, lock files, secrets. Per-file size cap 5MB; per-extension cap 10MB.                  |
-| `npm run check:defaults`   | Every settings control's `default` must equal the manifest `config` default for the same id: Settings shows the control default for a never-saved value, while the extension runs with the manifest default. Loads each settings provider in Node with a fresh-install stub context. Controls whose id starts with `__` are treated as inputs for action buttons, not config, and skipped. Also checks literal code fallbacks (`config.x ?? 0`) and truthiness reads of default-true booleans. Runs on every extension. |
+| `npm run check:defaults`   | The copies of each setting's default agree (see [Settings defaults and `enabled`](#settings-defaults-and-enabled)): every settings control's `default`, the `DEFAULTS` in `defaults.js`, and literal code fallbacks (`config.x ?? 0`) must equal the manifest `config` default. Loads each settings provider in Node as a fresh install twice: on an older host, where the control default is what Settings shows and Save stores, and on a current one (`context.hostFeatures` with `config.manifest_defaults`), where Settings shows the manifest default and `normalize()` must leave it as it is. Fails on a manifest that declares `enabled`, a settings control with id `enabled`, and code that reads a missing `enabled` (or a default-true boolean) as off. Controls whose id starts with `__` are inputs for action buttons, not config, and are skipped. Runs on every extension. |
 
 ### Affected-paths scoping (CI)
 
@@ -73,6 +73,7 @@ extensions/
     manifest.json          (required)
     search.js              (optional)
     settings.js            (optional)
+    defaults.js            (optional, DEFAULTS for settings.js and code fallbacks)
     widget.js              (optional)
     tools.js               (optional)
     triggers.js            (optional)
@@ -179,6 +180,48 @@ minutes either side of a meeting start) are the reference
 implementations; `makeContext({ mascot })` in
 [`test-helpers/mock-context.mjs`](test-helpers/mock-context.mjs) mocks
 the API, and `mascot: null` simulates a host that lacks it.
+
+## Settings defaults and `enabled`
+
+Declare every setting and its default in the manifest's `config` block.
+That's the source of truth. Kage hosts that list
+`config.manifest_defaults` in `context.hostFeatures` give your code the
+manifest defaults overlaid with the user's saved values, show the
+manifest default on the Settings page, and save only what the user
+changed. See Kage's
+[`docs/EXTENSIONS.md`](https://github.com/nachmore/Kage/blob/main/docs/EXTENSIONS.md)
+(Config Schema).
+
+Older hosts are still in use (users on stable and beta lag behind), and
+an extension can't require a minimum host version. Those hosts show each
+settings control's own `default`, give your code the saved config as it
+is (so a key added after the user last saved is `undefined`), and on Save
+replace the whole stored config with the controls on the page. Until the
+minimum supported Kage includes `config.manifest_defaults`:
+
+- Keep one `DEFAULTS` constant in the extension's `defaults.js` (see
+  `extensions/hello-world/defaults.js`), and use it for every control
+  `default` and every code fallback, never a literal:
+  `(config.trigger || DEFAULTS.trigger)`, `config.flag ?? DEFAULTS.flag`.
+  `npm run check:defaults` keeps it equal to the manifest. Its comment
+  should say that it, the control defaults and the fallbacks can go once
+  the minimum supported Kage includes `config.manifest_defaults`.
+- If a page leaves some value controls out (a setup wizard), Save on an
+  older host drops their stored values. Keep hidden copies of them there,
+  and leave the copies out when `context.hostFeatures` includes
+  `config.manifest_defaults` (see `extensions/spotify/settings.js`).
+
+`enabled` belongs to the host: it's the Disable/Enable button in your
+extension's Settings header, on every host. Don't add an "Enable"
+checkbox (current hosts hide it; older ones show one that does nothing
+unless your code reads it), and don't declare `enabled` in `config`.
+Where code needs it, read `config.enabled !== false`: current hosts set
+it from the header, and older ones don't set it. `check:defaults` fails on
+all three. If your extension used to have an "Enable" checkbox, an older
+host still hands you whatever it saved, with nothing left on the page to
+change it, so only honour `config.enabled` when `context.hostFeatures`
+includes `config.manifest_defaults` (see
+`extensions/link-preview/formatter.js`).
 
 ## Internationalisation (i18n)
 

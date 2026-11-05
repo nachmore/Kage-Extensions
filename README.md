@@ -12,6 +12,7 @@ extensions/
     manifest.json    # required
     search.js        # optional — adds search-box results
     settings.js      # optional — settings page
+    defaults.js      # optional — DEFAULTS for the settings page and code fallbacks
     widget.js        # optional — persistent UI in a Kage slot
     tools.js         # optional — exposes tools to the LLM agent
     styles.css       # optional
@@ -38,6 +39,12 @@ on every push to `main`.
    npm run validate
    ```
 4. Open a PR. CI re-runs validation; merging triggers a rebuild + redeploy.
+
+Settings defaults go in the manifest's `config` block, with one
+`DEFAULTS` copy in `defaults.js` for older Kage hosts. Don't add an
+"Enable" checkbox: the Disable/Enable button in an extension's Settings
+header belongs to the host. See
+[Settings defaults and `enabled`](CONTRIBUTING.md#settings-defaults-and-enabled).
 
 The manifest schema, capability list, sandbox rules, and contribution
 points are documented in [`CONTRIBUTING.md`](CONTRIBUTING.md). For the
