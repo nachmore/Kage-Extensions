@@ -48,10 +48,10 @@
     "_source_hash": "d6ca34a24bd63a0b"
   },
   "settings.auto_copy.description": {
-    "message": "Enter'a basıldığında cevabı panoya otomatik olarak kopyala",
+    "message": "Enter tuşuna bastığınızda sonucu panoya kopyalar. Kapalıyken Enter, sonucu giriş çubuğuna ekler; böylece hesaplamaya devam edebilirsiniz.",
     "description": "Helper for the auto-copy toggle",
     "_machine_translated": true,
-    "_source_hash": "b5bc779ee463b01f"
+    "_source_hash": "b618182aa537abd2"
   },
   "settings.thousands.label": {
     "message": "Binlik ayırıcı kullan",
@@ -70,5 +70,11 @@
     "description": "Validation error when precision is out of range",
     "_machine_translated": true,
     "_source_hash": "f8c4a655091ad748"
+  },
+  "result.insert_hint": {
+    "message": "Sonucu giriş çubuğuna eklemek için Enter tuşuna basın",
+    "description": "Description shown on a math result row when Auto-copy Result is off: Enter replaces the typed expression with its answer instead of copying it",
+    "_machine_translated": true,
+    "_source_hash": "5a4c247cb0475894"
   }
 }

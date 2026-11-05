@@ -37,15 +37,29 @@ export default class MathSearchProvider {
             id: 'math',
             type: 'math',
             label: '= ' + display,
-            description: this.t('result.copy_hint'),
+            description: this._autoCopy() ? this.t('result.copy_hint') : this.t('result.insert_hint'),
             icon: '🧮',
             score: 93,
-            data: { value: display, raw: mathResult.result },
+            // `plain` is the answer without thousands separators: what goes
+            // back into the input bar, where mathjs can't read "1,000".
+            data: { value: display, plain: mathResult.display, raw: mathResult.result },
         }];
     }
 
+    /**
+     * Enter (or a click) on the result. With auto_copy on, the answer goes
+     * to the clipboard as shown. With it off, nothing is copied: the answer
+     * replaces the input, so you can keep calculating with it.
+     */
     execute(result) {
-        return { type: 'copy', value: result.data.value };
+        if (this._autoCopy()) {
+            return { type: 'copy', value: result.data.value };
+        }
+        return { type: 'replace_input', value: result.data.plain ?? result.data.value };
+    }
+
+    _autoCopy() {
+        return this.config.auto_copy ?? DEFAULTS.auto_copy;
     }
 
     destroy() {}

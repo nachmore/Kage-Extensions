@@ -36,6 +36,7 @@ function manifestDefaults() {
 
 const CATALOG = {
     'result.copy_hint': { message: 'Press Enter to copy result' },
+    'result.insert_hint': { message: 'Press Enter to put the result in the input bar' },
 };
 
 /** Spin up a provider with a fresh mocked context. */
@@ -239,6 +240,62 @@ describe('MathSearchProvider — execute (copy action)', () => {
         const row = await evalQuery(provider, '2+2');
         const action = provider.execute(row);
         expect(action).toEqual({ type: 'copy', value: '4' });
+    });
+});
+
+describe('MathSearchProvider — auto_copy', () => {
+    it('is on by default: Enter copies, and the row says so', async () => {
+        const { provider } = setup({ config: {} });
+        const row = await evalQuery(provider, '2+2');
+        expect(row.description).toBe('Press Enter to copy result');
+        expect(provider.execute(row)).toEqual({ type: 'copy', value: '4' });
+    });
+
+    it('never-saved settings (manifest defaults) copy on Enter', async () => {
+        const { provider } = setup({ config: manifestDefaults() });
+        const row = await evalQuery(provider, '29/34');
+        expect(provider.execute(row)).toEqual({ type: 'copy', value: '0.85' });
+    });
+
+    it('on: copies the answer as shown, thousands separators included', async () => {
+        const { provider } = setup({ config: { auto_copy: true, thousands_separator: true } });
+        const row = await evalQuery(provider, '1000*1000');
+        expect(provider.execute(row)).toEqual({ type: 'copy', value: '1,000,000' });
+    });
+
+    it('off: Enter puts the answer in the input instead of copying it', async () => {
+        const { provider } = setup({ config: { auto_copy: false } });
+        const row = await evalQuery(provider, '29/34');
+        expect(row.description).toBe('Press Enter to put the result in the input bar');
+        expect(provider.execute(row)).toEqual({ type: 'replace_input', value: '0.85' });
+    });
+
+    it('off: the answer goes back without thousands separators, so it still evaluates', async () => {
+        const { provider } = setup({ config: { auto_copy: false, thousands_separator: true, precision: 0 } });
+        const row = await evalQuery(provider, '1000*1000');
+        expect(row.label).toBe('= 1,000,000');
+        const action = provider.execute(row);
+        expect(action).toEqual({ type: 'replace_input', value: '1000000' });
+        // Typing on from the answer keeps calculating.
+        expect((await evalQuery(provider, action.value + '*2')).data.value).toBe('2,000,000');
+    });
+
+    it('off: a unit result goes back with its unit', async () => {
+        const { provider } = setup({ config: { auto_copy: false } });
+        const row = await evalQuery(provider, '5 km to miles');
+        const action = provider.execute(row);
+        expect(action.type).toBe('replace_input');
+        expect(action.value).toBe(row.data.value);
+        expect(action.value).toMatch(/^3\.1\d* mile/i);
+    });
+
+    it('follows a settings change without re-initializing', async () => {
+        const { provider } = setup({ config: {} });
+        const row = await evalQuery(provider, '2+2');
+        provider.onConfigUpdate({ auto_copy: false });
+        expect(provider.execute(row)).toEqual({ type: 'replace_input', value: '4' });
+        provider.onConfigUpdate({ auto_copy: true });
+        expect(provider.execute(row)).toEqual({ type: 'copy', value: '4' });
     });
 });
 

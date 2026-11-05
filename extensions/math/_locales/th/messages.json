@@ -48,10 +48,10 @@
     "_source_hash": "d6ca34a24bd63a0b"
   },
   "settings.auto_copy.description": {
-    "message": "คัดลอกคำตอบไปยังคลิปบอร์ดอัตโนมัติเมื่อกด Enter",
+    "message": "คัดลอกคำตอบไปยังคลิปบอร์ดเมื่อคุณกด Enter หากปิดไว้ Enter จะใส่คำตอบลงในแถบป้อนข้อมูลแทน เพื่อให้คุณคำนวณต่อได้",
     "description": "Helper for the auto-copy toggle",
     "_machine_translated": true,
-    "_source_hash": "b5bc779ee463b01f"
+    "_source_hash": "b618182aa537abd2"
   },
   "settings.thousands.label": {
     "message": "ใช้ตัวคั่นหลักพัน",
@@ -70,5 +70,11 @@
     "description": "Validation error when precision is out of range",
     "_machine_translated": true,
     "_source_hash": "f8c4a655091ad748"
+  },
+  "result.insert_hint": {
+    "message": "กด Enter เพื่อใส่ผลลัพธ์ลงในแถบป้อนข้อมูล",
+    "description": "Description shown on a math result row when Auto-copy Result is off: Enter replaces the typed expression with its answer instead of copying it",
+    "_machine_translated": true,
+    "_source_hash": "5a4c247cb0475894"
   }
 }

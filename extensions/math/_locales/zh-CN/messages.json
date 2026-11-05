@@ -48,10 +48,10 @@
     "_source_hash": "d6ca34a24bd63a0b"
   },
   "settings.auto_copy.description": {
-    "message": "按 Enter 时自动将结果复制到剪贴板",
+    "message": "按 Enter 时将答案复制到剪贴板。关闭后，按 Enter 会将答案填入输入栏，方便你继续计算。",
     "description": "Helper for the auto-copy toggle",
     "_machine_translated": true,
-    "_source_hash": "b5bc779ee463b01f"
+    "_source_hash": "b618182aa537abd2"
   },
   "settings.thousands.label": {
     "message": "使用千位分隔符",
@@ -70,5 +70,11 @@
     "description": "Validation error when precision is out of range",
     "_machine_translated": true,
     "_source_hash": "f8c4a655091ad748"
+  },
+  "result.insert_hint": {
+    "message": "按 Enter 将结果填入输入栏",
+    "description": "Description shown on a math result row when Auto-copy Result is off: Enter replaces the typed expression with its answer instead of copying it",
+    "_machine_translated": true,
+    "_source_hash": "5a4c247cb0475894"
   }
 }
