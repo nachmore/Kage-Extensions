@@ -363,13 +363,16 @@ export default class SpotifySettingsProvider {
      *
      * The sandbox can't write the clipboard, so this is a host copy action:
      * the host copies `copy.value` inside the click and never calls
-     * runAction. Hosts that predate copy actions ignore `copy`, so the
-     * button is only offered when the host lists `settings.copy_action`;
-     * elsewhere the selectable <code> line above is how the URI gets copied.
-     * The `action` RPC is set anyway: those older hosts reject an action
-     * control without one, which would drop the whole page, so the schema
-     * stays valid everywhere, and a click that does reach runAction still
-     * shows the URI.
+     * runAction, even when the copy fails (it says so itself). Hosts that
+     * predate copy actions ignore `copy`, so the button is only offered when
+     * the host lists `settings.copy_action`; elsewhere the selectable <code>
+     * line above is how the URI gets copied. So no host that gets this
+     * button sends its clicks to runAction, which has no case for it.
+     *
+     * Hosts that list the feature don't need `action` on a copy control. It
+     * is set anyway, only to keep the schema valid under the older rule that
+     * every action control has one: a schema that fails validation loses
+     * the whole page, not just this button.
      */
     _copyRedirectControls() {
         if (!this._canCopy) return [];
@@ -442,10 +445,6 @@ export default class SpotifySettingsProvider {
         switch (action) {
             case 'setup_open_dashboard':
                 return this._openDashboard();
-            case 'setup_copy_redirect':
-                // Only reached if the host didn't copy (see
-                // _copyRedirectControls): say what to copy instead.
-                return { status: this.t('setup.create_app.copy.fallback', { uri: REDIRECT_URI }) };
             case 'setup_save_client_id':
                 return this._saveClientId(values || {});
             case 'setup_connect':

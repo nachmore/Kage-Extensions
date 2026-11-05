@@ -138,11 +138,16 @@ export function hostHasFeature(hostFeatures, feature) {
  * Why Kage's loopback listener rejected `oauth_loopback_await`:
  * 'timeout', 'cancelled', or null for anything else.
  *
- * Current hosts put a stable `kind` on the error and translate its message,
- * so the kind decides. Older hosts set no kind, always answer in English,
- * and reported a timeout as "OAuth listener was cancelled before a callback
- * arrived" (they couldn't cancel an await in flight, so that text always
- * meant a timeout). The message is only matched when there's no kind.
+ * Current hosts put a stable `kind` on the error, and the kind decides.
+ * Their `timeout` and `cancelled` messages are fixed English in every
+ * locale ("OAuth flow timed out before a callback arrived" / "OAuth
+ * listener was cancelled before a callback arrived"); their other loopback
+ * errors (kind `internal`: a listener that failed or no longer exists) are
+ * translated. Older hosts set no kind, always answer in English, and
+ * reported a timeout with that same "...was cancelled before a callback
+ * arrived" text (they couldn't cancel an await in flight, so it always
+ * meant a timeout). So the text alone can't tell a timeout from a cancel,
+ * and it is only matched when there's no kind.
  *
  * @returns {'timeout'|'cancelled'|null}
  */

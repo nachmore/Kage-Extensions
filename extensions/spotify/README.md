@@ -52,7 +52,7 @@ where you were if you close the window):
      `127.0.0.1` as the IETF-blessed loopback address and lets the
      actual runtime port differ from the registered one, so Kage's
      ephemeral listener works regardless of the number. Use `http`
-     and `127.0.0.1` exactly — not `https`, not `localhost`. On current
+     and `127.0.0.1` exactly — not `https`, not `localhost`. On newer
      Kage versions, **Copy Redirect URI** puts the exact address on your
      clipboard.
    - Tick **Web API**, accept the terms, and **Save**.

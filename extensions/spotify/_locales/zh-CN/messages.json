@@ -856,11 +856,5 @@
     "description": "Button on setup step 2 that copies the Redirect URI to the clipboard. 'Redirect URI' is the name of the field on Spotify's form.",
     "_machine_translated": true,
     "_source_hash": "ef709febdb94fdef"
-  },
-  "setup.create_app.copy.fallback": {
-    "message": "请选中上方地址并复制：{uri}",
-    "description": "Shown next to the Copy Redirect URI button if Kage couldn't copy it automatically. {uri} is the address, keep it as is.",
-    "_machine_translated": true,
-    "_source_hash": "0aa8372accaf9502"
   }
 }

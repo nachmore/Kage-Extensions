@@ -449,10 +449,6 @@
     "message": "Copy Redirect URI",
     "description": "Button on setup step 2 that copies the Redirect URI to the clipboard. 'Redirect URI' is the name of the field on Spotify's form."
   },
-  "setup.create_app.copy.fallback": {
-    "message": "Select the address above and copy it: {uri}",
-    "description": "Shown next to the Copy Redirect URI button if Kage couldn't copy it automatically. {uri} is the address, keep it as is."
-  },
   "setup.client_id.title": {
     "message": "Copy your Client ID",
     "description": "Title of setup step 3"

@@ -449,7 +449,9 @@ function untilAborted(promise, signal) {
  * listener failed; current hosts say why in the host error's `kind`, e.g.
  * 'timeout' or 'cancelled', see setup.loopbackFailure). The messages
  * written here stay English: they're for logs. A 'loopback' error keeps
- * the host's message, which current hosts translate.
+ * the host's message: fixed English for a timeout or cancel, translated on
+ * current hosts for anything else (a listener that failed or no longer
+ * exists).
  *
  * @param {object} [opts]
  * @param {AbortSignal} [opts.signal] Abandons the sign-in: stops waiting

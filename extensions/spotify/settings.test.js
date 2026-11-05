@@ -551,12 +551,12 @@ describe('Spotify settings — step 2 Copy Redirect URI button', () => {
         expect(copyControls(await provider.getSettings())).toEqual([]);
     });
 
-    it('a click that reaches runAction anyway shows the URI and stays on step 2', async () => {
-        // Current hosts copy without calling runAction; this is the
-        // fallback RPC an older host would call.
+    it("the button's `action` is only there for schema validity: it does nothing", async () => {
+        // Every host that gets the button copies without calling runAction.
+        // The `action` must not name a real one (e.g. a step change) anyway.
         const { provider, store } = atStep2(CURRENT_HOST);
         const res = await provider.runAction(byId(await provider.getSettings(), 'setup_copy_redirect').action, {});
-        expect(res).toEqual({ status: msg('setup.create_app.copy.fallback').replace('{uri}', REDIRECT_URI) });
+        expect(res).toEqual({});
         expect(setupState(store)).toEqual({ step: 'create_app' });
     });
 });
@@ -657,27 +657,41 @@ describe('Spotify settings — sign-in failures from current hosts carry a kind'
         setupSignIn({ client: CLIENT, creds: CREDS }, () => {
             throw fail;
         }, CURRENT_HOST);
-    // Current hosts translate the message, so it can't be matched on.
-    const TIMED_OUT_JA = hostError(
-        'timeout',
-        'errors.oauth.timed_out',
-        'コールバックを受け取る前に OAuth フローがタイムアウトしました'
-    );
+    // What a current host's oauth_loopback_await rejects with (Kage
+    // src/commands/oauth.rs). `timeout` and `cancelled` carry fixed English
+    // text in every locale, under the passthrough key; the cancelled text is
+    // the one older hosts used for a timeout. Other loopback failures are
+    // `internal`, keyed, and translated.
+    const TIMEOUT_TEXT = 'OAuth flow timed out before a callback arrived';
+    const CANCELLED_TEXT = 'OAuth listener was cancelled before a callback arrived';
+    const UNKNOWN_LISTENER_TEXT = 'Unknown listener id (timed out, cancelled, or already consumed)';
+    const timedOut = () => hostError('timeout', 'errors.passthrough', TIMEOUT_TEXT);
+    const cancelled = () => hostError('cancelled', 'errors.passthrough', CANCELLED_TEXT);
 
-    it('a timeout is recognised by its kind in any language', async () => {
-        let res = await atConnect(TIMED_OUT_JA).provider.runAction('setup_connect', {});
+    it('a timeout explains the two browser-side setup mistakes', async () => {
+        let res = await atConnect(timedOut()).provider.runAction('setup_connect', {});
         expect(res.status).toBe(msg('setup.connect.error.timeout'));
 
-        res = await reconnecting(TIMED_OUT_JA).provider.runAction('connect', {});
+        res = await reconnecting(timedOut()).provider.runAction('connect', {});
         expect(res.status).toBe(msg('settings.connect.error.timeout'));
     });
 
-    it('a listener Kage reports as cancelled ends quietly, even with the old timeout wording', async () => {
-        // Current hosts keep the old English text for `cancelled`; on its own
-        // it used to mean a timeout. The kind says otherwise.
-        const cancelled = () =>
-            hostError('cancelled', 'errors.oauth.cancelled', 'OAuth listener was cancelled before a callback arrived');
+    it('the kind wins over the text: a timeout is a timeout whatever its message says', async () => {
+        // Current hosts keep the timeout text English, so this can't happen
+        // today; the kind alone must still be enough.
+        const timedOutJa = hostError(
+            'timeout',
+            'errors.passthrough',
+            'コールバックを受け取る前に OAuth フローがタイムアウトしました'
+        );
+        const res = await atConnect(timedOutJa).provider.runAction('setup_connect', {});
+        expect(res.status).toBe(msg('setup.connect.error.timeout'));
+        expect(loopbackFailure(timedOutJa)).toBe('timeout');
+    });
 
+    it('a listener Kage reports as cancelled ends quietly, even with the old timeout wording', async () => {
+        // On its own, this text used to mean a timeout. The kind says
+        // otherwise.
         const setupCtx = atConnect(cancelled());
         expect(await setupCtx.provider.runAction('setup_connect', {})).toEqual({});
         expect(setupState(setupCtx.store)).toEqual({ step: 'connect' });
@@ -692,25 +706,21 @@ describe('Spotify settings — sign-in failures from current hosts carry a kind'
     });
 
     it('any other kind is reported as it is, never as a timeout', async () => {
-        const failed = hostError(
-            'internal',
-            'errors.oauth.listener_failed',
-            'OAuth listener failed before a callback arrived: connection reset'
-        );
-        const res = await atConnect(failed).provider.runAction('setup_connect', {});
-        expect(res.status).toBe(
-            msg('signin.error.unknown').replace('{message}', 'OAuth listener failed before a callback arrived: connection reset')
-        );
+        // The English unknown-listener text says "timed out", which the
+        // old-host text match would read as a timeout. The kind says otherwise.
+        const gone = hostError('internal', 'errors.oauth.unknown_listener', UNKNOWN_LISTENER_TEXT);
+        const res = await atConnect(gone).provider.runAction('setup_connect', {});
+        expect(res.status).toBe(msg('signin.error.unknown').replace('{message}', UNKNOWN_LISTENER_TEXT));
     });
 
     it('the kind decides; the English text only counts when there is none (older hosts)', () => {
-        const OLD_HOST_TIMEOUT = 'OAuth listener was cancelled before a callback arrived';
-        expect(loopbackFailure(TIMED_OUT_JA)).toBe('timeout');
-        expect(loopbackFailure(hostError('cancelled', 'errors.oauth.cancelled', OLD_HOST_TIMEOUT))).toBe('cancelled');
-        expect(loopbackFailure(hostError('internal', 'errors.oauth.unknown_listener', OLD_HOST_TIMEOUT))).toBeNull();
-        // Older hosts: no kind, always English.
-        expect(loopbackFailure(new Error(OLD_HOST_TIMEOUT))).toBe('timeout');
-        expect(loopbackFailure(new Error('OAuth flow timed out before a callback arrived'))).toBe('timeout');
+        expect(loopbackFailure(timedOut())).toBe('timeout');
+        expect(loopbackFailure(cancelled())).toBe('cancelled');
+        expect(loopbackFailure(hostError('internal', 'errors.oauth.unknown_listener', UNKNOWN_LISTENER_TEXT))).toBeNull();
+        // Older hosts: no kind, always English, and their timeout used the
+        // text current hosts use for a cancel.
+        expect(loopbackFailure(new Error(CANCELLED_TEXT))).toBe('timeout');
+        expect(loopbackFailure(new Error(TIMEOUT_TEXT))).toBe('timeout');
         expect(loopbackFailure(new Error('Unknown listener'))).toBeNull();
         expect(loopbackFailure(undefined)).toBeNull();
     });
