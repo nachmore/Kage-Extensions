@@ -12,6 +12,10 @@ export default class WindowWalkerSettingsProvider {
     initialize(context) {
         this.config = context.config || {};
         this.t = context.i18n?.t?.bind(context.i18n) || ((k) => k);
+        // Hosts without 'windows.minimized' don't say which windows are
+        // minimized, so "Hide minimized windows" does nothing there.
+        this._hostFlagsMinimized = Array.isArray(context.hostFeatures)
+            && context.hostFeatures.includes('windows.minimized');
     }
 
     onConfigUpdate(config) {
@@ -46,7 +50,9 @@ export default class WindowWalkerSettingsProvider {
                             type: 'checkbox',
                             id: 'hide_minimized',
                             label: t('settings.hide_minimized.label'),
-                            description: t('settings.hide_minimized.description'),
+                            description: this._hostFlagsMinimized
+                                ? t('settings.hide_minimized.description')
+                                : t('settings.hide_minimized.description_needs_update'),
                             default: DEFAULTS.hide_minimized,
                         },
                     ],

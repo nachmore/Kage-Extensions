@@ -42,8 +42,12 @@
     "description": "Toggle: filter out minimized windows"
   },
   "settings.hide_minimized.description": {
-    "message": "Exclude minimized windows from the list.",
+    "message": "Exclude minimized windows from the list. On macOS, minimized windows are only listed when Kage has the Accessibility permission.",
     "description": "Helper for hide-minimized toggle"
+  },
+  "settings.hide_minimized.description_needs_update": {
+    "message": "Exclude minimized windows from the list. Needs a more recent version of Kage: this one doesn't say which windows are minimized, so all of them are listed.",
+    "description": "Helper for hide-minimized toggle on an older Kage host that can't tell which windows are minimized (the setting has no effect there)"
   },
   "keyword.w.label": {
     "message": "Switch window",

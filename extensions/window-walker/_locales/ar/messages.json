@@ -60,10 +60,10 @@
     "_source_hash": "583f54293cdc6323"
   },
   "settings.hide_minimized.description": {
-    "message": "استبعاد النوافذ المصغّرة من القائمة.",
+    "message": "استبعاد النوافذ المصغّرة من القائمة. على macOS، لا تظهر النوافذ المصغّرة في القائمة إلا عند منح Kage إذن تسهيلات الاستخدام.",
     "description": "Helper for hide-minimized toggle",
     "_machine_translated": true,
-    "_source_hash": "969c657a8dc12e02"
+    "_source_hash": "bd90f4c78c49366e"
   },
   "keyword.w.label": {
     "message": "تبديل النافذة",
@@ -76,5 +76,11 @@
     "description": "Keyword hint for window-walker",
     "_machine_translated": true,
     "_source_hash": "a047d70bbdba62a1"
+  },
+  "settings.hide_minimized.description_needs_update": {
+    "message": "استبعاد النوافذ المصغّرة من القائمة. يتطلب إصدارًا أحدث من Kage: لا يحدّد هذا الإصدار النوافذ المصغّرة، لذا تظهر جميع النوافذ في القائمة.",
+    "description": "Helper for hide-minimized toggle on an older Kage host that can't tell which windows are minimized (the setting has no effect there)",
+    "_machine_translated": true,
+    "_source_hash": "57036a16cd83fea4"
   }
 }

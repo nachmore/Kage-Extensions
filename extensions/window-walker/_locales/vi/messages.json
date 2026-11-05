@@ -60,10 +60,10 @@
     "_source_hash": "583f54293cdc6323"
   },
   "settings.hide_minimized.description": {
-    "message": "Loại trừ các cửa sổ đã thu nhỏ khỏi danh sách.",
+    "message": "Loại các cửa sổ đã thu nhỏ khỏi danh sách. Trên macOS, cửa sổ đã thu nhỏ chỉ được liệt kê khi Kage có quyền Trợ năng.",
     "description": "Helper for hide-minimized toggle",
     "_machine_translated": true,
-    "_source_hash": "969c657a8dc12e02"
+    "_source_hash": "bd90f4c78c49366e"
   },
   "keyword.w.label": {
     "message": "Chuyển cửa sổ",
@@ -76,5 +76,11 @@
     "description": "Keyword hint for window-walker",
     "_machine_translated": true,
     "_source_hash": "a047d70bbdba62a1"
+  },
+  "settings.hide_minimized.description_needs_update": {
+    "message": "Loại các cửa sổ đã thu nhỏ khỏi danh sách. Cần phiên bản Kage mới hơn: phiên bản này không cho biết cửa sổ nào đã thu nhỏ, nên tất cả cửa sổ đều được liệt kê.",
+    "description": "Helper for hide-minimized toggle on an older Kage host that can't tell which windows are minimized (the setting has no effect there)",
+    "_machine_translated": true,
+    "_source_hash": "57036a16cd83fea4"
   }
 }

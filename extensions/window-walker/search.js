@@ -16,6 +16,11 @@ export default class WindowWalkerSearchProvider {
     initialize(context) {
         this.invoke = context.invoke;
         this.config = context.config || {};
+        // Hosts with 'windows.minimized' flag each list_open_windows entry
+        // with `minimized`. Older hosts don't say, so hide_minimized can't
+        // apply there and every listed window is shown, as before.
+        this._hostFlagsMinimized = Array.isArray(context.hostFeatures)
+            && context.hostFeatures.includes('windows.minimized');
         this._cache = null;
         this._cacheTime = 0;
         // Bounded LRU icon cache: Map preserves insertion order, we evict oldest.
@@ -71,10 +76,10 @@ export default class WindowWalkerSearchProvider {
             }
         }
 
-        if (!this._cache || this._cache.length === 0) return [];
+        let windows = this._listedWindows();
+        if (windows.length === 0) return [];
 
         // Filter by title or process name
-        let windows = this._cache;
         if (filter) {
             windows = windows.filter(w =>
                 w.title.toLowerCase().includes(filter) ||
@@ -103,12 +108,25 @@ export default class WindowWalkerSearchProvider {
         });
     }
 
+    /**
+     * The cached window list, without minimized windows when the user hides
+     * them and the host says which those are. On macOS without the
+     * Accessibility permission the host leaves minimized windows out of the
+     * list itself, whatever this setting says.
+     */
+    _listedWindows() {
+        const windows = Array.isArray(this._cache) ? this._cache : [];
+        const hide = this._hostFlagsMinimized
+            && (this.config.hide_minimized ?? DEFAULTS.hide_minimized);
+        return hide ? windows.filter((w) => w.minimized !== true) : windows;
+    }
+
     /** Fetch icons for handles in the current window list that aren't cached yet. */
     async _fetchMissingIcons() {
         if (!this._cache) return;
 
         const missing = [];
-        for (const w of this._cache) {
+        for (const w of this._listedWindows()) {
             if (!this._iconCache.has(w.handle)) {
                 missing.push(w.handle);
             }
