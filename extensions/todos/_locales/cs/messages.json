@@ -486,10 +486,10 @@
     "_source_hash": "bc0b18fb9be84061"
   },
   "settings.confirm_delete.description": {
-    "message": "Před smazáním úkolu vyžadovat potvrzení.",
+    "message": "Před smazáním úkolu nebo vymazáním dokončených úkolů se zeptat, takže smazání vyžaduje druhé stisknutí klávesy Enter. Když je volba vypnutá, Enter maže okamžitě.",
     "description": "Settings: confirm delete description",
     "_machine_translated": true,
-    "_source_hash": "918d6a90de2837e3"
+    "_source_hash": "343c481d8e5f6cb0"
   },
   "settings.show_due_banner.label": {
     "message": "Zobrazit banner s připomenutími",
@@ -616,5 +616,47 @@
     "description": "Keyword hint for todos",
     "_machine_translated": true,
     "_source_hash": "174dea6117a8e919"
+  },
+  "result.confirm_delete.label": {
+    "message": "🗑️ Smazat „{text}“?",
+    "description": "Confirmation row shown after Enter on a todo in the delete list (todo-), when Confirm Delete is on. The placeholder is the todo text",
+    "_machine_translated": true,
+    "_source_hash": "c11f2bf2f8418de5"
+  },
+  "result.confirm_delete.description": {
+    "message": "Stisknutím klávesy Enter úkol smažete. Tuto akci nelze vrátit zpět.",
+    "description": "Description on the delete confirmation row",
+    "_machine_translated": true,
+    "_source_hash": "5990d9643e9ff029"
+  },
+  "result.confirm_clear.label": {
+    "message": "🧹 Vymazat dokončené úkoly ({count})?",
+    "description": "Confirmation row shown after Enter on 'Clear N completed', when Confirm Delete is on. The placeholder is the number of completed todos",
+    "_machine_translated": true,
+    "_source_hash": "c9f937ee7d3731e3"
+  },
+  "result.confirm_clear.description": {
+    "message": "Stisknutím klávesy Enter je odstraníte. Tuto akci nelze vrátit zpět.",
+    "description": "Description on the clear-completed confirmation row",
+    "_machine_translated": true,
+    "_source_hash": "8a77534c90d11e88"
+  },
+  "result.confirm_cancel.label": {
+    "message": "↩️ Ne, ponechat",
+    "description": "Row under the delete confirmation that cancels deleting one todo",
+    "_machine_translated": true,
+    "_source_hash": "824c529f07f0506c"
+  },
+  "result.confirm_cancel.label_many": {
+    "message": "↩️ Ne, ponechat je",
+    "description": "Row under the clear-completed confirmation that cancels removing the completed todos",
+    "_machine_translated": true,
+    "_source_hash": "eeefd1732775e2e4"
+  },
+  "result.confirm_cancel.description": {
+    "message": "Zpět na seznam",
+    "description": "Description on the cancel row under a delete confirmation",
+    "_machine_translated": true,
+    "_source_hash": "f1f4c77641dc42e0"
   }
 }

@@ -486,10 +486,10 @@
     "_source_hash": "bc0b18fb9be84061"
   },
   "settings.confirm_delete.description": {
-    "message": "Bir görevi silmeden önce onay iste.",
+    "message": "Bir yapılacak öğesini silmeden veya tamamlananları temizlemeden önce sorar; böylece silmek için Enter tuşuna ikinci kez basmanız gerekir. Kapalıyken Enter hemen siler.",
     "description": "Settings: confirm delete description",
     "_machine_translated": true,
-    "_source_hash": "918d6a90de2837e3"
+    "_source_hash": "343c481d8e5f6cb0"
   },
   "settings.show_due_banner.label": {
     "message": "Hatırlatma afişini göster",
@@ -616,5 +616,47 @@
     "description": "Keyword hint for todos",
     "_machine_translated": true,
     "_source_hash": "174dea6117a8e919"
+  },
+  "result.confirm_delete.label": {
+    "message": "🗑️ \"{text}\" silinsin mi?",
+    "description": "Confirmation row shown after Enter on a todo in the delete list (todo-), when Confirm Delete is on. The placeholder is the todo text",
+    "_machine_translated": true,
+    "_source_hash": "c11f2bf2f8418de5"
+  },
+  "result.confirm_delete.description": {
+    "message": "Silmek için Enter tuşuna basın. Bu işlem geri alınamaz.",
+    "description": "Description on the delete confirmation row",
+    "_machine_translated": true,
+    "_source_hash": "5990d9643e9ff029"
+  },
+  "result.confirm_clear.label": {
+    "message": "🧹 Tamamlanan {count} öğe temizlensin mi?",
+    "description": "Confirmation row shown after Enter on 'Clear N completed', when Confirm Delete is on. The placeholder is the number of completed todos",
+    "_machine_translated": true,
+    "_source_hash": "c9f937ee7d3731e3"
+  },
+  "result.confirm_clear.description": {
+    "message": "Kaldırmak için Enter tuşuna basın. Bu işlem geri alınamaz.",
+    "description": "Description on the clear-completed confirmation row",
+    "_machine_translated": true,
+    "_source_hash": "8a77534c90d11e88"
+  },
+  "result.confirm_cancel.label": {
+    "message": "↩️ Hayır, kalsın",
+    "description": "Row under the delete confirmation that cancels deleting one todo",
+    "_machine_translated": true,
+    "_source_hash": "824c529f07f0506c"
+  },
+  "result.confirm_cancel.label_many": {
+    "message": "↩️ Hayır, kalsınlar",
+    "description": "Row under the clear-completed confirmation that cancels removing the completed todos",
+    "_machine_translated": true,
+    "_source_hash": "eeefd1732775e2e4"
+  },
+  "result.confirm_cancel.description": {
+    "message": "Listeye dön",
+    "description": "Description on the cancel row under a delete confirmation",
+    "_machine_translated": true,
+    "_source_hash": "f1f4c77641dc42e0"
   }
 }

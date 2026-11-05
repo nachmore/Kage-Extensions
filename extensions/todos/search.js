@@ -16,6 +16,12 @@ import { DEFAULTS } from './defaults.js';
 
 const STORAGE_KEY = 'kage-todos';
 
+// How long a "Delete …?" question stays up for its query. Past this, the
+// query shows its list again (the question was abandoned).
+const CONFIRM_TTL_MS = 2 * 60_000;
+
+const normQuery = (q) => String(q ?? '').trim().toLowerCase();
+
 export default class TodosSearchProvider {
     initialize(context) {
         this.config = context.config || {};
@@ -23,6 +29,10 @@ export default class TodosSearchProvider {
         this.t = context.i18n?.t?.bind(context.i18n) || ((k) => k);
         this.todos = [];
         this._loadFailed = false;
+        // The delete waiting for an answer, while confirm_delete is on:
+        // { kind: 'todo', todoId } or { kind: 'completed' }, plus the query
+        // it was asked from and when.
+        this._pendingDelete = null;
         this._ready = this._load();
     }
 
@@ -258,6 +268,20 @@ export default class TodosSearchProvider {
     // --- Search matching ---
 
     match(query) {
+        const confirm = this._buildConfirmRows(query);
+        if (confirm) return confirm;
+        const rows = this._matchRows(query);
+        // Remember where each delete row came from, so confirm_delete can
+        // ask its question in place and Cancel can bring the list back.
+        for (const r of rows) {
+            if (r.data?.action === 'delete' || r.data?.action === 'clear_completed') {
+                r.data.query = query;
+            }
+        }
+        return rows;
+    }
+
+    _matchRows(query) {
         const lower = query.trim().toLowerCase();
 
         // "todo" or "todos" → summary
@@ -506,6 +530,62 @@ export default class TodosSearchProvider {
         return results;
     }
 
+    _confirmDelete() {
+        return this.config.confirm_delete ?? DEFAULTS.confirm_delete;
+    }
+
+    /**
+     * Ask before a delete: remember it, and re-run the same query, which
+     * now answers with a "Delete …?" row and a "keep" row in place of the
+     * list. Enter on the first deletes, so with the question's row selected
+     * a delete takes a second Enter.
+     */
+    _askDelete(pending, query) {
+        const q = query ?? (pending.kind === 'completed' ? 'todos' : 'todo-');
+        this._pendingDelete = { ...pending, query: q, at: Date.now() };
+        return { type: 'replace_input', value: q };
+    }
+
+    /** The question for a pending delete, or null to show the query's rows. */
+    _buildConfirmRows(query) {
+        const p = this._pendingDelete;
+        if (!p) return null;
+        if (normQuery(query) !== normQuery(p.query) || Date.now() - p.at > CONFIRM_TTL_MS) {
+            this._pendingDelete = null;
+            return null;
+        }
+        // Each todo's question has its own ids, so the host's frecency boost
+        // (which follows a row id) can't learn to rank "keep" above
+        // "delete" across todos.
+        const cancel = (label, idSuffix) => ({
+            id: `todo:confirm-cancel:${idSuffix}`, type: 'todo_action',
+            label,
+            description: this.t('result.confirm_cancel.description'),
+            icon: '↩️', score: 99,
+            data: { action: 'cancel_delete', query: p.query },
+        });
+        if (p.kind === 'completed') {
+            const count = this.todos.filter(t => t.status === 'complete').length;
+            if (count === 0) { this._pendingDelete = null; return null; }
+            return [{
+                id: 'todo:confirm-clear', type: 'todo_action',
+                label: this.t('result.confirm_clear.label', { count }),
+                description: this.t('result.confirm_clear.description'),
+                icon: '🧹', score: 100,
+                data: { action: 'confirm_clear_completed' },
+            }, cancel(this.t('result.confirm_cancel.label_many'), 'completed')];
+        }
+        const todo = this.todos.find(t => t.id === p.todoId);
+        if (!todo) { this._pendingDelete = null; return null; }
+        return [{
+            id: `todo:confirm-del:${todo.id}`, type: 'todo_action',
+            label: this.t('result.confirm_delete.label', { text: todo.text }),
+            description: this.t('result.confirm_delete.description'),
+            icon: '🗑️', score: 100,
+            data: { action: 'confirm_delete', todoId: todo.id },
+        }, cancel(this.t('result.confirm_cancel.label'), todo.id)];
+    }
+
     _buildSummaryText() {
         const stats = this.getStats();
         const lines = [];
@@ -553,8 +633,23 @@ export default class TodosSearchProvider {
                 return r;
             }
             case 'cycle': return this._cycleTodoStatus(data.todoId);
-            case 'delete': return this._deleteTodo(data.todoId);
-            case 'clear_completed': return this._clearCompleted();
+            case 'delete':
+                if (this._confirmDelete()) return this._askDelete({ kind: 'todo', todoId: data.todoId }, data.query);
+                return this._deleteTodo(data.todoId);
+            case 'clear_completed':
+                if (this._confirmDelete()) return this._askDelete({ kind: 'completed' }, data.query);
+                return this._clearCompleted();
+            // The answers to the question: Enter on that row is the
+            // confirmation, so these act whatever the setting is now.
+            case 'confirm_delete':
+                this._pendingDelete = null;
+                return this._deleteTodo(data.todoId);
+            case 'confirm_clear_completed':
+                this._pendingDelete = null;
+                return this._clearCompleted();
+            case 'cancel_delete':
+                this._pendingDelete = null;
+                return { type: 'replace_input', value: data.query ?? 'todo-' };
             case 'summary': return this._buildSummaryText();
             case 'none': default: return null;
         }

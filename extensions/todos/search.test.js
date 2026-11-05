@@ -167,3 +167,152 @@ describe('TodosSearchProvider — getKeywords', () => {
         }
     });
 });
+
+describe('TodosSearchProvider — confirm_delete', () => {
+    const SEED = [
+        { id: 'a', text: 'buy milk', status: 'pending', createdAt: 3 },
+        { id: 'b', text: 'call mum', status: 'pending', createdAt: 2 },
+        { id: 'c', text: 'file taxes', status: 'complete', createdAt: 1 },
+        { id: 'd', text: 'water plants', status: 'complete', createdAt: 0 },
+    ];
+
+    async function ready(config = {}) {
+        const store = { 'kage-todos': JSON.stringify(SEED) };
+        const invokes = {
+            load_extension_data: ({ key }) => store[key] ?? null,
+            save_extension_data: ({ key, data }) => {
+                store[key] = data;
+            },
+        };
+        const { context } = makeContext({ config, invokes });
+        const provider = new TodosSearchProvider();
+        provider.initialize(context);
+        await provider._ready;
+        const saved = () => JSON.parse(store['kage-todos']).map((t) => t.id);
+        return { provider, saved };
+    }
+
+    const deleteRow = (provider, query, id) =>
+        provider.match(query).find((r) => r.data?.action === 'delete' && r.data.todoId === id);
+    const clearRow = (provider, query) =>
+        provider.match(query).find((r) => r.data?.action === 'clear_completed');
+    const top = (rows) => [...rows].sort((x, y) => y.score - x.score)[0];
+
+    afterEach(() => {
+        vi.useRealTimers();
+    });
+
+    describe('on (the default)', () => {
+        it('the first Enter asks instead of deleting', async () => {
+            const { provider, saved } = await ready();
+            const action = provider.execute(deleteRow(provider, 'todo-', 'a'));
+            // Re-runs the same query, which now shows the question.
+            expect(action).toEqual({ type: 'replace_input', value: 'todo-' });
+            expect(provider.todos.map((t) => t.id)).toEqual(['a', 'b', 'c', 'd']);
+            expect(saved()).toEqual(['a', 'b', 'c', 'd']);
+        });
+
+        it('never-saved config (no confirm_delete key) asks too', async () => {
+            const { provider } = await ready({});
+            expect(provider.execute(deleteRow(provider, 'todo-', 'a')).type).toBe('replace_input');
+        });
+
+        it('the re-run query shows "Delete …?" on top and a way out, not the list', async () => {
+            const { provider } = await ready();
+            provider.execute(deleteRow(provider, 'todo-', 'a'));
+            const rows = provider.match('todo-');
+            expect(rows.map((r) => r.data.action)).toEqual(['confirm_delete', 'cancel_delete']);
+            expect(rows[0].label).toBe('result.confirm_delete.label');
+            expect(top(rows).data).toEqual({ action: 'confirm_delete', todoId: 'a' });
+        });
+
+        it('a second Enter, on the question, deletes', async () => {
+            const { provider, saved } = await ready();
+            provider.execute(deleteRow(provider, 'todo-', 'a'));
+            const action = provider.execute(top(provider.match('todo-')));
+            expect(action.type).toBe('display');
+            expect(provider.todos.map((t) => t.id)).toEqual(['b', 'c', 'd']);
+            expect(saved()).toEqual(['b', 'c', 'd']);
+            // Answered: the query lists again.
+            expect(provider.match('todo-').some((r) => r.data?.action === 'delete')).toBe(true);
+        });
+
+        it('"No, keep it" brings the list back and deletes nothing', async () => {
+            const { provider, saved } = await ready();
+            provider.execute(deleteRow(provider, 'todo- mi', 'a'));
+            const cancel = provider.match('todo- mi').find((r) => r.data.action === 'cancel_delete');
+            expect(provider.execute(cancel)).toEqual({ type: 'replace_input', value: 'todo- mi' });
+            expect(saved()).toEqual(['a', 'b', 'c', 'd']);
+            const rows = provider.match('todo- mi');
+            expect(rows.map((r) => r.data.todoId)).toEqual(['a']);
+            expect(rows[0].data.action).toBe('delete');
+        });
+
+        it('keeps the filtered query it was asked from', async () => {
+            const { provider } = await ready();
+            const action = provider.execute(deleteRow(provider, 'todo- milk', 'a'));
+            expect(action).toEqual({ type: 'replace_input', value: 'todo- milk' });
+            expect(provider.match('todo- milk')[0].data.action).toBe('confirm_delete');
+        });
+
+        it('typing something else drops the question', async () => {
+            const { provider } = await ready();
+            provider.execute(deleteRow(provider, 'todo-', 'a'));
+            expect(provider.match('todo- c')[0].data.action).toBe('delete');
+            expect(provider.match('todo-').some((r) => r.data?.action === 'confirm_delete')).toBe(false);
+        });
+
+        it('an abandoned question expires', async () => {
+            vi.useFakeTimers();
+            const { provider } = await ready();
+            provider.execute(deleteRow(provider, 'todo-', 'a'));
+            vi.advanceTimersByTime(3 * 60_000);
+            expect(provider.match('todo-').some((r) => r.data?.action === 'confirm_delete')).toBe(false);
+        });
+
+        it('a todo removed meanwhile drops the question', async () => {
+            const { provider } = await ready();
+            provider.execute(deleteRow(provider, 'todo-', 'a'));
+            provider.deleteTodo('a');
+            expect(provider.match('todo-').some((r) => r.data?.action === 'confirm_delete')).toBe(false);
+        });
+
+        it('"Clear N completed" asks too, then clears on the second Enter', async () => {
+            const { provider, saved } = await ready();
+            expect(provider.execute(clearRow(provider, 'todo /done'))).toEqual({
+                type: 'replace_input',
+                value: 'todo /done',
+            });
+            expect(saved()).toEqual(['a', 'b', 'c', 'd']);
+            const rows = provider.match('todo /done');
+            expect(rows.map((r) => r.data.action)).toEqual(['confirm_clear_completed', 'cancel_delete']);
+            provider.execute(top(rows));
+            expect(saved()).toEqual(['a', 'b']);
+        });
+    });
+
+    describe('off', () => {
+        it('Enter on a todo deletes it at once', async () => {
+            const { provider, saved } = await ready({ confirm_delete: false });
+            const action = provider.execute(deleteRow(provider, 'todo-', 'a'));
+            expect(action.type).toBe('display');
+            expect(saved()).toEqual(['b', 'c', 'd']);
+            expect(provider.match('todo-').some((r) => r.data?.action === 'confirm_delete')).toBe(false);
+        });
+
+        it('"Clear N completed" clears at once', async () => {
+            const { provider, saved } = await ready({ confirm_delete: false });
+            provider.execute(clearRow(provider, 'todo /done'));
+            expect(saved()).toEqual(['a', 'b']);
+        });
+
+        it('turning it off while asked still lets the question be answered', async () => {
+            const { provider, saved } = await ready();
+            provider.execute(deleteRow(provider, 'todo-', 'a'));
+            const yes = top(provider.match('todo-'));
+            provider.onConfigUpdate({ confirm_delete: false });
+            provider.execute(yes);
+            expect(saved()).toEqual(['b', 'c', 'd']);
+        });
+    });
+});

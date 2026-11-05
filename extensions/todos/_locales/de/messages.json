@@ -486,10 +486,10 @@
     "_source_hash": "bc0b18fb9be84061"
   },
   "settings.confirm_delete.description": {
-    "message": "Vor dem Löschen einer Aufgabe um Bestätigung bitten.",
+    "message": "Vor dem Löschen eines Todos oder dem Entfernen erledigter Todos nachfragen, sodass zum Löschen ein zweites Drücken der Eingabetaste nötig ist. Wenn deaktiviert, löscht die Eingabetaste sofort.",
     "description": "Settings: confirm delete description",
     "_machine_translated": true,
-    "_source_hash": "918d6a90de2837e3"
+    "_source_hash": "343c481d8e5f6cb0"
   },
   "settings.show_due_banner.label": {
     "message": "Banner für fällige Erinnerungen anzeigen",
@@ -616,5 +616,47 @@
     "description": "Keyword hint for todos",
     "_machine_translated": true,
     "_source_hash": "174dea6117a8e919"
+  },
+  "result.confirm_delete.label": {
+    "message": "🗑️ „{text}“ löschen?",
+    "description": "Confirmation row shown after Enter on a todo in the delete list (todo-), when Confirm Delete is on. The placeholder is the todo text",
+    "_machine_translated": true,
+    "_source_hash": "c11f2bf2f8418de5"
+  },
+  "result.confirm_delete.description": {
+    "message": "Drücken Sie die Eingabetaste, um es zu löschen. Dies kann nicht rückgängig gemacht werden.",
+    "description": "Description on the delete confirmation row",
+    "_machine_translated": true,
+    "_source_hash": "5990d9643e9ff029"
+  },
+  "result.confirm_clear.label": {
+    "message": "🧹 {count} erledigte entfernen?",
+    "description": "Confirmation row shown after Enter on 'Clear N completed', when Confirm Delete is on. The placeholder is the number of completed todos",
+    "_machine_translated": true,
+    "_source_hash": "c9f937ee7d3731e3"
+  },
+  "result.confirm_clear.description": {
+    "message": "Drücken Sie die Eingabetaste, um sie zu entfernen. Dies kann nicht rückgängig gemacht werden.",
+    "description": "Description on the clear-completed confirmation row",
+    "_machine_translated": true,
+    "_source_hash": "8a77534c90d11e88"
+  },
+  "result.confirm_cancel.label": {
+    "message": "↩️ Nein, behalten",
+    "description": "Row under the delete confirmation that cancels deleting one todo",
+    "_machine_translated": true,
+    "_source_hash": "824c529f07f0506c"
+  },
+  "result.confirm_cancel.label_many": {
+    "message": "↩️ Nein, alle behalten",
+    "description": "Row under the clear-completed confirmation that cancels removing the completed todos",
+    "_machine_translated": true,
+    "_source_hash": "eeefd1732775e2e4"
+  },
+  "result.confirm_cancel.description": {
+    "message": "Zurück zur Liste",
+    "description": "Description on the cancel row under a delete confirmation",
+    "_machine_translated": true,
+    "_source_hash": "f1f4c77641dc42e0"
   }
 }

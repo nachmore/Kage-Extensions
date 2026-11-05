@@ -89,6 +89,34 @@
     "message": "Press Enter to delete",
     "description": "Description for a todo in delete list"
   },
+  "result.confirm_delete.label": {
+    "message": "🗑️ Delete \"{text}\"?",
+    "description": "Confirmation row shown after Enter on a todo in the delete list (todo-), when Confirm Delete is on. The placeholder is the todo text"
+  },
+  "result.confirm_delete.description": {
+    "message": "Press Enter to delete it. This can't be undone.",
+    "description": "Description on the delete confirmation row"
+  },
+  "result.confirm_clear.label": {
+    "message": "🧹 Clear {count} completed?",
+    "description": "Confirmation row shown after Enter on 'Clear N completed', when Confirm Delete is on. The placeholder is the number of completed todos"
+  },
+  "result.confirm_clear.description": {
+    "message": "Press Enter to remove them. This can't be undone.",
+    "description": "Description on the clear-completed confirmation row"
+  },
+  "result.confirm_cancel.label": {
+    "message": "↩️ No, keep it",
+    "description": "Row under the delete confirmation that cancels deleting one todo"
+  },
+  "result.confirm_cancel.label_many": {
+    "message": "↩️ No, keep them",
+    "description": "Row under the clear-completed confirmation that cancels removing the completed todos"
+  },
+  "result.confirm_cancel.description": {
+    "message": "Back to the list",
+    "description": "Description on the cancel row under a delete confirmation"
+  },
   "result.add.label": {
     "message": "➕ Add: {text}",
     "description": "Label for a quick-add result"
@@ -326,7 +354,7 @@
     "description": "Settings: confirm delete label"
   },
   "settings.confirm_delete.description": {
-    "message": "Ask for confirmation before deleting a todo.",
+    "message": "Ask before deleting a todo or clearing completed ones, so deleting takes a second Enter. When off, Enter deletes right away.",
     "description": "Settings: confirm delete description"
   },
   "settings.show_due_banner.label": {

@@ -486,10 +486,10 @@
     "_source_hash": "bc0b18fb9be84061"
   },
   "settings.confirm_delete.description": {
-    "message": "할 일을 삭제하기 전에 확인을 요청합니다.",
+    "message": "할 일을 삭제하거나 완료된 항목을 지우기 전에 확인하므로, Enter 키를 한 번 더 눌러야 삭제됩니다. 이 옵션을 끄면 Enter 키를 누르는 즉시 삭제됩니다.",
     "description": "Settings: confirm delete description",
     "_machine_translated": true,
-    "_source_hash": "918d6a90de2837e3"
+    "_source_hash": "343c481d8e5f6cb0"
   },
   "settings.show_due_banner.label": {
     "message": "기한 알림 배너 표시",
@@ -616,5 +616,47 @@
     "description": "Keyword hint for todos",
     "_machine_translated": true,
     "_source_hash": "174dea6117a8e919"
+  },
+  "result.confirm_delete.label": {
+    "message": "🗑️ \"{text}\"을(를) 삭제하시겠습니까?",
+    "description": "Confirmation row shown after Enter on a todo in the delete list (todo-), when Confirm Delete is on. The placeholder is the todo text",
+    "_machine_translated": true,
+    "_source_hash": "c11f2bf2f8418de5"
+  },
+  "result.confirm_delete.description": {
+    "message": "삭제하려면 Enter 키를 누르십시오. 이 작업은 되돌릴 수 없습니다.",
+    "description": "Description on the delete confirmation row",
+    "_machine_translated": true,
+    "_source_hash": "5990d9643e9ff029"
+  },
+  "result.confirm_clear.label": {
+    "message": "🧹 완료된 항목 {count}개를 지우시겠습니까?",
+    "description": "Confirmation row shown after Enter on 'Clear N completed', when Confirm Delete is on. The placeholder is the number of completed todos",
+    "_machine_translated": true,
+    "_source_hash": "c9f937ee7d3731e3"
+  },
+  "result.confirm_clear.description": {
+    "message": "제거하려면 Enter 키를 누르십시오. 이 작업은 되돌릴 수 없습니다.",
+    "description": "Description on the clear-completed confirmation row",
+    "_machine_translated": true,
+    "_source_hash": "8a77534c90d11e88"
+  },
+  "result.confirm_cancel.label": {
+    "message": "↩️ 아니요, 유지합니다",
+    "description": "Row under the delete confirmation that cancels deleting one todo",
+    "_machine_translated": true,
+    "_source_hash": "824c529f07f0506c"
+  },
+  "result.confirm_cancel.label_many": {
+    "message": "↩️ 아니요, 모두 유지합니다",
+    "description": "Row under the clear-completed confirmation that cancels removing the completed todos",
+    "_machine_translated": true,
+    "_source_hash": "eeefd1732775e2e4"
+  },
+  "result.confirm_cancel.description": {
+    "message": "목록으로 돌아가기",
+    "description": "Description on the cancel row under a delete confirmation",
+    "_machine_translated": true,
+    "_source_hash": "f1f4c77641dc42e0"
   }
 }
