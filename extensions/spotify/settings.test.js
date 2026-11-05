@@ -39,7 +39,7 @@ const REFRESH = { type: 'refresh' };
 // `context.hostFeatures` of a current Kage host. Leaving it out (the default
 // in these tests) is a host that predates feature detection.
 const CURRENT_HOST = {
-    hostFeatures: ['settings.copy_action', 'invoke.error_kind', 'config.manifest_defaults'],
+    hostFeatures: ['settings.copy_action', 'invoke.error_kind', 'config.manifest_defaults', 'windows.minimized'],
 };
 // A host from before 'config.manifest_defaults': Save replaces the whole
 // stored config with the page's value controls.

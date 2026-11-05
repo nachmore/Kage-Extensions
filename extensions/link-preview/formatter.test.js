@@ -18,7 +18,7 @@ import { makeContext } from '../../test-helpers/mock-context.mjs';
 // `context.hostFeatures` of a host where `config.enabled` is the Settings
 // header's Disable/Enable switch. Without it (the default here) the host
 // predates that, and `enabled` is only ever a saved value.
-const CURRENT_HOST = ['settings.copy_action', 'invoke.error_kind', 'config.manifest_defaults'];
+const CURRENT_HOST = ['settings.copy_action', 'invoke.error_kind', 'config.manifest_defaults', 'windows.minimized'];
 
 function setup({ config = {}, meta = {}, hostFeatures } = {}) {
     const invokes = {

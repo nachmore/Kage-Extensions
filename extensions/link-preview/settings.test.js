@@ -10,7 +10,7 @@ import { makeContext } from '../../test-helpers/mock-context.mjs';
 
 // `context.hostFeatures` of a current Kage host. Leaving it out (the
 // default here) is a host from before 'config.manifest_defaults'.
-const CURRENT_HOST = ['settings.copy_action', 'invoke.error_kind', 'config.manifest_defaults'];
+const CURRENT_HOST = ['settings.copy_action', 'invoke.error_kind', 'config.manifest_defaults', 'windows.minimized'];
 
 const NOTE_KEY = 'settings.legacy_disabled.info_html';
 
