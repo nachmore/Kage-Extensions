@@ -13,7 +13,6 @@ export default class CurrencySettingsProvider {
                 {
                     label: 'Defaults',
                     controls: [
-                        { type: 'checkbox', id: 'enabled', label: 'Enable', default: true },
                         {
                             type: 'text', id: 'default_source', label: 'Default source currency',
                             default: 'USD', maxWidth: 80,

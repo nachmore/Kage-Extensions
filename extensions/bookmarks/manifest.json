@@ -1,7 +1,7 @@
 {
   "id": "bookmarks",
   "name": "__MSG_manifest.name__",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "type": "extension",
   "description": "__MSG_manifest.description__",
   "icon": "🔖",
@@ -18,10 +18,6 @@
     "urls"
   ],
   "config": {
-    "enabled": {
-      "type": "boolean",
-      "default": true
-    },
     "trigger": {
       "type": "string",
       "default": "bm"

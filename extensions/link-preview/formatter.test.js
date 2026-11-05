@@ -15,12 +15,17 @@ import { describe, it, expect, vi } from 'vitest';
 import LinkPreviewFormatter from './formatter.js';
 import { makeContext } from '../../test-helpers/mock-context.mjs';
 
-function setup({ config = { enabled: true }, meta = {} } = {}) {
+// `context.hostFeatures` of a host where `config.enabled` is the Settings
+// header's Disable/Enable switch. Without it (the default here) the host
+// predates that.
+const CURRENT_HOST = ['settings.copy_action', 'invoke.error_kind', 'config.manifest_defaults'];
+
+function setup({ config = {}, meta = {}, hostFeatures } = {}) {
     const invokes = {
         // meta is a map of url → metadata object (or null). Unlisted → null.
         fetch_link_metadata: ({ url }) => (url in meta ? meta[url] : null),
     };
-    const { context } = makeContext({ config, invokes });
+    const { context } = makeContext({ config, invokes, hostFeatures });
     const formatter = new LinkPreviewFormatter();
     formatter.initialize(context);
     return formatter;
@@ -32,13 +37,23 @@ function parse(html) {
 }
 
 describe('LinkPreviewFormatter — short-circuits', () => {
-    it('returns null when disabled', async () => {
-        const f = setup({ config: { enabled: false } });
+    it('returns null when the host has the extension switched off', async () => {
+        const f = setup({ config: { enabled: false }, hostFeatures: CURRENT_HOST });
         expect(await f.format('<a href="https://example.com">x</a>', {})).toBeNull();
     });
 
-    it('treats a config without `enabled` as enabled (the manifest default)', async () => {
-        const f = setup({ config: {} });
+    it('treats a config without `enabled` as enabled, on current and older hosts', async () => {
+        for (const hostFeatures of [CURRENT_HOST, undefined]) {
+            const f = setup({ config: {}, hostFeatures });
+            const out = await f.format('<a href="https://example.com">x</a>', {});
+            expect(parse(out).querySelectorAll('.link-preview-card')).toHaveLength(1);
+        }
+    });
+
+    it("ignores an older host's saved enabled: false (from the removed Enable checkbox)", async () => {
+        // There, `enabled` is just a saved value, and nothing on the page
+        // can change it any more. The header switch turns previews off.
+        const f = setup({ config: { enabled: false } });
         const out = await f.format('<a href="https://example.com">x</a>', {});
         expect(parse(out).querySelectorAll('.link-preview-card')).toHaveLength(1);
     });
@@ -74,7 +89,7 @@ describe('LinkPreviewFormatter — card insertion', () => {
     });
 
     it('caps cards at max_previews', async () => {
-        const f = setup({ config: { enabled: true, max_previews: 2 } });
+        const f = setup({ config: { max_previews: 2 } });
         const html = ['a', 'b', 'c', 'd']
             .map((s) => `<a href="https://example.com/${s}">${s}</a>`)
             .join('');
@@ -115,7 +130,7 @@ describe('LinkPreviewFormatter — card shapes', () => {
 
     it('omits the hero image when show_images is false', async () => {
         const f = setup({
-            config: { enabled: true, show_images: false },
+            config: { show_images: false },
             meta: { 'https://example.com': { title: 'E', image: 'https://example.com/og.png' } },
         });
         const out = await f.format('<a href="https://example.com">e</a>', {});
@@ -163,7 +178,6 @@ describe('LinkPreviewFormatter — progressive loading (hosts with context.forma
     function setupProgressive(fetchImpl) {
         const requestReformat = vi.fn();
         const { context } = makeContext({
-            config: { enabled: true },
             invokes: { fetch_link_metadata: fetchImpl },
             formatter: { requestReformat },
         });

@@ -29,18 +29,6 @@
     "_machine_translated": true,
     "_source_hash": "8f8fad89bd661f18"
   },
-  "settings.enabled.label": {
-    "message": "लिंक प्रीव्यू सक्षम करें",
-    "description": "Settings: enable toggle label",
-    "_machine_translated": true,
-    "_source_hash": "8d8bac295d1fb446"
-  },
-  "settings.enabled.description": {
-    "message": "सहायक संदेशों में मिलने वाले URL के लिए प्रीव्यू कार्ड दिखाएँ।",
-    "description": "Settings: enable toggle description",
-    "_machine_translated": true,
-    "_source_hash": "a09c739f5e71639d"
-  },
   "settings.show_images.label": {
     "message": "हीरो छवियाँ दिखाएँ",
     "description": "Settings: hero images toggle label",

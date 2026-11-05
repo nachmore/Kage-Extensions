@@ -29,18 +29,6 @@
     "_machine_translated": true,
     "_source_hash": "8f8fad89bd661f18"
   },
-  "settings.enabled.label": {
-    "message": "启用链接预览",
-    "description": "Settings: enable toggle label",
-    "_machine_translated": true,
-    "_source_hash": "8d8bac295d1fb446"
-  },
-  "settings.enabled.description": {
-    "message": "为助手消息中出现的 URL 显示预览卡片。",
-    "description": "Settings: enable toggle description",
-    "_machine_translated": true,
-    "_source_hash": "a09c739f5e71639d"
-  },
   "settings.show_images.label": {
     "message": "显示主图",
     "description": "Settings: hero images toggle label",

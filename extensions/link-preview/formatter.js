@@ -38,6 +38,10 @@ const DESC_TRUNCATE_AT = 140;
 // card. Cache hits and fast sites land inside it, so they never flash.
 const FAST_PATH_MS = 250;
 
+// Hosts listing this in `context.hostFeatures` set `config.enabled` to the
+// Settings header's Disable/Enable switch.
+const HOST_FEATURE_MANIFEST_DEFAULTS = 'config.manifest_defaults';
+
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export default class LinkPreviewFormatter {
@@ -45,6 +49,14 @@ export default class LinkPreviewFormatter {
         this.config = context.config || {};
         this.invoke = context.invoke;
         this.t = context.i18n?.t?.bind(context.i18n) || ((k) => k);
+        // On older hosts `config.enabled` is whatever this extension's own
+        // "Enable" checkbox saved. That checkbox is gone (the header switch
+        // does the job on every host), so a value it left behind is ignored
+        // there: honouring a saved `false` would keep previews off with no
+        // control left that turns them back on.
+        this._hostOwnsEnabled =
+            Array.isArray(context.hostFeatures) &&
+            context.hostFeatures.includes(HOST_FEATURE_MANIFEST_DEFAULTS);
         // In-memory cache for the duration of this sandbox lifetime. The
         // disk cache lives in the host (behind `fetch_link_metadata`) and
         // is shared across windows / restarts. Holds only settled results;
@@ -67,9 +79,9 @@ export default class LinkPreviewFormatter {
      * the existing HTML unchanged.
      */
     async format(html, context) {
-        // `=== false`, not falsy: the manifest defaults this on, and a config
-        // saved without the key must keep that default.
-        if (this.config?.enabled === false) return null;
+        // Switched off with the header while this sandbox stays loaded.
+        // `=== false`, not falsy: a missing `enabled` means on.
+        if (this._hostOwnsEnabled && this.config?.enabled === false) return null;
         // Streaming chunks contain URLs mid-write; resolving against
         // them is wasteful and produces flicker. Wait for the final
         // pass.

@@ -26,7 +26,6 @@ export default class SnippetsSettingsProvider {
             sections: [
                 {
                     controls: [
-                        { type: 'checkbox', id: 'enabled', label: t('settings.enabled.label'), default: true },
                         { type: 'text', id: 'trigger', label: t('settings.trigger.label'), default: 'snip', maxWidth: 120 },
                         {
                             type: 'info',

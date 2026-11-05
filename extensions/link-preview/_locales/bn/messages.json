@@ -29,18 +29,6 @@
     "_machine_translated": true,
     "_source_hash": "8f8fad89bd661f18"
   },
-  "settings.enabled.label": {
-    "message": "লিঙ্ক প্রিভিউ সক্ষম করুন",
-    "description": "Settings: enable toggle label",
-    "_machine_translated": true,
-    "_source_hash": "8d8bac295d1fb446"
-  },
-  "settings.enabled.description": {
-    "message": "অ্যাসিস্ট্যান্ট বার্তায় পাওয়া URL-এর জন্য প্রিভিউ কার্ড দেখান।",
-    "description": "Settings: enable toggle description",
-    "_machine_translated": true,
-    "_source_hash": "a09c739f5e71639d"
-  },
   "settings.show_images.label": {
     "message": "হিরো ছবি দেখান",
     "description": "Settings: hero images toggle label",

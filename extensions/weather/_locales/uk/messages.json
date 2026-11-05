@@ -197,12 +197,6 @@
     "_machine_translated": true,
     "_source_hash": "7f2435163a522988"
   },
-  "settings.enabled.label": {
-    "message": "Увімкнути",
-    "description": "Settings: enable toggle",
-    "_machine_translated": true,
-    "_source_hash": "813fb292fb3bfe0d"
-  },
   "settings.trigger.label": {
     "message": "Тригерне слово",
     "description": "Settings: trigger word label",

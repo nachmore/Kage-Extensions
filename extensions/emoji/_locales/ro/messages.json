@@ -35,12 +35,6 @@
     "_machine_translated": true,
     "_source_hash": "9d1fa3f643108b7e"
   },
-  "settings.enabled.label": {
-    "message": "Activează",
-    "description": "Settings: enable toggle label",
-    "_machine_translated": true,
-    "_source_hash": "efce5571f8dbd1e9"
-  },
   "settings.trigger.label": {
     "message": "Cuvânt declanșator",
     "description": "Settings: trigger word label",

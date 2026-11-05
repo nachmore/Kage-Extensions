@@ -41,10 +41,6 @@
     "message": "Search GitHub from the launcher. Works unauthenticated up to 60 req/hr (per IP). Optional: paste a fine-grained personal access token for 5,000 req/hr and access to private repos. The token is stored locally in Kage's sandboxed extension data.",
     "description": "Settings page description"
   },
-  "settings.enabled.label": {
-    "message": "Enable",
-    "description": "Settings: enable toggle"
-  },
   "settings.trigger.label": {
     "message": "Trigger",
     "description": "Settings: trigger word label"

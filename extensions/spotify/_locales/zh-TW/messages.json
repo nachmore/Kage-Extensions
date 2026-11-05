@@ -251,12 +251,6 @@
     "_machine_translated": true,
     "_source_hash": "bf664ebb2209530c"
   },
-  "settings.enabled.label": {
-    "message": "啟用",
-    "description": "Settings: enable toggle",
-    "_machine_translated": true,
-    "_source_hash": "813fb292fb3bfe0d"
-  },
   "settings.show_now_playing_bar.label": {
     "message": "在浮動視窗中顯示正在播放列",
     "description": "Settings: show now-playing bar",

@@ -13,7 +13,6 @@ export default class PasswordSettingsProvider {
                 {
                     label: t('settings.section.defaults'),
                     controls: [
-                        { type: 'checkbox', id: 'enabled', label: t('settings.enabled.label'), default: true },
                         { type: 'text', id: 'trigger', label: t('settings.trigger.label'), default: 'pw', maxWidth: 80 },
                         {
                             type: 'number', id: 'default_length', label: t('settings.default_length.label'),

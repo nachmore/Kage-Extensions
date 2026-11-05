@@ -67,10 +67,6 @@
     "message": "Forecasts from <a href=\"https://open-meteo.com\">Open-Meteo</a>; geocoding via OpenStreetMap Nominatim.",
     "description": "Settings page description"
   },
-  "settings.enabled.label": {
-    "message": "Enable",
-    "description": "Settings: enable toggle"
-  },
   "settings.trigger.label": {
     "message": "Trigger word",
     "description": "Settings: trigger word label"

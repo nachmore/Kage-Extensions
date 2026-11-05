@@ -37,10 +37,6 @@
     "message": "Defaults",
     "description": "Settings section: defaults"
   },
-  "settings.enabled.label": {
-    "message": "Enable",
-    "description": "Settings: enable toggle"
-  },
   "settings.trigger.label": {
     "message": "Trigger",
     "description": "Settings: trigger word label"

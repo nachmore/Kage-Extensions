@@ -257,7 +257,7 @@ describe('Spotify settings — not set up shows the guided setup', () => {
         );
         // The regular settings and account controls are not on screen.
         const visible = visibleIds(schema);
-        for (const id of ['enabled', 'trigger', 'refresh_seconds', 'connect', 'check_connection', 'disconnect']) {
+        for (const id of ['trigger', 'refresh_seconds', 'connect', 'check_connection', 'disconnect']) {
             expect(visible).not.toContain(id);
         }
     });
@@ -268,7 +268,7 @@ describe('Spotify settings — not set up shows the guided setup', () => {
         // validate() would reject the "missing" trigger.
         const { provider } = setup({});
         const schema = await provider.getSettings();
-        for (const id of ['enabled', 'show_now_playing_bar', 'refresh_seconds', 'trigger']) {
+        for (const id of ['show_now_playing_bar', 'refresh_seconds', 'trigger']) {
             expect(byId(schema, id), id).toBeTruthy();
         }
         const values = {};
@@ -315,7 +315,7 @@ describe('Spotify settings — configured shows the regular settings', () => {
         expectHostValid(schema);
         expect(screenOf(schema)).toBe('settings');
         const visible = visibleIds(schema);
-        for (const id of ['enabled', 'trigger', 'connect', 'check_connection', 'disconnect', 'setup_restart']) {
+        for (const id of ['show_now_playing_bar', 'trigger', 'connect', 'check_connection', 'disconnect', 'setup_restart']) {
             expect(visible).toContain(id);
         }
         expect(visible.filter((id) => id.startsWith('setup_') && id !== 'setup_restart')).toEqual([]);
@@ -969,8 +969,8 @@ describe('Spotify settings — re-run setup and sign out', () => {
 
     it('normalize strips helper fields so only real config is kept', () => {
         const { provider } = setup({});
-        const out = provider.normalize({ trigger: ' SP ', enabled: true, __setup_client_id: 'x', __client_id_input: 'y' });
-        expect(out).toEqual({ values: { trigger: 'sp', enabled: true } });
+        const out = provider.normalize({ trigger: ' SP ', show_now_playing_bar: true, __setup_client_id: 'x', __client_id_input: 'y' });
+        expect(out).toEqual({ values: { trigger: 'sp', show_now_playing_bar: true } });
     });
 });
 

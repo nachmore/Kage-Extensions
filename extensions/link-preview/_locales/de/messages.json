@@ -29,18 +29,6 @@
     "_machine_translated": true,
     "_source_hash": "8f8fad89bd661f18"
   },
-  "settings.enabled.label": {
-    "message": "Linkvorschauen aktivieren",
-    "description": "Settings: enable toggle label",
-    "_machine_translated": true,
-    "_source_hash": "8d8bac295d1fb446"
-  },
-  "settings.enabled.description": {
-    "message": "Vorschaukarten für URLs in Assistentennachrichten anzeigen.",
-    "description": "Settings: enable toggle description",
-    "_machine_translated": true,
-    "_source_hash": "a09c739f5e71639d"
-  },
   "settings.show_images.label": {
     "message": "Hero-Bilder anzeigen",
     "description": "Settings: hero images toggle label",

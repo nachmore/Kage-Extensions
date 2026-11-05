@@ -1,7 +1,7 @@
 {
   "id": "spotify",
   "name": "__MSG_manifest.name__",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "type": "extension",
   "description": "__MSG_manifest.description__",
   "icon": "🎧",
@@ -20,10 +20,6 @@
     "oauth"
   ],
   "config": {
-    "enabled": {
-      "type": "boolean",
-      "default": true
-    },
     "show_now_playing_bar": {
       "type": "boolean",
       "default": true

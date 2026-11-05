@@ -1,7 +1,7 @@
 {
   "id": "password",
   "name": "__MSG_manifest.name__",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "extension",
   "description": "__MSG_manifest.description__",
   "icon": "🔐",
@@ -15,10 +15,6 @@
   ],
   "permissions": [],
   "config": {
-    "enabled": {
-      "type": "boolean",
-      "default": true
-    },
     "trigger": {
       "type": "string",
       "default": "pw"

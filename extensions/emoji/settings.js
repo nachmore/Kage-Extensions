@@ -12,7 +12,6 @@ export default class EmojiSettingsProvider {
             sections: [
                 {
                     controls: [
-                        { type: 'checkbox', id: 'enabled', label: t('settings.enabled.label'), default: true },
                         {
                             type: 'text', id: 'trigger', label: t('settings.trigger.label'),
                             default: 'emoji', maxWidth: 140,

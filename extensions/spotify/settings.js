@@ -49,7 +49,7 @@ const STEP_ACTIONS = Object.freeze({
 // values through an in-place refresh). Without them, a Save during setup
 // would drop the user's trigger word and refresh interval, and validate()
 // would reject the "missing" trigger.
-const NEVER_SHOWN = Object.freeze({ id: 'enabled', oneOf: [] });
+const NEVER_SHOWN = Object.freeze({ id: 'trigger', oneOf: [] });
 
 export default class SpotifySettingsProvider {
     initialize(context) {
@@ -80,12 +80,6 @@ export default class SpotifySettingsProvider {
     _displayControls() {
         const t = this.t;
         return [
-            {
-                type: 'checkbox',
-                id: 'enabled',
-                label: t('settings.enabled.label'),
-                default: true,
-            },
             {
                 type: 'checkbox',
                 id: 'show_now_playing_bar',

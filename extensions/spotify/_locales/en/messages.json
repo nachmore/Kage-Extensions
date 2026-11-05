@@ -237,10 +237,6 @@
     "message": "Display",
     "description": "Settings section: display"
   },
-  "settings.enabled.label": {
-    "message": "Enable",
-    "description": "Settings: enable toggle"
-  },
   "settings.show_now_playing_bar.label": {
     "message": "Show now-playing bar in the floating window",
     "description": "Settings: show now-playing bar"

@@ -53,12 +53,6 @@
     "_machine_translated": true,
     "_source_hash": "dd9f392bd82cb46e"
   },
-  "settings.enabled.label": {
-    "message": "Activer",
-    "description": "Settings: enable toggle",
-    "_machine_translated": true,
-    "_source_hash": "813fb292fb3bfe0d"
-  },
   "settings.trigger.label": {
     "message": "Déclencheur",
     "description": "Settings: trigger word label",

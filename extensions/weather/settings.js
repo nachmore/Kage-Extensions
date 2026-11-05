@@ -12,7 +12,6 @@ export default class WeatherSettingsProvider {
             sections: [
                 {
                     controls: [
-                        { type: 'checkbox', id: 'enabled', label: t('settings.enabled.label'), default: true },
                         {
                             type: 'text', id: 'trigger', label: t('settings.trigger.label'),
                             default: 'weather', maxWidth: 140,

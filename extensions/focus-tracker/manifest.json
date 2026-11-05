@@ -1,7 +1,7 @@
 {
   "id": "focus-tracker",
   "name": "__MSG_manifest.name__",
-  "version": "1.8.0",
+  "version": "1.8.1",
   "type": "extension",
   "description": "__MSG_manifest.description__",
   "icon": "📊",
@@ -11,10 +11,6 @@
     "windows"
   ],
   "config": {
-    "enabled": {
-      "type": "boolean",
-      "default": true
-    },
     "trigger": {
       "type": "string",
       "default": "focus"

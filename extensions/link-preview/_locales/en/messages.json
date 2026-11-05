@@ -25,14 +25,6 @@
     "message": "Shows inline preview cards for URLs in AI responses.",
     "description": "Settings page description"
   },
-  "settings.enabled.label": {
-    "message": "Enable Link Previews",
-    "description": "Settings: enable toggle label"
-  },
-  "settings.enabled.description": {
-    "message": "Show preview cards for URLs found in assistant messages.",
-    "description": "Settings: enable toggle description"
-  },
   "settings.show_images.label": {
     "message": "Show hero images",
     "description": "Settings: hero images toggle label"

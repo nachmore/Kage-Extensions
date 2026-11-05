@@ -18,7 +18,6 @@ export default class BookmarksSettingsProvider {
             sections: [
                 {
                     controls: [
-                        { type: 'checkbox', id: 'enabled', label: 'Enable', default: true },
                         {
                             type: 'text', id: 'trigger', label: 'Trigger word',
                             default: 'bm', maxWidth: 100,

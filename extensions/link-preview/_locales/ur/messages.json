@@ -29,18 +29,6 @@
     "_machine_translated": true,
     "_source_hash": "8f8fad89bd661f18"
   },
-  "settings.enabled.label": {
-    "message": "لنک پیش منظر فعال کریں",
-    "description": "Settings: enable toggle label",
-    "_machine_translated": true,
-    "_source_hash": "8d8bac295d1fb446"
-  },
-  "settings.enabled.description": {
-    "message": "اسسٹنٹ پیغامات میں ملنے والے URLs کے لیے پیش منظر کارڈز دکھائیں۔",
-    "description": "Settings: enable toggle description",
-    "_machine_translated": true,
-    "_source_hash": "a09c739f5e71639d"
-  },
   "settings.show_images.label": {
     "message": "ہیرو امیجز دکھائیں",
     "description": "Settings: hero images toggle label",

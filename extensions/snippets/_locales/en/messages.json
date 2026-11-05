@@ -53,10 +53,6 @@
     "message": "Save bits of text — canned replies, addresses, commands, code blocks — and copy them with one keystroke.",
     "description": "Settings page description"
   },
-  "settings.enabled.label": {
-    "message": "Enable",
-    "description": "Settings: enable toggle"
-  },
   "settings.trigger.label": {
     "message": "Trigger word",
     "description": "Settings: trigger word label"

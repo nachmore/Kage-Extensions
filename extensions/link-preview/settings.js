@@ -25,13 +25,6 @@ export default class LinkPreviewSettingsProvider {
                     controls: [
                         {
                             type: 'checkbox',
-                            id: 'enabled',
-                            label: t('settings.enabled.label'),
-                            description: t('settings.enabled.description'),
-                            default: true,
-                        },
-                        {
-                            type: 'checkbox',
                             id: 'show_images',
                             label: t('settings.show_images.label'),
                             description: t('settings.show_images.description'),

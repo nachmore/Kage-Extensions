@@ -77,12 +77,6 @@
     "_machine_translated": true,
     "_source_hash": "39c8f4d65c94fd7a"
   },
-  "settings.enabled.label": {
-    "message": "Aktivera",
-    "description": "Settings: enable toggle",
-    "_machine_translated": true,
-    "_source_hash": "813fb292fb3bfe0d"
-  },
   "settings.trigger.label": {
     "message": "Utlösarord",
     "description": "Settings: trigger word label",
