@@ -3,10 +3,12 @@
 // effects, so Node can import it to render the same cards into index.html
 // that the browser renders later.
 //
-// Every value that reaches markup goes through escapeHtml(); every value
-// that reaches a style attribute goes through safeColor()/safeGradient().
-// Catalog entries come from reviewed manifests, but the page treats them as
-// untrusted text all the same.
+// Every value that reaches markup goes through escapeHtml(); every color
+// that reaches the stylesheet goes through safeColor()/safeGradient(). The
+// markup has no style attributes, so it renders the same under a strict
+// Content-Security-Policy (style-src 'self'). Catalog entries come from
+// reviewed manifests, but the page treats them as untrusted text all the
+// same.
 
 export const REPO_URL = 'https://github.com/nachmore/Kage-Extensions';
 export const KAGE_URL = 'https://nachmore.github.io/Kage/';
@@ -192,23 +194,6 @@ export const SETUP_PICKS = Object.freeze(
         'kiro-ish-theme',
     ])
 );
-
-// The default palette (Kage Dark / Kage Light, ui/css/shared-kage-tokens.css)
-// for a theme whose colors we couldn't load.
-export const KAGE_PALETTE = Object.freeze({
-    dark: {
-        accent: '#319795', bg: '#1a202c', elevated: '#2d3748', input: '#2d3748',
-        border: '#4a5568', text: '#e2e8f0', bright: '#f7fafc', muted: '#a0aec0',
-        outline: '#319795', invert: '0',
-        gradient: 'linear-gradient(135deg, #81e6d9 0%, #319795 100%)',
-    },
-    light: {
-        accent: '#319795', bg: '#f7fafc', elevated: '#ffffff', input: '#edf2f7',
-        border: '#cbd5e0', text: '#2d3748', bright: '#1a202c', muted: '#718096',
-        outline: '#319795', invert: '0',
-        gradient: 'linear-gradient(135deg, #81e6d9 0%, #319795 100%)',
-    },
-});
 
 // ─── text ─────────────────────────────────────────────────────────────
 
@@ -587,10 +572,15 @@ export function extensionCardHtml(item, extra) {
     ].join('');
 }
 
-function paletteStyle(palette) {
-    const dark = palette?.dark || KAGE_PALETTE.dark;
-    // A theme without a light palette previews its dark one in both modes.
-    const light = palette ? palette.light || dark : KAGE_PALETTE.light;
+// A theme preview's custom properties: --d-* for its dark palette, --l-*
+// for its light one, as [name, value] pairs of validated colors. A theme
+// without a light palette previews its dark one in both modes; one without
+// any gets nothing, and style.css falls back to Kage Dark / Kage Light
+// (ui/css/shared-kage-tokens.css).
+export function paletteVars(palette) {
+    const dark = palette?.dark;
+    if (!dark || typeof dark !== 'object') return [];
+    const light = palette.light && typeof palette.light === 'object' ? palette.light : dark;
     const vars = [];
     for (const [mode, p] of [
         ['d', dark],
@@ -598,24 +588,37 @@ function paletteStyle(palette) {
     ]) {
         for (const k of ['accent', 'bg', 'elevated', 'input', 'border', 'text', 'bright', 'muted', 'outline']) {
             const c = safeColor(p[k]);
-            if (c) vars.push(`--${mode}-${k}: ${c}`);
+            if (c) vars.push([`--${mode}-${k}`, c]);
         }
         const g = safeGradient(p.gradient);
-        if (g) vars.push(`--${mode}-grad: ${g}`);
-        vars.push(`--${mode}-invert: ${p.invert === '1' ? 1 : 0}`);
+        if (g) vars.push([`--${mode}-grad`, g]);
+        vars.push([`--${mode}-invert`, p.invert === '1' ? '1' : '0']);
     }
-    return vars.join('; ');
+    return vars;
+}
+
+// One rule per theme with a palette, keyed on the card's data-id, for
+// stage.mjs to write into style.css: the previews get their colors from the
+// stylesheet, never from a style attribute.
+export function paletteCss(items, extras = {}) {
+    const rules = [];
+    for (const item of Array.isArray(items) ? items : []) {
+        if (item?.type !== 'theme' || typeof item.id !== 'string' || !ID_RE.test(item.id)) continue;
+        const vars = paletteVars(extras[item.id]?.palette);
+        if (!vars.length) continue;
+        rules.push(`.theme-card[data-id="${item.id}"] {\n${vars.map(([k, v]) => `    ${k}: ${v};`).join('\n')}\n}`);
+    }
+    return rules.join('\n');
 }
 
 export function themeCardHtml(item, extra) {
     const id = esc(item.id);
     const palette = extra?.palette;
-    const style = paletteStyle(palette);
     const swatches = ['accent', 'bg', 'elevated', 'text', 'muted']
         .map((k) => `<span class="sw sw--${k}"></span>`)
         .join('');
     return [
-        `<article class="card theme-card${palette ? '' : ' theme-card--plain'}" data-spot data-id="${id}" data-v="${esc(item.version)}" id="${esc(cardId(item.id))}" aria-labelledby="${esc(cardId(item.id))}-name" style="${esc(style)}">`,
+        `<article class="card theme-card${palette ? '' : ' theme-card--plain'}" data-spot data-id="${id}" data-v="${esc(item.version)}" id="${esc(cardId(item.id))}" aria-labelledby="${esc(cardId(item.id))}-name">`,
         `<div class="tp" aria-hidden="true">`,
         `<div class="tp__strip"><img src="assets/mascot/kage-icon.svg" width="30" height="24" alt="" loading="lazy" decoding="async"></div>`,
         `<div class="tp__body">`,

@@ -20,6 +20,17 @@
     const fine = window.matchMedia('(pointer: fine)').matches;
     const $$ = (sel, el = document) => [...el.querySelectorAll(sel)];
 
+    // boot.js marks the page as scripted before it's drawn. If it didn't
+    // run (but this did), do it now, so the controls that need JavaScript
+    // aren't left hidden.
+    if (!doc.classList.contains('js')) {
+        doc.classList.remove('no-js');
+        doc.classList.add('js');
+        const n = navigator;
+        const p = (n.userAgentData && n.userAgentData.platform) || n.platform || '';
+        doc.dataset.os = /mac/i.test(p) && n.maxTouchPoints < 2 ? 'mac' : /win/i.test(p) ? 'windows' : 'other';
+    }
+
     // ─── reveals ──────────────────────────────────────────────────────
 
     const reveals = $$('.reveal');

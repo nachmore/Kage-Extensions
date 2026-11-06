@@ -1,13 +1,28 @@
 // web/stage.mjs: the extras it derives from the source tree, the pre-render,
 // and what it may (and may not) write into a built catalog folder.
 
+import { createHash } from 'node:crypto';
 import { existsSync } from 'node:fs';
-import { mkdir, mkdtemp, readFile, rm, symlink, writeFile } from 'node:fs/promises';
+import { cp, link, lstat, mkdir, mkdtemp, readFile, readdir, realpath, rm, symlink, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { REPO_ROOT, WEB_FILES, buildExtras, reachesWeb, fill, renderIndex, sourceIndex, stage } from '../stage.mjs';
+import {
+    REPO_ROOT,
+    WEB_FILES,
+    assertWritable,
+    buildExtras,
+    extrasBlock,
+    fill,
+    fillCss,
+    isProtected,
+    reachesWeb,
+    renderIndex,
+    renderStyle,
+    sourceIndex,
+    stage,
+} from '../stage.mjs';
 
 const web = path.join(REPO_ROOT, 'web');
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -147,6 +162,47 @@ describe('renderIndex', () => {
     it('fails loudly when a marker is missing', () => {
         expect(() => fill('<p>no markers</p>', 'ext-cards', 'x')).toThrow(/ext-cards/);
         expect(fill('a<!--@x-->old<!--/@x-->b', 'x', '$&$1')).toBe('a<!--@x-->$&$1<!--/@x-->b');
+        expect(() => fillCss('a {}', 'theme-palettes', 'x')).toThrow(/theme-palettes/);
+        expect(() => fillCss('/*@x*//*/@x*/', 'x', 'a {} /* */')).toThrow(/\*\//);
+    });
+
+    it('renders a page a strict CSP (script-src and style-src \'self\') allows', async () => {
+        const template = await readFile(path.join(web, 'index.html'), 'utf8');
+        const html = renderIndex(template, catalog, extras);
+        // No inline script: every <script> loads a file, except the JSON data block.
+        for (const [tag] of html.matchAll(/<script\b[^>]*>/g)) {
+            expect(/\ssrc="\.\/[a-z-]+\.js"/.test(tag) || tag === '<script type="application/json" id="store-extras">', tag).toBe(true);
+        }
+        expect(html.match(/<script type="application\/json"/g)).toHaveLength(1);
+        // No inline handlers, no style attributes, no <style> element.
+        expect(html).not.toMatch(/\son[a-z]+\s*=/i);
+        expect(html).not.toMatch(/\sstyle\s*=/i);
+        expect(html).not.toMatch(/<style\b/i);
+        expect(html).toContain('<html lang="en" class="no-js">');
+        expect(html).toMatch(/<script src="\.\/boot\.js"><\/script>/);
+    });
+
+    it('embeds the extras as inert JSON the page reads back', async () => {
+        const template = await readFile(path.join(web, 'index.html'), 'utf8');
+        const html = renderIndex(template, catalog, extras);
+        const json = /<script type="application\/json" id="store-extras">([^<]*)<\/script>/.exec(html)[1];
+        expect(JSON.parse(json).items).toEqual(JSON.parse(JSON.stringify(extras.items)));
+        const tricky = extrasBlock({ items: { x: { trigger: '</script><script>alert(1)</script><!--' } } });
+        const open = '<script type="application/json" id="store-extras">';
+        expect(tricky.startsWith(open) && tricky.endsWith('</script>')).toBe(true);
+        const body = tricky.slice(open.length, -'</script>'.length);
+        expect(body).not.toContain('<');
+        expect(JSON.parse(body).items.x.trigger).toBe('</script><script>alert(1)</script><!--');
+    });
+
+    it('writes each theme’s preview colors into the stylesheet', async () => {
+        const css = await readFile(path.join(web, 'style.css'), 'utf8');
+        const out = renderStyle(css, catalog, extras);
+        expect(out).toMatch(/\.theme-card\[data-id="nord-theme"\] \{\n {4}--d-accent: #88C0D0;/);
+        expect(out).toContain('--l-bg: #ECEFF4;');
+        for (const t of catalog.items.filter((i) => i.type === 'theme')) expect(out, t.id).toContain(`[data-id="${t.id}"]`);
+        expect(out.startsWith(css.slice(0, css.indexOf('/*@theme-palettes*/')))).toBe(true);
+        expect(renderStyle(out, catalog, extras)).toBe(out);
     });
 });
 
@@ -185,6 +241,11 @@ describe('stage', () => {
         expect(await readFile(path.join(dist, 'spotify-callback.html'), 'utf8')).toBe(
             await readFile(path.join(web, 'spotify-callback.html'), 'utf8')
         );
+        for (const f of WEB_FILES) {
+            expect(await readFile(path.join(dist, f)), f).toEqual(await readFile(path.join(web, f)));
+        }
+        expect(await readFile(path.join(dist, 'style.css'), 'utf8')).toContain('.theme-card[data-id="nord-theme"]');
+        expect(await tempFiles(dist)).toEqual([]);
     });
 
     it('leaves no broken local references in the staged pages', async () => {
@@ -214,6 +275,176 @@ describe('stage', () => {
             }
         }
         expect(missing).toEqual([]);
+    });
+});
+
+// Every leftover temp file under `dir`.
+async function tempFiles(dir) {
+    const out = [];
+    for (const e of await readdir(dir, { withFileTypes: true, recursive: true })) {
+        if (/^\..*\.tmp$/.test(e.name)) out.push(path.join(e.parentPath, e.name));
+    }
+    return out;
+}
+
+const sha = async (p) => createHash('sha256').update(await readFile(p)).digest('hex');
+
+// Hashes of everything Kage downloads (and the checksums), by path.
+async function clientFiles(dist) {
+    const out = {};
+    out['catalog.json'] = await sha(path.join(dist, 'catalog.json'));
+    for (const dir of ['detail', 'packages']) {
+        for (const f of await readdir(path.join(dist, dir))) out[`${dir}/${f}`] = await sha(path.join(dist, dir, f));
+    }
+    return out;
+}
+
+describe('safe output', () => {
+    let tmp;
+    let n = 0;
+    beforeAll(async () => {
+        tmp = await mkdtemp(path.join(tmpdir(), 'kage-store-safe-'));
+    });
+    afterAll(async () => {
+        await rm(tmp, { recursive: true, force: true });
+    });
+
+    // A built catalog folder, and a scratch folder "outside" it.
+    async function fixture() {
+        const base = path.join(tmp, `case-${++n}`);
+        const dist = path.join(base, 'dist');
+        const outside = path.join(base, 'outside');
+        await mkdir(path.join(dist, 'detail'), { recursive: true });
+        await mkdir(path.join(dist, 'packages'), { recursive: true });
+        await mkdir(outside);
+        await writeFile(path.join(dist, 'catalog.json'), `${JSON.stringify(catalog, null, 2)}\n`);
+        await writeFile(path.join(dist, 'detail', 'math.json'), '{"id":"math"}');
+        await writeFile(path.join(dist, 'packages', 'math-1.1.0.zip'), 'zip bytes');
+        await writeFile(path.join(dist, 'packages', 'math-1.1.0.zip.sha256'), 'abc  math-1.1.0.zip\n');
+        await writeFile(path.join(outside, 'keep.txt'), 'outside');
+        return { base, dist, outside, before: await clientFiles(dist) };
+    }
+
+    // A copy of the source tree's web/ to plant things in.
+    async function sourceRoot(base) {
+        const root = path.join(base, 'repo');
+        await cp(web, path.join(root, 'web'), { recursive: true, filter: (src) => !src.includes(`${path.sep}test`) });
+        return root;
+    }
+
+    async function refuses(dist, re, opts = {}) {
+        await expect(stage(dist, { log: () => {}, ...opts })).rejects.toThrow(re);
+    }
+
+    it('won’t write store-extras.json through a symlink to catalog.json', async () => {
+        const { dist, before } = await fixture();
+        await symlink('catalog.json', path.join(dist, 'store-extras.json'));
+        await refuses(dist, /store-extras\.json in the output is a symlink/);
+        expect(await clientFiles(dist)).toEqual(before);
+        expect(Array.isArray(JSON.parse(await readFile(path.join(dist, 'catalog.json'), 'utf8')).items)).toBe(true);
+        // Checked before anything was written.
+        expect(existsSync(path.join(dist, 'index.html'))).toBe(false);
+    });
+
+    it('won’t write index.html through a symlink out of the folder', async () => {
+        const { dist, outside, before } = await fixture();
+        await symlink(path.join(outside, 'keep.txt'), path.join(dist, 'index.html'));
+        await refuses(dist, /index\.html in the output is a symlink/);
+        expect(await readFile(path.join(outside, 'keep.txt'), 'utf8')).toBe('outside');
+        expect(await clientFiles(dist)).toEqual(before);
+    });
+
+    it('won’t write into a symlinked folder, at the top or further down', async () => {
+        const a = await fixture();
+        await symlink(a.outside, path.join(a.dist, 'assets'));
+        await refuses(a.dist, /assets in the output is a symlink/);
+        expect(await readdir(a.outside)).toEqual(['keep.txt']);
+
+        const b = await fixture();
+        await mkdir(path.join(b.dist, 'assets'));
+        await symlink(b.outside, path.join(b.dist, 'assets', 'mascot'));
+        await refuses(b.dist, /assets\/mascot in the output is a symlink/);
+        expect(await readdir(b.outside)).toEqual(['keep.txt']);
+        expect(await clientFiles(b.dist)).toEqual(b.before);
+    });
+
+    it('won’t replace a folder or other non-file with a page file', async () => {
+        const { dist } = await fixture();
+        await mkdir(path.join(dist, 'index.html'));
+        await refuses(dist, /index\.html in the output is not a regular file/);
+    });
+
+    it('replaces a hard link to catalog.json instead of writing through it', async () => {
+        const { dist, before } = await fixture();
+        await link(path.join(dist, 'catalog.json'), path.join(dist, 'store-extras.json'));
+        await stage(dist, { log: () => {} });
+        expect(await clientFiles(dist)).toEqual(before);
+        expect(JSON.parse(await readFile(path.join(dist, 'store-extras.json'), 'utf8')).items.weather).toBeTruthy();
+        expect((await lstat(path.join(dist, 'catalog.json'))).nlink).toBe(1);
+        expect(await tempFiles(dist)).toEqual([]);
+    });
+
+    it('refuses symlinks among the page’s own files, before writing anything', async () => {
+        for (const plant of [
+            async (root, outside) => symlink(path.join(outside, 'keep.txt'), path.join(root, 'web', 'assets', 'evil.svg')),
+            async (root, outside) => symlink(outside, path.join(root, 'web', 'assets', 'more')),
+            async (root) => {
+                await rm(path.join(root, 'web', 'app.js'));
+                await symlink(path.join(web, 'app.js'), path.join(root, 'web', 'app.js'));
+            },
+            async (root) => {
+                await rm(path.join(root, 'web', 'index.html'));
+                await symlink(path.join(web, 'index.html'), path.join(root, 'web', 'index.html'));
+            },
+        ]) {
+            const { base, dist, outside, before } = await fixture();
+            const root = await sourceRoot(base);
+            await plant(root, outside);
+            await refuses(dist, /is a symlink; the page's files must be regular files/, { root });
+            expect(await readdir(dist)).toEqual(['catalog.json', 'detail', 'packages']);
+            expect(await clientFiles(dist)).toEqual(before);
+        }
+    });
+
+    it('never writes catalog.json, detail/, packages/ or *.sha256', async () => {
+        for (const rel of ['catalog.json', 'Catalog.JSON', 'detail/math.json', 'DETAIL/x', 'packages/a.zip', 'packages', 'assets/x.sha256', 'a.SHA256']) {
+            expect(isProtected(rel), rel).toBe(true);
+            expect(() => assertWritable(rel), rel).toThrow(/belong to the catalog build/);
+        }
+        for (const rel of ['../x', '/abs', 'a//b', '', './x', 'a/../b', 'a\\b']) {
+            expect(() => assertWritable(rel), rel).toThrow(/not a plain relative path/);
+        }
+        for (const rel of ['index.html', 'store-extras.json', 'assets/mascot/kage-icon.svg', 'assets/catalog.json']) {
+            expect(() => assertWritable(rel), rel).not.toThrow();
+        }
+        // A page file that would land on one is refused, before anything is written.
+        const { base, dist, before } = await fixture();
+        const root = await sourceRoot(base);
+        await writeFile(path.join(root, 'web', 'assets', 'stars.svg.sha256'), 'x');
+        await refuses(dist, /belong to the catalog build/, { root });
+        expect(await readdir(dist)).toEqual(['catalog.json', 'detail', 'packages']);
+        expect(await clientFiles(dist)).toEqual(before);
+    });
+
+    it('stages into a folder reached through a symlink', async () => {
+        const { base, dist, before } = await fixture();
+        const via = path.join(base, 'via');
+        await symlink(dist, via);
+        await stage(via, { log: () => {} });
+        expect(existsSync(path.join(dist, 'index.html'))).toBe(true);
+        expect((await lstat(via)).isSymbolicLink()).toBe(true);
+        expect(await clientFiles(dist)).toEqual(before);
+        expect(await realpath(via)).toBe(await realpath(dist));
+    });
+
+    it('stages again over its own output, changing nothing Kage downloads', async () => {
+        const { dist, before } = await fixture();
+        await stage(dist, { log: () => {} });
+        const first = await readFile(path.join(dist, 'index.html'));
+        await stage(dist, { log: () => {} });
+        expect(await readFile(path.join(dist, 'index.html'))).toEqual(first);
+        expect(await clientFiles(dist)).toEqual(before);
+        expect(await tempFiles(dist)).toEqual([]);
     });
 });
 

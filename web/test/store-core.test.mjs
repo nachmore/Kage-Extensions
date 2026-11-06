@@ -14,6 +14,7 @@ import {
     SETUP_PICKS,
     applyFilters,
     buildQuery,
+    cardHtml,
     categoriesFor,
     categoryChipsHtml,
     detailHtml,
@@ -25,7 +26,9 @@ import {
     formatSize,
     installUrl,
     isOnline,
+    paletteCss,
     paletteFromColors,
+    paletteVars,
     parseQuery,
     safeColor,
     safeDownloadUrl,
@@ -301,24 +304,47 @@ describe('markup', () => {
         expect(extensionCardHtml(ext('x', { permissions: ['mystery'] }))).toContain('❓</span> mystery');
     });
 
-    it('puts only validated colors in a theme card’s style', () => {
+    it('gives theme cards no style attribute (their colors come from the stylesheet)', () => {
+        const palette = { dark: paletteFromColors({ 'kage-accent': '#88C0D0', 'kage-bg': '#2E3440' }) };
+        const html = themeCardHtml(ITEMS[5], { palette });
+        expect(html).not.toMatch(/\sstyle=/);
+        expect(html).toContain('data-id="nord-theme"');
+        expect(html).toContain('class="swatches"');
+        // No palette at all: Kage's own colors (the CSS fallbacks), no swatches.
+        const plain = themeCardHtml(ITEMS[5]);
+        expect(plain).toContain('theme-card--plain');
+        expect(plain).not.toMatch(/\sstyle=/);
+        expect(plain).not.toContain('class="swatches"');
+        for (const item of ITEMS) expect(cardHtml(item, {}), item.id).not.toMatch(/\sstyle=/);
+        expect(detailHtml(ITEMS[0], {})).not.toMatch(/\sstyle=/);
+    });
+
+    it('turns a palette into validated custom properties only', () => {
         const palette = {
             dark: { ...paletteFromColors({ 'kage-accent': '#88C0D0', 'kage-bg': '#2E3440' }), text: 'red;}</style>' },
         };
-        const html = themeCardHtml(ITEMS[5], { palette });
-        const style = /style="([^"]*)"/.exec(html)[1];
-        expect(style).toContain('--d-accent: #88C0D0');
-        expect(style).toContain('--d-bg: #2E3440');
-        expect(style).not.toContain('--d-text');
-        expect(style).not.toMatch(/[<>]/);
+        const vars = Object.fromEntries(paletteVars(palette));
+        expect(vars['--d-accent']).toBe('#88C0D0');
+        expect(vars['--d-bg']).toBe('#2E3440');
+        expect(vars).not.toHaveProperty('--d-text');
         // No light palette: the dark one previews in both modes.
-        expect(style).toContain('--l-accent: #88C0D0');
-        expect(html).toContain('class="swatches"');
-        // No palette at all: Kage's own colors, no swatches.
-        const plain = themeCardHtml(ITEMS[5]);
-        expect(plain).toContain('theme-card--plain');
-        expect(plain).toContain('--l-bg: #f7fafc');
-        expect(plain).not.toContain('class="swatches"');
+        expect(vars['--l-accent']).toBe('#88C0D0');
+        expect(vars['--d-invert']).toBe('0');
+        for (const v of Object.values(vars)) expect(v).not.toMatch(/[<>;{}]/);
+        expect(paletteVars(null)).toEqual([]);
+        expect(paletteVars({ light: palette.dark })).toEqual([]);
+    });
+
+    it('writes one stylesheet rule per theme with a palette, keyed on data-id', () => {
+        const nord = { dark: paletteFromColors({ 'kage-accent': '#88C0D0', 'kage-bg': '#2E3440' }) };
+        const css = paletteCss(
+            [...ITEMS, theme('bad"id'), { id: 'x', type: 'extension' }],
+            { 'nord-theme': { palette: nord }, x: { palette: nord }, 'bad"id': { palette: nord } }
+        );
+        expect(css).toMatch(/^\.theme-card\[data-id="nord-theme"\] \{\n {4}--d-accent: #88C0D0;/);
+        expect(css.match(/\{/g)).toHaveLength(1); // not sunset (no palette), not the extension, not the bad id
+        expect(css).not.toMatch(/[<>]|\*\//);
+        expect(paletteCss(ITEMS, {})).toBe('');
     });
 
     it('renders category chips with counts, hiding empty ones', () => {

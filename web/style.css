@@ -687,6 +687,17 @@ kbd {
     }
 }
 
+/* Entrance and reveal delays, as classes rather than style attributes so a
+   strict Content-Security-Policy (style-src 'self') keeps them. */
+.d-50 { --d: 50ms; }
+.d-60 { --d: 60ms; }
+.d-80 { --d: 80ms; }
+.d-100 { --d: 100ms; }
+.d-120 { --d: 120ms; }
+.d-150 { --d: 150ms; }
+.d-180 { --d: 180ms; }
+.d-200 { --d: 200ms; }
+
 /* ─── section scaffolding ─────────────────────────────────────────── */
 
 section {
@@ -3132,9 +3143,27 @@ h2 {
     }
 }
 
-/* catalog.json didn't load, or app.js didn't (.store-failed): keep the
-   pre-rendered cards, which install and download on their own, and drop
-   the controls that need the script. */
+/* A script didn't load (boot.js adds the class named in its
+   data-fail-class), or catalog.json didn't (app.js adds .no-catalog): keep
+   the pre-rendered cards, which install and download on their own, and drop
+   the controls that need the missing piece. Without main.js, the reveals
+   and the nav don't wait for the 2.5 s failsafe. */
+.main-failed .reveal {
+    opacity: 1 !important;
+    translate: none !important;
+    scale: none !important;
+}
+
+.main-failed .nav {
+    background: rgba(7, 11, 16, 0.84);
+    border-bottom-color: var(--line);
+}
+
+.main-failed [data-sleepy],
+.demo-failed [data-demo-controls] {
+    display: none !important;
+}
+
 .no-catalog [data-search-form],
 .no-catalog [data-filterbar],
 .no-catalog [data-details],
@@ -3155,3 +3184,11 @@ h2 {
     display: inline-block;
     vertical-align: 2px;
 }
+
+/* ─── theme preview colors ────────────────────────────────────────── */
+
+/* stage.mjs writes one rule per theme between these markers, from its color
+   files: `.theme-card[data-id="<id>"] { --d-*: …; --l-*: …; }` (see
+   paletteCss() in store-core.js). Unstaged, the block is empty and every
+   preview shows Kage's own colors. */
+/*@theme-palettes*//*/@theme-palettes*/

@@ -9,15 +9,27 @@
 //      carry (a keyword to try, what an extension adds, whether it goes
 //      online, a theme's colors) for the page only;
 //   2. writes <dist>/index.html with every card already rendered, so the
-//      catalog is there before (and without) JavaScript;
-//   3. copies the page's other files and web/assets/ alongside.
+//      catalog is there before (and without) JavaScript, and the same facts
+//      embedded as a JSON data block, so the cards and the filters always
+//      agree;
+//   3. writes <dist>/style.css with a rule per theme for its preview colors
+//      (no style attributes, so the page works under a strict CSP);
+//   4. copies the page's other files (WEB_FILES) and web/assets/ alongside.
 //
-// It only ever adds or overwrites the files in WEB_FILES, assets/,
-// index.html and store-extras.json. catalog.json, detail/ and packages/
-// (which Kage itself downloads) are read, never written.
+// It writes only those paths, and only as regular files inside <dist>:
+//   - a symlink among the page's sources, or at or above a destination, is
+//     refused (the build fails) rather than followed;
+//   - every destination folder must resolve inside <dist>;
+//   - each file is written to a temporary file in its folder and renamed
+//     over the old one, which replaces a directory entry and never writes
+//     through a link;
+//   - catalog.json, detail/, packages/ and *.sha256 (what Kage itself
+//     downloads, and the build's checksums) are never written.
+// Everything is read and checked before the first write.
 
-import { cp, lstat, mkdir, readFile, readdir, realpath, stat, writeFile } from 'node:fs/promises';
-import { existsSync } from 'node:fs';
+import { constants } from 'node:fs';
+import { lstat, mkdir, open, readFile, readdir, realpath, rename, rm } from 'node:fs/promises';
+import { randomBytes } from 'node:crypto';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import {
@@ -27,6 +39,7 @@ import {
     escapeHtml,
     extraFromManifest,
     formatDate,
+    paletteCss,
     paletteFromColors,
     plural,
     summaryText,
@@ -35,17 +48,19 @@ import {
 const here = path.dirname(fileURLToPath(import.meta.url));
 export const REPO_ROOT = path.resolve(here, '..');
 
-// Copied as they are. index.html is rendered, not copied.
+// Copied as they are. index.html and style.css are rendered, not copied.
 export const WEB_FILES = Object.freeze([
-    'style.css',
     'app.js',
     'store-core.js',
+    'boot.js',
     'main.js',
     'demo.js',
     'spotify-callback.html',
 ]);
 
 const ID_RE = /^[a-z0-9][a-z0-9_-]{0,63}$/;
+// Not on Windows; there, lstat() is the check.
+const NOFOLLOW = constants.O_NOFOLLOW ?? 0;
 
 async function readJson(p) {
     return JSON.parse(await readFile(p, 'utf8'));
@@ -163,12 +178,36 @@ export async function buildExtras(catalog, root = REPO_ROOT) {
     return { schemaVersion: 1, items };
 }
 
+// ─── rendering ────────────────────────────────────────────────────────
+
+function fillBetween(text, open, close, label, content) {
+    const q = (s) => s.replace(/[.*+?^${}()|[\]\\/]/g, '\\$&');
+    const re = new RegExp(`(${q(open)})[\\s\\S]*?(${q(close)})`);
+    if (!re.test(text)) throw new Error(`${label} has no ${open} … ${close} block`);
+    return text.replace(re, (_, a, b) => `${a}${content}${b}`);
+}
+
 // Replace what's between <!--@name--> and <!--/@name--> (markers kept, so
 // staging the staged file again gives the same result).
 export function fill(html, name, content) {
-    const re = new RegExp(`(<!--@${name}-->)[\\s\\S]*?(<!--/@${name}-->)`);
-    if (!re.test(html)) throw new Error(`index.html has no <!--@${name}--> … <!--/@${name}--> block`);
-    return html.replace(re, (_, a, b) => `${a}${content}${b}`);
+    return fillBetween(html, `<!--@${name}-->`, `<!--/@${name}-->`, 'index.html', content);
+}
+
+// The same for style.css: /*@name*/ … /*/@name*/.
+export function fillCss(css, name, content) {
+    if (content.includes('*/')) throw new Error(`${name}: generated CSS can't contain "*/"`);
+    return fillBetween(css, `/*@${name}*/`, `/*/@${name}*/`, 'style.css', content);
+}
+
+// The extras as an inert JSON data block. `<` is escaped, so nothing in it
+// can close the element or open a comment; a data block isn't script, so a
+// CSP doesn't block it.
+export function extrasBlock(extras) {
+    const json = JSON.stringify({ schemaVersion: extras.schemaVersion ?? 1, items: extras.items ?? {} }).replace(
+        /</g,
+        '\\u003c'
+    );
+    return `<script type="application/json" id="store-extras">${json}</script>`;
 }
 
 export function renderIndex(template, catalog, extras) {
@@ -185,37 +224,199 @@ export function renderIndex(template, catalog, extras) {
         'counts',
         `${escapeHtml(plural(r.totals.extensions, 'extension'))} · ${escapeHtml(plural(r.totals.themes, 'theme'))}`
     );
+    html = fill(html, 'extras', extrasBlock(extras));
     const built = formatDate(catalog.generatedAt);
     if (built) html = fill(html, 'built', `Catalog built ${escapeHtml(built)}`);
     return html;
 }
 
+export function renderStyle(css, catalog, extras) {
+    const css2 = paletteCss(Array.isArray(catalog.items) ? catalog.items : [], extras.items ?? {});
+    return fillCss(css, 'theme-palettes', css2 ? `\n${css2}\n` : '');
+}
+
+// ─── safe output ──────────────────────────────────────────────────────
+
+const inside = (root, p) => p === root || p.startsWith(root + path.sep);
+
+// What Kage downloads, and the build's checksums. Compared case-blind:
+// on a case-insensitive disk Catalog.JSON is catalog.json.
+export function isProtected(rel) {
+    const parts = String(rel).toLowerCase().split(/[\\/]+/).filter(Boolean);
+    if (!parts.length) return true;
+    if (parts.length === 1 && parts[0] === 'catalog.json') return true;
+    if (parts[0] === 'detail' || parts[0] === 'packages') return true;
+    return parts[parts.length - 1].endsWith('.sha256');
+}
+
+// A plain relative path (a/b/c.ext, no "..", no leading "/") that staging
+// may write.
+export function assertWritable(rel) {
+    const parts = typeof rel === 'string' ? rel.split('/') : [];
+    if (!parts.length || parts.some((p) => !p || p === '.' || p === '..' || p.includes('\\') || p.includes('\0'))) {
+        throw new Error(`refusing to write "${rel}": not a plain relative path`);
+    }
+    if (isProtected(rel)) throw new Error(`refusing to write "${rel}": catalog.json, detail/, packages/ and *.sha256 belong to the catalog build`);
+}
+
+// Read one of the page's own files: a regular file (never a symlink) whose
+// real path is inside web/.
+async function readSource(webReal, rel) {
+    const p = path.join(webReal, ...rel.split('/'));
+    const st = await lstat(p);
+    if (st.isSymbolicLink()) throw new Error(`web/${rel} is a symlink; the page's files must be regular files`);
+    if (!st.isFile()) throw new Error(`web/${rel} is not a regular file`);
+    if (!inside(webReal, await realpath(p))) throw new Error(`web/${rel} resolves outside web/`);
+    const fh = await open(p, constants.O_RDONLY | NOFOLLOW);
+    try {
+        if (!(await fh.stat()).isFile()) throw new Error(`web/${rel} is not a regular file`);
+        return await fh.readFile();
+    } finally {
+        await fh.close();
+    }
+}
+
+// Every file under web/<dir>, as relative paths. Dotfiles (.DS_Store) are
+// left out; a symlink or anything that isn't a file or folder fails.
+async function walkSource(webReal, dir) {
+    const out = [];
+    const abs = path.join(webReal, ...dir.split('/'));
+    const st = await lstat(abs);
+    if (st.isSymbolicLink()) throw new Error(`web/${dir} is a symlink; the page's files must be regular files`);
+    if (!st.isDirectory()) throw new Error(`web/${dir} is not a folder`);
+    for (const e of await readdir(abs, { withFileTypes: true })) {
+        if (e.name.startsWith('.')) continue;
+        const rel = `${dir}/${e.name}`;
+        if (e.isSymbolicLink()) throw new Error(`web/${rel} is a symlink; the page's files must be regular files`);
+        if (e.isDirectory()) out.push(...(await walkSource(webReal, rel)));
+        else if (e.isFile()) out.push(rel);
+        else throw new Error(`web/${rel} is not a regular file`);
+    }
+    return out;
+}
+
+// Check (and with `create`, make) each folder from <dist> down to `relDir`:
+// none may be a symlink or a non-folder, and the last must resolve inside
+// <dist>. Returns its real path.
+async function destDir(distReal, relDir, create) {
+    let cur = distReal;
+    for (const part of relDir ? relDir.split('/') : []) {
+        cur = path.join(cur, part);
+        let st = null;
+        try {
+            st = await lstat(cur);
+        } catch (e) {
+            if (e.code !== 'ENOENT') throw e;
+        }
+        if (!st) {
+            if (!create) return null; // nothing there yet: nothing to refuse
+            try {
+                await mkdir(cur);
+            } catch (e) {
+                if (e.code !== 'EEXIST') throw e;
+            }
+            st = await lstat(cur);
+        }
+        if (st.isSymbolicLink()) throw new Error(`${path.relative(distReal, cur)} in the output is a symlink; refusing to write through it`);
+        if (!st.isDirectory()) throw new Error(`${path.relative(distReal, cur)} in the output is not a folder`);
+    }
+    const real = await realpath(cur);
+    if (!inside(distReal, real)) throw new Error(`${relDir || '.'} resolves outside the output folder`);
+    return real;
+}
+
+// The destination may be missing or a regular file; anything else
+// (a symlink, a folder, a FIFO) is refused.
+async function checkDest(file, rel) {
+    let st;
+    try {
+        st = await lstat(file);
+    } catch (e) {
+        if (e.code === 'ENOENT') return;
+        throw e;
+    }
+    if (st.isSymbolicLink()) throw new Error(`${rel} in the output is a symlink; refusing to write through it`);
+    if (!st.isFile()) throw new Error(`${rel} in the output is not a regular file`);
+}
+
+const split = (rel) => {
+    const i = rel.lastIndexOf('/');
+    return i < 0 ? ['', rel] : [rel.slice(0, i), rel.slice(i + 1)];
+};
+
+async function checkOutput(distReal, rel) {
+    assertWritable(rel);
+    const [dir, base] = split(rel);
+    const real = await destDir(distReal, dir, false);
+    if (real) await checkDest(path.join(real, base), rel);
+}
+
+async function writeOutput(distReal, rel, data) {
+    assertWritable(rel);
+    const [dir, base] = split(rel);
+    const real = await destDir(distReal, dir, true);
+    if (isProtected(path.relative(distReal, path.join(real, base)))) throw new Error(`refusing to write "${rel}"`);
+    const dest = path.join(real, base);
+    await checkDest(dest, rel);
+    // O_EXCL: the temp name is new, so this can't open (or follow) anything
+    // that was already there.
+    const tmp = path.join(real, `.${base}.${process.pid}.${randomBytes(6).toString('hex')}.tmp`);
+    const fh = await open(tmp, constants.O_WRONLY | constants.O_CREAT | constants.O_EXCL | NOFOLLOW, 0o644);
+    try {
+        try {
+            await fh.writeFile(data);
+        } finally {
+            await fh.close();
+        }
+        // rename() swaps the directory entry: a link (or a hard link to
+        // catalog.json) at `dest` is replaced, never written through.
+        await rename(tmp, dest);
+    } catch (e) {
+        await rm(tmp, { force: true });
+        throw e;
+    }
+}
+
+// ─── staging ──────────────────────────────────────────────────────────
+
 export async function stage(distDir, { root = REPO_ROOT, log = console.log } = {}) {
-    const dist = path.resolve(distDir);
-    const catalogPath = path.join(dist, 'catalog.json');
-    if (!existsSync(catalogPath)) {
-        throw new Error(`${catalogPath} not found. Run \`npm run build\` first.`);
+    let distReal;
+    try {
+        distReal = await realpath(path.resolve(distDir));
+    } catch {
+        distReal = null;
+    }
+    const catalogPath = distReal && path.join(distReal, 'catalog.json');
+    let catalogStat = null;
+    try {
+        catalogStat = catalogPath ? await lstat(catalogPath) : null;
+    } catch {
+        catalogStat = null;
+    }
+    if (!catalogStat) {
+        throw new Error(`${path.join(path.resolve(distDir), 'catalog.json')} not found. Run \`npm run build\` first.`);
     }
     const catalog = await readJson(catalogPath);
-    const web = path.join(root, 'web');
+    const webReal = await realpath(path.join(root, 'web'));
 
+    // Read and render everything first.
     const extras = await buildExtras(catalog, root);
     extras.generatedAt = catalog.generatedAt ?? null;
-    await writeFile(path.join(dist, 'store-extras.json'), `${JSON.stringify(extras, null, 2)}\n`);
+    const out = new Map();
+    out.set('store-extras.json', Buffer.from(`${JSON.stringify(extras, null, 2)}\n`));
+    out.set('index.html', Buffer.from(renderIndex((await readSource(webReal, 'index.html')).toString('utf8'), catalog, extras)));
+    out.set('style.css', Buffer.from(renderStyle((await readSource(webReal, 'style.css')).toString('utf8'), catalog, extras)));
+    for (const f of WEB_FILES) out.set(f, await readSource(webReal, f));
+    for (const f of await walkSource(webReal, 'assets')) out.set(f, await readSource(webReal, f));
 
-    const template = await readFile(path.join(web, 'index.html'), 'utf8');
-    await writeFile(path.join(dist, 'index.html'), renderIndex(template, catalog, extras));
+    // Check every destination, then write.
+    for (const rel of out.keys()) await checkOutput(distReal, rel);
+    for (const [rel, data] of out) await writeOutput(distReal, rel, data);
 
-    for (const f of WEB_FILES) await cp(path.join(web, f), path.join(dist, f));
-    const assets = path.join(web, 'assets');
-    if ((await stat(assets)).isDirectory()) {
-        await mkdir(path.join(dist, 'assets'), { recursive: true });
-        await cp(assets, path.join(dist, 'assets'), { recursive: true });
-    }
     log(
-        `Staged the store page into ${dist} (${Object.keys(extras.items).length} of ${(catalog.items ?? []).length} item(s) with extras).`
+        `Staged the store page into ${distReal} (${out.size} files; ${Object.keys(extras.items).length} of ${(catalog.items ?? []).length} item(s) with extras).`
     );
-    return { extras };
+    return { extras, files: [...out.keys()] };
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {

@@ -1,15 +1,23 @@
-// The store browser. Loads catalog.json (built by scripts/build-catalog.mjs)
-// and store-extras.json (written by web/stage.mjs), then wires up search,
-// categories, the themes' dark/light preview and the detail dialog. No
-// framework and no build step: CI copies these files next to the catalog.
+// The store browser. Loads catalog.json (built by scripts/build-catalog.mjs),
+// then wires up search, categories, the themes' dark/light preview and the
+// detail dialog. No framework and no build step: CI copies these files next
+// to the catalog.
 //
 // The deployed index.html already has every card in it (stage.mjs renders
 // them with the same functions), so this script only re-renders when the
 // search, the category or the catalog changes. Without it the page still
 // lists everything, with working install and download links.
 //
-// URL: ?q=<search>&cat=<category>&ext=<id> (all optional) is kept in sync
-// with history.replaceState, so a link reopens the same view or dialog.
+// What the catalog doesn't say (a keyword to try, Online, Agent tools, a
+// theme's colors) comes from the store extras stage.mjs embedded in the
+// page: the same data the pre-rendered cards were made from, so the badges
+// and the filters can't disagree. A page without them (unstaged) fetches
+// store-extras.json instead, and then renders every card itself.
+//
+// URL: ?q=<search>&cat=<category>&ext=<id> (all optional) mirrors the view,
+// so a link reopens it. Searching and the category chips replace the
+// current history entry; opening the detail view pushes one, so Back
+// closes it and Forward reopens it. See "URL and history" below.
 
 import {
     applyFilters,
@@ -49,6 +57,7 @@ export async function start({ doc = document, win = window, fetchImpl = win.fetc
 
     const reduce = !!win.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
     const fromUrl = parseQuery(win.location.search);
+    // ext: the id the detail view shows, or null when it's closed.
     const state = { items: [], extras: {}, q: fromUrl.q, cat: fromUrl.cat, ext: null };
     const byId = () => new Map(state.items.map((i) => [i.id, i]));
     let lastTrigger = null;
@@ -71,11 +80,11 @@ export async function start({ doc = document, win = window, fetchImpl = win.fetc
     // them and focus inside a card survives. Only cards that weren't shown
     // before animate in. A card is reused only for the same version.
     const tpl = doc.createElement('template');
-    function reconcile(container, items, animate) {
+    function reconcile(container, items, animate, reuse = true) {
         const old = new Map();
         for (const n of [...container.children]) {
-            if (n.dataset?.id) old.set(n.dataset.id, n);
-            else n.remove(); // "Loading…", an old error
+            if (n.dataset?.id && reuse) old.set(n.dataset.id, n);
+            else n.remove(); // "Loading…", an old error, or a card we can't trust
         }
         const keep = new Set();
         let prev = null;
@@ -101,12 +110,12 @@ export async function start({ doc = document, win = window, fetchImpl = win.fetc
         for (const n of old.values()) if (!keep.has(n)) n.remove();
     }
 
-    function render({ fresh = true } = {}) {
+    function render({ fresh = true, reuse = true } = {}) {
         const r = applyFilters(state.items, { q: state.q, cat: state.cat }, state.extras);
         state.cat = r.cat;
 
-        reconcile(els.results, r.extensions, fresh);
-        if (els.themes) reconcile(els.themes, r.themes, fresh);
+        reconcile(els.results, r.extensions, fresh, reuse);
+        if (els.themes) reconcile(els.themes, r.themes, fresh, reuse);
         updateChips(r.counts, r.cat);
 
         const none = r.extensions.length === 0;
@@ -159,19 +168,121 @@ export async function start({ doc = document, win = window, fetchImpl = win.fetc
         if (refocus) els.chips.querySelector(`[data-cat="${active}"]`)?.focus();
     }
 
+    function markChips() {
+        for (const c of els.chips?.querySelectorAll('[data-cat]') ?? []) {
+            c.setAttribute('aria-pressed', String(c.dataset.cat === state.cat));
+        }
+    }
+
+    function setQuery(q) {
+        state.q = q;
+        if (els.search) els.search.value = q;
+    }
+
+    // ─── URL and history ──────────────────────────────────────────────
+    //
+    // Typing, the chips, Escape and "Show everything" *replace* the current
+    // entry: a half-typed word isn't somewhere to go Back to. Opening the
+    // detail view *pushes* an entry (marked with this page's HIST token),
+    // so Back closes it and Forward opens it again. Closing it yourself
+    // goes back off that entry; a detail view the page was opened on (a
+    // shared ?ext= link) has no entry of its own, so closing it replaces.
+    // popstate shows what the entry it lands on says, and never writes to
+    // that entry.
+
+    const HIST = `kage-store-${Math.random().toString(36).slice(2)}`;
     let urlTimer = 0;
-    function syncUrl(now = false) {
+    let goingBack = false; // history.back() sent, its popstate not here yet
+    let afterBack = null; // { id, trigger } of a Details press made meanwhile
+
+    const urlFor = () => `${win.location.pathname}${buildQuery(state)}${win.location.hash}`;
+    const ownEntry = () => win.history.state?.kageStore === HIST;
+
+    function replaceUrl(now = false) {
+        win.clearTimeout(urlTimer);
+        urlTimer = 0;
         const apply = () => {
-            const url = `${win.location.pathname}${buildQuery(state)}${win.location.hash}`;
+            urlTimer = 0;
             try {
-                win.history.replaceState(null, '', url);
+                win.history.replaceState(win.history.state, '', urlFor());
             } catch {
                 // file:// or a sandboxed frame: the view still works.
             }
         };
-        win.clearTimeout(urlTimer);
         if (now) apply();
         else urlTimer = win.setTimeout(apply, 350);
+    }
+
+    // A search still waiting to reach the address goes there now, before
+    // the entry is left (a new entry starts from the current address).
+    function flushUrl() {
+        if (urlTimer) replaceUrl(true);
+    }
+
+    function pushUrl() {
+        win.clearTimeout(urlTimer);
+        urlTimer = 0;
+        try {
+            win.history.pushState({ kageStore: HIST }, '', urlFor());
+        } catch {
+            // As above.
+        }
+    }
+
+    // The detail view closed itself (Close, Escape, the backdrop): leave
+    // its entry.
+    function leaveDetailsEntry() {
+        if (!ownEntry()) {
+            replaceUrl(true);
+            return;
+        }
+        goingBack = true;
+        try {
+            win.history.back();
+        } catch {
+            goingBack = false;
+            replaceUrl(true);
+            return;
+        }
+        // No popstate (a sandboxed frame, say): stop waiting for it.
+        win.setTimeout(() => {
+            if (goingBack) {
+                goingBack = false;
+                runAfterBack();
+            }
+        }, 1000);
+    }
+
+    function runAfterBack() {
+        const a = afterBack;
+        afterBack = null;
+        if (a) openDetails(a.id, a.trigger);
+    }
+
+    // Back or Forward (or an in-page #link): show what this entry says.
+    function onPopState() {
+        // A write still waiting was for the entry we left, not this one.
+        win.clearTimeout(urlTimer);
+        urlTimer = 0;
+        goingBack = false;
+        const u = parseQuery(win.location.search);
+        if (!loaded) {
+            // Recorded; applied when the catalog is in.
+            pending = null;
+            setQuery(u.q);
+            state.cat = u.cat;
+            markChips();
+            return;
+        }
+        if (u.q.trim() !== state.q.trim() || u.cat !== state.cat) {
+            setQuery(u.q);
+            state.cat = u.cat;
+            render();
+        }
+        const want = u.ext && byId().has(u.ext) ? u.ext : null;
+        if (want && want !== state.ext) openDetails(want, null, { history: false });
+        else if (!want && state.ext) closeDetails({ history: false });
+        runAfterBack();
     }
 
     // ─── loading ──────────────────────────────────────────────────────
@@ -182,15 +293,30 @@ export async function start({ doc = document, win = window, fetchImpl = win.fetc
         return resp.json();
     }
 
+    // The extras stage.mjs embedded in the page, or null.
+    function pageExtras() {
+        const el = doc.getElementById('store-extras');
+        if (!el) return null;
+        try {
+            const v = JSON.parse(el.textContent);
+            return validExtras(v) ? v.items : null;
+        } catch {
+            return null;
+        }
+    }
+
+    const validExtras = (v) => !!v && typeof v.items === 'object' && v.items !== null && !Array.isArray(v.items);
+
     const prerendered = !!els.results.querySelector(':scope > [data-id]');
     wireSearch();
     wireChrome();
+    const embedded = pageExtras();
     const [catalog, extras] = await Promise.allSettled([
         getJson('./catalog.json', { cache: 'no-store' }),
-        getJson('./store-extras.json'),
+        embedded ? Promise.resolve({ items: embedded }) : getJson('./store-extras.json'),
     ]);
 
-    if (extras.status === 'fulfilled' && extras.value?.items && typeof extras.value.items === 'object') {
+    if (extras.status === 'fulfilled' && validExtras(extras.value)) {
         state.extras = extras.value.items;
     }
 
@@ -222,27 +348,42 @@ export async function start({ doc = document, win = window, fetchImpl = win.fetc
     // Anything typed while the catalog was loading.
     if (els.search) state.q = els.search.value;
     loaded = true;
-    // The first render keeps the pre-rendered cards (same ids and versions).
-    render({ fresh: false });
-    if (state.q || state.cat !== 'all') syncUrl(true);
+    // The first render keeps the pre-rendered cards (same ids and versions)
+    // when they were made from the extras we have, which is the case when
+    // the extras came from the page itself. Otherwise their badges could
+    // disagree with the filters, so they're rebuilt.
+    render({ fresh: false, reuse: !!embedded });
 
-    if (pending && byId().has(pending.id)) {
-        openDetails(pending.id, pending.trigger);
-    } else if (fromUrl.ext && byId().has(fromUrl.ext)) {
-        openDetails(fromUrl.ext, null);
-    } else if (new URLSearchParams(win.location.search).has('ext')) {
-        // Unknown or malformed id: drop it from the address.
-        syncUrl(true);
-    } else if (fromUrl.type === 'theme' && !state.q) {
+    // The address now (Back or Forward may have moved it during the load).
+    const atLoad = parseQuery(win.location.search);
+    const opening = pending && byId().has(pending.id) ? pending : null;
+    pending = null;
+    const deep = !opening && atLoad.ext && byId().has(atLoad.ext) ? atLoad.ext : null;
+    if (deep) openDetails(deep, null, { history: false });
+    if (state.q || state.cat !== 'all' || (!deep && new URLSearchParams(win.location.search).has('ext'))) {
+        // Tidy the address; an unknown or malformed ?ext= is dropped.
+        replaceUrl(true);
+    }
+    if (opening) openDetails(opening.id, opening.trigger);
+    else if (!deep && fromUrl.type === 'theme' && !state.q) {
         doc.getElementById('themes')?.scrollIntoView?.({ block: 'start' });
     }
 
     // ─── detail dialog ────────────────────────────────────────────────
 
-    async function openDetails(id, trigger) {
+    // `history: false` when the address already says so (a deep link, Back
+    // or Forward); otherwise this is a new entry.
+    async function openDetails(id, trigger, { history = true } = {}) {
         const item = byId().get(id);
         if (!item || !els.dialog || !els.dialogBody) return;
-        lastTrigger = trigger;
+        if (history && goingBack) {
+            // Still leaving the last one: open once that's done.
+            afterBack = { id, trigger };
+            return;
+        }
+        const wasOpen = !!state.ext && els.dialog.open;
+        if (history && !wasOpen) flushUrl();
+        if (trigger || !wasOpen) lastTrigger = trigger;
         state.ext = id;
         let extra = state.extras[id];
         els.dialogBody.innerHTML = detailHtml(item, extra);
@@ -252,7 +393,10 @@ export async function start({ doc = document, win = window, fetchImpl = win.fetc
         }
         els.dialog.querySelector('.dlg__inner')?.scrollTo?.(0, 0);
         els.dialog.querySelector('[data-close]')?.focus();
-        syncUrl(true);
+        if (history) {
+            if (wasOpen) replaceUrl(true);
+            else pushUrl();
+        }
 
         // No store-extras.json (a local preview, say): the manifest in
         // detail/<id>.json says what the extension adds.
@@ -268,8 +412,11 @@ export async function start({ doc = document, win = window, fetchImpl = win.fetc
         }
     }
 
-    function closeDetails() {
+    // `history: false` when the address already says it's closed (Back):
+    // state.ext is cleared first, so onClosed() leaves the history alone.
+    function closeDetails({ history = true } = {}) {
         if (!els.dialog) return;
+        if (!history) state.ext = null;
         if (els.dialog.open) {
             if (typeof els.dialog.close === 'function') els.dialog.close();
             else {
@@ -279,9 +426,13 @@ export async function start({ doc = document, win = window, fetchImpl = win.fetc
         }
     }
 
+    // The dialog's `close` event, however it closed. (The event is queued:
+    // if the dialog is open again by the time it fires, it's stale.)
     function onClosed() {
+        if (els.dialog.open) return;
+        const was = state.ext;
         state.ext = null;
-        syncUrl(true);
+        if (was) leaveDetailsEntry();
         const t = lastTrigger;
         lastTrigger = null;
         // The card may have been re-rendered while the dialog was open.
@@ -297,24 +448,23 @@ export async function start({ doc = document, win = window, fetchImpl = win.fetc
             state.q = els.search.value;
             if (!loaded) return;
             render();
-            syncUrl();
+            replaceUrl();
         });
 
         els.search?.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && els.search.value) {
                 e.preventDefault();
-                els.search.value = '';
-                state.q = '';
+                setQuery('');
                 if (!loaded) return;
                 render();
-                syncUrl(true);
+                replaceUrl(true);
             }
         });
 
         els.form?.addEventListener('submit', (e) => {
             e.preventDefault();
             if (!loaded) return;
-            syncUrl(true);
+            replaceUrl(true);
             const target = els.results.querySelector(':scope > [data-id]') ? doc.getElementById('browse') : doc.getElementById('themes');
             target?.scrollIntoView?.({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
             // Phones: put the keyboard away so the results are visible.
@@ -328,23 +478,20 @@ export async function start({ doc = document, win = window, fetchImpl = win.fetc
             // Pressing the active category again goes back to All.
             state.cat = cat === state.cat && cat !== 'all' ? 'all' : cat;
             if (!loaded) {
-                for (const c of els.chips.querySelectorAll('[data-cat]')) {
-                    c.setAttribute('aria-pressed', String(c.dataset.cat === state.cat));
-                }
+                markChips();
                 return;
             }
             render();
-            syncUrl(true);
+            replaceUrl(true);
         });
 
         doc.querySelector('[data-clear]')?.addEventListener('click', () => {
-            state.q = '';
+            setQuery('');
             state.cat = 'all';
-            if (els.search) els.search.value = '';
             if (loaded) {
                 render();
-                syncUrl(true);
-            }
+                replaceUrl(true);
+            } else markChips();
             els.search?.focus();
         });
 
@@ -367,6 +514,18 @@ export async function start({ doc = document, win = window, fetchImpl = win.fetc
                 }
             }
         });
+
+        win.addEventListener('popstate', onPopState);
+        // A link to #somewhere makes a new entry from the address as it is:
+        // put a pending search there first. Likewise before the page goes.
+        doc.addEventListener(
+            'click',
+            (e) => {
+                if (e.target instanceof win.Element && e.target.closest('a[href^="#"]')) flushUrl();
+            },
+            true
+        );
+        win.addEventListener('pagehide', flushUrl);
 
         if (els.dialog) {
             els.dialog.addEventListener('close', onClosed);

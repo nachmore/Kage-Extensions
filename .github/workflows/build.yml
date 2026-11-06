@@ -168,10 +168,11 @@ jobs:
 
             # Drop the static store browser at the Pages root so visiting
             # the site shows a real page, not a 404. web/stage.mjs copies
-            # web/'s files (WEB_FILES, assets/), writes store-extras.json
-            # and an index.html with every card pre-rendered from
-            # dist/catalog.json. It never writes catalog.json, detail/ or
-            # packages/, which Kage itself downloads.
+            # web/'s files (WEB_FILES, assets/), writes store-extras.json,
+            # an index.html with every card pre-rendered from
+            # dist/catalog.json, and a style.css with the theme colors. It
+            # refuses to write catalog.json, detail/, packages/ or *.sha256
+            # (what Kage itself downloads), or through a symlink.
             - name: Stage web browser
               run: node web/stage.mjs dist
 

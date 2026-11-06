@@ -17,17 +17,16 @@
 <meta property="og:description" content="Extensions and themes for Kage. Every one runs in a sandbox and lists, up front, what it can ask Kage for.">
 <meta property="og:url" content="https://nachmore.github.io/Kage-Extensions/">
 <meta name="twitter:card" content="summary">
-<script>
-(function (h) {
-  var n = navigator, p = (n.userAgentData && n.userAgentData.platform) || n.platform || '';
-  h.classList.replace('no-js', 'js');
-  h.dataset.os = /mac/i.test(p) && n.maxTouchPoints < 2 ? 'mac' : /win/i.test(p) ? 'windows' : 'other';
-})(document.documentElement);
-</script>
+<!-- No inline script (the JSON data block at the end isn't script), no
+     on…= handler and no style attribute anywhere on the page, so it works
+     under a strict CSP (script-src 'self'; style-src 'self'). boot.js runs
+     first and swaps no-js for js; if a script below fails to load, it puts
+     that script's data-fail-class on <html>. -->
+<script src="./boot.js"></script>
 <link rel="stylesheet" href="./style.css">
-<script src="./main.js" defer></script>
-<script src="./demo.js" defer></script>
-<script src="./app.js" type="module" onerror="document.documentElement.classList.add('store-failed')"></script>
+<script src="./main.js" defer data-fail-class="main-failed"></script>
+<script src="./demo.js" defer data-fail-class="demo-failed"></script>
+<script src="./app.js" type="module" data-fail-class="store-failed"></script>
 </head>
 <body>
 <svg class="sprite" aria-hidden="true" focusable="false">
@@ -103,10 +102,10 @@
     <div class="hero__inner wrap">
       <div class="hero__copy">
         <p class="eyebrow eyebrow--pill hero-in"><span class="dot" aria-hidden="true"></span><span><span data-counts><!--@counts-->Extensions and themes<!--/@counts--></span><span class="hide-sm"> · all sandboxed</span></span></p>
-        <h1 id="hero-title" class="hero__title hero-in" style="--d: 50ms">Teach Kage <span class="grad">new tricks.</span></h1>
-        <p class="hero__lede hero-in" style="--d: 100ms">Extensions and themes for <a href="https://nachmore.github.io/Kage/">Kage</a>, the launcher that works with your AI agent. Each one runs in a sandbox and lists, up front, what it can ask Kage for.</p>
+        <h1 id="hero-title" class="hero__title hero-in d-50">Teach Kage <span class="grad">new tricks.</span></h1>
+        <p class="hero__lede hero-in d-100">Extensions and themes for <a href="https://nachmore.github.io/Kage/">Kage</a>, the launcher that works with your AI agent. Each one runs in a sandbox and lists, up front, what it can ask Kage for.</p>
 
-        <form class="search hero-in needs-js" style="--d: 150ms" role="search" action="./" method="get" data-search-form>
+        <form class="search hero-in needs-js d-150" role="search" action="./" method="get" data-search-form>
           <button class="peek" type="button" data-cat aria-label="Kage the cat. Press to say hello.">
             <span class="peek__glow" aria-hidden="true"></span>
             <svg class="cat" viewBox="-3 -3 156.181 125.455" aria-hidden="true">
@@ -138,10 +137,10 @@
             <input id="search" name="q" type="search" placeholder="Try “timer” or “dark”" autocomplete="off" spellcheck="false" enterkeyhint="search" aria-describedby="summary">
           </div>
         </form>
-        <p class="summary hero-in" style="--d: 180ms" id="summary" aria-live="polite"><!--@summary-->Loading the catalog…<!--/@summary--></p>
+        <p class="summary hero-in d-180" id="summary" aria-live="polite"><!--@summary-->Loading the catalog…<!--/@summary--></p>
       </div>
 
-      <div class="stage hero-in" style="--d: 200ms">
+      <div class="stage hero-in d-200">
         <div class="lm" data-lm aria-hidden="true">
           <div class="lm__strip">
             <img class="is-on" data-pose="idle" src="assets/mascot/kage-icon.svg" width="44" height="35" alt="">
@@ -206,7 +205,7 @@
           <h2 id="themes-title">Paint Kage your colors.</h2>
           <p class="lede">A theme recolors every Kage window, in dark and light. Themes are colors only: no code, no access to ask for.</p>
         </div>
-        <div class="picker needs-js reveal" style="--d: 80ms" role="group" aria-label="Preview the themes in">
+        <div class="picker needs-js reveal d-80" role="group" aria-label="Preview the themes in">
           <span class="picker__label" aria-hidden="true">Preview</span>
           <button type="button" data-mode-pick="dark" aria-pressed="true"><span class="sw-dot sw-dot--dark" aria-hidden="true"></span>Dark</button>
           <button type="button" data-mode-pick="light" aria-pressed="false"><span class="sw-dot sw-dot--light" aria-hidden="true"></span>Light</button>
@@ -224,9 +223,9 @@
           <p class="eyebrow">Untrusted by default</p>
           <h2 id="trust-title">Every extension runs in a sandbox.</h2>
         </div>
-        <p class="body-copy reveal" style="--d: 60ms">That includes the ones Kage’s setup installs. An extension can only ask Kage for what its manifest declares, and you see that list before you install it. Code in the sandbox can still talk to web services; those extensions are marked <span class="badge badge--online badge--inline">Online</span>.</p>
+        <p class="body-copy reveal d-60">That includes the ones Kage’s setup installs. An extension can only ask Kage for what its manifest declares, and you see that list before you install it. Code in the sandbox can still talk to web services; those extensions are marked <span class="badge badge--online badge--inline">Online</span>.</p>
       </div>
-      <ul class="points reveal" style="--d: 100ms">
+      <ul class="points reveal d-100">
         <li><svg class="ico" aria-hidden="true"><use href="#i-box"/></svg><div><h3>Walled off</h3><p>Extension code runs in a sandboxed frame with no direct access to Kage, your files or your other extensions.</p></div></li>
         <li><svg class="ico" aria-hidden="true"><use href="#i-eye"/></svg><div><h3>Declared up front</h3><p>Each card lists what an extension can ask Kage for, in the same words Kage uses when you install it.</p></div></li>
         <li><svg class="ico" aria-hidden="true"><use href="#i-refresh"/></svg><div><h3>Held back on update</h3><p>An update can’t give itself more access than you approved.</p></div></li>
@@ -244,18 +243,18 @@
           <h2 id="build-title">Cook up an extension.</h2>
           <p class="lede">An extension is a folder: a manifest and a few ES modules, no build step. If you can write a little JavaScript, you can teach Kage something new.</p>
         </div>
-        <ol class="steps reveal" style="--d: 80ms">
+        <ol class="steps reveal d-80">
           <li><span>1</span><div><h3>Start from hello-world</h3><p>Copy <code>extensions/hello-world</code>: a manifest, a search provider, a settings page and tests.</p></div></li>
           <li><span>2</span><div><h3>Learn what it can do</h3><p>Kage’s extension guide covers launcher results, widgets, agent tools, settings and the sandbox.</p></div></li>
           <li><span>3</span><div><h3>Check it and send it</h3><p><code>npm run check:all</code> and <code>npm test</code> run the same checks as CI. Open a pull request; once it’s merged, it’s in the store.</p></div></li>
         </ol>
-        <div class="btn-row reveal" style="--d: 120ms">
+        <div class="btn-row reveal d-120">
           <a class="btn btn--primary" href="https://github.com/nachmore/Kage-Extensions/tree/main/extensions/hello-world">Start from hello-world<svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></a>
           <a class="btn btn--ghost" href="https://github.com/nachmore/Kage/blob/main/docs/EXTENSIONS.md"><svg class="ico" aria-hidden="true"><use href="#i-book"/></svg>Extension guide</a>
           <a class="btn btn--ghost" href="https://github.com/nachmore/Kage-Extensions/blob/main/CONTRIBUTING.md">Contributing</a>
         </div>
       </div>
-      <div class="code-stack reveal reveal--rise" style="--d: 100ms" aria-label="A minimal extension: its manifest.json and search.js" role="group">
+      <div class="code-stack reveal reveal--rise d-100" aria-label="A minimal extension: its manifest.json and search.js" role="group">
         <figure class="code code--back">
           <figcaption><span class="code__dots" aria-hidden="true"><i></i><i></i><i></i></span>manifest.json</figcaption>
 <pre tabindex="0" aria-label="manifest.json"><code>{
@@ -372,5 +371,8 @@
   </div>
   <button type="button" class="dlg__close" data-close aria-label="Close"><svg class="ico" aria-hidden="true"><use href="#i-close"/></svg></button>
 </dialog>
+<!-- stage.mjs puts the page's store-extras here as a JSON data block, the
+     same facts it rendered the cards from, so app.js filters with them. -->
+<!--@extras--><!--/@extras-->
 </body>
 </html>

@@ -5,7 +5,8 @@
  * so without this script (or with reduced motion) there's still a complete
  * picture. The chips jump to an example and hold it; the button pauses and
  * plays the cycle (WCAG 2.2.2). Nothing runs while the launcher is off
- * screen or the tab is hidden.
+ * screen or the tab is hidden: pausing, scrolling away or switching tabs
+ * stops the typing on the spot and leaves that scene complete.
  *
  * The answers are illustrations: real queries for real extensions, but the
  * weather and the password are made up.
@@ -79,10 +80,38 @@
     let index = 0;
     let paused = reduce;
     let visible = !('IntersectionObserver' in window);
-    let timer = 0;
-    let run = 0; // bumps on every new scene, so a stale typing loop stops
+    // Every wait belongs to a generation. cancel() starts a new one and
+    // ends the waits of the old, so whatever was typing (or waiting to
+    // move on) stops there: nothing keeps a timer once it's cancelled.
+    let gen = 0;
+    const waits = new Map(); // timer id → resolve
+    let typing = false; // a scene is being typed in
+    let planned = false; // the next scene is waiting its turn
 
+    const onScreen = () => visible && !document.hidden;
     const pose = (name) => poses.forEach((p) => p.classList.toggle('is-on', p.dataset.pose === name));
+
+    // Resolves true after `ms`, or false as soon as cancel() runs.
+    function wait(ms) {
+        const my = gen;
+        return new Promise((resolve) => {
+            const id = setTimeout(() => {
+                waits.delete(id);
+                resolve(my === gen);
+            }, ms);
+            waits.set(id, resolve);
+        });
+    }
+
+    function cancel() {
+        gen++;
+        planned = false;
+        for (const [id, resolve] of waits) {
+            clearTimeout(id);
+            resolve(false);
+        }
+        waits.clear();
+    }
 
     function rowEl(r, selected) {
         const li = document.createElement('li');
@@ -105,7 +134,10 @@
         return li;
     }
 
+    // The scene, complete: its whole query and its answer.
     function finish(s) {
+        typing = false;
+        query.textContent = s.q;
         rows.replaceChildren(...s.rows.map((r, i) => rowEl(r, i === 0)));
         root.classList.remove('is-typing', 'is-empty');
         pose('happy');
@@ -119,52 +151,62 @@
     }
 
     async function show(i, { animate = !reduce } = {}) {
-        const my = ++run;
-        clearTimeout(timer);
+        cancel();
         index = (i + SCENES.length) % SCENES.length;
         const s = SCENES[index];
         mark();
         root.classList.toggle('is-anim', animate);
-        if (!animate) {
-            query.textContent = s.q;
+        if (!animate || !onScreen()) {
             finish(s);
             plan();
             return;
         }
+        typing = true;
         rows.replaceChildren();
         query.textContent = '';
         root.classList.add('is-typing', 'is-empty');
         pose('typing');
-        await wait(260);
+        if (!(await wait(260))) return;
         for (const ch of s.q) {
-            if (my !== run) return;
             query.textContent += ch;
             root.classList.remove('is-empty');
-            await wait(55 + Math.random() * 60);
+            if (!(await wait(55 + Math.random() * 60))) return;
         }
-        if (my !== run) return;
-        await wait(160);
-        if (my !== run) return;
+        if (!(await wait(160))) return;
         finish(s);
         plan();
     }
 
+    // Queue the next scene, if the cycle is playing and can be seen.
     function plan() {
-        clearTimeout(timer);
-        if (paused || !visible || document.hidden) return;
-        timer = setTimeout(() => show(index + 1), HOLD);
+        if (planned || typing || paused || !onScreen()) return;
+        planned = true;
+        wait(HOLD).then((ok) => {
+            if (ok) show(index + 1);
+        });
     }
 
-    function wait(ms) {
-        return new Promise((r) => setTimeout(r, ms));
+    // Stop where we are. A scene cut off mid-typing is shown complete, so
+    // a pause (or coming back to the tab) always starts from a whole scene.
+    function halt() {
+        const cut = typing;
+        cancel();
+        if (cut) finish(SCENES[index]);
     }
 
     function setPaused(p) {
         paused = p;
         toggle?.setAttribute('aria-pressed', String(p));
         root.classList.toggle('is-playing', !p && !reduce);
-        if (p) clearTimeout(timer);
-        else show(index + 1);
+        if (p) halt();
+        else if (onScreen()) show(index + 1);
+    }
+
+    // Off screen or in a hidden tab, nothing runs; back in view, the
+    // cycle carries on from the scene that's showing.
+    function onVisibility() {
+        if (onScreen()) plan();
+        else halt();
     }
 
     chips.forEach((c, i) =>
@@ -183,10 +225,10 @@
             const v = entries[entries.length - 1].isIntersecting;
             if (v === visible) return;
             visible = v;
-            plan();
+            onVisibility();
         }).observe(root);
     }
-    document.addEventListener('visibilitychange', plan);
+    document.addEventListener('visibilitychange', onVisibility);
 
     toggle?.setAttribute('aria-pressed', String(paused));
     root.classList.toggle('is-playing', !paused && !reduce);
