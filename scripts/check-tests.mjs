@@ -19,6 +19,7 @@
 // Single-pass: collect every failure, then exit non-zero so a contributor sees
 // the whole list in one round trip.
 
+import { invokedDirectly } from './lib/invoked-directly.mjs';
 import { readdir, readFile, stat } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -171,7 +172,9 @@ async function main() {
     console.log(`[tests] OK — every code-contributing extension has a test (or a declared exemption).`);
 }
 
-main().catch((e) => {
-    console.error(e);
-    process.exit(1);
-});
+if (invokedDirectly(import.meta.url)) {
+    main().catch((e) => {
+        console.error(e);
+        process.exit(1);
+    });
+}

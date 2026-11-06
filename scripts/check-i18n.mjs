@@ -22,6 +22,7 @@
 //
 // Affected-paths logic mirrors the other check-*.mjs scripts.
 
+import { invokedDirectly } from './lib/invoked-directly.mjs';
 import { readFile, readdir, stat } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -291,7 +292,9 @@ async function main() {
     if (errors.length > 0) process.exit(1);
 }
 
-main().catch((e) => {
-    console.error(e);
-    process.exit(1);
-});
+if (invokedDirectly(import.meta.url)) {
+    main().catch((e) => {
+        console.error(e);
+        process.exit(1);
+    });
+}

@@ -1,6 +1,6 @@
 import { afterAll, expect, it } from 'vitest';
 import { execFileSync } from 'node:child_process';
-import { mkdtempSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, readdirSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -18,4 +18,18 @@ if (invokedDirectly(import.meta.url)) console.log('MAIN RAN');`);
     expect(execFileSync(process.execPath, [link], { encoding: 'utf8' })).toBe('MAIN RAN\n');
     expect(execFileSync(process.execPath, ['--input-type=module', '-e', `import ${JSON.stringify(pathToFileURL(real).href)};`],
         { encoding: 'utf8' })).toBe('');
+});
+
+it('keeps every real scripts CLI inert on import', () => {
+    const scripts = new URL('./', import.meta.url);
+    const urls = readdirSync(scripts).filter((file) => file.endsWith('.mjs') && !file.endsWith('.test.mjs'))
+        .map((file) => new URL(file, scripts).href);
+    const source = `await Promise.all(${JSON.stringify(urls)}.map(url => import(url))); console.log('IMPORTED');`;
+    expect(execFileSync(process.execPath, ['--input-type=module', '-e', source], { encoding: 'utf8', timeout: 10000 })).toBe('IMPORTED\n');
+});
+
+it('runs a real CLI through a symlink using the shared guard', () => {
+    const link = path.join(root, 'validate.mjs');
+    symlinkSync(new URL('./validate-manifests.mjs', import.meta.url), link);
+    expect(execFileSync(process.execPath, [link], { encoding: 'utf8', timeout: 10000 })).toContain('All manifests valid.');
 });

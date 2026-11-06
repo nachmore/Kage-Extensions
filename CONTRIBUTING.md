@@ -156,25 +156,39 @@ locations, and caches are personal data, but are not inherently secrets. Inspect
 the values as well as the names: an innocuous key such as `connection` may hold
 an OAuth token.
 
-`check:security` fails on undeclared secret-bearing storage writes and config
-fields. It checks the host's name heuristic
+`check:security` parses every packaged JavaScript module without executing it
+and fails on undeclared secret-bearing storage writes and config fields.
+Storage keys use the host's conservative name heuristic
 `/(token|secret|credential|creds|password|passwd|api[-_]?key|auth|oauth|session|cookie)/i`,
-secret property/variable names and capability URLs, and text/select settings
-inputs with secret IDs or labels. It resolves `t()` labels through
+even when a particular payload is harmless. It also checks secret
+property/variable names and capability URLs, including prefixed snake_case and
+camelCase URL names. Flags, counts, limits and bounds (such as `hasApiKey` and
+`tokenCount`) and bare plural `tokens` are not treated as secret values.
+Settings value-control IDs are checked by name; only **text** control
+**labels** are checked for secret input wording. Descriptions and select
+labels cannot establish that a pasted secret will be stored.
+It resolves `t()` labels, including aliases of `this.t`, through
 `_locales/en/messages.json` and uses the host's supported control types
 (`checkbox`, `text`, `number`, `select`, `range`, `action`, `info`); the host
 does not provide a password input type or `secret`/`inputType` flags.
 The Acorn parser follows lexical constants, object-member constants,
-ternary alternatives, explicit local imports (including aliases), template
-prefixes, and function/method/arrow storage wrappers and wrapper chains.
+ternary alternatives, explicit local imports (including aliases), trailing
+template/concatenation prefixes, and function/method/arrow storage wrappers
+and wrapper chains. Every caller path is checked independently. A deferred
+wrapper path is resolved only when every reference is a direct call whose
+own path resolves; callbacks and escaped/indirect references fail that check.
+Invoke commands must be literals or statically resolvable constants, including
+when invoked through `.call`, `.apply` or `Reflect.apply`. Runtime command
+construction with `.join`, `.replaceAll` or unresolved interpolation fails.
 An unverified, user-supplied client identifier is a secret candidate: a pasted
 client secret may pass format validation. Literal public identifiers are not
 classified as secrets on that basis.
 
-Computed keys, unavailable modules, and opaque transformations still need
-manual review. Unresolved writes fail the gate. Prefer literal keys or clear
-prefixes, or annotate the storage call (or its wrapper call) on the same line
-or the immediately preceding line:
+Unresolved keys/options, compound assignments, interior wildcard fragments,
+and unresolved settings IDs/types/text labels or schema collections fail the
+gate. Missing English translation keys fail too. Prefer literal keys, trailing
+prefixes and visible settings arrays/objects, or annotate the storage/control
+call (or its wrapper call) on the same line or the immediately preceding line:
 
 ```js
 // Reviewed: every account record contains an access token.
@@ -186,17 +200,37 @@ await persist(makeCacheKey(pair), rates); // kage-sensitive-data: not-sensitive
 ```
 
 A key/prefix annotation requires the matching `sensitiveData` declaration.
-`not-sensitive` is an explicit reviewed assertion about the complete write;
-use it only when no stored value grants access. An annotation cannot bypass
-parse failures or unassociated `save_extension_data` command references.
-Dynamic dispatch, mutation of object properties, and opaque return-value flows
-are not a complete data-flow analysis; review them as well as declarations.
-Shipped test files still undergo eval/remote-import security checks but are
-excluded from sensitive-data analysis because their fixtures contain examples.
+It supplements every resolved key; it never replaces a known key.
+`not-sensitive` permits an **unresolved** write after explicit review;
+resolved keys still undergo name and value checks. For an unresolved settings
+control/schema, a field annotation requires `config.<field>.sensitive: true`;
+`not-sensitive` records a reviewed analysis gap. Resolved control names/labels
+are still checked. Trailing punctuation such as `not-sensitive.` is accepted.
+Every annotation, including an unattached annotation, produces a visible
+`warn [sensitive-data-annotation]` with its file and line in CI output.
+Annotations cannot bypass parse failures, unresolved invoke commands,
+unassociated `save_extension_data` references, or missing relative modules.
+
+Tests (`*.test.js`, `*.spec.js` and their `.mjs`/`.cjs` variants) are excluded
+from ZIPs: their attack fixtures are development examples, not runtime code.
+Production imports/re-exports of those files fail. All other packaged JS,
+including `_locales/`, dot-directories and nested dependencies, undergoes both
+sensitive-data and eval/remote-import checks. Every literal relative import,
+including a dynamic import, must target an analyzed module.
+
+This is a static gate, not complete data-flow or content inspection. Arbitrary
+function results, fetched payloads with innocuous property names, indirect
+object mutation, runtime-computed import URLs, and secrets embedded in strings
+still need manual review. Ordinary cache values are not classified by their
+contents, and this gate does not inspect host-owned search history/frecency
+or result IDs. Named secret values and recognized OAuth exchange/await results
+are checked, but an unknown API can still return secret material.
 `__…` settings controls
 are transient action inputs stripped by `normalize()`, so their eventual
 storage writes need declarations rather than config flags. No extension or
-storage-key allowlist is used; status booleans such as `auth_revoked` and
+storage-key allowlist is used. `action`/`info` controls cannot store config
+input; transient `__…` IDs do not persist config. These host control semantics
+are the only control exemptions. Status booleans such as `auth_revoked` and
 coordination locks are not secret payloads.
 
 Hosts advertising `export.sensitive_data` in `context.hostFeatures` understand

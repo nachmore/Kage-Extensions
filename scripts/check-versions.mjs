@@ -29,6 +29,7 @@
 // not a hard fail, so a transient outage doesn't block all merges. The
 // build job re-derives everything from scratch in that case anyway.
 
+import { invokedDirectly } from './lib/invoked-directly.mjs';
 import { stat } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -125,7 +126,9 @@ async function main() {
     console.log('[versions] OK — every changed extension has a version bump.');
 }
 
-main().catch((e) => {
-    console.error(e);
-    process.exit(1);
-});
+if (invokedDirectly(import.meta.url)) {
+    main().catch((e) => {
+        console.error(e);
+        process.exit(1);
+    });
+}

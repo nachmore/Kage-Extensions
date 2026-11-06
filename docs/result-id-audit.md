@@ -21,7 +21,7 @@ are not search result IDs.
 | hello-world | Fixed `hello-world` | No private input. |
 | link-preview | No search results (message formatter only) | No result ID path. |
 | math | Fixed `math` | Expression/result not included. |
-| password | Fixed `pw:password`, `pw:passphrase`, `pw:regen` starting in 1.0.2 | Generated values are no longer included. Earlier IDs contained entire generated passwords/passphrases; existing host records remain until host cleanup. |
+| password | Fixed `pw:password`, `pw:passphrase`, `pw:regen` starting in 1.0.2 | Generated values are no longer included. Earlier IDs contained entire generated passwords/passphrases; the host prunes old frecency entries 90 days after their last selection. |
 | snippets | Snippet names for add/delete/copy | Names can be private or arbitrary pasted secrets. Snippet bodies are not included. |
 | spotify | Full play/queue/playlist query, device argument, device ID, volume; fixed command IDs | Reveals listening queries, private playlist/device names, and device identifiers; arbitrary pasted text can include secrets. Auth tokens and saved client input are not included. |
 | stocks | Symbol and action/error code | Reveals selected/looked-up securities. API keys are not included. |

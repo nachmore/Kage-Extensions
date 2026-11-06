@@ -93,7 +93,7 @@
 // content), like validate-manifests and check-tests. Single pass: every
 // issue is collected, then the script exits non-zero.
 
-import { realpathSync } from 'node:fs';
+import { invokedDirectly } from './lib/invoked-directly.mjs';
 import { readdir, readFile, stat } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -1031,17 +1031,7 @@ async function main() {
     return 0;
 }
 
-function invokedDirectly() {
-    if (!process.argv[1]) return false;
-    try {
-        // realpath: on macOS /tmp is a symlink, and import.meta.url is resolved.
-        return realpathSync(fileURLToPath(import.meta.url)) === realpathSync(process.argv[1]);
-    } catch {
-        return false;
-    }
-}
-
-if (invokedDirectly()) {
+if (invokedDirectly(import.meta.url)) {
     // Explicit exit: a provider may leave a timer running after initialize().
     main().then(
         (code) => process.exit(code),

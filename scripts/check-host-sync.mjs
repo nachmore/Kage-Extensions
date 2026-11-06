@@ -21,6 +21,7 @@
 //     reference for forward-compat).
 //   - exit 1 with a diff summary otherwise.
 
+import { invokedDirectly } from './lib/invoked-directly.mjs';
 import { COMMAND_CAPABILITIES, CAPABILITIES, MASCOT_ACTIVITIES } from './host-capabilities.mjs';
 
 const UPSTREAM_URL =
@@ -203,7 +204,9 @@ async function main() {
     console.log('Host capability + mascot activity tables are in sync with upstream.');
 }
 
-main().catch((e) => {
-    console.error(e);
-    process.exit(1);
-});
+if (invokedDirectly(import.meta.url)) {
+    main().catch((e) => {
+        console.error(e);
+        process.exit(1);
+    });
+}

@@ -61,6 +61,7 @@ import { fileURLToPath } from 'node:url';
 import { affectedItems, shouldRun } from './lib/affected.mjs';
 import { checkSensitiveDeclarations } from './lib/check-sensitive-data.mjs';
 import { invokedDirectly } from './lib/invoked-directly.mjs';
+import { isTestModule } from './lib/packaged-files.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -136,21 +137,18 @@ const PATTERNS = [
 ];
 
 async function listJsFiles(dir) {
-    // Skip _locales — they're JSON.
     let entries;
     try {
         entries = await readdir(dir, { withFileTypes: true });
-    } catch {
-        return [];
+    } catch (error) {
+        throw new Error(`Cannot inventory JavaScript in ${dir}: ${error.message}`);
     }
     const out = [];
     for (const e of entries) {
-        if (e.name.startsWith('.')) continue;
-        if (e.name === 'node_modules' || e.name === '_locales') continue;
         const full = path.join(dir, e.name);
         if (e.isDirectory()) {
             out.push(...(await listJsFiles(full)));
-        } else if (/\.(?:js|mjs|cjs)$/.test(e.name)) {
+        } else if (e.isFile() && /\.(?:js|mjs|cjs)$/.test(e.name)) {
             out.push(full);
         }
     }
@@ -162,8 +160,8 @@ async function scanFile(file, extId) {
     let txt;
     try {
         txt = await readFile(file, 'utf8');
-    } catch {
-        return { results, source: '' };
+    } catch (error) {
+        throw new Error(`Cannot read JavaScript ${file}: ${error.message}`);
     }
     const lines = txt.split(/\r?\n/);
     for (let i = 0; i < lines.length; i++) {
@@ -200,7 +198,7 @@ export async function checkExtension(dir) {
     for (const f of files) {
         const scan = await scanFile(f, itemKey);
         results.push(...scan.results);
-        if (!/\.(?:test|spec)\.[cm]?js$/.test(f)) {
+        if (!isTestModule(f)) {
             sources.push({ file: path.relative(dir, f), source: scan.source });
         }
     }

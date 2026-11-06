@@ -31,6 +31,7 @@ import { createReadStream, createWriteStream, existsSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { invokedDirectly } from './lib/invoked-directly.mjs';
+import { isTestModule, PACKAGE_POLICY } from './lib/packaged-files.mjs';
 import archiver from 'archiver';
 
 const SCHEMA_VERSION = 1;
@@ -119,8 +120,9 @@ async function hashFile(p) {
 // Zip the extension folder so its files are at the zip root (manifest.json
 // at top level). Kage's installer accepts either layout, but a flat zip
 // is the conventional one and what the dev_server.py mock currently expects.
-async function packageDir(srcDir, outZip) {
+export async function packageDir(srcDir, outZip) {
     await mkdir(path.dirname(outZip), { recursive: true });
+    const files = (await listFilesRecursive(srcDir)).filter((file) => !isTestModule(file));
     return new Promise((resolve, reject) => {
         const output = createWriteStream(outZip);
         const archive = archiver('zip', { zlib: { level: 9 } });
@@ -131,7 +133,7 @@ async function packageDir(srcDir, outZip) {
         });
         archive.on('error', reject);
         archive.pipe(output);
-        archive.directory(srcDir, false);
+        for (const file of files) archive.file(path.join(srcDir, file), { name: file });
         archive.finalize();
     });
 }
@@ -199,6 +201,7 @@ async function processItem({ kind, dirName, previousById }) {
     const reuseExisting =
         previous &&
         previous.version === version &&
+        previous.packagePolicy === PACKAGE_POLICY &&
         previous.sourceHash === sourceHash &&
         existsSync(zipPath) &&
         existsSync(checksumPath);
@@ -244,6 +247,7 @@ async function processItem({ kind, dirName, previousById }) {
         size,
         sha256,
         sourceHash,
+        packagePolicy: PACKAGE_POLICY,
         updatedAt,
     };
 

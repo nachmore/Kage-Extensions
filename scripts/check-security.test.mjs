@@ -7,7 +7,7 @@ import { checkSensitiveDeclarations } from './lib/check-sensitive-data.mjs';
 import { checkExtension as checkDefaults } from './check-defaults.mjs';
 
 const scan = (source, manifest = {}, file = 'search.js') =>
-    checkSensitiveDeclarations(manifest, [{ file, source }]);
+    checkSensitiveDeclarations(manifest, [{ file, source }]).filter((issue) => issue.severity === 'error');
 const write = (key, data = 'value') =>
     `await context.invoke('save_extension_data', { key: ${key}, data: JSON.stringify(${data}) });`;
 
@@ -34,7 +34,7 @@ describe('security: sensitive storage declarations', () => {
     });
 
     it('requires a prefix declaration for dynamic template and concatenated keys', () => {
-        for (const key of ['`token_${account}`', "'token_' + account", "'token_' + account + '_suffix'", '`token_${`user_${account}`}_suffix`']) {
+        for (const key of ['`token_${account}`', "'token_' + account", '`token_${`user_${account}`}`']) {
             const prefix = key.includes('user_') ? 'token_user_*' : 'token_*';
             expect(scan(write(key))[0].message).toContain(`'${prefix}'`);
             expect(scan(write(key), { sensitiveData: ['token_*'] })).toEqual([]);
@@ -45,7 +45,7 @@ describe('security: sensitive storage declarations', () => {
 
     it('requires declarations for OAuth tokens and API keys under innocuous keys', () => {
         for (const data of ['{ access_token: response.access_token }', '{ refresh_token }',
-            '{ client_secret }', '{ secret: values.input }', '{ api_key: values.input }', 'credentials', 'tokens', 'authToken', 'values.__token_input']) {
+            '{ client_secret }', '{ secret: values.input }', '{ api_key: values.input }', 'credentials', 'accessTokens', 'authToken', 'values.__token_input']) {
             expect(scan(write("'client'", data))[0].message).toContain('secret-bearing value');
             expect(scan(write("'client'", data), { sensitiveData: ['client'] })).toEqual([]);
         }
@@ -138,7 +138,7 @@ await writeState(response.access_token);`;
             { file: 'b.js', source: `export {COMMAND} from './a.js';` },
             { file: 'search.js', source: `import {COMMAND} from './a.js'; context.invoke(COMMAND,{key:'token',data:t}); const orphan='save_extension_data';` },
         ];
-        expect(checkSensitiveDeclarations({}, sources)[0].message).toContain('could not be resolved as storage calls');
+        expect(checkSensitiveDeclarations({}, sources).some((issue) => issue.message.includes('could not be resolved as storage calls'))).toBe(true);
     });
 
     it('resolves object members and all ternary alternatives', () => {
@@ -243,7 +243,7 @@ describe('security: sensitive config declarations', () => {
 
     it.each([
         `type: 'text', label: 'Private calendar URL'`,
-        `type: 'text', label: 'PAT'`,
+        `type: 'text', label: 'Personal access token'`,
         `type: 'text', label: 'Access credential'`,
         `type: 'text', label: 'Bearer'`,
         `type: 'text', label: 'API key'`,

@@ -12,6 +12,7 @@
 // Failures are non-fatal: on the first deploy the URL 404s, and we
 // fall through to a from-scratch build.
 
+import { invokedDirectly } from './lib/invoked-directly.mjs';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
@@ -75,8 +76,10 @@ async function main() {
     console.log(`Seeded ${reused} zip(s) from previous deploy (${missed} missing).`);
 }
 
-main().catch((e) => {
-    console.error(`seed-dist failed: ${e.message}`);
-    // Don't fail the build — incremental is an optimization, not a requirement.
-    process.exit(0);
-});
+if (invokedDirectly(import.meta.url)) {
+    main().catch((e) => {
+        console.error(`seed-dist failed: ${e.message}`);
+        // Don't fail the build — incremental is an optimization, not a requirement.
+        process.exit(0);
+    });
+}
