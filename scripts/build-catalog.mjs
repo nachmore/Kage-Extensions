@@ -29,7 +29,8 @@ import {
 } from 'node:fs/promises';
 import { createReadStream, createWriteStream, existsSync } from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath, pathToFileURL } from 'node:url';
+import { fileURLToPath } from 'node:url';
+import { invokedDirectly } from './lib/invoked-directly.mjs';
 import archiver from 'archiver';
 
 const SCHEMA_VERSION = 1;
@@ -321,11 +322,8 @@ async function main() {
 
 // Run main() only when invoked directly (node scripts/build-catalog.mjs),
 // not when imported for its helpers (check-versions.mjs). Guard against a
-// missing argv[1] (e.g. `node -e`/`--import`) so importing this module
-// never crashes on the pathToFileURL call.
-const invokedDirectly =
-    process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
-if (invokedDirectly) {
+// missing argv[1] (e.g. `node -e`/`--import`) and symlinked script paths.
+if (invokedDirectly(import.meta.url)) {
     main().catch((e) => {
         console.error(e);
         process.exit(1);

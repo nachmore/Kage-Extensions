@@ -20,10 +20,10 @@ in-memory cache or a host-owned API.
 | hello-world | None | `greeting`, `show_timestamp` | No | Greeting and display preference. |
 | link-preview | None | `max_previews`, `show_images` | No | Display preferences and in-memory metadata cache; disk caching belongs to the host's `fetch_link_metadata` implementation. No webhook or private URL setting. |
 | math | None | `precision`, `auto_copy`, `thousands_separator` | No | Calculation/display preferences. |
-| password | None | `trigger`, `default_length`, `include_symbols`, `include_numbers`, `include_lowercase`, `include_uppercase`, `exclude_ambiguous` | No saved secrets | Generates passwords for display/copy; it does not persist generated passwords. Settings only describe generation preferences. |
+| password | None | `trigger`, `default_length`, `include_symbols`, `include_numbers`, `include_lowercase`, `include_uppercase`, `exclude_ambiguous` | No extension-data secrets | Generates passwords for display/copy. Before 1.0.2, result IDs embedded generated passwords/passphrases and the host persisted them in search frecency after selection. Version 1.0.2 uses fixed `pw:password` / `pw:passphrase` IDs. Previously recorded secrets remain host-owned data and need host-side cleanup. Settings only describe generation preferences. |
 | snippets | `snippets` | `trigger` | No | General user-authored text; the extension does not solicit credentials. |
-| spotify | **`creds`**, **`client`**, `device`, `setup`, `status`, `refresh_lock` | `show_now_playing_bar`, `refresh_seconds`, `trigger` | **Yes:** `creds`, conservatively `client`. No: other keys/config. | `creds` contains access/refresh tokens. `client` currently contains only a public PKCE client ID; conservatively declared as requested authentication metadata. `device` is an ID/name, `setup` is wizard progress, `status` is a revocation flag/timestamp, and `refresh_lock` is an instance lease. |
-| stocks | **`credentials`**, `request_budget`, `request_lock`, `quote_index`, `quote_*` | `provider`, `watchlist`, `refresh_seconds`, `show_watchlist`, `agent_tools` | **Yes:** `credentials`. No: other keys/config. | `credentials.api_key` holds the Finnhub API key. Other records are quotes/history, indexes, rate-limit/backoff state, and a short coordination lease. Must declare `sensitiveData: ["credentials"]`; this extension is maintained separately and was not edited in this audit. |
+| spotify | **`creds`**, **`client`**, `device`, `setup`, `status`, `refresh_lock` | `show_now_playing_bar`, `refresh_seconds`, `trigger` | **Yes:** `creds`, `client` (required). No: other keys/config. | `creds` contains access/refresh tokens. `client` holds pasted authentication input: a client SECRET can satisfy the 16–64 alphanumeric format and be saved when verification is offline/unverified. Versions 0.1.0–0.3.15 saved the input unchecked. Its sensitive declaration is required even though a genuine public PKCE client ID does not grant access. `device` is an ID/name, `setup` is wizard progress, `status` is a revocation flag/timestamp, and `refresh_lock` is an instance lease. |
+| stocks | **`credentials`**, `request_budget`, `request_lock`, `quote_index`, `quote_*` | `provider`, `watchlist`, `refresh_seconds`, `show_watchlist`, `agent_tools` | **Yes:** `credentials`. No: other keys/config. | `credentials.api_key` holds the Finnhub API key and the manifest declares `sensitiveData: ["credentials"]`. Other records are quotes/history, indexes, rate-limit/backoff state, and a short coordination lease. |
 | timer | None | `notify_on_complete`, `sound_on_complete`, `sound_id`, `custom_sound_path`, `sound_repeats`, `show_window_on_complete` | No | Notification/sound preferences and a local sound-file path. |
 | todos | `kage-todos` | `default_category`, `show_completed`, `confirm_delete`, `sort_by`, `show_due_banner` | No | User tasks and presentation preferences. |
 | weather | `geocode_cache`, `forecast_cache` | `trigger`, `home_location`, `units` | No | Locations and public forecast data; no API key. Locations are personal data, not credentials. |
@@ -37,13 +37,21 @@ in-memory cache or a host-owned API.
 - GitHub declares `sensitiveData: ["token"]` and
   `config.personal_token.sensitive: true`.
 - Spotify declares `sensitiveData: ["creds", "client"]`.
-- Stocks requires `sensitiveData: ["credentials"]` from its owning change.
+- Stocks declares `sensitiveData: ["credentials"]`.
 - Other manifests need no sensitive declarations.
 
-Spotify's public client ID does not itself grant access. Its conservative
-declaration follows the requested treatment of the non-obvious `client` key;
-this is the one classification that is stricter than the access-granting test.
-No client secret is persisted there.
+Spotify's genuine public client ID does not itself grant access, but
+`parseClientId()` accepts any 16–64 alphanumerics, including a pasted client
+secret. `verifyClientId()` returns `unverified` while offline, and settings
+still saves that input; versions 0.1.0–0.3.15 saved it without verification.
+Existing stores can therefore contain client secrets. `client` must remain
+declared sensitive.
+
+GitHub retains the unused legacy `config.personal_token` definition and its
+sensitive flag so users' existing config values remain covered by backups.
+Current settings use a transient input and the `token` storage key. Search
+and settings each initialize their own storage context; search reads persisted
+tokens on each request so changes from another module instance are visible.
 
 Users can paste a secret into arbitrary snippets, bookmarks, or todos. Their
 ordinary content cannot be classified statically, and this contract explicitly

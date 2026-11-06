@@ -14,21 +14,24 @@ import { DEFAULTS } from './defaults.js';
 const TOKEN_KEY = 'token';
 
 let _ctx = null;
-let _cachedToken = null;
+
+// Each contribution can load its own module instance. Initialize from both
+// search and settings, and read persisted tokens so another instance's changes
+// are visible on the next request.
+export function init(context) {
+    _ctx = context;
+}
 
 async function getToken() {
-    if (_cachedToken !== null) return _cachedToken;
     try {
         const raw = await _ctx.invoke('load_extension_data', { key: TOKEN_KEY });
-        _cachedToken = raw ? (JSON.parse(raw).token || '') : '';
+        return raw ? (JSON.parse(raw).token || '') : '';
     } catch {
-        _cachedToken = '';
+        return '';
     }
-    return _cachedToken;
 }
 
 export async function setToken(token) {
-    _cachedToken = token || '';
     await _ctx.invoke('save_extension_data', {
         key: TOKEN_KEY,
         data: JSON.stringify({ token: token || '' }),
@@ -49,7 +52,7 @@ async function ghFetch(path) {
 
 export default class GitHubSearchProvider {
     initialize(context) {
-        _ctx = context;
+        init(context);
         this.invoke = context.invoke;
         this.config = context.config || {};
         this.log = context.log;

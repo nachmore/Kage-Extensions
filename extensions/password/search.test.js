@@ -91,6 +91,16 @@ describe('PasswordSearchProvider — passphrases', () => {
 });
 
 describe('PasswordSearchProvider — execute', () => {
+    it.each(['pw', 'pw 32', 'pw word', 'pw word 6'])('keeps generated secrets out of every result id (%s)', (query) => {
+        const rows = gen(setup(), query);
+        const generated = rows.filter((row) => row.data.value).map((row) => row.data.value);
+        expect(generated).toHaveLength(1);
+        for (const row of rows) {
+            for (const value of generated) expect(row.id).not.toContain(value);
+        }
+        expect(rows[0].id).toBe(query.includes('word') ? 'pw:passphrase' : 'pw:password');
+    });
+
     it('copies the password value', () => {
         const provider = setup();
         const row = gen(provider, 'pw 16')[0];

@@ -60,6 +60,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { affectedItems, shouldRun } from './lib/affected.mjs';
 import { checkSensitiveDeclarations } from './lib/check-sensitive-data.mjs';
+import { invokedDirectly } from './lib/invoked-directly.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -197,13 +198,38 @@ export async function checkExtension(dir) {
     const sources = [];
     const files = await listJsFiles(dir);
     for (const f of files) {
-        if (/\.(?:test|spec)\.[cm]?js$/.test(f)) continue;
         const scan = await scanFile(f, itemKey);
         results.push(...scan.results);
-        sources.push({ file: path.relative(dir, f), source: scan.source });
+        if (!/\.(?:test|spec)\.[cm]?js$/.test(f)) {
+            sources.push({ file: path.relative(dir, f), source: scan.source });
+        }
     }
-    const manifest = JSON.parse(await readFile(path.join(dir, 'manifest.json'), 'utf8'));
-    for (const issue of checkSensitiveDeclarations(manifest, sources)) {
+    let manifestSource;
+    let manifest;
+    try {
+        manifestSource = await readFile(path.join(dir, 'manifest.json'), 'utf8');
+        manifest = JSON.parse(manifestSource);
+        if (!manifest || typeof manifest !== 'object' || Array.isArray(manifest)) throw new Error('manifest must be an object');
+    } catch (e) {
+        results.push({
+            extId: itemKey, file: path.relative(repoRoot, path.join(dir, 'manifest.json')),
+            line: 1, lineText: '', severity: 'error', pattern: 'invalid-manifest',
+            message: `Cannot check sensitive declarations: ${e.code === 'ENOENT' ? 'missing manifest.json' : e.message}.`,
+        });
+        return results;
+    }
+    let messages = {};
+    try { messages = JSON.parse(await readFile(path.join(dir, '_locales/en/messages.json'), 'utf8')); }
+    catch (e) {
+        if (e.code !== 'ENOENT') {
+            results.push({
+                extId: itemKey, file: path.relative(repoRoot, path.join(dir, '_locales/en/messages.json')),
+                line: 1, lineText: '', severity: 'error', pattern: 'invalid-locales',
+                message: `Cannot resolve English settings labels: ${e.message}.`,
+            });
+        }
+    }
+    for (const issue of checkSensitiveDeclarations(manifest, sources, { manifestSource, messages })) {
         const file = path.join(dir, issue.file);
         const source = issue.file === 'manifest.json'
             ? await readFile(file, 'utf8')
@@ -216,13 +242,17 @@ export async function checkExtension(dir) {
     return results;
 }
 
-async function main() {
-    const results = [];
-    const affected = await affectedItems();
+export function securityTargets(affected, all = false) {
     const checkChanged = affected.nonItemChanged.some((file) =>
         file === 'scripts/check-security.mjs' || file.startsWith('scripts/lib/')
     );
-    const targets = affected.all.filter((it) => shouldRun(it, affected, { all: flagAll || checkChanged }));
+    return affected.all.filter((it) => shouldRun(it, affected, { all: all || checkChanged }));
+}
+
+async function main() {
+    const results = [];
+    const affected = await affectedItems();
+    const targets = securityTargets(affected, flagAll);
 
     if (affected.mode === 'changed' && !flagAll) {
         const skipped = affected.all.length - targets.length;
@@ -264,7 +294,7 @@ async function main() {
     if (errs.length > 0) process.exit(1);
 }
 
-if (process.argv[1] && path.resolve(process.argv[1]) === __filename) {
+if (invokedDirectly(import.meta.url)) {
     main().catch((e) => {
         console.error(e);
         process.exit(1);

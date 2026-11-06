@@ -6,7 +6,7 @@ export const SENSITIVE_NAME = /(token|secret|credential|creds|password|passwd|ap
 export function validSensitivePattern(value) {
     if (typeof value !== 'string') return false;
     const key = value.endsWith('*') ? value.slice(0, -1) : value;
-    return /^[A-Za-z0-9_.-]{1,128}$/.test(key) && !key.includes('..');
+    return /^[A-Za-z0-9_.-]{1,128}$/.test(key) && !key.includes('..') && !/\.json$/i.test(key);
 }
 
 export function declaresSensitiveKey(manifest, key) {
@@ -18,37 +18,65 @@ export function declaresSensitiveKey(manifest, key) {
     );
 }
 
-export function sensitiveMetadataIssues(manifest) {
+export function sensitiveMetadataIssues(manifest, { locations = false } = {}) {
     const issues = [];
+    const note = (message, path) => issues.push(locations ? { message, path } : message);
     if (manifest.sensitiveData !== undefined) {
         if (!Array.isArray(manifest.sensitiveData)) {
-            issues.push("'sensitiveData' must be an array of storage-key strings");
+            note("'sensitiveData' must be an array of storage-key strings", ['sensitiveData']);
         } else {
             if (manifest.sensitiveData.length > 32) {
-                issues.push("'sensitiveData' must contain at most 32 entries");
+                note("'sensitiveData' must contain at most 32 entries", ['sensitiveData']);
             }
-            for (const value of manifest.sensitiveData) {
+            for (const [i, value] of manifest.sensitiveData.entries()) {
                 if (!validSensitivePattern(value)) {
-                    issues.push(
-                        "'sensitiveData' entries must be exact keys or nonempty prefixes ending in '*': " +
-                        "1–128 ASCII letters, digits, '-', '_', '.', without '..'"
-                    );
+                    note(
+                        `'sensitiveData' entry ${JSON.stringify(value)} (index ${i}) is invalid; entries must be exact keys or nonempty prefixes ending in '*': ` +
+                        "1–128 ASCII letters, digits, '-', '_', '.', without '..' or a '.json' suffix",
+                        ['sensitiveData', i]);
+                    continue;
+                }
+                for (const previous of manifest.sensitiveData.slice(0, i)) {
+                    if (!validSensitivePattern(previous)) continue;
+                    if (previous === value) {
+                        note(`duplicate sensitiveData entry '${value}'`, ['sensitiveData', i]);
+                    } else if ((previous.endsWith('*') && value.startsWith(previous.slice(0, -1))) ||
+                        (value.endsWith('*') && previous.startsWith(value.slice(0, -1)))) {
+                        note(`overlapping sensitiveData entries '${previous}' and '${value}'`, ['sensitiveData', i]);
+                    }
                 }
             }
         }
     }
     if (manifest.config !== undefined) {
         if (!manifest.config || typeof manifest.config !== 'object' || Array.isArray(manifest.config)) {
-            issues.push("'config' must be an object of config field definitions");
+            note("'config' must be an object of config field definitions", ['config']);
         } else {
             for (const [field, definition] of Object.entries(manifest.config)) {
                 if (!definition || typeof definition !== 'object' || Array.isArray(definition)) {
-                    issues.push(`config.${field} must be an object`);
+                    note(`config.${field} must be an object`, ['config', field]);
                 } else if (definition.sensitive !== undefined && typeof definition.sensitive !== 'boolean') {
-                    issues.push(`config.${field}.sensitive must be a boolean`);
+                    note(`config.${field}.sensitive must be a boolean`, ['config', field, 'sensitive']);
                 }
             }
         }
     }
+    function misplaced(object, parts = []) {
+        if (!object || typeof object !== 'object') return;
+        for (const [key, value] of Object.entries(object)) {
+            const at = [...parts, key];
+            const normalized = key.toLowerCase().replace(/[-_]/g, '');
+            const typo = /^(?:sensitve|sensative|sensitvie|sensitivedata|sensitive)$/.test(normalized);
+            const allowed = (key === 'sensitiveData' && parts.length === 0) ||
+                (key === 'sensitive' && parts.length === 2 && parts[0] === 'config') ||
+                (parts.length === 1 && parts[0] === 'config' && value && typeof value === 'object' && !Array.isArray(value));
+            // Top-level unknown fields already have a precise validator error.
+            if (typo && !allowed && parts.length > 0) {
+                note(`misplaced or misspelled '${at.join('.')}' sensitive metadata; use top-level sensitiveData or config.<field>.sensitive`, at);
+            }
+            misplaced(value, at);
+        }
+    }
+    misplaced(manifest);
     return issues;
 }

@@ -74,7 +74,7 @@ export default class PasswordSearchProvider {
             const phrase = genPassphrase(count);
             const bits = Math.round(count * Math.log2(WORDS.length) * 10) / 10;
             return [{
-                id: `pw:phrase:${phrase}`,
+                id: 'pw:passphrase',
                 type: 'password',
                 label: phrase,
                 description: this.t('result.passphrase.description', { count, bits }),
@@ -91,7 +91,7 @@ export default class PasswordSearchProvider {
         const password = genPassword(length, this.config);
         const bits = entropyBits(length, pool(this.config).length);
         return [{
-            id: `pw:${password}`,
+            id: 'pw:password',
             type: 'password',
             label: password,
             description: this.t('result.password.description', { length, bits }),

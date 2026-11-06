@@ -34,6 +34,8 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { KNOWN_CAPABILITIES, MASCOT_ACTIVITIES } from './host-capabilities.mjs';
 import { sensitiveMetadataIssues } from './lib/sensitive-data.mjs';
+import { invokedDirectly } from './lib/invoked-directly.mjs';
+import { jsonLine } from './lib/json-lines.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -112,11 +114,18 @@ function graphemeCount(str) {
 
 export async function validateManifest(manifestPath, expectedKind, dirName) {
     const issues = [];
-    const note = (loc, msg) => issues.push(`${loc}: ${msg}`);
+    let source = '';
+    const note = (loc, msg, parts) => {
+        const inferred = msg.match(/(?:config\.|contributes\.)([\w.-]+)/)?.[0]?.split('.') ||
+            msg.match(/(?:field )?'([^']+)'/)?.[1]?.split('.');
+        const at = jsonLine(source, parts || inferred || []);
+        issues.push(`${loc}:${at}: ${msg}`);
+    };
     const loc = path.relative(repoRoot, manifestPath);
     let m;
     try {
-        m = await readJson(manifestPath);
+        source = await readFile(manifestPath, 'utf8');
+        m = JSON.parse(source);
     } catch (e) {
         note(loc, `failed to parse JSON: ${e.message}`);
         return issues;
@@ -131,10 +140,10 @@ export async function validateManifest(manifestPath, expectedKind, dirName) {
     // at runtime; failing CI here gives the author an immediate hint.
     for (const k of Object.keys(m)) {
         if (!KNOWN_TOP_LEVEL_FIELDS.has(k)) {
-            note(loc, `unknown top-level field '${k}' (typo? known fields: ${[...KNOWN_TOP_LEVEL_FIELDS].sort().join(', ')})`);
+            note(loc, `unknown top-level field '${k}' (typo? known fields: ${[...KNOWN_TOP_LEVEL_FIELDS].sort().join(', ')})`, [k]);
         }
     }
-    for (const issue of sensitiveMetadataIssues(m)) note(loc, issue);
+    for (const issue of sensitiveMetadataIssues(m, { locations: true })) note(loc, issue.message, issue.path);
 
     // --- Required field presence + type ---------------------------------
     if (typeof m.id !== 'string' || !ID_PATTERN.test(m.id)) {
@@ -183,16 +192,16 @@ export async function validateManifest(manifestPath, expectedKind, dirName) {
             note(loc, `'permissions' is required (use [] for no capabilities)`);
         } else {
             const seen = new Set();
-            for (const p of m.permissions) {
+            for (const [i, p] of m.permissions.entries()) {
                 if (typeof p !== 'string') {
-                    note(loc, `permissions entries must be strings; got ${typeof p}`);
+                    note(loc, `permissions entry ${JSON.stringify(p)} must be a string; got ${typeof p}`, ['permissions', i]);
                     continue;
                 }
                 if (!KNOWN_CAPABILITIES.includes(p)) {
-                    note(loc, `unknown capability '${p}' in 'permissions' (see scripts/host-capabilities.mjs)`);
+                    note(loc, `unknown capability '${p}' in 'permissions' (see scripts/host-capabilities.mjs)`, ['permissions', i]);
                 }
                 if (seen.has(p)) {
-                    note(loc, `duplicate capability '${p}' in 'permissions'`);
+                    note(loc, `duplicate capability '${p}' in 'permissions'`, ['permissions', i]);
                 }
                 seen.add(p);
             }
@@ -222,18 +231,18 @@ export async function validateManifest(manifestPath, expectedKind, dirName) {
             for (const f of fileFields) {
                 const v = m.contributes[f];
                 if (typeof v === 'string') {
-                    await checkRel(loc, manifestPath, v, note);
+                    await checkRel(loc, manifestPath, v, note, ['contributes', f]);
                 }
             }
             if (m.contributes.css !== undefined) {
                 if (!Array.isArray(m.contributes.css)) {
                     note(loc, `'contributes.css' must be an array of paths`);
                 } else {
-                    for (const c of m.contributes.css) {
+                    for (const [i, c] of m.contributes.css.entries()) {
                         if (typeof c !== 'string') {
-                            note(loc, `'contributes.css' entries must be strings`);
+                            note(loc, `'contributes.css' entry ${JSON.stringify(c)} must be a string`, ['contributes', 'css', i]);
                         } else {
-                            await checkRel(loc, manifestPath, c, note);
+                            await checkRel(loc, manifestPath, c, note, ['contributes', 'css', i]);
                         }
                     }
                 }
@@ -243,15 +252,15 @@ export async function validateManifest(manifestPath, expectedKind, dirName) {
                     note(loc, `'contributes.widgets' must be an array`);
                 } else {
                     const seenIds = new Set();
-                    for (const w of m.contributes.widgets) {
+                    for (const [i, w] of m.contributes.widgets.entries()) {
                         if (typeof w?.id !== 'string') {
-                            note(loc, `widget entries need an 'id' string`);
+                            note(loc, `widget entry ${i} needs an 'id' string`, ['contributes', 'widgets', i]);
                         } else if (seenIds.has(w.id)) {
-                            note(loc, `duplicate widget id '${w.id}'`);
+                            note(loc, `duplicate widget id '${w.id}'`, ['contributes', 'widgets', i, 'id']);
                         }
                         if (w?.id) seenIds.add(w.id);
                         if (typeof w?.module === 'string') {
-                            await checkRel(loc, manifestPath, w.module, note);
+                            await checkRel(loc, manifestPath, w.module, note, ['contributes', 'widgets', i, 'module']);
                         }
                     }
                 }
@@ -265,28 +274,29 @@ export async function validateManifest(manifestPath, expectedKind, dirName) {
                     note(loc, `'contributes.mascotActivities' must be an array of activity names`);
                 } else {
                     const seenActivities = new Set();
-                    for (const a of m.contributes.mascotActivities) {
+                    for (const [i, a] of m.contributes.mascotActivities.entries()) {
                         if (typeof a !== 'string') {
-                            note(loc, `'contributes.mascotActivities' entries must be strings; got ${typeof a}`);
+                            note(loc, `'contributes.mascotActivities' entry ${JSON.stringify(a)} must be a string; got ${typeof a}`, ['contributes', 'mascotActivities', i]);
                             continue;
                         }
                         if (!MASCOT_ACTIVITIES.includes(a)) {
                             note(
                                 loc,
                                 `unknown mascot activity '${a}' — the vocabulary is closed and generic ` +
-                                    `(${MASCOT_ACTIVITIES.join(', ')}); see scripts/host-capabilities.mjs`
+                                    `(${MASCOT_ACTIVITIES.join(', ')}); see scripts/host-capabilities.mjs`,
+                                ['contributes', 'mascotActivities', i]
                             );
                         }
                         if (seenActivities.has(a)) {
-                            note(loc, `duplicate mascot activity '${a}'`);
+                            note(loc, `duplicate mascot activity '${a}'`, ['contributes', 'mascotActivities', i]);
                         }
                         seenActivities.add(a);
                     }
                 }
             }
             if (m.contributes.themes && typeof m.contributes.themes === 'object') {
-                for (const v of Object.values(m.contributes.themes)) {
-                    if (typeof v === 'string') await checkRel(loc, manifestPath, v, note);
+                for (const [key, v] of Object.entries(m.contributes.themes)) {
+                    if (typeof v === 'string') await checkRel(loc, manifestPath, v, note, ['contributes', 'themes', key]);
                 }
             }
         }
@@ -294,22 +304,22 @@ export async function validateManifest(manifestPath, expectedKind, dirName) {
 
     // --- Folder ↔ id parity --------------------------------------------
     if (expectedKind === 'extension' && m.id && dirName && m.id !== dirName) {
-        note(loc, `extension folder name '${dirName}' must match manifest id '${m.id}'`);
+        note(loc, `extension folder name '${dirName}' must match manifest id '${m.id}'`, ['id']);
     }
     return issues;
 }
 
-async function checkRel(loc, manifestPath, relPath, note) {
+async function checkRel(loc, manifestPath, relPath, note, parts) {
     if (typeof relPath !== 'string') return;
     if (!relPath.startsWith('./') && !relPath.startsWith('/')) {
-        note(loc, `path '${relPath}' should start with './'`);
+        note(loc, `path '${relPath}' should start with './'`, parts);
         return;
     }
     const abs = path.resolve(path.dirname(manifestPath), relPath);
     try {
         await stat(abs);
     } catch {
-        note(loc, `referenced file not found: ${relPath}`);
+        note(loc, `referenced file not found: ${relPath}`, parts);
     }
 }
 
@@ -361,7 +371,7 @@ async function main() {
     console.log('All manifests valid.');
 }
 
-if (process.argv[1] && path.resolve(process.argv[1]) === __filename) {
+if (invokedDirectly(import.meta.url)) {
     main().catch((e) => {
         console.error(e);
         process.exit(1);

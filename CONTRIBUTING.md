@@ -132,7 +132,10 @@ Use top-level `sensitiveData` for the **storage key** passed to
 the on-disk `.json` suffix. Each entry is an exact key or a nonempty prefix
 ending in `*`, with at most 32 entries. Keys and glob prefixes use 1–128 ASCII
 letters (either case), digits, `-`, `_`, or `.`, and cannot contain `..`. The
-only wildcard is one final `*`; a bare `*` is invalid.
+only wildcard is one final `*`; a bare `*` is invalid. Do not include `.json`
+suffixes, duplicates, or overlapping entries. Repository checks match keys
+**case-sensitively**, so `Token` does not declare `token`. The host's
+case-insensitive safety net is deliberately more forgiving.
 
 Mark a secret kept in settings with `config.<field>.sensitive: true`:
 
@@ -156,10 +159,41 @@ an OAuth token.
 `check:security` fails on undeclared secret-bearing storage writes and config
 fields. It checks the host's name heuristic
 `/(token|secret|credential|creds|password|passwd|api[-_]?key|auth|oauth|session|cookie)/i`,
-obvious secret values and capability URLs, and password/secret settings inputs.
-It follows simple constants, imported key constants, template prefixes, and
-storage wrappers. Opaque computed keys or value transformations still need
-manual review; prefer literal keys or clear prefixes. `__…` settings controls
+secret property/variable names and capability URLs, and text/select settings
+inputs with secret IDs or labels. It resolves `t()` labels through
+`_locales/en/messages.json` and uses the host's supported control types
+(`checkbox`, `text`, `number`, `select`, `range`, `action`, `info`); the host
+does not provide a password input type or `secret`/`inputType` flags.
+The Acorn parser follows lexical constants, object-member constants,
+ternary alternatives, explicit local imports (including aliases), template
+prefixes, and function/method/arrow storage wrappers and wrapper chains.
+An unverified, user-supplied client identifier is a secret candidate: a pasted
+client secret may pass format validation. Literal public identifiers are not
+classified as secrets on that basis.
+
+Computed keys, unavailable modules, and opaque transformations still need
+manual review. Unresolved writes fail the gate. Prefer literal keys or clear
+prefixes, or annotate the storage call (or its wrapper call) on the same line
+or the immediately preceding line:
+
+```js
+// Reviewed: every account record contains an access token.
+// kage-sensitive-data: connection_*
+await persist(makeAccountKey(account), record);
+
+// Reviewed: this generated key stores only public exchange rates.
+await persist(makeCacheKey(pair), rates); // kage-sensitive-data: not-sensitive
+```
+
+A key/prefix annotation requires the matching `sensitiveData` declaration.
+`not-sensitive` is an explicit reviewed assertion about the complete write;
+use it only when no stored value grants access. An annotation cannot bypass
+parse failures or unassociated `save_extension_data` command references.
+Dynamic dispatch, mutation of object properties, and opaque return-value flows
+are not a complete data-flow analysis; review them as well as declarations.
+Shipped test files still undergo eval/remote-import security checks but are
+excluded from sensitive-data analysis because their fixtures contain examples.
+`__…` settings controls
 are transient action inputs stripped by `normalize()`, so their eventual
 storage writes need declarations rather than config flags. No extension or
 storage-key allowlist is used; status booleans such as `auth_revoked` and

@@ -2,11 +2,12 @@
 // users can lift the 60 req/hr unauthenticated rate limit and search
 // private repos.
 
-import { setToken } from './search.js';
+import { init, setToken } from './search.js';
 import { DEFAULTS } from './defaults.js';
 
 export default class GitHubSettingsProvider {
     initialize(context) {
+        init(context);
         this.invoke = context.invoke;
         this.config = context.config || {};
         this._ctx = context;
