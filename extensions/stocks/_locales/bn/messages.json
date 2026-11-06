@@ -348,10 +348,10 @@
     "_source_hash": "feaafa8e946fc0b2"
   },
   "settings.agent_tools_hint": {
-    "message": "এজেন্ট টুল Finnhub কোট ও সেগুলো থেকে প্রাপ্ত ফলাফল আপনার এজেন্ট প্রোভাইডারের কাছে পাঠাতে পারে। আপনার Finnhub চুক্তি এই শেয়ারিং অনুমোদন করলেই কেবল এটি চালু করুন।",
+    "message": "এজেন্ট টুলগুলো Finnhub-এর দর এবং সেগুলো থেকে পাওয়া ফলাফল আপনার এজেন্ট প্রদানকারীর কাছে পাঠাতে পারে। আপনার Finnhub চুক্তি এই ধরনের শেয়ারের অনুমতি দিলে তবেই এটি চালু করুন। Kage রিস্টার্ট করার পর এটি কার্যকর হবে।",
     "description": "Explain opt-in and external agent data flow",
     "_machine_translated": true,
-    "_source_hash": "600e0e85ae5aca60"
+    "_source_hash": "85852257d902cb3e"
   },
   "settings.delete_quotes": {
     "message": "সংরক্ষিত কোট মুছুন",
@@ -360,10 +360,10 @@
     "_source_hash": "c3ae84bf8010f20d"
   },
   "settings.quotes_deleted": {
-    "message": "সংরক্ষিত কোট ও স্থানীয় নমুনা মুছে ফেলা হয়েছে।",
-    "description": "Cache deletion success",
+    "message": "{count}টি সংরক্ষিত দরের রেকর্ড এবং সেগুলোর স্থানীয় নমুনা মুছে ফেলা হয়েছে। অন্য উইন্ডো বা চলমান রিফ্রেশ আরও রেকর্ড সংরক্ষণ করতে পারে।",
+    "description": "Accurate count of records deleted; preserve {count}; concurrent windows may retain or save records",
     "_machine_translated": true,
-    "_source_hash": "5c098db4acf64401"
+    "_source_hash": "06d62290314fd122"
   },
   "widget.setup": {
     "message": "Stocks সেটিংস খুলে কোট সেট আপ করতে stock লিখে Enter চাপুন।",

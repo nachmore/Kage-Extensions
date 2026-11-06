@@ -348,10 +348,10 @@
     "_source_hash": "feaafa8e946fc0b2"
   },
   "settings.agent_tools_hint": {
-    "message": "代理程式工具可能會將 Finnhub 報價及衍生結果傳送給您的代理程式供應商。請僅在您的 Finnhub 協議允許此類分享時才啟用。",
+    "message": "代理程式工具可能會將 Finnhub 報價及衍生結果傳送給您的代理程式供應商。請僅在您與 Finnhub 的協議允許此類分享時啟用。重新啟動 Kage 後生效。",
     "description": "Explain opt-in and external agent data flow",
     "_machine_translated": true,
-    "_source_hash": "600e0e85ae5aca60"
+    "_source_hash": "85852257d902cb3e"
   },
   "settings.delete_quotes": {
     "message": "刪除已儲存的報價",
@@ -360,10 +360,10 @@
     "_source_hash": "c3ae84bf8010f20d"
   },
   "settings.quotes_deleted": {
-    "message": "已刪除已儲存的報價與本機樣本。",
-    "description": "Cache deletion success",
+    "message": "已刪除 {count} 筆已儲存的報價記錄及其本機樣本。其他視窗或進行中的重新整理可能會再儲存更多記錄。",
+    "description": "Accurate count of records deleted; preserve {count}; concurrent windows may retain or save records",
     "_machine_translated": true,
-    "_source_hash": "5c098db4acf64401"
+    "_source_hash": "06d62290314fd122"
   },
   "widget.setup": {
     "message": "輸入 stock 並按下 Enter，即可開啟「股票」設定並設定報價。",

@@ -1,5 +1,6 @@
 // Keep this module a leaf for the host's single shared-module rewrite pass.
-const MAX_SYMBOLS = 10;
+export const MAX_SYMBOLS = 10;
+const STOPWORDS = new Set('of for on up vs the a to in my is and or with from about price prices picks rom comp buy why how what should can please explain today news'.split(' '));
 const FOREIGN_SUFFIX = /\.(?:[A-Z]{2,}|L|F|T|V)$/;
 const NAMES = Object.freeze({
   AAPL: 'Apple Inc.',
@@ -60,11 +61,12 @@ export function parseQuery(query) {
   const input = match ? match[2] || '' : text;
   const parts = input.split(/[\s,]+/).filter(Boolean);
   if (!match && (!parts.length || !parts.every((p) => /^\$[A-Za-z0-9][A-Za-z0-9.-]{0,17}$/.test(p)))) return null;
-  if (match && (input.includes('?') || /^(?:market|split|options|prices)\b/i.test(input))) return null;
-  if (match && parts.filter((part) => {
+  if (match && (/[?!:]/.test(input) || /^(?:market|split|options|prices)\b/i.test(input))) return null;
+  if (match && parts.some((part) => {
     try { normalizeSymbol(part); return false; }
     catch (error) { return error.code === 'invalid_symbols'; }
-  }).length > 3) return null;
+  })) return null;
+  if (match && parts.length > 1 && parts.some((part) => STOPWORDS.has(part.replace(/^\$/, '').toLowerCase()))) return null;
   if (!parts.length) return { symbols: [], copy: !!match?.[1] };
   try {
     const entries = symbolEntries(parts);

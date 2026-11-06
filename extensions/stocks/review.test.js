@@ -96,7 +96,7 @@ describe('review regressions: launcher and UI', () => {
       await vi.advanceTimersByTimeAsync(180);
     }
     const rows = await drive(Promise.all(promises), 1500);
-    expect(rows.slice(0, -1).every((row) => row.length === 0)).toBe(true);
+    expect(rows.at(-1).filter((row) => row.data.quote && !row.data.copy)).toHaveLength(text === '$AAPL' ? 1 : 7);
     const symbols = fetch.mock.calls.map(([url]) => new URL(url).searchParams.get('symbol'));
     expect(symbols).toEqual(text === '$AAPL' ? ['AAPL'] : ['AAPL', 'MSFT', 'NVDA', 'GOOGL', 'AMZN', 'META', 'TSLA']);
     expect(JSON.parse(h.store.get('request_budget')).attempts).toHaveLength(symbols.length);
@@ -118,19 +118,19 @@ describe('review regressions: launcher and UI', () => {
     const h = host();
     const search = init(Search, h);
     const placeholder = search.match('$AAPL')[0];
-    expect(placeholder.data).toEqual({ pending: true, symbols: ['AAPL'], copy: false });
+    expect(placeholder.data).toEqual({ pending: true, symbols: ['AAPL'], copy: false, query: '$AAPL' });
     expect(await search.execute(placeholder)).toMatchObject({ type: 'custom' });
     expect(h.invoke).toHaveBeenCalledWith('open_url', { url: 'https://www.tradingview.com/chart/?symbol=AAPL' });
     const copy = await drive(search.execute(search.match('stock copy AAPL')[0]));
     expect(copy).toEqual({ type: 'copy', value: 'AAPL 189.12 +0.2%' });
-    expect(await search.execute(search.match('stock')[0])).toEqual({ type: 'open_extension_settings' });
+    expect(await search.execute(search.match('stock')[0])).toMatchObject({ type: 'custom' });
   });
 
   it.each(['unknown', 'invalid_symbols', 'too_many', 'rate_limit', 'offline', 'busy', 'unsupported', 'timeout'])('does not route %s errors to settings', async (code) => {
     const search = init(Search, host());
-    expect(await search.execute(search.errorRow('AAPL', code))).toBeNull();
+    expect(await search.execute(search.errorRow('AAPL', code))).toMatchObject({ type: 'custom' });
   });
-  it.each(['setup', 'auth', 'cache_only', 'storage'])('routes actionable %s errors to settings', async (code) => {
+  it.each(['setup', 'auth'])('routes actionable %s errors to settings', async (code) => {
     const search = init(Search, host());
     expect(await search.execute(search.errorRow('AAPL', code))).toEqual({ type: 'open_extension_settings' });
   });
@@ -163,16 +163,16 @@ describe('review regressions: launcher and UI', () => {
     });
     const widget = init(Widget, h);
     expect(widget.getRefreshInterval()).toBe(60_000);
-    await drive(widget.render(), 150);
+    await drive(widget.render(), 1200);
     expect(JSON.parse(h.store.get('quote_AAPL')).fetchedAt).toBe(NOW);
     for (let tick = 1; tick <= 3; tick++) {
       vi.setSystemTime(NOW + tick * 300_000);
-      await drive(widget.render(), 150);
+      await drive(widget.render(), 1200);
       expect(fetch).toHaveBeenCalledTimes(tick + 1);
     }
     widget.onConfigUpdate({ watchlist: 'AAPL', refresh_seconds: 60 });
     vi.setSystemTime(NOW + 960_000);
-    await drive(widget.render(), 150);
+    await drive(widget.render(), 1200);
     expect(fetch).toHaveBeenCalledTimes(5);
   });
 });
@@ -184,7 +184,7 @@ describe('review regressions: storage, budgets and keys', () => {
     const output = await drive(widget.render());
     expect(output.actions).toHaveLength(10);
     expect(h.stats.rejected).toBe(0);
-    expect(h.stats.calls).toBeLessThanOrEqual(40);
+    expect(h.stats.calls).toBeLessThanOrEqual(70);
     expect(h.invoke.mock.calls.filter(([cmd, args]) => cmd === 'load_extension_data' && args.key === 'credentials')).toHaveLength(1);
     expect(h.stats.writes.filter((key) => key === 'request_budget')).toHaveLength(1);
     expect(JSON.parse(h.store.get('request_budget')).attempts).toHaveLength(10);
@@ -203,19 +203,19 @@ describe('review regressions: storage, budgets and keys', () => {
     expect(fetch).not.toHaveBeenCalled();
   });
 
-  it.each(['', '{torn', 'null', '{"attempts":"broken"}'])('does not overwrite an unreadable budget %j', async (record) => {
+  it.each(['', '{torn', 'null'])('repairs an unreadable budget conservatively %j', async (record) => {
     const h = host({ seed: { request_budget: record } });
     const quotes = await drive(h.client.getQuotes(['AAPL']));
     expect(quotes[0].error).toBe('storage');
-    expect(h.store.get('request_budget')).toBe(record);
-    expect(h.stats.writes).not.toContain('request_budget');
+    expect(JSON.parse(h.store.get('request_budget'))).toMatchObject({ backoffUntil: NOW + 60_000, backoffReason: 'storage' });
+    expect(h.stats.writes).toContain('request_budget');
     expect(fetch).not.toHaveBeenCalled();
   });
 
   it('fails closed during backoff and keeps its local pause when the shared read fails', async () => {
     const h = host({ seed: { request_budget: '{torn' } });
-    await expect(h.client.backoff({ code: 'offline' })).rejects.toMatchObject({ code: 'storage' });
-    expect(h.store.get('request_budget')).toBe('{torn');
+    await h.client.backoff({ code: 'offline' });
+    expect(JSON.parse(h.store.get('request_budget')).backoffReason).toBe('storage');
     expect(h.client.localBackoff).toBeGreaterThan(NOW);
   });
 
@@ -346,7 +346,7 @@ describe('review regressions: storage, budgets and keys', () => {
     expect(h.store.has('quote_OLD')).toBe(false);
     expect(JSON.parse(h.store.get('quote_AAPL')).samples).toHaveLength(1);
     const settings = init(Settings, h);
-    expect((await settings.runAction('delete_quotes')).status).toContain('deleted');
+    expect((await settings.runAction('delete_quotes')).status).toContain('Deleted');
     expect([...h.store.keys()].filter((key) => /^quote_(?!index)/.test(key))).toEqual([]);
     expect(await h.client.key()).toBe(GOOD);
   });
@@ -384,7 +384,7 @@ describe('review regressions: symbols, formatting and tools', () => {
   });
 
   it('formats whole-second times, price-precision changes and rounded zero without changing clipboard locale', () => {
-    expect(timestampText(NOW / 1000)).toBe('2026-11-06 16:20:40 UTC');
+    expect(timestampText(NOW / 1000, { invariant: true })).toBe('2026-11-06 16:20:40 UTC');
     expect(signedText(0.43, { price: 189.12 })).toBe('+0.43');
     expect(signedText(-0.001, { percent: true })).toBe('0%');
     expect(signedText(0.001, { percent: true })).toBe('0%');

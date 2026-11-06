@@ -348,10 +348,10 @@
     "_source_hash": "feaafa8e946fc0b2"
   },
   "settings.agent_tools_hint": {
-    "message": "เครื่องมือของเอเจนต์อาจส่งราคาจาก Finnhub และผลลัพธ์ที่ได้จากข้อมูลดังกล่าวไปยังผู้ให้บริการเอเจนต์ของคุณ เปิดใช้เฉพาะเมื่อข้อตกลงกับ Finnhub ของคุณอนุญาตให้แชร์ข้อมูลนี้",
+    "message": "เครื่องมือของเอเจนต์อาจส่งราคาหุ้นจาก Finnhub และผลลัพธ์ที่ได้จากข้อมูลดังกล่าวไปยังผู้ให้บริการเอเจนต์ของคุณ โปรดเปิดใช้งานเฉพาะเมื่อข้อตกลงกับ Finnhub ของคุณอนุญาตให้แชร์ข้อมูลนี้ได้ การตั้งค่าจะมีผลหลังจากรีสตาร์ท Kage",
     "description": "Explain opt-in and external agent data flow",
     "_machine_translated": true,
-    "_source_hash": "600e0e85ae5aca60"
+    "_source_hash": "85852257d902cb3e"
   },
   "settings.delete_quotes": {
     "message": "ลบราคาที่บันทึกไว้",
@@ -360,10 +360,10 @@
     "_source_hash": "c3ae84bf8010f20d"
   },
   "settings.quotes_deleted": {
-    "message": "ลบราคาที่บันทึกไว้และข้อมูลตัวอย่างในเครื่องแล้ว",
-    "description": "Cache deletion success",
+    "message": "ลบบันทึกราคาหุ้นที่บันทึกไว้ {count} รายการและตัวอย่างข้อมูลในเครื่องที่เกี่ยวข้องแล้ว หน้าต่างอื่นหรือการรีเฟรชที่กำลังทำงานอยู่อาจบันทึกข้อมูลเพิ่มเติมได้",
+    "description": "Accurate count of records deleted; preserve {count}; concurrent windows may retain or save records",
     "_machine_translated": true,
-    "_source_hash": "5c098db4acf64401"
+    "_source_hash": "06d62290314fd122"
   },
   "widget.setup": {
     "message": "พิมพ์ stock แล้วกด Enter เพื่อเปิดการตั้งค่า Stocks และตั้งค่าการแสดงราคา",

@@ -234,7 +234,7 @@
     "description": "Optional agent tool access; disabled by default"
   },
   "settings.agent_tools_hint": {
-    "message": "Agent tools may send Finnhub quotes and derived results to your agent provider. Enable only when your Finnhub agreement permits this sharing.",
+    "message": "Agent tools may send Finnhub quotes and derived results to your agent provider. Enable only when your Finnhub agreement permits this sharing. Takes effect after you restart Kage.",
     "description": "Explain opt-in and external agent data flow"
   },
   "settings.delete_quotes": {
@@ -242,8 +242,8 @@
     "description": "Delete cached quotes and locally sampled history, retaining the key"
   },
   "settings.quotes_deleted": {
-    "message": "Saved quotes and local samples deleted.",
-    "description": "Cache deletion success"
+    "message": "Deleted {count} saved quote records and their local samples. Other windows or active refreshes may save more.",
+    "description": "Accurate count of records deleted; preserve {count}; concurrent windows may retain or save records"
   },
   "widget.setup": {
     "message": "Type stock and press Enter to open Stocks settings and set up quotes.",

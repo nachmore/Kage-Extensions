@@ -348,10 +348,10 @@
     "_source_hash": "feaafa8e946fc0b2"
   },
   "settings.agent_tools_hint": {
-    "message": "Agenttools kunnen Finnhub-koersen en afgeleide resultaten naar uw agentprovider sturen. Schakel dit alleen in als uw Finnhub-overeenkomst dit delen toestaat.",
+    "message": "Agenttools kunnen Finnhub-koersen en afgeleide resultaten naar je agentprovider sturen. Schakel dit alleen in als je Finnhub-overeenkomst dit delen toestaat. Wordt van kracht nadat je Kage opnieuw hebt gestart.",
     "description": "Explain opt-in and external agent data flow",
     "_machine_translated": true,
-    "_source_hash": "600e0e85ae5aca60"
+    "_source_hash": "85852257d902cb3e"
   },
   "settings.delete_quotes": {
     "message": "Opgeslagen koersen verwijderen",
@@ -360,10 +360,10 @@
     "_source_hash": "c3ae84bf8010f20d"
   },
   "settings.quotes_deleted": {
-    "message": "Opgeslagen koersen en lokale metingen verwijderd.",
-    "description": "Cache deletion success",
+    "message": "{count} opgeslagen koersrecords en de bijbehorende lokale samples verwijderd. Andere vensters of actieve vernieuwingen kunnen er meer opslaan.",
+    "description": "Accurate count of records deleted; preserve {count}; concurrent windows may retain or save records",
     "_machine_translated": true,
-    "_source_hash": "5c098db4acf64401"
+    "_source_hash": "06d62290314fd122"
   },
   "widget.setup": {
     "message": "Typ stock en druk op Enter om de Stocks-instellingen te openen en koersen in te stellen.",

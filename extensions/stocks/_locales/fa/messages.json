@@ -348,10 +348,10 @@
     "_source_hash": "feaafa8e946fc0b2"
   },
   "settings.agent_tools_hint": {
-    "message": "ابزارهای عامل ممکن است قیمت‌های Finnhub و نتایج حاصل از آن‌ها را برای ارائه‌دهندهٔ عامل شما ارسال کنند. فقط در صورتی فعال کنید که قرارداد Finnhub شما اجازهٔ این اشتراک‌گذاری را بدهد.",
+    "message": "ابزارهای عامل ممکن است قیمت‌های Finnhub و نتایج حاصل از آن‌ها را برای ارائه‌دهندهٔ عامل شما ارسال کنند. فقط در صورتی این گزینه را فعال کنید که توافق‌نامهٔ شما با Finnhub اجازهٔ چنین اشتراکی را بدهد. این تغییر پس از راه‌اندازی مجدد Kage اعمال می‌شود.",
     "description": "Explain opt-in and external agent data flow",
     "_machine_translated": true,
-    "_source_hash": "600e0e85ae5aca60"
+    "_source_hash": "85852257d902cb3e"
   },
   "settings.delete_quotes": {
     "message": "حذف قیمت‌های ذخیره‌شده",
@@ -360,10 +360,10 @@
     "_source_hash": "c3ae84bf8010f20d"
   },
   "settings.quotes_deleted": {
-    "message": "قیمت‌های ذخیره‌شده و نمونه‌های محلی حذف شدند.",
-    "description": "Cache deletion success",
+    "message": "{count} رکورد قیمت ذخیره‌شده و نمونه‌های محلی آن‌ها حذف شدند. ممکن است پنجره‌های دیگر یا به‌روزرسانی‌های در حال اجرا رکوردهای بیشتری ذخیره کنند.",
+    "description": "Accurate count of records deleted; preserve {count}; concurrent windows may retain or save records",
     "_machine_translated": true,
-    "_source_hash": "5c098db4acf64401"
+    "_source_hash": "06d62290314fd122"
   },
   "widget.setup": {
     "message": "برای باز کردن تنظیمات سهام و راه‌اندازی قیمت‌ها، stock را تایپ کنید و Enter را بزنید.",

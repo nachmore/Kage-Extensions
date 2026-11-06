@@ -1,4 +1,4 @@
-import { MAX_SYMBOLS } from './defaults.js';
+import { MAX_SYMBOLS } from './symbols.js';
 
 export function escapeHtml(value) {
   return String(value ?? '').replace(/[&<>"']/g, (c) => ({
@@ -22,9 +22,11 @@ export function signedText(value, { percent = false, price = value, locale, inva
   const digits = percent ? 2 : precision(price);
   const rounded = Number(value.toFixed(digits)) || 0;
   const fixed = rounded.toFixed(digits);
-  const text = invariant ? (percent ? fixed.replace(/\.?0+$/, '') : fixed)
-    : new Intl.NumberFormat(locale, { minimumFractionDigits: percent ? 0 : digits, maximumFractionDigits: digits }).format(rounded);
-  return `${rounded > 0 ? '+' : ''}${text}${percent ? '%' : ''}`;
+  if (invariant) return `${rounded > 0 ? '+' : ''}${percent ? fixed.replace(/\.?0+$/, '') : fixed}${percent ? '%' : ''}`;
+  return new Intl.NumberFormat(locale, {
+    style: percent ? 'percent' : 'decimal', signDisplay: 'exceptZero',
+    minimumFractionDigits: percent ? 0 : digits, maximumFractionDigits: digits,
+  }).format(percent ? rounded / 100 : rounded);
 }
 
 export function copyText(quote) {
@@ -32,24 +34,27 @@ export function copyText(quote) {
 }
 
 export function direction(quote) {
-  return quote.change > 0 ? 'up' : quote.change < 0 ? 'down' : 'flat';
+  const change = Number.isFinite(quote.change) ? Number(quote.change.toFixed(precision(quote.price))) : 0;
+  return change > 0 ? 'up' : change < 0 ? 'down' : 'flat';
 }
 
-export function timestampText(value) {
+export function timestampText(value, { locale, invariant = false } = {}) {
   if (!Number.isFinite(value)) return '—';
   const date = new Date(Math.floor(value) * 1000);
-  return Number.isFinite(date.getTime()) ? date.toISOString().replace('T', ' ').replace('.000Z', ' UTC') : '—';
+  if (!Number.isFinite(date.getTime())) return '—';
+  return invariant ? date.toISOString().replace('T', ' ').replace('.000Z', ' UTC')
+    : new Intl.DateTimeFormat(locale, { dateStyle: 'medium', timeStyle: 'long' }).format(date);
 }
 
-export function quoteDescription(quote, t) {
+export function quoteDescription(quote, t, locale) {
   const parts = [
     'Finnhub · USD',
-    t('quote.as_of', { time: timestampText(quote.timestamp) }),
+    t('quote.as_of', { time: timestampText(quote.timestamp, { locale }) }),
   ];
   if (quote.timestamp * 1000 < Date.now() - 15 * 60_000) parts.push(t('quote.delayed'));
-  if (quote.cached) parts.push(t('quote.cached', { time: timestampText(quote.fetchedAt / 1000) }));
+  if (quote.cached) parts.push(t('quote.cached', { time: timestampText(quote.fetchedAt / 1000, { locale }) }));
   if (quote.reason) parts.push(errorText(quote.reason, t));
-  if (quote.retryAt) parts.push(t('quote.retry', { time: timestampText(quote.retryAt / 1000) }));
+  if (quote.retryAt) parts.push(t('quote.retry', { time: timestampText(quote.retryAt / 1000, { locale }) }));
   return parts.join(' · ');
 }
 

@@ -348,10 +348,10 @@
     "_source_hash": "feaafa8e946fc0b2"
   },
   "settings.agent_tools_hint": {
-    "message": "כלי סוכנים עשויים לשלוח ציטוטים מ-Finnhub ותוצאות שנגזרו מהם לספק הסוכן שלכם. הפעילו רק אם ההסכם שלכם עם Finnhub מתיר שיתוף כזה.",
+    "message": "כלי הסוכן עשויים לשלוח ציטוטי מחירים מ-Finnhub ותוצאות הנגזרות מהם לספק הסוכן שלך. יש להפעיל רק אם ההסכם שלך עם Finnhub מתיר שיתוף כזה. השינוי ייכנס לתוקף לאחר הפעלה מחדש של Kage.",
     "description": "Explain opt-in and external agent data flow",
     "_machine_translated": true,
-    "_source_hash": "600e0e85ae5aca60"
+    "_source_hash": "85852257d902cb3e"
   },
   "settings.delete_quotes": {
     "message": "מחיקת ציטוטים שמורים",
@@ -360,10 +360,10 @@
     "_source_hash": "c3ae84bf8010f20d"
   },
   "settings.quotes_deleted": {
-    "message": "הציטוטים השמורים והדגימות המקומיות נמחקו.",
-    "description": "Cache deletion success",
+    "message": "נמחקו {count} רשומות שמורות של ציטוטי מחירים והדגימות המקומיות שלהן. חלונות אחרים או רענונים פעילים עשויים לשמור רשומות נוספות.",
+    "description": "Accurate count of records deleted; preserve {count}; concurrent windows may retain or save records",
     "_machine_translated": true,
-    "_source_hash": "5c098db4acf64401"
+    "_source_hash": "06d62290314fd122"
   },
   "widget.setup": {
     "message": "הקלידו stock והקישו Enter כדי לפתוח את הגדרות המניות ולהגדיר ציטוטים.",

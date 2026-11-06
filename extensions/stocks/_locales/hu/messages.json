@@ -348,10 +348,10 @@
     "_source_hash": "feaafa8e946fc0b2"
   },
   "settings.agent_tools_hint": {
-    "message": "Az ügynökeszközök Finnhub-árfolyamokat és az azokból származtatott eredményeket küldhetnek az ügynökszolgáltatójának. Csak akkor engedélyezze, ha a Finnhub-szerződése megengedi az ilyen megosztást.",
+    "message": "Az ügynökeszközök elküldhetik a Finnhub-árfolyamokat és a belőlük származtatott eredményeket az ügynökszolgáltatójának. Csak akkor engedélyezze, ha a Finnhubbal kötött szerződése megengedi az ilyen megosztást. A Kage újraindítása után lép életbe.",
     "description": "Explain opt-in and external agent data flow",
     "_machine_translated": true,
-    "_source_hash": "600e0e85ae5aca60"
+    "_source_hash": "85852257d902cb3e"
   },
   "settings.delete_quotes": {
     "message": "Mentett árfolyamok törlése",
@@ -360,10 +360,10 @@
     "_source_hash": "c3ae84bf8010f20d"
   },
   "settings.quotes_deleted": {
-    "message": "A mentett árfolyamok és a helyi minták törölve.",
-    "description": "Cache deletion success",
+    "message": "{count} mentett árfolyamrekord és a hozzájuk tartozó helyi minták törölve. Más ablakok vagy folyamatban lévő frissítések további rekordokat menthetnek.",
+    "description": "Accurate count of records deleted; preserve {count}; concurrent windows may retain or save records",
     "_machine_translated": true,
-    "_source_hash": "5c098db4acf64401"
+    "_source_hash": "06d62290314fd122"
   },
   "widget.setup": {
     "message": "Írja be a stock parancsot, és nyomja meg az Entert a Stocks beállításainak megnyitásához és az árfolyamok beállításához.",

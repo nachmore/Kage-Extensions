@@ -348,10 +348,10 @@
     "_source_hash": "feaafa8e946fc0b2"
   },
   "settings.agent_tools_hint": {
-    "message": "Agentværktøjer kan sende Finnhub-kurser og afledte resultater til din agentudbyder. Aktivér kun, hvis din Finnhub-aftale tillader denne deling.",
+    "message": "Agentværktøjer kan sende Finnhub-kurser og afledte resultater til din agentudbyder. Aktivér kun, hvis din Finnhub-aftale tillader denne deling. Træder i kraft, når du genstarter Kage.",
     "description": "Explain opt-in and external agent data flow",
     "_machine_translated": true,
-    "_source_hash": "600e0e85ae5aca60"
+    "_source_hash": "85852257d902cb3e"
   },
   "settings.delete_quotes": {
     "message": "Slet gemte kurser",
@@ -360,10 +360,10 @@
     "_source_hash": "c3ae84bf8010f20d"
   },
   "settings.quotes_deleted": {
-    "message": "Gemte kurser og lokale målinger er slettet.",
-    "description": "Cache deletion success",
+    "message": "Slettede {count} gemte kursposter og deres lokale prøver. Andre vinduer eller igangværende opdateringer kan gemme flere.",
+    "description": "Accurate count of records deleted; preserve {count}; concurrent windows may retain or save records",
     "_machine_translated": true,
-    "_source_hash": "5c098db4acf64401"
+    "_source_hash": "06d62290314fd122"
   },
   "widget.setup": {
     "message": "Skriv stock, og tryk på Enter for at åbne Stocks-indstillingerne og konfigurere kurser.",

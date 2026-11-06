@@ -29,8 +29,9 @@ preflight is not allowed. Requests omit cookies/referrers and reject
 redirects. No request URLs, credentials, or raw provider errors are logged.
 Remove the key in settings to stop authenticated requests.
 
-Choose **Saved quotes only · offline** to suspend network requests while
-retaining the last saved quotes and local history.
+Choose **Saved quotes only · offline** to pause automatic network refreshes
+and retain quotes and local history for up to 31 days. **Test and save key**
+still makes the connection test you request.
 
 ## Data and limits
 
@@ -43,15 +44,19 @@ Your other applications using the same key also consume Finnhub's limit.
 Persistent storage has no atomic compare-and-swap, so cross-window budget
 coordination is best effort, as in Spotify. Each batch reads the key once
 and reserves its requests in one budget transaction. Storage errors,
-empty files and torn JSON fail closed; transient host invoke-limit errors
-are retried. Short lock leases are retried with jitter. A 429 response
+empty files and torn JSON are repaired where possible: an unreadable lock
+expires, a twice-unreadable budget closes requests for 60 seconds, and a
+successful refresh replaces a torn quote. Transient host invoke-limit errors
+are retried. Short lock leases use nonce checks and retry lost ownership
+with jitter; coordination remains best effort without host atomic writes. A 429 response
 applies shared exponential backoff once per failure episode, capped at
 15 minutes; the streak decays after 30 minutes without failures. The browser
 does not expose Finnhub's `Retry-After` header, so Stocks uses a minimum
 60-second pause. Network, server and authentication failures also back off;
 a 2.2-second timeout uses a separate 3-second local pause. HTTP 403 is a
 per-symbol plan/unsupported error and never sets an authentication backoff.
-Candidate-key tests bypass backoff but still count toward the request budget;
+Candidate-key tests bypass authentication backoff, respect network/server
+and rate-limit pauses, and still count toward the request budget;
 rejected candidates never set auth backoff. Saving/removing a key clears it.
 Cached values keep their original last-trade and retrieval timestamps.
 
@@ -65,6 +70,8 @@ US symbols and share classes such as `BRK.B` are accepted; `AAPL.US` is an
 alias for `AAPL`. International suffixes such as `.L`, `.TO` and `.JP`
 produce an explanation instead of being silently stripped or mapped to a
 different US stock. Unknown symbols never turn into zero-price quotes.
+Unknown and plan-restricted symbols are cached for ten minutes to avoid
+repeated unsuccessful requests.
 
 ### Sparklines and agent tools
 
@@ -72,12 +79,16 @@ The optional sparkline uses **locally sampled quotes**, collecting actual
 provider timestamps as the extension is used. It does not make additional
 requests, fill gaps, or imply a complete trading-day series. The cache
 returns at most 512 samples per queried symbol in a rolling 31-day window.
-An index tracks queried records; maintenance prunes expired quotes and
-samples at most once a day while Stocks is used. Files may remain on disk
-longer when Stocks is unused. **Delete saved quotes** clears tracked quotes
-and samples immediately, retaining the API key.
+An index tracks queried records; maintenance runs after returning quotes,
+pruning up to 20 records per daily pass. Files may remain on disk longer.
+The `qidx` index migrates the old index and avoids a filename collision with
+the `INDEX` ticker. Today's host cannot enumerate data files, so a torn
+index starts fresh and previously untracked files may remain.
+**Delete saved quotes** reports the number of records it actually deleted,
+retaining the API key. Other windows and active refreshes may save more.
 
 - Enable **Allow Stocks tools for agents** in settings to expose the tools.
+  Takes effect after you restart Kage.
   They are off by default because their output can reach an external agent
   provider; enable them only when your Finnhub agreement permits sharing.
 - `get_quote(symbols)` returns quotes, source, currency, ISO trade/fetch/retry
@@ -142,12 +153,20 @@ metadata commands, not sandbox `fetch`. The only fetch destination is
 enforced in extension code: `finnhub.io`. Browser navigation is limited to
 the Finnhub setup/source links and `www.tradingview.com` charts.
 
-Search accepts only complete cashtag lists on the `$` path, leaving agent
-prompts such as `$PATH is not set` alone. A 380 ms settle wait and generation
-counter suppress superseded typed prefixes. Pending Enter opens the chart
-(or fetches before copying); only actionable setup errors open settings.
+Search accepts ticker lists on both paths, rejecting malformed tokens,
+question/exclamation/colon punctuation and multi-word prose with stopwords.
+Prompts such as `$PATH is not set` and `stock price of nvda` stay with the
+agent. Exact cache hits return immediately. Other lookups wait for a 600 ms
+pause or a trailing space/comma; pauses longer than 600 ms can still request
+typed prefixes. A generation counter suppresses superseded results.
+Pending Enter opens a valid chart (or fetches before copying), using the
+watchlist for bare `stock`/`stock copy`. Missing keys open settings.
+Non-setup errors open valid charts or preserve the input with the host's
+`replace_input` action.
 Widgets poll at the minimum interval, use request-start cache timestamps,
 and re-check configured freshness so interval changes work without remounting.
+Display numbers and times use the user's language and local timezone;
+clipboard text and tool timestamps remain invariant.
 
 The host rewrites shared imports in a single pass. Provider transport is
 folded into `client.js`; shared dependencies are leaves and there are no

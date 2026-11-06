@@ -348,10 +348,10 @@
     "_source_hash": "feaafa8e946fc0b2"
   },
   "settings.agent_tools_hint": {
-    "message": "Narzędzia agentów mogą wysyłać notowania Finnhub i wyniki pochodne do Twojego dostawcy agenta. Włącz tę opcję tylko wtedy, gdy Twoja umowa z Finnhub zezwala na takie udostępnianie.",
+    "message": "Narzędzia agenta mogą wysyłać notowania Finnhub i wyniki pochodne do dostawcy agenta. Włącz tę opcję tylko wtedy, gdy umowa z Finnhub zezwala na takie udostępnianie. Zmiana zacznie obowiązywać po ponownym uruchomieniu aplikacji Kage.",
     "description": "Explain opt-in and external agent data flow",
     "_machine_translated": true,
-    "_source_hash": "600e0e85ae5aca60"
+    "_source_hash": "85852257d902cb3e"
   },
   "settings.delete_quotes": {
     "message": "Usuń zapisane notowania",
@@ -360,10 +360,10 @@
     "_source_hash": "c3ae84bf8010f20d"
   },
   "settings.quotes_deleted": {
-    "message": "Zapisane notowania i lokalne próbki zostały usunięte.",
-    "description": "Cache deletion success",
+    "message": "Usunięto zapisane rekordy notowań wraz z ich lokalnymi próbkami (liczba: {count}). Inne okna lub aktywne odświeżania mogą zapisać kolejne.",
+    "description": "Accurate count of records deleted; preserve {count}; concurrent windows may retain or save records",
     "_machine_translated": true,
-    "_source_hash": "5c098db4acf64401"
+    "_source_hash": "06d62290314fd122"
   },
   "widget.setup": {
     "message": "Wpisz stock i naciśnij Enter, aby otworzyć ustawienia Stocks i skonfigurować notowania.",

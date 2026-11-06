@@ -348,10 +348,10 @@
     "_source_hash": "feaafa8e946fc0b2"
   },
   "settings.agent_tools_hint": {
-    "message": "Nástroje agentů mohou odesílat kurzy z Finnhubu a odvozené výsledky vašemu poskytovateli agenta. Povolte to pouze tehdy, pokud vaše smlouva s Finnhubem takové sdílení umožňuje.",
+    "message": "Nástroje agenta mohou odesílat kotace z Finnhub a odvozené výsledky vašemu poskytovateli agenta. Povolte je pouze tehdy, pokud vaše smlouva s Finnhub takové sdílení umožňuje. Změna se projeví po restartování aplikace Kage.",
     "description": "Explain opt-in and external agent data flow",
     "_machine_translated": true,
-    "_source_hash": "600e0e85ae5aca60"
+    "_source_hash": "85852257d902cb3e"
   },
   "settings.delete_quotes": {
     "message": "Smazat uložené kurzy",
@@ -360,10 +360,10 @@
     "_source_hash": "c3ae84bf8010f20d"
   },
   "settings.quotes_deleted": {
-    "message": "Uložené kurzy a místní vzorky byly smazány.",
-    "description": "Cache deletion success",
+    "message": "Počet smazaných uložených záznamů kotací (včetně jejich místních vzorků): {count}. Jiná okna nebo probíhající obnovování mohou uložit další.",
+    "description": "Accurate count of records deleted; preserve {count}; concurrent windows may retain or save records",
     "_machine_translated": true,
-    "_source_hash": "5c098db4acf64401"
+    "_source_hash": "06d62290314fd122"
   },
   "widget.setup": {
     "message": "Napište stock a stiskněte Enter. Otevře se nastavení Akcie, kde nastavíte kurzy.",

@@ -348,10 +348,10 @@
     "_source_hash": "feaafa8e946fc0b2"
   },
   "settings.agent_tools_hint": {
-    "message": "智能体工具可能会将 Finnhub 报价及衍生结果发送给您的智能体服务商。仅在您的 Finnhub 协议允许此类共享时启用。",
+    "message": "智能体工具可能会将 Finnhub 报价及衍生结果发送给您的智能体提供商。仅在您与 Finnhub 的协议允许此类共享时启用。重启 Kage 后生效。",
     "description": "Explain opt-in and external agent data flow",
     "_machine_translated": true,
-    "_source_hash": "600e0e85ae5aca60"
+    "_source_hash": "85852257d902cb3e"
   },
   "settings.delete_quotes": {
     "message": "删除已保存的报价",
@@ -360,10 +360,10 @@
     "_source_hash": "c3ae84bf8010f20d"
   },
   "settings.quotes_deleted": {
-    "message": "已删除已保存的报价和本地样本。",
-    "description": "Cache deletion success",
+    "message": "已删除 {count} 条已保存的报价记录及其本地样本。其他窗口或正在进行的刷新可能会保存更多记录。",
+    "description": "Accurate count of records deleted; preserve {count}; concurrent windows may retain or save records",
     "_machine_translated": true,
-    "_source_hash": "5c098db4acf64401"
+    "_source_hash": "06d62290314fd122"
   },
   "widget.setup": {
     "message": "输入 stock 并按 Enter 键，打开股票设置并设置报价。",

@@ -348,10 +348,10 @@
     "_source_hash": "feaafa8e946fc0b2"
   },
   "settings.agent_tools_hint": {
-    "message": "Agentverktyg kan skicka kurser från Finnhub och härledda resultat till din agentleverantör. Aktivera bara om ditt avtal med Finnhub tillåter sådan delning.",
+    "message": "Agentverktyg kan skicka Finnhub-kurser och härledda resultat till din agentleverantör. Aktivera endast om ditt avtal med Finnhub tillåter sådan delning. Ändringen börjar gälla när du har startat om Kage.",
     "description": "Explain opt-in and external agent data flow",
     "_machine_translated": true,
-    "_source_hash": "600e0e85ae5aca60"
+    "_source_hash": "85852257d902cb3e"
   },
   "settings.delete_quotes": {
     "message": "Radera sparade kurser",
@@ -360,10 +360,10 @@
     "_source_hash": "c3ae84bf8010f20d"
   },
   "settings.quotes_deleted": {
-    "message": "Sparade kurser och lokala mätpunkter har raderats.",
-    "description": "Cache deletion success",
+    "message": "Raderade {count} sparade kursposter och deras lokala mätpunkter. Andra fönster eller pågående uppdateringar kan spara fler.",
+    "description": "Accurate count of records deleted; preserve {count}; concurrent windows may retain or save records",
     "_machine_translated": true,
-    "_source_hash": "5c098db4acf64401"
+    "_source_hash": "06d62290314fd122"
   },
   "widget.setup": {
     "message": "Skriv stock och tryck på Enter för att öppna inställningarna för Stocks och konfigurera kurser.",

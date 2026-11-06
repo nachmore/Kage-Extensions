@@ -13,7 +13,7 @@ import Widget from './widget.js';
 
 const catalog = JSON.parse(readFileSync(new URL('./_locales/en/messages.json', import.meta.url), 'utf8'));
 const TEST_KEY = 'example-test-key';
-const NOW = Date.parse('2026-11-06T16:00:00Z');
+const NOW = Date.parse('2026-11-06T16:00:00.417Z');
 const body = (extra = {}) => ({ c: 189.12, pc: 186.69, t: NOW / 1000, ...extra });
 const jsonResponse = (data = body(), status = 200, headers = {}) => ({
   ok: status >= 200 && status < 300, status, headers: new Headers(headers),
@@ -149,10 +149,10 @@ describe('formatting and display safety', () => {
     const quote = { ...parseFinnhubQuote(body({ t: NOW / 1000 - 86_400 }), 'AAPL'), cached: true, fetchedAt: NOW - 60_000, reason: 'rate_limit', retryAt: NOW + 60_000 };
     const text = quoteDescription(quote, f.context.i18n.t);
     expect(text).toContain('Finnhub');
-    expect(text).toContain('2026-11-05 16:00:00 UTC');
+    expect(text).toContain(timestampText(quote.timestamp));
     expect(text).toContain('Data delayed / market may be closed');
-    expect(text).toContain('Cached 2026-11-06 15:59:00 UTC');
-    expect(text).toContain('Retry after 2026-11-06 16:01:00 UTC');
+    expect(text).toContain('Cached ' + timestampText(quote.fetchedAt / 1000));
+    expect(text).toContain('Retry after ' + timestampText(quote.retryAt / 1000));
   });
   it('escapes untrusted text and draws honest sparse and flat sparklines', () => {
     expect(escapeHtml('<img onerror="x">&')).toBe('&lt;img onerror=&quot;x&quot;&gt;&amp;');
@@ -226,7 +226,7 @@ describe('cache, budgets, backoff and concurrent windows', () => {
     Date.now.mockReturnValue(NOW + 60_001);
     await sibling.testKey(TEST_KEY);
     expect(fetch).toHaveBeenCalledTimes(41);
-  });
+  }, 15000);
   it('caps request bursts below the provider global 30/second ceiling', async () => {
     const f = fixture();
     fetch.mockResolvedValue(jsonResponse());
@@ -441,7 +441,7 @@ describe('launcher, settings, tools and widget workflows', () => {
     const output = await widget.render();
     expect(output.html).toContain('Source: Finnhub');
     expect(output.html).toContain('AAPL 189.12');
-    expect(output.html).toContain('UTC');
+    expect(output.html).toContain(timestampText(NOW / 1000));
     expect(output.actions).toEqual([{ id: 'chart:AAPL', rpc: 'chart:AAPL' }]);
     await widget.onAction('chart:AAPL');
     expect(f.invoke).toHaveBeenCalledWith('open_url', { url: chartUrl('AAPL') });

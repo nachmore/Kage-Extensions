@@ -1,5 +1,6 @@
 import { getClient } from './client.js';
-import { DEFAULTS, MAX_SYMBOLS } from './defaults.js';
+import { DEFAULTS } from './defaults.js';
+import { MAX_SYMBOLS } from './symbols.js';
 import { errorText } from './format.js';
 
 export default class StocksToolProvider {
@@ -39,9 +40,11 @@ export default class StocksToolProvider {
           ...(quote.error ? { message: errorText(quote.error, this.t) } : { tradeTime: iso(timestamp * 1000), fetchedAt: iso(fetchedAt) }),
           ...(retryAt ? { retryAt: iso(retryAt) } : {}),
         }));
-        if (quotes.every((quote) => ['setup', 'auth', 'cache_only'].includes(quote.error))) {
-          return { error: result[0].message, result };
+        const connection = quotes.findIndex((quote) => ['setup', 'auth', 'cache_only', 'storage'].includes(quote.error));
+        if (connection >= 0 && quotes.every((quote) => quote.error)) {
+          return { error: result[connection].message, result };
         }
+        if (quotes.every((quote) => quote.error) && !(await this.client.key())) return { error: errorText('setup', this.t), result };
         return { result };
       }
       if (name === 'get_history') {

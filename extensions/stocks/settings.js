@@ -1,6 +1,6 @@
-import { DEFAULTS, MIN_REFRESH_SECONDS, MAX_REFRESH_SECONDS, MAX_SYMBOLS, MAX_PER_MINUTE } from './defaults.js';
+import { DEFAULTS, MIN_REFRESH_SECONDS, MAX_REFRESH_SECONDS, MAX_PER_MINUTE } from './defaults.js';
 import { FREE_KEY_URL, getClient, validKey } from './client.js';
-import { parseSymbols } from './symbols.js';
+import { MAX_SYMBOLS, parseSymbols } from './symbols.js';
 import { errorText, escapeHtml } from './format.js';
 
 export default class StocksSettingsProvider {
@@ -17,7 +17,8 @@ export default class StocksSettingsProvider {
 
   async getSettings() {
     const t = this.t;
-    const hasKey = !!(await this.client.key());
+    let hasKey = false, unreadableKey = false;
+    try { hasKey = !!(await this.client.key()); } catch { unreadableKey = true; }
     this.scratchId = hasKey ? `__replacement_key_${this.keyRevision}`
       : this.keyRevision ? `__api_key_${this.keyRevision}` : '__api_key';
     return {
@@ -42,7 +43,7 @@ export default class StocksSettingsProvider {
             // the compatible input, as in Spotify's guided setup.
             { type: 'text', id: this.scratchId, default: '', label: t('setup.key'), description: t('setup.key_hint') },
             { type: 'action', id: 'test_key', action: 'test_key', label: t('setup.test'), variant: 'primary' },
-            { type: 'action', id: 'remove_key', action: 'remove_key', label: t('setup.remove'), disabled: !hasKey },
+            { type: 'action', id: 'remove_key', action: 'remove_key', label: t('setup.remove'), disabled: !hasKey && !unreadableKey },
           ],
         },
         {
@@ -104,8 +105,8 @@ export default class StocksSettingsProvider {
         return { status: this.t('setup.removed'), host: { type: 'refresh' } };
       }
       if (action === 'delete_quotes') {
-        await this.client.deleteQuotes(parseSymbols(this.config.watchlist ?? DEFAULTS.watchlist, { allowEmpty: true }));
-        return { status: this.t('settings.quotes_deleted'), host: { type: 'refresh' } };
+        const count = await this.client.deleteQuotes(parseSymbols(this.config.watchlist ?? DEFAULTS.watchlist, { allowEmpty: true }));
+        return { status: this.t('settings.quotes_deleted', { count }), host: { type: 'refresh' } };
       }
       if (action === 'test_key') {
         const key = String(values[this.scratchId] || '').trim() || await this.client.key();

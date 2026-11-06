@@ -348,10 +348,10 @@
     "_source_hash": "feaafa8e946fc0b2"
   },
   "settings.agent_tools_hint": {
-    "message": "Instrumentele pentru agenți pot trimite cotațiile Finnhub și rezultatele derivate către furnizorul agentului dumneavoastră. Activați această opțiune doar dacă acordul dumneavoastră Finnhub permite această partajare.",
+    "message": "Instrumentele agentului pot trimite cotațiile Finnhub și rezultatele derivate către furnizorul dvs. de agent. Activați această opțiune doar dacă acordul dvs. cu Finnhub permite această partajare. Modificarea se aplică după ce reporniți Kage.",
     "description": "Explain opt-in and external agent data flow",
     "_machine_translated": true,
-    "_source_hash": "600e0e85ae5aca60"
+    "_source_hash": "85852257d902cb3e"
   },
   "settings.delete_quotes": {
     "message": "Ștergeți cotațiile salvate",
@@ -360,10 +360,10 @@
     "_source_hash": "c3ae84bf8010f20d"
   },
   "settings.quotes_deleted": {
-    "message": "Cotațiile salvate și eșantioanele locale au fost șterse.",
-    "description": "Cache deletion success",
+    "message": "S-au șters înregistrările de cotații salvate ({count}) și eșantioanele lor locale. Alte ferestre sau reîmprospătări active pot salva altele noi.",
+    "description": "Accurate count of records deleted; preserve {count}; concurrent windows may retain or save records",
     "_machine_translated": true,
-    "_source_hash": "5c098db4acf64401"
+    "_source_hash": "06d62290314fd122"
   },
   "widget.setup": {
     "message": "Tastați stock și apăsați Enter pentru a deschide setările Stocks și a configura cotațiile.",

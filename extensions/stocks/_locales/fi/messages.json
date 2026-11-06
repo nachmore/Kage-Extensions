@@ -348,10 +348,10 @@
     "_source_hash": "feaafa8e946fc0b2"
   },
   "settings.agent_tools_hint": {
-    "message": "Agenttityökalut voivat lähettää Finnhub-kursseja ja niistä johdettuja tuloksia agenttisi palveluntarjoajalle. Ota käyttöön vain, jos Finnhub-sopimuksesi sallii tämän jakamisen.",
+    "message": "Agenttityökalut voivat lähettää Finnhub-noteerauksia ja niistä johdettuja tuloksia agenttipalveluntarjoajallesi. Ota käyttöön vain, jos Finnhub-sopimuksesi sallii tämän jakamisen. Muutos tulee voimaan, kun käynnistät Kagen uudelleen.",
     "description": "Explain opt-in and external agent data flow",
     "_machine_translated": true,
-    "_source_hash": "600e0e85ae5aca60"
+    "_source_hash": "85852257d902cb3e"
   },
   "settings.delete_quotes": {
     "message": "Poista tallennetut kurssit",
@@ -360,10 +360,10 @@
     "_source_hash": "c3ae84bf8010f20d"
   },
   "settings.quotes_deleted": {
-    "message": "Tallennetut kurssit ja paikalliset näytteet poistettu.",
-    "description": "Cache deletion success",
+    "message": "Poistettu tallennettuja noteeraustietueita ja niiden paikallisia näytteitä: {count}. Muut ikkunat tai käynnissä olevat päivitykset voivat tallentaa lisää.",
+    "description": "Accurate count of records deleted; preserve {count}; concurrent windows may retain or save records",
     "_machine_translated": true,
-    "_source_hash": "5c098db4acf64401"
+    "_source_hash": "06d62290314fd122"
   },
   "widget.setup": {
     "message": "Kirjoita stock ja paina Enter avataksesi Osakkeet-asetukset ja määrittääksesi kurssit.",

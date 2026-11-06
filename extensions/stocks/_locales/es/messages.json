@@ -348,10 +348,10 @@
     "_source_hash": "feaafa8e946fc0b2"
   },
   "settings.agent_tools_hint": {
-    "message": "Las herramientas para agentes pueden enviar cotizaciones de Finnhub y resultados derivados a su proveedor de agentes. Actívelas solo si su acuerdo con Finnhub permite compartir estos datos.",
+    "message": "Las herramientas del agente pueden enviar cotizaciones de Finnhub y resultados derivados a tu proveedor de agente. Actívalas solo si tu acuerdo con Finnhub permite compartir estos datos. El cambio se aplica después de reiniciar Kage.",
     "description": "Explain opt-in and external agent data flow",
     "_machine_translated": true,
-    "_source_hash": "600e0e85ae5aca60"
+    "_source_hash": "85852257d902cb3e"
   },
   "settings.delete_quotes": {
     "message": "Eliminar cotizaciones guardadas",
@@ -360,10 +360,10 @@
     "_source_hash": "c3ae84bf8010f20d"
   },
   "settings.quotes_deleted": {
-    "message": "Se eliminaron las cotizaciones guardadas y las muestras locales.",
-    "description": "Cache deletion success",
+    "message": "Se eliminaron {count} registros de cotizaciones guardados y sus muestras locales. Otras ventanas o actualizaciones en curso pueden guardar más.",
+    "description": "Accurate count of records deleted; preserve {count}; concurrent windows may retain or save records",
     "_machine_translated": true,
-    "_source_hash": "5c098db4acf64401"
+    "_source_hash": "06d62290314fd122"
   },
   "widget.setup": {
     "message": "Escriba stock y pulse Intro para abrir los ajustes de Stocks y configurar las cotizaciones.",

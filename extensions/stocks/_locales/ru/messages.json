@@ -348,10 +348,10 @@
     "_source_hash": "feaafa8e946fc0b2"
   },
   "settings.agent_tools_hint": {
-    "message": "Инструменты агентов могут передавать котировки Finnhub и полученные на их основе результаты вашему провайдеру агента. Включайте этот параметр, только если ваше соглашение с Finnhub допускает такую передачу.",
+    "message": "Инструменты агента могут отправлять котировки Finnhub и производные результаты вашему поставщику агента. Включайте эту функцию, только если ваше соглашение с Finnhub допускает такую передачу данных. Изменение вступит в силу после перезапуска Kage.",
     "description": "Explain opt-in and external agent data flow",
     "_machine_translated": true,
-    "_source_hash": "600e0e85ae5aca60"
+    "_source_hash": "85852257d902cb3e"
   },
   "settings.delete_quotes": {
     "message": "Удалить сохранённые котировки",
@@ -360,10 +360,10 @@
     "_source_hash": "c3ae84bf8010f20d"
   },
   "settings.quotes_deleted": {
-    "message": "Сохранённые котировки и локальные выборки удалены.",
-    "description": "Cache deletion success",
+    "message": "Удалено сохранённых записей котировок: {count} (вместе с их локальными выборками). Другие окна или активные обновления могут сохранить новые записи.",
+    "description": "Accurate count of records deleted; preserve {count}; concurrent windows may retain or save records",
     "_machine_translated": true,
-    "_source_hash": "5c098db4acf64401"
+    "_source_hash": "06d62290314fd122"
   },
   "widget.setup": {
     "message": "Введите stock и нажмите Enter, чтобы открыть настройки «Акции» и настроить котировки.",

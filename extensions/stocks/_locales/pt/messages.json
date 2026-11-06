@@ -348,10 +348,10 @@
     "_source_hash": "feaafa8e946fc0b2"
   },
   "settings.agent_tools_hint": {
-    "message": "As ferramentas de agentes podem enviar cotações do Finnhub e resultados derivados ao seu provedor de agentes. Ative somente se o seu contrato com o Finnhub permitir esse compartilhamento.",
+    "message": "As ferramentas do agente podem enviar cotações do Finnhub e resultados derivados ao seu provedor de agente. Ative apenas se o seu contrato com o Finnhub permitir esse compartilhamento. Entra em vigor depois que você reiniciar o Kage.",
     "description": "Explain opt-in and external agent data flow",
     "_machine_translated": true,
-    "_source_hash": "600e0e85ae5aca60"
+    "_source_hash": "85852257d902cb3e"
   },
   "settings.delete_quotes": {
     "message": "Excluir cotações salvas",
@@ -360,10 +360,10 @@
     "_source_hash": "c3ae84bf8010f20d"
   },
   "settings.quotes_deleted": {
-    "message": "Cotações salvas e amostras locais excluídas.",
-    "description": "Cache deletion success",
+    "message": "Registros de cotações salvos excluídos: {count}, junto com as amostras locais. Outras janelas ou atualizações em andamento podem salvar mais.",
+    "description": "Accurate count of records deleted; preserve {count}; concurrent windows may retain or save records",
     "_machine_translated": true,
-    "_source_hash": "5c098db4acf64401"
+    "_source_hash": "06d62290314fd122"
   },
   "widget.setup": {
     "message": "Digite stock e pressione Enter para abrir as configurações de Ações e configurar as cotações.",

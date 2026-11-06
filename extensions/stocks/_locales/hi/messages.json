@@ -348,10 +348,10 @@
     "_source_hash": "feaafa8e946fc0b2"
   },
   "settings.agent_tools_hint": {
-    "message": "एजेंट टूल Finnhub के भाव और उनसे निकले नतीजे आपके एजेंट प्रदाता को भेज सकते हैं। इसे तभी चालू करें जब आपका Finnhub अनुबंध इस तरह साझा करने की अनुमति देता हो।",
+    "message": "एजेंट टूल Finnhub कोट और उनसे निकले परिणाम आपके एजेंट प्रदाता को भेज सकते हैं। इसे केवल तभी चालू करें जब आपका Finnhub अनुबंध इस तरह साझा करने की अनुमति देता हो। यह बदलाव Kage को रीस्टार्ट करने के बाद लागू होगा।",
     "description": "Explain opt-in and external agent data flow",
     "_machine_translated": true,
-    "_source_hash": "600e0e85ae5aca60"
+    "_source_hash": "85852257d902cb3e"
   },
   "settings.delete_quotes": {
     "message": "सेव किए गए भाव मिटाएँ",
@@ -360,10 +360,10 @@
     "_source_hash": "c3ae84bf8010f20d"
   },
   "settings.quotes_deleted": {
-    "message": "सेव किए गए भाव और लोकल सैंपल मिटा दिए गए।",
-    "description": "Cache deletion success",
+    "message": "{count} सहेजे गए कोट रिकॉर्ड और उनके स्थानीय सैंपल हटा दिए गए। अन्य विंडो या चल रहे रीफ़्रेश और रिकॉर्ड सहेज सकते हैं।",
+    "description": "Accurate count of records deleted; preserve {count}; concurrent windows may retain or save records",
     "_machine_translated": true,
-    "_source_hash": "5c098db4acf64401"
+    "_source_hash": "06d62290314fd122"
   },
   "widget.setup": {
     "message": "Stocks सेटिंग्स खोलकर भाव सेट अप करने के लिए stock टाइप करें और Enter दबाएँ।",

@@ -348,10 +348,10 @@
     "_source_hash": "feaafa8e946fc0b2"
   },
   "settings.agent_tools_hint": {
-    "message": "エージェントツールは、Finnhub の株価やそこから得られた結果をエージェントプロバイダーに送信する場合があります。Finnhub との契約でこの共有が許可されている場合にのみ有効にしてください。",
+    "message": "エージェントツールは、Finnhub の株価データとそこから得られた結果をエージェントプロバイダーに送信する場合があります。Finnhub との契約でこの共有が許可されている場合にのみ有効にしてください。設定は Kage の再起動後に反映されます。",
     "description": "Explain opt-in and external agent data flow",
     "_machine_translated": true,
-    "_source_hash": "600e0e85ae5aca60"
+    "_source_hash": "85852257d902cb3e"
   },
   "settings.delete_quotes": {
     "message": "保存済みの株価を削除",
@@ -360,10 +360,10 @@
     "_source_hash": "c3ae84bf8010f20d"
   },
   "settings.quotes_deleted": {
-    "message": "保存済みの株価とローカルのサンプルを削除しました。",
-    "description": "Cache deletion success",
+    "message": "保存済みの株価レコード {count} 件と、そのローカルサンプルを削除しました。他のウィンドウや実行中の更新によって、新たに保存される場合があります。",
+    "description": "Accurate count of records deleted; preserve {count}; concurrent windows may retain or save records",
     "_machine_translated": true,
-    "_source_hash": "5c098db4acf64401"
+    "_source_hash": "06d62290314fd122"
   },
   "widget.setup": {
     "message": "stock と入力して Enter キーを押すと、Stocks の設定が開き、株価を設定できます。",

@@ -348,10 +348,10 @@
     "_source_hash": "feaafa8e946fc0b2"
   },
   "settings.agent_tools_hint": {
-    "message": "Ajan araçları, Finnhub fiyatlarını ve bunlardan türetilen sonuçları ajan sağlayıcınıza gönderebilir. Yalnızca Finnhub sözleşmeniz bu paylaşıma izin veriyorsa etkinleştirin.",
+    "message": "Ajan araçları, Finnhub fiyat tekliflerini ve bunlardan türetilen sonuçları ajan sağlayıcınıza gönderebilir. Bunu yalnızca Finnhub sözleşmeniz bu paylaşıma izin veriyorsa etkinleştirin. Değişiklik, Kage'i yeniden başlattıktan sonra geçerli olur.",
     "description": "Explain opt-in and external agent data flow",
     "_machine_translated": true,
-    "_source_hash": "600e0e85ae5aca60"
+    "_source_hash": "85852257d902cb3e"
   },
   "settings.delete_quotes": {
     "message": "Kayıtlı fiyatları sil",
@@ -360,10 +360,10 @@
     "_source_hash": "c3ae84bf8010f20d"
   },
   "settings.quotes_deleted": {
-    "message": "Kayıtlı fiyatlar ve yerel örnekler silindi.",
-    "description": "Cache deletion success",
+    "message": "Kaydedilmiş {count} fiyat teklifi kaydı ve bunlara ait yerel örnekler silindi. Diğer pencereler veya devam eden yenilemeler yeni kayıtlar ekleyebilir.",
+    "description": "Accurate count of records deleted; preserve {count}; concurrent windows may retain or save records",
     "_machine_translated": true,
-    "_source_hash": "5c098db4acf64401"
+    "_source_hash": "06d62290314fd122"
   },
   "widget.setup": {
     "message": "Stocks ayarlarını açıp fiyatları kurmak için stock yazın ve Enter'a basın.",

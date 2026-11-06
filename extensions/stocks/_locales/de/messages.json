@@ -348,10 +348,10 @@
     "_source_hash": "feaafa8e946fc0b2"
   },
   "settings.agent_tools_hint": {
-    "message": "Agenten-Tools können Finnhub-Kurse und daraus abgeleitete Ergebnisse an Ihren Agenten-Anbieter senden. Aktivieren Sie diese Option nur, wenn Ihre Finnhub-Vereinbarung diese Weitergabe erlaubt.",
+    "message": "Agent-Tools können Finnhub-Kurse und daraus abgeleitete Ergebnisse an Ihren Agent-Anbieter senden. Aktivieren Sie diese Option nur, wenn Ihre Vereinbarung mit Finnhub diese Weitergabe erlaubt. Die Änderung wird nach einem Neustart von Kage wirksam.",
     "description": "Explain opt-in and external agent data flow",
     "_machine_translated": true,
-    "_source_hash": "600e0e85ae5aca60"
+    "_source_hash": "85852257d902cb3e"
   },
   "settings.delete_quotes": {
     "message": "Gespeicherte Kurse löschen",
@@ -360,10 +360,10 @@
     "_source_hash": "c3ae84bf8010f20d"
   },
   "settings.quotes_deleted": {
-    "message": "Gespeicherte Kurse und lokale Messwerte gelöscht.",
-    "description": "Cache deletion success",
+    "message": "{count} gespeicherte Kursdatensätze und ihre lokalen Stichproben wurden gelöscht. Andere Fenster oder laufende Aktualisierungen können weitere speichern.",
+    "description": "Accurate count of records deleted; preserve {count}; concurrent windows may retain or save records",
     "_machine_translated": true,
-    "_source_hash": "5c098db4acf64401"
+    "_source_hash": "06d62290314fd122"
   },
   "widget.setup": {
     "message": "Geben Sie stock ein und drücken Sie die Eingabetaste, um die Stocks-Einstellungen zu öffnen und Kurse einzurichten.",

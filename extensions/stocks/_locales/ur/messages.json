@@ -348,10 +348,10 @@
     "_source_hash": "feaafa8e946fc0b2"
   },
   "settings.agent_tools_hint": {
-    "message": "ایجنٹ ٹولز Finnhub کوٹس اور ان سے اخذ کردہ نتائج آپ کے ایجنٹ فراہم کنندہ کو بھیج سکتے ہیں۔ صرف اسی صورت میں فعال کریں جب آپ کا Finnhub معاہدہ اس اشتراک کی اجازت دیتا ہو۔",
+    "message": "ایجنٹ ٹولز Finnhub کے کوٹس اور ان سے حاصل شدہ نتائج آپ کے ایجنٹ فراہم کنندہ کو بھیج سکتے ہیں۔ صرف اسی صورت میں فعال کریں جب آپ کا Finnhub معاہدہ اس اشتراک کی اجازت دیتا ہو۔ یہ تبدیلی Kage دوبارہ شروع کرنے کے بعد مؤثر ہوگی۔",
     "description": "Explain opt-in and external agent data flow",
     "_machine_translated": true,
-    "_source_hash": "600e0e85ae5aca60"
+    "_source_hash": "85852257d902cb3e"
   },
   "settings.delete_quotes": {
     "message": "محفوظ کردہ کوٹس حذف کریں",
@@ -360,10 +360,10 @@
     "_source_hash": "c3ae84bf8010f20d"
   },
   "settings.quotes_deleted": {
-    "message": "محفوظ کردہ کوٹس اور مقامی نمونے حذف کر دیے گئے۔",
-    "description": "Cache deletion success",
+    "message": "{count} محفوظ شدہ کوٹ ریکارڈز اور ان کے مقامی نمونے حذف کر دیے گئے۔ دیگر ونڈوز یا جاری ریفریش مزید ریکارڈز محفوظ کر سکتے ہیں۔",
+    "description": "Accurate count of records deleted; preserve {count}; concurrent windows may retain or save records",
     "_machine_translated": true,
-    "_source_hash": "5c098db4acf64401"
+    "_source_hash": "06d62290314fd122"
   },
   "widget.setup": {
     "message": "Stocks کی ترتیبات کھولنے اور کوٹس سیٹ اپ کرنے کے لیے stock ٹائپ کریں اور Enter دبائیں۔",

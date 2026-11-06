@@ -9,6 +9,7 @@ export default class StocksWatchlistWidget {
     this.invoke = context.invoke;
     this.config = context.config || {};
     this.t = context.i18n?.t?.bind(context.i18n) || ((key) => key);
+    this.locale = context.i18n?.language?.();
     this.symbols = [];
   }
 
@@ -28,20 +29,23 @@ export default class StocksWatchlistWidget {
     }
     if (!this.symbols.length) return null;
     const quotes = await this.client.getQuotes(this.symbols, this.config);
+    const connection = quotes.find((quote) => ['setup', 'auth', 'cache_only', 'storage'].includes(quote.error || quote.reason));
     if (quotes.every((quote) => ['setup', 'auth', 'cache_only', 'storage'].includes(quote.error))) {
       const hint = quotes.every((quote) => quote.error === 'setup') ? this.t('widget.setup') : this.t('widget.connection');
       return { className: 'stocks-widget', html: `<span>${escapeHtml(hint)}</span>` };
     }
     const html = await Promise.all(quotes.map(async (quote) => {
       if (quote.error) {
+        if (connection && ['setup', 'auth', 'cache_only', 'storage'].includes(quote.error)) return '';
         return `<span class="stocks-tile"><strong>${escapeHtml(quote.symbol)}</strong><small>${escapeHtml(errorText(quote.error, this.t))}</small></span>`;
       }
       const history = await this.client.getHistory(quote.symbol, '1d', quote);
-      return `<button class="stocks-tile stocks-${direction(quote)}" data-ext-action="chart:${escapeHtml(quote.symbol)}" title="${escapeHtml(quoteDescription(quote, this.t))}"><strong>${escapeHtml(quote.symbol)} ${priceText(quote.price)}</strong><span>${signedText(quote.change, { price: quote.price })} (${signedText(quote.percent, { percent: true })})</span>${sparkline(history.samples, this.t('quote.sampled'))}<small>${escapeHtml(quoteDescription(quote, this.t))}</small></button>`;
+      const description = quoteDescription(connection ? { ...quote, reason: null } : quote, this.t, this.locale);
+      return `<button class="stocks-tile stocks-${direction(quote)}" data-ext-action="chart:${escapeHtml(quote.symbol)}" title="${escapeHtml(description)}"><strong>${escapeHtml(quote.symbol)} ${priceText(quote.price, { locale: this.locale })}</strong><span>${signedText(quote.change, { price: quote.price, locale: this.locale })} (${signedText(quote.percent, { percent: true, locale: this.locale })})</span>${sparkline(history.samples, this.t('quote.sampled'))}<small>${escapeHtml(description)}</small></button>`;
     }));
     return {
       className: 'extension-bar stocks-widget',
-      html: `<span class="stocks-source">📈 <a href="https://finnhub.io/">${escapeHtml(this.t('quote.source'))}</a></span><span class="stocks-tiles">${html.join('')}</span>`,
+      html: `<span class="stocks-source">📈 <a href="https://finnhub.io/">${escapeHtml(this.t('quote.source'))}</a>${connection ? ` · ${escapeHtml(this.t(connection.reason === 'setup' || connection.error === 'setup' ? 'widget.setup' : 'widget.connection'))}` : ''}</span><span class="stocks-tiles">${html.join('')}</span>`,
       actions: quotes.filter((quote) => !quote.error).map(({ symbol }) => ({ id: `chart:${symbol}`, rpc: `chart:${symbol}` })),
     };
   }

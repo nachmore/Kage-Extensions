@@ -348,10 +348,10 @@
     "_source_hash": "feaafa8e946fc0b2"
   },
   "settings.agent_tools_hint": {
-    "message": "Alat agen dapat mengirim kuotasi Finnhub dan hasil turunannya ke penyedia agen Anda. Aktifkan hanya jika perjanjian Finnhub Anda mengizinkan berbagi data ini.",
+    "message": "Alat agen dapat mengirim kuotasi Finnhub dan hasil turunannya ke penyedia agen Anda. Aktifkan hanya jika perjanjian Finnhub Anda mengizinkan berbagi data ini. Berlaku setelah Anda memulai ulang Kage.",
     "description": "Explain opt-in and external agent data flow",
     "_machine_translated": true,
-    "_source_hash": "600e0e85ae5aca60"
+    "_source_hash": "85852257d902cb3e"
   },
   "settings.delete_quotes": {
     "message": "Hapus kuotasi tersimpan",
@@ -360,10 +360,10 @@
     "_source_hash": "c3ae84bf8010f20d"
   },
   "settings.quotes_deleted": {
-    "message": "Kuotasi tersimpan dan sampel lokal telah dihapus.",
-    "description": "Cache deletion success",
+    "message": "{count} catatan kuotasi tersimpan beserta sampel lokalnya telah dihapus. Jendela lain atau penyegaran yang sedang berjalan mungkin menyimpan catatan baru.",
+    "description": "Accurate count of records deleted; preserve {count}; concurrent windows may retain or save records",
     "_machine_translated": true,
-    "_source_hash": "5c098db4acf64401"
+    "_source_hash": "06d62290314fd122"
   },
   "widget.setup": {
     "message": "Ketik stock dan tekan Enter untuk membuka pengaturan Stocks dan menyiapkan kuotasi.",

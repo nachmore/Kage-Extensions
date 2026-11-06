@@ -348,10 +348,10 @@
     "_source_hash": "feaafa8e946fc0b2"
   },
   "settings.agent_tools_hint": {
-    "message": "قد ترسل أدوات الوكلاء أسعار Finnhub والنتائج المستخلصة منها إلى مزوّد الوكيل الخاص بك. فعّل هذا الخيار فقط إذا كانت اتفاقيتك مع Finnhub تسمح بهذه المشاركة.",
+    "message": "قد ترسل أدوات الوكيل أسعار Finnhub والنتائج المشتقة منها إلى مزوّد الوكيل لديك. لا تفعّلها إلا إذا كانت اتفاقيتك مع Finnhub تسمح بهذه المشاركة. يسري التغيير بعد إعادة تشغيل Kage.",
     "description": "Explain opt-in and external agent data flow",
     "_machine_translated": true,
-    "_source_hash": "600e0e85ae5aca60"
+    "_source_hash": "85852257d902cb3e"
   },
   "settings.delete_quotes": {
     "message": "حذف الأسعار المحفوظة",
@@ -360,10 +360,10 @@
     "_source_hash": "c3ae84bf8010f20d"
   },
   "settings.quotes_deleted": {
-    "message": "تم حذف الأسعار المحفوظة والعينات المحلية.",
-    "description": "Cache deletion success",
+    "message": "تم حذف {count} من سجلات الأسعار المحفوظة وعيّناتها المحلية. قد تحفظ النوافذ الأخرى أو عمليات التحديث الجارية سجلات أخرى.",
+    "description": "Accurate count of records deleted; preserve {count}; concurrent windows may retain or save records",
     "_machine_translated": true,
-    "_source_hash": "5c098db4acf64401"
+    "_source_hash": "06d62290314fd122"
   },
   "widget.setup": {
     "message": "اكتب stock واضغط Enter لفتح إعدادات الأسهم وإعداد الأسعار.",

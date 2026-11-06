@@ -348,10 +348,10 @@
     "_source_hash": "feaafa8e946fc0b2"
   },
   "settings.agent_tools_hint": {
-    "message": "Công cụ của tác nhân có thể gửi giá từ Finnhub và các kết quả suy ra từ đó đến nhà cung cấp tác nhân của bạn. Chỉ bật khi thỏa thuận Finnhub của bạn cho phép chia sẻ như vậy.",
+    "message": "Công cụ của agent có thể gửi báo giá Finnhub và các kết quả được tính từ đó đến nhà cung cấp agent của bạn. Chỉ bật khi thỏa thuận Finnhub của bạn cho phép chia sẻ như vậy. Thay đổi có hiệu lực sau khi bạn khởi động lại Kage.",
     "description": "Explain opt-in and external agent data flow",
     "_machine_translated": true,
-    "_source_hash": "600e0e85ae5aca60"
+    "_source_hash": "85852257d902cb3e"
   },
   "settings.delete_quotes": {
     "message": "Xóa giá đã lưu",
@@ -360,10 +360,10 @@
     "_source_hash": "c3ae84bf8010f20d"
   },
   "settings.quotes_deleted": {
-    "message": "Đã xóa giá đã lưu và các mẫu dữ liệu cục bộ.",
-    "description": "Cache deletion success",
+    "message": "Đã xóa {count} bản ghi báo giá đã lưu cùng các mẫu cục bộ của chúng. Các cửa sổ khác hoặc các lần làm mới đang chạy có thể lưu thêm bản ghi.",
+    "description": "Accurate count of records deleted; preserve {count}; concurrent windows may retain or save records",
     "_machine_translated": true,
-    "_source_hash": "5c098db4acf64401"
+    "_source_hash": "06d62290314fd122"
   },
   "widget.setup": {
     "message": "Nhập stock rồi nhấn Enter để mở cài đặt Cổ phiếu và thiết lập báo giá.",

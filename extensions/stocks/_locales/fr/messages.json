@@ -348,10 +348,10 @@
     "_source_hash": "feaafa8e946fc0b2"
   },
   "settings.agent_tools_hint": {
-    "message": "Les outils d’agent peuvent envoyer les cours Finnhub et les résultats qui en sont dérivés à votre fournisseur d’agent. N’activez cette option que si votre contrat Finnhub autorise ce partage.",
+    "message": "Les outils d'agent peuvent envoyer les cotations Finnhub et les résultats dérivés à votre fournisseur d'agent. Activez cette option uniquement si votre contrat Finnhub autorise ce partage. La modification prend effet après le redémarrage de Kage.",
     "description": "Explain opt-in and external agent data flow",
     "_machine_translated": true,
-    "_source_hash": "600e0e85ae5aca60"
+    "_source_hash": "85852257d902cb3e"
   },
   "settings.delete_quotes": {
     "message": "Supprimer les cours enregistrés",
@@ -360,10 +360,10 @@
     "_source_hash": "c3ae84bf8010f20d"
   },
   "settings.quotes_deleted": {
-    "message": "Cours enregistrés et échantillons locaux supprimés.",
-    "description": "Cache deletion success",
+    "message": "Enregistrements de cotations sauvegardés supprimés, avec leurs échantillons locaux : {count}. D'autres fenêtres ou des actualisations en cours peuvent en enregistrer davantage.",
+    "description": "Accurate count of records deleted; preserve {count}; concurrent windows may retain or save records",
     "_machine_translated": true,
-    "_source_hash": "5c098db4acf64401"
+    "_source_hash": "06d62290314fd122"
   },
   "widget.setup": {
     "message": "Saisissez stock et appuyez sur Entrée pour ouvrir les paramètres de Stocks et configurer les cours.",

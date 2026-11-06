@@ -81,11 +81,14 @@ export async function fetchQuote(symbol, key, { signal } = {}) {
 export const CREDENTIALS_KEY = 'credentials';
 const BUDGET_KEY = 'request_budget';
 const LOCK_KEY = 'request_lock';
-const INDEX_KEY = 'quote_index';
+const INDEX_KEY = 'qidx';
+const LEGACY_INDEX_KEY = 'quote_index';
 const MAX_PER_SECOND = 20;
 const MAX_BACKOFF_MS = 15 * 60_000;
 const MAX_SAMPLES = 512;
 const RETENTION_MS = 31 * 86_400_000;
+const NEGATIVE_MS = 10 * 60_000;
+const PRUNE_LIMIT = 20;
 const RANGES = Object.freeze({ '1d': 86_400_000, '1w': 7 * 86_400_000, '1m': RETENTION_MS });
 const BACKOFF_CODES = new Set(['rate_limit', 'offline', 'unavailable', 'auth', 'timeout']);
 const clients = new WeakMap();
@@ -136,12 +139,17 @@ export class StocksClient {
   async read(key) {
     const raw = await this.dataInvoke('load_extension_data', { key });
     if (raw === null) return null;
-    // Empty/torn records are failed reads, never a missing budget or key.
+    // Distinguish corrupt contents from an I/O failure so repairs never
+    // overwrite a readable record just because the disk is unavailable.
     try {
       const value = JSON.parse(raw);
       if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error();
       return value;
-    } catch { throw new StockError('storage'); }
+    } catch {
+      const error = new StockError('storage');
+      error.unreadable = true;
+      throw error;
+    }
   }
 
   async write(key, value) {
@@ -150,12 +158,23 @@ export class StocksClient {
 
   async key() {
     const value = await this.read(CREDENTIALS_KEY);
+    if (value?.revision && this.keyRevision !== value.revision) {
+      this.keyRevision = value.revision;
+      if (this.localBackoffReason === 'auth') {
+        this.localBackoff = 0;
+        this.localBackoffReason = null;
+        this.localAuthKey = null;
+      }
+    }
     return validKey(value?.api_key) ? value.api_key.trim() : null;
   }
 
   async clearAuthBackoff() {
-    this.localBackoff = 0;
-    this.localBackoffReason = null;
+    if (this.localBackoffReason === 'auth') {
+      this.localBackoff = 0;
+      this.localBackoffReason = null;
+      this.localAuthKey = null;
+    }
     await this.budgetTransaction((budget) => budget.backoffReason === 'auth'
       ? { ...budget, backoffUntil: 0, backoffReason: null, streak: 0, lastFailureAt: 0 }
       : budget);
@@ -163,17 +182,18 @@ export class StocksClient {
 
   async saveKey(key) {
     if (!validKey(key)) throw new StockError('invalid_key');
-    await this.clearAuthBackoff();
-    await this.write(CREDENTIALS_KEY, { api_key: key.trim() });
+    await this.write(CREDENTIALS_KEY, { api_key: key.trim(), revision: `${this.owner}:${Math.random()}` });
+    try { await this.clearAuthBackoff(); } catch { /* Credentials are already saved. */ }
   }
 
   async removeKey() {
-    await this.clearAuthBackoff();
     await this.dataInvoke('delete_extension_data', { key: CREDENTIALS_KEY });
+    try { await this.clearAuthBackoff(); } catch { /* Credentials are already removed. */ }
   }
 
   async cached(symbol) {
     const entry = await this.read(`quote_${normalizeSymbol(symbol)}`);
+    if (['unknown', 'unsupported'].includes(entry?.error) && entry.expiresAt > Date.now()) return entry;
     if (!entry?.quote || entry.quote.symbol !== symbol
         || !Number.isFinite(entry.quote.price) || entry.quote.price <= 0
         || !Number.isFinite(entry.quote.timestamp) || entry.quote.timestamp <= 0
@@ -193,30 +213,73 @@ export class StocksClient {
     return this.serial(async () => {
       for (let attempt = 0; ; attempt++) {
         const now = Date.now();
-        const lock = await this.read(LOCK_KEY);
+        let lock;
+        try { lock = await this.read(LOCK_KEY); }
+        catch (error) { if (!error.unreadable) throw error; }
         if (lock?.expiresAt > now && lock.owner !== this.owner) {
           if (attempt >= 3) throw new StockError('busy', lock.expiresAt);
           await wait(Math.min(300, lock.expiresAt - now) + 15 + Math.random() * 25);
           continue;
         }
-        // Short lease; no extra re-read/release invokes or read/delete race.
-        // The host lacks atomic CAS: simultaneous acquisition is best effort.
-        await this.write(LOCK_KEY, { owner: this.owner, expiresAt: now + 250 });
-        const budget = await this.read(BUDGET_KEY) ?? {};
-        const next = update(budget, Date.now());
-        await this.write(BUDGET_KEY, next);
-        return;
+        const nonce = `${this.owner}:${Math.random()}`;
+        await this.write(LOCK_KEY, { owner: this.owner, nonce, expiresAt: now + 250 });
+        // Validate the lease both before and after writing. The host has no
+        // atomic CAS; a lost nonce retries against the winner's budget.
+        if ((await this.read(LOCK_KEY))?.nonce !== nonce) {
+          if (attempt >= 3) throw new StockError('busy', Date.now() + 250);
+          await wait(15 + Math.random() * 25);
+          continue;
+        }
+        try {
+          let budget;
+          const readBudget = async () => {
+            const record = await this.read(BUDGET_KEY) ?? {};
+            if (record.attempts !== undefined && (!Array.isArray(record.attempts) || !record.attempts.every(Number.isFinite))) {
+              const error = new StockError('storage');
+              error.unreadable = true;
+              throw error;
+            }
+            return record;
+          };
+          try { budget = await readBudget(); }
+          catch (error) {
+            if (!error.unreadable) throw error;
+            try { budget = await readBudget(); }
+            catch (second) {
+              if (!second.unreadable) throw second;
+              budget = { attempts: [], backoffUntil: Date.now() + 60_000, backoffReason: 'storage', streak: 0 };
+              await this.write(BUDGET_KEY, budget);
+            }
+          }
+          const next = { ...update(budget, Date.now()), transaction: nonce };
+          if ((await this.read(LOCK_KEY))?.nonce !== nonce) {
+            if (attempt >= 3) throw new StockError('busy', Date.now() + 250);
+            continue;
+          }
+          await this.write(BUDGET_KEY, next);
+          const written = await this.read(BUDGET_KEY);
+          if (written?.transaction === nonce && (await this.read(LOCK_KEY))?.nonce === nonce) return;
+          if (attempt >= 3) throw new StockError('busy', Date.now() + 250);
+        } finally {
+          // Never delete a lock which another window acquired meanwhile.
+          try {
+            if ((await this.read(LOCK_KEY))?.nonce === nonce) {
+              await this.write(LOCK_KEY, { owner: this.owner, nonce, expiresAt: 0 });
+            }
+          } catch { /* A lease also expires on its own. */ }
+        }
       }
     });
   }
 
-  async reserve(n = 1, { bypassBackoff = false } = {}) {
+  async reserve(n = 1, { bypassAuth = false } = {}) {
     await this.budgetTransaction((budget, now) => {
       const localActive = this.localBackoff > now;
-      const until = Math.max(Number(budget.backoffUntil) || 0, localActive ? this.localBackoff : 0);
-      if (!bypassBackoff && until > now) {
-        throw new StockError(localActive ? this.localBackoffReason : budget.backoffReason || 'rate_limit', until);
-      }
+      const pauses = [
+        { until: Number(budget.backoffUntil) || 0, reason: budget.backoffReason || 'rate_limit' },
+        { until: localActive ? this.localBackoff : 0, reason: this.localBackoffReason },
+      ].filter((pause) => !(bypassAuth && pause.reason === 'auth')).sort((a, b) => b.until - a.until);
+      if (pauses[0]?.until > now) throw new StockError(pauses[0].reason, pauses[0].until);
       if (budget.attempts !== undefined && (!Array.isArray(budget.attempts)
           || !budget.attempts.every(Number.isFinite))) throw new StockError('storage');
       const attempts = (budget.attempts || []).filter((time) => time > now - 60_000).sort((a, b) => a - b);
@@ -279,7 +342,7 @@ export class StocksClient {
 
   async testKey(key) {
     if (!validKey(key)) throw new StockError('invalid_key');
-    await this.reserve(1, { bypassBackoff: true });
+    await this.reserve(1, { bypassAuth: true });
     return this.request('AAPL', key, { testing: true });
   }
 
@@ -301,12 +364,11 @@ export class StocksClient {
 
   fallback(cache, reason, retryAt = null) {
     const retry = BACKOFF_CODES.has(reason) || reason === 'busy' ? retryAt : null;
-    if (!cache) throw new StockError(reason, retry);
+    if (!cache || cache.error) throw new StockError(reason, retry);
     return { ...cache.quote, fetchedAt: cache.fetchedAt, cached: true, stale: true, reason, retryAt: retry, samples: cache.samples || [] };
   }
 
-  async refresh(symbol, key, cache, cacheReadFailed = false) {
-    const fetchedAt = Date.now();
+  async refresh(symbol, key, cache, fetchedAt = Date.now(), preserveRecord = false) {
     try {
       const quote = await this.request(symbol, key);
       const samples = (Array.isArray(cache?.samples) ? cache.samples : [])
@@ -315,18 +377,26 @@ export class StocksClient {
       if (!samples.some((p) => p.timestamp === quote.timestamp)) samples.push({ timestamp: quote.timestamp, price: quote.price });
       samples.sort((a, b) => a.timestamp - b.timestamp);
       const entry = { quote, fetchedAt, samples: samples.slice(-MAX_SAMPLES) };
-      if (!cacheReadFailed) {
+      if (!preserveRecord) {
         try { await this.write(`quote_${symbol}`, entry); } catch { /* Keep the fresh result. */ }
       }
       return { ...quote, fetchedAt, cached: false, stale: false, samples: entry.samples };
     } catch (error) {
+      if (!preserveRecord && ['unknown', 'unsupported'].includes(error.code)) {
+        try { await this.write(`quote_${symbol}`, { error: error.code, fetchedAt, expiresAt: fetchedAt + NEGATIVE_MS }); } catch { /* Best effort negative cache. */ }
+      }
       const retryAt = error.retryAt || (BACKOFF_CODES.has(error.code) && this.localBackoff > Date.now() ? this.localBackoff : null);
       return this.fallback(cache, error.code || 'unavailable', retryAt);
     }
   }
 
   async getQuotes(input, config = {}) {
+    // Start the reservation clock before IPC. Polls at 60/300 seconds must
+    // not miss the boundary because key/cache/budget reads took time.
+    const fetchedAt = Date.now();
     const entries = symbolEntries(input);
+    // Migrate before an INDEX quote can overwrite quote_index on APFS/NTFS.
+    if (entries.some((entry) => entry.symbol === 'INDEX')) await this.maintainQuotes([]);
     const provider = config.provider ?? DEFAULTS.provider;
     let key, keyError;
     if (provider === 'finnhub') {
@@ -339,19 +409,20 @@ export class StocksClient {
     }
     const ready = await Promise.all(entries.map(async (entry) => {
       if (entry.error) return entry;
-      let cache, cacheReadFailed = false;
-      try { cache = await this.cached(entry.symbol); } catch { cacheReadFailed = true; }
-      return { ...entry, cache, cacheReadFailed };
+      let cache, preserveRecord = false;
+      try { cache = await this.cached(entry.symbol); } catch (error) { preserveRecord = !error.unreadable; }
+      return { ...entry, cache, preserveRecord };
     }));
     const fresh = [];
     const output = ready.map((entry) => {
       if (entry.error) return Promise.resolve(entry);
-      const { symbol, cache, cacheReadFailed } = entry;
+      const { symbol, cache, preserveRecord } = entry;
       const failure = (error) => ({ symbol, error: error.code || 'unavailable', retryAt: error.retryAt || null });
       const reason = provider === 'cache' ? 'cache_only' : provider !== 'finnhub' ? 'unsupported' : keyError || (!key ? 'setup' : null);
       if (reason) {
         try { return Promise.resolve(this.fallback(cache, reason)); } catch (error) { return Promise.resolve(failure(error)); }
       }
+      if (cache?.error) return Promise.resolve({ symbol, error: cache.error, retryAt: null });
       if (cache && cache.fetchedAt > Date.now() - refreshSeconds(config) * 1000) {
         return Promise.resolve({ ...cache.quote, fetchedAt: cache.fetchedAt, cached: true, stale: false, samples: cache.samples || [] });
       }
@@ -359,7 +430,7 @@ export class StocksClient {
       let resolve, reject;
       const promise = new Promise((res, rej) => { resolve = res; reject = rej; });
       this.pending.set(symbol, promise);
-      fresh.push({ symbol, cache, cacheReadFailed, resolve, reject });
+      fresh.push({ symbol, cache, preserveRecord, resolve, reject });
       return promise.catch(failure);
     });
     if (fresh.length) {
@@ -367,7 +438,7 @@ export class StocksClient {
       try {
         await this.reserve(fresh.length);
         await Promise.all(fresh.map(async (entry) => {
-          try { entry.resolve(await this.refresh(entry.symbol, key, entry.cache, entry.cacheReadFailed)); }
+          try { entry.resolve(await this.refresh(entry.symbol, key, entry.cache, fetchedAt, entry.preserveRecord)); }
           catch (error) { entry.reject(error); }
           finally { this.pending.delete(entry.symbol); }
         }));
@@ -383,45 +454,137 @@ export class StocksClient {
     if (fresh.length && results.some((quote) => quote.cached === false)) {
       try { await this.recovered(); } catch { /* Existing budget is preserved. */ }
     }
-    try { await this.maintainQuotes(ready.filter((q) => !q.error && !q.cacheReadFailed).map((q) => q.symbol)); }
-    catch { /* No destructive maintenance when its index cannot be read. */ }
+    this.scheduleMaintenance(ready.filter((q) => !q.error).map((q) => q.symbol));
     return results;
   }
 
+  async exactCache(symbols, config = {}) {
+    if (!symbols.length) return null;
+    try {
+      const caches = await Promise.all(symbols.map((symbol) => this.cached(symbol)));
+      if (caches.some((cache) => !cache || (!cache.error && cache.fetchedAt <= Date.now() - refreshSeconds(config) * 1000))) return null;
+      // getQuotes also applies key removal and saved-only status to cache hits.
+      return await this.getQuotes(symbols, config);
+    } catch { return null; }
+  }
+
+  scheduleMaintenance(symbols) {
+    this.maintenanceSymbols ||= new Set();
+    for (const symbol of symbols) this.maintenanceSymbols.add(symbol);
+    if (this.maintenanceTimer !== undefined) return;
+    this.maintenanceTimer = setTimeout(() => {
+      this.maintenanceTimer = undefined;
+      const tracked = [...this.maintenanceSymbols];
+      this.maintenanceSymbols.clear();
+      this.maintenance = this.maintainQuotes(tracked).catch(() => {
+        // Keep failed tracking work for the next lookup rather than orphaning
+        // new records after transient contention or an inaccessible index.
+        for (const symbol of tracked) this.maintenanceSymbols.add(symbol);
+      });
+    }, 0);
+  }
+
+  async quoteIndex() {
+    let index;
+    try { index = await this.read(INDEX_KEY); }
+    catch (error) { if (!error.unreadable) throw error; }
+    if (!index) {
+      // Today's host cannot enumerate extension data. Migrate the old index
+      // if readable, otherwise start fresh and track subsequent lookups.
+      try { index = await this.read(LEGACY_INDEX_KEY); }
+      catch (error) { if (!error.unreadable) throw error; }
+    }
+    return index?.symbols && typeof index.symbols === 'object' && !Array.isArray(index.symbols)
+      ? index : { symbols: {}, prunedAt: 0 };
+  }
+
+  async indexLease(work) {
+    for (let attempt = 0; attempt < 5; attempt++) {
+      let lock;
+      try { lock = await this.read('qidx_lock'); }
+      catch (error) { if (!error.unreadable) throw error; }
+      if (lock?.expiresAt > Date.now() && lock.owner !== this.owner) {
+        await wait(Math.min(250, lock.expiresAt - Date.now()) + 15 + Math.random() * 25);
+        continue;
+      }
+      const nonce = `${this.owner}:${Math.random()}`;
+      await this.write('qidx_lock', { owner: this.owner, nonce, expiresAt: Date.now() + 5000 });
+      if ((await this.read('qidx_lock'))?.nonce !== nonce) continue;
+      try { return await work(); }
+      finally {
+        try {
+          if ((await this.read('qidx_lock'))?.nonce === nonce) await this.write('qidx_lock', { owner: this.owner, nonce, expiresAt: 0 });
+        } catch { /* Lease expiry also releases maintenance. */ }
+      }
+    }
+    throw new StockError('busy', Date.now() + 250);
+  }
+
   async maintainQuotes(symbols = [], { clear = false } = {}) {
-    await this.serial(async () => {
-      const index = await this.read(INDEX_KEY) ?? { symbols: {}, prunedAt: 0 };
-      if (!index.symbols || typeof index.symbols !== 'object' || Array.isArray(index.symbols)) throw new StockError('storage');
+    return this.serial(() => this.indexLease(async () => {
+      const index = await this.quoteIndex();
       const tracked = { ...index.symbols };
       for (const symbol of symbols) tracked[normalizeSymbol(symbol)] = true;
       const due = clear || !index.prunedAt || index.prunedAt <= Date.now() - 86_400_000;
+      const removed = new Set();
+      let deleted = 0;
       if (due) {
-        for (const symbol of Object.keys(tracked)) {
-          normalizeSymbol(symbol);
+        const keys = Object.keys(tracked);
+        const start = clear ? 0 : Number(index.cursor) || 0;
+        for (const symbol of (clear ? keys : keys.slice(start, start + PRUNE_LIMIT))) {
+          try { if (normalizeSymbol(symbol) !== symbol) throw new StockError('invalid_symbols'); }
+          catch { delete tracked[symbol]; removed.add(symbol); continue; }
+          let entry, unreadable = false;
+          try { entry = await this.read(`quote_${symbol}`); }
+          catch (error) { if (!error.unreadable) continue; unreadable = true; }
           if (clear) {
-            await this.dataInvoke('delete_extension_data', { key: `quote_${symbol}` });
+            if (entry || unreadable) {
+              try {
+                await this.dataInvoke('delete_extension_data', { key: `quote_${symbol}` });
+                deleted++;
+              } catch { continue; }
+            }
             delete tracked[symbol];
+            removed.add(symbol);
             continue;
           }
-          const entry = await this.read(`quote_${symbol}`);
-          if (!entry || entry.fetchedAt <= Date.now() - RETENTION_MS) {
-            await this.dataInvoke('delete_extension_data', { key: `quote_${symbol}` });
+          if (unreadable || !entry || !Number.isFinite(entry.fetchedAt) || entry.fetchedAt <= Date.now() - RETENTION_MS || (entry.error && entry.expiresAt <= Date.now())) {
+            try { await this.dataInvoke('delete_extension_data', { key: `quote_${symbol}` }); }
+            catch { continue; }
             delete tracked[symbol];
+            removed.add(symbol);
           } else if (Array.isArray(entry.samples)) {
-            const samples = entry.samples.filter((p) => p.timestamp * 1000 > Date.now() - RETENTION_MS);
-            if (samples.length !== entry.samples.length) await this.write(`quote_${symbol}`, { ...entry, samples });
+            const samples = entry.samples.filter((p) => p && Number.isFinite(p.timestamp) && Number.isFinite(p.price)
+              && p.timestamp * 1000 > Date.now() - RETENTION_MS);
+            if (samples.length !== entry.samples.length) {
+              // Do not overwrite a fresh quote written during this pass.
+              const latest = await this.read(`quote_${symbol}`).catch(() => null);
+              if (latest?.fetchedAt === entry.fetchedAt) await this.write(`quote_${symbol}`, { ...latest, samples });
+            }
           }
         }
       }
-      if (due || symbols.some((symbol) => !index.symbols[symbol])) {
-        await this.write(INDEX_KEY, { symbols: tracked, prunedAt: due ? Date.now() : index.prunedAt });
-      }
-    });
+      // Merge symbols added by other windows while pruning was in progress.
+      const latest = await this.quoteIndex();
+      const merged = { ...latest.symbols, ...tracked };
+      for (const symbol of removed) delete merged[symbol];
+      const cursor = due && !clear ? (Number(index.cursor) || 0) + PRUNE_LIMIT : 0;
+      await this.write(INDEX_KEY, { symbols: merged, prunedAt: due ? Date.now() : index.prunedAt,
+        cursor: cursor < Object.keys(index.symbols).length ? cursor : 0 });
+      return deleted;
+    }));
   }
 
   async deleteQuotes(symbols = []) {
     await Promise.allSettled([...this.pending.values()]);
-    await this.maintainQuotes(symbols, { clear: true });
+    if (this.maintenanceTimer !== undefined) {
+      clearTimeout(this.maintenanceTimer);
+      this.maintenanceTimer = undefined;
+    }
+    if (this.maintenance) await this.maintenance;
+    const tracked = [...new Set([...symbols, ...(this.maintenanceSymbols || [])])];
+    this.maintenanceSymbols?.clear();
+    return this.maintainQuotes(tracked, { clear: true });
   }
 
   async getHistory(input, range = '1d', entry = undefined) {
@@ -429,7 +592,7 @@ export class StocksClient {
     if (!Object.hasOwn(RANGES, range)) throw new StockError('invalid_range');
     const cache = entry === undefined ? await this.cached(symbol) : entry;
     if (entry === undefined) {
-      try { await this.maintainQuotes([symbol]); } catch { /* Keep readable history. */ }
+      this.scheduleMaintenance([symbol]);
     }
     const start = (Date.now() - RANGES[range]) / 1000;
     const samples = (Array.isArray(cache?.samples) ? cache.samples : [])
