@@ -1,58 +1,260 @@
 {
-  "_meta": { "language": "en", "name": "English", "rtl": false, "machine_translated": false },
-  "manifest.name": { "message": "Stocks", "description": "Extension display name" },
-  "manifest.description": { "message": "Online · US quotes and watchlist from Finnhub with your free key. Data delayed when cached; every quote shows its timestamp.", "description": "Store listing; Online and Data delayed communicate network dependency and freshness" },
-  "result.loading": { "message": "Looking up stocks…", "description": "Launcher placeholder while quotes load" },
-  "result.help": { "message": "Try $AAPL, stock msft, or stock aapl msft nvda. Enter opens a chart; choose Copy or use stock copy AAPL to copy a quote.", "description": "Launcher syntax and actions" },
-  "result.copy": { "message": "Copy {text}", "description": "Selectable clipboard action; preserve {text}" },
-  "quote.as_of": { "message": "As of {time}", "description": "Actual last trade timestamp, not request time; preserve {time}" },
-  "quote.cached": { "message": "Cached {time}", "description": "Time the saved quote was fetched; preserve {time}" },
-  "quote.retry": { "message": "Retry after {time}", "description": "Rate limit backoff expiry; preserve {time}" },
-  "quote.delayed": { "message": "Data delayed / market may be closed", "description": "Quote is over 15 minutes old; do not imply verified exchange status" },
-  "quote.sampled": { "message": "Locally sampled Finnhub quotes, with gaps. Collects while Stocks is used; this is not historical candle data.", "description": "Sparkline accessible label and settings explanation" },
-  "quote.source": { "message": "Source: Finnhub", "description": "Visible provider attribution" },
-  "error.setup": { "message": "Open Stocks settings, get a free Finnhub key, then Test and save it.", "description": "No stored key" },
-  "error.auth": { "message": "Finnhub rejected the key. Open Stocks settings to test a replacement.", "description": "Authentication or plan error, no raw provider response" },
-  "error.unknown": { "message": "No quote for this symbol. Check the US ticker, including any share-class suffix.", "description": "Unknown or zero-valued quote" },
-  "error.unsupported": { "message": "This provider supports US tickers only. International exchange suffixes need a different data plan.", "description": "Unsupported provider or international symbol" },
-  "error.invalid_symbols": { "message": "Enter stock symbols separated by spaces or commas, such as AAPL MSFT or BRK.B.", "description": "Symbol validation error" },
-  "error.too_many": { "message": "Use at most 10 symbols per query or watchlist.", "description": "Bounded request batch" },
-  "error.rate_limit": { "message": "Request limit reached. Showing saved data when available; requests will resume after a pause.", "description": "Rate limit backoff" },
-  "error.offline": { "message": "Cannot reach Finnhub. Showing saved data when available.", "description": "Offline or network timeout" },
-  "error.unavailable": { "message": "Finnhub is unavailable. Showing saved data when available.", "description": "Sanitized provider error" },
-  "error.busy": { "message": "Another Kage window is refreshing quotes. Try again shortly.", "description": "Cross-window request lock contention" },
-  "error.cache_only": { "message": "Saved quotes only; live requests are paused.", "description": "User selected offline provider mode" },
-  "error.storage": { "message": "Quote storage is unavailable. Requests are paused until their limit can be tracked.", "description": "Fail closed when rate budget cannot persist" },
-  "error.invalid_key": { "message": "Paste a Finnhub API key, then Test and save. Do not paste a URL.", "description": "Malformed or missing API key" },
-  "error.invalid_range": { "message": "Choose a range of 1d, 1w, or 1m.", "description": "Agent history range validation" },
-  "settings.description": { "message": "US stock quotes, watchlist, and local quote history. Online · Source: Finnhub. Saved values may be delayed.", "description": "Settings summary" },
-  "settings.connection": { "message": "Quote provider and setup", "description": "Connection section heading" },
-  "settings.provider": { "message": "Provider", "description": "Provider selector label" },
-  "settings.finnhub": { "message": "Finnhub · US quotes · free personal key", "description": "Supported online provider option" },
-  "settings.cache": { "message": "Saved quotes only · offline", "description": "Network paused provider option" },
-  "setup.intro": { "message": "Keyless Stooq downloads are currently unavailable. Use your own free Finnhub key for US quotes; Stocks never supplies a shared key.", "description": "Explain the authorized fallback to key setup" },
-  "setup.terms": { "message": "Finnhub's personal plans are for eligible personal use. Business use and sharing data or derived results with third parties require Finnhub approval. Check the provider's terms, including before sending quotes to a remote agent.", "description": "Material provider use restrictions" },
-  "setup.steps": { "message": "1. Open Get a free key and register at Finnhub. 2. Copy your API key from its dashboard. 3. Paste it below and choose Test and save. 4. Save your watchlist and provider settings.", "description": "Guided setup steps" },
-  "setup.saved": { "message": "A key is saved on this device. Leave the field empty to test it, or paste a replacement. Stored keys are never shown here.", "description": "Connected setup state without secret disclosure" },
-  "setup.free_key": { "message": "Get a free key", "description": "Open provider registration in system browser" },
-  "setup.key": { "message": "Finnhub API key", "description": "Scratch field for secret" },
-  "setup.key_hint": { "message": "Test and save stores the key in private extension data, like Spotify credentials. Typing it here does not save it with regular settings. This host's text field is visible while you type.", "description": "Storage and host input behavior" },
-  "setup.test": { "message": "Test and save key", "description": "Probe quote endpoint and save only on success" },
-  "setup.remove": { "message": "Remove saved key", "description": "Delete provider credentials; retain cached quotes" },
-  "setup.removed": { "message": "Key removed. Saved quotes remain available.", "description": "Removal success" },
-  "setup.success": { "message": "Finnhub quote test passed; key saved. Save the provider and watchlist settings to finish.", "description": "Successful guided setup" },
-  "settings.watchlist_section": { "message": "Watchlist and refresh", "description": "Display settings section" },
-  "settings.watchlist": { "message": "Watchlist", "description": "Editable list label" },
-  "settings.watchlist_hint": { "message": "Up to {max} US symbols, separated by spaces or commas. An empty list hides the widget.", "description": "Watchlist validation; preserve {max}" },
-  "settings.show": { "message": "Show watchlist in the floating window", "description": "Widget visibility toggle" },
-  "settings.refresh": { "message": "Refresh interval (seconds)", "description": "Quote cache and widget refresh interval" },
-  "settings.refresh_hint": { "message": "Minimum 60 seconds; default 300. Hidden-window polls pause on current Kage hosts. At most 40 requests per minute are reserved across this device; provider limits also include your other apps.", "description": "Request budget and hidden behavior" },
-  "settings.refresh_error": { "message": "Refresh interval must be between 60 and 3600 seconds.", "description": "Invalid interval" },
-  "tool.quote": { "message": "Get US stock quotes from Finnhub for personal use. Returns source, last-trade timestamp, cache freshness and per-symbol errors. Requires the user's free key; do not redistribute without provider approval.", "description": "Agent tool description" },
-  "tool.symbols": { "message": "Up to 10 US symbols, for example [\"AAPL\", \"MSFT\", \"BRK.B\"].", "description": "Quote tool parameter description" },
-  "tool.history": { "message": "Get locally sampled Finnhub quotes observed on this device for 1d, 1w or 1m. No network requests. Incomplete, sparse samples, not historical candles; an empty list means nothing was collected.", "description": "Agent tool scope must not imply full historical coverage" },
-  "tool.symbol": { "message": "A US stock symbol.", "description": "History symbol parameter description" },
-  "tool.range": { "message": "1d, 1w or 1m; default 1d.", "description": "History range parameter description" },
-  "tool.disabled": { "message": "Stocks is disabled.", "description": "Host-disabled tool execution" },
-  "tool.unknown": { "message": "Unknown Stocks tool.", "description": "Unrecognized tool execution" }
+  "_meta": {
+    "language": "en",
+    "name": "English",
+    "rtl": false,
+    "machine_translated": false
+  },
+  "manifest.name": {
+    "message": "Stocks",
+    "description": "Extension display name"
+  },
+  "manifest.description": {
+    "message": "Online · US quotes and watchlist from Finnhub with your free key. Data delayed when cached; every quote shows its timestamp.",
+    "description": "Store listing; Online and Data delayed communicate network dependency and freshness"
+  },
+  "result.loading": {
+    "message": "Looking up stocks…",
+    "description": "Launcher placeholder while quotes load"
+  },
+  "result.help": {
+    "message": "Try $AAPL, stock msft, or stock aapl msft nvda. Enter opens a chart; choose Copy or use stock copy AAPL to copy a quote.",
+    "description": "Launcher syntax and actions"
+  },
+  "result.copy": {
+    "message": "Copy {text}",
+    "description": "Selectable clipboard action; preserve {text}"
+  },
+  "quote.as_of": {
+    "message": "As of {time}",
+    "description": "Actual last trade timestamp, not request time; preserve {time}"
+  },
+  "quote.cached": {
+    "message": "Cached {time}",
+    "description": "Time the saved quote was fetched; preserve {time}"
+  },
+  "quote.retry": {
+    "message": "Retry after {time}",
+    "description": "Rate limit backoff expiry; preserve {time}"
+  },
+  "quote.delayed": {
+    "message": "Data delayed / market may be closed",
+    "description": "Quote is over 15 minutes old; do not imply verified exchange status"
+  },
+  "quote.sampled": {
+    "message": "Locally sampled Finnhub quotes, with gaps. Collects while Stocks is used; this is not historical candle data.",
+    "description": "Sparkline accessible label and settings explanation"
+  },
+  "quote.source": {
+    "message": "Source: Finnhub",
+    "description": "Visible provider attribution"
+  },
+  "error.setup": {
+    "message": "Open Stocks settings, get a free Finnhub key, then Test and save it.",
+    "description": "No stored key"
+  },
+  "error.auth": {
+    "message": "Finnhub rejected the key. Open Stocks settings to test a replacement.",
+    "description": "Authentication error; never include the raw provider response"
+  },
+  "error.unknown": {
+    "message": "No quote for this symbol. Check the US ticker, including any share-class suffix.",
+    "description": "Unknown or zero-valued quote"
+  },
+  "error.unsupported": {
+    "message": "This provider supports US tickers only. International exchange suffixes need a different data plan.",
+    "description": "Unsupported provider or international symbol"
+  },
+  "error.invalid_symbols": {
+    "message": "Enter stock symbols separated by spaces or commas, such as AAPL MSFT or BRK.B.",
+    "description": "Symbol validation error"
+  },
+  "error.too_many": {
+    "message": "Use at most {max} symbols per query or watchlist.",
+    "description": "Bounded request batch; preserve {max}"
+  },
+  "error.rate_limit": {
+    "message": "Request limit reached. Showing saved data when available; requests will resume after a pause.",
+    "description": "Rate limit backoff"
+  },
+  "error.offline": {
+    "message": "Cannot reach Finnhub. Showing saved data when available.",
+    "description": "Offline or network failure"
+  },
+  "error.unavailable": {
+    "message": "Finnhub is unavailable. Showing saved data when available.",
+    "description": "Sanitized provider error"
+  },
+  "error.busy": {
+    "message": "Another Kage window is refreshing quotes. Try again shortly.",
+    "description": "Cross-window request lock contention"
+  },
+  "error.cache_only": {
+    "message": "Saved quotes only; live requests are paused. Open Stocks settings to choose Finnhub and connect a key.",
+    "description": "User selected offline provider mode"
+  },
+  "error.storage": {
+    "message": "Quote storage is unavailable. Requests are paused until their limit can be tracked.",
+    "description": "Fail closed when rate budget cannot persist"
+  },
+  "error.invalid_key": {
+    "message": "Paste a Finnhub API key, then Test and save. Do not paste a URL.",
+    "description": "Malformed or missing API key"
+  },
+  "error.invalid_range": {
+    "message": "Choose a range of 1d, 1w, or 1m.",
+    "description": "Agent history range validation"
+  },
+  "settings.description": {
+    "message": "US stock quotes, watchlist, and local quote history. Online · Source: Finnhub. Saved values may be delayed.",
+    "description": "Settings summary"
+  },
+  "settings.connection": {
+    "message": "Quote provider and setup",
+    "description": "Connection section heading"
+  },
+  "settings.provider": {
+    "message": "Provider",
+    "description": "Provider selector label"
+  },
+  "settings.finnhub": {
+    "message": "Finnhub · US quotes · free personal key",
+    "description": "Supported online provider option"
+  },
+  "settings.cache": {
+    "message": "Saved quotes only · offline",
+    "description": "Network paused provider option"
+  },
+  "setup.intro": {
+    "message": "Use your own free Finnhub key for US stock quotes. Get a key below, then test and save it to connect.",
+    "description": "User-facing provider setup introduction"
+  },
+  "setup.terms": {
+    "message": "Finnhub's personal plans are for eligible personal use. Business use and sharing data or derived results with third parties require Finnhub approval. Check the provider's terms, including before sending quotes to a remote agent.",
+    "description": "Material provider use restrictions"
+  },
+  "setup.steps": {
+    "message": "1. Open Get a free key and register at Finnhub. 2. Copy your API key from its dashboard. 3. Paste it below and choose Test and save. 4. Save your watchlist and provider settings.",
+    "description": "Guided setup steps"
+  },
+  "setup.saved": {
+    "message": "A key is saved on this device. Leave the field empty to test it, or paste a replacement. Stored keys are never shown here.",
+    "description": "Connected setup state without secret disclosure"
+  },
+  "setup.free_key": {
+    "message": "Get a free key",
+    "description": "Open provider registration in system browser"
+  },
+  "setup.key": {
+    "message": "Finnhub API key",
+    "description": "Scratch field for secret"
+  },
+  "setup.key_hint": {
+    "message": "Test and save stores the key in private extension data, like Spotify credentials. Typing it here does not save it with regular settings. This host's text field is visible while you type.",
+    "description": "Storage and host input behavior"
+  },
+  "setup.test": {
+    "message": "Test and save key",
+    "description": "Probe quote endpoint and save only on success"
+  },
+  "setup.remove": {
+    "message": "Remove saved key",
+    "description": "Delete provider credentials; retain cached quotes"
+  },
+  "setup.removed": {
+    "message": "Key removed. Saved quotes remain available.",
+    "description": "Removal success"
+  },
+  "setup.success": {
+    "message": "Finnhub quote test passed; key saved. Save the provider and watchlist settings to finish.",
+    "description": "Successful guided setup"
+  },
+  "settings.watchlist_section": {
+    "message": "Watchlist and refresh",
+    "description": "Display settings section"
+  },
+  "settings.watchlist": {
+    "message": "Watchlist",
+    "description": "Editable list label"
+  },
+  "settings.watchlist_hint": {
+    "message": "Up to {max} US symbols, separated by spaces or commas. An empty list hides the widget.",
+    "description": "Watchlist validation; preserve {max}"
+  },
+  "settings.show": {
+    "message": "Show watchlist in the floating window",
+    "description": "Widget visibility toggle"
+  },
+  "settings.refresh": {
+    "message": "Refresh interval (seconds)",
+    "description": "Quote cache and widget refresh interval"
+  },
+  "settings.refresh_hint": {
+    "message": "Minimum {min} seconds; default {default}. Hidden-window polls pause on current Kage hosts. At most {budget} requests per minute are reserved across this device; provider limits also include your other apps.",
+    "description": "Request budget and hidden behavior; preserve {min}, {default}, {budget}"
+  },
+  "settings.refresh_error": {
+    "message": "Refresh interval must be between {min} and {max} seconds.",
+    "description": "Invalid interval; preserve {min}, {max}"
+  },
+  "tool.quote": {
+    "message": "Get US stock quotes from Finnhub for personal use. Returns source, last-trade timestamp, cache freshness and per-symbol errors. Requires the user's free key; do not redistribute without provider approval.",
+    "description": "Agent tool description"
+  },
+  "tool.symbols": {
+    "message": "Up to {max} US symbols, for example [\"AAPL\", \"MSFT\", \"BRK.B\"].",
+    "description": "Quote tool parameter description; preserve {max}"
+  },
+  "tool.history": {
+    "message": "Get locally sampled Finnhub quotes observed on this device for 1d, 1w or 1m. No network requests. Incomplete, sparse samples, not historical candles; an empty list means nothing was collected.",
+    "description": "Agent tool scope must not imply full historical coverage"
+  },
+  "tool.symbol": {
+    "message": "A US stock symbol.",
+    "description": "History symbol parameter description"
+  },
+  "tool.range": {
+    "message": "1d, 1w or 1m; default 1d.",
+    "description": "History range parameter description"
+  },
+  "tool.disabled": {
+    "message": "Stocks is disabled.",
+    "description": "Host-disabled tool execution"
+  },
+  "tool.unknown": {
+    "message": "Unknown Stocks tool.",
+    "description": "Unrecognized tool execution"
+  },
+  "error.timeout": {
+    "message": "Finnhub took too long to respond. Try again in a few seconds; showing saved data when available.",
+    "description": "Request timeout; short local pause, separate from offline backoff"
+  },
+  "settings.agent_tools": {
+    "message": "Allow Stocks tools for agents",
+    "description": "Optional agent tool access; disabled by default"
+  },
+  "settings.agent_tools_hint": {
+    "message": "Agent tools may send Finnhub quotes and derived results to your agent provider. Enable only when your Finnhub agreement permits this sharing.",
+    "description": "Explain opt-in and external agent data flow"
+  },
+  "settings.delete_quotes": {
+    "message": "Delete saved quotes",
+    "description": "Delete cached quotes and locally sampled history, retaining the key"
+  },
+  "settings.quotes_deleted": {
+    "message": "Saved quotes and local samples deleted.",
+    "description": "Cache deletion success"
+  },
+  "widget.setup": {
+    "message": "Type stock and press Enter to open Stocks settings and set up quotes.",
+    "description": "Compact first-run widget hint; keep stock as the launcher command"
+  },
+  "widget.connection": {
+    "message": "Quotes need attention. Type stock and press Enter to open Stocks settings.",
+    "description": "Compact widget hint for authentication, saved-only or storage problems; keep stock as the launcher command"
+  },
+  "tool.opt_in": {
+    "message": "Enable Allow Stocks tools for agents in Stocks settings before using this tool. Check that your Finnhub agreement permits sharing data with your agent provider.",
+    "description": "Actionable agent tool opt-in error"
+  }
 }

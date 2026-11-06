@@ -78,10 +78,10 @@
     "_source_hash": "8adbf75fdf5bc595"
   },
   "error.auth": {
-    "message": "Finnhub a refusé la clé. Ouvrez les paramètres de Bourse pour tester une autre clé.",
-    "description": "Authentication or plan error, no raw provider response",
+    "message": "Finnhub a refusé la clé. Ouvrez les paramètres de Stocks pour tester une autre clé.",
+    "description": "Authentication error; never include the raw provider response",
     "_machine_translated": true,
-    "_source_hash": "ecc147e2c9741ce7"
+    "_source_hash": "eca735a4f5fb0bce"
   },
   "error.unknown": {
     "message": "Aucun cours pour ce symbole. Vérifiez le ticker américain, y compris tout suffixe de catégorie d’actions.",
@@ -102,10 +102,10 @@
     "_source_hash": "5cd17969829278c5"
   },
   "error.too_many": {
-    "message": "Utilisez au maximum 10 symboles par requête ou liste de suivi.",
-    "description": "Bounded request batch",
+    "message": "Utilisez au maximum {max} symboles par requête ou liste de suivi.",
+    "description": "Bounded request batch; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "e8f0028cd32f8c7b"
+    "_source_hash": "22531ab77bc6c225"
   },
   "error.rate_limit": {
     "message": "Limite de requêtes atteinte. Affichage des données enregistrées si disponibles ; les requêtes reprendront après une pause.",
@@ -114,10 +114,10 @@
     "_source_hash": "7d553dee0c6fe94a"
   },
   "error.offline": {
-    "message": "Impossible de joindre Finnhub. Affichage des données enregistrées si disponibles.",
-    "description": "Offline or network timeout",
+    "message": "Impossible de joindre Finnhub. Les données enregistrées sont affichées si elles sont disponibles.",
+    "description": "Offline or network failure",
     "_machine_translated": true,
-    "_source_hash": "e74f5fe32dc5f429"
+    "_source_hash": "536dacabe5ed1015"
   },
   "error.unavailable": {
     "message": "Finnhub est indisponible. Affichage des données enregistrées si disponibles.",
@@ -132,10 +132,10 @@
     "_source_hash": "b6ed5bc4b975b5a0"
   },
   "error.cache_only": {
-    "message": "Cours enregistrés uniquement ; les requêtes en direct sont suspendues.",
+    "message": "Cours enregistrés uniquement ; les requêtes en direct sont suspendues. Ouvrez les paramètres Bourse pour choisir Finnhub et connecter une clé.",
     "description": "User selected offline provider mode",
     "_machine_translated": true,
-    "_source_hash": "ceee09611e30c87c"
+    "_source_hash": "69f4b08853704dde"
   },
   "error.storage": {
     "message": "Le stockage des cours est indisponible. Les requêtes sont suspendues jusqu’à ce que leur limite puisse être suivie.",
@@ -186,10 +186,10 @@
     "_source_hash": "f429d58cbb1c5f8b"
   },
   "setup.intro": {
-    "message": "Les téléchargements Stooq sans clé sont actuellement indisponibles. Utilisez votre propre clé Finnhub gratuite pour les cotations américaines ; Stocks ne fournit jamais de clé partagée.",
-    "description": "Explain the authorized fallback to key setup",
+    "message": "Utilisez votre propre clé Finnhub gratuite pour obtenir les cours des actions américaines. Obtenez une clé ci-dessous, puis testez-la et enregistrez-la pour vous connecter.",
+    "description": "User-facing provider setup introduction",
     "_machine_translated": true,
-    "_source_hash": "d8f6685775cf04bc"
+    "_source_hash": "0686f89d96f514a5"
   },
   "setup.terms": {
     "message": "Les offres personnelles de Finnhub sont réservées à un usage personnel éligible. Toute utilisation professionnelle et tout partage de données ou de résultats dérivés avec des tiers nécessitent l’accord de Finnhub. Consultez les conditions du fournisseur, notamment avant d’envoyer des cotations à un agent distant.",
@@ -282,16 +282,16 @@
     "_source_hash": "d5d486955acdd4c8"
   },
   "settings.refresh_hint": {
-    "message": "Minimum 60 secondes ; 300 par défaut. Les interrogations sont suspendues lorsque la fenêtre est masquée sur les hôtes Kage actuels. Au maximum 40 requêtes par minute sont réservées sur cet appareil ; les limites du fournisseur incluent aussi vos autres applications.",
-    "description": "Request budget and hidden behavior",
+    "message": "Minimum {min} secondes ; {default} par défaut. Les interrogations sont suspendues lorsque la fenêtre est masquée sur les hôtes Kage actuels. Au maximum {budget} requêtes par minute sont réservées sur cet appareil ; les limites du fournisseur incluent aussi vos autres applications.",
+    "description": "Request budget and hidden behavior; preserve {min}, {default}, {budget}",
     "_machine_translated": true,
-    "_source_hash": "86c3403cda44db0e"
+    "_source_hash": "835954ceb7299192"
   },
   "settings.refresh_error": {
-    "message": "L’intervalle d’actualisation doit être compris entre 60 et 3600 secondes.",
-    "description": "Invalid interval",
+    "message": "L’intervalle d’actualisation doit être compris entre {min} et {max} secondes.",
+    "description": "Invalid interval; preserve {min}, {max}",
     "_machine_translated": true,
-    "_source_hash": "c93b2dfa0a61d9f4"
+    "_source_hash": "45f891673cb1e039"
   },
   "tool.quote": {
     "message": "Obtenir des cotations boursières américaines depuis Finnhub pour un usage personnel. Renvoie la source, l’horodatage de la dernière transaction, la fraîcheur du cache et les erreurs par symbole. Nécessite la clé gratuite de l’utilisateur ; ne pas redistribuer sans l’accord du fournisseur.",
@@ -300,10 +300,10 @@
     "_source_hash": "9aa8d167f9bf2f94"
   },
   "tool.symbols": {
-    "message": "Jusqu’à 10 symboles américains, par exemple [\"AAPL\", \"MSFT\", \"BRK.B\"].",
-    "description": "Quote tool parameter description",
+    "message": "Jusqu’à {max} symboles américains, par exemple [\"AAPL\", \"MSFT\", \"BRK.B\"].",
+    "description": "Quote tool parameter description; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "5d5d1c443bb02531"
+    "_source_hash": "753c9fd4564636f3"
   },
   "tool.history": {
     "message": "Obtenir les cotations Finnhub échantillonnées localement sur cet appareil pour 1d, 1w ou 1m. Aucune requête réseau. Échantillons incomplets et épars, pas des chandeliers historiques ; une liste vide signifie qu’aucune donnée n’a été collectée.",
@@ -334,5 +334,53 @@
     "description": "Unrecognized tool execution",
     "_machine_translated": true,
     "_source_hash": "2acdb85e54aa0ed1"
+  },
+  "error.timeout": {
+    "message": "Finnhub a mis trop de temps à répondre. Réessayez dans quelques secondes ; les données enregistrées sont affichées si elles sont disponibles.",
+    "description": "Request timeout; short local pause, separate from offline backoff",
+    "_machine_translated": true,
+    "_source_hash": "23491b785f430a04"
+  },
+  "settings.agent_tools": {
+    "message": "Autoriser les outils Stocks pour les agents",
+    "description": "Optional agent tool access; disabled by default",
+    "_machine_translated": true,
+    "_source_hash": "feaafa8e946fc0b2"
+  },
+  "settings.agent_tools_hint": {
+    "message": "Les outils d’agent peuvent envoyer les cours Finnhub et les résultats qui en sont dérivés à votre fournisseur d’agent. N’activez cette option que si votre contrat Finnhub autorise ce partage.",
+    "description": "Explain opt-in and external agent data flow",
+    "_machine_translated": true,
+    "_source_hash": "600e0e85ae5aca60"
+  },
+  "settings.delete_quotes": {
+    "message": "Supprimer les cours enregistrés",
+    "description": "Delete cached quotes and locally sampled history, retaining the key",
+    "_machine_translated": true,
+    "_source_hash": "c3ae84bf8010f20d"
+  },
+  "settings.quotes_deleted": {
+    "message": "Cours enregistrés et échantillons locaux supprimés.",
+    "description": "Cache deletion success",
+    "_machine_translated": true,
+    "_source_hash": "5c098db4acf64401"
+  },
+  "widget.setup": {
+    "message": "Saisissez stock et appuyez sur Entrée pour ouvrir les paramètres de Stocks et configurer les cours.",
+    "description": "Compact first-run widget hint; keep stock as the launcher command",
+    "_machine_translated": true,
+    "_source_hash": "9c88d9cf89fa770f"
+  },
+  "widget.connection": {
+    "message": "Les cours nécessitent votre attention. Saisissez stock et appuyez sur Entrée pour ouvrir les paramètres de Stocks.",
+    "description": "Compact widget hint for authentication, saved-only or storage problems; keep stock as the launcher command",
+    "_machine_translated": true,
+    "_source_hash": "28d7c64fff255e29"
+  },
+  "tool.opt_in": {
+    "message": "Activez « Autoriser les outils Stocks pour les agents » dans les paramètres de Stocks avant d’utiliser cet outil. Vérifiez que votre contrat Finnhub autorise le partage de données avec votre fournisseur d’agent.",
+    "description": "Actionable agent tool opt-in error",
+    "_machine_translated": true,
+    "_source_hash": "a00e5cc3750744f0"
   }
 }

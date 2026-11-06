@@ -78,10 +78,10 @@
     "_source_hash": "8adbf75fdf5bc595"
   },
   "error.auth": {
-    "message": "Finnhub がキーを拒否しました。株価の設定を開いて、別のキーをテストしてください。",
-    "description": "Authentication or plan error, no raw provider response",
+    "message": "Finnhub でキーが拒否されました。Stocks の設定を開いて、新しいキーをテストしてください。",
+    "description": "Authentication error; never include the raw provider response",
     "_machine_translated": true,
-    "_source_hash": "ecc147e2c9741ce7"
+    "_source_hash": "eca735a4f5fb0bce"
   },
   "error.unknown": {
     "message": "このシンボルの株価はありません。株式クラスのサフィックスを含め、米国のティッカーを確認してください。",
@@ -102,10 +102,10 @@
     "_source_hash": "5cd17969829278c5"
   },
   "error.too_many": {
-    "message": "1 回のクエリまたはウォッチリストで使用できるシンボルは最大 10 個です。",
-    "description": "Bounded request batch",
+    "message": "1 回のクエリまたはウォッチリストで使用できるシンボルは最大 {max} 個です。",
+    "description": "Bounded request batch; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "e8f0028cd32f8c7b"
+    "_source_hash": "22531ab77bc6c225"
   },
   "error.rate_limit": {
     "message": "リクエストの上限に達しました。保存済みのデータがあれば表示します。しばらくするとリクエストが再開されます。",
@@ -114,10 +114,10 @@
     "_source_hash": "7d553dee0c6fe94a"
   },
   "error.offline": {
-    "message": "Finnhub に接続できません。保存済みのデータがあれば表示します。",
-    "description": "Offline or network timeout",
+    "message": "Finnhub に接続できません。保存済みのデータがある場合はそれを表示しています。",
+    "description": "Offline or network failure",
     "_machine_translated": true,
-    "_source_hash": "e74f5fe32dc5f429"
+    "_source_hash": "536dacabe5ed1015"
   },
   "error.unavailable": {
     "message": "Finnhub を利用できません。保存済みのデータがあれば表示します。",
@@ -132,10 +132,10 @@
     "_source_hash": "b6ed5bc4b975b5a0"
   },
   "error.cache_only": {
-    "message": "保存済みの株価のみです。ライブリクエストは一時停止中です。",
+    "message": "保存済みの株価のみ表示しています。ライブリクエストは一時停止中です。Stocks の設定を開いて Finnhub を選択し、キーを接続してください。",
     "description": "User selected offline provider mode",
     "_machine_translated": true,
-    "_source_hash": "ceee09611e30c87c"
+    "_source_hash": "69f4b08853704dde"
   },
   "error.storage": {
     "message": "株価のストレージを利用できません。上限を追跡できるようになるまで、リクエストは一時停止されます。",
@@ -186,10 +186,10 @@
     "_source_hash": "f429d58cbb1c5f8b"
   },
   "setup.intro": {
-    "message": "現在、キー不要の Stooq ダウンロードは利用できません。米国株価を取得するには、ご自身の無料 Finnhub キーを使用してください。Stocks が共有キーを提供することはありません。",
-    "description": "Explain the authorized fallback to key setup",
+    "message": "米国株の株価を取得するには、ご自身の無料の Finnhub キーを使用します。下のリンクからキーを取得し、テストして保存すると接続されます。",
+    "description": "User-facing provider setup introduction",
     "_machine_translated": true,
-    "_source_hash": "d8f6685775cf04bc"
+    "_source_hash": "0686f89d96f514a5"
   },
   "setup.terms": {
     "message": "Finnhub の個人向けプランは、対象となる個人利用のためのものです。商用利用や、データまたはそこから派生した結果を第三者と共有するには、Finnhub の承認が必要です。リモートエージェントに株価を送信する前にも、プロバイダーの利用規約をご確認ください。",
@@ -282,16 +282,16 @@
     "_source_hash": "d5d486955acdd4c8"
   },
   "settings.refresh_hint": {
-    "message": "最小 60 秒、デフォルトは 300 秒です。現在の Kage ホストでは、ウィンドウが非表示の間はポーリングが一時停止します。このデバイス全体で 1 分あたり最大 40 件のリクエストが確保されます。プロバイダーの制限には、他のアプリからのリクエストも含まれます。",
-    "description": "Request budget and hidden behavior",
+    "message": "最小 {min} 秒、既定値は {default} 秒です。現在の Kage ホストでは、ウィンドウが非表示の間はポーリングが一時停止します。このデバイス全体で 1 分あたり最大 {budget} 件のリクエストが確保されます。プロバイダーの制限には、他のアプリからのリクエストも含まれます。",
+    "description": "Request budget and hidden behavior; preserve {min}, {default}, {budget}",
     "_machine_translated": true,
-    "_source_hash": "86c3403cda44db0e"
+    "_source_hash": "835954ceb7299192"
   },
   "settings.refresh_error": {
-    "message": "更新間隔は 60～3600 秒の範囲で指定してください。",
-    "description": "Invalid interval",
+    "message": "更新間隔は {min} 秒から {max} 秒の間で指定してください。",
+    "description": "Invalid interval; preserve {min}, {max}",
     "_machine_translated": true,
-    "_source_hash": "c93b2dfa0a61d9f4"
+    "_source_hash": "45f891673cb1e039"
   },
   "tool.quote": {
     "message": "個人利用のために Finnhub から米国株の株価を取得します。ソース、最終取引のタイムスタンプ、キャッシュの鮮度、シンボルごとのエラーを返します。ユーザーの無料キーが必要です。プロバイダーの承認なしに再配布しないでください。",
@@ -300,10 +300,10 @@
     "_source_hash": "9aa8d167f9bf2f94"
   },
   "tool.symbols": {
-    "message": "最大 10 個の米国株シンボル（例：[\"AAPL\", \"MSFT\", \"BRK.B\"]）。",
-    "description": "Quote tool parameter description",
+    "message": "最大 {max} 個の米国株シンボル（例: [\"AAPL\", \"MSFT\", \"BRK.B\"]）。",
+    "description": "Quote tool parameter description; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "5d5d1c443bb02531"
+    "_source_hash": "753c9fd4564636f3"
   },
   "tool.history": {
     "message": "このデバイスでローカルに記録された Finnhub の相場を 1d、1w、または 1m の期間で取得します。ネットワークリクエストは行いません。サンプルは不完全かつまばらで、過去のローソク足データではありません。空のリストは、何も収集されていないことを意味します。",
@@ -334,5 +334,53 @@
     "description": "Unrecognized tool execution",
     "_machine_translated": true,
     "_source_hash": "2acdb85e54aa0ed1"
+  },
+  "error.timeout": {
+    "message": "Finnhub からの応答に時間がかかりすぎています。数秒後にもう一度お試しください。保存済みのデータがある場合はそれを表示しています。",
+    "description": "Request timeout; short local pause, separate from offline backoff",
+    "_machine_translated": true,
+    "_source_hash": "23491b785f430a04"
+  },
+  "settings.agent_tools": {
+    "message": "エージェントに Stocks ツールの使用を許可",
+    "description": "Optional agent tool access; disabled by default",
+    "_machine_translated": true,
+    "_source_hash": "feaafa8e946fc0b2"
+  },
+  "settings.agent_tools_hint": {
+    "message": "エージェントツールは、Finnhub の株価やそこから得られた結果をエージェントプロバイダーに送信する場合があります。Finnhub との契約でこの共有が許可されている場合にのみ有効にしてください。",
+    "description": "Explain opt-in and external agent data flow",
+    "_machine_translated": true,
+    "_source_hash": "600e0e85ae5aca60"
+  },
+  "settings.delete_quotes": {
+    "message": "保存済みの株価を削除",
+    "description": "Delete cached quotes and locally sampled history, retaining the key",
+    "_machine_translated": true,
+    "_source_hash": "c3ae84bf8010f20d"
+  },
+  "settings.quotes_deleted": {
+    "message": "保存済みの株価とローカルのサンプルを削除しました。",
+    "description": "Cache deletion success",
+    "_machine_translated": true,
+    "_source_hash": "5c098db4acf64401"
+  },
+  "widget.setup": {
+    "message": "stock と入力して Enter キーを押すと、Stocks の設定が開き、株価を設定できます。",
+    "description": "Compact first-run widget hint; keep stock as the launcher command",
+    "_machine_translated": true,
+    "_source_hash": "9c88d9cf89fa770f"
+  },
+  "widget.connection": {
+    "message": "株価の確認が必要です。stock と入力して Enter キーを押すと、Stocks の設定が開きます。",
+    "description": "Compact widget hint for authentication, saved-only or storage problems; keep stock as the launcher command",
+    "_machine_translated": true,
+    "_source_hash": "28d7c64fff255e29"
+  },
+  "tool.opt_in": {
+    "message": "このツールを使用する前に、Stocks の設定で「エージェントに Stocks ツールの使用を許可」を有効にしてください。Finnhub との契約で、エージェントプロバイダーとのデータ共有が許可されていることを確認してください。",
+    "description": "Actionable agent tool opt-in error",
+    "_machine_translated": true,
+    "_source_hash": "a00e5cc3750744f0"
   }
 }

@@ -78,10 +78,10 @@
     "_source_hash": "8adbf75fdf5bc595"
   },
   "error.auth": {
-    "message": "Finnhub đã từ chối khóa. Mở cài đặt Cổ phiếu để kiểm tra khóa thay thế.",
-    "description": "Authentication or plan error, no raw provider response",
+    "message": "Finnhub đã từ chối khóa. Hãy mở cài đặt Cổ phiếu để thử một khóa thay thế.",
+    "description": "Authentication error; never include the raw provider response",
     "_machine_translated": true,
-    "_source_hash": "ecc147e2c9741ce7"
+    "_source_hash": "eca735a4f5fb0bce"
   },
   "error.unknown": {
     "message": "Không có báo giá cho mã này. Hãy kiểm tra mã cổ phiếu Mỹ, bao gồm cả hậu tố loại cổ phần (nếu có).",
@@ -102,10 +102,10 @@
     "_source_hash": "5cd17969829278c5"
   },
   "error.too_many": {
-    "message": "Dùng tối đa 10 mã cho mỗi truy vấn hoặc danh sách theo dõi.",
-    "description": "Bounded request batch",
+    "message": "Mỗi truy vấn hoặc danh sách theo dõi chỉ được dùng tối đa {max} mã.",
+    "description": "Bounded request batch; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "e8f0028cd32f8c7b"
+    "_source_hash": "22531ab77bc6c225"
   },
   "error.rate_limit": {
     "message": "Đã đạt giới hạn yêu cầu. Đang hiển thị dữ liệu đã lưu nếu có; các yêu cầu sẽ tiếp tục sau một lúc.",
@@ -114,10 +114,10 @@
     "_source_hash": "7d553dee0c6fe94a"
   },
   "error.offline": {
-    "message": "Không thể kết nối Finnhub. Đang hiển thị dữ liệu đã lưu nếu có.",
-    "description": "Offline or network timeout",
+    "message": "Không thể kết nối với Finnhub. Đang hiển thị dữ liệu đã lưu nếu có.",
+    "description": "Offline or network failure",
     "_machine_translated": true,
-    "_source_hash": "e74f5fe32dc5f429"
+    "_source_hash": "536dacabe5ed1015"
   },
   "error.unavailable": {
     "message": "Finnhub hiện không khả dụng. Đang hiển thị dữ liệu đã lưu nếu có.",
@@ -132,10 +132,10 @@
     "_source_hash": "b6ed5bc4b975b5a0"
   },
   "error.cache_only": {
-    "message": "Chỉ dùng báo giá đã lưu; các yêu cầu trực tiếp đang tạm dừng.",
+    "message": "Chỉ hiển thị báo giá đã lưu; các yêu cầu trực tiếp đang tạm dừng. Hãy mở cài đặt Cổ phiếu để chọn Finnhub và kết nối khóa.",
     "description": "User selected offline provider mode",
     "_machine_translated": true,
-    "_source_hash": "ceee09611e30c87c"
+    "_source_hash": "69f4b08853704dde"
   },
   "error.storage": {
     "message": "Không thể truy cập bộ nhớ báo giá. Các yêu cầu sẽ tạm dừng cho đến khi có thể theo dõi giới hạn yêu cầu.",
@@ -186,10 +186,10 @@
     "_source_hash": "f429d58cbb1c5f8b"
   },
   "setup.intro": {
-    "message": "Hiện không thể tải dữ liệu Stooq không cần khóa. Hãy dùng khóa Finnhub miễn phí của riêng bạn để nhận báo giá Mỹ; Stocks không bao giờ cung cấp khóa dùng chung.",
-    "description": "Explain the authorized fallback to key setup",
+    "message": "Hãy dùng khóa Finnhub miễn phí của riêng bạn để xem giá cổ phiếu Mỹ. Lấy khóa bên dưới, sau đó kiểm tra và lưu để kết nối.",
+    "description": "User-facing provider setup introduction",
     "_machine_translated": true,
-    "_source_hash": "d8f6685775cf04bc"
+    "_source_hash": "0686f89d96f514a5"
   },
   "setup.terms": {
     "message": "Các gói cá nhân của Finnhub dành cho mục đích sử dụng cá nhân hợp lệ. Việc sử dụng cho doanh nghiệp và chia sẻ dữ liệu hoặc kết quả phái sinh với bên thứ ba cần được Finnhub chấp thuận. Hãy xem điều khoản của nhà cung cấp, kể cả trước khi gửi báo giá đến một agent từ xa.",
@@ -282,16 +282,16 @@
     "_source_hash": "d5d486955acdd4c8"
   },
   "settings.refresh_hint": {
-    "message": "Tối thiểu 60 giây; mặc định 300. Việc truy vấn khi cửa sổ bị ẩn sẽ tạm dừng trên các máy chủ Kage hiện tại. Tối đa 40 yêu cầu mỗi phút được dành riêng trên toàn thiết bị này; giới hạn của nhà cung cấp cũng tính cả các ứng dụng khác của bạn.",
-    "description": "Request budget and hidden behavior",
+    "message": "Tối thiểu {min} giây; mặc định {default}. Trên các máy chủ Kage hiện tại, việc cập nhật sẽ tạm dừng khi cửa sổ bị ẩn. Thiết bị này dành tối đa {budget} yêu cầu mỗi phút; giới hạn của nhà cung cấp cũng tính cả các ứng dụng khác của bạn.",
+    "description": "Request budget and hidden behavior; preserve {min}, {default}, {budget}",
     "_machine_translated": true,
-    "_source_hash": "86c3403cda44db0e"
+    "_source_hash": "835954ceb7299192"
   },
   "settings.refresh_error": {
-    "message": "Khoảng thời gian làm mới phải từ 60 đến 3600 giây.",
-    "description": "Invalid interval",
+    "message": "Khoảng thời gian làm mới phải từ {min} đến {max} giây.",
+    "description": "Invalid interval; preserve {min}, {max}",
     "_machine_translated": true,
-    "_source_hash": "c93b2dfa0a61d9f4"
+    "_source_hash": "45f891673cb1e039"
   },
   "tool.quote": {
     "message": "Lấy báo giá cổ phiếu Mỹ từ Finnhub để sử dụng cá nhân. Trả về nguồn, dấu thời gian giao dịch gần nhất, độ mới của bộ nhớ đệm và lỗi theo từng mã. Yêu cầu khóa miễn phí của người dùng; không phân phối lại khi chưa được nhà cung cấp chấp thuận.",
@@ -300,10 +300,10 @@
     "_source_hash": "9aa8d167f9bf2f94"
   },
   "tool.symbols": {
-    "message": "Tối đa 10 mã cổ phiếu Mỹ, ví dụ [\"AAPL\", \"MSFT\", \"BRK.B\"].",
-    "description": "Quote tool parameter description",
+    "message": "Tối đa {max} mã cổ phiếu Mỹ, ví dụ [\"AAPL\", \"MSFT\", \"BRK.B\"].",
+    "description": "Quote tool parameter description; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "5d5d1c443bb02531"
+    "_source_hash": "753c9fd4564636f3"
   },
   "tool.history": {
     "message": "Lấy các báo giá Finnhub được lấy mẫu cục bộ, ghi nhận trên thiết bị này trong 1d, 1w hoặc 1m. Không gửi yêu cầu mạng. Đây là các mẫu thưa thớt, không đầy đủ, không phải nến lịch sử; danh sách trống nghĩa là chưa thu thập được dữ liệu nào.",
@@ -334,5 +334,53 @@
     "description": "Unrecognized tool execution",
     "_machine_translated": true,
     "_source_hash": "2acdb85e54aa0ed1"
+  },
+  "error.timeout": {
+    "message": "Finnhub phản hồi quá lâu. Hãy thử lại sau vài giây; đang hiển thị dữ liệu đã lưu nếu có.",
+    "description": "Request timeout; short local pause, separate from offline backoff",
+    "_machine_translated": true,
+    "_source_hash": "23491b785f430a04"
+  },
+  "settings.agent_tools": {
+    "message": "Cho phép tác nhân dùng công cụ Cổ phiếu",
+    "description": "Optional agent tool access; disabled by default",
+    "_machine_translated": true,
+    "_source_hash": "feaafa8e946fc0b2"
+  },
+  "settings.agent_tools_hint": {
+    "message": "Công cụ của tác nhân có thể gửi giá từ Finnhub và các kết quả suy ra từ đó đến nhà cung cấp tác nhân của bạn. Chỉ bật khi thỏa thuận Finnhub của bạn cho phép chia sẻ như vậy.",
+    "description": "Explain opt-in and external agent data flow",
+    "_machine_translated": true,
+    "_source_hash": "600e0e85ae5aca60"
+  },
+  "settings.delete_quotes": {
+    "message": "Xóa giá đã lưu",
+    "description": "Delete cached quotes and locally sampled history, retaining the key",
+    "_machine_translated": true,
+    "_source_hash": "c3ae84bf8010f20d"
+  },
+  "settings.quotes_deleted": {
+    "message": "Đã xóa giá đã lưu và các mẫu dữ liệu cục bộ.",
+    "description": "Cache deletion success",
+    "_machine_translated": true,
+    "_source_hash": "5c098db4acf64401"
+  },
+  "widget.setup": {
+    "message": "Nhập stock rồi nhấn Enter để mở cài đặt Cổ phiếu và thiết lập báo giá.",
+    "description": "Compact first-run widget hint; keep stock as the launcher command",
+    "_machine_translated": true,
+    "_source_hash": "9c88d9cf89fa770f"
+  },
+  "widget.connection": {
+    "message": "Báo giá cần được xử lý. Nhập stock rồi nhấn Enter để mở cài đặt Cổ phiếu.",
+    "description": "Compact widget hint for authentication, saved-only or storage problems; keep stock as the launcher command",
+    "_machine_translated": true,
+    "_source_hash": "28d7c64fff255e29"
+  },
+  "tool.opt_in": {
+    "message": "Hãy bật Cho phép tác nhân dùng công cụ Cổ phiếu trong cài đặt Cổ phiếu trước khi dùng công cụ này. Kiểm tra xem thỏa thuận Finnhub của bạn có cho phép chia sẻ dữ liệu với nhà cung cấp tác nhân hay không.",
+    "description": "Actionable agent tool opt-in error",
+    "_machine_translated": true,
+    "_source_hash": "a00e5cc3750744f0"
   }
 }

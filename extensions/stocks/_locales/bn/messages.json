@@ -78,10 +78,10 @@
     "_source_hash": "8adbf75fdf5bc595"
   },
   "error.auth": {
-    "message": "Finnhub কী-টি প্রত্যাখ্যান করেছে। নতুন কী পরীক্ষা করতে স্টক সেটিংস খুলুন।",
-    "description": "Authentication or plan error, no raw provider response",
+    "message": "Finnhub কী-টি প্রত্যাখ্যান করেছে। একটি নতুন কী পরীক্ষা করতে Stocks সেটিংস খুলুন।",
+    "description": "Authentication error; never include the raw provider response",
     "_machine_translated": true,
-    "_source_hash": "ecc147e2c9741ce7"
+    "_source_hash": "eca735a4f5fb0bce"
   },
   "error.unknown": {
     "message": "এই সিম্বলের কোনো কোট নেই। শেয়ার-ক্লাস সাফিক্সসহ US টিকারটি যাচাই করুন।",
@@ -102,10 +102,10 @@
     "_source_hash": "5cd17969829278c5"
   },
   "error.too_many": {
-    "message": "প্রতি কোয়েরি বা ওয়াচলিস্টে সর্বোচ্চ ১০টি সিম্বল ব্যবহার করুন।",
-    "description": "Bounded request batch",
+    "message": "প্রতিটি কোয়েরি বা ওয়াচলিস্টে সর্বোচ্চ {max}টি সিম্বল ব্যবহার করুন।",
+    "description": "Bounded request batch; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "e8f0028cd32f8c7b"
+    "_source_hash": "22531ab77bc6c225"
   },
   "error.rate_limit": {
     "message": "অনুরোধের সীমা পূর্ণ হয়েছে। সংরক্ষিত ডেটা থাকলে তা দেখানো হচ্ছে; কিছুক্ষণ বিরতির পরে অনুরোধ আবার শুরু হবে।",
@@ -114,10 +114,10 @@
     "_source_hash": "7d553dee0c6fe94a"
   },
   "error.offline": {
-    "message": "Finnhub-এ পৌঁছানো যাচ্ছে না। সংরক্ষিত ডেটা থাকলে তা দেখানো হচ্ছে।",
-    "description": "Offline or network timeout",
+    "message": "Finnhub-এর সাথে সংযোগ করা যাচ্ছে না। উপলব্ধ থাকলে সংরক্ষিত ডেটা দেখানো হচ্ছে।",
+    "description": "Offline or network failure",
     "_machine_translated": true,
-    "_source_hash": "e74f5fe32dc5f429"
+    "_source_hash": "536dacabe5ed1015"
   },
   "error.unavailable": {
     "message": "Finnhub অনুপলব্ধ। সংরক্ষিত ডেটা থাকলে তা দেখানো হচ্ছে।",
@@ -132,10 +132,10 @@
     "_source_hash": "b6ed5bc4b975b5a0"
   },
   "error.cache_only": {
-    "message": "শুধু সংরক্ষিত কোট; লাইভ অনুরোধ বিরত রাখা হয়েছে।",
+    "message": "শুধু সংরক্ষিত দর দেখানো হচ্ছে; লাইভ অনুরোধ বিরত আছে। Finnhub বেছে নিতে এবং একটি কী সংযুক্ত করতে Stocks সেটিংস খুলুন।",
     "description": "User selected offline provider mode",
     "_machine_translated": true,
-    "_source_hash": "ceee09611e30c87c"
+    "_source_hash": "69f4b08853704dde"
   },
   "error.storage": {
     "message": "কোট স্টোরেজ অনুপলব্ধ। অনুরোধের সীমা ট্র্যাক করা না যাওয়া পর্যন্ত অনুরোধ বিরত থাকবে।",
@@ -186,10 +186,10 @@
     "_source_hash": "f429d58cbb1c5f8b"
   },
   "setup.intro": {
-    "message": "কী ছাড়া Stooq ডাউনলোড বর্তমানে উপলভ্য নয়। মার্কিন দরের জন্য আপনার নিজের বিনামূল্যের Finnhub কী ব্যবহার করুন; Stocks কখনো কোনো শেয়ার করা কী দেয় না।",
-    "description": "Explain the authorized fallback to key setup",
+    "message": "মার্কিন স্টকের কোটের জন্য আপনার নিজের বিনামূল্যের Finnhub কী ব্যবহার করুন। নিচে থেকে একটি কী নিন, তারপর সংযোগ করতে সেটি পরীক্ষা করে সংরক্ষণ করুন।",
+    "description": "User-facing provider setup introduction",
     "_machine_translated": true,
-    "_source_hash": "d8f6685775cf04bc"
+    "_source_hash": "0686f89d96f514a5"
   },
   "setup.terms": {
     "message": "Finnhub-এর ব্যক্তিগত প্ল্যানগুলো শুধু যোগ্য ব্যক্তিগত ব্যবহারের জন্য। ব্যবসায়িক ব্যবহার এবং তৃতীয় পক্ষের সঙ্গে ডেটা বা তা থেকে প্রাপ্ত ফলাফল শেয়ার করতে Finnhub-এর অনুমোদন প্রয়োজন। প্রদানকারীর শর্তাবলি দেখে নিন, বিশেষ করে কোনো রিমোট এজেন্টে দর পাঠানোর আগে।",
@@ -282,16 +282,16 @@
     "_source_hash": "d5d486955acdd4c8"
   },
   "settings.refresh_hint": {
-    "message": "সর্বনিম্ন ৬০ সেকেন্ড; ডিফল্ট ৩০০। বর্তমান Kage হোস্টে উইন্ডো লুকানো থাকলে পোলিং থেমে থাকে। এই ডিভাইসে মিনিটে সর্বোচ্চ ৪০টি অনুরোধ সংরক্ষিত রাখা হয়; প্রদানকারীর সীমায় আপনার অন্যান্য অ্যাপের অনুরোধও গণ্য হয়।",
-    "description": "Request budget and hidden behavior",
+    "message": "সর্বনিম্ন {min} সেকেন্ড; ডিফল্ট {default}। বর্তমান Kage হোস্টে উইন্ডো লুকানো থাকলে পোলিং বিরতিতে থাকে। এই ডিভাইসে প্রতি মিনিটে সর্বোচ্চ {budget}টি অনুরোধ সংরক্ষিত থাকে; প্রোভাইডারের সীমায় আপনার অন্যান্য অ্যাপও অন্তর্ভুক্ত।",
+    "description": "Request budget and hidden behavior; preserve {min}, {default}, {budget}",
     "_machine_translated": true,
-    "_source_hash": "86c3403cda44db0e"
+    "_source_hash": "835954ceb7299192"
   },
   "settings.refresh_error": {
-    "message": "রিফ্রেশের ব্যবধান ৬০ থেকে ৩৬০০ সেকেন্ডের মধ্যে হতে হবে।",
-    "description": "Invalid interval",
+    "message": "রিফ্রেশের ব্যবধান {min} থেকে {max} সেকেন্ডের মধ্যে হতে হবে।",
+    "description": "Invalid interval; preserve {min}, {max}",
     "_machine_translated": true,
-    "_source_hash": "c93b2dfa0a61d9f4"
+    "_source_hash": "45f891673cb1e039"
   },
   "tool.quote": {
     "message": "ব্যক্তিগত ব্যবহারের জন্য Finnhub থেকে মার্কিন স্টকের দর আনে। উৎস, শেষ লেনদেনের টাইমস্ট্যাম্প, ক্যাশের সতেজতা এবং প্রতিটি সিম্বলের ত্রুটি ফেরত দেয়। ব্যবহারকারীর বিনামূল্যের কী প্রয়োজন; প্রদানকারীর অনুমোদন ছাড়া পুনর্বিতরণ করবেন না।",
@@ -300,10 +300,10 @@
     "_source_hash": "9aa8d167f9bf2f94"
   },
   "tool.symbols": {
-    "message": "সর্বোচ্চ ১০টি মার্কিন সিম্বল, যেমন [\"AAPL\", \"MSFT\", \"BRK.B\"]।",
-    "description": "Quote tool parameter description",
+    "message": "সর্বোচ্চ {max}টি মার্কিন সিম্বল, যেমন [\"AAPL\", \"MSFT\", \"BRK.B\"]।",
+    "description": "Quote tool parameter description; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "5d5d1c443bb02531"
+    "_source_hash": "753c9fd4564636f3"
   },
   "tool.history": {
     "message": "এই ডিভাইসে স্থানীয়ভাবে সংগৃহীত Finnhub কোট 1d, 1w বা 1m সময়সীমার জন্য পান। কোনো নেটওয়ার্ক অনুরোধ করা হয় না। এগুলো অসম্পূর্ণ, বিক্ষিপ্ত নমুনা, ঐতিহাসিক ক্যান্ডেল নয়; খালি তালিকা মানে কিছুই সংগ্রহ করা হয়নি।",
@@ -334,5 +334,53 @@
     "description": "Unrecognized tool execution",
     "_machine_translated": true,
     "_source_hash": "2acdb85e54aa0ed1"
+  },
+  "error.timeout": {
+    "message": "Finnhub সাড়া দিতে অনেক বেশি সময় নিয়েছে। কয়েক সেকেন্ড পরে আবার চেষ্টা করুন; উপলব্ধ থাকলে সংরক্ষিত ডেটা দেখানো হচ্ছে।",
+    "description": "Request timeout; short local pause, separate from offline backoff",
+    "_machine_translated": true,
+    "_source_hash": "23491b785f430a04"
+  },
+  "settings.agent_tools": {
+    "message": "এজেন্টদের জন্য Stocks টুল অনুমোদন করুন",
+    "description": "Optional agent tool access; disabled by default",
+    "_machine_translated": true,
+    "_source_hash": "feaafa8e946fc0b2"
+  },
+  "settings.agent_tools_hint": {
+    "message": "এজেন্ট টুল Finnhub কোট ও সেগুলো থেকে প্রাপ্ত ফলাফল আপনার এজেন্ট প্রোভাইডারের কাছে পাঠাতে পারে। আপনার Finnhub চুক্তি এই শেয়ারিং অনুমোদন করলেই কেবল এটি চালু করুন।",
+    "description": "Explain opt-in and external agent data flow",
+    "_machine_translated": true,
+    "_source_hash": "600e0e85ae5aca60"
+  },
+  "settings.delete_quotes": {
+    "message": "সংরক্ষিত কোট মুছুন",
+    "description": "Delete cached quotes and locally sampled history, retaining the key",
+    "_machine_translated": true,
+    "_source_hash": "c3ae84bf8010f20d"
+  },
+  "settings.quotes_deleted": {
+    "message": "সংরক্ষিত কোট ও স্থানীয় নমুনা মুছে ফেলা হয়েছে।",
+    "description": "Cache deletion success",
+    "_machine_translated": true,
+    "_source_hash": "5c098db4acf64401"
+  },
+  "widget.setup": {
+    "message": "Stocks সেটিংস খুলে কোট সেট আপ করতে stock লিখে Enter চাপুন।",
+    "description": "Compact first-run widget hint; keep stock as the launcher command",
+    "_machine_translated": true,
+    "_source_hash": "9c88d9cf89fa770f"
+  },
+  "widget.connection": {
+    "message": "কোটে মনোযোগ প্রয়োজন। Stocks সেটিংস খুলতে stock লিখে Enter চাপুন।",
+    "description": "Compact widget hint for authentication, saved-only or storage problems; keep stock as the launcher command",
+    "_machine_translated": true,
+    "_source_hash": "28d7c64fff255e29"
+  },
+  "tool.opt_in": {
+    "message": "এই টুল ব্যবহারের আগে Stocks সেটিংসে \"এজেন্টদের জন্য Stocks টুল অনুমোদন করুন\" চালু করুন। আপনার Finnhub চুক্তি এজেন্ট প্রোভাইডারের সাথে ডেটা শেয়ার করার অনুমতি দেয় কি না তা যাচাই করুন।",
+    "description": "Actionable agent tool opt-in error",
+    "_machine_translated": true,
+    "_source_hash": "a00e5cc3750744f0"
   }
 }

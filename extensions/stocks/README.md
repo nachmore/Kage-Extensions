@@ -16,8 +16,8 @@ or enter `stock copy AAPL`, to copy text such as `AAPL 189.12 +1.3%`.
    system browser. Register and copy the API key from your dashboard.
 3. Paste the key and choose **Test and save key**. The extension probes the
    AAPL quote endpoint and saves the key only after a valid quote response.
-4. Edit the watchlist (up to 10 symbols) and refresh interval, then save
-   regular settings.
+4. Edit the watchlist (up to 10 distinct symbols) and refresh interval, then
+   save regular settings. Agent tools are disabled until explicitly enabled.
 
 No shared/demo credentials are shipped. Keys use the same
 `save_extension_data` storage as Spotify credentials, separate from config.
@@ -41,10 +41,19 @@ minimum, deduplicates concurrent same-symbol requests inside a window,
 and shares quote caches, request budgets and backoff across Kage windows.
 Your other applications using the same key also consume Finnhub's limit.
 Persistent storage has no atomic compare-and-swap, so cross-window budget
-coordination is best effort, as in Spotify. A 429 response applies shared
-exponential backoff and respects `Retry-After` when the browser exposes it.
-Offline, server and authentication failures also back off. Cached values
-keep their original last-trade and retrieval timestamps.
+coordination is best effort, as in Spotify. Each batch reads the key once
+and reserves its requests in one budget transaction. Storage errors,
+empty files and torn JSON fail closed; transient host invoke-limit errors
+are retried. Short lock leases are retried with jitter. A 429 response
+applies shared exponential backoff once per failure episode, capped at
+15 minutes; the streak decays after 30 minutes without failures. The browser
+does not expose Finnhub's `Retry-After` header, so Stocks uses a minimum
+60-second pause. Network, server and authentication failures also back off;
+a 2.2-second timeout uses a separate 3-second local pause. HTTP 403 is a
+per-symbol plan/unsupported error and never sets an authentication backoff.
+Candidate-key tests bypass backoff but still count toward the request budget;
+rejected candidates never set auth backoff. Saving/removing a key clears it.
+Cached values keep their original last-trade and retrieval timestamps.
 
 The floating-window widget uses the same cache. Current Kage hosts skip
 widget polls while hidden; the extension also honors document visibility.
@@ -62,10 +71,19 @@ different US stock. Unknown symbols never turn into zero-price quotes.
 The optional sparkline uses **locally sampled quotes**, collecting actual
 provider timestamps as the extension is used. It does not make additional
 requests, fill gaps, or imply a complete trading-day series. The cache
-retains at most 512 samples per queried symbol for up to 31 days.
+returns at most 512 samples per queried symbol in a rolling 31-day window.
+An index tracks queried records; maintenance prunes expired quotes and
+samples at most once a day while Stocks is used. Files may remain on disk
+longer when Stocks is unused. **Delete saved quotes** clears tracked quotes
+and samples immediately, retaining the API key.
 
-- `get_quote(symbols)` returns quotes, source, currency, trade timestamps,
-  fetch times, cache status, and per-symbol errors.
+- Enable **Allow Stocks tools for agents** in settings to expose the tools.
+  They are off by default because their output can reach an external agent
+  provider; enable them only when your Finnhub agreement permits sharing.
+- `get_quote(symbols)` returns quotes, source, currency, ISO trade/fetch/retry
+  times, open/high/low, cache status, and per-symbol error messages. Invalid
+  symbols do not prevent valid siblings from succeeding. An all-setup,
+  authentication or saved-only failure also returns an actionable tool error.
 - `get_history(symbol, range)` returns local samples for `1d`, `1w`, or
   `1m`, explicitly marked `kind: locally_sampled_quotes` and
   `complete: false`. It performs no network requests. It can be empty.
@@ -123,6 +141,18 @@ exact-domain fetch permissions**; its `network` capability covers Rust
 metadata commands, not sandbox `fetch`. The only fetch destination is
 enforced in extension code: `finnhub.io`. Browser navigation is limited to
 the Finnhub setup/source links and `www.tradingview.com` charts.
+
+Search accepts only complete cashtag lists on the `$` path, leaving agent
+prompts such as `$PATH is not set` alone. A 380 ms settle wait and generation
+counter suppress superseded typed prefixes. Pending Enter opens the chart
+(or fetches before copying); only actionable setup errors open settings.
+Widgets poll at the minimum interval, use request-start cache timestamps,
+and re-check configured freshness so interval changes work without remounting.
+
+The host rewrites shared imports in a single pass. Provider transport is
+folded into `client.js`; shared dependencies are leaves and there are no
+re-exports. `host-loader.test.js` checks import depth and loads all providers
+through the same rewrite, including a failing nested-graph control.
 
 Potential host improvements, not implemented in Kage: exact-origin fetch
 grants, atomic extension-data transactions, password/masked scratch

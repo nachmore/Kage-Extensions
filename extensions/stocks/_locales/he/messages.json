@@ -78,10 +78,10 @@
     "_source_hash": "8adbf75fdf5bc595"
   },
   "error.auth": {
-    "message": "Finnhub דחה את המפתח. פתחו את הגדרות 'מניות' כדי לבדוק מפתח חלופי.",
-    "description": "Authentication or plan error, no raw provider response",
+    "message": "Finnhub דחה את המפתח. פתחו את הגדרות המניות כדי לבדוק מפתח חלופי.",
+    "description": "Authentication error; never include the raw provider response",
     "_machine_translated": true,
-    "_source_hash": "ecc147e2c9741ce7"
+    "_source_hash": "eca735a4f5fb0bce"
   },
   "error.unknown": {
     "message": "אין ציטוט עבור הסימול הזה. בדקו את סימול המניה האמריקאי, כולל סיומת סוג המניה, אם יש.",
@@ -102,10 +102,10 @@
     "_source_hash": "5cd17969829278c5"
   },
   "error.too_many": {
-    "message": "ניתן להשתמש בעד 10 סימולים לכל שאילתה או רשימת מעקב.",
-    "description": "Bounded request batch",
+    "message": "ניתן להשתמש בעד {max} סימולים לכל שאילתה או רשימת מעקב.",
+    "description": "Bounded request batch; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "e8f0028cd32f8c7b"
+    "_source_hash": "22531ab77bc6c225"
   },
   "error.rate_limit": {
     "message": "הגעתם למגבלת הבקשות. מוצגים נתונים שמורים כשהם זמינים; הבקשות יתחדשו לאחר הפסקה.",
@@ -114,10 +114,10 @@
     "_source_hash": "7d553dee0c6fe94a"
   },
   "error.offline": {
-    "message": "אין אפשרות להתחבר ל-Finnhub. מוצגים נתונים שמורים כשהם זמינים.",
-    "description": "Offline or network timeout",
+    "message": "לא ניתן להתחבר ל-Finnhub. מוצגים נתונים שמורים, אם יש כאלה.",
+    "description": "Offline or network failure",
     "_machine_translated": true,
-    "_source_hash": "e74f5fe32dc5f429"
+    "_source_hash": "536dacabe5ed1015"
   },
   "error.unavailable": {
     "message": "Finnhub אינו זמין. מוצגים נתונים שמורים כשהם זמינים.",
@@ -132,10 +132,10 @@
     "_source_hash": "b6ed5bc4b975b5a0"
   },
   "error.cache_only": {
-    "message": "ציטוטים שמורים בלבד; בקשות בזמן אמת מושהות.",
+    "message": "מוצגים רק ציטוטי מחיר שמורים; בקשות בזמן אמת מושהות. כדי לבחור ב-Finnhub ולחבר מפתח, יש לפתוח את הגדרות המניות.",
     "description": "User selected offline provider mode",
     "_machine_translated": true,
-    "_source_hash": "ceee09611e30c87c"
+    "_source_hash": "69f4b08853704dde"
   },
   "error.storage": {
     "message": "אחסון הציטוטים אינו זמין. הבקשות מושהות עד שיהיה אפשר לעקוב אחר המגבלה שלהן.",
@@ -186,10 +186,10 @@
     "_source_hash": "f429d58cbb1c5f8b"
   },
   "setup.intro": {
-    "message": "הורדות מ-Stooq ללא מפתח אינן זמינות כרגע. כדי לקבל שערים בארה״ב יש להשתמש במפתח Finnhub חינמי משלך; Stocks לעולם אינו מספק מפתח משותף.",
-    "description": "Explain the authorized fallback to key setup",
+    "message": "השתמשו במפתח Finnhub חינמי משלכם כדי לקבל ציטוטים של מניות בארה״ב. קבלו מפתח למטה, ואז בדקו ושמרו אותו כדי להתחבר.",
+    "description": "User-facing provider setup introduction",
     "_machine_translated": true,
-    "_source_hash": "d8f6685775cf04bc"
+    "_source_hash": "0686f89d96f514a5"
   },
   "setup.terms": {
     "message": "התוכניות האישיות של Finnhub מיועדות לשימוש אישי מורשה. שימוש עסקי ושיתוף נתונים או תוצאות נגזרות עם צד שלישי מחייבים אישור של Finnhub. יש לבדוק את תנאי הספק, גם לפני שליחת שערים לסוכן מרוחק.",
@@ -282,16 +282,16 @@
     "_source_hash": "d5d486955acdd4c8"
   },
   "settings.refresh_hint": {
-    "message": "מינימום 60 שניות; ברירת המחדל 300. בגרסאות הנוכחיות של Kage, הבדיקות מושהות כשהחלון מוסתר. במכשיר זה שמורות לכל היותר 40 בקשות לדקה; מגבלות הספק כוללות גם את האפליקציות האחרות שלך.",
-    "description": "Request budget and hidden behavior",
+    "message": "מינימום {min} שניות; ברירת מחדל {default}. בגרסאות הנוכחיות של Kage, הבדיקות מושהות כשהחלון מוסתר. לכל היותר {budget} בקשות לדקה שמורות במכשיר הזה; מגבלות הספק כוללות גם את האפליקציות האחרות שלכם.",
+    "description": "Request budget and hidden behavior; preserve {min}, {default}, {budget}",
     "_machine_translated": true,
-    "_source_hash": "86c3403cda44db0e"
+    "_source_hash": "835954ceb7299192"
   },
   "settings.refresh_error": {
-    "message": "מרווח הרענון חייב להיות בין 60 ל-3600 שניות.",
-    "description": "Invalid interval",
+    "message": "מרווח הרענון חייב להיות בין {min} ל-{max} שניות.",
+    "description": "Invalid interval; preserve {min}, {max}",
     "_machine_translated": true,
-    "_source_hash": "c93b2dfa0a61d9f4"
+    "_source_hash": "45f891673cb1e039"
   },
   "tool.quote": {
     "message": "קבלת שערי מניות בארה״ב מ-Finnhub לשימוש אישי. מחזיר מקור, חותמת זמן של העסקה האחרונה, עדכניות המטמון ושגיאות לכל סימול. נדרש המפתח החינמי של המשתמש; אין להפיץ מחדש ללא אישור הספק.",
@@ -300,10 +300,10 @@
     "_source_hash": "9aa8d167f9bf2f94"
   },
   "tool.symbols": {
-    "message": "עד 10 סימולים בארה״ב, לדוגמה [\"AAPL\", \"MSFT\", \"BRK.B\"].",
-    "description": "Quote tool parameter description",
+    "message": "עד {max} סימולים של מניות בארה״ב, לדוגמה [\"AAPL\", \"MSFT\", \"BRK.B\"].",
+    "description": "Quote tool parameter description; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "5d5d1c443bb02531"
+    "_source_hash": "753c9fd4564636f3"
   },
   "tool.history": {
     "message": "קבלת שערי Finnhub שנדגמו באופן מקומי ונצפו במכשיר זה עבור 1d, 1w או 1m. ללא בקשות רשת. דגימות חלקיות ודלילות, לא נרות היסטוריים; רשימה ריקה פירושה שלא נאסף דבר.",
@@ -334,5 +334,53 @@
     "description": "Unrecognized tool execution",
     "_machine_translated": true,
     "_source_hash": "2acdb85e54aa0ed1"
+  },
+  "error.timeout": {
+    "message": "Finnhub לא הגיב בזמן. נסו שוב בעוד כמה שניות; מוצגים נתונים שמורים, אם יש כאלה.",
+    "description": "Request timeout; short local pause, separate from offline backoff",
+    "_machine_translated": true,
+    "_source_hash": "23491b785f430a04"
+  },
+  "settings.agent_tools": {
+    "message": "לאפשר לסוכנים להשתמש בכלי המניות",
+    "description": "Optional agent tool access; disabled by default",
+    "_machine_translated": true,
+    "_source_hash": "feaafa8e946fc0b2"
+  },
+  "settings.agent_tools_hint": {
+    "message": "כלי סוכנים עשויים לשלוח ציטוטים מ-Finnhub ותוצאות שנגזרו מהם לספק הסוכן שלכם. הפעילו רק אם ההסכם שלכם עם Finnhub מתיר שיתוף כזה.",
+    "description": "Explain opt-in and external agent data flow",
+    "_machine_translated": true,
+    "_source_hash": "600e0e85ae5aca60"
+  },
+  "settings.delete_quotes": {
+    "message": "מחיקת ציטוטים שמורים",
+    "description": "Delete cached quotes and locally sampled history, retaining the key",
+    "_machine_translated": true,
+    "_source_hash": "c3ae84bf8010f20d"
+  },
+  "settings.quotes_deleted": {
+    "message": "הציטוטים השמורים והדגימות המקומיות נמחקו.",
+    "description": "Cache deletion success",
+    "_machine_translated": true,
+    "_source_hash": "5c098db4acf64401"
+  },
+  "widget.setup": {
+    "message": "הקלידו stock והקישו Enter כדי לפתוח את הגדרות המניות ולהגדיר ציטוטים.",
+    "description": "Compact first-run widget hint; keep stock as the launcher command",
+    "_machine_translated": true,
+    "_source_hash": "9c88d9cf89fa770f"
+  },
+  "widget.connection": {
+    "message": "הציטוטים דורשים טיפול. הקלידו stock והקישו Enter כדי לפתוח את הגדרות המניות.",
+    "description": "Compact widget hint for authentication, saved-only or storage problems; keep stock as the launcher command",
+    "_machine_translated": true,
+    "_source_hash": "28d7c64fff255e29"
+  },
+  "tool.opt_in": {
+    "message": "לפני השימוש בכלי הזה, הפעילו את האפשרות ״לאפשר לסוכנים להשתמש בכלי המניות״ בהגדרות המניות. ודאו שההסכם שלכם עם Finnhub מתיר שיתוף נתונים עם ספק הסוכן שלכם.",
+    "description": "Actionable agent tool opt-in error",
+    "_machine_translated": true,
+    "_source_hash": "a00e5cc3750744f0"
   }
 }

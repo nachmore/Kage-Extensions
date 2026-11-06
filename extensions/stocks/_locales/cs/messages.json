@@ -78,10 +78,10 @@
     "_source_hash": "8adbf75fdf5bc595"
   },
   "error.auth": {
-    "message": "Finnhub klíč odmítl. Otevřete nastavení Akcií a otestujte náhradní klíč.",
-    "description": "Authentication or plan error, no raw provider response",
+    "message": "Finnhub klíč odmítl. Otevřete nastavení Akcie a otestujte náhradní klíč.",
+    "description": "Authentication error; never include the raw provider response",
     "_machine_translated": true,
-    "_source_hash": "ecc147e2c9741ce7"
+    "_source_hash": "eca735a4f5fb0bce"
   },
   "error.unknown": {
     "message": "Pro tento symbol není k dispozici žádný kurz. Zkontrolujte americký ticker včetně případné přípony třídy akcií.",
@@ -102,10 +102,10 @@
     "_source_hash": "5cd17969829278c5"
   },
   "error.too_many": {
-    "message": "Použijte nejvýše 10 symbolů na dotaz nebo sledovaný seznam.",
-    "description": "Bounded request batch",
+    "message": "Použijte nejvýše {max} symbolů na dotaz nebo sledovaný seznam.",
+    "description": "Bounded request batch; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "e8f0028cd32f8c7b"
+    "_source_hash": "22531ab77bc6c225"
   },
   "error.rate_limit": {
     "message": "Byl dosažen limit požadavků. Zobrazují se uložená data, pokud jsou k dispozici; požadavky budou po přestávce obnoveny.",
@@ -114,10 +114,10 @@
     "_source_hash": "7d553dee0c6fe94a"
   },
   "error.offline": {
-    "message": "Nelze se připojit k Finnhubu. Zobrazují se uložená data, pokud jsou k dispozici.",
-    "description": "Offline or network timeout",
+    "message": "Finnhub není dostupný. Pokud jsou k dispozici, zobrazují se uložená data.",
+    "description": "Offline or network failure",
     "_machine_translated": true,
-    "_source_hash": "e74f5fe32dc5f429"
+    "_source_hash": "536dacabe5ed1015"
   },
   "error.unavailable": {
     "message": "Finnhub není dostupný. Zobrazují se uložená data, pokud jsou k dispozici.",
@@ -132,10 +132,10 @@
     "_source_hash": "b6ed5bc4b975b5a0"
   },
   "error.cache_only": {
-    "message": "Pouze uložené kurzy; živé požadavky jsou pozastaveny.",
+    "message": "Pouze uložené kotace; živé požadavky jsou pozastaveny. Otevřete nastavení Akcií, vyberte Finnhub a připojte klíč.",
     "description": "User selected offline provider mode",
     "_machine_translated": true,
-    "_source_hash": "ceee09611e30c87c"
+    "_source_hash": "69f4b08853704dde"
   },
   "error.storage": {
     "message": "Úložiště kurzů není dostupné. Požadavky jsou pozastaveny, dokud nebude možné sledovat jejich limit.",
@@ -186,10 +186,10 @@
     "_source_hash": "f429d58cbb1c5f8b"
   },
   "setup.intro": {
-    "message": "Stahování ze Stooq bez klíče je momentálně nedostupné. Pro kurzy z USA použijte vlastní bezplatný klíč Finnhub; Stocks nikdy neposkytuje sdílený klíč.",
-    "description": "Explain the authorized fallback to key setup",
+    "message": "Pro kurzy amerických akcií použijte vlastní bezplatný klíč Finnhub. Níže získejte klíč, poté jej otestujte a uložte pro připojení.",
+    "description": "User-facing provider setup introduction",
     "_machine_translated": true,
-    "_source_hash": "d8f6685775cf04bc"
+    "_source_hash": "0686f89d96f514a5"
   },
   "setup.terms": {
     "message": "Osobní tarify Finnhub jsou určeny pro oprávněné osobní použití. Obchodní použití a sdílení dat nebo odvozených výsledků s třetími stranami vyžaduje souhlas Finnhub. Zkontrolujte podmínky poskytovatele, a to i před odesláním kurzů vzdálenému agentovi.",
@@ -282,16 +282,16 @@
     "_source_hash": "d5d486955acdd4c8"
   },
   "settings.refresh_hint": {
-    "message": "Minimálně 60 sekund; výchozí 300. Dotazování ve skrytém okně se na současných hostitelích Kage pozastaví. V rámci tohoto zařízení je vyhrazeno nejvýše 40 požadavků za minutu; limity poskytovatele zahrnují i vaše další aplikace.",
-    "description": "Request budget and hidden behavior",
+    "message": "Minimálně {min} s; výchozí {default}. V aktuálních hostitelích Kage se dotazování ve skrytém okně pozastaví. Na tomto zařízení je vyhrazeno nejvýše {budget} požadavků za minutu; do limitů poskytovatele se započítávají i vaše další aplikace.",
+    "description": "Request budget and hidden behavior; preserve {min}, {default}, {budget}",
     "_machine_translated": true,
-    "_source_hash": "86c3403cda44db0e"
+    "_source_hash": "835954ceb7299192"
   },
   "settings.refresh_error": {
-    "message": "Interval obnovování musí být mezi 60 a 3600 sekundami.",
-    "description": "Invalid interval",
+    "message": "Interval obnovení musí být mezi {min} a {max} sekundami.",
+    "description": "Invalid interval; preserve {min}, {max}",
     "_machine_translated": true,
-    "_source_hash": "c93b2dfa0a61d9f4"
+    "_source_hash": "45f891673cb1e039"
   },
   "tool.quote": {
     "message": "Získá kurzy amerických akcií z Finnhub pro osobní použití. Vrací zdroj, časové razítko posledního obchodu, aktuálnost mezipaměti a chyby pro jednotlivé symboly. Vyžaduje bezplatný klíč uživatele; bez souhlasu poskytovatele dále nešiřte.",
@@ -300,10 +300,10 @@
     "_source_hash": "9aa8d167f9bf2f94"
   },
   "tool.symbols": {
-    "message": "Až 10 amerických symbolů, například [\"AAPL\", \"MSFT\", \"BRK.B\"].",
-    "description": "Quote tool parameter description",
+    "message": "Až {max} amerických symbolů, například [\"AAPL\", \"MSFT\", \"BRK.B\"].",
+    "description": "Quote tool parameter description; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "5d5d1c443bb02531"
+    "_source_hash": "753c9fd4564636f3"
   },
   "tool.history": {
     "message": "Získá lokálně vzorkované kotace Finnhub zaznamenané na tomto zařízení za 1d, 1w nebo 1m. Bez síťových požadavků. Neúplné, řídké vzorky, nikoli historické svíčky; prázdný seznam znamená, že nebylo nic shromážděno.",
@@ -334,5 +334,53 @@
     "description": "Unrecognized tool execution",
     "_machine_translated": true,
     "_source_hash": "2acdb85e54aa0ed1"
+  },
+  "error.timeout": {
+    "message": "Finnhub neodpověděl včas. Zkuste to znovu za několik sekund; pokud jsou k dispozici, zobrazují se uložená data.",
+    "description": "Request timeout; short local pause, separate from offline backoff",
+    "_machine_translated": true,
+    "_source_hash": "23491b785f430a04"
+  },
+  "settings.agent_tools": {
+    "message": "Povolit agentům nástroje Akcie",
+    "description": "Optional agent tool access; disabled by default",
+    "_machine_translated": true,
+    "_source_hash": "feaafa8e946fc0b2"
+  },
+  "settings.agent_tools_hint": {
+    "message": "Nástroje agentů mohou odesílat kurzy z Finnhubu a odvozené výsledky vašemu poskytovateli agenta. Povolte to pouze tehdy, pokud vaše smlouva s Finnhubem takové sdílení umožňuje.",
+    "description": "Explain opt-in and external agent data flow",
+    "_machine_translated": true,
+    "_source_hash": "600e0e85ae5aca60"
+  },
+  "settings.delete_quotes": {
+    "message": "Smazat uložené kurzy",
+    "description": "Delete cached quotes and locally sampled history, retaining the key",
+    "_machine_translated": true,
+    "_source_hash": "c3ae84bf8010f20d"
+  },
+  "settings.quotes_deleted": {
+    "message": "Uložené kurzy a místní vzorky byly smazány.",
+    "description": "Cache deletion success",
+    "_machine_translated": true,
+    "_source_hash": "5c098db4acf64401"
+  },
+  "widget.setup": {
+    "message": "Napište stock a stiskněte Enter. Otevře se nastavení Akcie, kde nastavíte kurzy.",
+    "description": "Compact first-run widget hint; keep stock as the launcher command",
+    "_machine_translated": true,
+    "_source_hash": "9c88d9cf89fa770f"
+  },
+  "widget.connection": {
+    "message": "Kurzy vyžadují pozornost. Napište stock a stiskněte Enter pro otevření nastavení Akcie.",
+    "description": "Compact widget hint for authentication, saved-only or storage problems; keep stock as the launcher command",
+    "_machine_translated": true,
+    "_source_hash": "28d7c64fff255e29"
+  },
+  "tool.opt_in": {
+    "message": "Před použitím tohoto nástroje zapněte v nastavení Akcie volbu „Povolit agentům nástroje Akcie“. Ověřte, že vaše smlouva s Finnhubem umožňuje sdílení dat s vaším poskytovatelem agenta.",
+    "description": "Actionable agent tool opt-in error",
+    "_machine_translated": true,
+    "_source_hash": "a00e5cc3750744f0"
   }
 }

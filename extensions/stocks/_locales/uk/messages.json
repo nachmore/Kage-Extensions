@@ -78,10 +78,10 @@
     "_source_hash": "8adbf75fdf5bc595"
   },
   "error.auth": {
-    "message": "Finnhub відхилив ключ. Відкрийте налаштування «Акцій», щоб перевірити інший ключ.",
-    "description": "Authentication or plan error, no raw provider response",
+    "message": "Finnhub відхилив ключ. Відкрийте налаштування «Акції», щоб перевірити інший ключ.",
+    "description": "Authentication error; never include the raw provider response",
     "_machine_translated": true,
-    "_source_hash": "ecc147e2c9741ce7"
+    "_source_hash": "eca735a4f5fb0bce"
   },
   "error.unknown": {
     "message": "Немає котирування для цього символу. Перевірте тікер США, зокрема суфікс класу акцій.",
@@ -102,10 +102,10 @@
     "_source_hash": "5cd17969829278c5"
   },
   "error.too_many": {
-    "message": "Використовуйте не більше 10 символів на запит або список спостереження.",
-    "description": "Bounded request batch",
+    "message": "Використовуйте не більше {max} символів на запит або список спостереження.",
+    "description": "Bounded request batch; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "e8f0028cd32f8c7b"
+    "_source_hash": "22531ab77bc6c225"
   },
   "error.rate_limit": {
     "message": "Досягнуто ліміту запитів. Показуються збережені дані, якщо вони є; запити відновляться після паузи.",
@@ -114,10 +114,10 @@
     "_source_hash": "7d553dee0c6fe94a"
   },
   "error.offline": {
-    "message": "Не вдається з’єднатися з Finnhub. Показуються збережені дані, якщо вони є.",
-    "description": "Offline or network timeout",
+    "message": "Не вдається підключитися до Finnhub. Показано збережені дані, якщо вони є.",
+    "description": "Offline or network failure",
     "_machine_translated": true,
-    "_source_hash": "e74f5fe32dc5f429"
+    "_source_hash": "536dacabe5ed1015"
   },
   "error.unavailable": {
     "message": "Finnhub недоступний. Показуються збережені дані, якщо вони є.",
@@ -132,10 +132,10 @@
     "_source_hash": "b6ed5bc4b975b5a0"
   },
   "error.cache_only": {
-    "message": "Лише збережені котирування; запити в реальному часі призупинено.",
+    "message": "Лише збережені котирування; запити в реальному часі призупинено. Відкрийте налаштування «Акції», щоб вибрати Finnhub і підключити ключ.",
     "description": "User selected offline provider mode",
     "_machine_translated": true,
-    "_source_hash": "ceee09611e30c87c"
+    "_source_hash": "69f4b08853704dde"
   },
   "error.storage": {
     "message": "Сховище котирувань недоступне. Запити призупинено, доки не стане можливим відстежувати їхній ліміт.",
@@ -186,10 +186,10 @@
     "_source_hash": "f429d58cbb1c5f8b"
   },
   "setup.intro": {
-    "message": "Завантаження зі Stooq без ключа наразі недоступні. Використовуйте власний безкоштовний ключ Finnhub для котирувань США; Stocks ніколи не надає спільний ключ.",
-    "description": "Explain the authorized fallback to key setup",
+    "message": "Використовуйте власний безплатний ключ Finnhub для котирувань акцій США. Отримайте ключ нижче, а потім перевірте та збережіть його, щоб підключитися.",
+    "description": "User-facing provider setup introduction",
     "_machine_translated": true,
-    "_source_hash": "d8f6685775cf04bc"
+    "_source_hash": "0686f89d96f514a5"
   },
   "setup.terms": {
     "message": "Особисті плани Finnhub призначені для відповідного особистого використання. Комерційне використання, а також передавання даних або похідних результатів третім особам потребують схвалення Finnhub. Ознайомтеся з умовами постачальника, зокрема перед надсиланням котирувань віддаленому агенту.",
@@ -282,16 +282,16 @@
     "_source_hash": "d5d486955acdd4c8"
   },
   "settings.refresh_hint": {
-    "message": "Мінімум 60 секунд; за замовчуванням 300. На поточних хостах Kage опитування в прихованому вікні призупиняються. На цьому пристрої зарезервовано не більше 40 запитів на хвилину; ліміти постачальника також враховують інші ваші застосунки.",
-    "description": "Request budget and hidden behavior",
+    "message": "Мінімум {min} с; за замовчуванням {default}. У поточних хостах Kage опитування в прихованому вікні призупиняється. На цьому пристрої зарезервовано не більше {budget} запитів на хвилину; ліміти провайдера також враховують ваші інші застосунки.",
+    "description": "Request budget and hidden behavior; preserve {min}, {default}, {budget}",
     "_machine_translated": true,
-    "_source_hash": "86c3403cda44db0e"
+    "_source_hash": "835954ceb7299192"
   },
   "settings.refresh_error": {
-    "message": "Інтервал оновлення має бути від 60 до 3600 секунд.",
-    "description": "Invalid interval",
+    "message": "Інтервал оновлення має бути від {min} до {max} с.",
+    "description": "Invalid interval; preserve {min}, {max}",
     "_machine_translated": true,
-    "_source_hash": "c93b2dfa0a61d9f4"
+    "_source_hash": "45f891673cb1e039"
   },
   "tool.quote": {
     "message": "Отримує котирування акцій США з Finnhub для особистого використання. Повертає джерело, час останньої угоди, актуальність кешу та помилки для кожного символу. Потребує безкоштовного ключа користувача; не поширюйте дані без схвалення постачальника.",
@@ -300,10 +300,10 @@
     "_source_hash": "9aa8d167f9bf2f94"
   },
   "tool.symbols": {
-    "message": "До 10 символів США, наприклад [\"AAPL\", \"MSFT\", \"BRK.B\"].",
-    "description": "Quote tool parameter description",
+    "message": "До {max} символів США, наприклад [\"AAPL\", \"MSFT\", \"BRK.B\"].",
+    "description": "Quote tool parameter description; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "5d5d1c443bb02531"
+    "_source_hash": "753c9fd4564636f3"
   },
   "tool.history": {
     "message": "Отримати котирування Finnhub, локально зібрані на цьому пристрої за 1d, 1w або 1m. Без мережевих запитів. Це неповні, розріджені вибірки, а не історичні свічки; порожній список означає, що нічого не зібрано.",
@@ -334,5 +334,53 @@
     "description": "Unrecognized tool execution",
     "_machine_translated": true,
     "_source_hash": "2acdb85e54aa0ed1"
+  },
+  "error.timeout": {
+    "message": "Finnhub не відповів вчасно. Спробуйте ще раз за кілька секунд; показано збережені дані, якщо вони є.",
+    "description": "Request timeout; short local pause, separate from offline backoff",
+    "_machine_translated": true,
+    "_source_hash": "23491b785f430a04"
+  },
+  "settings.agent_tools": {
+    "message": "Дозволити агентам інструменти «Акції»",
+    "description": "Optional agent tool access; disabled by default",
+    "_machine_translated": true,
+    "_source_hash": "feaafa8e946fc0b2"
+  },
+  "settings.agent_tools_hint": {
+    "message": "Інструменти агентів можуть надсилати котирування Finnhub і похідні результати вашому провайдеру агентів. Вмикайте лише тоді, коли ваша угода з Finnhub дозволяє такий обмін даними.",
+    "description": "Explain opt-in and external agent data flow",
+    "_machine_translated": true,
+    "_source_hash": "600e0e85ae5aca60"
+  },
+  "settings.delete_quotes": {
+    "message": "Видалити збережені котирування",
+    "description": "Delete cached quotes and locally sampled history, retaining the key",
+    "_machine_translated": true,
+    "_source_hash": "c3ae84bf8010f20d"
+  },
+  "settings.quotes_deleted": {
+    "message": "Збережені котирування та локальні вибірки видалено.",
+    "description": "Cache deletion success",
+    "_machine_translated": true,
+    "_source_hash": "5c098db4acf64401"
+  },
+  "widget.setup": {
+    "message": "Введіть stock і натисніть Enter, щоб відкрити налаштування «Акції» та налаштувати котирування.",
+    "description": "Compact first-run widget hint; keep stock as the launcher command",
+    "_machine_translated": true,
+    "_source_hash": "9c88d9cf89fa770f"
+  },
+  "widget.connection": {
+    "message": "Котирування потребують уваги. Введіть stock і натисніть Enter, щоб відкрити налаштування «Акції».",
+    "description": "Compact widget hint for authentication, saved-only or storage problems; keep stock as the launcher command",
+    "_machine_translated": true,
+    "_source_hash": "28d7c64fff255e29"
+  },
+  "tool.opt_in": {
+    "message": "Перш ніж використовувати цей інструмент, увімкніть параметр «Дозволити агентам інструменти «Акції»» у налаштуваннях «Акції». Переконайтеся, що ваша угода з Finnhub дозволяє обмін даними з вашим провайдером агентів.",
+    "description": "Actionable agent tool opt-in error",
+    "_machine_translated": true,
+    "_source_hash": "a00e5cc3750744f0"
   }
 }

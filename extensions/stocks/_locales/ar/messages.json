@@ -78,10 +78,10 @@
     "_source_hash": "8adbf75fdf5bc595"
   },
   "error.auth": {
-    "message": "رفض Finnhub المفتاح. افتح إعدادات «الأسهم» لاختبار مفتاح بديل.",
-    "description": "Authentication or plan error, no raw provider response",
+    "message": "رفض Finnhub المفتاح. افتح إعدادات الأسهم لاختبار مفتاح بديل.",
+    "description": "Authentication error; never include the raw provider response",
     "_machine_translated": true,
-    "_source_hash": "ecc147e2c9741ce7"
+    "_source_hash": "eca735a4f5fb0bce"
   },
   "error.unknown": {
     "message": "لا يوجد سعر لهذا الرمز. تحقق من رمز السهم الأمريكي، بما في ذلك أي لاحقة لفئة الأسهم.",
@@ -102,10 +102,10 @@
     "_source_hash": "5cd17969829278c5"
   },
   "error.too_many": {
-    "message": "استخدم 10 رموز كحد أقصى في كل استعلام أو قائمة متابعة.",
-    "description": "Bounded request batch",
+    "message": "استخدم {max} رمزًا كحد أقصى لكل استعلام أو قائمة مراقبة.",
+    "description": "Bounded request batch; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "e8f0028cd32f8c7b"
+    "_source_hash": "22531ab77bc6c225"
   },
   "error.rate_limit": {
     "message": "تم بلوغ حد الطلبات. تُعرض البيانات المحفوظة عند توفرها، وستُستأنف الطلبات بعد فترة توقف.",
@@ -114,10 +114,10 @@
     "_source_hash": "7d553dee0c6fe94a"
   },
   "error.offline": {
-    "message": "يتعذر الوصول إلى Finnhub. تُعرض البيانات المحفوظة عند توفرها.",
-    "description": "Offline or network timeout",
+    "message": "تعذّر الوصول إلى Finnhub. يتم عرض البيانات المحفوظة عند توفرها.",
+    "description": "Offline or network failure",
     "_machine_translated": true,
-    "_source_hash": "e74f5fe32dc5f429"
+    "_source_hash": "536dacabe5ed1015"
   },
   "error.unavailable": {
     "message": "Finnhub غير متاح. تُعرض البيانات المحفوظة عند توفرها.",
@@ -132,10 +132,10 @@
     "_source_hash": "b6ed5bc4b975b5a0"
   },
   "error.cache_only": {
-    "message": "الأسعار المحفوظة فقط؛ الطلبات المباشرة متوقفة مؤقتًا.",
+    "message": "عروض الأسعار المحفوظة فقط؛ الطلبات المباشرة متوقفة مؤقتًا. افتح إعدادات الأسهم لاختيار Finnhub وربط مفتاح.",
     "description": "User selected offline provider mode",
     "_machine_translated": true,
-    "_source_hash": "ceee09611e30c87c"
+    "_source_hash": "69f4b08853704dde"
   },
   "error.storage": {
     "message": "تخزين الأسعار غير متاح. الطلبات متوقفة مؤقتًا إلى أن يصبح تتبّع حدّها ممكنًا.",
@@ -186,10 +186,10 @@
     "_source_hash": "f429d58cbb1c5f8b"
   },
   "setup.intro": {
-    "message": "تنزيلات Stooq بدون مفتاح غير متاحة حاليًا. استخدم مفتاح Finnhub المجاني الخاص بك للحصول على الأسعار الأمريكية؛ لا توفّر إضافة Stocks مفتاحًا مشتركًا أبدًا.",
-    "description": "Explain the authorized fallback to key setup",
+    "message": "استخدم مفتاح Finnhub المجاني الخاص بك للحصول على أسعار الأسهم الأمريكية. احصل على مفتاح أدناه، ثم اختبره واحفظه للاتصال.",
+    "description": "User-facing provider setup introduction",
     "_machine_translated": true,
-    "_source_hash": "d8f6685775cf04bc"
+    "_source_hash": "0686f89d96f514a5"
   },
   "setup.terms": {
     "message": "خطط Finnhub الشخصية مخصّصة للاستخدام الشخصي المؤهَّل. يتطلب الاستخدام التجاري ومشاركة البيانات أو النتائج المشتقة منها مع أطراف ثالثة موافقة Finnhub. راجع شروط المزوّد، بما في ذلك قبل إرسال الأسعار إلى وكيل بعيد.",
@@ -282,16 +282,16 @@
     "_source_hash": "d5d486955acdd4c8"
   },
   "settings.refresh_hint": {
-    "message": "الحد الأدنى 60 ثانية؛ والافتراضي 300. يتوقف الاستطلاع في النافذة المخفية على مضيفات Kage الحالية. يُحجز 40 طلبًا كحد أقصى في الدقيقة على مستوى هذا الجهاز؛ وتشمل حدود المزوّد أيضًا تطبيقاتك الأخرى.",
-    "description": "Request budget and hidden behavior",
+    "message": "الحد الأدنى {min} ثانية؛ والقيمة الافتراضية {default}. يتوقف الاستطلاع في النوافذ المخفية على مضيفات Kage الحالية. يُحجز {budget} طلبًا في الدقيقة كحد أقصى على مستوى هذا الجهاز؛ وتشمل حدود المزوّد أيضًا تطبيقاتك الأخرى.",
+    "description": "Request budget and hidden behavior; preserve {min}, {default}, {budget}",
     "_machine_translated": true,
-    "_source_hash": "86c3403cda44db0e"
+    "_source_hash": "835954ceb7299192"
   },
   "settings.refresh_error": {
-    "message": "يجب أن يكون الفاصل الزمني للتحديث بين 60 و3600 ثانية.",
-    "description": "Invalid interval",
+    "message": "يجب أن تكون فترة التحديث بين {min} و{max} ثانية.",
+    "description": "Invalid interval; preserve {min}, {max}",
     "_machine_translated": true,
-    "_source_hash": "c93b2dfa0a61d9f4"
+    "_source_hash": "45f891673cb1e039"
   },
   "tool.quote": {
     "message": "الحصول على أسعار الأسهم الأمريكية من Finnhub للاستخدام الشخصي. يُرجع المصدر والطابع الزمني لآخر صفقة ومدى حداثة ذاكرة التخزين المؤقت والأخطاء الخاصة بكل رمز. يتطلب مفتاح المستخدم المجاني؛ لا تُعِد توزيع البيانات دون موافقة المزوّد.",
@@ -300,10 +300,10 @@
     "_source_hash": "9aa8d167f9bf2f94"
   },
   "tool.symbols": {
-    "message": "حتى 10 رموز أمريكية، على سبيل المثال [\"AAPL\", \"MSFT\", \"BRK.B\"].",
-    "description": "Quote tool parameter description",
+    "message": "حتى {max} رمزًا أمريكيًا، مثل [\"AAPL\", \"MSFT\", \"BRK.B\"].",
+    "description": "Quote tool parameter description; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "5d5d1c443bb02531"
+    "_source_hash": "753c9fd4564636f3"
   },
   "tool.history": {
     "message": "الحصول على أسعار Finnhub التي جرى رصدها وأخذ عينات منها محليًا على هذا الجهاز لمدة 1d أو 1w أو 1m. لا تُرسل أي طلبات عبر الشبكة. العينات غير مكتملة ومتفرقة، وليست شموعًا تاريخية؛ وتعني القائمة الفارغة أنه لم يُجمع أي شيء.",
@@ -334,5 +334,53 @@
     "description": "Unrecognized tool execution",
     "_machine_translated": true,
     "_source_hash": "2acdb85e54aa0ed1"
+  },
+  "error.timeout": {
+    "message": "استغرق Finnhub وقتًا طويلًا للرد. أعد المحاولة بعد بضع ثوانٍ؛ يتم عرض البيانات المحفوظة عند توفرها.",
+    "description": "Request timeout; short local pause, separate from offline backoff",
+    "_machine_translated": true,
+    "_source_hash": "23491b785f430a04"
+  },
+  "settings.agent_tools": {
+    "message": "السماح للوكلاء باستخدام أدوات الأسهم",
+    "description": "Optional agent tool access; disabled by default",
+    "_machine_translated": true,
+    "_source_hash": "feaafa8e946fc0b2"
+  },
+  "settings.agent_tools_hint": {
+    "message": "قد ترسل أدوات الوكلاء أسعار Finnhub والنتائج المستخلصة منها إلى مزوّد الوكيل الخاص بك. فعّل هذا الخيار فقط إذا كانت اتفاقيتك مع Finnhub تسمح بهذه المشاركة.",
+    "description": "Explain opt-in and external agent data flow",
+    "_machine_translated": true,
+    "_source_hash": "600e0e85ae5aca60"
+  },
+  "settings.delete_quotes": {
+    "message": "حذف الأسعار المحفوظة",
+    "description": "Delete cached quotes and locally sampled history, retaining the key",
+    "_machine_translated": true,
+    "_source_hash": "c3ae84bf8010f20d"
+  },
+  "settings.quotes_deleted": {
+    "message": "تم حذف الأسعار المحفوظة والعينات المحلية.",
+    "description": "Cache deletion success",
+    "_machine_translated": true,
+    "_source_hash": "5c098db4acf64401"
+  },
+  "widget.setup": {
+    "message": "اكتب stock واضغط Enter لفتح إعدادات الأسهم وإعداد الأسعار.",
+    "description": "Compact first-run widget hint; keep stock as the launcher command",
+    "_machine_translated": true,
+    "_source_hash": "9c88d9cf89fa770f"
+  },
+  "widget.connection": {
+    "message": "الأسعار تحتاج إلى انتباهك. اكتب stock واضغط Enter لفتح إعدادات الأسهم.",
+    "description": "Compact widget hint for authentication, saved-only or storage problems; keep stock as the launcher command",
+    "_machine_translated": true,
+    "_source_hash": "28d7c64fff255e29"
+  },
+  "tool.opt_in": {
+    "message": "فعّل «السماح للوكلاء باستخدام أدوات الأسهم» في إعدادات الأسهم قبل استخدام هذه الأداة. تحقق من أن اتفاقيتك مع Finnhub تسمح بمشاركة البيانات مع مزوّد الوكيل الخاص بك.",
+    "description": "Actionable agent tool opt-in error",
+    "_machine_translated": true,
+    "_source_hash": "a00e5cc3750744f0"
   }
 }

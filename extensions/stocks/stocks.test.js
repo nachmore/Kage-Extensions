@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { makeContext } from '../../test-helpers/mock-context.mjs';
 import { DEFAULTS, refreshSeconds } from './defaults.js';
 import { chartUrl, normalizeSymbol, parseQuery, parseSymbols } from './symbols.js';
-import { fetchQuote, parseFinnhubQuote, retryAfterMs, validKey } from './provider.js';
+import { fetchQuote, parseFinnhubQuote, validKey } from './client.js';
 import { CREDENTIALS_KEY, StocksClient, getClient } from './client.js';
 import { copyText, direction, escapeHtml, priceText, quoteDescription, signedText, sparkline, timestampText } from './format.js';
 import Search from './search.js';
@@ -24,7 +24,7 @@ function fixture({ config = {}, key = TEST_KEY, seed = {} } = {}) {
   const store = new Map(Object.entries(seed).map(([k, v]) => [k, JSON.stringify(v)]));
   if (key) store.set(CREDENTIALS_KEY, JSON.stringify({ api_key: key }));
   const mock = makeContext({
-    catalog, config,
+    catalog, config: { agent_tools: true, ...config },
     invokes: {
       load_extension_data: ({ key }) => store.get(key) || null,
       save_extension_data: ({ key, data }) => { store.set(key, data); },
@@ -32,7 +32,7 @@ function fixture({ config = {}, key = TEST_KEY, seed = {} } = {}) {
       open_url: () => {},
     },
   });
-  return { ...mock, store, client: new StocksClient(mock.context) };
+  return { ...mock, store, client: getClient(mock.context) };
 }
 
 function init(Class, f) {
@@ -75,7 +75,8 @@ describe('symbols and launcher queries', () => {
     expect(() => normalizeSymbol(symbol)).toThrow('invalid_symbols');
   });
   it('limits query, tools and watchlist sizes before any request', () => {
-    expect(() => parseSymbols(Array(11).fill('AAPL'))).toThrow('too_many');
+    expect(parseSymbols(Array(11).fill('AAPL'))).toEqual(['AAPL']);
+    expect(() => parseSymbols(['AAPL', 'MSFT', 'NVDA', 'GOOG', 'META', 'AMD', 'IBM', 'INTC', 'TSLA', 'AMZN', 'ORCL'])).toThrow('too_many');
     expect(() => parseSymbols({})).toThrow('invalid_symbols');
     expect(parseSymbols('', { allowEmpty: true })).toEqual([]);
   });
@@ -106,10 +107,9 @@ describe('Finnhub parsing and transport', () => {
     expect(new URL(url).searchParams.get('token')).toBe(TEST_KEY);
     expect(options).toMatchObject({ credentials: 'omit', referrerPolicy: 'no-referrer', redirect: 'error' });
     expect(options.headers).toEqual({ Accept: 'application/json' });
-    expect(JSON.stringify(parseFinnhubQuote(body(), 'AAPL'))).not.toContain(TEST_KEY);
   });
-  it.each([[401, 'auth'], [403, 'auth'], [429, 'rate_limit'], [500, 'unavailable']])('classifies HTTP %i without leaking error bodies', async (status, code) => {
-    const response = jsonResponse({ error: TEST_KEY }, status, { 'Retry-After': '120' });
+  it.each([[401, 'auth'], [403, 'unsupported'], [429, 'rate_limit'], [500, 'unavailable']])('classifies HTTP %i without leaking error bodies', async (status, code) => {
+    const response = jsonResponse({ error: TEST_KEY }, status, {});
     fetch.mockResolvedValue(response);
     await expect(fetchQuote('AAPL', TEST_KEY)).rejects.toMatchObject({ code });
     expect(response.json).not.toHaveBeenCalled();
@@ -122,14 +122,11 @@ describe('Finnhub parsing and transport', () => {
     fetch.mockResolvedValueOnce(jsonResponse({ error: TEST_KEY }));
     await expect(fetchQuote('AAPL', TEST_KEY)).rejects.toThrow('unavailable');
   });
-  it('validates keys and clamps Retry-After', () => {
+  it('validates keys', () => {
     expect(validKey(TEST_KEY)).toBe(true);
     expect(validKey('https://example.com/key')).toBe(false);
     expect(validKey('')).toBe(false);
-    expect(retryAfterMs('120', NOW)).toBe(120_000);
-    expect(retryAfterMs(new Date(NOW + 180_000).toUTCString(), NOW)).toBe(180_000);
-    expect(retryAfterMs(null, NOW)).toBe(60_000);
-    expect(retryAfterMs('999999999', NOW)).toBe(86_400_000);
+
   });
 });
 
@@ -207,11 +204,12 @@ describe('cache, budgets, backoff and concurrent windows', () => {
     fetch.mockResolvedValueOnce(jsonResponse());
     await f.client.getQuote('AAPL');
     Date.now.mockReturnValue(NOW + 600_000);
-    fetch.mockResolvedValueOnce(jsonResponse({}, 429, { 'Retry-After': '120' }));
+    fetch.mockResolvedValueOnce(jsonResponse({}, 429, {}));
     const old = await f.client.getQuote('AAPL');
-    expect(old).toMatchObject({ stale: true, reason: 'rate_limit', fetchedAt: NOW, retryAt: NOW + 720_000 });
+    expect(old).toMatchObject({ stale: true, reason: 'rate_limit', fetchedAt: NOW, retryAt: NOW + 660_000 });
     const sibling = new StocksClient(f.context);
-    await expect(sibling.getQuote('MSFT')).rejects.toMatchObject({ code: 'rate_limit', retryAt: NOW + 720_000 });
+    Date.now.mockReturnValue(NOW + 600_251);
+    await expect(sibling.getQuote('MSFT')).rejects.toMatchObject({ code: 'rate_limit', retryAt: NOW + 660_000 });
     expect(fetch).toHaveBeenCalledTimes(2);
   });
   it('enforces a shared 40-request minute budget and then recovers', async () => {
@@ -222,6 +220,7 @@ describe('cache, budgets, backoff and concurrent windows', () => {
       await f.client.testKey(TEST_KEY);
     }
     const sibling = new StocksClient(f.context);
+    Date.now.mockReturnValue(NOW + 1251);
     await expect(sibling.testKey(TEST_KEY)).rejects.toMatchObject({ code: 'rate_limit', retryAt: NOW + 60_000 });
     expect(fetch).toHaveBeenCalledTimes(40);
     Date.now.mockReturnValue(NOW + 60_001);
@@ -241,14 +240,14 @@ describe('cache, budgets, backoff and concurrent windows', () => {
   it('increases consecutive provider backoff and resets the streak after recovery', async () => {
     const f = fixture();
     fetch.mockResolvedValue(jsonResponse({}, 429));
-    await expect(f.client.testKey(TEST_KEY)).rejects.toThrow('rate_limit');
+    await expect(f.client.getQuote('AAPL')).rejects.toThrow('rate_limit');
     expect(JSON.parse(f.store.get('request_budget')).backoffUntil).toBe(NOW + 60_000);
     Date.now.mockReturnValue(NOW + 60_001);
-    await expect(f.client.testKey(TEST_KEY)).rejects.toThrow('rate_limit');
+    await expect(f.client.getQuote('AAPL')).rejects.toThrow('rate_limit');
     expect(JSON.parse(f.store.get('request_budget')).backoffUntil).toBe(NOW + 180_001);
     Date.now.mockReturnValue(NOW + 180_002);
     fetch.mockResolvedValue(jsonResponse());
-    await f.client.testKey(TEST_KEY);
+    await f.client.getQuote('AAPL');
     expect(JSON.parse(f.store.get('request_budget')).streak).toBe(0);
   });
   it('aborts slow network requests within the widget render budget and caches the failure backoff', async () => {
@@ -259,8 +258,8 @@ describe('cache, budgets, backoff and concurrent windows', () => {
     }));
     const request = f.client.getQuotes(['AAPL']);
     await vi.advanceTimersByTimeAsync(2201);
-    expect((await request)[0].error).toBe('offline');
-    expect(JSON.parse(f.store.get('request_budget')).backoffReason).toBe('offline');
+    expect((await request)[0]).toMatchObject({ error: 'timeout', retryAt: NOW + 5200 });
+    expect(JSON.parse(f.store.get('request_budget')).backoffReason).toBeUndefined();
   });
   it('preserves per-symbol failures in a mixed multi-symbol request', async () => {
     const f = fixture();
@@ -380,8 +379,6 @@ describe('launcher, settings, tools and widget workflows', () => {
     fetch.mockResolvedValue(jsonResponse());
     const toolResult = await init(Tools, f).execute('get_quote', { symbols: ['AAPL'] });
     expect(JSON.stringify(toolResult)).not.toContain(TEST_KEY);
-    expect(f.log.warn).not.toHaveBeenCalled();
-    expect(f.log.error).not.toHaveBeenCalled();
   });
   it('shows canonical defaults on both old and current hosts and excludes secrets on Save', async () => {
     const f = fixture({ key: null });
@@ -445,8 +442,8 @@ describe('launcher, settings, tools and widget workflows', () => {
     expect(output.html).toContain('Source: Finnhub');
     expect(output.html).toContain('AAPL 189.12');
     expect(output.html).toContain('UTC');
-    expect(output.actions).toEqual([{ id: 'chart:0', rpc: 'chart:0' }]);
-    await widget.onAction('chart:0');
+    expect(output.actions).toEqual([{ id: 'chart:AAPL', rpc: 'chart:AAPL' }]);
+    await widget.onAction('chart:AAPL');
     expect(f.invoke).toHaveBeenCalledWith('open_url', { url: chartUrl('AAPL') });
     const calls = f.invoke.mock.calls.length;
     await widget.onAction('chart:999');

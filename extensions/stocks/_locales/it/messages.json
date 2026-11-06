@@ -78,10 +78,10 @@
     "_source_hash": "8adbf75fdf5bc595"
   },
   "error.auth": {
-    "message": "Finnhub ha rifiutato la chiave. Apri le impostazioni di Azioni per verificarne una sostitutiva.",
-    "description": "Authentication or plan error, no raw provider response",
+    "message": "Finnhub ha rifiutato la chiave. Apri le impostazioni di Stocks per provarne una nuova.",
+    "description": "Authentication error; never include the raw provider response",
     "_machine_translated": true,
-    "_source_hash": "ecc147e2c9741ce7"
+    "_source_hash": "eca735a4f5fb0bce"
   },
   "error.unknown": {
     "message": "Nessuna quotazione per questo simbolo. Controlla il ticker USA, incluso l'eventuale suffisso della classe di azioni.",
@@ -102,10 +102,10 @@
     "_source_hash": "5cd17969829278c5"
   },
   "error.too_many": {
-    "message": "Usa al massimo 10 simboli per query o watchlist.",
-    "description": "Bounded request batch",
+    "message": "Usa al massimo {max} simboli per query o watchlist.",
+    "description": "Bounded request batch; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "e8f0028cd32f8c7b"
+    "_source_hash": "22531ab77bc6c225"
   },
   "error.rate_limit": {
     "message": "Limite di richieste raggiunto. Vengono mostrati i dati salvati, se disponibili; le richieste riprenderanno dopo una pausa.",
@@ -115,9 +115,9 @@
   },
   "error.offline": {
     "message": "Impossibile raggiungere Finnhub. Vengono mostrati i dati salvati, se disponibili.",
-    "description": "Offline or network timeout",
+    "description": "Offline or network failure",
     "_machine_translated": true,
-    "_source_hash": "e74f5fe32dc5f429"
+    "_source_hash": "536dacabe5ed1015"
   },
   "error.unavailable": {
     "message": "Finnhub non è disponibile. Vengono mostrati i dati salvati, se disponibili.",
@@ -132,10 +132,10 @@
     "_source_hash": "b6ed5bc4b975b5a0"
   },
   "error.cache_only": {
-    "message": "Solo quotazioni salvate; le richieste in tempo reale sono in pausa.",
+    "message": "Solo quotazioni salvate; le richieste in tempo reale sono in pausa. Apri le impostazioni di Stocks per scegliere Finnhub e collegare una chiave.",
     "description": "User selected offline provider mode",
     "_machine_translated": true,
-    "_source_hash": "ceee09611e30c87c"
+    "_source_hash": "69f4b08853704dde"
   },
   "error.storage": {
     "message": "L'archivio delle quotazioni non è disponibile. Le richieste sono in pausa finché non sarà possibile tracciarne il limite.",
@@ -186,10 +186,10 @@
     "_source_hash": "f429d58cbb1c5f8b"
   },
   "setup.intro": {
-    "message": "I download di Stooq senza chiave non sono al momento disponibili. Usa la tua chiave Finnhub gratuita per le quotazioni USA; Stocks non fornisce mai una chiave condivisa.",
-    "description": "Explain the authorized fallback to key setup",
+    "message": "Usa la tua chiave Finnhub gratuita per le quotazioni delle azioni USA. Ottieni una chiave qui sotto, poi verificala e salvala per connetterti.",
+    "description": "User-facing provider setup introduction",
     "_machine_translated": true,
-    "_source_hash": "d8f6685775cf04bc"
+    "_source_hash": "0686f89d96f514a5"
   },
   "setup.terms": {
     "message": "I piani personali di Finnhub sono destinati a un uso personale idoneo. L'uso aziendale e la condivisione di dati o risultati derivati con terze parti richiedono l'approvazione di Finnhub. Consulta i termini del provider, anche prima di inviare quotazioni a un agente remoto.",
@@ -282,16 +282,16 @@
     "_source_hash": "d5d486955acdd4c8"
   },
   "settings.refresh_hint": {
-    "message": "Minimo 60 secondi; predefinito 300. Le interrogazioni a finestra nascosta vengono sospese negli host Kage attuali. Su questo dispositivo sono riservate al massimo 40 richieste al minuto; i limiti del provider includono anche le tue altre app.",
-    "description": "Request budget and hidden behavior",
+    "message": "Minimo {min} secondi; predefinito {default}. Sugli host Kage attuali gli aggiornamenti si sospendono quando la finestra è nascosta. Su questo dispositivo sono riservate al massimo {budget} richieste al minuto; i limiti del provider includono anche le tue altre app.",
+    "description": "Request budget and hidden behavior; preserve {min}, {default}, {budget}",
     "_machine_translated": true,
-    "_source_hash": "86c3403cda44db0e"
+    "_source_hash": "835954ceb7299192"
   },
   "settings.refresh_error": {
-    "message": "L'intervallo di aggiornamento deve essere compreso tra 60 e 3600 secondi.",
-    "description": "Invalid interval",
+    "message": "L'intervallo di aggiornamento deve essere compreso tra {min} e {max} secondi.",
+    "description": "Invalid interval; preserve {min}, {max}",
     "_machine_translated": true,
-    "_source_hash": "c93b2dfa0a61d9f4"
+    "_source_hash": "45f891673cb1e039"
   },
   "tool.quote": {
     "message": "Ottiene da Finnhub quotazioni di azioni USA per uso personale. Restituisce fonte, timestamp dell'ultima negoziazione, aggiornamento della cache ed errori per simbolo. Richiede la chiave gratuita dell'utente; non ridistribuire senza l'approvazione del provider.",
@@ -300,10 +300,10 @@
     "_source_hash": "9aa8d167f9bf2f94"
   },
   "tool.symbols": {
-    "message": "Fino a 10 simboli USA, ad esempio [\"AAPL\", \"MSFT\", \"BRK.B\"].",
-    "description": "Quote tool parameter description",
+    "message": "Fino a {max} simboli USA, ad esempio [\"AAPL\", \"MSFT\", \"BRK.B\"].",
+    "description": "Quote tool parameter description; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "5d5d1c443bb02531"
+    "_source_hash": "753c9fd4564636f3"
   },
   "tool.history": {
     "message": "Ottieni le quotazioni Finnhub campionate localmente e osservate su questo dispositivo per 1d, 1w o 1m. Nessuna richiesta di rete. Campioni incompleti e sparsi, non candele storiche; un elenco vuoto significa che non è stato raccolto nulla.",
@@ -334,5 +334,53 @@
     "description": "Unrecognized tool execution",
     "_machine_translated": true,
     "_source_hash": "2acdb85e54aa0ed1"
+  },
+  "error.timeout": {
+    "message": "Finnhub ha impiegato troppo tempo a rispondere. Riprova tra qualche secondo; vengono mostrati i dati salvati, se disponibili.",
+    "description": "Request timeout; short local pause, separate from offline backoff",
+    "_machine_translated": true,
+    "_source_hash": "23491b785f430a04"
+  },
+  "settings.agent_tools": {
+    "message": "Consenti gli strumenti Stocks agli agenti",
+    "description": "Optional agent tool access; disabled by default",
+    "_machine_translated": true,
+    "_source_hash": "feaafa8e946fc0b2"
+  },
+  "settings.agent_tools_hint": {
+    "message": "Gli strumenti per agenti possono inviare le quotazioni Finnhub e i risultati derivati al tuo provider di agenti. Attiva questa opzione solo se il tuo contratto con Finnhub consente questa condivisione.",
+    "description": "Explain opt-in and external agent data flow",
+    "_machine_translated": true,
+    "_source_hash": "600e0e85ae5aca60"
+  },
+  "settings.delete_quotes": {
+    "message": "Elimina le quotazioni salvate",
+    "description": "Delete cached quotes and locally sampled history, retaining the key",
+    "_machine_translated": true,
+    "_source_hash": "c3ae84bf8010f20d"
+  },
+  "settings.quotes_deleted": {
+    "message": "Quotazioni salvate e campioni locali eliminati.",
+    "description": "Cache deletion success",
+    "_machine_translated": true,
+    "_source_hash": "5c098db4acf64401"
+  },
+  "widget.setup": {
+    "message": "Digita stock e premi Invio per aprire le impostazioni di Stocks e configurare le quotazioni.",
+    "description": "Compact first-run widget hint; keep stock as the launcher command",
+    "_machine_translated": true,
+    "_source_hash": "9c88d9cf89fa770f"
+  },
+  "widget.connection": {
+    "message": "Le quotazioni richiedono attenzione. Digita stock e premi Invio per aprire le impostazioni di Stocks.",
+    "description": "Compact widget hint for authentication, saved-only or storage problems; keep stock as the launcher command",
+    "_machine_translated": true,
+    "_source_hash": "28d7c64fff255e29"
+  },
+  "tool.opt_in": {
+    "message": "Prima di usare questo strumento, attiva «Consenti gli strumenti Stocks agli agenti» nelle impostazioni di Stocks. Verifica che il tuo contratto con Finnhub consenta di condividere i dati con il tuo provider di agenti.",
+    "description": "Actionable agent tool opt-in error",
+    "_machine_translated": true,
+    "_source_hash": "a00e5cc3750744f0"
   }
 }

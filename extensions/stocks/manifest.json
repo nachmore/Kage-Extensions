@@ -8,11 +8,13 @@
   "author": "kage",
   "tags": ["stocks", "finance", "quotes", "watchlist", "finnhub", "online", "data-delayed"],
   "permissions": ["storage", "urls"],
+  "sensitiveData": ["credentials"],
   "config": {
     "provider": { "type": "string", "default": "finnhub" },
     "watchlist": { "type": "string", "default": "AAPL MSFT NVDA" },
     "refresh_seconds": { "type": "number", "default": 300 },
-    "show_watchlist": { "type": "boolean", "default": true }
+    "show_watchlist": { "type": "boolean", "default": true },
+    "agent_tools": { "type": "boolean", "default": false }
   },
   "contributes": {
     "searchProvider": "./search.js",

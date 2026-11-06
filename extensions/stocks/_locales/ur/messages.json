@@ -78,10 +78,10 @@
     "_source_hash": "8adbf75fdf5bc595"
   },
   "error.auth": {
-    "message": "Finnhub نے key مسترد کر دی۔ متبادل key ٹیسٹ کرنے کے لیے اسٹاکس کی ترتیبات کھولیں۔",
-    "description": "Authentication or plan error, no raw provider response",
+    "message": "Finnhub نے کلید مسترد کر دی۔ متبادل کلید آزمانے کے لیے Stocks کی ترتیبات کھولیں۔",
+    "description": "Authentication error; never include the raw provider response",
     "_machine_translated": true,
-    "_source_hash": "ecc147e2c9741ce7"
+    "_source_hash": "eca735a4f5fb0bce"
   },
   "error.unknown": {
     "message": "اس علامت کی کوئی قیمت نہیں ملی۔ امریکی ٹکر چیک کریں، بشمول شیئر کلاس کا لاحقہ اگر کوئی ہو۔",
@@ -102,10 +102,10 @@
     "_source_hash": "5cd17969829278c5"
   },
   "error.too_many": {
-    "message": "ہر سوال یا واچ لسٹ میں زیادہ سے زیادہ 10 علامات استعمال کریں۔",
-    "description": "Bounded request batch",
+    "message": "ہر سوال یا واچ لسٹ میں زیادہ سے زیادہ {max} علامتیں استعمال کریں۔",
+    "description": "Bounded request batch; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "e8f0028cd32f8c7b"
+    "_source_hash": "22531ab77bc6c225"
   },
   "error.rate_limit": {
     "message": "درخواستوں کی حد پوری ہو گئی۔ دستیاب ہونے پر محفوظ شدہ ڈیٹا دکھایا جا رہا ہے؛ وقفے کے بعد درخواستیں دوبارہ شروع ہوں گی۔",
@@ -114,10 +114,10 @@
     "_source_hash": "7d553dee0c6fe94a"
   },
   "error.offline": {
-    "message": "Finnhub تک رسائی نہیں ہو سکی۔ دستیاب ہونے پر محفوظ شدہ ڈیٹا دکھایا جا رہا ہے۔",
-    "description": "Offline or network timeout",
+    "message": "Finnhub تک رسائی نہیں ہو سکی۔ دستیاب ہونے پر محفوظ کردہ ڈیٹا دکھایا جا رہا ہے۔",
+    "description": "Offline or network failure",
     "_machine_translated": true,
-    "_source_hash": "e74f5fe32dc5f429"
+    "_source_hash": "536dacabe5ed1015"
   },
   "error.unavailable": {
     "message": "Finnhub دستیاب نہیں ہے۔ دستیاب ہونے پر محفوظ شدہ ڈیٹا دکھایا جا رہا ہے۔",
@@ -132,10 +132,10 @@
     "_source_hash": "b6ed5bc4b975b5a0"
   },
   "error.cache_only": {
-    "message": "صرف محفوظ شدہ قیمتیں؛ لائیو درخواستیں موقوف ہیں۔",
+    "message": "صرف محفوظ کردہ قیمتیں دستیاب ہیں؛ لائیو درخواستیں روک دی گئی ہیں۔ Finnhub منتخب کرنے اور کلید منسلک کرنے کے لیے Stocks کی ترتیبات کھولیں۔",
     "description": "User selected offline provider mode",
     "_machine_translated": true,
-    "_source_hash": "ceee09611e30c87c"
+    "_source_hash": "69f4b08853704dde"
   },
   "error.storage": {
     "message": "قیمتوں کا اسٹوریج دستیاب نہیں ہے۔ درخواستیں اس وقت تک موقوف ہیں جب تک ان کی حد کا حساب نہ رکھا جا سکے۔",
@@ -186,10 +186,10 @@
     "_source_hash": "f429d58cbb1c5f8b"
   },
   "setup.intro": {
-    "message": "بغیر کلید کے Stooq ڈاؤن لوڈز فی الحال دستیاب نہیں ہیں۔ امریکی قیمتوں کے لیے اپنی مفت Finnhub کلید استعمال کریں؛ Stocks کبھی بھی مشترکہ کلید فراہم نہیں کرتا۔",
-    "description": "Explain the authorized fallback to key setup",
+    "message": "امریکی اسٹاک کوٹس کے لیے اپنی مفت Finnhub کلید استعمال کریں۔ نیچے سے کلید حاصل کریں، پھر منسلک ہونے کے لیے اسے آزما کر محفوظ کریں۔",
+    "description": "User-facing provider setup introduction",
     "_machine_translated": true,
-    "_source_hash": "d8f6685775cf04bc"
+    "_source_hash": "0686f89d96f514a5"
   },
   "setup.terms": {
     "message": "Finnhub کے ذاتی پلان اہل ذاتی استعمال کے لیے ہیں۔ کاروباری استعمال اور ڈیٹا یا اس سے حاصل شدہ نتائج تیسرے فریق کے ساتھ شیئر کرنے کے لیے Finnhub کی منظوری درکار ہے۔ فراہم کنندہ کی شرائط چیک کریں، بشمول قیمتیں کسی ریموٹ ایجنٹ کو بھیجنے سے پہلے۔",
@@ -282,16 +282,16 @@
     "_source_hash": "d5d486955acdd4c8"
   },
   "settings.refresh_hint": {
-    "message": "کم از کم 60 سیکنڈ؛ طے شدہ 300۔ موجودہ Kage ہوسٹس پر چھپی ہوئی ونڈو کی پولنگ رک جاتی ہے۔ اس آلے پر فی منٹ زیادہ سے زیادہ 40 درخواستیں مختص ہیں؛ فراہم کنندہ کی حدود میں آپ کی دیگر ایپس بھی شامل ہیں۔",
-    "description": "Request budget and hidden behavior",
+    "message": "کم از کم {min} سیکنڈ؛ طے شدہ {default}۔ موجودہ Kage ہوسٹس پر پوشیدہ ونڈو کی پولنگ رک جاتی ہے۔ اس آلے پر فی منٹ زیادہ سے زیادہ {budget} درخواستیں مختص ہیں؛ فراہم کنندہ کی حدود میں آپ کی دیگر ایپس بھی شامل ہیں۔",
+    "description": "Request budget and hidden behavior; preserve {min}, {default}, {budget}",
     "_machine_translated": true,
-    "_source_hash": "86c3403cda44db0e"
+    "_source_hash": "835954ceb7299192"
   },
   "settings.refresh_error": {
-    "message": "ریفریش وقفہ 60 اور 3600 سیکنڈ کے درمیان ہونا چاہیے۔",
-    "description": "Invalid interval",
+    "message": "ریفریش کا وقفہ {min} اور {max} سیکنڈ کے درمیان ہونا چاہیے۔",
+    "description": "Invalid interval; preserve {min}, {max}",
     "_machine_translated": true,
-    "_source_hash": "c93b2dfa0a61d9f4"
+    "_source_hash": "45f891673cb1e039"
   },
   "tool.quote": {
     "message": "ذاتی استعمال کے لیے Finnhub سے امریکی اسٹاک کی قیمتیں حاصل کریں۔ ماخذ، آخری ٹریڈ کا ٹائم اسٹیمپ، کیشے کی تازگی اور ہر علامت کی خرابیاں واپس کرتا ہے۔ صارف کی مفت کلید درکار ہے؛ فراہم کنندہ کی منظوری کے بغیر دوبارہ تقسیم نہ کریں۔",
@@ -300,10 +300,10 @@
     "_source_hash": "9aa8d167f9bf2f94"
   },
   "tool.symbols": {
-    "message": "زیادہ سے زیادہ 10 امریکی علامات، مثال کے طور پر [\"AAPL\", \"MSFT\", \"BRK.B\"]۔",
-    "description": "Quote tool parameter description",
+    "message": "زیادہ سے زیادہ {max} امریکی علامتیں، مثال کے طور پر [\"AAPL\", \"MSFT\", \"BRK.B\"]۔",
+    "description": "Quote tool parameter description; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "5d5d1c443bb02531"
+    "_source_hash": "753c9fd4564636f3"
   },
   "tool.history": {
     "message": "اس ڈیوائس پر 1d، 1w یا 1m کے لیے مقامی طور پر جمع کیے گئے Finnhub کوٹس حاصل کریں۔ کوئی نیٹ ورک درخواست نہیں کی جاتی۔ یہ نامکمل اور کم نمونے ہیں، تاریخی کینڈلز نہیں؛ خالی فہرست کا مطلب ہے کہ کچھ بھی جمع نہیں کیا گیا۔",
@@ -334,5 +334,53 @@
     "description": "Unrecognized tool execution",
     "_machine_translated": true,
     "_source_hash": "2acdb85e54aa0ed1"
+  },
+  "error.timeout": {
+    "message": "Finnhub نے جواب دینے میں بہت دیر لگائی۔ چند سیکنڈ بعد دوبارہ کوشش کریں؛ دستیاب ہونے پر محفوظ کردہ ڈیٹا دکھایا جا رہا ہے۔",
+    "description": "Request timeout; short local pause, separate from offline backoff",
+    "_machine_translated": true,
+    "_source_hash": "23491b785f430a04"
+  },
+  "settings.agent_tools": {
+    "message": "ایجنٹس کے لیے Stocks ٹولز کی اجازت دیں",
+    "description": "Optional agent tool access; disabled by default",
+    "_machine_translated": true,
+    "_source_hash": "feaafa8e946fc0b2"
+  },
+  "settings.agent_tools_hint": {
+    "message": "ایجنٹ ٹولز Finnhub کوٹس اور ان سے اخذ کردہ نتائج آپ کے ایجنٹ فراہم کنندہ کو بھیج سکتے ہیں۔ صرف اسی صورت میں فعال کریں جب آپ کا Finnhub معاہدہ اس اشتراک کی اجازت دیتا ہو۔",
+    "description": "Explain opt-in and external agent data flow",
+    "_machine_translated": true,
+    "_source_hash": "600e0e85ae5aca60"
+  },
+  "settings.delete_quotes": {
+    "message": "محفوظ کردہ کوٹس حذف کریں",
+    "description": "Delete cached quotes and locally sampled history, retaining the key",
+    "_machine_translated": true,
+    "_source_hash": "c3ae84bf8010f20d"
+  },
+  "settings.quotes_deleted": {
+    "message": "محفوظ کردہ کوٹس اور مقامی نمونے حذف کر دیے گئے۔",
+    "description": "Cache deletion success",
+    "_machine_translated": true,
+    "_source_hash": "5c098db4acf64401"
+  },
+  "widget.setup": {
+    "message": "Stocks کی ترتیبات کھولنے اور کوٹس سیٹ اپ کرنے کے لیے stock ٹائپ کریں اور Enter دبائیں۔",
+    "description": "Compact first-run widget hint; keep stock as the launcher command",
+    "_machine_translated": true,
+    "_source_hash": "9c88d9cf89fa770f"
+  },
+  "widget.connection": {
+    "message": "کوٹس پر توجہ درکار ہے۔ Stocks کی ترتیبات کھولنے کے لیے stock ٹائپ کریں اور Enter دبائیں۔",
+    "description": "Compact widget hint for authentication, saved-only or storage problems; keep stock as the launcher command",
+    "_machine_translated": true,
+    "_source_hash": "28d7c64fff255e29"
+  },
+  "tool.opt_in": {
+    "message": "یہ ٹول استعمال کرنے سے پہلے Stocks کی ترتیبات میں \"ایجنٹس کے لیے Stocks ٹولز کی اجازت دیں\" فعال کریں۔ تصدیق کریں کہ آپ کا Finnhub معاہدہ آپ کے ایجنٹ فراہم کنندہ کے ساتھ ڈیٹا کے اشتراک کی اجازت دیتا ہے۔",
+    "description": "Actionable agent tool opt-in error",
+    "_machine_translated": true,
+    "_source_hash": "a00e5cc3750744f0"
   }
 }

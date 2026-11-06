@@ -1,6 +1,5 @@
-import { DEFAULTS, MIN_REFRESH_SECONDS, MAX_REFRESH_SECONDS, MAX_SYMBOLS } from './defaults.js';
-import { getClient } from './client.js';
-import { FREE_KEY_URL, validKey } from './provider.js';
+import { DEFAULTS, MIN_REFRESH_SECONDS, MAX_REFRESH_SECONDS, MAX_SYMBOLS, MAX_PER_MINUTE } from './defaults.js';
+import { FREE_KEY_URL, getClient, validKey } from './client.js';
 import { parseSymbols } from './symbols.js';
 import { errorText, escapeHtml } from './format.js';
 
@@ -10,6 +9,8 @@ export default class StocksSettingsProvider {
     this.invoke = context.invoke;
     this.config = context.config || {};
     this.t = context.i18n?.t?.bind(context.i18n) || ((key) => key);
+    this.keyRevision = 0;
+    this.scratchId = '__api_key';
   }
 
   onConfigUpdate(config) { this.config = config || {}; }
@@ -17,6 +18,8 @@ export default class StocksSettingsProvider {
   async getSettings() {
     const t = this.t;
     const hasKey = !!(await this.client.key());
+    this.scratchId = hasKey ? `__replacement_key_${this.keyRevision}`
+      : this.keyRevision ? `__api_key_${this.keyRevision}` : '__api_key';
     return {
       description: t('settings.description'),
       sections: [
@@ -37,7 +40,7 @@ export default class StocksSettingsProvider {
             // Scratch field never goes into config or back into the schema.
             // The host has no password control type; an empty text field is
             // the compatible input, as in Spotify's guided setup.
-            { type: 'text', id: '__api_key', default: '', label: t('setup.key'), description: t('setup.key_hint') },
+            { type: 'text', id: this.scratchId, default: '', label: t('setup.key'), description: t('setup.key_hint') },
             { type: 'action', id: 'test_key', action: 'test_key', label: t('setup.test'), variant: 'primary' },
             { type: 'action', id: 'remove_key', action: 'remove_key', label: t('setup.remove'), disabled: !hasKey },
           ],
@@ -50,8 +53,10 @@ export default class StocksSettingsProvider {
             {
               type: 'number', id: 'refresh_seconds', label: t('settings.refresh'),
               default: DEFAULTS.refresh_seconds, min: MIN_REFRESH_SECONDS, max: MAX_REFRESH_SECONDS,
-              description: t('settings.refresh_hint'),
+              description: t('settings.refresh_hint', { min: MIN_REFRESH_SECONDS, default: DEFAULTS.refresh_seconds, budget: MAX_PER_MINUTE }),
             },
+            { type: 'checkbox', id: 'agent_tools', label: t('settings.agent_tools'), default: DEFAULTS.agent_tools, description: t('settings.agent_tools_hint') },
+            { type: 'action', id: 'delete_quotes', action: 'delete_quotes', label: t('settings.delete_quotes') },
             { type: 'info', html: `<p>${escapeHtml(t('result.help'))}</p><p>${escapeHtml(t('quote.sampled'))}</p>` },
           ],
         },
@@ -68,7 +73,7 @@ export default class StocksSettingsProvider {
       if (values.refresh_seconds !== undefined) {
         const n = Number(values.refresh_seconds);
         if (!Number.isFinite(n) || n < MIN_REFRESH_SECONDS || n > MAX_REFRESH_SECONDS) {
-          return { valid: false, error: this.t('settings.refresh_error') };
+          return { valid: false, error: this.t('settings.refresh_error', { min: MIN_REFRESH_SECONDS, max: MAX_REFRESH_SECONDS }) };
         }
       }
       return { valid: true };
@@ -95,13 +100,19 @@ export default class StocksSettingsProvider {
       }
       if (action === 'remove_key') {
         await this.client.removeKey();
+        this.keyRevision++;
         return { status: this.t('setup.removed'), host: { type: 'refresh' } };
       }
+      if (action === 'delete_quotes') {
+        await this.client.deleteQuotes(parseSymbols(this.config.watchlist ?? DEFAULTS.watchlist, { allowEmpty: true }));
+        return { status: this.t('settings.quotes_deleted'), host: { type: 'refresh' } };
+      }
       if (action === 'test_key') {
-        const key = String(values.__api_key || '').trim() || await this.client.key();
+        const key = String(values[this.scratchId] || '').trim() || await this.client.key();
         if (!validKey(key)) return { status: this.t('error.invalid_key') };
         await this.client.testKey(key);
         await this.client.saveKey(key);
+        this.keyRevision++;
         return { status: this.t('setup.success'), host: { type: 'refresh' } };
       }
       return {};

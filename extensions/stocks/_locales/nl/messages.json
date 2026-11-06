@@ -78,10 +78,10 @@
     "_source_hash": "8adbf75fdf5bc595"
   },
   "error.auth": {
-    "message": "Finnhub heeft de sleutel geweigerd. Open de instellingen van Aandelen om een vervangende sleutel te testen.",
-    "description": "Authentication or plan error, no raw provider response",
+    "message": "Finnhub heeft de sleutel geweigerd. Open de Stocks-instellingen om een nieuwe sleutel te testen.",
+    "description": "Authentication error; never include the raw provider response",
     "_machine_translated": true,
-    "_source_hash": "ecc147e2c9741ce7"
+    "_source_hash": "eca735a4f5fb0bce"
   },
   "error.unknown": {
     "message": "Geen koers voor dit symbool. Controleer de Amerikaanse ticker, inclusief een eventueel achtervoegsel voor de aandelenklasse.",
@@ -102,10 +102,10 @@
     "_source_hash": "5cd17969829278c5"
   },
   "error.too_many": {
-    "message": "Gebruik maximaal 10 symbolen per zoekopdracht of volglijst.",
-    "description": "Bounded request batch",
+    "message": "Gebruik maximaal {max} symbolen per zoekopdracht of watchlist.",
+    "description": "Bounded request batch; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "e8f0028cd32f8c7b"
+    "_source_hash": "22531ab77bc6c225"
   },
   "error.rate_limit": {
     "message": "Aanvraaglimiet bereikt. Opgeslagen gegevens worden getoond indien beschikbaar; aanvragen worden na een pauze hervat.",
@@ -115,9 +115,9 @@
   },
   "error.offline": {
     "message": "Kan Finnhub niet bereiken. Opgeslagen gegevens worden getoond indien beschikbaar.",
-    "description": "Offline or network timeout",
+    "description": "Offline or network failure",
     "_machine_translated": true,
-    "_source_hash": "e74f5fe32dc5f429"
+    "_source_hash": "536dacabe5ed1015"
   },
   "error.unavailable": {
     "message": "Finnhub is niet beschikbaar. Opgeslagen gegevens worden getoond indien beschikbaar.",
@@ -132,10 +132,10 @@
     "_source_hash": "b6ed5bc4b975b5a0"
   },
   "error.cache_only": {
-    "message": "Alleen opgeslagen koersen; live aanvragen zijn gepauzeerd.",
+    "message": "Alleen opgeslagen koersen; live verzoeken zijn gepauzeerd. Open de instellingen van Aandelen om Finnhub te kiezen en een sleutel te koppelen.",
     "description": "User selected offline provider mode",
     "_machine_translated": true,
-    "_source_hash": "ceee09611e30c87c"
+    "_source_hash": "69f4b08853704dde"
   },
   "error.storage": {
     "message": "Koersopslag is niet beschikbaar. Aanvragen zijn gepauzeerd totdat hun limiet kan worden bijgehouden.",
@@ -186,10 +186,10 @@
     "_source_hash": "f429d58cbb1c5f8b"
   },
   "setup.intro": {
-    "message": "Downloads van Stooq zonder sleutel zijn momenteel niet beschikbaar. Gebruik uw eigen gratis Finnhub-sleutel voor Amerikaanse koersen; Stocks levert nooit een gedeelde sleutel.",
-    "description": "Explain the authorized fallback to key setup",
+    "message": "Gebruik uw eigen gratis Finnhub-sleutel voor koersen van Amerikaanse aandelen. Vraag hieronder een sleutel aan en test en sla deze vervolgens op om verbinding te maken.",
+    "description": "User-facing provider setup introduction",
     "_machine_translated": true,
-    "_source_hash": "d8f6685775cf04bc"
+    "_source_hash": "0686f89d96f514a5"
   },
   "setup.terms": {
     "message": "De persoonlijke abonnementen van Finnhub zijn bedoeld voor toegestaan persoonlijk gebruik. Zakelijk gebruik en het delen van gegevens of afgeleide resultaten met derden vereisen goedkeuring van Finnhub. Raadpleeg de voorwaarden van de provider, ook voordat u koersen naar een externe agent stuurt.",
@@ -282,16 +282,16 @@
     "_source_hash": "d5d486955acdd4c8"
   },
   "settings.refresh_hint": {
-    "message": "Minimaal 60 seconden; standaard 300. Op huidige Kage-hosts wordt het ophalen gepauzeerd als het venster verborgen is. Er zijn maximaal 40 verzoeken per minuut gereserveerd op dit apparaat; providerlimieten omvatten ook uw andere apps.",
-    "description": "Request budget and hidden behavior",
+    "message": "Minimaal {min} seconden; standaard {default}. Bij huidige Kage-hosts wordt het ophalen gepauzeerd als het venster verborgen is. Op dit apparaat zijn maximaal {budget} verzoeken per minuut gereserveerd; de limieten van de provider gelden ook voor uw andere apps.",
+    "description": "Request budget and hidden behavior; preserve {min}, {default}, {budget}",
     "_machine_translated": true,
-    "_source_hash": "86c3403cda44db0e"
+    "_source_hash": "835954ceb7299192"
   },
   "settings.refresh_error": {
-    "message": "Het vernieuwingsinterval moet tussen 60 en 3600 seconden liggen.",
-    "description": "Invalid interval",
+    "message": "Het vernieuwingsinterval moet tussen {min} en {max} seconden liggen.",
+    "description": "Invalid interval; preserve {min}, {max}",
     "_machine_translated": true,
-    "_source_hash": "c93b2dfa0a61d9f4"
+    "_source_hash": "45f891673cb1e039"
   },
   "tool.quote": {
     "message": "Haal Amerikaanse aandelenkoersen op bij Finnhub voor persoonlijk gebruik. Retourneert bron, tijdstempel van de laatste transactie, actualiteit van de cache en fouten per symbool. Vereist de gratis sleutel van de gebruiker; niet herdistribueren zonder goedkeuring van de provider.",
@@ -300,10 +300,10 @@
     "_source_hash": "9aa8d167f9bf2f94"
   },
   "tool.symbols": {
-    "message": "Maximaal 10 Amerikaanse symbolen, bijvoorbeeld [\"AAPL\", \"MSFT\", \"BRK.B\"].",
-    "description": "Quote tool parameter description",
+    "message": "Maximaal {max} Amerikaanse symbolen, bijvoorbeeld [\"AAPL\", \"MSFT\", \"BRK.B\"].",
+    "description": "Quote tool parameter description; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "5d5d1c443bb02531"
+    "_source_hash": "753c9fd4564636f3"
   },
   "tool.history": {
     "message": "Haal lokaal verzamelde Finnhub-koersen op die op dit apparaat zijn waargenomen voor 1d, 1w of 1m. Geen netwerkverzoeken. Onvolledige, schaarse steekproeven, geen historische candles; een lege lijst betekent dat er niets is verzameld.",
@@ -334,5 +334,53 @@
     "description": "Unrecognized tool execution",
     "_machine_translated": true,
     "_source_hash": "2acdb85e54aa0ed1"
+  },
+  "error.timeout": {
+    "message": "Finnhub reageerde niet op tijd. Probeer het over een paar seconden opnieuw; opgeslagen gegevens worden getoond indien beschikbaar.",
+    "description": "Request timeout; short local pause, separate from offline backoff",
+    "_machine_translated": true,
+    "_source_hash": "23491b785f430a04"
+  },
+  "settings.agent_tools": {
+    "message": "Stocks-tools toestaan voor agents",
+    "description": "Optional agent tool access; disabled by default",
+    "_machine_translated": true,
+    "_source_hash": "feaafa8e946fc0b2"
+  },
+  "settings.agent_tools_hint": {
+    "message": "Agenttools kunnen Finnhub-koersen en afgeleide resultaten naar uw agentprovider sturen. Schakel dit alleen in als uw Finnhub-overeenkomst dit delen toestaat.",
+    "description": "Explain opt-in and external agent data flow",
+    "_machine_translated": true,
+    "_source_hash": "600e0e85ae5aca60"
+  },
+  "settings.delete_quotes": {
+    "message": "Opgeslagen koersen verwijderen",
+    "description": "Delete cached quotes and locally sampled history, retaining the key",
+    "_machine_translated": true,
+    "_source_hash": "c3ae84bf8010f20d"
+  },
+  "settings.quotes_deleted": {
+    "message": "Opgeslagen koersen en lokale metingen verwijderd.",
+    "description": "Cache deletion success",
+    "_machine_translated": true,
+    "_source_hash": "5c098db4acf64401"
+  },
+  "widget.setup": {
+    "message": "Typ stock en druk op Enter om de Stocks-instellingen te openen en koersen in te stellen.",
+    "description": "Compact first-run widget hint; keep stock as the launcher command",
+    "_machine_translated": true,
+    "_source_hash": "9c88d9cf89fa770f"
+  },
+  "widget.connection": {
+    "message": "Koersen vereisen aandacht. Typ stock en druk op Enter om de Stocks-instellingen te openen.",
+    "description": "Compact widget hint for authentication, saved-only or storage problems; keep stock as the launcher command",
+    "_machine_translated": true,
+    "_source_hash": "28d7c64fff255e29"
+  },
+  "tool.opt_in": {
+    "message": "Schakel Stocks-tools toestaan voor agents in via de Stocks-instellingen voordat u deze tool gebruikt. Controleer of uw Finnhub-overeenkomst het delen van gegevens met uw agentprovider toestaat.",
+    "description": "Actionable agent tool opt-in error",
+    "_machine_translated": true,
+    "_source_hash": "a00e5cc3750744f0"
   }
 }

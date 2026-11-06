@@ -9,43 +9,50 @@ export default class StocksSearchProvider {
     this.invoke = context.invoke;
     this.config = context.config || {};
     this.t = context.i18n?.t?.bind(context.i18n) || ((key) => key);
+    this.generation = 0;
   }
 
-  onConfigUpdate(config) { this.config = config || {}; }
+  onConfigUpdate(config) { this.config = config || {}; this.generation++; }
 
   // Hybrid content matcher: getKeywords would suppress "$AAPL".
   match(query) {
+    this.generation++;
     if (this.config.enabled === false) return [];
     const parsed = parseQuery(query);
     if (!parsed) return [];
     if (parsed.error) return [this.errorRow('', parsed.error)];
+    const symbols = parsed.symbols;
     return [{
       id: 'stocks:loading', type: 'stocks', icon: '📈', score: 90,
       label: this.t('result.loading'),
       description: this.t('result.help'),
-      data: { setup: true },
+      data: { pending: true, symbols, copy: parsed.copy },
     }];
   }
 
   async matchAsync(query) {
+    const generation = ++this.generation;
     if (this.config.enabled === false) return [];
     const parsed = parseQuery(query);
     if (!parsed) return [];
     if (parsed.error) return [this.errorRow('', parsed.error)];
+    await new Promise((resolve) => setTimeout(resolve, 380));
+    if (generation !== this.generation) return [];
     let symbols = parsed.symbols;
     if (!symbols.length) {
       try { symbols = parseSymbols(this.config.watchlist ?? DEFAULTS.watchlist); }
       catch (error) { return [this.errorRow('', error.code)]; }
     }
     const quotes = await this.client.getQuotes(symbols, this.config);
+    if (generation !== this.generation) return [];
     const results = [];
     for (const quote of quotes) {
       if (quote.error) {
         results.push(this.errorRow(quote.symbol, quote.error));
         continue;
       }
-      const history = await this.client.getHistory(quote.symbol, '1d');
-      const label = `${quote.symbol}${quote.name ? ` · ${quote.name}` : ''}  ${priceText(quote.price)}  ${signedText(quote.change)} (${signedText(quote.percent, { percent: true })})`;
+      const history = await this.client.getHistory(quote.symbol, '1d', quote);
+      const label = `${quote.symbol}${quote.name ? ` · ${quote.name}` : ''}  ${priceText(quote.price)}  ${signedText(quote.change, { price: quote.price })} (${signedText(quote.percent, { percent: true })})`;
       const row = {
         id: `stocks:${quote.symbol}`, type: 'stocks', icon: '📈', score: 95,
         label, description: quoteDescription(quote, this.t),
@@ -69,12 +76,24 @@ export default class StocksSearchProvider {
       id: `stocks:error:${symbol || code}`, type: 'stocks', icon: '📈', score: 90,
       label: symbol || this.t('manifest.name'),
       description: errorText(code, this.t),
-      data: { setup: true },
+      data: { setup: ['setup', 'auth', 'cache_only', 'storage'].includes(code), code, symbol },
     };
   }
 
   async execute(result) {
     if (result?.data?.setup) return { type: 'open_extension_settings' };
+    if (result?.data?.pending) {
+      const symbols = result.data.symbols || [];
+      if (!symbols.length) return { type: 'open_extension_settings' };
+      if (result.data.copy) {
+        const [quote] = await this.client.getQuotes([symbols[0]], this.config);
+        return quote?.error ? this.execute(this.errorRow(quote.symbol, quote.error))
+          : { type: 'copy', value: copyText(quote) };
+      }
+      try { await this.invoke('open_url', { url: chartUrl(symbols[0]) }); }
+      catch { return null; }
+      return { type: 'custom', data: {} };
+    }
     const quote = result?.data?.quote;
     if (!quote) return null;
     if (result.data.copy) return { type: 'copy', value: copyText(quote) };

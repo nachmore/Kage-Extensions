@@ -1,6 +1,6 @@
-import { MAX_SYMBOLS } from './defaults.js';
-
-const FOREIGN_SUFFIX = /\.(?:L|TO|V|DE|PA|AS|SW|HK|JP|AU|AX|PL|UK|NS|BO|KS|TW)$/;
+// Keep this module a leaf for the host's single shared-module rewrite pass.
+const MAX_SYMBOLS = 10;
+const FOREIGN_SUFFIX = /\.(?:[A-Z]{2,}|L|F|T|V)$/;
 const NAMES = Object.freeze({
   AAPL: 'Apple Inc.',
   MSFT: 'Microsoft Corporation',
@@ -30,8 +30,26 @@ export function parseSymbols(input, { allowEmpty = false } = {}) {
     ? input
     : typeof input === 'string' ? input.trim().split(/[\s,]+/).filter(Boolean) : [];
   if (!parts.length && !allowEmpty) throw new StockError('invalid_symbols');
-  if (parts.length > MAX_SYMBOLS) throw new StockError('too_many');
-  return [...new Set(parts.map(normalizeSymbol))];
+  const symbols = [...new Set(parts.map(normalizeSymbol))];
+  if (symbols.length > MAX_SYMBOLS) throw new StockError('too_many');
+  return symbols;
+}
+
+export function symbolEntries(input) {
+  const parts = Array.isArray(input) ? input
+    : typeof input === 'string' ? input.trim().split(/[\s,]+/).filter(Boolean) : [];
+  if (!parts.length) throw new StockError('invalid_symbols');
+  const entries = new Map();
+  for (const part of parts) {
+    let entry;
+    try { entry = { symbol: normalizeSymbol(part) }; }
+    catch (error) {
+      entry = { symbol: String(part ?? '').trim().replace(/^\$/, '').toUpperCase(), error: error.code };
+    }
+    entries.set(entry.symbol, entry);
+  }
+  if (entries.size > MAX_SYMBOLS) throw new StockError('too_many');
+  return [...entries.values()];
 }
 
 export function parseQuery(query) {
@@ -39,11 +57,21 @@ export function parseQuery(query) {
   const text = query.trim();
   const match = /^stock(?:\s+(copy)\b)?(?:\s+(.*))?$/i.exec(text);
   if (!match && !text.startsWith('$')) return null;
+  const input = match ? match[2] || '' : text;
+  const parts = input.split(/[\s,]+/).filter(Boolean);
+  if (!match && (!parts.length || !parts.every((p) => /^\$[A-Za-z0-9][A-Za-z0-9.-]{0,17}$/.test(p)))) return null;
+  if (match && (input.includes('?') || /^(?:market|split|options|prices)\b/i.test(input))) return null;
+  if (match && parts.filter((part) => {
+    try { normalizeSymbol(part); return false; }
+    catch (error) { return error.code === 'invalid_symbols'; }
+  }).length > 3) return null;
+  if (!parts.length) return { symbols: [], copy: !!match?.[1] };
   try {
-    const input = match ? match[2] || '' : text;
-    return { symbols: parseSymbols(input, { allowEmpty: true }), copy: !!match?.[1] };
+    const entries = symbolEntries(parts);
+    if (!match && entries.some((entry) => entry.error === 'invalid_symbols')) return null;
+    return { symbols: entries.map((entry) => entry.symbol), copy: !!match?.[1] };
   } catch (error) {
-    return { symbols: [], error: error.code };
+    return match ? { symbols: [], error: error.code } : null;
   }
 }
 

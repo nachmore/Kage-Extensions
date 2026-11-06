@@ -1,21 +1,34 @@
+import { MAX_SYMBOLS } from './defaults.js';
+
 export function escapeHtml(value) {
   return String(value ?? '').replace(/[&<>"']/g, (c) => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
   })[c]);
 }
 
-export function priceText(value) {
-  return Number.isFinite(value) ? value.toFixed(Math.abs(value) < 1 ? 4 : 2) : '—';
+function precision(value) { return Math.abs(value) < 1 ? 4 : 2; }
+
+export function priceText(value, { locale, invariant = false } = {}) {
+  if (!Number.isFinite(value)) return '—';
+  const digits = precision(value);
+  const rounded = Number(value.toFixed(digits)) || 0;
+  return invariant ? rounded.toFixed(digits) : new Intl.NumberFormat(locale, {
+    minimumFractionDigits: digits, maximumFractionDigits: digits,
+  }).format(rounded);
 }
 
-export function signedText(value, { percent = false } = {}) {
+export function signedText(value, { percent = false, price = value, locale, invariant = false } = {}) {
   if (!Number.isFinite(value)) return '—';
-  const text = percent ? value.toFixed(2).replace(/\.?0+$/, '') : priceText(value);
-  return `${value > 0 ? '+' : ''}${text}${percent ? '%' : ''}`;
+  const digits = percent ? 2 : precision(price);
+  const rounded = Number(value.toFixed(digits)) || 0;
+  const fixed = rounded.toFixed(digits);
+  const text = invariant ? (percent ? fixed.replace(/\.?0+$/, '') : fixed)
+    : new Intl.NumberFormat(locale, { minimumFractionDigits: percent ? 0 : digits, maximumFractionDigits: digits }).format(rounded);
+  return `${rounded > 0 ? '+' : ''}${text}${percent ? '%' : ''}`;
 }
 
 export function copyText(quote) {
-  return `${quote.symbol} ${priceText(quote.price)} ${signedText(quote.percent, { percent: true })}`;
+  return `${quote.symbol} ${priceText(quote.price, { invariant: true })} ${signedText(quote.percent, { percent: true, invariant: true })}`;
 }
 
 export function direction(quote) {
@@ -24,7 +37,7 @@ export function direction(quote) {
 
 export function timestampText(value) {
   if (!Number.isFinite(value)) return '—';
-  const date = new Date(value * 1000);
+  const date = new Date(Math.floor(value) * 1000);
   return Number.isFinite(date.getTime()) ? date.toISOString().replace('T', ' ').replace('.000Z', ' UTC') : '—';
 }
 
@@ -45,9 +58,9 @@ export function errorText(code, t) {
   const known = new Set([
     'setup', 'auth', 'unknown', 'unsupported', 'invalid_symbols', 'too_many',
     'rate_limit', 'offline', 'unavailable', 'busy', 'cache_only', 'storage',
-    'invalid_key', 'invalid_range',
+    'invalid_key', 'invalid_range', 'timeout',
   ]);
-  return t(`error.${known.has(code) ? code : 'unavailable'}`);
+  return t(`error.${known.has(code) ? code : 'unavailable'}`, { max: MAX_SYMBOLS });
 }
 
 export function sparkline(samples, label) {

@@ -79,9 +79,9 @@
   },
   "error.auth": {
     "message": "Finnhub 拒絕了此金鑰。請開啟「股票」設定以測試替代金鑰。",
-    "description": "Authentication or plan error, no raw provider response",
+    "description": "Authentication error; never include the raw provider response",
     "_machine_translated": true,
-    "_source_hash": "ecc147e2c9741ce7"
+    "_source_hash": "eca735a4f5fb0bce"
   },
   "error.unknown": {
     "message": "找不到此代號的報價。請檢查美股代號，包括任何股票類別後綴。",
@@ -102,10 +102,10 @@
     "_source_hash": "5cd17969829278c5"
   },
   "error.too_many": {
-    "message": "每次查詢或每個自選清單最多使用 10 個代號。",
-    "description": "Bounded request batch",
+    "message": "每次查詢或每個觀察清單最多只能使用 {max} 個代號。",
+    "description": "Bounded request batch; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "e8f0028cd32f8c7b"
+    "_source_hash": "22531ab77bc6c225"
   },
   "error.rate_limit": {
     "message": "已達請求上限。若有已儲存的資料將會顯示；暫停一段時間後將恢復請求。",
@@ -114,10 +114,10 @@
     "_source_hash": "7d553dee0c6fe94a"
   },
   "error.offline": {
-    "message": "無法連線至 Finnhub。若有已儲存的資料將會顯示。",
-    "description": "Offline or network timeout",
+    "message": "無法連線至 Finnhub。如有已儲存的資料，將會顯示該資料。",
+    "description": "Offline or network failure",
     "_machine_translated": true,
-    "_source_hash": "e74f5fe32dc5f429"
+    "_source_hash": "536dacabe5ed1015"
   },
   "error.unavailable": {
     "message": "Finnhub 目前無法使用。若有已儲存的資料將會顯示。",
@@ -132,10 +132,10 @@
     "_source_hash": "b6ed5bc4b975b5a0"
   },
   "error.cache_only": {
-    "message": "僅顯示已儲存的報價；即時請求已暫停。",
+    "message": "僅顯示已儲存的報價，即時請求已暫停。請開啟「股票」設定，選擇 Finnhub 並連結金鑰。",
     "description": "User selected offline provider mode",
     "_machine_translated": true,
-    "_source_hash": "ceee09611e30c87c"
+    "_source_hash": "69f4b08853704dde"
   },
   "error.storage": {
     "message": "報價儲存空間無法使用。在能夠追蹤請求上限之前，請求將會暫停。",
@@ -186,10 +186,10 @@
     "_source_hash": "f429d58cbb1c5f8b"
   },
   "setup.intro": {
-    "message": "目前無法使用免金鑰的 Stooq 下載。請使用您自己的免費 Finnhub 金鑰取得美股報價；股票擴充功能絕不提供共用金鑰。",
-    "description": "Explain the authorized fallback to key setup",
+    "message": "使用您自己的免費 Finnhub 金鑰取得美股報價。請在下方取得金鑰，然後測試並儲存以完成連線。",
+    "description": "User-facing provider setup introduction",
     "_machine_translated": true,
-    "_source_hash": "d8f6685775cf04bc"
+    "_source_hash": "0686f89d96f514a5"
   },
   "setup.terms": {
     "message": "Finnhub 的個人方案僅供符合資格的個人使用。商業用途，或與第三方分享資料或衍生結果，皆須取得 Finnhub 核准。請查閱提供者的條款，包括將報價傳送給遠端代理程式之前。",
@@ -282,16 +282,16 @@
     "_source_hash": "d5d486955acdd4c8"
   },
   "settings.refresh_hint": {
-    "message": "最短 60 秒；預設 300 秒。在目前的 Kage 主機上，視窗隱藏時會暫停輪詢。此裝置整體最多保留每分鐘 40 次請求；提供者的限制也會計入您的其他應用程式。",
-    "description": "Request budget and hidden behavior",
+    "message": "最少 {min} 秒；預設為 {default} 秒。在目前的 Kage 主機上，隱藏視窗時會暫停輪詢。此裝置上每分鐘最多保留 {budget} 次請求；供應商的限制也會計入您的其他應用程式。",
+    "description": "Request budget and hidden behavior; preserve {min}, {default}, {budget}",
     "_machine_translated": true,
-    "_source_hash": "86c3403cda44db0e"
+    "_source_hash": "835954ceb7299192"
   },
   "settings.refresh_error": {
-    "message": "重新整理間隔必須介於 60 到 3600 秒之間。",
-    "description": "Invalid interval",
+    "message": "重新整理間隔必須介於 {min} 到 {max} 秒之間。",
+    "description": "Invalid interval; preserve {min}, {max}",
     "_machine_translated": true,
-    "_source_hash": "c93b2dfa0a61d9f4"
+    "_source_hash": "45f891673cb1e039"
   },
   "tool.quote": {
     "message": "從 Finnhub 取得美股報價，僅供個人使用。傳回來源、最後成交時間戳記、快取新鮮度及各代號的錯誤。需要使用者的免費金鑰；未經提供者核准請勿轉發。",
@@ -300,10 +300,10 @@
     "_source_hash": "9aa8d167f9bf2f94"
   },
   "tool.symbols": {
-    "message": "最多 10 個美股代號，例如 [\"AAPL\", \"MSFT\", \"BRK.B\"]。",
-    "description": "Quote tool parameter description",
+    "message": "最多 {max} 個美股代號，例如 [\"AAPL\", \"MSFT\", \"BRK.B\"]。",
+    "description": "Quote tool parameter description; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "5d5d1c443bb02531"
+    "_source_hash": "753c9fd4564636f3"
   },
   "tool.history": {
     "message": "取得此裝置在本機取樣觀察到的 Finnhub 報價，範圍為 1d、1w 或 1m。不會發出任何網路請求。資料為不完整的稀疏樣本，並非歷史 K 線；清單為空表示尚未收集到任何資料。",
@@ -334,5 +334,53 @@
     "description": "Unrecognized tool execution",
     "_machine_translated": true,
     "_source_hash": "2acdb85e54aa0ed1"
+  },
+  "error.timeout": {
+    "message": "Finnhub 回應時間過長。請在幾秒後再試一次；如有已儲存的資料，將會顯示該資料。",
+    "description": "Request timeout; short local pause, separate from offline backoff",
+    "_machine_translated": true,
+    "_source_hash": "23491b785f430a04"
+  },
+  "settings.agent_tools": {
+    "message": "允許代理程式使用「股票」工具",
+    "description": "Optional agent tool access; disabled by default",
+    "_machine_translated": true,
+    "_source_hash": "feaafa8e946fc0b2"
+  },
+  "settings.agent_tools_hint": {
+    "message": "代理程式工具可能會將 Finnhub 報價及衍生結果傳送給您的代理程式供應商。請僅在您的 Finnhub 協議允許此類分享時才啟用。",
+    "description": "Explain opt-in and external agent data flow",
+    "_machine_translated": true,
+    "_source_hash": "600e0e85ae5aca60"
+  },
+  "settings.delete_quotes": {
+    "message": "刪除已儲存的報價",
+    "description": "Delete cached quotes and locally sampled history, retaining the key",
+    "_machine_translated": true,
+    "_source_hash": "c3ae84bf8010f20d"
+  },
+  "settings.quotes_deleted": {
+    "message": "已刪除已儲存的報價與本機樣本。",
+    "description": "Cache deletion success",
+    "_machine_translated": true,
+    "_source_hash": "5c098db4acf64401"
+  },
+  "widget.setup": {
+    "message": "輸入 stock 並按下 Enter，即可開啟「股票」設定並設定報價。",
+    "description": "Compact first-run widget hint; keep stock as the launcher command",
+    "_machine_translated": true,
+    "_source_hash": "9c88d9cf89fa770f"
+  },
+  "widget.connection": {
+    "message": "報價需要處理。輸入 stock 並按下 Enter，即可開啟「股票」設定。",
+    "description": "Compact widget hint for authentication, saved-only or storage problems; keep stock as the launcher command",
+    "_machine_translated": true,
+    "_source_hash": "28d7c64fff255e29"
+  },
+  "tool.opt_in": {
+    "message": "使用此工具前，請先在「股票」設定中啟用「允許代理程式使用『股票』工具」。請確認您的 Finnhub 協議允許與您的代理程式供應商分享資料。",
+    "description": "Actionable agent tool opt-in error",
+    "_machine_translated": true,
+    "_source_hash": "a00e5cc3750744f0"
   }
 }
