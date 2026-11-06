@@ -360,10 +360,8 @@
     "_source_hash": "c3ae84bf8010f20d"
   },
   "settings.quotes_deleted": {
-    "message": "{count} mentett árfolyamrekord és a hozzájuk tartozó helyi minták törölve. Más ablakok vagy folyamatban lévő frissítések további rekordokat menthetnek.",
-    "description": "Accurate count of records deleted; preserve {count}; concurrent windows may retain or save records",
-    "_machine_translated": true,
-    "_source_hash": "06d62290314fd122"
+    "message": "{deleted, plural, one {# mentett árfolyamrekord és a hozzá tartozó helyi minták törölve. Más ablakok vagy folyamatban lévő frissítések további rekordokat menthetnek.} other {# mentett árfolyamrekord és a hozzájuk tartozó helyi minták törölve. Más ablakok vagy folyamatban lévő frissítések további rekordokat menthetnek.}}{failed, plural, =0 {} one { # rekordot nem sikerült törölni. Próbálja újra.} other { # rekordot nem sikerült törölni. Próbálja újra.}}",
+    "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
   },
   "widget.setup": {
     "message": "Írja be a stock parancsot, és nyomja meg az Entert a Stocks beállításainak megnyitásához és az árfolyamok beállításához.",

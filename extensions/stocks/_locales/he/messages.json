@@ -360,10 +360,8 @@
     "_source_hash": "c3ae84bf8010f20d"
   },
   "settings.quotes_deleted": {
-    "message": "נמחקו {count} רשומות שמורות של ציטוטי מחירים והדגימות המקומיות שלהן. חלונות אחרים או רענונים פעילים עשויים לשמור רשומות נוספות.",
-    "description": "Accurate count of records deleted; preserve {count}; concurrent windows may retain or save records",
-    "_machine_translated": true,
-    "_source_hash": "06d62290314fd122"
+    "message": "{deleted, plural, one {נמחקה רשומה שמורה אחת של ציטוט מחיר והדגימות המקומיות שלה. חלונות אחרים או רענונים פעילים עשויים לשמור רשומות נוספות.} two {נמחקו שתי רשומות שמורות של ציטוטי מחירים והדגימות המקומיות שלהן. חלונות אחרים או רענונים פעילים עשויים לשמור רשומות נוספות.} other {נמחקו # רשומות שמורות של ציטוטי מחירים והדגימות המקומיות שלהן. חלונות אחרים או רענונים פעילים עשויים לשמור רשומות נוספות.}}{failed, plural, =0 {} one { לא ניתן היה למחוק רשומה אחת. נסו שוב.} two { לא ניתן היה למחוק שתי רשומות. נסו שוב.} other { לא ניתן היה למחוק # רשומות. נסו שוב.}}",
+    "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
   },
   "widget.setup": {
     "message": "הקלידו stock והקישו Enter כדי לפתוח את הגדרות המניות ולהגדיר ציטוטים.",

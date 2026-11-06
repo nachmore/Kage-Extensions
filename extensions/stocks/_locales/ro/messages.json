@@ -360,10 +360,8 @@
     "_source_hash": "c3ae84bf8010f20d"
   },
   "settings.quotes_deleted": {
-    "message": "S-au șters înregistrările de cotații salvate ({count}) și eșantioanele lor locale. Alte ferestre sau reîmprospătări active pot salva altele noi.",
-    "description": "Accurate count of records deleted; preserve {count}; concurrent windows may retain or save records",
-    "_machine_translated": true,
-    "_source_hash": "06d62290314fd122"
+    "message": "{deleted, plural, one {S-a șters # înregistrare de cotație salvată și eșantioanele sale locale. Alte ferestre sau reîmprospătări active pot salva altele noi.} other {S-au șters înregistrările de cotații salvate (#) și eșantioanele lor locale. Alte ferestre sau reîmprospătări active pot salva altele noi.}}{failed, plural, =0 {} one { # înregistrare nu a putut fi ștearsă. Încercați din nou.} other { # înregistrări nu au putut fi șterse. Încercați din nou.}}",
+    "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
   },
   "widget.setup": {
     "message": "Tastați stock și apăsați Enter pentru a deschide setările Stocks și a configura cotațiile.",

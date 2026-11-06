@@ -360,10 +360,8 @@
     "_source_hash": "c3ae84bf8010f20d"
   },
   "settings.quotes_deleted": {
-    "message": "저장된 시세 기록 {count}개와 해당 로컬 샘플을 삭제했습니다. 다른 창이나 진행 중인 새로 고침에서 기록이 추가로 저장될 수 있습니다.",
-    "description": "Accurate count of records deleted; preserve {count}; concurrent windows may retain or save records",
-    "_machine_translated": true,
-    "_source_hash": "06d62290314fd122"
+    "message": "{deleted, plural, one {저장된 시세 기록 #개와 해당 로컬 샘플을 삭제했습니다. 다른 창이나 진행 중인 새로 고침에서 기록이 추가로 저장될 수 있습니다.} other {저장된 시세 기록 #개와 해당 로컬 샘플을 삭제했습니다. 다른 창이나 진행 중인 새로 고침에서 기록이 추가로 저장될 수 있습니다.}}{failed, plural, =0 {} one { #개의 기록을 삭제하지 못했습니다. 다시 시도하세요.} other { #개의 기록을 삭제하지 못했습니다. 다시 시도하세요.}}",
+    "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
   },
   "widget.setup": {
     "message": "stock을 입력하고 Enter 키를 눌러 주식 설정을 열고 시세를 설정하십시오.",

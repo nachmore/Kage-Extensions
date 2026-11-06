@@ -360,10 +360,8 @@
     "_source_hash": "c3ae84bf8010f20d"
   },
   "settings.quotes_deleted": {
-    "message": "{count} सहेजे गए कोट रिकॉर्ड और उनके स्थानीय सैंपल हटा दिए गए। अन्य विंडो या चल रहे रीफ़्रेश और रिकॉर्ड सहेज सकते हैं।",
-    "description": "Accurate count of records deleted; preserve {count}; concurrent windows may retain or save records",
-    "_machine_translated": true,
-    "_source_hash": "06d62290314fd122"
+    "message": "{deleted, plural, one {# सहेजा गया कोट रिकॉर्ड और उसके स्थानीय सैंपल हटा दिए गए। अन्य विंडो या चल रहे रीफ़्रेश और रिकॉर्ड सहेज सकते हैं।} other {# सहेजे गए कोट रिकॉर्ड और उनके स्थानीय सैंपल हटा दिए गए। अन्य विंडो या चल रहे रीफ़्रेश और रिकॉर्ड सहेज सकते हैं।}}{failed, plural, =0 {} one { # रिकॉर्ड हटाया नहीं जा सका। फिर से प्रयास करें।} other { # रिकॉर्ड हटाए नहीं जा सके। फिर से प्रयास करें।}}",
+    "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
   },
   "widget.setup": {
     "message": "Stocks सेटिंग्स खोलकर भाव सेट अप करने के लिए stock टाइप करें और Enter दबाएँ।",

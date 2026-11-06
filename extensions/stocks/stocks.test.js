@@ -388,7 +388,7 @@ describe('launcher, settings, tools and widget workflows', () => {
     for (const [key, value] of Object.entries(DEFAULTS)) {
       expect(controls.find((c) => c.id === key).default).toEqual(value);
     }
-    expect(settings.normalize({ ...DEFAULTS, __api_key: TEST_KEY, unknown: 1 })).toEqual({ values: DEFAULTS });
+    expect(settings.normalize({ ...DEFAULTS, __api_key: TEST_KEY, unknown: 1 })).toEqual({ values: { ...DEFAULTS, __api_key: '' } });
     expect(settings.validate(DEFAULTS)).toEqual({ valid: true });
     expect(settings.validate({ watchlist: 'VOD.L' }).valid).toBe(false);
     expect(settings.validate({ refresh_seconds: 5 }).valid).toBe(false);

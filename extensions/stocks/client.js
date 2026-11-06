@@ -94,6 +94,11 @@ const BACKOFF_CODES = new Set(['rate_limit', 'offline', 'unavailable', 'auth', '
 const clients = new WeakMap();
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+export function isFresh(cache, config = {}, now = Date.now()) {
+  // Refresh slightly early so a late previous tick cannot skip this boundary.
+  return Number.isFinite(cache?.fetchedAt) && now - cache.fetchedAt < refreshSeconds(config) * 1000 - 1500;
+}
+
 export function getClient(context) {
   let client = clients.get(context.invoke);
   if (!client) {
@@ -106,6 +111,7 @@ export function getClient(context) {
 export class StocksClient {
   constructor(context) {
     this.invoke = context.invoke;
+    this.t = context.i18n?.t?.bind(context.i18n) || ((key) => key);
     this.pending = new Map();
     this.tail = Promise.resolve();
     this.owner = globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random()}`;
@@ -396,7 +402,12 @@ export class StocksClient {
     const fetchedAt = Date.now();
     const entries = symbolEntries(input);
     // Migrate before an INDEX quote can overwrite quote_index on APFS/NTFS.
-    if (entries.some((entry) => entry.symbol === 'INDEX')) await this.maintainQuotes([]);
+    if (entries.some((entry) => entry.symbol === 'INDEX')) {
+      try { await this.maintainQuotes([]); }
+      catch (error) {
+        for (const entry of entries) if (entry.symbol === 'INDEX') entry.error = error.code || 'storage';
+      }
+    }
     const provider = config.provider ?? DEFAULTS.provider;
     let key, keyError;
     if (provider === 'finnhub') {
@@ -423,7 +434,7 @@ export class StocksClient {
         try { return Promise.resolve(this.fallback(cache, reason)); } catch (error) { return Promise.resolve(failure(error)); }
       }
       if (cache?.error) return Promise.resolve({ symbol, error: cache.error, retryAt: null });
-      if (cache && cache.fetchedAt > Date.now() - refreshSeconds(config) * 1000) {
+      if (cache && isFresh(cache, config, fetchedAt)) {
         return Promise.resolve({ ...cache.quote, fetchedAt: cache.fetchedAt, cached: true, stale: false, samples: cache.samples || [] });
       }
       if (this.pending.has(symbol)) return this.pending.get(symbol).catch(failure);
@@ -462,7 +473,7 @@ export class StocksClient {
     if (!symbols.length) return null;
     try {
       const caches = await Promise.all(symbols.map((symbol) => this.cached(symbol)));
-      if (caches.some((cache) => !cache || (!cache.error && cache.fetchedAt <= Date.now() - refreshSeconds(config) * 1000))) return null;
+      if (caches.some((cache) => !cache || (!cache.error && !isFresh(cache, config)))) return null;
       // getQuotes also applies key removal and saved-only status to cache hits.
       return await this.getQuotes(symbols, config);
     } catch { return null; }
@@ -486,16 +497,17 @@ export class StocksClient {
 
   async quoteIndex() {
     let index;
+    let legacy = false;
     try { index = await this.read(INDEX_KEY); }
     catch (error) { if (!error.unreadable) throw error; }
     if (!index) {
       // Today's host cannot enumerate extension data. Migrate the old index
       // if readable, otherwise start fresh and track subsequent lookups.
-      try { index = await this.read(LEGACY_INDEX_KEY); }
+      try { index = await this.read(LEGACY_INDEX_KEY); legacy = !!index && !index.quote; }
       catch (error) { if (!error.unreadable) throw error; }
     }
     return index?.symbols && typeof index.symbols === 'object' && !Array.isArray(index.symbols)
-      ? index : { symbols: {}, prunedAt: 0 };
+      ? { ...index, legacy } : { symbols: {}, prunedAt: 0, legacy };
   }
 
   async indexLease(work) {
@@ -510,7 +522,15 @@ export class StocksClient {
       const nonce = `${this.owner}:${Math.random()}`;
       await this.write('qidx_lock', { owner: this.owner, nonce, expiresAt: Date.now() + 5000 });
       if ((await this.read('qidx_lock'))?.nonce !== nonce) continue;
-      try { return await work(); }
+      let renewedAt = Date.now();
+      const renew = async (force = false) => {
+        if (!force && Date.now() - renewedAt < 1000) return;
+        if ((await this.read('qidx_lock'))?.nonce !== nonce) throw new StockError('busy', Date.now() + 250);
+        await this.write('qidx_lock', { owner: this.owner, nonce, expiresAt: Date.now() + 5000 });
+        if ((await this.read('qidx_lock'))?.nonce !== nonce) throw new StockError('busy', Date.now() + 250);
+        renewedAt = Date.now();
+      };
+      try { return await work(renew); }
       finally {
         try {
           if ((await this.read('qidx_lock'))?.nonce === nonce) await this.write('qidx_lock', { owner: this.owner, nonce, expiresAt: 0 });
@@ -521,28 +541,32 @@ export class StocksClient {
   }
 
   async maintainQuotes(symbols = [], { clear = false } = {}) {
-    return this.serial(() => this.indexLease(async () => {
+    return this.serial(() => this.indexLease(async (renew) => {
       const index = await this.quoteIndex();
       const tracked = { ...index.symbols };
       for (const symbol of symbols) tracked[normalizeSymbol(symbol)] = true;
       const due = clear || !index.prunedAt || index.prunedAt <= Date.now() - 86_400_000;
       const removed = new Set();
-      let deleted = 0;
+      let deleted = 0, failed = 0;
       if (due) {
         const keys = Object.keys(tracked);
         const start = clear ? 0 : Number(index.cursor) || 0;
         for (const symbol of (clear ? keys : keys.slice(start, start + PRUNE_LIMIT))) {
+          await renew();
           try { if (normalizeSymbol(symbol) !== symbol) throw new StockError('invalid_symbols'); }
           catch { delete tracked[symbol]; removed.add(symbol); continue; }
           let entry, unreadable = false;
           try { entry = await this.read(`quote_${symbol}`); }
-          catch (error) { if (!error.unreadable) continue; unreadable = true; }
+          catch (error) {
+            if (!error.unreadable) { if (clear) failed++; continue; }
+            unreadable = true;
+          }
           if (clear) {
             if (entry || unreadable) {
               try {
                 await this.dataInvoke('delete_extension_data', { key: `quote_${symbol}` });
                 deleted++;
-              } catch { continue; }
+              } catch { failed++; continue; }
             }
             delete tracked[symbol];
             removed.add(symbol);
@@ -558,20 +582,30 @@ export class StocksClient {
               && p.timestamp * 1000 > Date.now() - RETENTION_MS);
             if (samples.length !== entry.samples.length) {
               // Do not overwrite a fresh quote written during this pass.
-              const latest = await this.read(`quote_${symbol}`).catch(() => null);
-              if (latest?.fetchedAt === entry.fetchedAt) await this.write(`quote_${symbol}`, { ...latest, samples });
+              try {
+                const latest = await this.read(`quote_${symbol}`);
+                if (latest?.fetchedAt === entry.fetchedAt) await this.write(`quote_${symbol}`, { ...latest, samples });
+              } catch { /* A failed trim must not abort tracking other records. */ }
             }
           }
         }
       }
       // Merge symbols added by other windows while pruning was in progress.
+      await renew(true);
       const latest = await this.quoteIndex();
       const merged = { ...latest.symbols, ...tracked };
       for (const symbol of removed) delete merged[symbol];
       const cursor = due && !clear ? (Number(index.cursor) || 0) + PRUNE_LIMIT : 0;
       await this.write(INDEX_KEY, { symbols: merged, prunedAt: due ? Date.now() : index.prunedAt,
         cursor: cursor < Object.keys(index.symbols).length ? cursor : 0 });
-      return deleted;
+      if (index.legacy) {
+        // quote_INDEX may share this path on case-insensitive filesystems.
+        try {
+          const legacy = await this.read(LEGACY_INDEX_KEY);
+          if (legacy && !legacy.quote) await this.dataInvoke('delete_extension_data', { key: LEGACY_INDEX_KEY });
+        } catch { /* The new index is durable even if legacy cleanup fails. */ }
+      }
+      return { deleted, failed };
     }));
   }
 
@@ -601,7 +635,7 @@ export class StocksClient {
     return {
       symbol, range, source: 'Finnhub', kind: 'locally_sampled_quotes',
       complete: false, samples, fetchedAt: cache?.fetchedAt || null,
-      note: 'Only quotes observed on this device; gaps and closed-market periods are not filled. Not historical candles.',
+      note: this.t('quote.sampled'),
     };
   }
 }

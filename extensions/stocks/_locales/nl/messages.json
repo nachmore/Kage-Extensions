@@ -360,10 +360,8 @@
     "_source_hash": "c3ae84bf8010f20d"
   },
   "settings.quotes_deleted": {
-    "message": "{count} opgeslagen koersrecords en de bijbehorende lokale samples verwijderd. Andere vensters of actieve vernieuwingen kunnen er meer opslaan.",
-    "description": "Accurate count of records deleted; preserve {count}; concurrent windows may retain or save records",
-    "_machine_translated": true,
-    "_source_hash": "06d62290314fd122"
+    "message": "{deleted, plural, one {# opgeslagen koersrecord en de bijbehorende lokale samples verwijderd. Andere vensters of actieve vernieuwingen kunnen er meer opslaan.} other {# opgeslagen koersrecords en de bijbehorende lokale samples verwijderd. Andere vensters of actieve vernieuwingen kunnen er meer opslaan.}}{failed, plural, =0 {} one { # record kon niet worden verwijderd. Probeer opnieuw.} other { # records konden niet worden verwijderd. Probeer opnieuw.}}",
+    "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
   },
   "widget.setup": {
     "message": "Typ stock en druk op Enter om de Stocks-instellingen te openen en koersen in te stellen.",

@@ -360,10 +360,8 @@
     "_source_hash": "c3ae84bf8010f20d"
   },
   "settings.quotes_deleted": {
-    "message": "Raderade {count} sparade kursposter och deras lokala mätpunkter. Andra fönster eller pågående uppdateringar kan spara fler.",
-    "description": "Accurate count of records deleted; preserve {count}; concurrent windows may retain or save records",
-    "_machine_translated": true,
-    "_source_hash": "06d62290314fd122"
+    "message": "{deleted, plural, one {Raderade # sparad kurspost och dess lokala mätpunkter. Andra fönster eller pågående uppdateringar kan spara fler.} other {Raderade # sparade kursposter och deras lokala mätpunkter. Andra fönster eller pågående uppdateringar kan spara fler.}}{failed, plural, =0 {} one { # kurspost kunde inte raderas. Försök igen.} other { # kursposter kunde inte raderas. Försök igen.}}",
+    "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
   },
   "widget.setup": {
     "message": "Skriv stock och tryck på Enter för att öppna inställningarna för Stocks och konfigurera kurser.",

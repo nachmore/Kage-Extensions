@@ -155,16 +155,24 @@ the Finnhub setup/source links and `www.tradingview.com` charts.
 
 Search accepts ticker lists on both paths, rejecting malformed tokens,
 question/exclamation/colon punctuation and multi-word prose with stopwords.
+The `stock` path also rejects bare words of six or more letters and common
+single-word prompts such as `price`, `news`, and `now`. Use `$NOW` or
+`stock copy NOW` for NOW; `stock up` still selects the real UP ticker.
 Prompts such as `$PATH is not set` and `stock price of nvda` stay with the
 agent. Exact cache hits return immediately. Other lookups wait for a 600 ms
-pause or a trailing space/comma; pauses longer than 600 ms can still request
-typed prefixes. A generation counter suppresses superseded results.
+pause, including after a trailing space/comma; pauses longer than 600 ms
+can still request typed prefixes. A generation counter suppresses superseded results.
 Pending Enter opens a valid chart (or fetches before copying), using the
 watchlist for bare `stock`/`stock copy`. Missing keys open settings.
-Non-setup errors open valid charts or preserve the input with the host's
-`replace_input` action.
+Bare `stock` also opens settings when a quote reports an authentication,
+saved-only, or storage problem. Unknown symbols and failed copy commands
+preserve the input with the host's `replace_input` action.
 Widgets poll at the minimum interval, use request-start cache timestamps,
-and re-check configured freshness so interval changes work without remounting.
+and re-check configured freshness with 1.5 seconds of slack so small tick
+jitter cannot skip a refresh. Intervals round to the nearest minute, within
+the configured limits, so widget polling follows the selected cadence.
+On hosts without feature detection, normalization explicitly blanks scratch
+credential fields before generic Save writes the controls to regular config.
 Display numbers and times use the user's language and local timezone;
 clipboard text and tool timestamps remain invariant.
 

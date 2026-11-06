@@ -30,7 +30,7 @@ export function signedText(value, { percent = false, price = value, locale, inva
 }
 
 export function copyText(quote) {
-  return `${quote.symbol} ${priceText(quote.price, { invariant: true })} ${signedText(quote.percent, { percent: true, invariant: true })}`;
+  return `${quote.symbol} ${priceText(quote.price, { invariant: true })}${Number.isFinite(quote.percent) ? ` ${signedText(quote.percent, { percent: true, invariant: true })}` : ''}`;
 }
 
 export function direction(quote) {

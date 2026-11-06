@@ -360,10 +360,8 @@
     "_source_hash": "c3ae84bf8010f20d"
   },
   "settings.quotes_deleted": {
-    "message": "Se eliminaron {count} registros de cotizaciones guardados y sus muestras locales. Otras ventanas o actualizaciones en curso pueden guardar más.",
-    "description": "Accurate count of records deleted; preserve {count}; concurrent windows may retain or save records",
-    "_machine_translated": true,
-    "_source_hash": "06d62290314fd122"
+    "message": "{deleted, plural, one {Se eliminó # registro de cotización guardado y sus muestras locales. Otras ventanas o actualizaciones en curso pueden guardar más.} other {Se eliminaron # registros de cotizaciones guardados y sus muestras locales. Otras ventanas o actualizaciones en curso pueden guardar más.}}{failed, plural, =0 {} one { No se pudo eliminar # registro. Inténtalo de nuevo.} other { No se pudieron eliminar # registros. Inténtalo de nuevo.}}",
+    "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
   },
   "widget.setup": {
     "message": "Escriba stock y pulse Intro para abrir los ajustes de Stocks y configurar las cotizaciones.",

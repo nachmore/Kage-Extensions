@@ -360,10 +360,8 @@
     "_source_hash": "c3ae84bf8010f20d"
   },
   "settings.quotes_deleted": {
-    "message": "保存済みの株価レコード {count} 件と、そのローカルサンプルを削除しました。他のウィンドウや実行中の更新によって、新たに保存される場合があります。",
-    "description": "Accurate count of records deleted; preserve {count}; concurrent windows may retain or save records",
-    "_machine_translated": true,
-    "_source_hash": "06d62290314fd122"
+    "message": "{deleted, plural, one {保存済みの株価レコード # 件と、そのローカルサンプルを削除しました。 他のウィンドウや実行中の更新によって、新たに保存される場合があります。} other {保存済みの株価レコード # 件と、そのローカルサンプルを削除しました。他のウィンドウや実行中の更新によって、新たに保存される場合があります。}}{failed, plural, =0 {} one { # 件のレコードを削除できませんでした。もう一度お試しください。} other { # 件のレコードを削除できませんでした。もう一度お試しください。}}",
+    "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
   },
   "widget.setup": {
     "message": "stock と入力して Enter キーを押すと、Stocks の設定が開き、株価を設定できます。",

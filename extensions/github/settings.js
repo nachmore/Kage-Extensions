@@ -10,6 +10,7 @@ export default class GitHubSettingsProvider {
         init(context);
         this.invoke = context.invoke;
         this.config = context.config || {};
+        this.hostFeatures = context.hostFeatures;
         this._ctx = context;
         this.t = context.i18n?.t?.bind(context.i18n) || ((k) => k);
     }
@@ -52,9 +53,13 @@ export default class GitHubSettingsProvider {
         };
     }
 
-    normalize(values) {
-        const { __token_input, ...rest } = values;
-        return { values: { ...rest, trigger: (rest.trigger || DEFAULTS.trigger).trim().toLowerCase() } };
+    normalize(values = {}) {
+        const clean = {};
+        for (const [key, value] of Object.entries(values)) {
+            if (!key.startsWith('__')) clean[key] = value;
+            else if (!this.hostFeatures) clean[key] = '';
+        }
+        return { values: { ...clean, trigger: (clean.trigger || DEFAULTS.trigger).trim().toLowerCase() } };
     }
 
     async runAction(action, values) {

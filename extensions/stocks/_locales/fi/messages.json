@@ -360,10 +360,8 @@
     "_source_hash": "c3ae84bf8010f20d"
   },
   "settings.quotes_deleted": {
-    "message": "Poistettu tallennettuja noteeraustietueita ja niiden paikallisia näytteitä: {count}. Muut ikkunat tai käynnissä olevat päivitykset voivat tallentaa lisää.",
-    "description": "Accurate count of records deleted; preserve {count}; concurrent windows may retain or save records",
-    "_machine_translated": true,
-    "_source_hash": "06d62290314fd122"
+    "message": "{deleted, plural, one {Poistettu # tallennettu noteeraustietue ja sen paikalliset näytteet. Muut ikkunat tai käynnissä olevat päivitykset voivat tallentaa lisää.} other {Poistettu tallennettuja noteeraustietueita ja niiden paikallisia näytteitä: #. Muut ikkunat tai käynnissä olevat päivitykset voivat tallentaa lisää.}}{failed, plural, =0 {} one { # tietuetta ei voitu poistaa. Yritä uudelleen.} other { # tietuetta ei voitu poistaa. Yritä uudelleen.}}",
+    "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
   },
   "widget.setup": {
     "message": "Kirjoita stock ja paina Enter avataksesi Osakkeet-asetukset ja määrittääksesi kurssit.",

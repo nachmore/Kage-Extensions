@@ -360,10 +360,8 @@
     "_source_hash": "c3ae84bf8010f20d"
   },
   "settings.quotes_deleted": {
-    "message": "Record di quotazioni salvati eliminati insieme ai relativi campioni locali: {count}. Altre finestre o aggiornamenti in corso potrebbero salvarne altri.",
-    "description": "Accurate count of records deleted; preserve {count}; concurrent windows may retain or save records",
-    "_machine_translated": true,
-    "_source_hash": "06d62290314fd122"
+    "message": "{deleted, plural, one {Eliminato # record di quotazione salvato insieme ai relativi campioni locali. Altre finestre o aggiornamenti in corso potrebbero salvarne altri.} other {Record di quotazioni salvati eliminati insieme ai relativi campioni locali: #. Altre finestre o aggiornamenti in corso potrebbero salvarne altri.}}{failed, plural, =0 {} one { Impossibile eliminare # record. Riprova.} other { Impossibile eliminare # record. Riprova.}}",
+    "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
   },
   "widget.setup": {
     "message": "Digita stock e premi Invio per aprire le impostazioni di Stocks e configurare le quotazioni.",

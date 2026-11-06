@@ -126,9 +126,14 @@ describe('review regressions: launcher and UI', () => {
     expect(await search.execute(search.match('stock')[0])).toMatchObject({ type: 'custom' });
   });
 
-  it.each(['unknown', 'invalid_symbols', 'too_many', 'rate_limit', 'offline', 'busy', 'unsupported', 'timeout'])('does not route %s errors to settings', async (code) => {
+  it.each(['too_many', 'rate_limit', 'offline', 'busy', 'unsupported', 'timeout'])('does not route %s errors to settings', async (code) => {
     const search = init(Search, host());
     expect(await search.execute(search.errorRow('AAPL', code))).toMatchObject({ type: 'custom' });
+  });
+  it.each(['unknown', 'invalid_symbols'])('keeps the input for %s errors', async (code) => {
+    const search = init(Search, host());
+    search.match('stock AAPLL');
+    expect(await search.execute(search.errorRow('AAPLL', code))).toEqual({ type: 'replace_input', value: 'stock AAPLL' });
   });
   it.each(['setup', 'auth'])('routes actionable %s errors to settings', async (code) => {
     const search = init(Search, host());

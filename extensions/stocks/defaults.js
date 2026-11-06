@@ -19,6 +19,6 @@ export const MAX_PER_MINUTE = 40;
 export function refreshSeconds(config = {}) {
   const n = Number(config.refresh_seconds ?? DEFAULTS.refresh_seconds);
   return Number.isFinite(n)
-    ? Math.min(MAX_REFRESH_SECONDS, Math.max(MIN_REFRESH_SECONDS, n))
+    ? Math.min(MAX_REFRESH_SECONDS, Math.max(MIN_REFRESH_SECONDS, Math.round(n / MIN_REFRESH_SECONDS) * MIN_REFRESH_SECONDS))
     : DEFAULTS.refresh_seconds;
 }

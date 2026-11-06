@@ -23,7 +23,7 @@ export default class StocksSearchProvider {
     if (this.config.enabled === false) return [];
     const parsed = parseQuery(query);
     if (!parsed) return [];
-    if (parsed.error) return [this.errorRow('', parsed.error)];
+    if (parsed.error) return [this.errorRow('', parsed.error, parsed.copy)];
     const symbols = parsed.symbols;
     return [{
       id: 'stocks:loading', type: 'stocks', icon: '📈', score: 90,
@@ -39,11 +39,11 @@ export default class StocksSearchProvider {
     if (this.config.enabled === false) return [];
     const parsed = parseQuery(query);
     if (!parsed) return [];
-    if (parsed.error) return [this.errorRow('', parsed.error)];
+    if (parsed.error) return [this.errorRow('', parsed.error, parsed.copy)];
     let symbols = parsed.symbols;
     if (!symbols.length) {
       try { symbols = parseSymbols(this.config.watchlist ?? DEFAULTS.watchlist); }
-      catch (error) { return [this.errorRow('', error.code)]; }
+      catch (error) { return [this.errorRow('', error.code, parsed.copy)]; }
     }
     const cacheRevision = this.configRevision;
     let quotes = await this.client.exactCache(symbols, this.config);
@@ -52,14 +52,14 @@ export default class StocksSearchProvider {
       return this.config.enabled === false ? [this.disabledRow()] : this.matchAsync(query);
     }
     if (!quotes) {
-      if (!/[\s,]$/.test(query)) await new Promise((resolve) => setTimeout(resolve, 600));
+      await new Promise((resolve) => setTimeout(resolve, 600));
       if (generation !== this.generation) return [];
       if (this.config.enabled === false) return [this.disabledRow()];
       // Config broadcasts do not supersede the query. Complete its loading
       // row using the latest settings instead of leaving the placeholder.
       if (!parsed.symbols.length) {
         try { symbols = parseSymbols(this.config.watchlist ?? DEFAULTS.watchlist); }
-        catch (error) { return [this.errorRow('', error.code)]; }
+        catch (error) { return [this.errorRow('', error.code, parsed.copy)]; }
       }
       const revision = this.configRevision;
       quotes = await this.client.getQuotes(symbols, this.config);
@@ -71,7 +71,7 @@ export default class StocksSearchProvider {
     const results = [];
     for (const quote of quotes) {
       if (quote.error) {
-        results.push(this.errorRow(quote.symbol, quote.error));
+        results.push(this.errorRow(quote.symbol, quote.error, parsed.copy));
         continue;
       }
       const history = await this.client.getHistory(quote.symbol, '1d', quote);
@@ -79,7 +79,7 @@ export default class StocksSearchProvider {
       const row = {
         id: `stocks:${quote.symbol}`, type: 'stocks', icon: '📈', score: 95,
         label, description: quoteDescription(quote, this.t, this.locale),
-        data: { quote, samples: history.samples, copy: parsed.copy },
+        data: { quote, samples: history.samples, copy: parsed.copy, query },
       };
       results.push(row);
       // The host ignores return actions from onResultAction. A separate
@@ -88,18 +88,18 @@ export default class StocksSearchProvider {
         id: `stocks:copy:${quote.symbol}`, type: 'stocks', icon: '📋', score: 80,
         label: this.t('result.copy', { text: copyText(quote) }),
         description: quoteDescription(quote, this.t, this.locale),
-        data: { quote, copy: true },
+        data: { quote, copy: true, query },
       });
     }
     return results;
   }
 
-  errorRow(symbol, code) {
+  errorRow(symbol, code, copy = false, query = this.query) {
     return {
       id: `stocks:error:${symbol || code}`, type: 'stocks', icon: '📈', score: 90,
       label: symbol || this.t('manifest.name'),
       description: errorText(code, this.t),
-      data: { setup: ['setup', 'auth'].includes(code), code, symbol, query: this.query },
+      data: { setup: ['setup', 'auth'].includes(code), code, symbol, copy, query },
     };
   }
 
@@ -107,13 +107,26 @@ export default class StocksSearchProvider {
     this.generation++;
     if (this.config.enabled === false) return this.keepInput(result);
     if (result?.data?.setup) return { type: 'open_extension_settings' };
+    const bare = /^stock\s*$/i.test(result?.data?.query ?? this.query ?? '');
+    if (bare && ['setup', 'auth', 'cache_only', 'storage'].includes(result?.data?.code || result?.data?.quote?.reason)) {
+      return { type: 'open_extension_settings' };
+    }
     if (result?.data?.pending) {
       let symbols = result.data.symbols || [];
       if (!symbols.length) {
         try {
+          if ((this.config.provider ?? DEFAULTS.provider) === 'cache') return { type: 'open_extension_settings' };
           if (!(await this.client.key())) return { type: 'open_extension_settings' };
           symbols = parseSymbols(this.config.watchlist ?? DEFAULTS.watchlist, { allowEmpty: true });
-        } catch { return this.keepInput(result); }
+          if (bare) {
+            const quotes = await this.client.exactCache(symbols, this.config);
+            if (quotes?.some((quote) => ['setup', 'auth', 'cache_only', 'storage'].includes(quote.error || quote.reason))) {
+              return { type: 'open_extension_settings' };
+            }
+          }
+        } catch (error) {
+          return bare && error.code === 'storage' ? { type: 'open_extension_settings' } : this.keepInput(result);
+        }
       }
       symbols = symbols.filter((symbol) => {
         try { normalizeSymbol(symbol); return true; } catch { return false; }
@@ -121,7 +134,8 @@ export default class StocksSearchProvider {
       if (!symbols.length) return this.keepInput(result);
       if (result.data.copy) {
         const [quote] = await this.client.getQuotes([symbols[0]], this.config);
-        return quote?.error ? this.execute(this.errorRow(quote.symbol, quote.error))
+        if (!quote) return this.keepInput(result);
+        return quote.error ? this.execute(this.errorRow(quote.symbol, quote.error, true, result.data.query))
           : { type: 'copy', value: copyText(quote) };
       }
       try { await this.invoke('open_url', { url: chartUrl(symbols[0]) }); }
@@ -131,6 +145,7 @@ export default class StocksSearchProvider {
     const quote = result?.data?.quote;
     if (!quote) {
       try {
+        if (result?.data?.copy || ['unknown', 'invalid_symbols'].includes(result?.data?.code)) return this.keepInput(result);
         if (!result?.data?.symbol) return this.keepInput(result);
         await this.invoke('open_url', { url: chartUrl(result.data.symbol) });
         return { type: 'custom', data: {} };

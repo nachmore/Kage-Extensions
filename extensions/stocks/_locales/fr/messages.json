@@ -360,10 +360,8 @@
     "_source_hash": "c3ae84bf8010f20d"
   },
   "settings.quotes_deleted": {
-    "message": "Enregistrements de cotations sauvegardés supprimés, avec leurs échantillons locaux : {count}. D'autres fenêtres ou des actualisations en cours peuvent en enregistrer davantage.",
-    "description": "Accurate count of records deleted; preserve {count}; concurrent windows may retain or save records",
-    "_machine_translated": true,
-    "_source_hash": "06d62290314fd122"
+    "message": "{deleted, plural, one {# enregistrement de cotation sauvegardé et ses échantillons locaux supprimés. D'autres fenêtres ou des actualisations en cours peuvent en enregistrer davantage.} other {Enregistrements de cotations sauvegardés supprimés, avec leurs échantillons locaux : #. D'autres fenêtres ou des actualisations en cours peuvent en enregistrer davantage.}}{failed, plural, =0 {} one { # enregistrement n’a pas pu être supprimé. Réessayez.} other { # enregistrements n’ont pas pu être supprimés. Réessayez.}}",
+    "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
   },
   "widget.setup": {
     "message": "Saisissez stock et appuyez sur Entrée pour ouvrir les paramètres de Stocks et configurer les cours.",

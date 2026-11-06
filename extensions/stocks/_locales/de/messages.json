@@ -360,10 +360,8 @@
     "_source_hash": "c3ae84bf8010f20d"
   },
   "settings.quotes_deleted": {
-    "message": "{count} gespeicherte Kursdatensätze und ihre lokalen Stichproben wurden gelöscht. Andere Fenster oder laufende Aktualisierungen können weitere speichern.",
-    "description": "Accurate count of records deleted; preserve {count}; concurrent windows may retain or save records",
-    "_machine_translated": true,
-    "_source_hash": "06d62290314fd122"
+    "message": "{deleted, plural, one {# gespeicherter Kursdatensatz und seine lokalen Stichproben wurden gelöscht. Andere Fenster oder laufende Aktualisierungen können weitere speichern.} other {# gespeicherte Kursdatensätze und ihre lokalen Stichproben wurden gelöscht. Andere Fenster oder laufende Aktualisierungen können weitere speichern.}}{failed, plural, =0 {} one { # Datensatz konnte nicht gelöscht werden. Versuchen Sie es erneut.} other { # Datensätze konnten nicht gelöscht werden. Versuchen Sie es erneut.}}",
+    "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
   },
   "widget.setup": {
     "message": "Geben Sie stock ein und drücken Sie die Eingabetaste, um die Stocks-Einstellungen zu öffnen und Kurse einzurichten.",

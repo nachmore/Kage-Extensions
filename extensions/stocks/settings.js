@@ -1,4 +1,4 @@
-import { DEFAULTS, MIN_REFRESH_SECONDS, MAX_REFRESH_SECONDS, MAX_PER_MINUTE } from './defaults.js';
+import { DEFAULTS, MIN_REFRESH_SECONDS, MAX_REFRESH_SECONDS, MAX_PER_MINUTE, refreshSeconds } from './defaults.js';
 import { FREE_KEY_URL, getClient, validKey } from './client.js';
 import { MAX_SYMBOLS, parseSymbols } from './symbols.js';
 import { errorText, escapeHtml } from './format.js';
@@ -8,6 +8,7 @@ export default class StocksSettingsProvider {
     this.client = getClient(context);
     this.invoke = context.invoke;
     this.config = context.config || {};
+    this.hostFeatures = context.hostFeatures;
     this.t = context.i18n?.t?.bind(context.i18n) || ((key) => key);
     this.keyRevision = 0;
     this.scratchId = '__api_key';
@@ -89,7 +90,12 @@ export default class StocksSettingsProvider {
     if (Object.hasOwn(clean, 'watchlist')) {
       clean.watchlist = parseSymbols(clean.watchlist, { allowEmpty: true }).join(' ');
     }
-    if (Object.hasOwn(clean, 'refresh_seconds')) clean.refresh_seconds = Number(clean.refresh_seconds);
+    if (Object.hasOwn(clean, 'refresh_seconds')) clean.refresh_seconds = refreshSeconds(clean);
+    // Older hosts merge normalized fields into controls before saving. Return
+    // explicit blanks so their generic Save cannot persist typed credentials.
+    if (!this.hostFeatures) {
+      for (const key of Object.keys(values)) if (key.startsWith('__')) clean[key] = '';
+    }
     return { values: clean };
   }
 
@@ -105,8 +111,8 @@ export default class StocksSettingsProvider {
         return { status: this.t('setup.removed'), host: { type: 'refresh' } };
       }
       if (action === 'delete_quotes') {
-        const count = await this.client.deleteQuotes(parseSymbols(this.config.watchlist ?? DEFAULTS.watchlist, { allowEmpty: true }));
-        return { status: this.t('settings.quotes_deleted', { count }), host: { type: 'refresh' } };
+        const counts = await this.client.deleteQuotes(parseSymbols(this.config.watchlist ?? DEFAULTS.watchlist, { allowEmpty: true }));
+        return { status: this.t('settings.quotes_deleted', counts), host: { type: 'refresh' } };
       }
       if (action === 'test_key') {
         const key = String(values[this.scratchId] || '').trim() || await this.client.key();

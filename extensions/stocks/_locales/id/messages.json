@@ -360,10 +360,8 @@
     "_source_hash": "c3ae84bf8010f20d"
   },
   "settings.quotes_deleted": {
-    "message": "{count} catatan kuotasi tersimpan beserta sampel lokalnya telah dihapus. Jendela lain atau penyegaran yang sedang berjalan mungkin menyimpan catatan baru.",
-    "description": "Accurate count of records deleted; preserve {count}; concurrent windows may retain or save records",
-    "_machine_translated": true,
-    "_source_hash": "06d62290314fd122"
+    "message": "{deleted, plural, one {# catatan kuotasi tersimpan beserta sampel lokalnya telah dihapus. Jendela lain atau penyegaran yang sedang berjalan mungkin menyimpan catatan baru.} other {# catatan kuotasi tersimpan beserta sampel lokalnya telah dihapus. Jendela lain atau penyegaran yang sedang berjalan mungkin menyimpan catatan baru.}}{failed, plural, =0 {} one { # catatan tidak dapat dihapus. Coba lagi.} other { # catatan tidak dapat dihapus. Coba lagi.}}",
+    "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
   },
   "widget.setup": {
     "message": "Ketik stock dan tekan Enter untuk membuka pengaturan Stocks dan menyiapkan kuotasi.",

@@ -360,10 +360,8 @@
     "_source_hash": "c3ae84bf8010f20d"
   },
   "settings.quotes_deleted": {
-    "message": "ลบบันทึกราคาหุ้นที่บันทึกไว้ {count} รายการและตัวอย่างข้อมูลในเครื่องที่เกี่ยวข้องแล้ว หน้าต่างอื่นหรือการรีเฟรชที่กำลังทำงานอยู่อาจบันทึกข้อมูลเพิ่มเติมได้",
-    "description": "Accurate count of records deleted; preserve {count}; concurrent windows may retain or save records",
-    "_machine_translated": true,
-    "_source_hash": "06d62290314fd122"
+    "message": "{deleted, plural, one {ลบบันทึกราคาหุ้นที่บันทึกไว้ # รายการและตัวอย่างข้อมูลในเครื่องที่เกี่ยวข้องแล้ว หน้าต่างอื่นหรือการรีเฟรชที่กำลังทำงานอยู่อาจบันทึกข้อมูลเพิ่มเติมได้} other {ลบบันทึกราคาหุ้นที่บันทึกไว้ # รายการและตัวอย่างข้อมูลในเครื่องที่เกี่ยวข้องแล้ว หน้าต่างอื่นหรือการรีเฟรชที่กำลังทำงานอยู่อาจบันทึกข้อมูลเพิ่มเติมได้}}{failed, plural, =0 {} one { ไม่สามารถลบได้ # รายการ ลองอีกครั้ง} other { ไม่สามารถลบได้ # รายการ ลองอีกครั้ง}}",
+    "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
   },
   "widget.setup": {
     "message": "พิมพ์ stock แล้วกด Enter เพื่อเปิดการตั้งค่า Stocks และตั้งค่าการแสดงราคา",

@@ -360,10 +360,8 @@
     "_source_hash": "c3ae84bf8010f20d"
   },
   "settings.quotes_deleted": {
-    "message": "Usunięto zapisane rekordy notowań wraz z ich lokalnymi próbkami (liczba: {count}). Inne okna lub aktywne odświeżania mogą zapisać kolejne.",
-    "description": "Accurate count of records deleted; preserve {count}; concurrent windows may retain or save records",
-    "_machine_translated": true,
-    "_source_hash": "06d62290314fd122"
+    "message": "{deleted, plural, one {Usunięto # zapisany rekord notowania wraz z jego lokalnymi próbkami. Inne okna lub aktywne odświeżania mogą zapisać kolejne.} few {Usunięto # zapisane rekordy notowań wraz z ich lokalnymi próbkami. Inne okna lub aktywne odświeżania mogą zapisać kolejne.} many {Usunięto # zapisanych rekordów notowań wraz z ich lokalnymi próbkami. Inne okna lub aktywne odświeżania mogą zapisać kolejne.} other {Usunięto zapisane rekordy notowań wraz z ich lokalnymi próbkami (liczba: #). Inne okna lub aktywne odświeżania mogą zapisać kolejne.}}{failed, plural, =0 {} one { Nie udało się usunąć # rekordu. Spróbuj ponownie.} few { Nie udało się usunąć # rekordów. Spróbuj ponownie.} many { Nie udało się usunąć # rekordów. Spróbuj ponownie.} other { Nie udało się usunąć # rekordów. Spróbuj ponownie.}}",
+    "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
   },
   "widget.setup": {
     "message": "Wpisz stock i naciśnij Enter, aby otworzyć ustawienia Stocks i skonfigurować notowania.",

@@ -57,10 +57,17 @@ describe('GitHub settings token actions', () => {
         expect(fetch.mock.calls.at(-1)[1].headers.Authorization).toBeUndefined();
     });
 
-    it('strips scratch input while retaining existing config fields', async () => {
+    it.each([undefined, []])('keeps scratch secrets out of Save with hostFeatures %j', async (hostFeatures) => {
         const { default: Settings } = await import('./settings.js');
         const settings = new Settings();
-        expect(settings.normalize({ trigger: ' GH ', personal_token: 'legacy', __token_input: 'scratch' }))
-            .toEqual({ values: { trigger: 'gh', personal_token: 'legacy' } });
+        settings.initialize(makeContext({ hostFeatures }).context);
+        const values = { trigger: ' GH ', personal_token: 'legacy', __token_input: 'scratch', __future_secret: 'secret' };
+        const normalized = settings.normalize(values).values;
+        expect(normalized).toEqual({ trigger: 'gh', personal_token: 'legacy',
+            ...(!hostFeatures ? { __token_input: '', __future_secret: '' } : {}) });
+        // Older hosts patch the controls, then serialize them on generic Save.
+        const persisted = hostFeatures ? normalized : { ...values, ...normalized };
+        expect(JSON.stringify(persisted)).not.toContain('scratch');
+        expect(JSON.stringify(persisted)).not.toContain('\"secret\"');
     });
 });

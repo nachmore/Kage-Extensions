@@ -1,6 +1,7 @@
 // Keep this module a leaf for the host's single shared-module rewrite pass.
 export const MAX_SYMBOLS = 10;
 const STOPWORDS = new Set('of for on up vs the a to in my is and or with from about price prices picks rom comp buy why how what should can please explain today news'.split(' '));
+const PROSE_WORDS = new Set('price prices news tips ideas picks market today now help'.split(' '));
 const FOREIGN_SUFFIX = /\.(?:[A-Z]{2,}|L|F|T|V)$/;
 const NAMES = Object.freeze({
   AAPL: 'Apple Inc.',
@@ -45,7 +46,7 @@ export function symbolEntries(input) {
     let entry;
     try { entry = { symbol: normalizeSymbol(part) }; }
     catch (error) {
-      entry = { symbol: String(part ?? '').trim().replace(/^\$/, '').toUpperCase(), error: error.code };
+      entry = { symbol: String(part ?? '').trim().replace(/^\$+/, '').toUpperCase(), error: error.code };
     }
     entries.set(entry.symbol, entry);
   }
@@ -61,6 +62,10 @@ export function parseQuery(query) {
   const input = match ? match[2] || '' : text;
   const parts = input.split(/[\s,]+/).filter(Boolean);
   if (!match && (!parts.length || !parts.every((p) => /^\$[A-Za-z0-9][A-Za-z0-9.-]{0,17}$/.test(p)))) return null;
+  if (match && parts.some((part) => /^[a-z]{6,}$/i.test(part))) return null;
+  // Explicit copy intent/cashtags disambiguate NOW; ordinary "stock now"
+  // belongs to prose. Short tickers such as A, ON and UP remain available.
+  if (match && parts.length === 1 && PROSE_WORDS.has(parts[0].toLowerCase()) && !match[1]) return null;
   if (match && (/[?!:]/.test(input) || /^(?:market|split|options|prices)\b/i.test(input))) return null;
   if (match && parts.some((part) => {
     try { normalizeSymbol(part); return false; }
@@ -73,7 +78,7 @@ export function parseQuery(query) {
     if (!match && entries.some((entry) => entry.error === 'invalid_symbols')) return null;
     return { symbols: entries.map((entry) => entry.symbol), copy: !!match?.[1] };
   } catch (error) {
-    return match ? { symbols: [], error: error.code } : null;
+    return match ? { symbols: [], error: error.code, copy: !!match[1] } : null;
   }
 }
 

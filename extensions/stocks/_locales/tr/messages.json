@@ -360,10 +360,8 @@
     "_source_hash": "c3ae84bf8010f20d"
   },
   "settings.quotes_deleted": {
-    "message": "Kaydedilmiş {count} fiyat teklifi kaydı ve bunlara ait yerel örnekler silindi. Diğer pencereler veya devam eden yenilemeler yeni kayıtlar ekleyebilir.",
-    "description": "Accurate count of records deleted; preserve {count}; concurrent windows may retain or save records",
-    "_machine_translated": true,
-    "_source_hash": "06d62290314fd122"
+    "message": "{deleted, plural, one {Kaydedilmiş # fiyat teklifi kaydı ve buna ait yerel örnekler silindi. Diğer pencereler veya devam eden yenilemeler yeni kayıtlar ekleyebilir.} other {Kaydedilmiş # fiyat teklifi kaydı ve bunlara ait yerel örnekler silindi. Diğer pencereler veya devam eden yenilemeler yeni kayıtlar ekleyebilir.}}{failed, plural, =0 {} one { # kayıt silinemedi. Tekrar deneyin.} other { # kayıt silinemedi. Tekrar deneyin.}}",
+    "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
   },
   "widget.setup": {
     "message": "Stocks ayarlarını açıp fiyatları kurmak için stock yazın ve Enter'a basın.",

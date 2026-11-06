@@ -41,10 +41,12 @@ export default class StocksToolProvider {
           ...(retryAt ? { retryAt: iso(retryAt) } : {}),
         }));
         const connection = quotes.findIndex((quote) => ['setup', 'auth', 'cache_only', 'storage'].includes(quote.error));
+        const details = result.filter((quote) => quote.error)
+          .map((quote) => `${quote.symbol ? `${quote.symbol}: ` : ''}${quote.message}`).join(' ');
         if (connection >= 0 && quotes.every((quote) => quote.error)) {
-          return { error: result[connection].message, result };
+          return { error: details, result };
         }
-        if (quotes.every((quote) => quote.error) && !(await this.client.key())) return { error: errorText('setup', this.t), result };
+        if (quotes.every((quote) => quote.error) && !(await this.client.key())) return { error: `${errorText('setup', this.t)} ${details}`, result };
         return { result };
       }
       if (name === 'get_history') {

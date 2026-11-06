@@ -88,11 +88,14 @@ describe('round 3: prompt intent and settling', () => {
     expect(requested).toEqual(perKey < 600 ? ['AAPL'] : ['A', 'AA', 'AAP', 'AAPL']);
   });
 
-  it.each(['stock aapl ', 'stock aapl,'])('a delimiter completes a token immediately: %s', async (query) => {
+  it.each(['stock aapl ', 'stock aapl,', 'stock '])('settles a cold lookup even after a delimiter: %s', async (query) => {
     const search = init(Search, host());
-    const rows = await search.matchAsync(query);
+    const pending = search.matchAsync(query);
+    await vi.advanceTimersByTimeAsync(599);
+    expect(fetch).not.toHaveBeenCalled();
+    const rows = await drive(pending, 1);
     expect(rows[0].data.quote.symbol).toBe('AAPL');
-    expect(Date.now()).toBe(NOW);
+    expect(Date.now()).toBe(NOW + 600);
   });
 
   it('serves an exact cache hit before any settle timer', async () => {
@@ -266,7 +269,7 @@ describe('round 3: index, pruning and deletion', () => {
     expect(h.store.has('quote_BAD')).toBe(false);
     expect(h.store.has('quote_OLD')).toBe(false);
     expect(JSON.parse(h.store.get('qidx'))).toMatchObject({ symbols: { AAPL: true }, prunedAt: NOW });
-    expect(await h.client.deleteQuotes([])).toBe(1);
+    expect(await h.client.deleteQuotes([])).toEqual({ deleted: 1, failed: 0 });
     expect(h.store.has('quote_AAPL')).toBe(false);
   });
 
@@ -275,7 +278,7 @@ describe('round 3: index, pruning and deletion', () => {
     await h.client.getQuotes(['MSFT']);
     await vi.advanceTimersByTimeAsync(100);
     expect(JSON.parse(h.store.get('qidx')).symbols.MSFT).toBe(true);
-    expect(await h.client.deleteQuotes([])).toBe(1);
+    expect(await h.client.deleteQuotes([])).toEqual({ deleted: 1, failed: 0 });
   });
 
   it('returns results before pruning and caps a pass at 20 records', async () => {
@@ -308,8 +311,9 @@ describe('round 3: index, pruning and deletion', () => {
       qidx: { symbols: { 'bad/path': true, MSFT: true, TORN: true, MISSING: true }, prunedAt: NOW },
     }, config: { watchlist: '' } });
     const settings = init(Settings, h);
+    settings.t = vi.fn(settings.t);
     const result = await settings.runAction('delete_quotes');
-    expect(result.status).toContain('Deleted 2 saved quote records');
+    expect(settings.t).toHaveBeenCalledWith('settings.quotes_deleted', { deleted: 2, failed: 0 });
     expect(result.status).toContain('Other windows or active refreshes');
     expect(h.store.has('quote_MSFT')).toBe(false);
     expect(h.store.has('quote_TORN')).toBe(false);
@@ -333,7 +337,7 @@ describe('round 3: index, pruning and deletion', () => {
     await vi.advanceTimersByTimeAsync(100);
     expect(JSON.parse(insensitive.get('qidx')).symbols).toMatchObject({ MSFT: true, INDEX: true });
     expect(JSON.parse(insensitive.get('quote_index')).quote.symbol).toBe('INDEX');
-    expect(await h.client.deleteQuotes([])).toBe(2);
+    expect(await h.client.deleteQuotes([])).toEqual({ deleted: 2, failed: 0 });
   });
 
   it('cached() excludes data beyond retention in saved-only mode', async () => {

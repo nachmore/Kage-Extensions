@@ -360,10 +360,8 @@
     "_source_hash": "c3ae84bf8010f20d"
   },
   "settings.quotes_deleted": {
-    "message": "已删除 {count} 条已保存的报价记录及其本地样本。其他窗口或正在进行的刷新可能会保存更多记录。",
-    "description": "Accurate count of records deleted; preserve {count}; concurrent windows may retain or save records",
-    "_machine_translated": true,
-    "_source_hash": "06d62290314fd122"
+    "message": "{deleted, plural, one {已删除 # 条已保存的报价记录及其本地样本。 其他窗口或正在进行的刷新可能会保存更多记录。} other {已删除 # 条已保存的报价记录及其本地样本。其他窗口或正在进行的刷新可能会保存更多记录。}}{failed, plural, =0 {} one { # 条记录无法删除。请重试。} other { # 条记录无法删除。请重试。}}",
+    "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
   },
   "widget.setup": {
     "message": "输入 stock 并按 Enter 键，打开股票设置并设置报价。",
