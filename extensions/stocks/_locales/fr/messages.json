@@ -1,0 +1,338 @@
+{
+  "_meta": {
+    "language": "fr",
+    "name": "Français",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Bourse",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "d6d4700604b64b88"
+  },
+  "manifest.description": {
+    "message": "En ligne · Cours américains et liste de suivi via Finnhub avec votre clé gratuite. Données différées en cache ; chaque cours affiche son horodatage.",
+    "description": "Store listing; Online and Data delayed communicate network dependency and freshness",
+    "_machine_translated": true,
+    "_source_hash": "6feb0a4240dfb80e"
+  },
+  "result.loading": {
+    "message": "Recherche des cours…",
+    "description": "Launcher placeholder while quotes load",
+    "_machine_translated": true,
+    "_source_hash": "a2b95adcfc6e29b7"
+  },
+  "result.help": {
+    "message": "Essayez $AAPL, stock msft ou stock aapl msft nvda. Entrée ouvre un graphique ; choisissez Copier ou utilisez stock copy AAPL pour copier un cours.",
+    "description": "Launcher syntax and actions",
+    "_machine_translated": true,
+    "_source_hash": "ca59813d90734a08"
+  },
+  "result.copy": {
+    "message": "Copier {text}",
+    "description": "Selectable clipboard action; preserve {text}",
+    "_machine_translated": true,
+    "_source_hash": "516993d8cc4732a3"
+  },
+  "quote.as_of": {
+    "message": "Au {time}",
+    "description": "Actual last trade timestamp, not request time; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "3dcdbc540a4593d1"
+  },
+  "quote.cached": {
+    "message": "En cache {time}",
+    "description": "Time the saved quote was fetched; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "76520879cd1583b5"
+  },
+  "quote.retry": {
+    "message": "Réessayer après {time}",
+    "description": "Rate limit backoff expiry; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "d305b2da13a783d0"
+  },
+  "quote.delayed": {
+    "message": "Données différées / marché peut-être fermé",
+    "description": "Quote is over 15 minutes old; do not imply verified exchange status",
+    "_machine_translated": true,
+    "_source_hash": "ece516a5d44ca6ba"
+  },
+  "quote.sampled": {
+    "message": "Cours Finnhub échantillonnés localement, avec des lacunes. Collectés pendant l’utilisation de Bourse ; il ne s’agit pas de données historiques en chandeliers.",
+    "description": "Sparkline accessible label and settings explanation",
+    "_machine_translated": true,
+    "_source_hash": "0eca89619bcb28b9"
+  },
+  "quote.source": {
+    "message": "Source : Finnhub",
+    "description": "Visible provider attribution",
+    "_machine_translated": true,
+    "_source_hash": "693535460d4db418"
+  },
+  "error.setup": {
+    "message": "Ouvrez les paramètres de Bourse, obtenez une clé Finnhub gratuite, puis cliquez sur Tester et enregistrer.",
+    "description": "No stored key",
+    "_machine_translated": true,
+    "_source_hash": "8adbf75fdf5bc595"
+  },
+  "error.auth": {
+    "message": "Finnhub a refusé la clé. Ouvrez les paramètres de Bourse pour tester une autre clé.",
+    "description": "Authentication or plan error, no raw provider response",
+    "_machine_translated": true,
+    "_source_hash": "ecc147e2c9741ce7"
+  },
+  "error.unknown": {
+    "message": "Aucun cours pour ce symbole. Vérifiez le ticker américain, y compris tout suffixe de catégorie d’actions.",
+    "description": "Unknown or zero-valued quote",
+    "_machine_translated": true,
+    "_source_hash": "3a30475366fb7002"
+  },
+  "error.unsupported": {
+    "message": "Ce fournisseur ne prend en charge que les tickers américains. Les suffixes de places boursières internationales nécessitent une autre offre de données.",
+    "description": "Unsupported provider or international symbol",
+    "_machine_translated": true,
+    "_source_hash": "1be0703c00de00dc"
+  },
+  "error.invalid_symbols": {
+    "message": "Saisissez des symboles boursiers séparés par des espaces ou des virgules, par exemple AAPL MSFT ou BRK.B.",
+    "description": "Symbol validation error",
+    "_machine_translated": true,
+    "_source_hash": "5cd17969829278c5"
+  },
+  "error.too_many": {
+    "message": "Utilisez au maximum 10 symboles par requête ou liste de suivi.",
+    "description": "Bounded request batch",
+    "_machine_translated": true,
+    "_source_hash": "e8f0028cd32f8c7b"
+  },
+  "error.rate_limit": {
+    "message": "Limite de requêtes atteinte. Affichage des données enregistrées si disponibles ; les requêtes reprendront après une pause.",
+    "description": "Rate limit backoff",
+    "_machine_translated": true,
+    "_source_hash": "7d553dee0c6fe94a"
+  },
+  "error.offline": {
+    "message": "Impossible de joindre Finnhub. Affichage des données enregistrées si disponibles.",
+    "description": "Offline or network timeout",
+    "_machine_translated": true,
+    "_source_hash": "e74f5fe32dc5f429"
+  },
+  "error.unavailable": {
+    "message": "Finnhub est indisponible. Affichage des données enregistrées si disponibles.",
+    "description": "Sanitized provider error",
+    "_machine_translated": true,
+    "_source_hash": "2dd30adcc5164ad4"
+  },
+  "error.busy": {
+    "message": "Une autre fenêtre Kage actualise les cours. Réessayez dans un instant.",
+    "description": "Cross-window request lock contention",
+    "_machine_translated": true,
+    "_source_hash": "b6ed5bc4b975b5a0"
+  },
+  "error.cache_only": {
+    "message": "Cours enregistrés uniquement ; les requêtes en direct sont suspendues.",
+    "description": "User selected offline provider mode",
+    "_machine_translated": true,
+    "_source_hash": "ceee09611e30c87c"
+  },
+  "error.storage": {
+    "message": "Le stockage des cours est indisponible. Les requêtes sont suspendues jusqu’à ce que leur limite puisse être suivie.",
+    "description": "Fail closed when rate budget cannot persist",
+    "_machine_translated": true,
+    "_source_hash": "4cbfbb2e9b0adc41"
+  },
+  "error.invalid_key": {
+    "message": "Collez une clé API Finnhub, puis cliquez sur Tester et enregistrer. Ne collez pas d’URL.",
+    "description": "Malformed or missing API key",
+    "_machine_translated": true,
+    "_source_hash": "b972e383a08a0ac1"
+  },
+  "error.invalid_range": {
+    "message": "Choisissez une période : 1d, 1w ou 1m.",
+    "description": "Agent history range validation",
+    "_machine_translated": true,
+    "_source_hash": "f4f4d83dc6129a6c"
+  },
+  "settings.description": {
+    "message": "Cotations boursières américaines, liste de suivi et historique local des cotations. En ligne · Source : Finnhub. Les valeurs enregistrées peuvent être différées.",
+    "description": "Settings summary",
+    "_machine_translated": true,
+    "_source_hash": "b91914b96330d6cb"
+  },
+  "settings.connection": {
+    "message": "Fournisseur de cotations et configuration",
+    "description": "Connection section heading",
+    "_machine_translated": true,
+    "_source_hash": "863fbc4ab994c2eb"
+  },
+  "settings.provider": {
+    "message": "Fournisseur",
+    "description": "Provider selector label",
+    "_machine_translated": true,
+    "_source_hash": "713fef775807424a"
+  },
+  "settings.finnhub": {
+    "message": "Finnhub · cotations américaines · clé personnelle gratuite",
+    "description": "Supported online provider option",
+    "_machine_translated": true,
+    "_source_hash": "e989961cfe6d267c"
+  },
+  "settings.cache": {
+    "message": "Cotations enregistrées uniquement · hors ligne",
+    "description": "Network paused provider option",
+    "_machine_translated": true,
+    "_source_hash": "f429d58cbb1c5f8b"
+  },
+  "setup.intro": {
+    "message": "Les téléchargements Stooq sans clé sont actuellement indisponibles. Utilisez votre propre clé Finnhub gratuite pour les cotations américaines ; Stocks ne fournit jamais de clé partagée.",
+    "description": "Explain the authorized fallback to key setup",
+    "_machine_translated": true,
+    "_source_hash": "d8f6685775cf04bc"
+  },
+  "setup.terms": {
+    "message": "Les offres personnelles de Finnhub sont réservées à un usage personnel éligible. Toute utilisation professionnelle et tout partage de données ou de résultats dérivés avec des tiers nécessitent l’accord de Finnhub. Consultez les conditions du fournisseur, notamment avant d’envoyer des cotations à un agent distant.",
+    "description": "Material provider use restrictions",
+    "_machine_translated": true,
+    "_source_hash": "9eb9716ed06ff746"
+  },
+  "setup.steps": {
+    "message": "1. Ouvrez Obtenir une clé gratuite et inscrivez-vous sur Finnhub. 2. Copiez votre clé API depuis son tableau de bord. 3. Collez-la ci-dessous et choisissez Tester et enregistrer. 4. Enregistrez votre liste de suivi et les paramètres du fournisseur.",
+    "description": "Guided setup steps",
+    "_machine_translated": true,
+    "_source_hash": "f0be788769ece36a"
+  },
+  "setup.saved": {
+    "message": "Une clé est enregistrée sur cet appareil. Laissez le champ vide pour la tester, ou collez une clé de remplacement. Les clés enregistrées ne sont jamais affichées ici.",
+    "description": "Connected setup state without secret disclosure",
+    "_machine_translated": true,
+    "_source_hash": "4fba007359b56f1d"
+  },
+  "setup.free_key": {
+    "message": "Obtenir une clé gratuite",
+    "description": "Open provider registration in system browser",
+    "_machine_translated": true,
+    "_source_hash": "42b307eaf0136997"
+  },
+  "setup.key": {
+    "message": "Clé API Finnhub",
+    "description": "Scratch field for secret",
+    "_machine_translated": true,
+    "_source_hash": "2e7e94ee1be4a2cf"
+  },
+  "setup.key_hint": {
+    "message": "Tester et enregistrer stocke la clé dans les données privées de l’extension, comme les identifiants Spotify. La saisir ici ne l’enregistre pas avec les paramètres habituels. Le champ de texte de cet hôte reste visible pendant la saisie.",
+    "description": "Storage and host input behavior",
+    "_machine_translated": true,
+    "_source_hash": "4c3122d9b4d5daad"
+  },
+  "setup.test": {
+    "message": "Tester et enregistrer la clé",
+    "description": "Probe quote endpoint and save only on success",
+    "_machine_translated": true,
+    "_source_hash": "bc2be6a1a4fb4210"
+  },
+  "setup.remove": {
+    "message": "Supprimer la clé enregistrée",
+    "description": "Delete provider credentials; retain cached quotes",
+    "_machine_translated": true,
+    "_source_hash": "469ba81c1b5aeb34"
+  },
+  "setup.removed": {
+    "message": "Clé supprimée. Les cotations enregistrées restent disponibles.",
+    "description": "Removal success",
+    "_machine_translated": true,
+    "_source_hash": "59cb7317745316bb"
+  },
+  "setup.success": {
+    "message": "Test de cotation Finnhub réussi ; clé enregistrée. Enregistrez les paramètres du fournisseur et de la liste de suivi pour terminer.",
+    "description": "Successful guided setup",
+    "_machine_translated": true,
+    "_source_hash": "96383792f28339c2"
+  },
+  "settings.watchlist_section": {
+    "message": "Liste de suivi et actualisation",
+    "description": "Display settings section",
+    "_machine_translated": true,
+    "_source_hash": "eeb14304489ebbaf"
+  },
+  "settings.watchlist": {
+    "message": "Liste de suivi",
+    "description": "Editable list label",
+    "_machine_translated": true,
+    "_source_hash": "4fa141d565f4d3cb"
+  },
+  "settings.watchlist_hint": {
+    "message": "Jusqu’à {max} symboles américains, séparés par des espaces ou des virgules. Une liste vide masque le widget.",
+    "description": "Watchlist validation; preserve {max}",
+    "_machine_translated": true,
+    "_source_hash": "18fd9ff917b78911"
+  },
+  "settings.show": {
+    "message": "Afficher la liste de suivi dans la fenêtre flottante",
+    "description": "Widget visibility toggle",
+    "_machine_translated": true,
+    "_source_hash": "acd01a47d682bca1"
+  },
+  "settings.refresh": {
+    "message": "Intervalle d’actualisation (secondes)",
+    "description": "Quote cache and widget refresh interval",
+    "_machine_translated": true,
+    "_source_hash": "d5d486955acdd4c8"
+  },
+  "settings.refresh_hint": {
+    "message": "Minimum 60 secondes ; 300 par défaut. Les interrogations sont suspendues lorsque la fenêtre est masquée sur les hôtes Kage actuels. Au maximum 40 requêtes par minute sont réservées sur cet appareil ; les limites du fournisseur incluent aussi vos autres applications.",
+    "description": "Request budget and hidden behavior",
+    "_machine_translated": true,
+    "_source_hash": "86c3403cda44db0e"
+  },
+  "settings.refresh_error": {
+    "message": "L’intervalle d’actualisation doit être compris entre 60 et 3600 secondes.",
+    "description": "Invalid interval",
+    "_machine_translated": true,
+    "_source_hash": "c93b2dfa0a61d9f4"
+  },
+  "tool.quote": {
+    "message": "Obtenir des cotations boursières américaines depuis Finnhub pour un usage personnel. Renvoie la source, l’horodatage de la dernière transaction, la fraîcheur du cache et les erreurs par symbole. Nécessite la clé gratuite de l’utilisateur ; ne pas redistribuer sans l’accord du fournisseur.",
+    "description": "Agent tool description",
+    "_machine_translated": true,
+    "_source_hash": "9aa8d167f9bf2f94"
+  },
+  "tool.symbols": {
+    "message": "Jusqu’à 10 symboles américains, par exemple [\"AAPL\", \"MSFT\", \"BRK.B\"].",
+    "description": "Quote tool parameter description",
+    "_machine_translated": true,
+    "_source_hash": "5d5d1c443bb02531"
+  },
+  "tool.history": {
+    "message": "Obtenir les cotations Finnhub échantillonnées localement sur cet appareil pour 1d, 1w ou 1m. Aucune requête réseau. Échantillons incomplets et épars, pas des chandeliers historiques ; une liste vide signifie qu’aucune donnée n’a été collectée.",
+    "description": "Agent tool scope must not imply full historical coverage",
+    "_machine_translated": true,
+    "_source_hash": "fcb4dd5f0bdcb792"
+  },
+  "tool.symbol": {
+    "message": "Un symbole boursier américain.",
+    "description": "History symbol parameter description",
+    "_machine_translated": true,
+    "_source_hash": "31f6b8214e118704"
+  },
+  "tool.range": {
+    "message": "1d, 1w ou 1m ; 1d par défaut.",
+    "description": "History range parameter description",
+    "_machine_translated": true,
+    "_source_hash": "992fdef4270c7170"
+  },
+  "tool.disabled": {
+    "message": "Stocks est désactivé.",
+    "description": "Host-disabled tool execution",
+    "_machine_translated": true,
+    "_source_hash": "9c2b3d9381a7a02c"
+  },
+  "tool.unknown": {
+    "message": "Outil Stocks inconnu.",
+    "description": "Unrecognized tool execution",
+    "_machine_translated": true,
+    "_source_hash": "2acdb85e54aa0ed1"
+  }
+}

@@ -1,0 +1,338 @@
+{
+  "_meta": {
+    "language": "fi",
+    "name": "Suomi",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Osakkeet",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "d6d4700604b64b88"
+  },
+  "manifest.description": {
+    "message": "Verkossa · Yhdysvaltain osakekurssit ja seurantalista Finnhubista ilmaisella avaimellasi. Välimuistissa olevat tiedot ovat viiveellä; jokaisessa kurssissa näkyy sen aikaleima.",
+    "description": "Store listing; Online and Data delayed communicate network dependency and freshness",
+    "_machine_translated": true,
+    "_source_hash": "6feb0a4240dfb80e"
+  },
+  "result.loading": {
+    "message": "Haetaan osakkeita…",
+    "description": "Launcher placeholder while quotes load",
+    "_machine_translated": true,
+    "_source_hash": "a2b95adcfc6e29b7"
+  },
+  "result.help": {
+    "message": "Kokeile $AAPL, stock msft tai stock aapl msft nvda. Enter avaa kaavion; valitse Kopioi tai kopioi kurssi komennolla stock copy AAPL.",
+    "description": "Launcher syntax and actions",
+    "_machine_translated": true,
+    "_source_hash": "ca59813d90734a08"
+  },
+  "result.copy": {
+    "message": "Kopioi {text}",
+    "description": "Selectable clipboard action; preserve {text}",
+    "_machine_translated": true,
+    "_source_hash": "516993d8cc4732a3"
+  },
+  "quote.as_of": {
+    "message": "Tilanne {time}",
+    "description": "Actual last trade timestamp, not request time; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "3dcdbc540a4593d1"
+  },
+  "quote.cached": {
+    "message": "Tallennettu {time}",
+    "description": "Time the saved quote was fetched; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "76520879cd1583b5"
+  },
+  "quote.retry": {
+    "message": "Yritä uudelleen {time} jälkeen",
+    "description": "Rate limit backoff expiry; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "d305b2da13a783d0"
+  },
+  "quote.delayed": {
+    "message": "Tiedot viiveellä / markkina voi olla suljettu",
+    "description": "Quote is over 15 minutes old; do not imply verified exchange status",
+    "_machine_translated": true,
+    "_source_hash": "ece516a5d44ca6ba"
+  },
+  "quote.sampled": {
+    "message": "Paikallisesti kerättyjä Finnhub-kursseja, joissa on aukkoja. Tietoja kerätään, kun Osakkeet-laajennusta käytetään; nämä eivät ole historiallisia kynttilätietoja.",
+    "description": "Sparkline accessible label and settings explanation",
+    "_machine_translated": true,
+    "_source_hash": "0eca89619bcb28b9"
+  },
+  "quote.source": {
+    "message": "Lähde: Finnhub",
+    "description": "Visible provider attribution",
+    "_machine_translated": true,
+    "_source_hash": "693535460d4db418"
+  },
+  "error.setup": {
+    "message": "Avaa Osakkeet-asetukset, hanki ilmainen Finnhub-avain ja valitse sitten Testaa ja tallenna.",
+    "description": "No stored key",
+    "_machine_translated": true,
+    "_source_hash": "8adbf75fdf5bc595"
+  },
+  "error.auth": {
+    "message": "Finnhub hylkäsi avaimen. Avaa Osakkeet-asetukset ja testaa uusi avain.",
+    "description": "Authentication or plan error, no raw provider response",
+    "_machine_translated": true,
+    "_source_hash": "ecc147e2c9741ce7"
+  },
+  "error.unknown": {
+    "message": "Tälle symbolille ei löytynyt kurssia. Tarkista Yhdysvaltain osaketunnus mahdollinen osakesarjan pääte mukaan lukien.",
+    "description": "Unknown or zero-valued quote",
+    "_machine_translated": true,
+    "_source_hash": "3a30475366fb7002"
+  },
+  "error.unsupported": {
+    "message": "Tämä palveluntarjoaja tukee vain Yhdysvaltain osaketunnuksia. Kansainvälisten pörssien päätteet vaativat toisen datasopimuksen.",
+    "description": "Unsupported provider or international symbol",
+    "_machine_translated": true,
+    "_source_hash": "1be0703c00de00dc"
+  },
+  "error.invalid_symbols": {
+    "message": "Anna osakesymbolit välilyönneillä tai pilkuilla eroteltuina, esimerkiksi AAPL MSFT tai BRK.B.",
+    "description": "Symbol validation error",
+    "_machine_translated": true,
+    "_source_hash": "5cd17969829278c5"
+  },
+  "error.too_many": {
+    "message": "Käytä enintään 10 symbolia hakua tai seurantalistaa kohden.",
+    "description": "Bounded request batch",
+    "_machine_translated": true,
+    "_source_hash": "e8f0028cd32f8c7b"
+  },
+  "error.rate_limit": {
+    "message": "Pyyntöraja saavutettu. Tallennetut tiedot näytetään, jos niitä on saatavilla; pyynnöt jatkuvat tauon jälkeen.",
+    "description": "Rate limit backoff",
+    "_machine_translated": true,
+    "_source_hash": "7d553dee0c6fe94a"
+  },
+  "error.offline": {
+    "message": "Finnhubiin ei saada yhteyttä. Tallennetut tiedot näytetään, jos niitä on saatavilla.",
+    "description": "Offline or network timeout",
+    "_machine_translated": true,
+    "_source_hash": "e74f5fe32dc5f429"
+  },
+  "error.unavailable": {
+    "message": "Finnhub ei ole käytettävissä. Tallennetut tiedot näytetään, jos niitä on saatavilla.",
+    "description": "Sanitized provider error",
+    "_machine_translated": true,
+    "_source_hash": "2dd30adcc5164ad4"
+  },
+  "error.busy": {
+    "message": "Toinen Kage-ikkuna päivittää kursseja. Yritä hetken kuluttua uudelleen.",
+    "description": "Cross-window request lock contention",
+    "_machine_translated": true,
+    "_source_hash": "b6ed5bc4b975b5a0"
+  },
+  "error.cache_only": {
+    "message": "Vain tallennetut kurssit; reaaliaikaiset pyynnöt on keskeytetty.",
+    "description": "User selected offline provider mode",
+    "_machine_translated": true,
+    "_source_hash": "ceee09611e30c87c"
+  },
+  "error.storage": {
+    "message": "Kurssien tallennustila ei ole käytettävissä. Pyynnöt on keskeytetty, kunnes niiden rajaa voidaan seurata.",
+    "description": "Fail closed when rate budget cannot persist",
+    "_machine_translated": true,
+    "_source_hash": "4cbfbb2e9b0adc41"
+  },
+  "error.invalid_key": {
+    "message": "Liitä Finnhub API -avain ja valitse sitten Testaa ja tallenna. Älä liitä URL-osoitetta.",
+    "description": "Malformed or missing API key",
+    "_machine_translated": true,
+    "_source_hash": "b972e383a08a0ac1"
+  },
+  "error.invalid_range": {
+    "message": "Valitse aikaväliksi 1d, 1w tai 1m.",
+    "description": "Agent history range validation",
+    "_machine_translated": true,
+    "_source_hash": "f4f4d83dc6129a6c"
+  },
+  "settings.description": {
+    "message": "Yhdysvaltain osakekurssit, seurantalista ja paikallinen kurssihistoria. Verkossa · Lähde: Finnhub. Tallennetut arvot voivat olla viiveellisiä.",
+    "description": "Settings summary",
+    "_machine_translated": true,
+    "_source_hash": "b91914b96330d6cb"
+  },
+  "settings.connection": {
+    "message": "Kurssipalvelu ja käyttöönotto",
+    "description": "Connection section heading",
+    "_machine_translated": true,
+    "_source_hash": "863fbc4ab994c2eb"
+  },
+  "settings.provider": {
+    "message": "Palveluntarjoaja",
+    "description": "Provider selector label",
+    "_machine_translated": true,
+    "_source_hash": "713fef775807424a"
+  },
+  "settings.finnhub": {
+    "message": "Finnhub · Yhdysvaltain kurssit · ilmainen henkilökohtainen avain",
+    "description": "Supported online provider option",
+    "_machine_translated": true,
+    "_source_hash": "e989961cfe6d267c"
+  },
+  "settings.cache": {
+    "message": "Vain tallennetut kurssit · offline-tila",
+    "description": "Network paused provider option",
+    "_machine_translated": true,
+    "_source_hash": "f429d58cbb1c5f8b"
+  },
+  "setup.intro": {
+    "message": "Avaimettomat Stooq-lataukset eivät ole tällä hetkellä käytettävissä. Käytä Yhdysvaltain kursseihin omaa ilmaista Finnhub-avaintasi; Stocks ei koskaan tarjoa jaettua avainta.",
+    "description": "Explain the authorized fallback to key setup",
+    "_machine_translated": true,
+    "_source_hash": "d8f6685775cf04bc"
+  },
+  "setup.terms": {
+    "message": "Finnhubin henkilökohtaiset paketit on tarkoitettu ehdot täyttävään henkilökohtaiseen käyttöön. Kaupallinen käyttö sekä tietojen tai niistä johdettujen tulosten jakaminen kolmansille osapuolille edellyttävät Finnhubin hyväksyntää. Tarkista palveluntarjoajan ehdot, myös ennen kuin lähetät kursseja etäagentille.",
+    "description": "Material provider use restrictions",
+    "_machine_translated": true,
+    "_source_hash": "9eb9716ed06ff746"
+  },
+  "setup.steps": {
+    "message": "1. Valitse Hanki ilmainen avain ja rekisteröidy Finnhubiin. 2. Kopioi API-avaimesi Finnhubin hallintapaneelista. 3. Liitä se alle ja valitse Testaa ja tallenna avain. 4. Tallenna seurantalistan ja palveluntarjoajan asetukset.",
+    "description": "Guided setup steps",
+    "_machine_translated": true,
+    "_source_hash": "f0be788769ece36a"
+  },
+  "setup.saved": {
+    "message": "Tälle laitteelle on tallennettu avain. Jätä kenttä tyhjäksi testataksesi sitä tai liitä tilalle uusi avain. Tallennettuja avaimia ei koskaan näytetä täällä.",
+    "description": "Connected setup state without secret disclosure",
+    "_machine_translated": true,
+    "_source_hash": "4fba007359b56f1d"
+  },
+  "setup.free_key": {
+    "message": "Hanki ilmainen avain",
+    "description": "Open provider registration in system browser",
+    "_machine_translated": true,
+    "_source_hash": "42b307eaf0136997"
+  },
+  "setup.key": {
+    "message": "Finnhub API -avain",
+    "description": "Scratch field for secret",
+    "_machine_translated": true,
+    "_source_hash": "2e7e94ee1be4a2cf"
+  },
+  "setup.key_hint": {
+    "message": "Testaa ja tallenna avain -toiminto tallentaa avaimen laajennuksen yksityisiin tietoihin, kuten Spotify-tunnukset. Pelkkä kirjoittaminen tähän ei tallenna sitä tavallisiin asetuksiin. Tämän isäntäsovelluksen tekstikenttä näkyy kirjoittaessasi.",
+    "description": "Storage and host input behavior",
+    "_machine_translated": true,
+    "_source_hash": "4c3122d9b4d5daad"
+  },
+  "setup.test": {
+    "message": "Testaa ja tallenna avain",
+    "description": "Probe quote endpoint and save only on success",
+    "_machine_translated": true,
+    "_source_hash": "bc2be6a1a4fb4210"
+  },
+  "setup.remove": {
+    "message": "Poista tallennettu avain",
+    "description": "Delete provider credentials; retain cached quotes",
+    "_machine_translated": true,
+    "_source_hash": "469ba81c1b5aeb34"
+  },
+  "setup.removed": {
+    "message": "Avain poistettu. Tallennetut kurssit ovat edelleen käytettävissä.",
+    "description": "Removal success",
+    "_machine_translated": true,
+    "_source_hash": "59cb7317745316bb"
+  },
+  "setup.success": {
+    "message": "Finnhub-kurssitesti onnistui; avain tallennettu. Viimeistele tallentamalla palveluntarjoajan ja seurantalistan asetukset.",
+    "description": "Successful guided setup",
+    "_machine_translated": true,
+    "_source_hash": "96383792f28339c2"
+  },
+  "settings.watchlist_section": {
+    "message": "Seurantalista ja päivitys",
+    "description": "Display settings section",
+    "_machine_translated": true,
+    "_source_hash": "eeb14304489ebbaf"
+  },
+  "settings.watchlist": {
+    "message": "Seurantalista",
+    "description": "Editable list label",
+    "_machine_translated": true,
+    "_source_hash": "4fa141d565f4d3cb"
+  },
+  "settings.watchlist_hint": {
+    "message": "Enintään {max} Yhdysvaltain osaketunnusta välilyönneillä tai pilkuilla erotettuina. Tyhjä lista piilottaa widgetin.",
+    "description": "Watchlist validation; preserve {max}",
+    "_machine_translated": true,
+    "_source_hash": "18fd9ff917b78911"
+  },
+  "settings.show": {
+    "message": "Näytä seurantalista kelluvassa ikkunassa",
+    "description": "Widget visibility toggle",
+    "_machine_translated": true,
+    "_source_hash": "acd01a47d682bca1"
+  },
+  "settings.refresh": {
+    "message": "Päivitysväli (sekuntia)",
+    "description": "Quote cache and widget refresh interval",
+    "_machine_translated": true,
+    "_source_hash": "d5d486955acdd4c8"
+  },
+  "settings.refresh_hint": {
+    "message": "Vähintään 60 sekuntia; oletus 300. Piilotetun ikkunan kyselyt keskeytetään nykyisissä Kage-isäntäsovelluksissa. Tällä laitteella varataan enintään 40 pyyntöä minuutissa; palveluntarjoajan rajoihin lasketaan myös muut sovelluksesi.",
+    "description": "Request budget and hidden behavior",
+    "_machine_translated": true,
+    "_source_hash": "86c3403cda44db0e"
+  },
+  "settings.refresh_error": {
+    "message": "Päivitysvälin on oltava 60–3600 sekuntia.",
+    "description": "Invalid interval",
+    "_machine_translated": true,
+    "_source_hash": "c93b2dfa0a61d9f4"
+  },
+  "tool.quote": {
+    "message": "Hae Yhdysvaltain osakekursseja Finnhubista henkilökohtaiseen käyttöön. Palauttaa lähteen, viimeisimmän kaupan aikaleiman, välimuistin tuoreuden ja osaketunnuskohtaiset virheet. Edellyttää käyttäjän ilmaista avainta; älä jaa tietoja edelleen ilman palveluntarjoajan hyväksyntää.",
+    "description": "Agent tool description",
+    "_machine_translated": true,
+    "_source_hash": "9aa8d167f9bf2f94"
+  },
+  "tool.symbols": {
+    "message": "Enintään 10 Yhdysvaltain osaketunnusta, esimerkiksi [\"AAPL\", \"MSFT\", \"BRK.B\"].",
+    "description": "Quote tool parameter description",
+    "_machine_translated": true,
+    "_source_hash": "5d5d1c443bb02531"
+  },
+  "tool.history": {
+    "message": "Hae tällä laitteella paikallisesti tallennetut Finnhub-kurssit ajalta 1d, 1w tai 1m. Ei verkkopyyntöjä. Näytteet ovat puutteellisia ja harvoja, eivätkä ne ole historiallisia kynttilöitä. Tyhjä luettelo tarkoittaa, ettei tietoja ole kerätty.",
+    "description": "Agent tool scope must not imply full historical coverage",
+    "_machine_translated": true,
+    "_source_hash": "fcb4dd5f0bdcb792"
+  },
+  "tool.symbol": {
+    "message": "Yhdysvaltalaisen osakkeen tunnus.",
+    "description": "History symbol parameter description",
+    "_machine_translated": true,
+    "_source_hash": "31f6b8214e118704"
+  },
+  "tool.range": {
+    "message": "1d, 1w tai 1m; oletus 1d.",
+    "description": "History range parameter description",
+    "_machine_translated": true,
+    "_source_hash": "992fdef4270c7170"
+  },
+  "tool.disabled": {
+    "message": "Stocks on poistettu käytöstä.",
+    "description": "Host-disabled tool execution",
+    "_machine_translated": true,
+    "_source_hash": "9c2b3d9381a7a02c"
+  },
+  "tool.unknown": {
+    "message": "Tuntematon Stocks-työkalu.",
+    "description": "Unrecognized tool execution",
+    "_machine_translated": true,
+    "_source_hash": "2acdb85e54aa0ed1"
+  }
+}

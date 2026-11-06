@@ -1,0 +1,338 @@
+{
+  "_meta": {
+    "language": "zh-CN",
+    "name": "简体中文",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "股票",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "d6d4700604b64b88"
+  },
+  "manifest.description": {
+    "message": "在线 · 使用您的免费密钥从 Finnhub 获取美股行情和自选股列表。缓存数据存在延迟；每条行情均显示其时间戳。",
+    "description": "Store listing; Online and Data delayed communicate network dependency and freshness",
+    "_machine_translated": true,
+    "_source_hash": "6feb0a4240dfb80e"
+  },
+  "result.loading": {
+    "message": "正在查询股票…",
+    "description": "Launcher placeholder while quotes load",
+    "_machine_translated": true,
+    "_source_hash": "a2b95adcfc6e29b7"
+  },
+  "result.help": {
+    "message": "试试 $AAPL、stock msft 或 stock aapl msft nvda。按 Enter 打开图表；选择“复制”或使用 stock copy AAPL 复制行情。",
+    "description": "Launcher syntax and actions",
+    "_machine_translated": true,
+    "_source_hash": "ca59813d90734a08"
+  },
+  "result.copy": {
+    "message": "复制 {text}",
+    "description": "Selectable clipboard action; preserve {text}",
+    "_machine_translated": true,
+    "_source_hash": "516993d8cc4732a3"
+  },
+  "quote.as_of": {
+    "message": "截至 {time}",
+    "description": "Actual last trade timestamp, not request time; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "3dcdbc540a4593d1"
+  },
+  "quote.cached": {
+    "message": "缓存于 {time}",
+    "description": "Time the saved quote was fetched; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "76520879cd1583b5"
+  },
+  "quote.retry": {
+    "message": "请在 {time} 后重试",
+    "description": "Rate limit backoff expiry; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "d305b2da13a783d0"
+  },
+  "quote.delayed": {
+    "message": "数据延迟 / 可能已休市",
+    "description": "Quote is over 15 minutes old; do not imply verified exchange status",
+    "_machine_translated": true,
+    "_source_hash": "ece516a5d44ca6ba"
+  },
+  "quote.sampled": {
+    "message": "在本地采样的 Finnhub 行情，存在间断。仅在使用“股票”时采集；这不是历史 K 线数据。",
+    "description": "Sparkline accessible label and settings explanation",
+    "_machine_translated": true,
+    "_source_hash": "0eca89619bcb28b9"
+  },
+  "quote.source": {
+    "message": "来源：Finnhub",
+    "description": "Visible provider attribution",
+    "_machine_translated": true,
+    "_source_hash": "693535460d4db418"
+  },
+  "error.setup": {
+    "message": "请打开“股票”设置，获取免费的 Finnhub 密钥，然后点击“测试并保存”。",
+    "description": "No stored key",
+    "_machine_translated": true,
+    "_source_hash": "8adbf75fdf5bc595"
+  },
+  "error.auth": {
+    "message": "Finnhub 拒绝了该密钥。请打开“股票”设置测试替换密钥。",
+    "description": "Authentication or plan error, no raw provider response",
+    "_machine_translated": true,
+    "_source_hash": "ecc147e2c9741ce7"
+  },
+  "error.unknown": {
+    "message": "未找到该代码的行情。请检查美股代码，包括任何股票类别后缀。",
+    "description": "Unknown or zero-valued quote",
+    "_machine_translated": true,
+    "_source_hash": "3a30475366fb7002"
+  },
+  "error.unsupported": {
+    "message": "此数据源仅支持美股代码。国际交易所后缀需要其他数据套餐。",
+    "description": "Unsupported provider or international symbol",
+    "_machine_translated": true,
+    "_source_hash": "1be0703c00de00dc"
+  },
+  "error.invalid_symbols": {
+    "message": "请输入以空格或逗号分隔的股票代码，例如 AAPL MSFT 或 BRK.B。",
+    "description": "Symbol validation error",
+    "_machine_translated": true,
+    "_source_hash": "5cd17969829278c5"
+  },
+  "error.too_many": {
+    "message": "每次查询或每个自选股列表最多使用 10 个代码。",
+    "description": "Bounded request batch",
+    "_machine_translated": true,
+    "_source_hash": "e8f0028cd32f8c7b"
+  },
+  "error.rate_limit": {
+    "message": "已达到请求上限。将在有可用数据时显示已保存的数据；暂停一段时间后将恢复请求。",
+    "description": "Rate limit backoff",
+    "_machine_translated": true,
+    "_source_hash": "7d553dee0c6fe94a"
+  },
+  "error.offline": {
+    "message": "无法连接 Finnhub。将在有可用数据时显示已保存的数据。",
+    "description": "Offline or network timeout",
+    "_machine_translated": true,
+    "_source_hash": "e74f5fe32dc5f429"
+  },
+  "error.unavailable": {
+    "message": "Finnhub 不可用。将在有可用数据时显示已保存的数据。",
+    "description": "Sanitized provider error",
+    "_machine_translated": true,
+    "_source_hash": "2dd30adcc5164ad4"
+  },
+  "error.busy": {
+    "message": "另一个 Kage 窗口正在刷新行情。请稍后重试。",
+    "description": "Cross-window request lock contention",
+    "_machine_translated": true,
+    "_source_hash": "b6ed5bc4b975b5a0"
+  },
+  "error.cache_only": {
+    "message": "仅显示已保存的行情；实时请求已暂停。",
+    "description": "User selected offline provider mode",
+    "_machine_translated": true,
+    "_source_hash": "ceee09611e30c87c"
+  },
+  "error.storage": {
+    "message": "行情存储不可用。在能够记录请求上限之前，请求将保持暂停。",
+    "description": "Fail closed when rate budget cannot persist",
+    "_machine_translated": true,
+    "_source_hash": "4cbfbb2e9b0adc41"
+  },
+  "error.invalid_key": {
+    "message": "请粘贴 Finnhub API 密钥，然后点击“测试并保存”。请勿粘贴 URL。",
+    "description": "Malformed or missing API key",
+    "_machine_translated": true,
+    "_source_hash": "b972e383a08a0ac1"
+  },
+  "error.invalid_range": {
+    "message": "请选择 1d、1w 或 1m 范围。",
+    "description": "Agent history range validation",
+    "_machine_translated": true,
+    "_source_hash": "f4f4d83dc6129a6c"
+  },
+  "settings.description": {
+    "message": "美股行情、自选股列表和本地行情历史。在线 · 数据来源：Finnhub。已保存的数据可能有延迟。",
+    "description": "Settings summary",
+    "_machine_translated": true,
+    "_source_hash": "b91914b96330d6cb"
+  },
+  "settings.connection": {
+    "message": "行情提供方与设置",
+    "description": "Connection section heading",
+    "_machine_translated": true,
+    "_source_hash": "863fbc4ab994c2eb"
+  },
+  "settings.provider": {
+    "message": "提供方",
+    "description": "Provider selector label",
+    "_machine_translated": true,
+    "_source_hash": "713fef775807424a"
+  },
+  "settings.finnhub": {
+    "message": "Finnhub · 美股行情 · 免费个人密钥",
+    "description": "Supported online provider option",
+    "_machine_translated": true,
+    "_source_hash": "e989961cfe6d267c"
+  },
+  "settings.cache": {
+    "message": "仅限已保存的行情 · 离线",
+    "description": "Network paused provider option",
+    "_machine_translated": true,
+    "_source_hash": "f429d58cbb1c5f8b"
+  },
+  "setup.intro": {
+    "message": "无需密钥的 Stooq 下载目前不可用。请使用您自己的免费 Finnhub 密钥获取美股行情；股票扩展从不提供共享密钥。",
+    "description": "Explain the authorized fallback to key setup",
+    "_machine_translated": true,
+    "_source_hash": "d8f6685775cf04bc"
+  },
+  "setup.terms": {
+    "message": "Finnhub 个人套餐仅供符合条件的个人使用。商业用途以及与第三方共享数据或衍生结果均需获得 Finnhub 批准。请查阅提供方的条款，包括在将行情发送给远程代理之前。",
+    "description": "Material provider use restrictions",
+    "_machine_translated": true,
+    "_source_hash": "9eb9716ed06ff746"
+  },
+  "setup.steps": {
+    "message": "1. 打开“获取免费密钥”并在 Finnhub 注册。2. 从其控制面板复制您的 API 密钥。3. 将其粘贴到下方并选择“测试并保存”。4. 保存您的自选股列表和提供方设置。",
+    "description": "Guided setup steps",
+    "_machine_translated": true,
+    "_source_hash": "f0be788769ece36a"
+  },
+  "setup.saved": {
+    "message": "此设备上已保存一个密钥。将字段留空可测试该密钥，或粘贴新密钥进行替换。已存储的密钥永远不会在此显示。",
+    "description": "Connected setup state without secret disclosure",
+    "_machine_translated": true,
+    "_source_hash": "4fba007359b56f1d"
+  },
+  "setup.free_key": {
+    "message": "获取免费密钥",
+    "description": "Open provider registration in system browser",
+    "_machine_translated": true,
+    "_source_hash": "42b307eaf0136997"
+  },
+  "setup.key": {
+    "message": "Finnhub API 密钥",
+    "description": "Scratch field for secret",
+    "_machine_translated": true,
+    "_source_hash": "2e7e94ee1be4a2cf"
+  },
+  "setup.key_hint": {
+    "message": "“测试并保存”会将密钥存储在扩展的私有数据中，与 Spotify 凭据的存储方式相同。在此输入不会将其随常规设置一起保存。输入时，此宿主的文本字段内容是可见的。",
+    "description": "Storage and host input behavior",
+    "_machine_translated": true,
+    "_source_hash": "4c3122d9b4d5daad"
+  },
+  "setup.test": {
+    "message": "测试并保存密钥",
+    "description": "Probe quote endpoint and save only on success",
+    "_machine_translated": true,
+    "_source_hash": "bc2be6a1a4fb4210"
+  },
+  "setup.remove": {
+    "message": "移除已保存的密钥",
+    "description": "Delete provider credentials; retain cached quotes",
+    "_machine_translated": true,
+    "_source_hash": "469ba81c1b5aeb34"
+  },
+  "setup.removed": {
+    "message": "密钥已移除。已保存的行情仍可使用。",
+    "description": "Removal success",
+    "_machine_translated": true,
+    "_source_hash": "59cb7317745316bb"
+  },
+  "setup.success": {
+    "message": "Finnhub 行情测试通过；密钥已保存。请保存提供方和自选股列表设置以完成设置。",
+    "description": "Successful guided setup",
+    "_machine_translated": true,
+    "_source_hash": "96383792f28339c2"
+  },
+  "settings.watchlist_section": {
+    "message": "自选股列表与刷新",
+    "description": "Display settings section",
+    "_machine_translated": true,
+    "_source_hash": "eeb14304489ebbaf"
+  },
+  "settings.watchlist": {
+    "message": "自选股列表",
+    "description": "Editable list label",
+    "_machine_translated": true,
+    "_source_hash": "4fa141d565f4d3cb"
+  },
+  "settings.watchlist_hint": {
+    "message": "最多 {max} 个美股代码，以空格或逗号分隔。列表为空时将隐藏小组件。",
+    "description": "Watchlist validation; preserve {max}",
+    "_machine_translated": true,
+    "_source_hash": "18fd9ff917b78911"
+  },
+  "settings.show": {
+    "message": "在浮动窗口中显示自选股列表",
+    "description": "Widget visibility toggle",
+    "_machine_translated": true,
+    "_source_hash": "acd01a47d682bca1"
+  },
+  "settings.refresh": {
+    "message": "刷新间隔（秒）",
+    "description": "Quote cache and widget refresh interval",
+    "_machine_translated": true,
+    "_source_hash": "d5d486955acdd4c8"
+  },
+  "settings.refresh_hint": {
+    "message": "最短 60 秒；默认 300 秒。在当前的 Kage 宿主上，窗口隐藏时将暂停轮询。此设备上每分钟最多预留 40 次请求；提供方的限制也包括您的其他应用。",
+    "description": "Request budget and hidden behavior",
+    "_machine_translated": true,
+    "_source_hash": "86c3403cda44db0e"
+  },
+  "settings.refresh_error": {
+    "message": "刷新间隔必须介于 60 到 3600 秒之间。",
+    "description": "Invalid interval",
+    "_machine_translated": true,
+    "_source_hash": "c93b2dfa0a61d9f4"
+  },
+  "tool.quote": {
+    "message": "从 Finnhub 获取美股行情，仅供个人使用。返回数据来源、最后成交时间戳、缓存新鲜度以及各代码的错误。需要用户的免费密钥；未经提供方批准，请勿再分发。",
+    "description": "Agent tool description",
+    "_machine_translated": true,
+    "_source_hash": "9aa8d167f9bf2f94"
+  },
+  "tool.symbols": {
+    "message": "最多 10 个美股代码，例如 [\"AAPL\", \"MSFT\", \"BRK.B\"]。",
+    "description": "Quote tool parameter description",
+    "_machine_translated": true,
+    "_source_hash": "5d5d1c443bb02531"
+  },
+  "tool.history": {
+    "message": "获取本设备在本地采样记录的 Finnhub 报价，范围为 1d、1w 或 1m。不发出任何网络请求。数据为不完整的稀疏样本，并非历史 K 线；列表为空表示未收集到任何数据。",
+    "description": "Agent tool scope must not imply full historical coverage",
+    "_machine_translated": true,
+    "_source_hash": "fcb4dd5f0bdcb792"
+  },
+  "tool.symbol": {
+    "message": "美股股票代码。",
+    "description": "History symbol parameter description",
+    "_machine_translated": true,
+    "_source_hash": "31f6b8214e118704"
+  },
+  "tool.range": {
+    "message": "1d、1w 或 1m；默认为 1d。",
+    "description": "History range parameter description",
+    "_machine_translated": true,
+    "_source_hash": "992fdef4270c7170"
+  },
+  "tool.disabled": {
+    "message": "股票功能已停用。",
+    "description": "Host-disabled tool execution",
+    "_machine_translated": true,
+    "_source_hash": "9c2b3d9381a7a02c"
+  },
+  "tool.unknown": {
+    "message": "未知的股票工具。",
+    "description": "Unrecognized tool execution",
+    "_machine_translated": true,
+    "_source_hash": "2acdb85e54aa0ed1"
+  }
+}

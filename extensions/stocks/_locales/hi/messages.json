@@ -1,0 +1,338 @@
+{
+  "_meta": {
+    "language": "hi",
+    "name": "हिन्दी",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "स्टॉक",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "d6d4700604b64b88"
+  },
+  "manifest.description": {
+    "message": "ऑनलाइन · आपकी मुफ़्त key से Finnhub के US कोट और वॉचलिस्ट। कैश होने पर डेटा विलंबित रहता है; हर कोट में उसका टाइमस्टैम्प दिखता है।",
+    "description": "Store listing; Online and Data delayed communicate network dependency and freshness",
+    "_machine_translated": true,
+    "_source_hash": "6feb0a4240dfb80e"
+  },
+  "result.loading": {
+    "message": "स्टॉक खोजे जा रहे हैं…",
+    "description": "Launcher placeholder while quotes load",
+    "_machine_translated": true,
+    "_source_hash": "a2b95adcfc6e29b7"
+  },
+  "result.help": {
+    "message": "$AAPL, stock msft या stock aapl msft nvda आज़माएँ। Enter दबाने पर चार्ट खुलता है; कोट कॉपी करने के लिए कॉपी करें चुनें या stock copy AAPL का उपयोग करें।",
+    "description": "Launcher syntax and actions",
+    "_machine_translated": true,
+    "_source_hash": "ca59813d90734a08"
+  },
+  "result.copy": {
+    "message": "{text} कॉपी करें",
+    "description": "Selectable clipboard action; preserve {text}",
+    "_machine_translated": true,
+    "_source_hash": "516993d8cc4732a3"
+  },
+  "quote.as_of": {
+    "message": "{time} तक",
+    "description": "Actual last trade timestamp, not request time; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "3dcdbc540a4593d1"
+  },
+  "quote.cached": {
+    "message": "{time} को कैश किया गया",
+    "description": "Time the saved quote was fetched; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "76520879cd1583b5"
+  },
+  "quote.retry": {
+    "message": "{time} के बाद फिर से प्रयास करें",
+    "description": "Rate limit backoff expiry; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "d305b2da13a783d0"
+  },
+  "quote.delayed": {
+    "message": "डेटा विलंबित है / बाज़ार बंद हो सकता है",
+    "description": "Quote is over 15 minutes old; do not imply verified exchange status",
+    "_machine_translated": true,
+    "_source_hash": "ece516a5d44ca6ba"
+  },
+  "quote.sampled": {
+    "message": "स्थानीय रूप से सैंपल किए गए Finnhub कोट, जिनमें अंतराल हो सकते हैं। Stocks का उपयोग होने के दौरान एकत्र किए जाते हैं; यह ऐतिहासिक कैंडल डेटा नहीं है।",
+    "description": "Sparkline accessible label and settings explanation",
+    "_machine_translated": true,
+    "_source_hash": "0eca89619bcb28b9"
+  },
+  "quote.source": {
+    "message": "स्रोत: Finnhub",
+    "description": "Visible provider attribution",
+    "_machine_translated": true,
+    "_source_hash": "693535460d4db418"
+  },
+  "error.setup": {
+    "message": "Stocks सेटिंग खोलें, एक मुफ़्त Finnhub key प्राप्त करें, फिर उसका परीक्षण करें और सहेजें।",
+    "description": "No stored key",
+    "_machine_translated": true,
+    "_source_hash": "8adbf75fdf5bc595"
+  },
+  "error.auth": {
+    "message": "Finnhub ने key अस्वीकार कर दी। दूसरी key का परीक्षण करने के लिए Stocks सेटिंग खोलें।",
+    "description": "Authentication or plan error, no raw provider response",
+    "_machine_translated": true,
+    "_source_hash": "ecc147e2c9741ce7"
+  },
+  "error.unknown": {
+    "message": "इस सिंबल के लिए कोई कोट नहीं है। US टिकर जाँचें, जिसमें कोई भी शेयर-क्लास प्रत्यय शामिल हो।",
+    "description": "Unknown or zero-valued quote",
+    "_machine_translated": true,
+    "_source_hash": "3a30475366fb7002"
+  },
+  "error.unsupported": {
+    "message": "यह प्रदाता केवल US टिकर का समर्थन करता है। अंतरराष्ट्रीय एक्सचेंज प्रत्ययों के लिए अलग डेटा प्लान चाहिए।",
+    "description": "Unsupported provider or international symbol",
+    "_machine_translated": true,
+    "_source_hash": "1be0703c00de00dc"
+  },
+  "error.invalid_symbols": {
+    "message": "स्पेस या कॉमा से अलग किए गए स्टॉक सिंबल दर्ज करें, जैसे AAPL MSFT या BRK.B।",
+    "description": "Symbol validation error",
+    "_machine_translated": true,
+    "_source_hash": "5cd17969829278c5"
+  },
+  "error.too_many": {
+    "message": "प्रति क्वेरी या वॉचलिस्ट अधिकतम 10 सिंबल का उपयोग करें।",
+    "description": "Bounded request batch",
+    "_machine_translated": true,
+    "_source_hash": "e8f0028cd32f8c7b"
+  },
+  "error.rate_limit": {
+    "message": "अनुरोध सीमा पूरी हो गई। उपलब्ध होने पर सहेजा गया डेटा दिखाया जा रहा है; कुछ देर बाद अनुरोध फिर से शुरू होंगे।",
+    "description": "Rate limit backoff",
+    "_machine_translated": true,
+    "_source_hash": "7d553dee0c6fe94a"
+  },
+  "error.offline": {
+    "message": "Finnhub से कनेक्ट नहीं हो पा रहा है। उपलब्ध होने पर सहेजा गया डेटा दिखाया जा रहा है।",
+    "description": "Offline or network timeout",
+    "_machine_translated": true,
+    "_source_hash": "e74f5fe32dc5f429"
+  },
+  "error.unavailable": {
+    "message": "Finnhub उपलब्ध नहीं है। उपलब्ध होने पर सहेजा गया डेटा दिखाया जा रहा है।",
+    "description": "Sanitized provider error",
+    "_machine_translated": true,
+    "_source_hash": "2dd30adcc5164ad4"
+  },
+  "error.busy": {
+    "message": "एक अन्य Kage विंडो कोट रीफ़्रेश कर रही है। थोड़ी देर में फिर से प्रयास करें।",
+    "description": "Cross-window request lock contention",
+    "_machine_translated": true,
+    "_source_hash": "b6ed5bc4b975b5a0"
+  },
+  "error.cache_only": {
+    "message": "केवल सहेजे गए कोट; लाइव अनुरोध रोके गए हैं।",
+    "description": "User selected offline provider mode",
+    "_machine_translated": true,
+    "_source_hash": "ceee09611e30c87c"
+  },
+  "error.storage": {
+    "message": "कोट स्टोरेज उपलब्ध नहीं है। अनुरोधों की सीमा ट्रैक किए जा सकने तक अनुरोध रोके गए हैं।",
+    "description": "Fail closed when rate budget cannot persist",
+    "_machine_translated": true,
+    "_source_hash": "4cbfbb2e9b0adc41"
+  },
+  "error.invalid_key": {
+    "message": "Finnhub API key पेस्ट करें, फिर परीक्षण करें और सहेजें। URL पेस्ट न करें।",
+    "description": "Malformed or missing API key",
+    "_machine_translated": true,
+    "_source_hash": "b972e383a08a0ac1"
+  },
+  "error.invalid_range": {
+    "message": "1d, 1w या 1m में से कोई अवधि चुनें।",
+    "description": "Agent history range validation",
+    "_machine_translated": true,
+    "_source_hash": "f4f4d83dc6129a6c"
+  },
+  "settings.description": {
+    "message": "अमेरिकी शेयरों के भाव, वॉचलिस्ट और स्थानीय भाव इतिहास। ऑनलाइन · स्रोत: Finnhub। सहेजे गए मान देर से अपडेट हो सकते हैं।",
+    "description": "Settings summary",
+    "_machine_translated": true,
+    "_source_hash": "b91914b96330d6cb"
+  },
+  "settings.connection": {
+    "message": "भाव प्रदाता और सेटअप",
+    "description": "Connection section heading",
+    "_machine_translated": true,
+    "_source_hash": "863fbc4ab994c2eb"
+  },
+  "settings.provider": {
+    "message": "प्रदाता",
+    "description": "Provider selector label",
+    "_machine_translated": true,
+    "_source_hash": "713fef775807424a"
+  },
+  "settings.finnhub": {
+    "message": "Finnhub · अमेरिकी भाव · मुफ़्त निजी कुंजी",
+    "description": "Supported online provider option",
+    "_machine_translated": true,
+    "_source_hash": "e989961cfe6d267c"
+  },
+  "settings.cache": {
+    "message": "केवल सहेजे गए भाव · ऑफ़लाइन",
+    "description": "Network paused provider option",
+    "_machine_translated": true,
+    "_source_hash": "f429d58cbb1c5f8b"
+  },
+  "setup.intro": {
+    "message": "बिना कुंजी वाले Stooq डाउनलोड अभी उपलब्ध नहीं हैं। अमेरिकी भावों के लिए अपनी मुफ़्त Finnhub कुंजी का उपयोग करें; Stocks कभी भी साझा कुंजी नहीं देता।",
+    "description": "Explain the authorized fallback to key setup",
+    "_machine_translated": true,
+    "_source_hash": "d8f6685775cf04bc"
+  },
+  "setup.terms": {
+    "message": "Finnhub के निजी प्लान केवल योग्य निजी उपयोग के लिए हैं। व्यावसायिक उपयोग और डेटा या उससे निकले परिणामों को तीसरे पक्ष के साथ साझा करने के लिए Finnhub की मंज़ूरी ज़रूरी है। प्रदाता की शर्तें देखें, खासकर किसी रिमोट एजेंट को भाव भेजने से पहले।",
+    "description": "Material provider use restrictions",
+    "_machine_translated": true,
+    "_source_hash": "9eb9716ed06ff746"
+  },
+  "setup.steps": {
+    "message": "1. मुफ़्त कुंजी पाएँ खोलें और Finnhub पर रजिस्टर करें। 2. उसके डैशबोर्ड से अपनी API कुंजी कॉपी करें। 3. उसे नीचे पेस्ट करें और कुंजी जाँचें और सहेजें चुनें। 4. अपनी वॉचलिस्ट और प्रदाता सेटिंग सहेजें।",
+    "description": "Guided setup steps",
+    "_machine_translated": true,
+    "_source_hash": "f0be788769ece36a"
+  },
+  "setup.saved": {
+    "message": "इस डिवाइस पर एक कुंजी सहेजी गई है। उसे जाँचने के लिए फ़ील्ड खाली छोड़ें, या बदलने के लिए नई कुंजी पेस्ट करें। सहेजी गई कुंजियाँ यहाँ कभी नहीं दिखाई जातीं।",
+    "description": "Connected setup state without secret disclosure",
+    "_machine_translated": true,
+    "_source_hash": "4fba007359b56f1d"
+  },
+  "setup.free_key": {
+    "message": "मुफ़्त कुंजी पाएँ",
+    "description": "Open provider registration in system browser",
+    "_machine_translated": true,
+    "_source_hash": "42b307eaf0136997"
+  },
+  "setup.key": {
+    "message": "Finnhub API कुंजी",
+    "description": "Scratch field for secret",
+    "_machine_translated": true,
+    "_source_hash": "2e7e94ee1be4a2cf"
+  },
+  "setup.key_hint": {
+    "message": "जाँचें और सहेजें कुंजी को निजी एक्सटेंशन डेटा में संग्रहित करता है, Spotify क्रेडेंशियल की तरह। यहाँ टाइप करने से वह सामान्य सेटिंग के साथ सहेजी नहीं जाती। टाइप करते समय इस होस्ट का टेक्स्ट फ़ील्ड दिखाई देता है।",
+    "description": "Storage and host input behavior",
+    "_machine_translated": true,
+    "_source_hash": "4c3122d9b4d5daad"
+  },
+  "setup.test": {
+    "message": "कुंजी जाँचें और सहेजें",
+    "description": "Probe quote endpoint and save only on success",
+    "_machine_translated": true,
+    "_source_hash": "bc2be6a1a4fb4210"
+  },
+  "setup.remove": {
+    "message": "सहेजी गई कुंजी हटाएँ",
+    "description": "Delete provider credentials; retain cached quotes",
+    "_machine_translated": true,
+    "_source_hash": "469ba81c1b5aeb34"
+  },
+  "setup.removed": {
+    "message": "कुंजी हटा दी गई। सहेजे गए भाव उपलब्ध रहेंगे।",
+    "description": "Removal success",
+    "_machine_translated": true,
+    "_source_hash": "59cb7317745316bb"
+  },
+  "setup.success": {
+    "message": "Finnhub भाव जाँच सफल रही; कुंजी सहेज ली गई। पूरा करने के लिए प्रदाता और वॉचलिस्ट सेटिंग सहेजें।",
+    "description": "Successful guided setup",
+    "_machine_translated": true,
+    "_source_hash": "96383792f28339c2"
+  },
+  "settings.watchlist_section": {
+    "message": "वॉचलिस्ट और रीफ़्रेश",
+    "description": "Display settings section",
+    "_machine_translated": true,
+    "_source_hash": "eeb14304489ebbaf"
+  },
+  "settings.watchlist": {
+    "message": "वॉचलिस्ट",
+    "description": "Editable list label",
+    "_machine_translated": true,
+    "_source_hash": "4fa141d565f4d3cb"
+  },
+  "settings.watchlist_hint": {
+    "message": "अधिकतम {max} अमेरिकी सिंबल, स्पेस या कॉमा से अलग किए हुए। खाली सूची होने पर विजेट छिप जाता है।",
+    "description": "Watchlist validation; preserve {max}",
+    "_machine_translated": true,
+    "_source_hash": "18fd9ff917b78911"
+  },
+  "settings.show": {
+    "message": "फ़्लोटिंग विंडो में वॉचलिस्ट दिखाएँ",
+    "description": "Widget visibility toggle",
+    "_machine_translated": true,
+    "_source_hash": "acd01a47d682bca1"
+  },
+  "settings.refresh": {
+    "message": "रीफ़्रेश अंतराल (सेकंड)",
+    "description": "Quote cache and widget refresh interval",
+    "_machine_translated": true,
+    "_source_hash": "d5d486955acdd4c8"
+  },
+  "settings.refresh_hint": {
+    "message": "न्यूनतम 60 सेकंड; डिफ़ॉल्ट 300। मौजूदा Kage होस्ट पर विंडो छिपी होने पर पोलिंग रुक जाती है। इस डिवाइस पर प्रति मिनट अधिकतम 40 अनुरोध आरक्षित हैं; प्रदाता की सीमाओं में आपके अन्य ऐप भी शामिल होते हैं।",
+    "description": "Request budget and hidden behavior",
+    "_machine_translated": true,
+    "_source_hash": "86c3403cda44db0e"
+  },
+  "settings.refresh_error": {
+    "message": "रीफ़्रेश अंतराल 60 से 3600 सेकंड के बीच होना चाहिए।",
+    "description": "Invalid interval",
+    "_machine_translated": true,
+    "_source_hash": "c93b2dfa0a61d9f4"
+  },
+  "tool.quote": {
+    "message": "निजी उपयोग के लिए Finnhub से अमेरिकी शेयरों के भाव पाएँ। स्रोत, अंतिम ट्रेड का टाइमस्टैम्प, कैश की ताज़गी और हर सिंबल की त्रुटियाँ लौटाता है। उपयोगकर्ता की मुफ़्त कुंजी ज़रूरी है; प्रदाता की मंज़ूरी के बिना दोबारा वितरित न करें।",
+    "description": "Agent tool description",
+    "_machine_translated": true,
+    "_source_hash": "9aa8d167f9bf2f94"
+  },
+  "tool.symbols": {
+    "message": "अधिकतम 10 अमेरिकी सिंबल, उदाहरण के लिए [\"AAPL\", \"MSFT\", \"BRK.B\"]।",
+    "description": "Quote tool parameter description",
+    "_machine_translated": true,
+    "_source_hash": "5d5d1c443bb02531"
+  },
+  "tool.history": {
+    "message": "इस डिवाइस पर 1d, 1w या 1m के लिए स्थानीय रूप से सैंपल किए गए Finnhub कोट प्राप्त करें। कोई नेटवर्क अनुरोध नहीं होता। ये अधूरे और छिटपुट सैंपल हैं, ऐतिहासिक कैंडल नहीं; खाली सूची का अर्थ है कि कुछ भी एकत्र नहीं किया गया।",
+    "description": "Agent tool scope must not imply full historical coverage",
+    "_machine_translated": true,
+    "_source_hash": "fcb4dd5f0bdcb792"
+  },
+  "tool.symbol": {
+    "message": "अमेरिकी स्टॉक का सिंबल।",
+    "description": "History symbol parameter description",
+    "_machine_translated": true,
+    "_source_hash": "31f6b8214e118704"
+  },
+  "tool.range": {
+    "message": "1d, 1w या 1m; डिफ़ॉल्ट 1d।",
+    "description": "History range parameter description",
+    "_machine_translated": true,
+    "_source_hash": "992fdef4270c7170"
+  },
+  "tool.disabled": {
+    "message": "Stocks अक्षम है।",
+    "description": "Host-disabled tool execution",
+    "_machine_translated": true,
+    "_source_hash": "9c2b3d9381a7a02c"
+  },
+  "tool.unknown": {
+    "message": "अज्ञात Stocks टूल।",
+    "description": "Unrecognized tool execution",
+    "_machine_translated": true,
+    "_source_hash": "2acdb85e54aa0ed1"
+  }
+}

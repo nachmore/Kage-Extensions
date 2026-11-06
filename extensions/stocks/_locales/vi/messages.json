@@ -1,0 +1,338 @@
+{
+  "_meta": {
+    "language": "vi",
+    "name": "Tiếng Việt",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Cổ phiếu",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "d6d4700604b64b88"
+  },
+  "manifest.description": {
+    "message": "Trực tuyến · Giá cổ phiếu Mỹ và danh sách theo dõi từ Finnhub bằng khóa miễn phí của bạn. Dữ liệu bị trễ khi dùng bộ nhớ đệm; mỗi báo giá đều hiển thị thời điểm cập nhật.",
+    "description": "Store listing; Online and Data delayed communicate network dependency and freshness",
+    "_machine_translated": true,
+    "_source_hash": "6feb0a4240dfb80e"
+  },
+  "result.loading": {
+    "message": "Đang tra cứu cổ phiếu…",
+    "description": "Launcher placeholder while quotes load",
+    "_machine_translated": true,
+    "_source_hash": "a2b95adcfc6e29b7"
+  },
+  "result.help": {
+    "message": "Thử $AAPL, stock msft hoặc stock aapl msft nvda. Nhấn Enter để mở biểu đồ; chọn Sao chép hoặc dùng stock copy AAPL để sao chép báo giá.",
+    "description": "Launcher syntax and actions",
+    "_machine_translated": true,
+    "_source_hash": "ca59813d90734a08"
+  },
+  "result.copy": {
+    "message": "Sao chép {text}",
+    "description": "Selectable clipboard action; preserve {text}",
+    "_machine_translated": true,
+    "_source_hash": "516993d8cc4732a3"
+  },
+  "quote.as_of": {
+    "message": "Tính đến {time}",
+    "description": "Actual last trade timestamp, not request time; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "3dcdbc540a4593d1"
+  },
+  "quote.cached": {
+    "message": "Đã lưu lúc {time}",
+    "description": "Time the saved quote was fetched; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "76520879cd1583b5"
+  },
+  "quote.retry": {
+    "message": "Thử lại sau {time}",
+    "description": "Rate limit backoff expiry; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "d305b2da13a783d0"
+  },
+  "quote.delayed": {
+    "message": "Dữ liệu bị trễ / thị trường có thể đã đóng cửa",
+    "description": "Quote is over 15 minutes old; do not imply verified exchange status",
+    "_machine_translated": true,
+    "_source_hash": "ece516a5d44ca6ba"
+  },
+  "quote.sampled": {
+    "message": "Báo giá Finnhub được lấy mẫu cục bộ, có khoảng trống. Chỉ thu thập khi Cổ phiếu đang được sử dụng; đây không phải dữ liệu nến lịch sử.",
+    "description": "Sparkline accessible label and settings explanation",
+    "_machine_translated": true,
+    "_source_hash": "0eca89619bcb28b9"
+  },
+  "quote.source": {
+    "message": "Nguồn: Finnhub",
+    "description": "Visible provider attribution",
+    "_machine_translated": true,
+    "_source_hash": "693535460d4db418"
+  },
+  "error.setup": {
+    "message": "Mở cài đặt Cổ phiếu, lấy khóa Finnhub miễn phí, sau đó chọn Kiểm tra và lưu.",
+    "description": "No stored key",
+    "_machine_translated": true,
+    "_source_hash": "8adbf75fdf5bc595"
+  },
+  "error.auth": {
+    "message": "Finnhub đã từ chối khóa. Mở cài đặt Cổ phiếu để kiểm tra khóa thay thế.",
+    "description": "Authentication or plan error, no raw provider response",
+    "_machine_translated": true,
+    "_source_hash": "ecc147e2c9741ce7"
+  },
+  "error.unknown": {
+    "message": "Không có báo giá cho mã này. Hãy kiểm tra mã cổ phiếu Mỹ, bao gồm cả hậu tố loại cổ phần (nếu có).",
+    "description": "Unknown or zero-valued quote",
+    "_machine_translated": true,
+    "_source_hash": "3a30475366fb7002"
+  },
+  "error.unsupported": {
+    "message": "Nhà cung cấp này chỉ hỗ trợ mã cổ phiếu Mỹ. Hậu tố sàn giao dịch quốc tế cần gói dữ liệu khác.",
+    "description": "Unsupported provider or international symbol",
+    "_machine_translated": true,
+    "_source_hash": "1be0703c00de00dc"
+  },
+  "error.invalid_symbols": {
+    "message": "Nhập các mã cổ phiếu, phân tách bằng dấu cách hoặc dấu phẩy, ví dụ AAPL MSFT hoặc BRK.B.",
+    "description": "Symbol validation error",
+    "_machine_translated": true,
+    "_source_hash": "5cd17969829278c5"
+  },
+  "error.too_many": {
+    "message": "Dùng tối đa 10 mã cho mỗi truy vấn hoặc danh sách theo dõi.",
+    "description": "Bounded request batch",
+    "_machine_translated": true,
+    "_source_hash": "e8f0028cd32f8c7b"
+  },
+  "error.rate_limit": {
+    "message": "Đã đạt giới hạn yêu cầu. Đang hiển thị dữ liệu đã lưu nếu có; các yêu cầu sẽ tiếp tục sau một lúc.",
+    "description": "Rate limit backoff",
+    "_machine_translated": true,
+    "_source_hash": "7d553dee0c6fe94a"
+  },
+  "error.offline": {
+    "message": "Không thể kết nối Finnhub. Đang hiển thị dữ liệu đã lưu nếu có.",
+    "description": "Offline or network timeout",
+    "_machine_translated": true,
+    "_source_hash": "e74f5fe32dc5f429"
+  },
+  "error.unavailable": {
+    "message": "Finnhub hiện không khả dụng. Đang hiển thị dữ liệu đã lưu nếu có.",
+    "description": "Sanitized provider error",
+    "_machine_translated": true,
+    "_source_hash": "2dd30adcc5164ad4"
+  },
+  "error.busy": {
+    "message": "Một cửa sổ Kage khác đang làm mới báo giá. Vui lòng thử lại sau giây lát.",
+    "description": "Cross-window request lock contention",
+    "_machine_translated": true,
+    "_source_hash": "b6ed5bc4b975b5a0"
+  },
+  "error.cache_only": {
+    "message": "Chỉ dùng báo giá đã lưu; các yêu cầu trực tiếp đang tạm dừng.",
+    "description": "User selected offline provider mode",
+    "_machine_translated": true,
+    "_source_hash": "ceee09611e30c87c"
+  },
+  "error.storage": {
+    "message": "Không thể truy cập bộ nhớ báo giá. Các yêu cầu sẽ tạm dừng cho đến khi có thể theo dõi giới hạn yêu cầu.",
+    "description": "Fail closed when rate budget cannot persist",
+    "_machine_translated": true,
+    "_source_hash": "4cbfbb2e9b0adc41"
+  },
+  "error.invalid_key": {
+    "message": "Dán khóa API Finnhub, sau đó chọn Kiểm tra và lưu. Không dán URL.",
+    "description": "Malformed or missing API key",
+    "_machine_translated": true,
+    "_source_hash": "b972e383a08a0ac1"
+  },
+  "error.invalid_range": {
+    "message": "Chọn khoảng thời gian 1d, 1w hoặc 1m.",
+    "description": "Agent history range validation",
+    "_machine_translated": true,
+    "_source_hash": "f4f4d83dc6129a6c"
+  },
+  "settings.description": {
+    "message": "Báo giá cổ phiếu Mỹ, danh sách theo dõi và lịch sử báo giá cục bộ. Trực tuyến · Nguồn: Finnhub. Giá trị đã lưu có thể bị trễ.",
+    "description": "Settings summary",
+    "_machine_translated": true,
+    "_source_hash": "b91914b96330d6cb"
+  },
+  "settings.connection": {
+    "message": "Nhà cung cấp báo giá và thiết lập",
+    "description": "Connection section heading",
+    "_machine_translated": true,
+    "_source_hash": "863fbc4ab994c2eb"
+  },
+  "settings.provider": {
+    "message": "Nhà cung cấp",
+    "description": "Provider selector label",
+    "_machine_translated": true,
+    "_source_hash": "713fef775807424a"
+  },
+  "settings.finnhub": {
+    "message": "Finnhub · Báo giá Mỹ · khóa cá nhân miễn phí",
+    "description": "Supported online provider option",
+    "_machine_translated": true,
+    "_source_hash": "e989961cfe6d267c"
+  },
+  "settings.cache": {
+    "message": "Chỉ báo giá đã lưu · ngoại tuyến",
+    "description": "Network paused provider option",
+    "_machine_translated": true,
+    "_source_hash": "f429d58cbb1c5f8b"
+  },
+  "setup.intro": {
+    "message": "Hiện không thể tải dữ liệu Stooq không cần khóa. Hãy dùng khóa Finnhub miễn phí của riêng bạn để nhận báo giá Mỹ; Stocks không bao giờ cung cấp khóa dùng chung.",
+    "description": "Explain the authorized fallback to key setup",
+    "_machine_translated": true,
+    "_source_hash": "d8f6685775cf04bc"
+  },
+  "setup.terms": {
+    "message": "Các gói cá nhân của Finnhub dành cho mục đích sử dụng cá nhân hợp lệ. Việc sử dụng cho doanh nghiệp và chia sẻ dữ liệu hoặc kết quả phái sinh với bên thứ ba cần được Finnhub chấp thuận. Hãy xem điều khoản của nhà cung cấp, kể cả trước khi gửi báo giá đến một agent từ xa.",
+    "description": "Material provider use restrictions",
+    "_machine_translated": true,
+    "_source_hash": "9eb9716ed06ff746"
+  },
+  "setup.steps": {
+    "message": "1. Mở Lấy khóa miễn phí và đăng ký tại Finnhub. 2. Sao chép API key từ bảng điều khiển của Finnhub. 3. Dán vào bên dưới và chọn Kiểm tra và lưu. 4. Lưu danh sách theo dõi và cài đặt nhà cung cấp.",
+    "description": "Guided setup steps",
+    "_machine_translated": true,
+    "_source_hash": "f0be788769ece36a"
+  },
+  "setup.saved": {
+    "message": "Đã lưu một khóa trên thiết bị này. Để trống trường để kiểm tra khóa đó, hoặc dán khóa thay thế. Khóa đã lưu không bao giờ được hiển thị ở đây.",
+    "description": "Connected setup state without secret disclosure",
+    "_machine_translated": true,
+    "_source_hash": "4fba007359b56f1d"
+  },
+  "setup.free_key": {
+    "message": "Lấy khóa miễn phí",
+    "description": "Open provider registration in system browser",
+    "_machine_translated": true,
+    "_source_hash": "42b307eaf0136997"
+  },
+  "setup.key": {
+    "message": "API key Finnhub",
+    "description": "Scratch field for secret",
+    "_machine_translated": true,
+    "_source_hash": "2e7e94ee1be4a2cf"
+  },
+  "setup.key_hint": {
+    "message": "Kiểm tra và lưu sẽ lưu khóa vào dữ liệu riêng tư của tiện ích mở rộng, giống như thông tin đăng nhập Spotify. Việc nhập khóa ở đây không lưu nó cùng các cài đặt thông thường. Trường văn bản của máy chủ này hiển thị nội dung khi bạn nhập.",
+    "description": "Storage and host input behavior",
+    "_machine_translated": true,
+    "_source_hash": "4c3122d9b4d5daad"
+  },
+  "setup.test": {
+    "message": "Kiểm tra và lưu khóa",
+    "description": "Probe quote endpoint and save only on success",
+    "_machine_translated": true,
+    "_source_hash": "bc2be6a1a4fb4210"
+  },
+  "setup.remove": {
+    "message": "Xóa khóa đã lưu",
+    "description": "Delete provider credentials; retain cached quotes",
+    "_machine_translated": true,
+    "_source_hash": "469ba81c1b5aeb34"
+  },
+  "setup.removed": {
+    "message": "Đã xóa khóa. Báo giá đã lưu vẫn khả dụng.",
+    "description": "Removal success",
+    "_machine_translated": true,
+    "_source_hash": "59cb7317745316bb"
+  },
+  "setup.success": {
+    "message": "Kiểm tra báo giá Finnhub thành công; đã lưu khóa. Hãy lưu cài đặt nhà cung cấp và danh sách theo dõi để hoàn tất.",
+    "description": "Successful guided setup",
+    "_machine_translated": true,
+    "_source_hash": "96383792f28339c2"
+  },
+  "settings.watchlist_section": {
+    "message": "Danh sách theo dõi và làm mới",
+    "description": "Display settings section",
+    "_machine_translated": true,
+    "_source_hash": "eeb14304489ebbaf"
+  },
+  "settings.watchlist": {
+    "message": "Danh sách theo dõi",
+    "description": "Editable list label",
+    "_machine_translated": true,
+    "_source_hash": "4fa141d565f4d3cb"
+  },
+  "settings.watchlist_hint": {
+    "message": "Tối đa {max} mã cổ phiếu Mỹ, phân tách bằng dấu cách hoặc dấu phẩy. Danh sách trống sẽ ẩn tiện ích.",
+    "description": "Watchlist validation; preserve {max}",
+    "_machine_translated": true,
+    "_source_hash": "18fd9ff917b78911"
+  },
+  "settings.show": {
+    "message": "Hiển thị danh sách theo dõi trong cửa sổ nổi",
+    "description": "Widget visibility toggle",
+    "_machine_translated": true,
+    "_source_hash": "acd01a47d682bca1"
+  },
+  "settings.refresh": {
+    "message": "Khoảng thời gian làm mới (giây)",
+    "description": "Quote cache and widget refresh interval",
+    "_machine_translated": true,
+    "_source_hash": "d5d486955acdd4c8"
+  },
+  "settings.refresh_hint": {
+    "message": "Tối thiểu 60 giây; mặc định 300. Việc truy vấn khi cửa sổ bị ẩn sẽ tạm dừng trên các máy chủ Kage hiện tại. Tối đa 40 yêu cầu mỗi phút được dành riêng trên toàn thiết bị này; giới hạn của nhà cung cấp cũng tính cả các ứng dụng khác của bạn.",
+    "description": "Request budget and hidden behavior",
+    "_machine_translated": true,
+    "_source_hash": "86c3403cda44db0e"
+  },
+  "settings.refresh_error": {
+    "message": "Khoảng thời gian làm mới phải từ 60 đến 3600 giây.",
+    "description": "Invalid interval",
+    "_machine_translated": true,
+    "_source_hash": "c93b2dfa0a61d9f4"
+  },
+  "tool.quote": {
+    "message": "Lấy báo giá cổ phiếu Mỹ từ Finnhub để sử dụng cá nhân. Trả về nguồn, dấu thời gian giao dịch gần nhất, độ mới của bộ nhớ đệm và lỗi theo từng mã. Yêu cầu khóa miễn phí của người dùng; không phân phối lại khi chưa được nhà cung cấp chấp thuận.",
+    "description": "Agent tool description",
+    "_machine_translated": true,
+    "_source_hash": "9aa8d167f9bf2f94"
+  },
+  "tool.symbols": {
+    "message": "Tối đa 10 mã cổ phiếu Mỹ, ví dụ [\"AAPL\", \"MSFT\", \"BRK.B\"].",
+    "description": "Quote tool parameter description",
+    "_machine_translated": true,
+    "_source_hash": "5d5d1c443bb02531"
+  },
+  "tool.history": {
+    "message": "Lấy các báo giá Finnhub được lấy mẫu cục bộ, ghi nhận trên thiết bị này trong 1d, 1w hoặc 1m. Không gửi yêu cầu mạng. Đây là các mẫu thưa thớt, không đầy đủ, không phải nến lịch sử; danh sách trống nghĩa là chưa thu thập được dữ liệu nào.",
+    "description": "Agent tool scope must not imply full historical coverage",
+    "_machine_translated": true,
+    "_source_hash": "fcb4dd5f0bdcb792"
+  },
+  "tool.symbol": {
+    "message": "Mã cổ phiếu Mỹ.",
+    "description": "History symbol parameter description",
+    "_machine_translated": true,
+    "_source_hash": "31f6b8214e118704"
+  },
+  "tool.range": {
+    "message": "1d, 1w hoặc 1m; mặc định là 1d.",
+    "description": "History range parameter description",
+    "_machine_translated": true,
+    "_source_hash": "992fdef4270c7170"
+  },
+  "tool.disabled": {
+    "message": "Stocks đã bị tắt.",
+    "description": "Host-disabled tool execution",
+    "_machine_translated": true,
+    "_source_hash": "9c2b3d9381a7a02c"
+  },
+  "tool.unknown": {
+    "message": "Công cụ Stocks không xác định.",
+    "description": "Unrecognized tool execution",
+    "_machine_translated": true,
+    "_source_hash": "2acdb85e54aa0ed1"
+  }
+}

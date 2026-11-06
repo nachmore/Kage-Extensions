@@ -1,0 +1,338 @@
+{
+  "_meta": {
+    "language": "tr",
+    "name": "Türkçe",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Hisse senetleri",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "d6d4700604b64b88"
+  },
+  "manifest.description": {
+    "message": "Çevrimiçi · Ücretsiz anahtarınızla Finnhub'dan ABD fiyatları ve izleme listesi. Önbellekteki veriler gecikmelidir; her fiyatta zaman damgası gösterilir.",
+    "description": "Store listing; Online and Data delayed communicate network dependency and freshness",
+    "_machine_translated": true,
+    "_source_hash": "6feb0a4240dfb80e"
+  },
+  "result.loading": {
+    "message": "Hisse senetleri aranıyor…",
+    "description": "Launcher placeholder while quotes load",
+    "_machine_translated": true,
+    "_source_hash": "a2b95adcfc6e29b7"
+  },
+  "result.help": {
+    "message": "$AAPL, stock msft veya stock aapl msft nvda deneyin. Enter bir grafik açar; bir fiyatı kopyalamak için Kopyala'yı seçin veya stock copy AAPL kullanın.",
+    "description": "Launcher syntax and actions",
+    "_machine_translated": true,
+    "_source_hash": "ca59813d90734a08"
+  },
+  "result.copy": {
+    "message": "{text} kopyala",
+    "description": "Selectable clipboard action; preserve {text}",
+    "_machine_translated": true,
+    "_source_hash": "516993d8cc4732a3"
+  },
+  "quote.as_of": {
+    "message": "{time} itibarıyla",
+    "description": "Actual last trade timestamp, not request time; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "3dcdbc540a4593d1"
+  },
+  "quote.cached": {
+    "message": "Önbelleğe alındı: {time}",
+    "description": "Time the saved quote was fetched; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "76520879cd1583b5"
+  },
+  "quote.retry": {
+    "message": "{time} sonrasında yeniden deneyin",
+    "description": "Rate limit backoff expiry; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "d305b2da13a783d0"
+  },
+  "quote.delayed": {
+    "message": "Veriler gecikmeli / piyasa kapalı olabilir",
+    "description": "Quote is over 15 minutes old; do not imply verified exchange status",
+    "_machine_translated": true,
+    "_source_hash": "ece516a5d44ca6ba"
+  },
+  "quote.sampled": {
+    "message": "Yerel olarak örneklenmiş, boşluklar içeren Finnhub fiyatları. Hisse senetleri kullanıldıkça toplanır; bu geçmiş mum verisi değildir.",
+    "description": "Sparkline accessible label and settings explanation",
+    "_machine_translated": true,
+    "_source_hash": "0eca89619bcb28b9"
+  },
+  "quote.source": {
+    "message": "Kaynak: Finnhub",
+    "description": "Visible provider attribution",
+    "_machine_translated": true,
+    "_source_hash": "693535460d4db418"
+  },
+  "error.setup": {
+    "message": "Hisse senetleri ayarlarını açın, ücretsiz bir Finnhub anahtarı alın, ardından Test et ve kaydet'i kullanın.",
+    "description": "No stored key",
+    "_machine_translated": true,
+    "_source_hash": "8adbf75fdf5bc595"
+  },
+  "error.auth": {
+    "message": "Finnhub anahtarı reddetti. Yeni bir anahtarı test etmek için Hisse senetleri ayarlarını açın.",
+    "description": "Authentication or plan error, no raw provider response",
+    "_machine_translated": true,
+    "_source_hash": "ecc147e2c9741ce7"
+  },
+  "error.unknown": {
+    "message": "Bu sembol için fiyat yok. Varsa hisse sınıfı ekiyle birlikte ABD sembolünü kontrol edin.",
+    "description": "Unknown or zero-valued quote",
+    "_machine_translated": true,
+    "_source_hash": "3a30475366fb7002"
+  },
+  "error.unsupported": {
+    "message": "Bu sağlayıcı yalnızca ABD sembollerini destekler. Uluslararası borsa ekleri farklı bir veri planı gerektirir.",
+    "description": "Unsupported provider or international symbol",
+    "_machine_translated": true,
+    "_source_hash": "1be0703c00de00dc"
+  },
+  "error.invalid_symbols": {
+    "message": "Hisse senedi sembollerini boşluk veya virgülle ayırarak girin, örneğin AAPL MSFT veya BRK.B.",
+    "description": "Symbol validation error",
+    "_machine_translated": true,
+    "_source_hash": "5cd17969829278c5"
+  },
+  "error.too_many": {
+    "message": "Sorgu veya izleme listesi başına en fazla 10 sembol kullanın.",
+    "description": "Bounded request batch",
+    "_machine_translated": true,
+    "_source_hash": "e8f0028cd32f8c7b"
+  },
+  "error.rate_limit": {
+    "message": "İstek sınırına ulaşıldı. Varsa kayıtlı veriler gösteriliyor; istekler bir süre sonra devam edecek.",
+    "description": "Rate limit backoff",
+    "_machine_translated": true,
+    "_source_hash": "7d553dee0c6fe94a"
+  },
+  "error.offline": {
+    "message": "Finnhub'a ulaşılamıyor. Varsa kayıtlı veriler gösteriliyor.",
+    "description": "Offline or network timeout",
+    "_machine_translated": true,
+    "_source_hash": "e74f5fe32dc5f429"
+  },
+  "error.unavailable": {
+    "message": "Finnhub kullanılamıyor. Varsa kayıtlı veriler gösteriliyor.",
+    "description": "Sanitized provider error",
+    "_machine_translated": true,
+    "_source_hash": "2dd30adcc5164ad4"
+  },
+  "error.busy": {
+    "message": "Başka bir Kage penceresi fiyatları yeniliyor. Kısa bir süre sonra tekrar deneyin.",
+    "description": "Cross-window request lock contention",
+    "_machine_translated": true,
+    "_source_hash": "b6ed5bc4b975b5a0"
+  },
+  "error.cache_only": {
+    "message": "Yalnızca kayıtlı fiyatlar; canlı istekler duraklatıldı.",
+    "description": "User selected offline provider mode",
+    "_machine_translated": true,
+    "_source_hash": "ceee09611e30c87c"
+  },
+  "error.storage": {
+    "message": "Fiyat depolama alanı kullanılamıyor. Sınır takip edilebilene kadar istekler duraklatıldı.",
+    "description": "Fail closed when rate budget cannot persist",
+    "_machine_translated": true,
+    "_source_hash": "4cbfbb2e9b0adc41"
+  },
+  "error.invalid_key": {
+    "message": "Bir Finnhub API anahtarı yapıştırın, ardından Test et ve kaydet'i kullanın. URL yapıştırmayın.",
+    "description": "Malformed or missing API key",
+    "_machine_translated": true,
+    "_source_hash": "b972e383a08a0ac1"
+  },
+  "error.invalid_range": {
+    "message": "1d, 1w veya 1m aralığından birini seçin.",
+    "description": "Agent history range validation",
+    "_machine_translated": true,
+    "_source_hash": "f4f4d83dc6129a6c"
+  },
+  "settings.description": {
+    "message": "ABD hisse senedi fiyatları, izleme listesi ve yerel fiyat geçmişi. Çevrimiçi · Kaynak: Finnhub. Kaydedilen değerler gecikmeli olabilir.",
+    "description": "Settings summary",
+    "_machine_translated": true,
+    "_source_hash": "b91914b96330d6cb"
+  },
+  "settings.connection": {
+    "message": "Fiyat sağlayıcısı ve kurulum",
+    "description": "Connection section heading",
+    "_machine_translated": true,
+    "_source_hash": "863fbc4ab994c2eb"
+  },
+  "settings.provider": {
+    "message": "Sağlayıcı",
+    "description": "Provider selector label",
+    "_machine_translated": true,
+    "_source_hash": "713fef775807424a"
+  },
+  "settings.finnhub": {
+    "message": "Finnhub · ABD fiyatları · ücretsiz kişisel anahtar",
+    "description": "Supported online provider option",
+    "_machine_translated": true,
+    "_source_hash": "e989961cfe6d267c"
+  },
+  "settings.cache": {
+    "message": "Yalnızca kaydedilen fiyatlar · çevrimdışı",
+    "description": "Network paused provider option",
+    "_machine_translated": true,
+    "_source_hash": "f429d58cbb1c5f8b"
+  },
+  "setup.intro": {
+    "message": "Anahtarsız Stooq indirmeleri şu anda kullanılamıyor. ABD fiyatları için kendi ücretsiz Finnhub anahtarınızı kullanın; Stocks hiçbir zaman paylaşılan bir anahtar sağlamaz.",
+    "description": "Explain the authorized fallback to key setup",
+    "_machine_translated": true,
+    "_source_hash": "d8f6685775cf04bc"
+  },
+  "setup.terms": {
+    "message": "Finnhub'ın kişisel planları uygun kişisel kullanım içindir. Ticari kullanım ve verilerin veya bunlardan elde edilen sonuçların üçüncü taraflarla paylaşılması Finnhub onayı gerektirir. Fiyatları uzak bir agent'a göndermeden önce de dahil olmak üzere sağlayıcının koşullarını inceleyin.",
+    "description": "Material provider use restrictions",
+    "_machine_translated": true,
+    "_source_hash": "9eb9716ed06ff746"
+  },
+  "setup.steps": {
+    "message": "1. Ücretsiz anahtar al'ı açın ve Finnhub'a kaydolun. 2. API anahtarınızı Finnhub panelinden kopyalayın. 3. Aşağıya yapıştırın ve Test et ve kaydet'i seçin. 4. İzleme listenizi ve sağlayıcı ayarlarınızı kaydedin.",
+    "description": "Guided setup steps",
+    "_machine_translated": true,
+    "_source_hash": "f0be788769ece36a"
+  },
+  "setup.saved": {
+    "message": "Bu cihazda kayıtlı bir anahtar var. Test etmek için alanı boş bırakın veya yerine yenisini yapıştırın. Kayıtlı anahtarlar burada asla gösterilmez.",
+    "description": "Connected setup state without secret disclosure",
+    "_machine_translated": true,
+    "_source_hash": "4fba007359b56f1d"
+  },
+  "setup.free_key": {
+    "message": "Ücretsiz anahtar al",
+    "description": "Open provider registration in system browser",
+    "_machine_translated": true,
+    "_source_hash": "42b307eaf0136997"
+  },
+  "setup.key": {
+    "message": "Finnhub API anahtarı",
+    "description": "Scratch field for secret",
+    "_machine_translated": true,
+    "_source_hash": "2e7e94ee1be4a2cf"
+  },
+  "setup.key_hint": {
+    "message": "Test et ve kaydet, anahtarı Spotify kimlik bilgileri gibi özel uzantı verilerinde saklar. Buraya yazmak, anahtarı normal ayarlarla birlikte kaydetmez. Bu ana uygulamanın metin alanı, yazarken görünür durumdadır.",
+    "description": "Storage and host input behavior",
+    "_machine_translated": true,
+    "_source_hash": "4c3122d9b4d5daad"
+  },
+  "setup.test": {
+    "message": "Anahtarı test et ve kaydet",
+    "description": "Probe quote endpoint and save only on success",
+    "_machine_translated": true,
+    "_source_hash": "bc2be6a1a4fb4210"
+  },
+  "setup.remove": {
+    "message": "Kayıtlı anahtarı kaldır",
+    "description": "Delete provider credentials; retain cached quotes",
+    "_machine_translated": true,
+    "_source_hash": "469ba81c1b5aeb34"
+  },
+  "setup.removed": {
+    "message": "Anahtar kaldırıldı. Kaydedilen fiyatlar kullanılabilir durumda kalır.",
+    "description": "Removal success",
+    "_machine_translated": true,
+    "_source_hash": "59cb7317745316bb"
+  },
+  "setup.success": {
+    "message": "Finnhub fiyat testi başarılı; anahtar kaydedildi. Tamamlamak için sağlayıcı ve izleme listesi ayarlarını kaydedin.",
+    "description": "Successful guided setup",
+    "_machine_translated": true,
+    "_source_hash": "96383792f28339c2"
+  },
+  "settings.watchlist_section": {
+    "message": "İzleme listesi ve yenileme",
+    "description": "Display settings section",
+    "_machine_translated": true,
+    "_source_hash": "eeb14304489ebbaf"
+  },
+  "settings.watchlist": {
+    "message": "İzleme listesi",
+    "description": "Editable list label",
+    "_machine_translated": true,
+    "_source_hash": "4fa141d565f4d3cb"
+  },
+  "settings.watchlist_hint": {
+    "message": "Boşluk veya virgülle ayrılmış en fazla {max} ABD sembolü. Boş bir liste widget'ı gizler.",
+    "description": "Watchlist validation; preserve {max}",
+    "_machine_translated": true,
+    "_source_hash": "18fd9ff917b78911"
+  },
+  "settings.show": {
+    "message": "İzleme listesini kayan pencerede göster",
+    "description": "Widget visibility toggle",
+    "_machine_translated": true,
+    "_source_hash": "acd01a47d682bca1"
+  },
+  "settings.refresh": {
+    "message": "Yenileme aralığı (saniye)",
+    "description": "Quote cache and widget refresh interval",
+    "_machine_translated": true,
+    "_source_hash": "d5d486955acdd4c8"
+  },
+  "settings.refresh_hint": {
+    "message": "En az 60 saniye; varsayılan 300. Güncel Kage ana uygulamalarında gizli pencere sorguları duraklatılır. Bu cihaz genelinde dakikada en fazla 40 istek ayrılır; sağlayıcı sınırlarına diğer uygulamalarınız da dahildir.",
+    "description": "Request budget and hidden behavior",
+    "_machine_translated": true,
+    "_source_hash": "86c3403cda44db0e"
+  },
+  "settings.refresh_error": {
+    "message": "Yenileme aralığı 60 ile 3600 saniye arasında olmalıdır.",
+    "description": "Invalid interval",
+    "_machine_translated": true,
+    "_source_hash": "c93b2dfa0a61d9f4"
+  },
+  "tool.quote": {
+    "message": "Kişisel kullanım için Finnhub'dan ABD hisse senedi fiyatlarını alır. Kaynağı, son işlem zaman damgasını, önbellek güncelliğini ve sembol bazında hataları döndürür. Kullanıcının ücretsiz anahtarını gerektirir; sağlayıcı onayı olmadan yeniden dağıtmayın.",
+    "description": "Agent tool description",
+    "_machine_translated": true,
+    "_source_hash": "9aa8d167f9bf2f94"
+  },
+  "tool.symbols": {
+    "message": "En fazla 10 ABD sembolü, örneğin [\"AAPL\", \"MSFT\", \"BRK.B\"].",
+    "description": "Quote tool parameter description",
+    "_machine_translated": true,
+    "_source_hash": "5d5d1c443bb02531"
+  },
+  "tool.history": {
+    "message": "Bu cihazda 1d, 1w veya 1m için gözlemlenen, yerel olarak örneklenmiş Finnhub fiyatlarını alın. Ağ isteği yapılmaz. Örnekler eksik ve seyrektir, geçmiş mum verileri değildir; boş liste hiçbir şey toplanmadığı anlamına gelir.",
+    "description": "Agent tool scope must not imply full historical coverage",
+    "_machine_translated": true,
+    "_source_hash": "fcb4dd5f0bdcb792"
+  },
+  "tool.symbol": {
+    "message": "Bir ABD hisse senedi sembolü.",
+    "description": "History symbol parameter description",
+    "_machine_translated": true,
+    "_source_hash": "31f6b8214e118704"
+  },
+  "tool.range": {
+    "message": "1d, 1w veya 1m; varsayılan 1d.",
+    "description": "History range parameter description",
+    "_machine_translated": true,
+    "_source_hash": "992fdef4270c7170"
+  },
+  "tool.disabled": {
+    "message": "Stocks devre dışı.",
+    "description": "Host-disabled tool execution",
+    "_machine_translated": true,
+    "_source_hash": "9c2b3d9381a7a02c"
+  },
+  "tool.unknown": {
+    "message": "Bilinmeyen Stocks aracı.",
+    "description": "Unrecognized tool execution",
+    "_machine_translated": true,
+    "_source_hash": "2acdb85e54aa0ed1"
+  }
+}

@@ -1,0 +1,338 @@
+{
+  "_meta": {
+    "language": "ro",
+    "name": "Română",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Acțiuni",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "d6d4700604b64b88"
+  },
+  "manifest.description": {
+    "message": "Online · Cotații din SUA și listă de urmărire de la Finnhub, cu cheia dumneavoastră gratuită. Date întârziate când sunt din cache; fiecare cotație își afișează marcajul de timp.",
+    "description": "Store listing; Online and Data delayed communicate network dependency and freshness",
+    "_machine_translated": true,
+    "_source_hash": "6feb0a4240dfb80e"
+  },
+  "result.loading": {
+    "message": "Se caută acțiunile…",
+    "description": "Launcher placeholder while quotes load",
+    "_machine_translated": true,
+    "_source_hash": "a2b95adcfc6e29b7"
+  },
+  "result.help": {
+    "message": "Încercați $AAPL, stock msft sau stock aapl msft nvda. Enter deschide un grafic; alegeți Copiați sau folosiți stock copy AAPL pentru a copia o cotație.",
+    "description": "Launcher syntax and actions",
+    "_machine_translated": true,
+    "_source_hash": "ca59813d90734a08"
+  },
+  "result.copy": {
+    "message": "Copiați {text}",
+    "description": "Selectable clipboard action; preserve {text}",
+    "_machine_translated": true,
+    "_source_hash": "516993d8cc4732a3"
+  },
+  "quote.as_of": {
+    "message": "La {time}",
+    "description": "Actual last trade timestamp, not request time; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "3dcdbc540a4593d1"
+  },
+  "quote.cached": {
+    "message": "Salvat în cache la {time}",
+    "description": "Time the saved quote was fetched; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "76520879cd1583b5"
+  },
+  "quote.retry": {
+    "message": "Reîncercați după {time}",
+    "description": "Rate limit backoff expiry; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "d305b2da13a783d0"
+  },
+  "quote.delayed": {
+    "message": "Date întârziate / piața poate fi închisă",
+    "description": "Quote is over 15 minutes old; do not imply verified exchange status",
+    "_machine_translated": true,
+    "_source_hash": "ece516a5d44ca6ba"
+  },
+  "quote.sampled": {
+    "message": "Cotații Finnhub eșantionate local, cu goluri. Se colectează cât timp folosiți Acțiuni; acestea nu sunt date istorice de tip lumânare.",
+    "description": "Sparkline accessible label and settings explanation",
+    "_machine_translated": true,
+    "_source_hash": "0eca89619bcb28b9"
+  },
+  "quote.source": {
+    "message": "Sursă: Finnhub",
+    "description": "Visible provider attribution",
+    "_machine_translated": true,
+    "_source_hash": "693535460d4db418"
+  },
+  "error.setup": {
+    "message": "Deschideți setările Acțiuni, obțineți o cheie Finnhub gratuită, apoi alegeți Testați și salvați.",
+    "description": "No stored key",
+    "_machine_translated": true,
+    "_source_hash": "8adbf75fdf5bc595"
+  },
+  "error.auth": {
+    "message": "Finnhub a respins cheia. Deschideți setările Acțiuni pentru a testa o cheie nouă.",
+    "description": "Authentication or plan error, no raw provider response",
+    "_machine_translated": true,
+    "_source_hash": "ecc147e2c9741ce7"
+  },
+  "error.unknown": {
+    "message": "Nu există nicio cotație pentru acest simbol. Verificați simbolul bursier din SUA, inclusiv orice sufix de clasă de acțiuni.",
+    "description": "Unknown or zero-valued quote",
+    "_machine_translated": true,
+    "_source_hash": "3a30475366fb7002"
+  },
+  "error.unsupported": {
+    "message": "Acest furnizor acceptă doar simboluri bursiere din SUA. Sufixele burselor internaționale necesită un alt plan de date.",
+    "description": "Unsupported provider or international symbol",
+    "_machine_translated": true,
+    "_source_hash": "1be0703c00de00dc"
+  },
+  "error.invalid_symbols": {
+    "message": "Introduceți simboluri bursiere separate prin spații sau virgule, de exemplu AAPL MSFT sau BRK.B.",
+    "description": "Symbol validation error",
+    "_machine_translated": true,
+    "_source_hash": "5cd17969829278c5"
+  },
+  "error.too_many": {
+    "message": "Folosiți cel mult 10 simboluri per interogare sau listă de urmărire.",
+    "description": "Bounded request batch",
+    "_machine_translated": true,
+    "_source_hash": "e8f0028cd32f8c7b"
+  },
+  "error.rate_limit": {
+    "message": "Limita de solicitări a fost atinsă. Se afișează datele salvate, dacă există; solicitările vor relua după o pauză.",
+    "description": "Rate limit backoff",
+    "_machine_translated": true,
+    "_source_hash": "7d553dee0c6fe94a"
+  },
+  "error.offline": {
+    "message": "Finnhub nu poate fi accesat. Se afișează datele salvate, dacă există.",
+    "description": "Offline or network timeout",
+    "_machine_translated": true,
+    "_source_hash": "e74f5fe32dc5f429"
+  },
+  "error.unavailable": {
+    "message": "Finnhub nu este disponibil. Se afișează datele salvate, dacă există.",
+    "description": "Sanitized provider error",
+    "_machine_translated": true,
+    "_source_hash": "2dd30adcc5164ad4"
+  },
+  "error.busy": {
+    "message": "O altă fereastră Kage actualizează cotațiile. Încercați din nou în curând.",
+    "description": "Cross-window request lock contention",
+    "_machine_translated": true,
+    "_source_hash": "b6ed5bc4b975b5a0"
+  },
+  "error.cache_only": {
+    "message": "Doar cotații salvate; solicitările live sunt întrerupte.",
+    "description": "User selected offline provider mode",
+    "_machine_translated": true,
+    "_source_hash": "ceee09611e30c87c"
+  },
+  "error.storage": {
+    "message": "Spațiul de stocare pentru cotații nu este disponibil. Solicitările sunt întrerupte până când limita lor poate fi urmărită.",
+    "description": "Fail closed when rate budget cannot persist",
+    "_machine_translated": true,
+    "_source_hash": "4cbfbb2e9b0adc41"
+  },
+  "error.invalid_key": {
+    "message": "Lipiți o cheie API Finnhub, apoi alegeți Testați și salvați. Nu lipiți un URL.",
+    "description": "Malformed or missing API key",
+    "_machine_translated": true,
+    "_source_hash": "b972e383a08a0ac1"
+  },
+  "error.invalid_range": {
+    "message": "Alegeți un interval de 1d, 1w sau 1m.",
+    "description": "Agent history range validation",
+    "_machine_translated": true,
+    "_source_hash": "f4f4d83dc6129a6c"
+  },
+  "settings.description": {
+    "message": "Cotații bursiere din SUA, listă de urmărire și istoric local al cotațiilor. Online · Sursă: Finnhub. Valorile salvate pot avea întârziere.",
+    "description": "Settings summary",
+    "_machine_translated": true,
+    "_source_hash": "b91914b96330d6cb"
+  },
+  "settings.connection": {
+    "message": "Furnizor de cotații și configurare",
+    "description": "Connection section heading",
+    "_machine_translated": true,
+    "_source_hash": "863fbc4ab994c2eb"
+  },
+  "settings.provider": {
+    "message": "Furnizor",
+    "description": "Provider selector label",
+    "_machine_translated": true,
+    "_source_hash": "713fef775807424a"
+  },
+  "settings.finnhub": {
+    "message": "Finnhub · cotații SUA · cheie personală gratuită",
+    "description": "Supported online provider option",
+    "_machine_translated": true,
+    "_source_hash": "e989961cfe6d267c"
+  },
+  "settings.cache": {
+    "message": "Doar cotații salvate · offline",
+    "description": "Network paused provider option",
+    "_machine_translated": true,
+    "_source_hash": "f429d58cbb1c5f8b"
+  },
+  "setup.intro": {
+    "message": "Descărcările Stooq fără cheie nu sunt disponibile momentan. Folosiți propria cheie Finnhub gratuită pentru cotațiile din SUA; Stocks nu oferă niciodată o cheie partajată.",
+    "description": "Explain the authorized fallback to key setup",
+    "_machine_translated": true,
+    "_source_hash": "d8f6685775cf04bc"
+  },
+  "setup.terms": {
+    "message": "Planurile personale Finnhub sunt destinate utilizării personale eligibile. Utilizarea în scop comercial și partajarea datelor sau a rezultatelor derivate cu terți necesită aprobarea Finnhub. Consultați termenii furnizorului, inclusiv înainte de a trimite cotații unui agent la distanță.",
+    "description": "Material provider use restrictions",
+    "_machine_translated": true,
+    "_source_hash": "9eb9716ed06ff746"
+  },
+  "setup.steps": {
+    "message": "1. Deschideți Obțineți o cheie gratuită și înregistrați-vă la Finnhub. 2. Copiați cheia API din panoul de control. 3. Lipiți-o mai jos și alegeți Testați și salvați. 4. Salvați lista de urmărire și setările furnizorului.",
+    "description": "Guided setup steps",
+    "_machine_translated": true,
+    "_source_hash": "f0be788769ece36a"
+  },
+  "setup.saved": {
+    "message": "O cheie este salvată pe acest dispozitiv. Lăsați câmpul gol pentru a o testa sau lipiți o cheie nouă. Cheile stocate nu sunt afișate niciodată aici.",
+    "description": "Connected setup state without secret disclosure",
+    "_machine_translated": true,
+    "_source_hash": "4fba007359b56f1d"
+  },
+  "setup.free_key": {
+    "message": "Obțineți o cheie gratuită",
+    "description": "Open provider registration in system browser",
+    "_machine_translated": true,
+    "_source_hash": "42b307eaf0136997"
+  },
+  "setup.key": {
+    "message": "Cheie API Finnhub",
+    "description": "Scratch field for secret",
+    "_machine_translated": true,
+    "_source_hash": "2e7e94ee1be4a2cf"
+  },
+  "setup.key_hint": {
+    "message": "Testați și salvați stochează cheia în datele private ale extensiei, la fel ca datele de autentificare Spotify. Introducerea ei aici nu o salvează împreună cu setările obișnuite. Câmpul de text al acestei gazde este vizibil în timp ce tastați.",
+    "description": "Storage and host input behavior",
+    "_machine_translated": true,
+    "_source_hash": "4c3122d9b4d5daad"
+  },
+  "setup.test": {
+    "message": "Testați și salvați cheia",
+    "description": "Probe quote endpoint and save only on success",
+    "_machine_translated": true,
+    "_source_hash": "bc2be6a1a4fb4210"
+  },
+  "setup.remove": {
+    "message": "Eliminați cheia salvată",
+    "description": "Delete provider credentials; retain cached quotes",
+    "_machine_translated": true,
+    "_source_hash": "469ba81c1b5aeb34"
+  },
+  "setup.removed": {
+    "message": "Cheia a fost eliminată. Cotațiile salvate rămân disponibile.",
+    "description": "Removal success",
+    "_machine_translated": true,
+    "_source_hash": "59cb7317745316bb"
+  },
+  "setup.success": {
+    "message": "Testul de cotație Finnhub a reușit; cheia a fost salvată. Salvați setările furnizorului și lista de urmărire pentru a finaliza.",
+    "description": "Successful guided setup",
+    "_machine_translated": true,
+    "_source_hash": "96383792f28339c2"
+  },
+  "settings.watchlist_section": {
+    "message": "Listă de urmărire și reîmprospătare",
+    "description": "Display settings section",
+    "_machine_translated": true,
+    "_source_hash": "eeb14304489ebbaf"
+  },
+  "settings.watchlist": {
+    "message": "Listă de urmărire",
+    "description": "Editable list label",
+    "_machine_translated": true,
+    "_source_hash": "4fa141d565f4d3cb"
+  },
+  "settings.watchlist_hint": {
+    "message": "Până la {max} simboluri din SUA, separate prin spații sau virgule. O listă goală ascunde widgetul.",
+    "description": "Watchlist validation; preserve {max}",
+    "_machine_translated": true,
+    "_source_hash": "18fd9ff917b78911"
+  },
+  "settings.show": {
+    "message": "Afișați lista de urmărire în fereastra flotantă",
+    "description": "Widget visibility toggle",
+    "_machine_translated": true,
+    "_source_hash": "acd01a47d682bca1"
+  },
+  "settings.refresh": {
+    "message": "Interval de reîmprospătare (secunde)",
+    "description": "Quote cache and widget refresh interval",
+    "_machine_translated": true,
+    "_source_hash": "d5d486955acdd4c8"
+  },
+  "settings.refresh_hint": {
+    "message": "Minimum 60 de secunde; implicit 300. Interogările din fereastra ascunsă sunt suspendate pe gazdele Kage actuale. Sunt rezervate cel mult 40 de solicitări pe minut pe acest dispozitiv; limitele furnizorului includ și celelalte aplicații ale dumneavoastră.",
+    "description": "Request budget and hidden behavior",
+    "_machine_translated": true,
+    "_source_hash": "86c3403cda44db0e"
+  },
+  "settings.refresh_error": {
+    "message": "Intervalul de reîmprospătare trebuie să fie între 60 și 3600 de secunde.",
+    "description": "Invalid interval",
+    "_machine_translated": true,
+    "_source_hash": "c93b2dfa0a61d9f4"
+  },
+  "tool.quote": {
+    "message": "Obține cotații bursiere din SUA de la Finnhub pentru uz personal. Returnează sursa, marcajul temporal al ultimei tranzacții, prospețimea cache-ului și erorile pentru fiecare simbol. Necesită cheia gratuită a utilizatorului; nu redistribuiți fără aprobarea furnizorului.",
+    "description": "Agent tool description",
+    "_machine_translated": true,
+    "_source_hash": "9aa8d167f9bf2f94"
+  },
+  "tool.symbols": {
+    "message": "Până la 10 simboluri din SUA, de exemplu [\"AAPL\", \"MSFT\", \"BRK.B\"].",
+    "description": "Quote tool parameter description",
+    "_machine_translated": true,
+    "_source_hash": "5d5d1c443bb02531"
+  },
+  "tool.history": {
+    "message": "Obține cotațiile Finnhub eșantionate local, observate pe acest dispozitiv, pentru 1d, 1w sau 1m. Fără solicitări de rețea. Eșantioane incomplete și rare, nu lumânări istorice; o listă goală înseamnă că nu s-a colectat nimic.",
+    "description": "Agent tool scope must not imply full historical coverage",
+    "_machine_translated": true,
+    "_source_hash": "fcb4dd5f0bdcb792"
+  },
+  "tool.symbol": {
+    "message": "Un simbol bursier din SUA.",
+    "description": "History symbol parameter description",
+    "_machine_translated": true,
+    "_source_hash": "31f6b8214e118704"
+  },
+  "tool.range": {
+    "message": "1d, 1w sau 1m; implicit 1d.",
+    "description": "History range parameter description",
+    "_machine_translated": true,
+    "_source_hash": "992fdef4270c7170"
+  },
+  "tool.disabled": {
+    "message": "Stocks este dezactivat.",
+    "description": "Host-disabled tool execution",
+    "_machine_translated": true,
+    "_source_hash": "9c2b3d9381a7a02c"
+  },
+  "tool.unknown": {
+    "message": "Instrument Stocks necunoscut.",
+    "description": "Unrecognized tool execution",
+    "_machine_translated": true,
+    "_source_hash": "2acdb85e54aa0ed1"
+  }
+}

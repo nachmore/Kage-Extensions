@@ -1,0 +1,338 @@
+{
+  "_meta": {
+    "language": "fa",
+    "name": "فارسی",
+    "rtl": true,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "سهام",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "d6d4700604b64b88"
+  },
+  "manifest.description": {
+    "message": "آنلاین · قیمت‌های سهام آمریکا و فهرست دیده‌بانی از Finnhub با کلید رایگان شما. داده‌های ذخیره‌شده با تأخیر هستند؛ هر قیمت زمان خود را نشان می‌دهد.",
+    "description": "Store listing; Online and Data delayed communicate network dependency and freshness",
+    "_machine_translated": true,
+    "_source_hash": "6feb0a4240dfb80e"
+  },
+  "result.loading": {
+    "message": "در حال جستجوی سهام…",
+    "description": "Launcher placeholder while quotes load",
+    "_machine_translated": true,
+    "_source_hash": "a2b95adcfc6e29b7"
+  },
+  "result.help": {
+    "message": "$AAPL، stock msft یا stock aapl msft nvda را امتحان کنید. Enter نمودار را باز می‌کند؛ برای کپی یک قیمت، «کپی» را انتخاب کنید یا از stock copy AAPL استفاده کنید.",
+    "description": "Launcher syntax and actions",
+    "_machine_translated": true,
+    "_source_hash": "ca59813d90734a08"
+  },
+  "result.copy": {
+    "message": "کپی {text}",
+    "description": "Selectable clipboard action; preserve {text}",
+    "_machine_translated": true,
+    "_source_hash": "516993d8cc4732a3"
+  },
+  "quote.as_of": {
+    "message": "تا {time}",
+    "description": "Actual last trade timestamp, not request time; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "3dcdbc540a4593d1"
+  },
+  "quote.cached": {
+    "message": "ذخیره‌شده در {time}",
+    "description": "Time the saved quote was fetched; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "76520879cd1583b5"
+  },
+  "quote.retry": {
+    "message": "تلاش دوباره پس از {time}",
+    "description": "Rate limit backoff expiry; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "d305b2da13a783d0"
+  },
+  "quote.delayed": {
+    "message": "داده با تأخیر / ممکن است بازار بسته باشد",
+    "description": "Quote is over 15 minutes old; do not imply verified exchange status",
+    "_machine_translated": true,
+    "_source_hash": "ece516a5d44ca6ba"
+  },
+  "quote.sampled": {
+    "message": "قیمت‌های Finnhub که به‌صورت محلی نمونه‌برداری شده‌اند و ممکن است وقفه داشته باشند. فقط هنگام استفاده از «سهام» جمع‌آوری می‌شوند؛ این داده‌ها کندل‌های تاریخی نیستند.",
+    "description": "Sparkline accessible label and settings explanation",
+    "_machine_translated": true,
+    "_source_hash": "0eca89619bcb28b9"
+  },
+  "quote.source": {
+    "message": "منبع: Finnhub",
+    "description": "Visible provider attribution",
+    "_machine_translated": true,
+    "_source_hash": "693535460d4db418"
+  },
+  "error.setup": {
+    "message": "تنظیمات «سهام» را باز کنید، یک کلید رایگان Finnhub دریافت کنید، سپس آن را «آزمایش و ذخیره» کنید.",
+    "description": "No stored key",
+    "_machine_translated": true,
+    "_source_hash": "8adbf75fdf5bc595"
+  },
+  "error.auth": {
+    "message": "Finnhub کلید را رد کرد. برای آزمایش کلید جایگزین، تنظیمات «سهام» را باز کنید.",
+    "description": "Authentication or plan error, no raw provider response",
+    "_machine_translated": true,
+    "_source_hash": "ecc147e2c9741ce7"
+  },
+  "error.unknown": {
+    "message": "قیمتی برای این نماد وجود ندارد. نماد سهام آمریکا را، همراه با پسوند کلاس سهم در صورت وجود، بررسی کنید.",
+    "description": "Unknown or zero-valued quote",
+    "_machine_translated": true,
+    "_source_hash": "3a30475366fb7002"
+  },
+  "error.unsupported": {
+    "message": "این ارائه‌دهنده فقط از نمادهای سهام آمریکا پشتیبانی می‌کند. پسوندهای بورس‌های بین‌المللی به طرح داده دیگری نیاز دارند.",
+    "description": "Unsupported provider or international symbol",
+    "_machine_translated": true,
+    "_source_hash": "1be0703c00de00dc"
+  },
+  "error.invalid_symbols": {
+    "message": "نمادهای سهام را با فاصله یا ویرگول جدا کنید، مانند AAPL MSFT یا BRK.B.",
+    "description": "Symbol validation error",
+    "_machine_translated": true,
+    "_source_hash": "5cd17969829278c5"
+  },
+  "error.too_many": {
+    "message": "در هر جستجو یا فهرست دیده‌بانی حداکثر ۱۰ نماد استفاده کنید.",
+    "description": "Bounded request batch",
+    "_machine_translated": true,
+    "_source_hash": "e8f0028cd32f8c7b"
+  },
+  "error.rate_limit": {
+    "message": "به سقف درخواست‌ها رسیده‌اید. در صورت وجود، داده‌های ذخیره‌شده نمایش داده می‌شوند؛ درخواست‌ها پس از مکثی از سر گرفته می‌شوند.",
+    "description": "Rate limit backoff",
+    "_machine_translated": true,
+    "_source_hash": "7d553dee0c6fe94a"
+  },
+  "error.offline": {
+    "message": "دسترسی به Finnhub ممکن نیست. در صورت وجود، داده‌های ذخیره‌شده نمایش داده می‌شوند.",
+    "description": "Offline or network timeout",
+    "_machine_translated": true,
+    "_source_hash": "e74f5fe32dc5f429"
+  },
+  "error.unavailable": {
+    "message": "Finnhub در دسترس نیست. در صورت وجود، داده‌های ذخیره‌شده نمایش داده می‌شوند.",
+    "description": "Sanitized provider error",
+    "_machine_translated": true,
+    "_source_hash": "2dd30adcc5164ad4"
+  },
+  "error.busy": {
+    "message": "پنجره دیگری از Kage در حال به‌روزرسانی قیمت‌ها است. کمی بعد دوباره امتحان کنید.",
+    "description": "Cross-window request lock contention",
+    "_machine_translated": true,
+    "_source_hash": "b6ed5bc4b975b5a0"
+  },
+  "error.cache_only": {
+    "message": "فقط قیمت‌های ذخیره‌شده؛ درخواست‌های زنده متوقف شده‌اند.",
+    "description": "User selected offline provider mode",
+    "_machine_translated": true,
+    "_source_hash": "ceee09611e30c87c"
+  },
+  "error.storage": {
+    "message": "فضای ذخیره‌سازی قیمت‌ها در دسترس نیست. درخواست‌ها تا زمانی که بتوان سقف آن‌ها را پیگیری کرد متوقف می‌شوند.",
+    "description": "Fail closed when rate budget cannot persist",
+    "_machine_translated": true,
+    "_source_hash": "4cbfbb2e9b0adc41"
+  },
+  "error.invalid_key": {
+    "message": "یک کلید API از Finnhub جای‌گذاری کنید، سپس «آزمایش و ذخیره» را بزنید. URL جای‌گذاری نکنید.",
+    "description": "Malformed or missing API key",
+    "_machine_translated": true,
+    "_source_hash": "b972e383a08a0ac1"
+  },
+  "error.invalid_range": {
+    "message": "بازه‌ای از میان 1d، 1w یا 1m انتخاب کنید.",
+    "description": "Agent history range validation",
+    "_machine_translated": true,
+    "_source_hash": "f4f4d83dc6129a6c"
+  },
+  "settings.description": {
+    "message": "قیمت سهام آمریکا، فهرست دیده‌بانی و تاریخچهٔ محلی قیمت‌ها. آنلاین · منبع: Finnhub. مقادیر ذخیره‌شده ممکن است با تأخیر باشند.",
+    "description": "Settings summary",
+    "_machine_translated": true,
+    "_source_hash": "b91914b96330d6cb"
+  },
+  "settings.connection": {
+    "message": "ارائه‌دهندهٔ قیمت و راه‌اندازی",
+    "description": "Connection section heading",
+    "_machine_translated": true,
+    "_source_hash": "863fbc4ab994c2eb"
+  },
+  "settings.provider": {
+    "message": "ارائه‌دهنده",
+    "description": "Provider selector label",
+    "_machine_translated": true,
+    "_source_hash": "713fef775807424a"
+  },
+  "settings.finnhub": {
+    "message": "Finnhub · قیمت‌های آمریکا · کلید شخصی رایگان",
+    "description": "Supported online provider option",
+    "_machine_translated": true,
+    "_source_hash": "e989961cfe6d267c"
+  },
+  "settings.cache": {
+    "message": "فقط قیمت‌های ذخیره‌شده · آفلاین",
+    "description": "Network paused provider option",
+    "_machine_translated": true,
+    "_source_hash": "f429d58cbb1c5f8b"
+  },
+  "setup.intro": {
+    "message": "دانلودهای بدون کلید Stooq در حال حاضر در دسترس نیستند. برای قیمت‌های آمریکا از کلید رایگان Finnhub خودتان استفاده کنید؛ Stocks هرگز کلید مشترک ارائه نمی‌دهد.",
+    "description": "Explain the authorized fallback to key setup",
+    "_machine_translated": true,
+    "_source_hash": "d8f6685775cf04bc"
+  },
+  "setup.terms": {
+    "message": "طرح‌های شخصی Finnhub برای استفادهٔ شخصیِ واجد شرایط است. استفادهٔ تجاری و اشتراک‌گذاری داده‌ها یا نتایج حاصل از آن‌ها با اشخاص ثالث نیازمند تأیید Finnhub است. شرایط ارائه‌دهنده را بررسی کنید، از جمله پیش از ارسال قیمت‌ها به یک عامل راه دور.",
+    "description": "Material provider use restrictions",
+    "_machine_translated": true,
+    "_source_hash": "9eb9716ed06ff746"
+  },
+  "setup.steps": {
+    "message": "۱. «دریافت کلید رایگان» را باز کنید و در Finnhub ثبت‌نام کنید. ۲. کلید API خود را از داشبورد آن کپی کنید. ۳. آن را در زیر جای‌گذاری کنید و «آزمایش و ذخیره» را انتخاب کنید. ۴. فهرست دیده‌بانی و تنظیمات ارائه‌دهنده را ذخیره کنید.",
+    "description": "Guided setup steps",
+    "_machine_translated": true,
+    "_source_hash": "f0be788769ece36a"
+  },
+  "setup.saved": {
+    "message": "یک کلید روی این دستگاه ذخیره شده است. برای آزمایش آن، فیلد را خالی بگذارید یا کلید جایگزین را جای‌گذاری کنید. کلیدهای ذخیره‌شده هرگز اینجا نمایش داده نمی‌شوند.",
+    "description": "Connected setup state without secret disclosure",
+    "_machine_translated": true,
+    "_source_hash": "4fba007359b56f1d"
+  },
+  "setup.free_key": {
+    "message": "دریافت کلید رایگان",
+    "description": "Open provider registration in system browser",
+    "_machine_translated": true,
+    "_source_hash": "42b307eaf0136997"
+  },
+  "setup.key": {
+    "message": "کلید API ‏Finnhub",
+    "description": "Scratch field for secret",
+    "_machine_translated": true,
+    "_source_hash": "2e7e94ee1be4a2cf"
+  },
+  "setup.key_hint": {
+    "message": "«آزمایش و ذخیره» کلید را در داده‌های خصوصی افزونه ذخیره می‌کند، مانند اعتبارنامه‌های Spotify. تایپ کردن آن در اینجا باعث ذخیره شدنش همراه تنظیمات عادی نمی‌شود. فیلد متنی این میزبان هنگام تایپ قابل مشاهده است.",
+    "description": "Storage and host input behavior",
+    "_machine_translated": true,
+    "_source_hash": "4c3122d9b4d5daad"
+  },
+  "setup.test": {
+    "message": "آزمایش و ذخیرهٔ کلید",
+    "description": "Probe quote endpoint and save only on success",
+    "_machine_translated": true,
+    "_source_hash": "bc2be6a1a4fb4210"
+  },
+  "setup.remove": {
+    "message": "حذف کلید ذخیره‌شده",
+    "description": "Delete provider credentials; retain cached quotes",
+    "_machine_translated": true,
+    "_source_hash": "469ba81c1b5aeb34"
+  },
+  "setup.removed": {
+    "message": "کلید حذف شد. قیمت‌های ذخیره‌شده همچنان در دسترس هستند.",
+    "description": "Removal success",
+    "_machine_translated": true,
+    "_source_hash": "59cb7317745316bb"
+  },
+  "setup.success": {
+    "message": "آزمایش قیمت Finnhub موفق بود؛ کلید ذخیره شد. برای پایان، تنظیمات ارائه‌دهنده و فهرست دیده‌بانی را ذخیره کنید.",
+    "description": "Successful guided setup",
+    "_machine_translated": true,
+    "_source_hash": "96383792f28339c2"
+  },
+  "settings.watchlist_section": {
+    "message": "فهرست دیده‌بانی و به‌روزرسانی",
+    "description": "Display settings section",
+    "_machine_translated": true,
+    "_source_hash": "eeb14304489ebbaf"
+  },
+  "settings.watchlist": {
+    "message": "فهرست دیده‌بانی",
+    "description": "Editable list label",
+    "_machine_translated": true,
+    "_source_hash": "4fa141d565f4d3cb"
+  },
+  "settings.watchlist_hint": {
+    "message": "حداکثر {max} نماد آمریکایی، جداشده با فاصله یا ویرگول. فهرست خالی ویجت را پنهان می‌کند.",
+    "description": "Watchlist validation; preserve {max}",
+    "_machine_translated": true,
+    "_source_hash": "18fd9ff917b78911"
+  },
+  "settings.show": {
+    "message": "نمایش فهرست دیده‌بانی در پنجرهٔ شناور",
+    "description": "Widget visibility toggle",
+    "_machine_translated": true,
+    "_source_hash": "acd01a47d682bca1"
+  },
+  "settings.refresh": {
+    "message": "فاصلهٔ به‌روزرسانی (ثانیه)",
+    "description": "Quote cache and widget refresh interval",
+    "_machine_translated": true,
+    "_source_hash": "d5d486955acdd4c8"
+  },
+  "settings.refresh_hint": {
+    "message": "حداقل ۶۰ ثانیه؛ پیش‌فرض ۳۰۰. در میزبان‌های فعلی Kage، درخواست‌های دوره‌ای هنگام پنهان بودن پنجره متوقف می‌شوند. حداکثر ۴۰ درخواست در دقیقه در کل این دستگاه رزرو می‌شود؛ محدودیت‌های ارائه‌دهنده شامل برنامه‌های دیگر شما نیز می‌شود.",
+    "description": "Request budget and hidden behavior",
+    "_machine_translated": true,
+    "_source_hash": "86c3403cda44db0e"
+  },
+  "settings.refresh_error": {
+    "message": "فاصلهٔ به‌روزرسانی باید بین ۶۰ تا ۳۶۰۰ ثانیه باشد.",
+    "description": "Invalid interval",
+    "_machine_translated": true,
+    "_source_hash": "c93b2dfa0a61d9f4"
+  },
+  "tool.quote": {
+    "message": "دریافت قیمت سهام آمریکا از Finnhub برای استفادهٔ شخصی. منبع، زمان آخرین معامله، تازگی حافظهٔ پنهان و خطاهای هر نماد را برمی‌گرداند. به کلید رایگان کاربر نیاز دارد؛ بدون تأیید ارائه‌دهنده بازتوزیع نکنید.",
+    "description": "Agent tool description",
+    "_machine_translated": true,
+    "_source_hash": "9aa8d167f9bf2f94"
+  },
+  "tool.symbols": {
+    "message": "حداکثر ۱۰ نماد آمریکایی، برای مثال [\"AAPL\", \"MSFT\", \"BRK.B\"].",
+    "description": "Quote tool parameter description",
+    "_machine_translated": true,
+    "_source_hash": "5d5d1c443bb02531"
+  },
+  "tool.history": {
+    "message": "دریافت قیمت‌های Finnhub که به‌صورت محلی روی این دستگاه برای 1d، 1w یا 1m نمونه‌برداری شده‌اند. بدون درخواست شبکه. نمونه‌ها ناقص و پراکنده‌اند و کندل‌های تاریخی نیستند؛ فهرست خالی یعنی هیچ داده‌ای جمع‌آوری نشده است.",
+    "description": "Agent tool scope must not imply full historical coverage",
+    "_machine_translated": true,
+    "_source_hash": "fcb4dd5f0bdcb792"
+  },
+  "tool.symbol": {
+    "message": "نماد یک سهام آمریکایی.",
+    "description": "History symbol parameter description",
+    "_machine_translated": true,
+    "_source_hash": "31f6b8214e118704"
+  },
+  "tool.range": {
+    "message": "1d، 1w یا 1m؛ پیش‌فرض 1d.",
+    "description": "History range parameter description",
+    "_machine_translated": true,
+    "_source_hash": "992fdef4270c7170"
+  },
+  "tool.disabled": {
+    "message": "Stocks غیرفعال است.",
+    "description": "Host-disabled tool execution",
+    "_machine_translated": true,
+    "_source_hash": "9c2b3d9381a7a02c"
+  },
+  "tool.unknown": {
+    "message": "ابزار ناشناختهٔ Stocks.",
+    "description": "Unrecognized tool execution",
+    "_machine_translated": true,
+    "_source_hash": "2acdb85e54aa0ed1"
+  }
+}

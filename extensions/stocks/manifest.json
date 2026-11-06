@@ -1,0 +1,26 @@
+{
+  "id": "stocks",
+  "name": "__MSG_manifest.name__",
+  "version": "1.0.0",
+  "type": "extension",
+  "description": "__MSG_manifest.description__",
+  "icon": "📈",
+  "author": "kage",
+  "tags": ["stocks", "finance", "quotes", "watchlist", "finnhub", "online", "data-delayed"],
+  "permissions": ["storage", "urls"],
+  "config": {
+    "provider": { "type": "string", "default": "finnhub" },
+    "watchlist": { "type": "string", "default": "AAPL MSFT NVDA" },
+    "refresh_seconds": { "type": "number", "default": 300 },
+    "show_watchlist": { "type": "boolean", "default": true }
+  },
+  "contributes": {
+    "searchProvider": "./search.js",
+    "settingsProvider": "./settings.js",
+    "toolProvider": "./tools.js",
+    "css": ["./styles.css"],
+    "widgets": [
+      { "id": "watchlist", "slot": "floating-bottom", "module": "./widget.js" }
+    ]
+  }
+}

@@ -1,0 +1,338 @@
+{
+  "_meta": {
+    "language": "ko",
+    "name": "한국어",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "주식",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "d6d4700604b64b88"
+  },
+  "manifest.description": {
+    "message": "온라인 · 무료 키로 Finnhub의 미국 시세와 관심 종목을 확인합니다. 캐시된 경우 데이터가 지연되며, 모든 시세에 시각이 표시됩니다.",
+    "description": "Store listing; Online and Data delayed communicate network dependency and freshness",
+    "_machine_translated": true,
+    "_source_hash": "6feb0a4240dfb80e"
+  },
+  "result.loading": {
+    "message": "주식 조회 중…",
+    "description": "Launcher placeholder while quotes load",
+    "_machine_translated": true,
+    "_source_hash": "a2b95adcfc6e29b7"
+  },
+  "result.help": {
+    "message": "$AAPL, stock msft 또는 stock aapl msft nvda를 입력해 보십시오. Enter를 누르면 차트가 열립니다. 시세를 복사하려면 복사를 선택하거나 stock copy AAPL을 사용하십시오.",
+    "description": "Launcher syntax and actions",
+    "_machine_translated": true,
+    "_source_hash": "ca59813d90734a08"
+  },
+  "result.copy": {
+    "message": "{text} 복사",
+    "description": "Selectable clipboard action; preserve {text}",
+    "_machine_translated": true,
+    "_source_hash": "516993d8cc4732a3"
+  },
+  "quote.as_of": {
+    "message": "{time} 기준",
+    "description": "Actual last trade timestamp, not request time; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "3dcdbc540a4593d1"
+  },
+  "quote.cached": {
+    "message": "{time}에 캐시됨",
+    "description": "Time the saved quote was fetched; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "76520879cd1583b5"
+  },
+  "quote.retry": {
+    "message": "{time} 이후 다시 시도",
+    "description": "Rate limit backoff expiry; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "d305b2da13a783d0"
+  },
+  "quote.delayed": {
+    "message": "데이터 지연됨 / 장이 마감되었을 수 있음",
+    "description": "Quote is over 15 minutes old; do not imply verified exchange status",
+    "_machine_translated": true,
+    "_source_hash": "ece516a5d44ca6ba"
+  },
+  "quote.sampled": {
+    "message": "로컬에서 수집한 Finnhub 시세로, 누락 구간이 있습니다. 주식을 사용하는 동안 수집되며 과거 캔들 데이터가 아닙니다.",
+    "description": "Sparkline accessible label and settings explanation",
+    "_machine_translated": true,
+    "_source_hash": "0eca89619bcb28b9"
+  },
+  "quote.source": {
+    "message": "출처: Finnhub",
+    "description": "Visible provider attribution",
+    "_machine_translated": true,
+    "_source_hash": "693535460d4db418"
+  },
+  "error.setup": {
+    "message": "주식 설정을 열고 무료 Finnhub 키를 받은 다음 테스트 후 저장하십시오.",
+    "description": "No stored key",
+    "_machine_translated": true,
+    "_source_hash": "8adbf75fdf5bc595"
+  },
+  "error.auth": {
+    "message": "Finnhub에서 키를 거부했습니다. 주식 설정을 열어 다른 키를 테스트하십시오.",
+    "description": "Authentication or plan error, no raw provider response",
+    "_machine_translated": true,
+    "_source_hash": "ecc147e2c9741ce7"
+  },
+  "error.unknown": {
+    "message": "이 종목 코드에 대한 시세가 없습니다. 주식 클래스 접미사를 포함하여 미국 티커를 확인하십시오.",
+    "description": "Unknown or zero-valued quote",
+    "_machine_translated": true,
+    "_source_hash": "3a30475366fb7002"
+  },
+  "error.unsupported": {
+    "message": "이 제공자는 미국 티커만 지원합니다. 해외 거래소 접미사를 사용하려면 다른 데이터 요금제가 필요합니다.",
+    "description": "Unsupported provider or international symbol",
+    "_machine_translated": true,
+    "_source_hash": "1be0703c00de00dc"
+  },
+  "error.invalid_symbols": {
+    "message": "AAPL MSFT 또는 BRK.B처럼 종목 코드를 공백이나 쉼표로 구분하여 입력하십시오.",
+    "description": "Symbol validation error",
+    "_machine_translated": true,
+    "_source_hash": "5cd17969829278c5"
+  },
+  "error.too_many": {
+    "message": "쿼리 또는 관심 종목당 최대 10개의 종목 코드를 사용하십시오.",
+    "description": "Bounded request batch",
+    "_machine_translated": true,
+    "_source_hash": "e8f0028cd32f8c7b"
+  },
+  "error.rate_limit": {
+    "message": "요청 한도에 도달했습니다. 가능한 경우 저장된 데이터를 표시합니다. 잠시 후 요청이 재개됩니다.",
+    "description": "Rate limit backoff",
+    "_machine_translated": true,
+    "_source_hash": "7d553dee0c6fe94a"
+  },
+  "error.offline": {
+    "message": "Finnhub에 연결할 수 없습니다. 가능한 경우 저장된 데이터를 표시합니다.",
+    "description": "Offline or network timeout",
+    "_machine_translated": true,
+    "_source_hash": "e74f5fe32dc5f429"
+  },
+  "error.unavailable": {
+    "message": "Finnhub를 사용할 수 없습니다. 가능한 경우 저장된 데이터를 표시합니다.",
+    "description": "Sanitized provider error",
+    "_machine_translated": true,
+    "_source_hash": "2dd30adcc5164ad4"
+  },
+  "error.busy": {
+    "message": "다른 Kage 창에서 시세를 새로 고치는 중입니다. 잠시 후 다시 시도하십시오.",
+    "description": "Cross-window request lock contention",
+    "_machine_translated": true,
+    "_source_hash": "b6ed5bc4b975b5a0"
+  },
+  "error.cache_only": {
+    "message": "저장된 시세만 표시합니다. 실시간 요청이 일시 중지되었습니다.",
+    "description": "User selected offline provider mode",
+    "_machine_translated": true,
+    "_source_hash": "ceee09611e30c87c"
+  },
+  "error.storage": {
+    "message": "시세 저장소를 사용할 수 없습니다. 요청 한도를 추적할 수 있을 때까지 요청이 일시 중지됩니다.",
+    "description": "Fail closed when rate budget cannot persist",
+    "_machine_translated": true,
+    "_source_hash": "4cbfbb2e9b0adc41"
+  },
+  "error.invalid_key": {
+    "message": "Finnhub API 키를 붙여넣은 다음 테스트 후 저장하십시오. URL을 붙여넣지 마십시오.",
+    "description": "Malformed or missing API key",
+    "_machine_translated": true,
+    "_source_hash": "b972e383a08a0ac1"
+  },
+  "error.invalid_range": {
+    "message": "1d, 1w 또는 1m 중에서 범위를 선택하십시오.",
+    "description": "Agent history range validation",
+    "_machine_translated": true,
+    "_source_hash": "f4f4d83dc6129a6c"
+  },
+  "settings.description": {
+    "message": "미국 주식 시세, 관심 종목, 로컬 시세 기록을 제공합니다. 온라인 · 출처: Finnhub. 저장된 값은 지연될 수 있습니다.",
+    "description": "Settings summary",
+    "_machine_translated": true,
+    "_source_hash": "b91914b96330d6cb"
+  },
+  "settings.connection": {
+    "message": "시세 제공업체 및 설정",
+    "description": "Connection section heading",
+    "_machine_translated": true,
+    "_source_hash": "863fbc4ab994c2eb"
+  },
+  "settings.provider": {
+    "message": "제공업체",
+    "description": "Provider selector label",
+    "_machine_translated": true,
+    "_source_hash": "713fef775807424a"
+  },
+  "settings.finnhub": {
+    "message": "Finnhub · 미국 시세 · 무료 개인 키",
+    "description": "Supported online provider option",
+    "_machine_translated": true,
+    "_source_hash": "e989961cfe6d267c"
+  },
+  "settings.cache": {
+    "message": "저장된 시세만 · 오프라인",
+    "description": "Network paused provider option",
+    "_machine_translated": true,
+    "_source_hash": "f429d58cbb1c5f8b"
+  },
+  "setup.intro": {
+    "message": "현재 키 없이 이용하는 Stooq 다운로드를 사용할 수 없습니다. 미국 시세를 보려면 본인의 무료 Finnhub 키를 사용하십시오. Stocks는 공유 키를 제공하지 않습니다.",
+    "description": "Explain the authorized fallback to key setup",
+    "_machine_translated": true,
+    "_source_hash": "d8f6685775cf04bc"
+  },
+  "setup.terms": {
+    "message": "Finnhub 개인 요금제는 자격을 갖춘 개인 용도로만 사용할 수 있습니다. 비즈니스 용도로 사용하거나 데이터 또는 파생 결과를 제3자와 공유하려면 Finnhub의 승인이 필요합니다. 원격 에이전트에 시세를 보내기 전을 포함하여 제공업체의 약관을 확인하십시오.",
+    "description": "Material provider use restrictions",
+    "_machine_translated": true,
+    "_source_hash": "9eb9716ed06ff746"
+  },
+  "setup.steps": {
+    "message": "1. 무료 키 받기를 열고 Finnhub에 가입합니다. 2. 대시보드에서 API 키를 복사합니다. 3. 아래에 붙여넣고 테스트 후 저장을 선택합니다. 4. 관심 종목 및 제공업체 설정을 저장합니다.",
+    "description": "Guided setup steps",
+    "_machine_translated": true,
+    "_source_hash": "f0be788769ece36a"
+  },
+  "setup.saved": {
+    "message": "이 기기에 키가 저장되어 있습니다. 저장된 키를 테스트하려면 필드를 비워 두고, 교체하려면 새 키를 붙여넣으십시오. 저장된 키는 여기에 표시되지 않습니다.",
+    "description": "Connected setup state without secret disclosure",
+    "_machine_translated": true,
+    "_source_hash": "4fba007359b56f1d"
+  },
+  "setup.free_key": {
+    "message": "무료 키 받기",
+    "description": "Open provider registration in system browser",
+    "_machine_translated": true,
+    "_source_hash": "42b307eaf0136997"
+  },
+  "setup.key": {
+    "message": "Finnhub API 키",
+    "description": "Scratch field for secret",
+    "_machine_translated": true,
+    "_source_hash": "2e7e94ee1be4a2cf"
+  },
+  "setup.key_hint": {
+    "message": "테스트 후 저장을 선택하면 Spotify 자격 증명과 마찬가지로 키가 비공개 확장 프로그램 데이터에 저장됩니다. 여기에 입력하는 것만으로는 일반 설정과 함께 저장되지 않습니다. 입력하는 동안 이 호스트의 텍스트 필드 내용이 표시됩니다.",
+    "description": "Storage and host input behavior",
+    "_machine_translated": true,
+    "_source_hash": "4c3122d9b4d5daad"
+  },
+  "setup.test": {
+    "message": "키 테스트 후 저장",
+    "description": "Probe quote endpoint and save only on success",
+    "_machine_translated": true,
+    "_source_hash": "bc2be6a1a4fb4210"
+  },
+  "setup.remove": {
+    "message": "저장된 키 삭제",
+    "description": "Delete provider credentials; retain cached quotes",
+    "_machine_translated": true,
+    "_source_hash": "469ba81c1b5aeb34"
+  },
+  "setup.removed": {
+    "message": "키를 삭제했습니다. 저장된 시세는 계속 사용할 수 있습니다.",
+    "description": "Removal success",
+    "_machine_translated": true,
+    "_source_hash": "59cb7317745316bb"
+  },
+  "setup.success": {
+    "message": "Finnhub 시세 테스트를 통과하여 키를 저장했습니다. 완료하려면 제공업체 및 관심 종목 설정을 저장하십시오.",
+    "description": "Successful guided setup",
+    "_machine_translated": true,
+    "_source_hash": "96383792f28339c2"
+  },
+  "settings.watchlist_section": {
+    "message": "관심 종목 및 새로 고침",
+    "description": "Display settings section",
+    "_machine_translated": true,
+    "_source_hash": "eeb14304489ebbaf"
+  },
+  "settings.watchlist": {
+    "message": "관심 종목",
+    "description": "Editable list label",
+    "_machine_translated": true,
+    "_source_hash": "4fa141d565f4d3cb"
+  },
+  "settings.watchlist_hint": {
+    "message": "미국 종목 기호를 최대 {max}개까지 공백이나 쉼표로 구분하여 입력하십시오. 목록이 비어 있으면 위젯이 숨겨집니다.",
+    "description": "Watchlist validation; preserve {max}",
+    "_machine_translated": true,
+    "_source_hash": "18fd9ff917b78911"
+  },
+  "settings.show": {
+    "message": "플로팅 창에 관심 종목 표시",
+    "description": "Widget visibility toggle",
+    "_machine_translated": true,
+    "_source_hash": "acd01a47d682bca1"
+  },
+  "settings.refresh": {
+    "message": "새로 고침 간격(초)",
+    "description": "Quote cache and widget refresh interval",
+    "_machine_translated": true,
+    "_source_hash": "d5d486955acdd4c8"
+  },
+  "settings.refresh_hint": {
+    "message": "최소 60초, 기본값 300초입니다. 현재 Kage 호스트에서는 창이 숨겨져 있으면 폴링이 일시 중지됩니다. 이 기기 전체에서 분당 최대 40개의 요청이 예약되며, 제공업체 한도에는 다른 앱의 요청도 포함됩니다.",
+    "description": "Request budget and hidden behavior",
+    "_machine_translated": true,
+    "_source_hash": "86c3403cda44db0e"
+  },
+  "settings.refresh_error": {
+    "message": "새로 고침 간격은 60초에서 3600초 사이여야 합니다.",
+    "description": "Invalid interval",
+    "_machine_translated": true,
+    "_source_hash": "c93b2dfa0a61d9f4"
+  },
+  "tool.quote": {
+    "message": "개인 용도로 Finnhub에서 미국 주식 시세를 가져옵니다. 출처, 마지막 거래 타임스탬프, 캐시 최신 상태 및 종목별 오류를 반환합니다. 사용자의 무료 키가 필요하며, 제공업체의 승인 없이 재배포하지 마십시오.",
+    "description": "Agent tool description",
+    "_machine_translated": true,
+    "_source_hash": "9aa8d167f9bf2f94"
+  },
+  "tool.symbols": {
+    "message": "미국 종목 기호 최대 10개(예: [\"AAPL\", \"MSFT\", \"BRK.B\"]).",
+    "description": "Quote tool parameter description",
+    "_machine_translated": true,
+    "_source_hash": "5d5d1c443bb02531"
+  },
+  "tool.history": {
+    "message": "이 기기에서 로컬로 샘플링된 Finnhub 시세를 1d, 1w 또는 1m 기간으로 가져옵니다. 네트워크 요청은 하지 않습니다. 불완전하고 드문드문한 샘플이며 과거 캔들 데이터가 아닙니다. 빈 목록은 수집된 데이터가 없다는 뜻입니다.",
+    "description": "Agent tool scope must not imply full historical coverage",
+    "_machine_translated": true,
+    "_source_hash": "fcb4dd5f0bdcb792"
+  },
+  "tool.symbol": {
+    "message": "미국 주식 종목 코드입니다.",
+    "description": "History symbol parameter description",
+    "_machine_translated": true,
+    "_source_hash": "31f6b8214e118704"
+  },
+  "tool.range": {
+    "message": "1d, 1w 또는 1m이며 기본값은 1d입니다.",
+    "description": "History range parameter description",
+    "_machine_translated": true,
+    "_source_hash": "992fdef4270c7170"
+  },
+  "tool.disabled": {
+    "message": "주식 기능이 비활성화되어 있습니다.",
+    "description": "Host-disabled tool execution",
+    "_machine_translated": true,
+    "_source_hash": "9c2b3d9381a7a02c"
+  },
+  "tool.unknown": {
+    "message": "알 수 없는 주식 도구입니다.",
+    "description": "Unrecognized tool execution",
+    "_machine_translated": true,
+    "_source_hash": "2acdb85e54aa0ed1"
+  }
+}

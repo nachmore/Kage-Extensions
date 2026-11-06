@@ -1,0 +1,338 @@
+{
+  "_meta": {
+    "language": "cs",
+    "name": "Čeština",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Akcie",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "d6d4700604b64b88"
+  },
+  "manifest.description": {
+    "message": "Online · Kurzy amerických akcií a sledovaný seznam z Finnhubu s vaším bezplatným klíčem. Data z mezipaměti jsou zpožděná; u každého kurzu je uveden čas.",
+    "description": "Store listing; Online and Data delayed communicate network dependency and freshness",
+    "_machine_translated": true,
+    "_source_hash": "6feb0a4240dfb80e"
+  },
+  "result.loading": {
+    "message": "Vyhledávání akcií…",
+    "description": "Launcher placeholder while quotes load",
+    "_machine_translated": true,
+    "_source_hash": "a2b95adcfc6e29b7"
+  },
+  "result.help": {
+    "message": "Zkuste $AAPL, stock msft nebo stock aapl msft nvda. Enter otevře graf; kurz zkopírujete volbou Kopírovat nebo příkazem stock copy AAPL.",
+    "description": "Launcher syntax and actions",
+    "_machine_translated": true,
+    "_source_hash": "ca59813d90734a08"
+  },
+  "result.copy": {
+    "message": "Kopírovat {text}",
+    "description": "Selectable clipboard action; preserve {text}",
+    "_machine_translated": true,
+    "_source_hash": "516993d8cc4732a3"
+  },
+  "quote.as_of": {
+    "message": "Stav k {time}",
+    "description": "Actual last trade timestamp, not request time; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "3dcdbc540a4593d1"
+  },
+  "quote.cached": {
+    "message": "Uloženo {time}",
+    "description": "Time the saved quote was fetched; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "76520879cd1583b5"
+  },
+  "quote.retry": {
+    "message": "Zkuste to znovu po {time}",
+    "description": "Rate limit backoff expiry; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "d305b2da13a783d0"
+  },
+  "quote.delayed": {
+    "message": "Data jsou zpožděná / trh může být zavřený",
+    "description": "Quote is over 15 minutes old; do not imply verified exchange status",
+    "_machine_translated": true,
+    "_source_hash": "ece516a5d44ca6ba"
+  },
+  "quote.sampled": {
+    "message": "Místně vzorkované kurzy z Finnhubu, s mezerami. Shromažďují se při používání rozšíření Akcie; nejde o historická data svíček.",
+    "description": "Sparkline accessible label and settings explanation",
+    "_machine_translated": true,
+    "_source_hash": "0eca89619bcb28b9"
+  },
+  "quote.source": {
+    "message": "Zdroj: Finnhub",
+    "description": "Visible provider attribution",
+    "_machine_translated": true,
+    "_source_hash": "693535460d4db418"
+  },
+  "error.setup": {
+    "message": "Otevřete nastavení Akcií, získejte bezplatný klíč Finnhub a poté jej otestujte a uložte.",
+    "description": "No stored key",
+    "_machine_translated": true,
+    "_source_hash": "8adbf75fdf5bc595"
+  },
+  "error.auth": {
+    "message": "Finnhub klíč odmítl. Otevřete nastavení Akcií a otestujte náhradní klíč.",
+    "description": "Authentication or plan error, no raw provider response",
+    "_machine_translated": true,
+    "_source_hash": "ecc147e2c9741ce7"
+  },
+  "error.unknown": {
+    "message": "Pro tento symbol není k dispozici žádný kurz. Zkontrolujte americký ticker včetně případné přípony třídy akcií.",
+    "description": "Unknown or zero-valued quote",
+    "_machine_translated": true,
+    "_source_hash": "3a30475366fb7002"
+  },
+  "error.unsupported": {
+    "message": "Tento poskytovatel podporuje pouze americké tickery. Přípony zahraničních burz vyžadují jiný datový tarif.",
+    "description": "Unsupported provider or international symbol",
+    "_machine_translated": true,
+    "_source_hash": "1be0703c00de00dc"
+  },
+  "error.invalid_symbols": {
+    "message": "Zadejte symboly akcií oddělené mezerami nebo čárkami, například AAPL MSFT nebo BRK.B.",
+    "description": "Symbol validation error",
+    "_machine_translated": true,
+    "_source_hash": "5cd17969829278c5"
+  },
+  "error.too_many": {
+    "message": "Použijte nejvýše 10 symbolů na dotaz nebo sledovaný seznam.",
+    "description": "Bounded request batch",
+    "_machine_translated": true,
+    "_source_hash": "e8f0028cd32f8c7b"
+  },
+  "error.rate_limit": {
+    "message": "Byl dosažen limit požadavků. Zobrazují se uložená data, pokud jsou k dispozici; požadavky budou po přestávce obnoveny.",
+    "description": "Rate limit backoff",
+    "_machine_translated": true,
+    "_source_hash": "7d553dee0c6fe94a"
+  },
+  "error.offline": {
+    "message": "Nelze se připojit k Finnhubu. Zobrazují se uložená data, pokud jsou k dispozici.",
+    "description": "Offline or network timeout",
+    "_machine_translated": true,
+    "_source_hash": "e74f5fe32dc5f429"
+  },
+  "error.unavailable": {
+    "message": "Finnhub není dostupný. Zobrazují se uložená data, pokud jsou k dispozici.",
+    "description": "Sanitized provider error",
+    "_machine_translated": true,
+    "_source_hash": "2dd30adcc5164ad4"
+  },
+  "error.busy": {
+    "message": "Jiné okno Kage právě obnovuje kurzy. Zkuste to za chvíli znovu.",
+    "description": "Cross-window request lock contention",
+    "_machine_translated": true,
+    "_source_hash": "b6ed5bc4b975b5a0"
+  },
+  "error.cache_only": {
+    "message": "Pouze uložené kurzy; živé požadavky jsou pozastaveny.",
+    "description": "User selected offline provider mode",
+    "_machine_translated": true,
+    "_source_hash": "ceee09611e30c87c"
+  },
+  "error.storage": {
+    "message": "Úložiště kurzů není dostupné. Požadavky jsou pozastaveny, dokud nebude možné sledovat jejich limit.",
+    "description": "Fail closed when rate budget cannot persist",
+    "_machine_translated": true,
+    "_source_hash": "4cbfbb2e9b0adc41"
+  },
+  "error.invalid_key": {
+    "message": "Vložte klíč API Finnhub a poté jej otestujte a uložte. Nevkládejte URL.",
+    "description": "Malformed or missing API key",
+    "_machine_translated": true,
+    "_source_hash": "b972e383a08a0ac1"
+  },
+  "error.invalid_range": {
+    "message": "Zvolte rozsah 1d, 1w nebo 1m.",
+    "description": "Agent history range validation",
+    "_machine_translated": true,
+    "_source_hash": "f4f4d83dc6129a6c"
+  },
+  "settings.description": {
+    "message": "Kurzy amerických akcií, sledované tituly a místní historie kurzů. Online · Zdroj: Finnhub. Uložené hodnoty mohou být zpožděné.",
+    "description": "Settings summary",
+    "_machine_translated": true,
+    "_source_hash": "b91914b96330d6cb"
+  },
+  "settings.connection": {
+    "message": "Poskytovatel kurzů a nastavení",
+    "description": "Connection section heading",
+    "_machine_translated": true,
+    "_source_hash": "863fbc4ab994c2eb"
+  },
+  "settings.provider": {
+    "message": "Poskytovatel",
+    "description": "Provider selector label",
+    "_machine_translated": true,
+    "_source_hash": "713fef775807424a"
+  },
+  "settings.finnhub": {
+    "message": "Finnhub · kurzy z USA · bezplatný osobní klíč",
+    "description": "Supported online provider option",
+    "_machine_translated": true,
+    "_source_hash": "e989961cfe6d267c"
+  },
+  "settings.cache": {
+    "message": "Pouze uložené kurzy · offline",
+    "description": "Network paused provider option",
+    "_machine_translated": true,
+    "_source_hash": "f429d58cbb1c5f8b"
+  },
+  "setup.intro": {
+    "message": "Stahování ze Stooq bez klíče je momentálně nedostupné. Pro kurzy z USA použijte vlastní bezplatný klíč Finnhub; Stocks nikdy neposkytuje sdílený klíč.",
+    "description": "Explain the authorized fallback to key setup",
+    "_machine_translated": true,
+    "_source_hash": "d8f6685775cf04bc"
+  },
+  "setup.terms": {
+    "message": "Osobní tarify Finnhub jsou určeny pro oprávněné osobní použití. Obchodní použití a sdílení dat nebo odvozených výsledků s třetími stranami vyžaduje souhlas Finnhub. Zkontrolujte podmínky poskytovatele, a to i před odesláním kurzů vzdálenému agentovi.",
+    "description": "Material provider use restrictions",
+    "_machine_translated": true,
+    "_source_hash": "9eb9716ed06ff746"
+  },
+  "setup.steps": {
+    "message": "1. Otevřete Získat bezplatný klíč a zaregistrujte se u Finnhub. 2. Zkopírujte svůj API klíč z jeho nástěnky. 3. Vložte jej níže a zvolte Otestovat a uložit. 4. Uložte nastavení sledovaných titulů a poskytovatele.",
+    "description": "Guided setup steps",
+    "_machine_translated": true,
+    "_source_hash": "f0be788769ece36a"
+  },
+  "setup.saved": {
+    "message": "V tomto zařízení je uložen klíč. Chcete-li jej otestovat, ponechte pole prázdné, nebo vložte náhradní. Uložené klíče se zde nikdy nezobrazují.",
+    "description": "Connected setup state without secret disclosure",
+    "_machine_translated": true,
+    "_source_hash": "4fba007359b56f1d"
+  },
+  "setup.free_key": {
+    "message": "Získat bezplatný klíč",
+    "description": "Open provider registration in system browser",
+    "_machine_translated": true,
+    "_source_hash": "42b307eaf0136997"
+  },
+  "setup.key": {
+    "message": "API klíč Finnhub",
+    "description": "Scratch field for secret",
+    "_machine_translated": true,
+    "_source_hash": "2e7e94ee1be4a2cf"
+  },
+  "setup.key_hint": {
+    "message": "Otestovat a uložit uloží klíč do soukromých dat rozšíření, podobně jako přihlašovací údaje Spotify. Zadáním sem se klíč neuloží s běžným nastavením. Textové pole tohoto hostitele je během psaní viditelné.",
+    "description": "Storage and host input behavior",
+    "_machine_translated": true,
+    "_source_hash": "4c3122d9b4d5daad"
+  },
+  "setup.test": {
+    "message": "Otestovat a uložit klíč",
+    "description": "Probe quote endpoint and save only on success",
+    "_machine_translated": true,
+    "_source_hash": "bc2be6a1a4fb4210"
+  },
+  "setup.remove": {
+    "message": "Odebrat uložený klíč",
+    "description": "Delete provider credentials; retain cached quotes",
+    "_machine_translated": true,
+    "_source_hash": "469ba81c1b5aeb34"
+  },
+  "setup.removed": {
+    "message": "Klíč byl odebrán. Uložené kurzy zůstávají k dispozici.",
+    "description": "Removal success",
+    "_machine_translated": true,
+    "_source_hash": "59cb7317745316bb"
+  },
+  "setup.success": {
+    "message": "Test kurzů Finnhub proběhl úspěšně; klíč byl uložen. Dokončete uložením nastavení poskytovatele a sledovaných titulů.",
+    "description": "Successful guided setup",
+    "_machine_translated": true,
+    "_source_hash": "96383792f28339c2"
+  },
+  "settings.watchlist_section": {
+    "message": "Sledované tituly a obnovování",
+    "description": "Display settings section",
+    "_machine_translated": true,
+    "_source_hash": "eeb14304489ebbaf"
+  },
+  "settings.watchlist": {
+    "message": "Sledované tituly",
+    "description": "Editable list label",
+    "_machine_translated": true,
+    "_source_hash": "4fa141d565f4d3cb"
+  },
+  "settings.watchlist_hint": {
+    "message": "Až {max} amerických symbolů oddělených mezerami nebo čárkami. Prázdný seznam widget skryje.",
+    "description": "Watchlist validation; preserve {max}",
+    "_machine_translated": true,
+    "_source_hash": "18fd9ff917b78911"
+  },
+  "settings.show": {
+    "message": "Zobrazit sledované tituly v plovoucím okně",
+    "description": "Widget visibility toggle",
+    "_machine_translated": true,
+    "_source_hash": "acd01a47d682bca1"
+  },
+  "settings.refresh": {
+    "message": "Interval obnovování (sekundy)",
+    "description": "Quote cache and widget refresh interval",
+    "_machine_translated": true,
+    "_source_hash": "d5d486955acdd4c8"
+  },
+  "settings.refresh_hint": {
+    "message": "Minimálně 60 sekund; výchozí 300. Dotazování ve skrytém okně se na současných hostitelích Kage pozastaví. V rámci tohoto zařízení je vyhrazeno nejvýše 40 požadavků za minutu; limity poskytovatele zahrnují i vaše další aplikace.",
+    "description": "Request budget and hidden behavior",
+    "_machine_translated": true,
+    "_source_hash": "86c3403cda44db0e"
+  },
+  "settings.refresh_error": {
+    "message": "Interval obnovování musí být mezi 60 a 3600 sekundami.",
+    "description": "Invalid interval",
+    "_machine_translated": true,
+    "_source_hash": "c93b2dfa0a61d9f4"
+  },
+  "tool.quote": {
+    "message": "Získá kurzy amerických akcií z Finnhub pro osobní použití. Vrací zdroj, časové razítko posledního obchodu, aktuálnost mezipaměti a chyby pro jednotlivé symboly. Vyžaduje bezplatný klíč uživatele; bez souhlasu poskytovatele dále nešiřte.",
+    "description": "Agent tool description",
+    "_machine_translated": true,
+    "_source_hash": "9aa8d167f9bf2f94"
+  },
+  "tool.symbols": {
+    "message": "Až 10 amerických symbolů, například [\"AAPL\", \"MSFT\", \"BRK.B\"].",
+    "description": "Quote tool parameter description",
+    "_machine_translated": true,
+    "_source_hash": "5d5d1c443bb02531"
+  },
+  "tool.history": {
+    "message": "Získá lokálně vzorkované kotace Finnhub zaznamenané na tomto zařízení za 1d, 1w nebo 1m. Bez síťových požadavků. Neúplné, řídké vzorky, nikoli historické svíčky; prázdný seznam znamená, že nebylo nic shromážděno.",
+    "description": "Agent tool scope must not imply full historical coverage",
+    "_machine_translated": true,
+    "_source_hash": "fcb4dd5f0bdcb792"
+  },
+  "tool.symbol": {
+    "message": "Symbol americké akcie.",
+    "description": "History symbol parameter description",
+    "_machine_translated": true,
+    "_source_hash": "31f6b8214e118704"
+  },
+  "tool.range": {
+    "message": "1d, 1w nebo 1m; výchozí 1d.",
+    "description": "History range parameter description",
+    "_machine_translated": true,
+    "_source_hash": "992fdef4270c7170"
+  },
+  "tool.disabled": {
+    "message": "Akcie jsou vypnuté.",
+    "description": "Host-disabled tool execution",
+    "_machine_translated": true,
+    "_source_hash": "9c2b3d9381a7a02c"
+  },
+  "tool.unknown": {
+    "message": "Neznámý nástroj Akcie.",
+    "description": "Unrecognized tool execution",
+    "_machine_translated": true,
+    "_source_hash": "2acdb85e54aa0ed1"
+  }
+}

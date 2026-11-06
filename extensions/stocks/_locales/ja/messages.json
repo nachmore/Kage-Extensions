@@ -1,0 +1,338 @@
+{
+  "_meta": {
+    "language": "ja",
+    "name": "日本語",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "株価",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "d6d4700604b64b88"
+  },
+  "manifest.description": {
+    "message": "オンライン · 無料キーを使って Finnhub から米国株の株価とウォッチリストを取得します。キャッシュ使用時はデータが遅延します。各株価にはタイムスタンプが表示されます。",
+    "description": "Store listing; Online and Data delayed communicate network dependency and freshness",
+    "_machine_translated": true,
+    "_source_hash": "6feb0a4240dfb80e"
+  },
+  "result.loading": {
+    "message": "株価を検索しています…",
+    "description": "Launcher placeholder while quotes load",
+    "_machine_translated": true,
+    "_source_hash": "a2b95adcfc6e29b7"
+  },
+  "result.help": {
+    "message": "$AAPL、stock msft、stock aapl msft nvda のように入力してください。Enter でチャートを開きます。株価をコピーするには「コピー」を選択するか、stock copy AAPL を使用してください。",
+    "description": "Launcher syntax and actions",
+    "_machine_translated": true,
+    "_source_hash": "ca59813d90734a08"
+  },
+  "result.copy": {
+    "message": "{text} をコピー",
+    "description": "Selectable clipboard action; preserve {text}",
+    "_machine_translated": true,
+    "_source_hash": "516993d8cc4732a3"
+  },
+  "quote.as_of": {
+    "message": "{time} 時点",
+    "description": "Actual last trade timestamp, not request time; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "3dcdbc540a4593d1"
+  },
+  "quote.cached": {
+    "message": "{time} にキャッシュ",
+    "description": "Time the saved quote was fetched; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "76520879cd1583b5"
+  },
+  "quote.retry": {
+    "message": "{time} 以降に再試行",
+    "description": "Rate limit backoff expiry; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "d305b2da13a783d0"
+  },
+  "quote.delayed": {
+    "message": "データ遅延 / 市場が閉まっている可能性があります",
+    "description": "Quote is over 15 minutes old; do not imply verified exchange status",
+    "_machine_translated": true,
+    "_source_hash": "ece516a5d44ca6ba"
+  },
+  "quote.sampled": {
+    "message": "ローカルで取得した Finnhub の株価で、欠落があります。株価の使用中に収集されます。過去のローソク足データではありません。",
+    "description": "Sparkline accessible label and settings explanation",
+    "_machine_translated": true,
+    "_source_hash": "0eca89619bcb28b9"
+  },
+  "quote.source": {
+    "message": "提供元: Finnhub",
+    "description": "Visible provider attribution",
+    "_machine_translated": true,
+    "_source_hash": "693535460d4db418"
+  },
+  "error.setup": {
+    "message": "株価の設定を開き、無料の Finnhub キーを取得してから、テストして保存してください。",
+    "description": "No stored key",
+    "_machine_translated": true,
+    "_source_hash": "8adbf75fdf5bc595"
+  },
+  "error.auth": {
+    "message": "Finnhub がキーを拒否しました。株価の設定を開いて、別のキーをテストしてください。",
+    "description": "Authentication or plan error, no raw provider response",
+    "_machine_translated": true,
+    "_source_hash": "ecc147e2c9741ce7"
+  },
+  "error.unknown": {
+    "message": "このシンボルの株価はありません。株式クラスのサフィックスを含め、米国のティッカーを確認してください。",
+    "description": "Unknown or zero-valued quote",
+    "_machine_translated": true,
+    "_source_hash": "3a30475366fb7002"
+  },
+  "error.unsupported": {
+    "message": "このプロバイダーは米国のティッカーのみに対応しています。海外取引所のサフィックスには別のデータプランが必要です。",
+    "description": "Unsupported provider or international symbol",
+    "_machine_translated": true,
+    "_source_hash": "1be0703c00de00dc"
+  },
+  "error.invalid_symbols": {
+    "message": "AAPL MSFT や BRK.B のように、スペースまたはカンマで区切って銘柄シンボルを入力してください。",
+    "description": "Symbol validation error",
+    "_machine_translated": true,
+    "_source_hash": "5cd17969829278c5"
+  },
+  "error.too_many": {
+    "message": "1 回のクエリまたはウォッチリストで使用できるシンボルは最大 10 個です。",
+    "description": "Bounded request batch",
+    "_machine_translated": true,
+    "_source_hash": "e8f0028cd32f8c7b"
+  },
+  "error.rate_limit": {
+    "message": "リクエストの上限に達しました。保存済みのデータがあれば表示します。しばらくするとリクエストが再開されます。",
+    "description": "Rate limit backoff",
+    "_machine_translated": true,
+    "_source_hash": "7d553dee0c6fe94a"
+  },
+  "error.offline": {
+    "message": "Finnhub に接続できません。保存済みのデータがあれば表示します。",
+    "description": "Offline or network timeout",
+    "_machine_translated": true,
+    "_source_hash": "e74f5fe32dc5f429"
+  },
+  "error.unavailable": {
+    "message": "Finnhub を利用できません。保存済みのデータがあれば表示します。",
+    "description": "Sanitized provider error",
+    "_machine_translated": true,
+    "_source_hash": "2dd30adcc5164ad4"
+  },
+  "error.busy": {
+    "message": "別の Kage ウィンドウが株価を更新しています。しばらくしてからもう一度お試しください。",
+    "description": "Cross-window request lock contention",
+    "_machine_translated": true,
+    "_source_hash": "b6ed5bc4b975b5a0"
+  },
+  "error.cache_only": {
+    "message": "保存済みの株価のみです。ライブリクエストは一時停止中です。",
+    "description": "User selected offline provider mode",
+    "_machine_translated": true,
+    "_source_hash": "ceee09611e30c87c"
+  },
+  "error.storage": {
+    "message": "株価のストレージを利用できません。上限を追跡できるようになるまで、リクエストは一時停止されます。",
+    "description": "Fail closed when rate budget cannot persist",
+    "_machine_translated": true,
+    "_source_hash": "4cbfbb2e9b0adc41"
+  },
+  "error.invalid_key": {
+    "message": "Finnhub の API キーを貼り付けてから、テストして保存してください。URL は貼り付けないでください。",
+    "description": "Malformed or missing API key",
+    "_machine_translated": true,
+    "_source_hash": "b972e383a08a0ac1"
+  },
+  "error.invalid_range": {
+    "message": "範囲は 1d、1w、1m のいずれかを選択してください。",
+    "description": "Agent history range validation",
+    "_machine_translated": true,
+    "_source_hash": "f4f4d83dc6129a6c"
+  },
+  "settings.description": {
+    "message": "米国株の株価、ウォッチリスト、ローカルの株価履歴。オンライン · ソース：Finnhub。保存された値は遅延している場合があります。",
+    "description": "Settings summary",
+    "_machine_translated": true,
+    "_source_hash": "b91914b96330d6cb"
+  },
+  "settings.connection": {
+    "message": "株価プロバイダーとセットアップ",
+    "description": "Connection section heading",
+    "_machine_translated": true,
+    "_source_hash": "863fbc4ab994c2eb"
+  },
+  "settings.provider": {
+    "message": "プロバイダー",
+    "description": "Provider selector label",
+    "_machine_translated": true,
+    "_source_hash": "713fef775807424a"
+  },
+  "settings.finnhub": {
+    "message": "Finnhub · 米国株価 · 無料の個人用キー",
+    "description": "Supported online provider option",
+    "_machine_translated": true,
+    "_source_hash": "e989961cfe6d267c"
+  },
+  "settings.cache": {
+    "message": "保存済みの株価のみ · オフライン",
+    "description": "Network paused provider option",
+    "_machine_translated": true,
+    "_source_hash": "f429d58cbb1c5f8b"
+  },
+  "setup.intro": {
+    "message": "現在、キー不要の Stooq ダウンロードは利用できません。米国株価を取得するには、ご自身の無料 Finnhub キーを使用してください。Stocks が共有キーを提供することはありません。",
+    "description": "Explain the authorized fallback to key setup",
+    "_machine_translated": true,
+    "_source_hash": "d8f6685775cf04bc"
+  },
+  "setup.terms": {
+    "message": "Finnhub の個人向けプランは、対象となる個人利用のためのものです。商用利用や、データまたはそこから派生した結果を第三者と共有するには、Finnhub の承認が必要です。リモートエージェントに株価を送信する前にも、プロバイダーの利用規約をご確認ください。",
+    "description": "Material provider use restrictions",
+    "_machine_translated": true,
+    "_source_hash": "9eb9716ed06ff746"
+  },
+  "setup.steps": {
+    "message": "1.「無料キーを取得」を開き、Finnhub に登録します。2. ダッシュボードから API キーをコピーします。3. 下に貼り付けて「テストして保存」を選択します。4. ウォッチリストとプロバイダーの設定を保存します。",
+    "description": "Guided setup steps",
+    "_machine_translated": true,
+    "_source_hash": "f0be788769ece36a"
+  },
+  "setup.saved": {
+    "message": "このデバイスにキーが保存されています。テストするにはフィールドを空のままにし、置き換えるには新しいキーを貼り付けてください。保存されたキーはここには表示されません。",
+    "description": "Connected setup state without secret disclosure",
+    "_machine_translated": true,
+    "_source_hash": "4fba007359b56f1d"
+  },
+  "setup.free_key": {
+    "message": "無料キーを取得",
+    "description": "Open provider registration in system browser",
+    "_machine_translated": true,
+    "_source_hash": "42b307eaf0136997"
+  },
+  "setup.key": {
+    "message": "Finnhub API キー",
+    "description": "Scratch field for secret",
+    "_machine_translated": true,
+    "_source_hash": "2e7e94ee1be4a2cf"
+  },
+  "setup.key_hint": {
+    "message": "「テストして保存」を選択すると、Spotify の認証情報と同様に、キーは拡張機能のプライベートデータに保存されます。ここに入力しても、通常の設定と一緒には保存されません。このホストのテキストフィールドは入力中に内容が表示されます。",
+    "description": "Storage and host input behavior",
+    "_machine_translated": true,
+    "_source_hash": "4c3122d9b4d5daad"
+  },
+  "setup.test": {
+    "message": "キーをテストして保存",
+    "description": "Probe quote endpoint and save only on success",
+    "_machine_translated": true,
+    "_source_hash": "bc2be6a1a4fb4210"
+  },
+  "setup.remove": {
+    "message": "保存済みのキーを削除",
+    "description": "Delete provider credentials; retain cached quotes",
+    "_machine_translated": true,
+    "_source_hash": "469ba81c1b5aeb34"
+  },
+  "setup.removed": {
+    "message": "キーを削除しました。保存済みの株価は引き続き利用できます。",
+    "description": "Removal success",
+    "_machine_translated": true,
+    "_source_hash": "59cb7317745316bb"
+  },
+  "setup.success": {
+    "message": "Finnhub の株価テストに成功し、キーを保存しました。完了するには、プロバイダーとウォッチリストの設定を保存してください。",
+    "description": "Successful guided setup",
+    "_machine_translated": true,
+    "_source_hash": "96383792f28339c2"
+  },
+  "settings.watchlist_section": {
+    "message": "ウォッチリストと更新",
+    "description": "Display settings section",
+    "_machine_translated": true,
+    "_source_hash": "eeb14304489ebbaf"
+  },
+  "settings.watchlist": {
+    "message": "ウォッチリスト",
+    "description": "Editable list label",
+    "_machine_translated": true,
+    "_source_hash": "4fa141d565f4d3cb"
+  },
+  "settings.watchlist_hint": {
+    "message": "米国株のシンボルを最大 {max} 個まで、スペースまたはカンマで区切って入力します。リストが空の場合、ウィジェットは非表示になります。",
+    "description": "Watchlist validation; preserve {max}",
+    "_machine_translated": true,
+    "_source_hash": "18fd9ff917b78911"
+  },
+  "settings.show": {
+    "message": "フローティングウィンドウにウォッチリストを表示",
+    "description": "Widget visibility toggle",
+    "_machine_translated": true,
+    "_source_hash": "acd01a47d682bca1"
+  },
+  "settings.refresh": {
+    "message": "更新間隔（秒）",
+    "description": "Quote cache and widget refresh interval",
+    "_machine_translated": true,
+    "_source_hash": "d5d486955acdd4c8"
+  },
+  "settings.refresh_hint": {
+    "message": "最小 60 秒、デフォルトは 300 秒です。現在の Kage ホストでは、ウィンドウが非表示の間はポーリングが一時停止します。このデバイス全体で 1 分あたり最大 40 件のリクエストが確保されます。プロバイダーの制限には、他のアプリからのリクエストも含まれます。",
+    "description": "Request budget and hidden behavior",
+    "_machine_translated": true,
+    "_source_hash": "86c3403cda44db0e"
+  },
+  "settings.refresh_error": {
+    "message": "更新間隔は 60～3600 秒の範囲で指定してください。",
+    "description": "Invalid interval",
+    "_machine_translated": true,
+    "_source_hash": "c93b2dfa0a61d9f4"
+  },
+  "tool.quote": {
+    "message": "個人利用のために Finnhub から米国株の株価を取得します。ソース、最終取引のタイムスタンプ、キャッシュの鮮度、シンボルごとのエラーを返します。ユーザーの無料キーが必要です。プロバイダーの承認なしに再配布しないでください。",
+    "description": "Agent tool description",
+    "_machine_translated": true,
+    "_source_hash": "9aa8d167f9bf2f94"
+  },
+  "tool.symbols": {
+    "message": "最大 10 個の米国株シンボル（例：[\"AAPL\", \"MSFT\", \"BRK.B\"]）。",
+    "description": "Quote tool parameter description",
+    "_machine_translated": true,
+    "_source_hash": "5d5d1c443bb02531"
+  },
+  "tool.history": {
+    "message": "このデバイスでローカルに記録された Finnhub の相場を 1d、1w、または 1m の期間で取得します。ネットワークリクエストは行いません。サンプルは不完全かつまばらで、過去のローソク足データではありません。空のリストは、何も収集されていないことを意味します。",
+    "description": "Agent tool scope must not imply full historical coverage",
+    "_machine_translated": true,
+    "_source_hash": "fcb4dd5f0bdcb792"
+  },
+  "tool.symbol": {
+    "message": "米国株のシンボル。",
+    "description": "History symbol parameter description",
+    "_machine_translated": true,
+    "_source_hash": "31f6b8214e118704"
+  },
+  "tool.range": {
+    "message": "1d、1w、または 1m。デフォルトは 1d です。",
+    "description": "History range parameter description",
+    "_machine_translated": true,
+    "_source_hash": "992fdef4270c7170"
+  },
+  "tool.disabled": {
+    "message": "株価は無効になっています。",
+    "description": "Host-disabled tool execution",
+    "_machine_translated": true,
+    "_source_hash": "9c2b3d9381a7a02c"
+  },
+  "tool.unknown": {
+    "message": "不明な株価ツールです。",
+    "description": "Unrecognized tool execution",
+    "_machine_translated": true,
+    "_source_hash": "2acdb85e54aa0ed1"
+  }
+}

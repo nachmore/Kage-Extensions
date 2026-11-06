@@ -1,0 +1,338 @@
+{
+  "_meta": {
+    "language": "ar",
+    "name": "العربية",
+    "rtl": true,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "الأسهم",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "d6d4700604b64b88"
+  },
+  "manifest.description": {
+    "message": "متصل · أسعار الأسهم الأمريكية وقائمة المتابعة من Finnhub باستخدام مفتاحك المجاني. تكون البيانات متأخرة عند تخزينها مؤقتًا، ويُعرض مع كل سعر وقت تحديثه.",
+    "description": "Store listing; Online and Data delayed communicate network dependency and freshness",
+    "_machine_translated": true,
+    "_source_hash": "6feb0a4240dfb80e"
+  },
+  "result.loading": {
+    "message": "جارٍ البحث عن الأسهم…",
+    "description": "Launcher placeholder while quotes load",
+    "_machine_translated": true,
+    "_source_hash": "a2b95adcfc6e29b7"
+  },
+  "result.help": {
+    "message": "جرّب $AAPL أو stock msft أو stock aapl msft nvda. يفتح Enter رسمًا بيانيًا؛ اختر «نسخ» أو استخدم stock copy AAPL لنسخ سعر سهم.",
+    "description": "Launcher syntax and actions",
+    "_machine_translated": true,
+    "_source_hash": "ca59813d90734a08"
+  },
+  "result.copy": {
+    "message": "نسخ {text}",
+    "description": "Selectable clipboard action; preserve {text}",
+    "_machine_translated": true,
+    "_source_hash": "516993d8cc4732a3"
+  },
+  "quote.as_of": {
+    "message": "حتى {time}",
+    "description": "Actual last trade timestamp, not request time; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "3dcdbc540a4593d1"
+  },
+  "quote.cached": {
+    "message": "مخزّن مؤقتًا {time}",
+    "description": "Time the saved quote was fetched; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "76520879cd1583b5"
+  },
+  "quote.retry": {
+    "message": "أعد المحاولة بعد {time}",
+    "description": "Rate limit backoff expiry; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "d305b2da13a783d0"
+  },
+  "quote.delayed": {
+    "message": "البيانات متأخرة / قد تكون السوق مغلقة",
+    "description": "Quote is over 15 minutes old; do not imply verified exchange status",
+    "_machine_translated": true,
+    "_source_hash": "ece516a5d44ca6ba"
+  },
+  "quote.sampled": {
+    "message": "أسعار من Finnhub مجمّعة محليًا، وقد تتخللها فجوات. تُجمع أثناء استخدام «الأسهم»؛ وهذه ليست بيانات شموع تاريخية.",
+    "description": "Sparkline accessible label and settings explanation",
+    "_machine_translated": true,
+    "_source_hash": "0eca89619bcb28b9"
+  },
+  "quote.source": {
+    "message": "المصدر: Finnhub",
+    "description": "Visible provider attribution",
+    "_machine_translated": true,
+    "_source_hash": "693535460d4db418"
+  },
+  "error.setup": {
+    "message": "افتح إعدادات «الأسهم»، واحصل على مفتاح Finnhub مجاني، ثم اختر «اختبار وحفظ».",
+    "description": "No stored key",
+    "_machine_translated": true,
+    "_source_hash": "8adbf75fdf5bc595"
+  },
+  "error.auth": {
+    "message": "رفض Finnhub المفتاح. افتح إعدادات «الأسهم» لاختبار مفتاح بديل.",
+    "description": "Authentication or plan error, no raw provider response",
+    "_machine_translated": true,
+    "_source_hash": "ecc147e2c9741ce7"
+  },
+  "error.unknown": {
+    "message": "لا يوجد سعر لهذا الرمز. تحقق من رمز السهم الأمريكي، بما في ذلك أي لاحقة لفئة الأسهم.",
+    "description": "Unknown or zero-valued quote",
+    "_machine_translated": true,
+    "_source_hash": "3a30475366fb7002"
+  },
+  "error.unsupported": {
+    "message": "يدعم هذا المزوّد رموز الأسهم الأمريكية فقط. تتطلب لواحق البورصات الدولية خطة بيانات مختلفة.",
+    "description": "Unsupported provider or international symbol",
+    "_machine_translated": true,
+    "_source_hash": "1be0703c00de00dc"
+  },
+  "error.invalid_symbols": {
+    "message": "أدخل رموز الأسهم مفصولة بمسافات أو فواصل، مثل AAPL MSFT أو BRK.B.",
+    "description": "Symbol validation error",
+    "_machine_translated": true,
+    "_source_hash": "5cd17969829278c5"
+  },
+  "error.too_many": {
+    "message": "استخدم 10 رموز كحد أقصى في كل استعلام أو قائمة متابعة.",
+    "description": "Bounded request batch",
+    "_machine_translated": true,
+    "_source_hash": "e8f0028cd32f8c7b"
+  },
+  "error.rate_limit": {
+    "message": "تم بلوغ حد الطلبات. تُعرض البيانات المحفوظة عند توفرها، وستُستأنف الطلبات بعد فترة توقف.",
+    "description": "Rate limit backoff",
+    "_machine_translated": true,
+    "_source_hash": "7d553dee0c6fe94a"
+  },
+  "error.offline": {
+    "message": "يتعذر الوصول إلى Finnhub. تُعرض البيانات المحفوظة عند توفرها.",
+    "description": "Offline or network timeout",
+    "_machine_translated": true,
+    "_source_hash": "e74f5fe32dc5f429"
+  },
+  "error.unavailable": {
+    "message": "Finnhub غير متاح. تُعرض البيانات المحفوظة عند توفرها.",
+    "description": "Sanitized provider error",
+    "_machine_translated": true,
+    "_source_hash": "2dd30adcc5164ad4"
+  },
+  "error.busy": {
+    "message": "تقوم نافذة Kage أخرى بتحديث الأسعار. حاول مرة أخرى بعد قليل.",
+    "description": "Cross-window request lock contention",
+    "_machine_translated": true,
+    "_source_hash": "b6ed5bc4b975b5a0"
+  },
+  "error.cache_only": {
+    "message": "الأسعار المحفوظة فقط؛ الطلبات المباشرة متوقفة مؤقتًا.",
+    "description": "User selected offline provider mode",
+    "_machine_translated": true,
+    "_source_hash": "ceee09611e30c87c"
+  },
+  "error.storage": {
+    "message": "تخزين الأسعار غير متاح. الطلبات متوقفة مؤقتًا إلى أن يصبح تتبّع حدّها ممكنًا.",
+    "description": "Fail closed when rate budget cannot persist",
+    "_machine_translated": true,
+    "_source_hash": "4cbfbb2e9b0adc41"
+  },
+  "error.invalid_key": {
+    "message": "الصق مفتاح API من Finnhub، ثم اختر «اختبار وحفظ». لا تلصق URL.",
+    "description": "Malformed or missing API key",
+    "_machine_translated": true,
+    "_source_hash": "b972e383a08a0ac1"
+  },
+  "error.invalid_range": {
+    "message": "اختر نطاقًا من 1d أو 1w أو 1m.",
+    "description": "Agent history range validation",
+    "_machine_translated": true,
+    "_source_hash": "f4f4d83dc6129a6c"
+  },
+  "settings.description": {
+    "message": "أسعار الأسهم الأمريكية وقائمة المراقبة وسجل الأسعار المحلي. متصل · المصدر: Finnhub. قد تكون القيم المحفوظة متأخرة.",
+    "description": "Settings summary",
+    "_machine_translated": true,
+    "_source_hash": "b91914b96330d6cb"
+  },
+  "settings.connection": {
+    "message": "مزوّد الأسعار والإعداد",
+    "description": "Connection section heading",
+    "_machine_translated": true,
+    "_source_hash": "863fbc4ab994c2eb"
+  },
+  "settings.provider": {
+    "message": "المزوّد",
+    "description": "Provider selector label",
+    "_machine_translated": true,
+    "_source_hash": "713fef775807424a"
+  },
+  "settings.finnhub": {
+    "message": "Finnhub · أسعار أمريكية · مفتاح شخصي مجاني",
+    "description": "Supported online provider option",
+    "_machine_translated": true,
+    "_source_hash": "e989961cfe6d267c"
+  },
+  "settings.cache": {
+    "message": "الأسعار المحفوظة فقط · دون اتصال",
+    "description": "Network paused provider option",
+    "_machine_translated": true,
+    "_source_hash": "f429d58cbb1c5f8b"
+  },
+  "setup.intro": {
+    "message": "تنزيلات Stooq بدون مفتاح غير متاحة حاليًا. استخدم مفتاح Finnhub المجاني الخاص بك للحصول على الأسعار الأمريكية؛ لا توفّر إضافة Stocks مفتاحًا مشتركًا أبدًا.",
+    "description": "Explain the authorized fallback to key setup",
+    "_machine_translated": true,
+    "_source_hash": "d8f6685775cf04bc"
+  },
+  "setup.terms": {
+    "message": "خطط Finnhub الشخصية مخصّصة للاستخدام الشخصي المؤهَّل. يتطلب الاستخدام التجاري ومشاركة البيانات أو النتائج المشتقة منها مع أطراف ثالثة موافقة Finnhub. راجع شروط المزوّد، بما في ذلك قبل إرسال الأسعار إلى وكيل بعيد.",
+    "description": "Material provider use restrictions",
+    "_machine_translated": true,
+    "_source_hash": "9eb9716ed06ff746"
+  },
+  "setup.steps": {
+    "message": "1. افتح «احصل على مفتاح مجاني» وسجّل في Finnhub. 2. انسخ مفتاح API من لوحة التحكم. 3. الصقه أدناه واختر «اختبار المفتاح وحفظه». 4. احفظ قائمة المراقبة وإعدادات المزوّد.",
+    "description": "Guided setup steps",
+    "_machine_translated": true,
+    "_source_hash": "f0be788769ece36a"
+  },
+  "setup.saved": {
+    "message": "يوجد مفتاح محفوظ على هذا الجهاز. اترك الحقل فارغًا لاختباره، أو الصق مفتاحًا بديلًا. لا تُعرض المفاتيح المخزّنة هنا أبدًا.",
+    "description": "Connected setup state without secret disclosure",
+    "_machine_translated": true,
+    "_source_hash": "4fba007359b56f1d"
+  },
+  "setup.free_key": {
+    "message": "احصل على مفتاح مجاني",
+    "description": "Open provider registration in system browser",
+    "_machine_translated": true,
+    "_source_hash": "42b307eaf0136997"
+  },
+  "setup.key": {
+    "message": "مفتاح Finnhub API",
+    "description": "Scratch field for secret",
+    "_machine_translated": true,
+    "_source_hash": "2e7e94ee1be4a2cf"
+  },
+  "setup.key_hint": {
+    "message": "يخزّن «اختبار المفتاح وحفظه» المفتاح في بيانات الإضافة الخاصة، مثل بيانات اعتماد Spotify. كتابته هنا لا تحفظه مع الإعدادات العادية. حقل النص في هذا المضيف يكون مرئيًا أثناء الكتابة.",
+    "description": "Storage and host input behavior",
+    "_machine_translated": true,
+    "_source_hash": "4c3122d9b4d5daad"
+  },
+  "setup.test": {
+    "message": "اختبار المفتاح وحفظه",
+    "description": "Probe quote endpoint and save only on success",
+    "_machine_translated": true,
+    "_source_hash": "bc2be6a1a4fb4210"
+  },
+  "setup.remove": {
+    "message": "إزالة المفتاح المحفوظ",
+    "description": "Delete provider credentials; retain cached quotes",
+    "_machine_translated": true,
+    "_source_hash": "469ba81c1b5aeb34"
+  },
+  "setup.removed": {
+    "message": "تمت إزالة المفتاح. ستظل الأسعار المحفوظة متاحة.",
+    "description": "Removal success",
+    "_machine_translated": true,
+    "_source_hash": "59cb7317745316bb"
+  },
+  "setup.success": {
+    "message": "نجح اختبار أسعار Finnhub وتم حفظ المفتاح. احفظ إعدادات المزوّد وقائمة المراقبة للإنهاء.",
+    "description": "Successful guided setup",
+    "_machine_translated": true,
+    "_source_hash": "96383792f28339c2"
+  },
+  "settings.watchlist_section": {
+    "message": "قائمة المراقبة والتحديث",
+    "description": "Display settings section",
+    "_machine_translated": true,
+    "_source_hash": "eeb14304489ebbaf"
+  },
+  "settings.watchlist": {
+    "message": "قائمة المراقبة",
+    "description": "Editable list label",
+    "_machine_translated": true,
+    "_source_hash": "4fa141d565f4d3cb"
+  },
+  "settings.watchlist_hint": {
+    "message": "حتى {max} من الرموز الأمريكية، مفصولة بمسافات أو فواصل. القائمة الفارغة تُخفي الأداة.",
+    "description": "Watchlist validation; preserve {max}",
+    "_machine_translated": true,
+    "_source_hash": "18fd9ff917b78911"
+  },
+  "settings.show": {
+    "message": "عرض قائمة المراقبة في النافذة العائمة",
+    "description": "Widget visibility toggle",
+    "_machine_translated": true,
+    "_source_hash": "acd01a47d682bca1"
+  },
+  "settings.refresh": {
+    "message": "الفاصل الزمني للتحديث (بالثواني)",
+    "description": "Quote cache and widget refresh interval",
+    "_machine_translated": true,
+    "_source_hash": "d5d486955acdd4c8"
+  },
+  "settings.refresh_hint": {
+    "message": "الحد الأدنى 60 ثانية؛ والافتراضي 300. يتوقف الاستطلاع في النافذة المخفية على مضيفات Kage الحالية. يُحجز 40 طلبًا كحد أقصى في الدقيقة على مستوى هذا الجهاز؛ وتشمل حدود المزوّد أيضًا تطبيقاتك الأخرى.",
+    "description": "Request budget and hidden behavior",
+    "_machine_translated": true,
+    "_source_hash": "86c3403cda44db0e"
+  },
+  "settings.refresh_error": {
+    "message": "يجب أن يكون الفاصل الزمني للتحديث بين 60 و3600 ثانية.",
+    "description": "Invalid interval",
+    "_machine_translated": true,
+    "_source_hash": "c93b2dfa0a61d9f4"
+  },
+  "tool.quote": {
+    "message": "الحصول على أسعار الأسهم الأمريكية من Finnhub للاستخدام الشخصي. يُرجع المصدر والطابع الزمني لآخر صفقة ومدى حداثة ذاكرة التخزين المؤقت والأخطاء الخاصة بكل رمز. يتطلب مفتاح المستخدم المجاني؛ لا تُعِد توزيع البيانات دون موافقة المزوّد.",
+    "description": "Agent tool description",
+    "_machine_translated": true,
+    "_source_hash": "9aa8d167f9bf2f94"
+  },
+  "tool.symbols": {
+    "message": "حتى 10 رموز أمريكية، على سبيل المثال [\"AAPL\", \"MSFT\", \"BRK.B\"].",
+    "description": "Quote tool parameter description",
+    "_machine_translated": true,
+    "_source_hash": "5d5d1c443bb02531"
+  },
+  "tool.history": {
+    "message": "الحصول على أسعار Finnhub التي جرى رصدها وأخذ عينات منها محليًا على هذا الجهاز لمدة 1d أو 1w أو 1m. لا تُرسل أي طلبات عبر الشبكة. العينات غير مكتملة ومتفرقة، وليست شموعًا تاريخية؛ وتعني القائمة الفارغة أنه لم يُجمع أي شيء.",
+    "description": "Agent tool scope must not imply full historical coverage",
+    "_machine_translated": true,
+    "_source_hash": "fcb4dd5f0bdcb792"
+  },
+  "tool.symbol": {
+    "message": "رمز سهم أمريكي.",
+    "description": "History symbol parameter description",
+    "_machine_translated": true,
+    "_source_hash": "31f6b8214e118704"
+  },
+  "tool.range": {
+    "message": "1d أو 1w أو 1m؛ القيمة الافتراضية 1d.",
+    "description": "History range parameter description",
+    "_machine_translated": true,
+    "_source_hash": "992fdef4270c7170"
+  },
+  "tool.disabled": {
+    "message": "الأسهم معطّلة.",
+    "description": "Host-disabled tool execution",
+    "_machine_translated": true,
+    "_source_hash": "9c2b3d9381a7a02c"
+  },
+  "tool.unknown": {
+    "message": "أداة أسهم غير معروفة.",
+    "description": "Unrecognized tool execution",
+    "_machine_translated": true,
+    "_source_hash": "2acdb85e54aa0ed1"
+  }
+}

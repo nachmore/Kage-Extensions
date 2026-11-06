@@ -1,0 +1,338 @@
+{
+  "_meta": {
+    "language": "id",
+    "name": "Bahasa Indonesia",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Saham",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "d6d4700604b64b88"
+  },
+  "manifest.description": {
+    "message": "Online · Kuotasi saham AS dan daftar pantauan dari Finnhub dengan kunci gratis Anda. Data tertunda saat diambil dari cache; setiap kuotasi menampilkan stempel waktunya.",
+    "description": "Store listing; Online and Data delayed communicate network dependency and freshness",
+    "_machine_translated": true,
+    "_source_hash": "6feb0a4240dfb80e"
+  },
+  "result.loading": {
+    "message": "Mencari saham…",
+    "description": "Launcher placeholder while quotes load",
+    "_machine_translated": true,
+    "_source_hash": "a2b95adcfc6e29b7"
+  },
+  "result.help": {
+    "message": "Coba $AAPL, stock msft, atau stock aapl msft nvda. Enter membuka grafik; pilih Salin atau gunakan stock copy AAPL untuk menyalin kuotasi.",
+    "description": "Launcher syntax and actions",
+    "_machine_translated": true,
+    "_source_hash": "ca59813d90734a08"
+  },
+  "result.copy": {
+    "message": "Salin {text}",
+    "description": "Selectable clipboard action; preserve {text}",
+    "_machine_translated": true,
+    "_source_hash": "516993d8cc4732a3"
+  },
+  "quote.as_of": {
+    "message": "Per {time}",
+    "description": "Actual last trade timestamp, not request time; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "3dcdbc540a4593d1"
+  },
+  "quote.cached": {
+    "message": "Di-cache {time}",
+    "description": "Time the saved quote was fetched; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "76520879cd1583b5"
+  },
+  "quote.retry": {
+    "message": "Coba lagi setelah {time}",
+    "description": "Rate limit backoff expiry; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "d305b2da13a783d0"
+  },
+  "quote.delayed": {
+    "message": "Data tertunda / pasar mungkin tutup",
+    "description": "Quote is over 15 minutes old; do not imply verified exchange status",
+    "_machine_translated": true,
+    "_source_hash": "ece516a5d44ca6ba"
+  },
+  "quote.sampled": {
+    "message": "Kuotasi Finnhub yang disampel secara lokal, dengan celah. Dikumpulkan selama Saham digunakan; ini bukan data candle historis.",
+    "description": "Sparkline accessible label and settings explanation",
+    "_machine_translated": true,
+    "_source_hash": "0eca89619bcb28b9"
+  },
+  "quote.source": {
+    "message": "Sumber: Finnhub",
+    "description": "Visible provider attribution",
+    "_machine_translated": true,
+    "_source_hash": "693535460d4db418"
+  },
+  "error.setup": {
+    "message": "Buka pengaturan Saham, dapatkan kunci Finnhub gratis, lalu Uji dan simpan.",
+    "description": "No stored key",
+    "_machine_translated": true,
+    "_source_hash": "8adbf75fdf5bc595"
+  },
+  "error.auth": {
+    "message": "Finnhub menolak kunci tersebut. Buka pengaturan Saham untuk menguji kunci pengganti.",
+    "description": "Authentication or plan error, no raw provider response",
+    "_machine_translated": true,
+    "_source_hash": "ecc147e2c9741ce7"
+  },
+  "error.unknown": {
+    "message": "Tidak ada kuotasi untuk simbol ini. Periksa ticker AS, termasuk akhiran kelas saham jika ada.",
+    "description": "Unknown or zero-valued quote",
+    "_machine_translated": true,
+    "_source_hash": "3a30475366fb7002"
+  },
+  "error.unsupported": {
+    "message": "Penyedia ini hanya mendukung ticker AS. Akhiran bursa internasional memerlukan paket data yang berbeda.",
+    "description": "Unsupported provider or international symbol",
+    "_machine_translated": true,
+    "_source_hash": "1be0703c00de00dc"
+  },
+  "error.invalid_symbols": {
+    "message": "Masukkan simbol saham yang dipisahkan dengan spasi atau koma, seperti AAPL MSFT atau BRK.B.",
+    "description": "Symbol validation error",
+    "_machine_translated": true,
+    "_source_hash": "5cd17969829278c5"
+  },
+  "error.too_many": {
+    "message": "Gunakan maksimal 10 simbol per kueri atau daftar pantauan.",
+    "description": "Bounded request batch",
+    "_machine_translated": true,
+    "_source_hash": "e8f0028cd32f8c7b"
+  },
+  "error.rate_limit": {
+    "message": "Batas permintaan tercapai. Menampilkan data tersimpan jika tersedia; permintaan akan dilanjutkan setelah jeda.",
+    "description": "Rate limit backoff",
+    "_machine_translated": true,
+    "_source_hash": "7d553dee0c6fe94a"
+  },
+  "error.offline": {
+    "message": "Tidak dapat menjangkau Finnhub. Menampilkan data tersimpan jika tersedia.",
+    "description": "Offline or network timeout",
+    "_machine_translated": true,
+    "_source_hash": "e74f5fe32dc5f429"
+  },
+  "error.unavailable": {
+    "message": "Finnhub tidak tersedia. Menampilkan data tersimpan jika tersedia.",
+    "description": "Sanitized provider error",
+    "_machine_translated": true,
+    "_source_hash": "2dd30adcc5164ad4"
+  },
+  "error.busy": {
+    "message": "Jendela Kage lain sedang memperbarui kuotasi. Coba lagi sebentar lagi.",
+    "description": "Cross-window request lock contention",
+    "_machine_translated": true,
+    "_source_hash": "b6ed5bc4b975b5a0"
+  },
+  "error.cache_only": {
+    "message": "Hanya kuotasi tersimpan; permintaan langsung dijeda.",
+    "description": "User selected offline provider mode",
+    "_machine_translated": true,
+    "_source_hash": "ceee09611e30c87c"
+  },
+  "error.storage": {
+    "message": "Penyimpanan kuotasi tidak tersedia. Permintaan dijeda hingga batasnya dapat dilacak.",
+    "description": "Fail closed when rate budget cannot persist",
+    "_machine_translated": true,
+    "_source_hash": "4cbfbb2e9b0adc41"
+  },
+  "error.invalid_key": {
+    "message": "Tempel kunci API Finnhub, lalu Uji dan simpan. Jangan menempelkan URL.",
+    "description": "Malformed or missing API key",
+    "_machine_translated": true,
+    "_source_hash": "b972e383a08a0ac1"
+  },
+  "error.invalid_range": {
+    "message": "Pilih rentang 1d, 1w, atau 1m.",
+    "description": "Agent history range validation",
+    "_machine_translated": true,
+    "_source_hash": "f4f4d83dc6129a6c"
+  },
+  "settings.description": {
+    "message": "Kuotasi saham AS, daftar pantauan, dan riwayat kuotasi lokal. Online · Sumber: Finnhub. Nilai yang tersimpan mungkin tertunda.",
+    "description": "Settings summary",
+    "_machine_translated": true,
+    "_source_hash": "b91914b96330d6cb"
+  },
+  "settings.connection": {
+    "message": "Penyedia kuotasi dan penyiapan",
+    "description": "Connection section heading",
+    "_machine_translated": true,
+    "_source_hash": "863fbc4ab994c2eb"
+  },
+  "settings.provider": {
+    "message": "Penyedia",
+    "description": "Provider selector label",
+    "_machine_translated": true,
+    "_source_hash": "713fef775807424a"
+  },
+  "settings.finnhub": {
+    "message": "Finnhub · kuotasi AS · kunci pribadi gratis",
+    "description": "Supported online provider option",
+    "_machine_translated": true,
+    "_source_hash": "e989961cfe6d267c"
+  },
+  "settings.cache": {
+    "message": "Hanya kuotasi tersimpan · offline",
+    "description": "Network paused provider option",
+    "_machine_translated": true,
+    "_source_hash": "f429d58cbb1c5f8b"
+  },
+  "setup.intro": {
+    "message": "Unduhan Stooq tanpa kunci saat ini tidak tersedia. Gunakan kunci Finnhub gratis milik Anda sendiri untuk kuotasi AS; Stocks tidak pernah menyediakan kunci bersama.",
+    "description": "Explain the authorized fallback to key setup",
+    "_machine_translated": true,
+    "_source_hash": "d8f6685775cf04bc"
+  },
+  "setup.terms": {
+    "message": "Paket pribadi Finnhub ditujukan untuk penggunaan pribadi yang memenuhi syarat. Penggunaan bisnis serta berbagi data atau hasil turunannya dengan pihak ketiga memerlukan persetujuan Finnhub. Periksa ketentuan penyedia, termasuk sebelum mengirim kuotasi ke agen jarak jauh.",
+    "description": "Material provider use restrictions",
+    "_machine_translated": true,
+    "_source_hash": "9eb9716ed06ff746"
+  },
+  "setup.steps": {
+    "message": "1. Buka Dapatkan kunci gratis dan daftar di Finnhub. 2. Salin kunci API Anda dari dasbornya. 3. Tempelkan di bawah ini lalu pilih Uji dan simpan. 4. Simpan pengaturan daftar pantauan dan penyedia Anda.",
+    "description": "Guided setup steps",
+    "_machine_translated": true,
+    "_source_hash": "f0be788769ece36a"
+  },
+  "setup.saved": {
+    "message": "Sebuah kunci tersimpan di perangkat ini. Biarkan kolom kosong untuk mengujinya, atau tempelkan kunci pengganti. Kunci yang tersimpan tidak pernah ditampilkan di sini.",
+    "description": "Connected setup state without secret disclosure",
+    "_machine_translated": true,
+    "_source_hash": "4fba007359b56f1d"
+  },
+  "setup.free_key": {
+    "message": "Dapatkan kunci gratis",
+    "description": "Open provider registration in system browser",
+    "_machine_translated": true,
+    "_source_hash": "42b307eaf0136997"
+  },
+  "setup.key": {
+    "message": "Kunci API Finnhub",
+    "description": "Scratch field for secret",
+    "_machine_translated": true,
+    "_source_hash": "2e7e94ee1be4a2cf"
+  },
+  "setup.key_hint": {
+    "message": "Uji dan simpan menyimpan kunci di data ekstensi privat, seperti kredensial Spotify. Mengetiknya di sini tidak menyimpannya bersama pengaturan biasa. Kolom teks host ini terlihat saat Anda mengetik.",
+    "description": "Storage and host input behavior",
+    "_machine_translated": true,
+    "_source_hash": "4c3122d9b4d5daad"
+  },
+  "setup.test": {
+    "message": "Uji dan simpan kunci",
+    "description": "Probe quote endpoint and save only on success",
+    "_machine_translated": true,
+    "_source_hash": "bc2be6a1a4fb4210"
+  },
+  "setup.remove": {
+    "message": "Hapus kunci tersimpan",
+    "description": "Delete provider credentials; retain cached quotes",
+    "_machine_translated": true,
+    "_source_hash": "469ba81c1b5aeb34"
+  },
+  "setup.removed": {
+    "message": "Kunci dihapus. Kuotasi tersimpan tetap tersedia.",
+    "description": "Removal success",
+    "_machine_translated": true,
+    "_source_hash": "59cb7317745316bb"
+  },
+  "setup.success": {
+    "message": "Uji kuotasi Finnhub berhasil; kunci disimpan. Simpan pengaturan penyedia dan daftar pantauan untuk menyelesaikan.",
+    "description": "Successful guided setup",
+    "_machine_translated": true,
+    "_source_hash": "96383792f28339c2"
+  },
+  "settings.watchlist_section": {
+    "message": "Daftar pantauan dan penyegaran",
+    "description": "Display settings section",
+    "_machine_translated": true,
+    "_source_hash": "eeb14304489ebbaf"
+  },
+  "settings.watchlist": {
+    "message": "Daftar pantauan",
+    "description": "Editable list label",
+    "_machine_translated": true,
+    "_source_hash": "4fa141d565f4d3cb"
+  },
+  "settings.watchlist_hint": {
+    "message": "Hingga {max} simbol AS, dipisahkan dengan spasi atau koma. Daftar kosong akan menyembunyikan widget.",
+    "description": "Watchlist validation; preserve {max}",
+    "_machine_translated": true,
+    "_source_hash": "18fd9ff917b78911"
+  },
+  "settings.show": {
+    "message": "Tampilkan daftar pantauan di jendela mengambang",
+    "description": "Widget visibility toggle",
+    "_machine_translated": true,
+    "_source_hash": "acd01a47d682bca1"
+  },
+  "settings.refresh": {
+    "message": "Interval penyegaran (detik)",
+    "description": "Quote cache and widget refresh interval",
+    "_machine_translated": true,
+    "_source_hash": "d5d486955acdd4c8"
+  },
+  "settings.refresh_hint": {
+    "message": "Minimum 60 detik; default 300. Polling saat jendela tersembunyi dijeda pada host Kage saat ini. Paling banyak 40 permintaan per menit dicadangkan di seluruh perangkat ini; batas penyedia juga mencakup aplikasi Anda yang lain.",
+    "description": "Request budget and hidden behavior",
+    "_machine_translated": true,
+    "_source_hash": "86c3403cda44db0e"
+  },
+  "settings.refresh_error": {
+    "message": "Interval penyegaran harus antara 60 dan 3600 detik.",
+    "description": "Invalid interval",
+    "_machine_translated": true,
+    "_source_hash": "c93b2dfa0a61d9f4"
+  },
+  "tool.quote": {
+    "message": "Dapatkan kuotasi saham AS dari Finnhub untuk penggunaan pribadi. Mengembalikan sumber, stempel waktu transaksi terakhir, kesegaran cache, dan galat per simbol. Memerlukan kunci gratis milik pengguna; jangan didistribusikan ulang tanpa persetujuan penyedia.",
+    "description": "Agent tool description",
+    "_machine_translated": true,
+    "_source_hash": "9aa8d167f9bf2f94"
+  },
+  "tool.symbols": {
+    "message": "Hingga 10 simbol AS, misalnya [\"AAPL\", \"MSFT\", \"BRK.B\"].",
+    "description": "Quote tool parameter description",
+    "_machine_translated": true,
+    "_source_hash": "5d5d1c443bb02531"
+  },
+  "tool.history": {
+    "message": "Dapatkan kutipan Finnhub yang diambil sampelnya secara lokal dan teramati di perangkat ini untuk 1d, 1w, atau 1m. Tanpa permintaan jaringan. Sampel tidak lengkap dan jarang, bukan candle historis; daftar kosong berarti tidak ada yang dikumpulkan.",
+    "description": "Agent tool scope must not imply full historical coverage",
+    "_machine_translated": true,
+    "_source_hash": "fcb4dd5f0bdcb792"
+  },
+  "tool.symbol": {
+    "message": "Simbol saham AS.",
+    "description": "History symbol parameter description",
+    "_machine_translated": true,
+    "_source_hash": "31f6b8214e118704"
+  },
+  "tool.range": {
+    "message": "1d, 1w, atau 1m; default 1d.",
+    "description": "History range parameter description",
+    "_machine_translated": true,
+    "_source_hash": "992fdef4270c7170"
+  },
+  "tool.disabled": {
+    "message": "Stocks dinonaktifkan.",
+    "description": "Host-disabled tool execution",
+    "_machine_translated": true,
+    "_source_hash": "9c2b3d9381a7a02c"
+  },
+  "tool.unknown": {
+    "message": "Alat Stocks tidak dikenal.",
+    "description": "Unrecognized tool execution",
+    "_machine_translated": true,
+    "_source_hash": "2acdb85e54aa0ed1"
+  }
+}

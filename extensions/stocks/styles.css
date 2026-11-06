@@ -1,0 +1,13 @@
+.stocks-result .app-info { min-width: 0; flex: 1; }
+.stocks-result .app-name, .stocks-result .app-description { display: block; }
+.stocks-up { color: var(--success-color, #218a57); }
+.stocks-down { color: var(--error-color, #cf5555); }
+.stocks-flat { color: var(--text-secondary, #888); }
+.stocks-widget { align-items: flex-start; gap: 8px; padding: 8px 10px; }
+.stocks-source { flex-shrink: 0; font-size: 11px; }
+.stocks-source a { color: inherit; }
+.stocks-tiles { display: flex; gap: 8px; flex: 1; min-width: 0; overflow-x: auto; }
+.stocks-tile { display: flex; flex-direction: column; gap: 3px; min-width: 118px; max-width: 190px; flex-shrink: 0; font: inherit; font-size: 11px; text-align: start; border: 1px solid var(--border-color, #8884); border-radius: 6px; background: transparent; padding: 6px; }
+button.stocks-tile { cursor: pointer; }
+.stocks-tile small { color: var(--text-secondary, #888); font-size: 10px; overflow-wrap: anywhere; }
+.stocks-sparkline { flex-shrink: 0; }

@@ -1,0 +1,338 @@
+{
+  "_meta": {
+    "language": "el",
+    "name": "Ελληνικά",
+    "rtl": false,
+    "machine_translated": true
+  },
+  "manifest.name": {
+    "message": "Μετοχές",
+    "description": "Extension display name",
+    "_machine_translated": true,
+    "_source_hash": "d6d4700604b64b88"
+  },
+  "manifest.description": {
+    "message": "Online · Τιμές μετοχών ΗΠΑ και λίστα παρακολούθησης από το Finnhub με το δωρεάν κλειδί σας. Τα δεδομένα από την προσωρινή μνήμη έχουν καθυστέρηση· κάθε τιμή εμφανίζει τη χρονοσφραγίδα της.",
+    "description": "Store listing; Online and Data delayed communicate network dependency and freshness",
+    "_machine_translated": true,
+    "_source_hash": "6feb0a4240dfb80e"
+  },
+  "result.loading": {
+    "message": "Αναζήτηση μετοχών…",
+    "description": "Launcher placeholder while quotes load",
+    "_machine_translated": true,
+    "_source_hash": "a2b95adcfc6e29b7"
+  },
+  "result.help": {
+    "message": "Δοκιμάστε $AAPL, stock msft ή stock aapl msft nvda. Το Enter ανοίγει γράφημα· επιλέξτε Αντιγραφή ή χρησιμοποιήστε stock copy AAPL για να αντιγράψετε μια τιμή.",
+    "description": "Launcher syntax and actions",
+    "_machine_translated": true,
+    "_source_hash": "ca59813d90734a08"
+  },
+  "result.copy": {
+    "message": "Αντιγραφή {text}",
+    "description": "Selectable clipboard action; preserve {text}",
+    "_machine_translated": true,
+    "_source_hash": "516993d8cc4732a3"
+  },
+  "quote.as_of": {
+    "message": "Στις {time}",
+    "description": "Actual last trade timestamp, not request time; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "3dcdbc540a4593d1"
+  },
+  "quote.cached": {
+    "message": "Αποθηκευμένο {time}",
+    "description": "Time the saved quote was fetched; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "76520879cd1583b5"
+  },
+  "quote.retry": {
+    "message": "Νέα προσπάθεια μετά τις {time}",
+    "description": "Rate limit backoff expiry; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "d305b2da13a783d0"
+  },
+  "quote.delayed": {
+    "message": "Δεδομένα με καθυστέρηση / η αγορά μπορεί να είναι κλειστή",
+    "description": "Quote is over 15 minutes old; do not imply verified exchange status",
+    "_machine_translated": true,
+    "_source_hash": "ece516a5d44ca6ba"
+  },
+  "quote.sampled": {
+    "message": "Τοπικά δειγματοληπτημένες τιμές Finnhub, με κενά. Συλλέγονται όσο χρησιμοποιείται η επέκταση Μετοχές· δεν πρόκειται για ιστορικά δεδομένα κεριών.",
+    "description": "Sparkline accessible label and settings explanation",
+    "_machine_translated": true,
+    "_source_hash": "0eca89619bcb28b9"
+  },
+  "quote.source": {
+    "message": "Πηγή: Finnhub",
+    "description": "Visible provider attribution",
+    "_machine_translated": true,
+    "_source_hash": "693535460d4db418"
+  },
+  "error.setup": {
+    "message": "Ανοίξτε τις ρυθμίσεις Μετοχών, αποκτήστε ένα δωρεάν κλειδί Finnhub και, στη συνέχεια, επιλέξτε Δοκιμή και αποθήκευση.",
+    "description": "No stored key",
+    "_machine_translated": true,
+    "_source_hash": "8adbf75fdf5bc595"
+  },
+  "error.auth": {
+    "message": "Το Finnhub απέρριψε το κλειδί. Ανοίξτε τις ρυθμίσεις Μετοχών για να δοκιμάσετε ένα άλλο.",
+    "description": "Authentication or plan error, no raw provider response",
+    "_machine_translated": true,
+    "_source_hash": "ecc147e2c9741ce7"
+  },
+  "error.unknown": {
+    "message": "Δεν υπάρχει τιμή για αυτό το σύμβολο. Ελέγξτε το σύμβολο ΗΠΑ, συμπεριλαμβανομένου τυχόν επιθήματος κατηγορίας μετοχών.",
+    "description": "Unknown or zero-valued quote",
+    "_machine_translated": true,
+    "_source_hash": "3a30475366fb7002"
+  },
+  "error.unsupported": {
+    "message": "Αυτός ο πάροχος υποστηρίζει μόνο σύμβολα ΗΠΑ. Τα επιθήματα διεθνών χρηματιστηρίων απαιτούν διαφορετικό πρόγραμμα δεδομένων.",
+    "description": "Unsupported provider or international symbol",
+    "_machine_translated": true,
+    "_source_hash": "1be0703c00de00dc"
+  },
+  "error.invalid_symbols": {
+    "message": "Εισαγάγετε σύμβολα μετοχών χωρισμένα με κενά ή κόμματα, όπως AAPL MSFT ή BRK.B.",
+    "description": "Symbol validation error",
+    "_machine_translated": true,
+    "_source_hash": "5cd17969829278c5"
+  },
+  "error.too_many": {
+    "message": "Χρησιμοποιήστε έως 10 σύμβολα ανά ερώτημα ή λίστα παρακολούθησης.",
+    "description": "Bounded request batch",
+    "_machine_translated": true,
+    "_source_hash": "e8f0028cd32f8c7b"
+  },
+  "error.rate_limit": {
+    "message": "Συμπληρώθηκε το όριο αιτημάτων. Εμφανίζονται αποθηκευμένα δεδομένα όταν είναι διαθέσιμα· τα αιτήματα θα συνεχιστούν μετά από μια παύση.",
+    "description": "Rate limit backoff",
+    "_machine_translated": true,
+    "_source_hash": "7d553dee0c6fe94a"
+  },
+  "error.offline": {
+    "message": "Δεν είναι δυνατή η σύνδεση με το Finnhub. Εμφανίζονται αποθηκευμένα δεδομένα όταν είναι διαθέσιμα.",
+    "description": "Offline or network timeout",
+    "_machine_translated": true,
+    "_source_hash": "e74f5fe32dc5f429"
+  },
+  "error.unavailable": {
+    "message": "Το Finnhub δεν είναι διαθέσιμο. Εμφανίζονται αποθηκευμένα δεδομένα όταν είναι διαθέσιμα.",
+    "description": "Sanitized provider error",
+    "_machine_translated": true,
+    "_source_hash": "2dd30adcc5164ad4"
+  },
+  "error.busy": {
+    "message": "Ένα άλλο παράθυρο του Kage ανανεώνει τις τιμές. Δοκιμάστε ξανά σε λίγο.",
+    "description": "Cross-window request lock contention",
+    "_machine_translated": true,
+    "_source_hash": "b6ed5bc4b975b5a0"
+  },
+  "error.cache_only": {
+    "message": "Μόνο αποθηκευμένες τιμές· τα ζωντανά αιτήματα έχουν τεθεί σε παύση.",
+    "description": "User selected offline provider mode",
+    "_machine_translated": true,
+    "_source_hash": "ceee09611e30c87c"
+  },
+  "error.storage": {
+    "message": "Ο χώρος αποθήκευσης τιμών δεν είναι διαθέσιμος. Τα αιτήματα έχουν τεθεί σε παύση μέχρι να είναι δυνατή η παρακολούθηση του ορίου τους.",
+    "description": "Fail closed when rate budget cannot persist",
+    "_machine_translated": true,
+    "_source_hash": "4cbfbb2e9b0adc41"
+  },
+  "error.invalid_key": {
+    "message": "Επικολλήστε ένα κλειδί API του Finnhub και, στη συνέχεια, επιλέξτε Δοκιμή και αποθήκευση. Μην επικολλήσετε URL.",
+    "description": "Malformed or missing API key",
+    "_machine_translated": true,
+    "_source_hash": "b972e383a08a0ac1"
+  },
+  "error.invalid_range": {
+    "message": "Επιλέξτε εύρος 1d, 1w ή 1m.",
+    "description": "Agent history range validation",
+    "_machine_translated": true,
+    "_source_hash": "f4f4d83dc6129a6c"
+  },
+  "settings.description": {
+    "message": "Τιμές μετοχών ΗΠΑ, λίστα παρακολούθησης και τοπικό ιστορικό τιμών. Online · Πηγή: Finnhub. Οι αποθηκευμένες τιμές ενδέχεται να έχουν καθυστέρηση.",
+    "description": "Settings summary",
+    "_machine_translated": true,
+    "_source_hash": "b91914b96330d6cb"
+  },
+  "settings.connection": {
+    "message": "Πάροχος τιμών και ρύθμιση",
+    "description": "Connection section heading",
+    "_machine_translated": true,
+    "_source_hash": "863fbc4ab994c2eb"
+  },
+  "settings.provider": {
+    "message": "Πάροχος",
+    "description": "Provider selector label",
+    "_machine_translated": true,
+    "_source_hash": "713fef775807424a"
+  },
+  "settings.finnhub": {
+    "message": "Finnhub · Τιμές ΗΠΑ · δωρεάν προσωπικό κλειδί",
+    "description": "Supported online provider option",
+    "_machine_translated": true,
+    "_source_hash": "e989961cfe6d267c"
+  },
+  "settings.cache": {
+    "message": "Μόνο αποθηκευμένες τιμές · εκτός σύνδεσης",
+    "description": "Network paused provider option",
+    "_machine_translated": true,
+    "_source_hash": "f429d58cbb1c5f8b"
+  },
+  "setup.intro": {
+    "message": "Οι λήψεις από το Stooq χωρίς κλειδί δεν είναι διαθέσιμες προς το παρόν. Χρησιμοποιήστε το δικό σας δωρεάν κλειδί Finnhub για τιμές ΗΠΑ· το Stocks δεν παρέχει ποτέ κοινόχρηστο κλειδί.",
+    "description": "Explain the authorized fallback to key setup",
+    "_machine_translated": true,
+    "_source_hash": "d8f6685775cf04bc"
+  },
+  "setup.terms": {
+    "message": "Τα προσωπικά προγράμματα της Finnhub προορίζονται για επιλέξιμη προσωπική χρήση. Η επαγγελματική χρήση και η κοινοποίηση δεδομένων ή παράγωγων αποτελεσμάτων σε τρίτους απαιτούν έγκριση από τη Finnhub. Ελέγξτε τους όρους του παρόχου, και πριν από την αποστολή τιμών σε απομακρυσμένο agent.",
+    "description": "Material provider use restrictions",
+    "_machine_translated": true,
+    "_source_hash": "9eb9716ed06ff746"
+  },
+  "setup.steps": {
+    "message": "1. Ανοίξτε το «Λήψη δωρεάν κλειδιού» και εγγραφείτε στη Finnhub. 2. Αντιγράψτε το API key σας από τον πίνακα ελέγχου. 3. Επικολλήστε το παρακάτω και επιλέξτε «Δοκιμή και αποθήκευση». 4. Αποθηκεύστε τη λίστα παρακολούθησης και τις ρυθμίσεις παρόχου.",
+    "description": "Guided setup steps",
+    "_machine_translated": true,
+    "_source_hash": "f0be788769ece36a"
+  },
+  "setup.saved": {
+    "message": "Υπάρχει αποθηκευμένο κλειδί σε αυτήν τη συσκευή. Αφήστε το πεδίο κενό για να το δοκιμάσετε ή επικολλήστε ένα νέο. Τα αποθηκευμένα κλειδιά δεν εμφανίζονται ποτέ εδώ.",
+    "description": "Connected setup state without secret disclosure",
+    "_machine_translated": true,
+    "_source_hash": "4fba007359b56f1d"
+  },
+  "setup.free_key": {
+    "message": "Λήψη δωρεάν κλειδιού",
+    "description": "Open provider registration in system browser",
+    "_machine_translated": true,
+    "_source_hash": "42b307eaf0136997"
+  },
+  "setup.key": {
+    "message": "Finnhub API key",
+    "description": "Scratch field for secret",
+    "_machine_translated": true,
+    "_source_hash": "2e7e94ee1be4a2cf"
+  },
+  "setup.key_hint": {
+    "message": "Η «Δοκιμή και αποθήκευση» αποθηκεύει το κλειδί στα ιδιωτικά δεδομένα της επέκτασης, όπως τα διαπιστευτήρια του Spotify. Η πληκτρολόγησή του εδώ δεν το αποθηκεύει μαζί με τις κανονικές ρυθμίσεις. Το πεδίο κειμένου αυτού του host είναι ορατό κατά την πληκτρολόγηση.",
+    "description": "Storage and host input behavior",
+    "_machine_translated": true,
+    "_source_hash": "4c3122d9b4d5daad"
+  },
+  "setup.test": {
+    "message": "Δοκιμή και αποθήκευση κλειδιού",
+    "description": "Probe quote endpoint and save only on success",
+    "_machine_translated": true,
+    "_source_hash": "bc2be6a1a4fb4210"
+  },
+  "setup.remove": {
+    "message": "Αφαίρεση αποθηκευμένου κλειδιού",
+    "description": "Delete provider credentials; retain cached quotes",
+    "_machine_translated": true,
+    "_source_hash": "469ba81c1b5aeb34"
+  },
+  "setup.removed": {
+    "message": "Το κλειδί αφαιρέθηκε. Οι αποθηκευμένες τιμές παραμένουν διαθέσιμες.",
+    "description": "Removal success",
+    "_machine_translated": true,
+    "_source_hash": "59cb7317745316bb"
+  },
+  "setup.success": {
+    "message": "Η δοκιμή τιμών Finnhub ολοκληρώθηκε επιτυχώς· το κλειδί αποθηκεύτηκε. Αποθηκεύστε τις ρυθμίσεις παρόχου και λίστας παρακολούθησης για να ολοκληρώσετε.",
+    "description": "Successful guided setup",
+    "_machine_translated": true,
+    "_source_hash": "96383792f28339c2"
+  },
+  "settings.watchlist_section": {
+    "message": "Λίστα παρακολούθησης και ανανέωση",
+    "description": "Display settings section",
+    "_machine_translated": true,
+    "_source_hash": "eeb14304489ebbaf"
+  },
+  "settings.watchlist": {
+    "message": "Λίστα παρακολούθησης",
+    "description": "Editable list label",
+    "_machine_translated": true,
+    "_source_hash": "4fa141d565f4d3cb"
+  },
+  "settings.watchlist_hint": {
+    "message": "Έως {max} σύμβολα ΗΠΑ, χωρισμένα με κενά ή κόμματα. Μια κενή λίστα αποκρύπτει το widget.",
+    "description": "Watchlist validation; preserve {max}",
+    "_machine_translated": true,
+    "_source_hash": "18fd9ff917b78911"
+  },
+  "settings.show": {
+    "message": "Εμφάνιση λίστας παρακολούθησης στο αιωρούμενο παράθυρο",
+    "description": "Widget visibility toggle",
+    "_machine_translated": true,
+    "_source_hash": "acd01a47d682bca1"
+  },
+  "settings.refresh": {
+    "message": "Διάστημα ανανέωσης (δευτερόλεπτα)",
+    "description": "Quote cache and widget refresh interval",
+    "_machine_translated": true,
+    "_source_hash": "d5d486955acdd4c8"
+  },
+  "settings.refresh_hint": {
+    "message": "Ελάχιστο 60 δευτερόλεπτα· προεπιλογή 300. Οι ενημερώσεις με κρυφό παράθυρο διακόπτονται στους τρέχοντες hosts του Kage. Δεσμεύονται έως 40 αιτήματα ανά λεπτό σε όλη τη συσκευή· τα όρια του παρόχου περιλαμβάνουν και τις άλλες εφαρμογές σας.",
+    "description": "Request budget and hidden behavior",
+    "_machine_translated": true,
+    "_source_hash": "86c3403cda44db0e"
+  },
+  "settings.refresh_error": {
+    "message": "Το διάστημα ανανέωσης πρέπει να είναι από 60 έως 3600 δευτερόλεπτα.",
+    "description": "Invalid interval",
+    "_machine_translated": true,
+    "_source_hash": "c93b2dfa0a61d9f4"
+  },
+  "tool.quote": {
+    "message": "Λήψη τιμών μετοχών ΗΠΑ από τη Finnhub για προσωπική χρήση. Επιστρέφει την πηγή, τη χρονοσφραγίδα τελευταίας συναλλαγής, την επικαιρότητα της cache και σφάλματα ανά σύμβολο. Απαιτεί το δωρεάν κλειδί του χρήστη· μην αναδιανέμετε χωρίς έγκριση του παρόχου.",
+    "description": "Agent tool description",
+    "_machine_translated": true,
+    "_source_hash": "9aa8d167f9bf2f94"
+  },
+  "tool.symbols": {
+    "message": "Έως 10 σύμβολα ΗΠΑ, για παράδειγμα [\"AAPL\", \"MSFT\", \"BRK.B\"].",
+    "description": "Quote tool parameter description",
+    "_machine_translated": true,
+    "_source_hash": "5d5d1c443bb02531"
+  },
+  "tool.history": {
+    "message": "Λήψη τιμών Finnhub που καταγράφηκαν τοπικά σε αυτήν τη συσκευή για 1d, 1w ή 1m. Χωρίς αιτήματα δικτύου. Ελλιπή, αραιά δείγματα, όχι ιστορικά κεριά· μια κενή λίστα σημαίνει ότι δεν συλλέχθηκε τίποτα.",
+    "description": "Agent tool scope must not imply full historical coverage",
+    "_machine_translated": true,
+    "_source_hash": "fcb4dd5f0bdcb792"
+  },
+  "tool.symbol": {
+    "message": "Ένα σύμβολο μετοχής των ΗΠΑ.",
+    "description": "History symbol parameter description",
+    "_machine_translated": true,
+    "_source_hash": "31f6b8214e118704"
+  },
+  "tool.range": {
+    "message": "1d, 1w ή 1m· προεπιλογή 1d.",
+    "description": "History range parameter description",
+    "_machine_translated": true,
+    "_source_hash": "992fdef4270c7170"
+  },
+  "tool.disabled": {
+    "message": "Το Stocks είναι απενεργοποιημένο.",
+    "description": "Host-disabled tool execution",
+    "_machine_translated": true,
+    "_source_hash": "9c2b3d9381a7a02c"
+  },
+  "tool.unknown": {
+    "message": "Άγνωστο εργαλείο Stocks.",
+    "description": "Unrecognized tool execution",
+    "_machine_translated": true,
+    "_source_hash": "2acdb85e54aa0ed1"
+  }
+}
