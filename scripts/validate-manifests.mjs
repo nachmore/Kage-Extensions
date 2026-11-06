@@ -33,6 +33,7 @@ import { readdir, readFile, stat } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { KNOWN_CAPABILITIES, MASCOT_ACTIVITIES } from './host-capabilities.mjs';
+import { sensitiveMetadataIssues } from './lib/sensitive-data.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -64,6 +65,7 @@ const KNOWN_TOP_LEVEL_FIELDS = new Set([
     'permissions',
     'contributes',
     'config',
+    'sensitiveData',
     'sandboxVendor',
     'homepage',
     'repository',
@@ -108,18 +110,20 @@ function graphemeCount(str) {
     return Array.from(str).length;
 }
 
-async function validateManifest(manifestPath, expectedKind, dirName) {
+export async function validateManifest(manifestPath, expectedKind, dirName) {
+    const issues = [];
+    const note = (loc, msg) => issues.push(`${loc}: ${msg}`);
     const loc = path.relative(repoRoot, manifestPath);
     let m;
     try {
         m = await readJson(manifestPath);
     } catch (e) {
         note(loc, `failed to parse JSON: ${e.message}`);
-        return;
+        return issues;
     }
     if (m === null || typeof m !== 'object' || Array.isArray(m)) {
         note(loc, 'manifest must be a JSON object at the root');
-        return;
+        return issues;
     }
 
     // Unknown-field detection — catches typos in field names. A typo
@@ -130,6 +134,7 @@ async function validateManifest(manifestPath, expectedKind, dirName) {
             note(loc, `unknown top-level field '${k}' (typo? known fields: ${[...KNOWN_TOP_LEVEL_FIELDS].sort().join(', ')})`);
         }
     }
+    for (const issue of sensitiveMetadataIssues(m)) note(loc, issue);
 
     // --- Required field presence + type ---------------------------------
     if (typeof m.id !== 'string' || !ID_PATTERN.test(m.id)) {
@@ -217,7 +222,7 @@ async function validateManifest(manifestPath, expectedKind, dirName) {
             for (const f of fileFields) {
                 const v = m.contributes[f];
                 if (typeof v === 'string') {
-                    await checkRel(loc, manifestPath, v);
+                    await checkRel(loc, manifestPath, v, note);
                 }
             }
             if (m.contributes.css !== undefined) {
@@ -228,7 +233,7 @@ async function validateManifest(manifestPath, expectedKind, dirName) {
                         if (typeof c !== 'string') {
                             note(loc, `'contributes.css' entries must be strings`);
                         } else {
-                            await checkRel(loc, manifestPath, c);
+                            await checkRel(loc, manifestPath, c, note);
                         }
                     }
                 }
@@ -246,7 +251,7 @@ async function validateManifest(manifestPath, expectedKind, dirName) {
                         }
                         if (w?.id) seenIds.add(w.id);
                         if (typeof w?.module === 'string') {
-                            await checkRel(loc, manifestPath, w.module);
+                            await checkRel(loc, manifestPath, w.module, note);
                         }
                     }
                 }
@@ -281,7 +286,7 @@ async function validateManifest(manifestPath, expectedKind, dirName) {
             }
             if (m.contributes.themes && typeof m.contributes.themes === 'object') {
                 for (const v of Object.values(m.contributes.themes)) {
-                    if (typeof v === 'string') await checkRel(loc, manifestPath, v);
+                    if (typeof v === 'string') await checkRel(loc, manifestPath, v, note);
                 }
             }
         }
@@ -291,9 +296,10 @@ async function validateManifest(manifestPath, expectedKind, dirName) {
     if (expectedKind === 'extension' && m.id && dirName && m.id !== dirName) {
         note(loc, `extension folder name '${dirName}' must match manifest id '${m.id}'`);
     }
+    return issues;
 }
 
-async function checkRel(loc, manifestPath, relPath) {
+async function checkRel(loc, manifestPath, relPath, note) {
     if (typeof relPath !== 'string') return;
     if (!relPath.startsWith('./') && !relPath.startsWith('/')) {
         note(loc, `path '${relPath}' should start with './'`);
@@ -325,7 +331,7 @@ async function main() {
                 note(path.relative(repoRoot, path.join(root, d)), 'missing manifest.json');
                 continue;
             }
-            await validateManifest(manifestPath, kind, d);
+            errors.push(...await validateManifest(manifestPath, kind, d));
             // Capture the id for collision detection (best-effort —
             // if the manifest didn't parse, skip).
             try {
@@ -355,7 +361,9 @@ async function main() {
     console.log('All manifests valid.');
 }
 
-main().catch((e) => {
-    console.error(e);
-    process.exit(1);
-});
+if (process.argv[1] && path.resolve(process.argv[1]) === __filename) {
+    main().catch((e) => {
+        console.error(e);
+        process.exit(1);
+    });
+}

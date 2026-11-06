@@ -1,7 +1,7 @@
 {
   "id": "github",
   "name": "__MSG_manifest.name__",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "type": "extension",
   "description": "__MSG_manifest.description__",
   "icon": "🐙",
@@ -17,6 +17,9 @@
     "urls",
     "storage"
   ],
+  "sensitiveData": [
+    "token"
+  ],
   "config": {
     "trigger": {
       "type": "string",
@@ -24,7 +27,8 @@
     },
     "personal_token": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "sensitive": true
     }
   },
   "contributes": {

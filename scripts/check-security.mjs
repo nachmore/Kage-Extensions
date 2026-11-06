@@ -40,6 +40,12 @@
 //     legitimate use (interpolating values you ALREADY HTML-escaped),
 //     but it's worth flagging so reviewers double-check.
 //
+//   Undeclared sensitive storage/config
+//     Require sensitiveData and config.<field>.sensitive for secret names,
+//     obvious secret writes, capability URLs, and secret settings controls.
+//     See lib/check-sensitive-data.mjs and CONTRIBUTING.md for static-analysis
+//     boundaries. No extension/key allowlist.
+//
 // Usage:
 //   node scripts/check-security.mjs              # check changed extensions only
 //   node scripts/check-security.mjs --all        # force-check everything
@@ -53,6 +59,7 @@ import { readFile, readdir } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { affectedItems, shouldRun } from './lib/affected.mjs';
+import { checkSensitiveDeclarations } from './lib/check-sensitive-data.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -127,8 +134,6 @@ const PATTERNS = [
     },
 ];
 
-const results = []; // { extId, file, line, lineText, pattern, severity, message }
-
 async function listJsFiles(dir) {
     // Skip _locales — they're JSON.
     let entries;
@@ -152,11 +157,12 @@ async function listJsFiles(dir) {
 }
 
 async function scanFile(file, extId) {
+    const results = [];
     let txt;
     try {
         txt = await readFile(file, 'utf8');
     } catch {
-        return;
+        return { results, source: '' };
     }
     const lines = txt.split(/\r?\n/);
     for (let i = 0; i < lines.length; i++) {
@@ -182,17 +188,41 @@ async function scanFile(file, extId) {
             }
         }
     }
+    return { results, source: txt };
 }
 
-async function scanItem(itemKey) {
-    const dir = path.join(repoRoot, itemKey);
+export async function checkExtension(dir) {
+    const itemKey = path.relative(repoRoot, dir);
+    const results = [];
+    const sources = [];
     const files = await listJsFiles(dir);
-    for (const f of files) await scanFile(f, itemKey);
+    for (const f of files) {
+        if (/\.(?:test|spec)\.[cm]?js$/.test(f)) continue;
+        const scan = await scanFile(f, itemKey);
+        results.push(...scan.results);
+        sources.push({ file: path.relative(dir, f), source: scan.source });
+    }
+    const manifest = JSON.parse(await readFile(path.join(dir, 'manifest.json'), 'utf8'));
+    for (const issue of checkSensitiveDeclarations(manifest, sources)) {
+        const file = path.join(dir, issue.file);
+        const source = issue.file === 'manifest.json'
+            ? await readFile(file, 'utf8')
+            : sources.find((s) => s.file === issue.file)?.source || '';
+        results.push({
+            ...issue, extId: itemKey, file: path.relative(repoRoot, file),
+            lineText: source.split(/\r?\n/)[issue.line - 1]?.trim() || '',
+        });
+    }
+    return results;
 }
 
 async function main() {
+    const results = [];
     const affected = await affectedItems();
-    const targets = affected.all.filter((it) => shouldRun(it, affected, { all: flagAll }));
+    const checkChanged = affected.nonItemChanged.some((file) =>
+        file === 'scripts/check-security.mjs' || file.startsWith('scripts/lib/')
+    );
+    const targets = affected.all.filter((it) => shouldRun(it, affected, { all: flagAll || checkChanged }));
 
     if (affected.mode === 'changed' && !flagAll) {
         const skipped = affected.all.length - targets.length;
@@ -206,7 +236,7 @@ async function main() {
     for (const it of targets) {
         // Themes are pure data; no JS.
         if (it.startsWith('themes/')) continue;
-        await scanItem(it);
+        results.push(...await checkExtension(path.join(repoRoot, it)));
     }
 
     if (results.length === 0) {
@@ -234,7 +264,9 @@ async function main() {
     if (errs.length > 0) process.exit(1);
 }
 
-main().catch((e) => {
-    console.error(e);
-    process.exit(1);
-});
+if (process.argv[1] && path.resolve(process.argv[1]) === __filename) {
+    main().catch((e) => {
+        console.error(e);
+        process.exit(1);
+    });
+}

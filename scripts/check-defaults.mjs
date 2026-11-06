@@ -137,6 +137,7 @@ export const CURRENT_HOST_FEATURES = Object.freeze([
     'settings.copy_action',
     'invoke.error_kind',
     'config.manifest_defaults',
+    'export.sensitive_data',
     'windows.minimized',
 ]);
 
