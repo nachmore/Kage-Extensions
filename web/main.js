@@ -29,6 +29,12 @@
         const n = navigator;
         const p = (n.userAgentData && n.userAgentData.platform) || n.platform || '';
         doc.dataset.os = /mac/i.test(p) && n.maxTouchPoints < 2 ? 'mac' : /win/i.test(p) ? 'windows' : 'other';
+        // boot.js also watches for app.js failing to load; without it, check
+        // once the page has loaded (module scripts run before that) and hide
+        // the store controls that would be dead.
+        window.addEventListener('load', () => {
+            if (!doc.classList.contains('store-loaded')) doc.classList.add('store-failed');
+        });
     }
 
     // ─── reveals ──────────────────────────────────────────────────────

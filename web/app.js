@@ -376,6 +376,11 @@ export async function start({ doc = document, win = window, fetchImpl = win.fetc
     async function openDetails(id, trigger, { history = true } = {}) {
         const item = byId().get(id);
         if (!item || !els.dialog || !els.dialogBody) return;
+        // Closed, but its queued `close` event hasn't fired yet (a fast
+        // close-then-open): settle it now, or its history entry would be
+        // left behind and Back would reopen it later. The stale event then
+        // finds nothing to do.
+        if (history && state.ext && !els.dialog.open) onClosed();
         if (history && goingBack) {
             // Still leaving the last one: open once that's done.
             afterBack = { id, trigger };
@@ -597,6 +602,10 @@ export async function start({ doc = document, win = window, fetchImpl = win.fetc
 
 // If this throws, hide the controls it would have run (style.css,
 // .store-failed); the pre-rendered cards keep working on their own.
+// .store-loaded tells main.js (when boot.js was blocked and couldn't watch
+// for load errors) that this module ran at all.
+if (typeof document !== 'undefined') document.documentElement.classList.add('store-loaded');
+
 export const ready =
     typeof document !== 'undefined' && !globalThis.__KAGE_STORE_NO_AUTOSTART__
         ? start().catch((e) => {

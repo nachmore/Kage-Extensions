@@ -426,15 +426,32 @@ describe('safe output', () => {
         expect(await clientFiles(dist)).toEqual(before);
     });
 
-    it('stages into a folder reached through a symlink', async () => {
+    it('refuses an output folder that is a symlink, or a catalog folder', async () => {
         const { base, dist, before } = await fixture();
         const via = path.join(base, 'via');
         await symlink(dist, via);
-        await stage(via, { log: () => {} });
-        expect(existsSync(path.join(dist, 'index.html'))).toBe(true);
-        expect((await lstat(via)).isSymbolicLink()).toBe(true);
+        await refuses(via, /is a symlink; stage into the real build folder/);
+        const toDetail = path.join(base, 'to-detail');
+        await symlink(path.join(dist, 'detail'), toDetail);
+        await refuses(toDetail, /is a symlink/);
+        // Not via a link, but still one of the catalog's own folders.
+        await writeFile(path.join(dist, 'detail', 'catalog.json'), `${JSON.stringify(catalog)}\n`);
+        await refuses(path.join(dist, 'detail'), /inside a catalog folder/);
+        await rm(path.join(dist, 'detail', 'catalog.json'));
+        expect(existsSync(path.join(dist, 'index.html'))).toBe(false);
+        expect(existsSync(path.join(dist, 'detail', 'store-extras.json'))).toBe(false);
         expect(await clientFiles(dist)).toEqual(before);
-        expect(await realpath(via)).toBe(await realpath(dist));
+    });
+
+    it('refuses an output folder reached through a symlink inside the checkout', async () => {
+        const { base, dist, before } = await fixture();
+        const root = await sourceRoot(base);
+        await mkdir(path.join(root, 'build'));
+        await cp(dist, path.join(root, 'build', 'dist'), { recursive: true });
+        await symlink(path.join(root, 'build'), path.join(root, 'out'));
+        await refuses(path.join(root, 'out', 'dist'), /out is a symlink/, { root });
+        expect(existsSync(path.join(root, 'build', 'dist', 'index.html'))).toBe(false);
+        expect(await clientFiles(dist)).toEqual(before);
     });
 
     it('stages again over its own output, changing nothing Kage downloads', async () => {

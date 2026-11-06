@@ -522,6 +522,32 @@ describe('history', () => {
         expect(isOpen(doc)).toBe(false);
     });
 
+    it('a fast close-then-open (the close event still queued, as in Chrome) leaves no stale entry behind', async () => {
+        const { win, doc } = await open();
+        const dlg = doc.getElementById('details');
+        // Browsers close a <dialog> at once but fire its `close` event later.
+        dlg.showModal = () => dlg.setAttribute('open', '');
+        dlg.close = () => {
+            dlg.removeAttribute('open');
+            win.setTimeout(() => dlg.dispatchEvent(new win.Event('close')), 0);
+        };
+        const start = win.history.length;
+        doc.querySelector('[data-details="weather"]').click();
+        await until(() => isOpen(doc) && win.location.search === '?ext=weather', 'Weather');
+        doc.querySelector('[data-close]').click();
+        doc.querySelector('[data-details="timer"]').click(); // before the close event
+        await until(() => isOpen(doc) && title(doc) === 'Timer & Stopwatch', 'Timer');
+        expect(win.location.search).toBe('?ext=timer');
+        await sleep(50); // the stale close event fires
+        expect(isOpen(doc)).toBe(true);
+        doc.querySelector('[data-close]').click();
+        await until(() => win.location.search === '', 'Back off Timer');
+        await sleep(100);
+        // Weather must not come back: its entry was settled, not left behind.
+        expect(isOpen(doc)).toBe(false);
+        expect(win.history.length).toBe(start + 1);
+    });
+
     it('applies a Back press made during the load', async () => {
         const html = renderIndex(template, CATALOG, extras);
         const dom = new JSDOM(html, { url: `${BASE}?q=math` });

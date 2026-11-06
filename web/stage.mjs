@@ -379,7 +379,38 @@ async function writeOutput(distReal, rel, data) {
 
 // ─── staging ──────────────────────────────────────────────────────────
 
+// The output folder must be a real folder: not a symlink itself, not reached
+// through a symlink inside the checkout, and not one of the catalog's own
+// folders (detail/, packages/). Otherwise realpath() would make the
+// redirected target the boundary every later check trusts.
+async function checkOutputRoot(distDir, root) {
+    const abs = path.resolve(distDir);
+    let st;
+    try {
+        st = await lstat(abs);
+    } catch {
+        return; // missing: the catalog.json check below reports it
+    }
+    if (st.isSymbolicLink()) throw new Error(`${abs} is a symlink; stage into the real build folder`);
+    const repo = path.resolve(root);
+    if (inside(repo, abs)) {
+        for (let cur = path.dirname(abs); inside(repo, cur) && cur !== repo; cur = path.dirname(cur)) {
+            if ((await lstat(cur)).isSymbolicLink()) {
+                throw new Error(`${path.relative(repo, cur)} is a symlink; stage into the real build folder`);
+            }
+        }
+    }
+    // The folder itself or its parent (so dist/detail/x too). Not further
+    // up: a checkout can live under a folder that happens to be named so.
+    const real = await realpath(abs);
+    const near = [path.basename(real), path.basename(path.dirname(real))].map((x) => x.toLowerCase());
+    if (near.includes('detail') || near.includes('packages')) {
+        throw new Error(`${abs} is inside a catalog folder (detail/ or packages/); stage into the build folder itself`);
+    }
+}
+
 export async function stage(distDir, { root = REPO_ROOT, log = console.log } = {}) {
+    await checkOutputRoot(distDir, root);
     let distReal;
     try {
         distReal = await realpath(path.resolve(distDir));
