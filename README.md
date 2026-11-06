@@ -61,12 +61,25 @@ Output lands in `dist/` (gitignored). The script detects unchanged
 source folders and reuses the existing zip from a prior build — useful
 when iterating on one extension out of many.
 
+To preview the store page on top of it, stage it and serve `dist/` on
+your own machine only:
+
+```
+node web/stage.mjs dist
+python3 -m http.server 8000 --bind 127.0.0.1 --directory dist
+```
+
+See [`web/README.md`](web/README.md) for how the page is built and
+published.
+
 ## How distribution works
 
 - Catalog index → `https://nachmore.github.io/Kage-Extensions/catalog.json`
 - Per-item detail → `…/detail/<id>.json`
 - Installable bundle → `…/packages/<id>-<version>.zip`
-- Web browser → `https://nachmore.github.io/Kage-Extensions/`
+- Web browser → `https://nachmore.github.io/Kage-Extensions/` (source in
+  [`web/`](web/README.md); links like `?q=timer` or `?ext=weather` open a
+  search or an extension's details)
 
 The Kage app reads the catalog URL on startup and on store-window
 open. Versioned zip URLs are immutable; cache them aggressively. The

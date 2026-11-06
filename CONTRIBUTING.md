@@ -117,7 +117,7 @@ are slightly looser since theme ids conventionally end in `-theme`.
 | `description` | One sentence. Shown in the catalog and Kage's settings.               |
 | `icon`        | Emoji. Single character preferred.                                    |
 | `author`      | Free-form.                                                            |
-| `tags`        | Optional array of strings, used by the store search.                  |
+| `tags`        | Optional array of strings, used by the store search and to sort the extension into the web store's categories (`CATEGORIES` in `web/store-core.js`). |
 | `permissions` | **Required for `type: extension`.** Use `[]` for none.                |
 | `contributes` | What the extension provides — see `docs/EXTENSIONS.md` for the spec.  |
 
@@ -482,7 +482,8 @@ user's browser, and receives the captured `code` directly.
 
 For services that won't accept loopback redirect URIs there's a static
 fallback page: `https://nachmore.github.io/Kage-Extensions/spotify-callback.html`
-(and equivalents for other services on request — open a PR adding one).
+(and equivalents for other services on request — open a PR adding one,
+and add the file to `WEB_FILES` in `web/stage.mjs` so it's published).
 The user pastes the code back into the extension's settings.
 
 See `extensions/spotify` for a complete working example.

@@ -1,83 +1,376 @@
 <!doctype html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>Kage Extension Store</title>
-        <link rel="stylesheet" href="./style.css" />
-    </head>
-    <body>
-        <header class="hero">
-            <div class="hero-inner">
-                <h1>
-                    <span class="hero-mark">✨</span>
-                    Kage Extensions
-                </h1>
-                <p class="lede">
-                    Search providers, themes, and widgets for
-                    <a href="https://github.com/nachmore/Kage">Kage</a>. Click
-                    <strong>Install in Kage</strong> on any card to open Kage's
-                    store and approve the install. No Kage yet? Grab the
-                    <code>.zip</code> instead and side-load it from the store
-                    window.
-                </p>
-                <div class="search-row">
-                    <input
-                        id="search"
-                        type="search"
-                        placeholder="Search by name, tag, or description…"
-                        autocomplete="off"
-                    />
-                    <div class="filters">
-                        <button class="chip is-active" data-filter="all">All</button>
-                        <button class="chip" data-filter="extension">Extensions</button>
-                        <button class="chip" data-filter="theme">Themes</button>
-                    </div>
-                </div>
-            </div>
-        </header>
-        <main>
-            <section id="results" class="grid"></section>
-            <p id="empty" class="empty hidden">Nothing matches your search.</p>
-            <p id="loading" class="empty">Loading catalog…</p>
-        </main>
-        <footer>
-            <p>
-                <a href="https://github.com/nachmore/Kage-Extensions">Source</a>
-                ·
-                <a href="https://github.com/nachmore/Kage-Extensions/blob/main/CONTRIBUTING.md"
-                    >Contribute</a
-                >
-                · catalog
-                <span id="generated-at">…</span>
-            </p>
-        </footer>
-        <template id="card-template">
-            <article class="card">
-                <header class="card-header">
-                    <span class="card-icon"></span>
-                    <div>
-                        <h2 class="card-name"></h2>
-                        <p class="card-author"></p>
-                    </div>
-                    <span class="card-type"></span>
-                </header>
-                <p class="card-desc"></p>
-                <ul class="card-tags"></ul>
-                <ul class="card-perms" aria-label="Capabilities this extension requests"></ul>
-                <footer class="card-footer">
-                    <span class="card-version"></span>
-                    <span class="card-actions">
-                        <a class="card-install"
-                           title="Open Kage and start the install with the permission prompt"
-                           >Install in Kage</a>
-                        <a class="card-download"
-                           title="Download the .zip and side-load it from Kage's store"
-                           >.zip</a>
-                    </span>
-                </footer>
-            </article>
-        </template>
-        <script src="./app.js" type="module"></script>
-    </body>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kage Extension Store: extensions and themes for Kage</title>
+<meta name="description" content="Extensions and themes for Kage, the launcher for Windows and macOS that works with your AI agent. Every extension runs in a sandbox and lists, up front, what it can ask Kage for.">
+<meta name="theme-color" content="#080c11">
+<meta name="color-scheme" content="dark">
+<link rel="canonical" href="https://nachmore.github.io/Kage-Extensions/">
+<link rel="icon" href="assets/brand/kage-icon-basic.svg" type="image/svg+xml">
+<link rel="icon" href="assets/brand/32x32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="assets/brand/128x128@2x.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Kage">
+<meta property="og:title" content="Kage Extension Store">
+<meta property="og:description" content="Extensions and themes for Kage. Every one runs in a sandbox and lists, up front, what it can ask Kage for.">
+<meta property="og:url" content="https://nachmore.github.io/Kage-Extensions/">
+<meta name="twitter:card" content="summary">
+<script>
+(function (h) {
+  var n = navigator, p = (n.userAgentData && n.userAgentData.platform) || n.platform || '';
+  h.classList.replace('no-js', 'js');
+  h.dataset.os = /mac/i.test(p) && n.maxTouchPoints < 2 ? 'mac' : /win/i.test(p) ? 'windows' : 'other';
+})(document.documentElement);
+</script>
+<link rel="stylesheet" href="./style.css">
+<script src="./main.js" defer></script>
+<script src="./demo.js" defer></script>
+<script src="./app.js" type="module" onerror="document.documentElement.classList.add('store-failed')"></script>
+</head>
+<body>
+<svg class="sprite" aria-hidden="true" focusable="false">
+  <linearGradient id="shadow-grad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#81e6d9" stop-opacity=".1"/><stop offset=".55" stop-color="#38b2ac" stop-opacity=".045"/><stop offset="1" stop-color="#38b2ac" stop-opacity="0"/></linearGradient>
+  <symbol id="cat-body" viewBox="0 0 150.181 119.455"><path transform="translate(-30.458 -97.464)" d="M83.074 216.822c-24.928-.713-46.78-3.185-51.25-5.797-1.34-.784-1.5-1.013-1.29-1.847.396-1.577 5.609-3.09 14.777-4.286l1.527-.199-1.852-1.41c-9.888-7.53-15.005-21.17-12.997-34.639 1.638-10.994 6.575-21.535 15.299-32.67l2.416-3.085-1.32-1.984c-.727-1.09-2.098-3.559-3.047-5.485-3.62-7.343-5.655-13.577-5.655-17.33 0-3.355.873-3.954 5.689-3.908 4.597.043 10.363 1.01 16.536 2.774 3.109.889 8.464 2.745 9.621 3.336.73.372.875.326 3.846-1.21 8.34-4.31 16.719-6.505 26.089-6.833 10.726-.375 21.017 1.945 30.813 6.945 1.795.916 2.871 1.327 3.062 1.168.414-.343 31.249-12.687 32.137-12.865.402-.08.983-.01 1.292.155 1.145.612 1.18.423-4.497 23.912l-3.186 13.18 1.159 1.24c4.118 4.41 9.249 11.83 12.11 17.512 4.41 8.76 7.012 19.582 6.107 25.396-.774 4.973-2.56 5.136-9.058.825-1.94-1.288-3.756-2.595-4.033-2.904-.764-.852-.935-.681-.562.562.186.618.487 2.38.668 3.914.934 7.9-2.452 16.6-8.529 21.913l-1.519 1.327 1.255.166c2.896.381 9.268 1.48 10.886 1.877 2.45.601 4.978 1.837 5.202 2.543.247.779-.946 1.825-2.925 2.566-6.08 2.274-25.821 4.359-47.693 5.035-6.68.207-35.002.28-41.078.106z"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 21h16"/></symbol>
+  <symbol id="i-external" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 4 6v6c0 5 3.4 8.3 8 9 4.6-.7 8-4 8-9V6z"/><path d="m9 12 2 2 4-4"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.3-4.9L4 8M4 4v4h4M4 13a8 8 0 0 0 14.3 4.9L20 16m0 4v-4h-4"/></symbol>
+  <symbol id="i-sparkle" viewBox="0 0 24 24"><path d="m12 3 1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9zM19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z"/></symbol>
+  <symbol id="i-box" viewBox="0 0 24 24"><path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="m3 8 9 5 9-5M12 13v8"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 21a2 2 0 0 1 2-2h13v2"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><path d="M8.5 5v14M15.5 5v14"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+  <symbol id="i-github" viewBox="0 0 16 16"><path class="fill" d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"/></symbol>
+</svg>
+
+<a class="skip" href="#browse">Skip to the extensions</a>
+<div class="progress" aria-hidden="true"><span></span></div>
+
+<header class="nav" data-nav>
+  <div class="nav__inner wrap">
+    <a class="brand" href="./" aria-label="Kage Extensions, home">
+      <img src="assets/brand/kage-icon-basic.svg" width="34" height="27" alt="">
+      <span>Kage</span><span class="brand__tag">Extensions</span>
+    </a>
+    <nav class="nav__links" aria-label="Primary">
+      <a href="#browse">Extensions</a>
+      <a href="#themes">Themes</a>
+      <a href="#build">Build your own</a>
+      <a href="https://nachmore.github.io/Kage/">Kage</a>
+    </nav>
+    <div class="nav__cta">
+      <button type="button" class="icon-link nav__search needs-js" data-search-jump aria-label="Search extensions" title="Search"><svg class="ico" aria-hidden="true"><use href="#i-search"/></svg></button>
+      <a class="icon-link nav__gh" href="https://github.com/nachmore/Kage-Extensions" aria-label="Kage-Extensions on GitHub"><svg class="ico ico--fill" aria-hidden="true"><use href="#i-github"/></svg></a>
+      <a class="btn btn--sm btn--primary" href="https://nachmore.github.io/Kage/#download">Get Kage</a>
+    </div>
+    <details class="nav__menu">
+      <summary aria-label="Menu"><svg class="ico" aria-hidden="true"><use href="#i-menu"/></svg></summary>
+      <nav class="nav__sheet" aria-label="Mobile">
+        <a href="#browse">Extensions</a>
+        <a href="#themes">Themes</a>
+        <a href="#build">Build your own</a>
+        <a href="https://nachmore.github.io/Kage/">The Kage site</a>
+        <a href="https://github.com/nachmore/Kage-Extensions">GitHub</a>
+        <a class="btn btn--primary" href="https://nachmore.github.io/Kage/#download">Get Kage</a>
+      </nav>
+    </details>
+  </div>
+</header>
+
+<main id="main">
+  <section class="hero" id="top" aria-labelledby="hero-title">
+    <!-- data-depth: how far a layer lags the page on scroll (bigger = farther
+         away); data-px: how far it follows the pointer (bigger = nearer). -->
+    <div class="sky" aria-hidden="true">
+      <div class="layer layer--aurora" data-depth="0.7" data-px="10"><div class="aurora"><span></span><span></span><span></span></div></div>
+      <div class="layer layer--stars-far" data-depth="0.6" data-px="6"></div>
+      <div class="layer layer--stars-near" data-depth="0.45" data-px="14"></div>
+      <div class="layer layer--shadow" data-depth="0.35" data-px="20"><svg class="shadow-cat" viewBox="0 0 150.181 119.455"><use href="#cat-body"/></svg></div>
+      <div class="layer layer--cloud" data-depth="0.25" data-px="26"><img class="float-cat float-cat--cloud" src="assets/mascot/kage-peeking-from-cloud.svg" width="150" height="141" alt=""></div>
+      <div class="layer layer--star" data-depth="0.15" data-px="34"><img class="float-cat float-cat--star" src="assets/mascot/kage-with-star.svg" width="104" height="98" alt=""></div>
+      <div class="layer layer--mist"></div>
+    </div>
+
+    <div class="hero__inner wrap">
+      <div class="hero__copy">
+        <p class="eyebrow eyebrow--pill hero-in"><span class="dot" aria-hidden="true"></span><span><span data-counts><!--@counts-->Extensions and themes<!--/@counts--></span><span class="hide-sm"> · all sandboxed</span></span></p>
+        <h1 id="hero-title" class="hero__title hero-in" style="--d: 50ms">Teach Kage <span class="grad">new tricks.</span></h1>
+        <p class="hero__lede hero-in" style="--d: 100ms">Extensions and themes for <a href="https://nachmore.github.io/Kage/">Kage</a>, the launcher that works with your AI agent. Each one runs in a sandbox and lists, up front, what it can ask Kage for.</p>
+
+        <form class="search hero-in needs-js" style="--d: 150ms" role="search" action="./" method="get" data-search-form>
+          <button class="peek" type="button" data-cat aria-label="Kage the cat. Press to say hello.">
+            <span class="peek__glow" aria-hidden="true"></span>
+            <svg class="cat" viewBox="-3 -3 156.181 125.455" aria-hidden="true">
+              <defs>
+                <clipPath id="eye-clip-l"><circle cx="41.4" cy="45.4" r="13.4"/></clipPath>
+                <clipPath id="eye-clip-r"><circle cx="101.2" cy="47.1" r="13.8"/></clipPath>
+              </defs>
+              <g class="cat__tilt">
+                <use class="cat__body" href="#cat-body" width="150.181" height="119.455"/>
+                <g class="cat__eyes">
+                  <g class="cat__eye cat__eye--l">
+                    <circle class="cat__white" cx="41.4" cy="45.4" r="13.4"/>
+                    <g clip-path="url(#eye-clip-l)"><g class="cat__pupil"><circle class="cat__iris" cx="46.6" cy="44" r="10.4"/><circle class="cat__glint" cx="51.2" cy="41.7" r="2.75"/><circle class="cat__glint" cx="53.6" cy="45.8" r="1.05"/></g></g>
+                  </g>
+                  <g class="cat__eye cat__eye--r">
+                    <circle class="cat__white" cx="101.2" cy="47.1" r="13.8"/>
+                    <g clip-path="url(#eye-clip-r)"><g class="cat__pupil"><circle class="cat__iris" cx="95.9" cy="45.5" r="10.6"/><circle class="cat__glint" cx="93.5" cy="43.2" r="2.8"/><circle class="cat__glint" cx="90.6" cy="46.85" r="1"/></g></g>
+                  </g>
+                </g>
+                <g class="cat__happy"><path d="M30.5 48.5c3.4-7.6 14.6-7.6 18 0M91 50c3.4-7.6 14.6-7.6 18 0"/></g>
+                <path class="cat__mouth" transform="translate(-30.458 -97.464)" d="M103.789 157.071c2.467-.642 4.685-2.5 4.685-3.921 0-.766-.522-.753-2.64.064-3.243 1.25-5.743 1.033-8.785-.762-.863-.509-.966-.518-1.298-.119-.309.373-.266.602.306 1.627.807 1.446 2.422 2.667 4.135 3.128 1.663.447 1.82.446 3.597-.017z"/>
+                <g class="cat__blush"><ellipse cx="28" cy="60" rx="6" ry="3"/><ellipse cx="114" cy="62" rx="6" ry="3"/></g>
+              </g>
+            </svg>
+          </button>
+          <label class="sr-only" for="search">Search extensions and themes</label>
+          <div class="search__field">
+            <svg class="ico search__ico" aria-hidden="true"><use href="#i-search"/></svg>
+            <input id="search" name="q" type="search" placeholder="Try “timer” or “dark”" autocomplete="off" spellcheck="false" enterkeyhint="search" aria-describedby="summary">
+          </div>
+        </form>
+        <p class="summary hero-in" style="--d: 180ms" id="summary" aria-live="polite"><!--@summary-->Loading the catalog…<!--/@summary--></p>
+      </div>
+
+      <div class="stage hero-in" style="--d: 200ms">
+        <div class="lm" data-lm aria-hidden="true">
+          <div class="lm__strip">
+            <img class="is-on" data-pose="idle" src="assets/mascot/kage-icon.svg" width="44" height="35" alt="">
+            <img data-pose="typing" src="assets/mascot/kage-interested.svg" width="44" height="41" alt="">
+            <img data-pose="happy" src="assets/mascot/kage-happy.svg" width="44" height="41" alt="">
+          </div>
+          <div class="lm__body">
+            <div class="lm__input"><span class="lm__query" data-lm-query>12 km to mi</span><span class="lm__caret"></span><span class="lm__ph">Search or ask…</span></div>
+            <ul class="lm__rows" data-lm-rows>
+              <li class="lm-row is-sel"><span class="lm-row__icon">🧮</span><span class="lm-row__text"><b>= 7.46 mi</b><small>Math Calculator</small></span><kbd>Enter</kbd></li>
+            </ul>
+            <div class="lm__foot"><span><kbd>↑</kbd><kbd>↓</kbd> to choose</span><span class="lm__hint"><kbd data-mac="⌘+Enter">Ctrl+Enter</kbd> asks your agent</span></div>
+          </div>
+        </div>
+        <p class="sr-only">An animated example of store extensions in the Kage launcher: “12 km to mi” answers “= 7.46 mi”, “#38b2ac” shows the color in RGB and HSL, “:fire” finds the fire and fire-truck emoji, “weather lisbon” shows a forecast, “pw” makes a password and “timer 25m” starts a countdown.</p>
+        <p class="lm-via">Powered by <a href="#ext-math" data-lm-via><span data-lm-via-icon aria-hidden="true">🧮</span> <span data-lm-via-name>Math Calculator</span></a></p>
+        <div class="demo-controls needs-js" data-demo-controls>
+          <div class="demo-chips" role="group" aria-label="Examples in the launcher">
+            <button type="button" data-scene="0">12 km to mi</button>
+            <button type="button" data-scene="1">#38b2ac</button>
+            <button type="button" data-scene="2">:fire</button>
+            <button type="button" data-scene="3">weather lisbon</button>
+            <button type="button" data-scene="4">pw</button>
+            <button type="button" data-scene="5">timer 25m</button>
+          </div>
+          <button type="button" class="play-toggle" data-demo-toggle aria-pressed="false" aria-label="Pause the examples">
+            <svg class="ico ico--pause" aria-hidden="true"><use href="#i-pause"/></svg>
+            <svg class="ico ico--play ico--fill" aria-hidden="true"><use href="#i-play"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="browse" id="browse" aria-labelledby="browse-title">
+    <div class="wrap">
+      <div class="browse__head reveal">
+        <div>
+          <p class="eyebrow">The store</p>
+          <h2 id="browse-title">Extensions</h2>
+        </div>
+        <p class="browse__note">Click <strong>Install in Kage</strong> and Kage opens with its install prompt. No Kage yet? <a href="https://nachmore.github.io/Kage/#download">Get Kage</a> first, then come back. The <code>.zip</code> is the extension itself, to read or keep.</p>
+      </div>
+      <div class="filterbar needs-js" data-filterbar>
+        <div class="chips" role="group" aria-label="Categories" data-chips><!--@chips--><!--/@chips--></div>
+      </div>
+      <div class="grid" id="results" data-results><!--@ext-cards--><p class="loading">Loading the catalog…</p><!--/@ext-cards--></div>
+      <div class="empty" id="empty" hidden>
+        <img src="assets/mascot/kage-magnifying-glass.svg" width="120" height="113" alt="" loading="lazy" decoding="async">
+        <p><strong>No extensions match.</strong> <span data-empty-detail>Try another word, or a different category.</span></p>
+        <button type="button" class="btn btn--ghost btn--sm" data-clear>Show everything</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="themes" id="themes" aria-labelledby="themes-title">
+    <div class="wrap">
+      <div class="themes__head">
+        <div class="section-head reveal">
+          <img class="section-cat" src="assets/mascot/kage-paint.svg" width="110" height="103" alt="" loading="lazy" decoding="async">
+          <p class="eyebrow">Themes</p>
+          <h2 id="themes-title">Paint Kage your colors.</h2>
+          <p class="lede">A theme recolors every Kage window, in dark and light. Themes are colors only: no code, no access to ask for.</p>
+        </div>
+        <div class="picker needs-js reveal" style="--d: 80ms" role="group" aria-label="Preview the themes in">
+          <span class="picker__label" aria-hidden="true">Preview</span>
+          <button type="button" data-mode-pick="dark" aria-pressed="true"><span class="sw-dot sw-dot--dark" aria-hidden="true"></span>Dark</button>
+          <button type="button" data-mode-pick="light" aria-pressed="false"><span class="sw-dot sw-dot--light" aria-hidden="true"></span>Light</button>
+        </div>
+      </div>
+      <div class="theme-grid" id="theme-results" data-mode="dark" data-theme-results><!--@theme-cards--><p class="loading">Loading the themes…</p><!--/@theme-cards--></div>
+      <p class="empty empty--small" id="theme-empty" hidden>No themes match.</p>
+    </div>
+  </section>
+
+  <section class="trust band" id="sandbox" aria-labelledby="trust-title">
+    <div class="wrap split">
+      <div class="split__text">
+        <div class="section-head reveal">
+          <p class="eyebrow">Untrusted by default</p>
+          <h2 id="trust-title">Every extension runs in a sandbox.</h2>
+        </div>
+        <p class="body-copy reveal" style="--d: 60ms">That includes the ones Kage’s setup installs. An extension can only ask Kage for what its manifest declares, and you see that list before you install it. Code in the sandbox can still talk to web services; those extensions are marked <span class="badge badge--online badge--inline">Online</span>.</p>
+      </div>
+      <ul class="points reveal" style="--d: 100ms">
+        <li><svg class="ico" aria-hidden="true"><use href="#i-box"/></svg><div><h3>Walled off</h3><p>Extension code runs in a sandboxed frame with no direct access to Kage, your files or your other extensions.</p></div></li>
+        <li><svg class="ico" aria-hidden="true"><use href="#i-eye"/></svg><div><h3>Declared up front</h3><p>Each card lists what an extension can ask Kage for, in the same words Kage uses when you install it.</p></div></li>
+        <li><svg class="ico" aria-hidden="true"><use href="#i-refresh"/></svg><div><h3>Held back on update</h3><p>An update can’t give itself more access than you approved.</p></div></li>
+        <li><svg class="ico" aria-hidden="true"><use href="#i-lock"/></svg><div><h3>Checked in the open</h3><p>Changes arrive as public pull requests, and CI checks each extension’s calls to Kage against the access it declares.</p></div></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="build" id="build" aria-labelledby="build-title">
+    <div class="wrap split split--build">
+      <div class="split__text">
+        <div class="section-head reveal">
+          <img class="section-cat section-cat--left" src="assets/mascot/kage-chef-hat.svg" width="110" height="103" alt="" loading="lazy" decoding="async">
+          <p class="eyebrow">Build your own</p>
+          <h2 id="build-title">Cook up an extension.</h2>
+          <p class="lede">An extension is a folder: a manifest and a few ES modules, no build step. If you can write a little JavaScript, you can teach Kage something new.</p>
+        </div>
+        <ol class="steps reveal" style="--d: 80ms">
+          <li><span>1</span><div><h3>Start from hello-world</h3><p>Copy <code>extensions/hello-world</code>: a manifest, a search provider, a settings page and tests.</p></div></li>
+          <li><span>2</span><div><h3>Learn what it can do</h3><p>Kage’s extension guide covers launcher results, widgets, agent tools, settings and the sandbox.</p></div></li>
+          <li><span>3</span><div><h3>Check it and send it</h3><p><code>npm run check:all</code> and <code>npm test</code> run the same checks as CI. Open a pull request; once it’s merged, it’s in the store.</p></div></li>
+        </ol>
+        <div class="btn-row reveal" style="--d: 120ms">
+          <a class="btn btn--primary" href="https://github.com/nachmore/Kage-Extensions/tree/main/extensions/hello-world">Start from hello-world<svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+          <a class="btn btn--ghost" href="https://github.com/nachmore/Kage/blob/main/docs/EXTENSIONS.md"><svg class="ico" aria-hidden="true"><use href="#i-book"/></svg>Extension guide</a>
+          <a class="btn btn--ghost" href="https://github.com/nachmore/Kage-Extensions/blob/main/CONTRIBUTING.md">Contributing</a>
+        </div>
+      </div>
+      <div class="code-stack reveal reveal--rise" style="--d: 100ms" aria-label="A minimal extension: its manifest.json and search.js" role="group">
+        <figure class="code code--back">
+          <figcaption><span class="code__dots" aria-hidden="true"><i></i><i></i><i></i></span>manifest.json</figcaption>
+<pre tabindex="0" aria-label="manifest.json"><code>{
+  <span class="tk-k">"id"</span>: <span class="tk-s">"hello"</span>,
+  <span class="tk-k">"name"</span>: <span class="tk-s">"Hello"</span>,
+  <span class="tk-k">"version"</span>: <span class="tk-s">"1.0.0"</span>,
+  <span class="tk-k">"type"</span>: <span class="tk-s">"extension"</span>,
+  <span class="tk-k">"description"</span>: <span class="tk-s">"Says hello back."</span>,
+  <span class="tk-k">"icon"</span>: <span class="tk-s">"👋"</span>,
+  <span class="tk-k">"author"</span>: <span class="tk-s">"you"</span>,
+  <span class="tk-k">"permissions"</span>: [],
+  <span class="tk-k">"contributes"</span>: {
+    <span class="tk-k">"searchProvider"</span>: <span class="tk-s">"./search.js"</span>
+  }
+}</code></pre>
+        </figure>
+        <figure class="code code--front">
+          <figcaption><span class="code__dots" aria-hidden="true"><i></i><i></i><i></i></span>search.js</figcaption>
+<pre tabindex="0" aria-label="search.js"><code><span class="tk-w">export default class</span> <span class="tk-f">Hello</span> {
+  <span class="tk-f">match</span>(query) {
+    <span class="tk-w">if</span> (query.<span class="tk-f">trim</span>() !== <span class="tk-s">'hello'</span>) <span class="tk-w">return</span> [];
+    <span class="tk-w">return</span> [{
+      id: <span class="tk-s">'hi'</span>,
+      label: <span class="tk-s">'Hello, world!'</span>,
+      icon: <span class="tk-s">'👋'</span>,
+      score: <span class="tk-n">90</span>,
+      data: { value: <span class="tk-s">'Hello, world!'</span> },
+    }];
+  }
+  <span class="tk-f">execute</span>(result) {
+    <span class="tk-w">return</span> { type: <span class="tk-s">'copy'</span>, value: result.data.value };
+  }
+}</code></pre>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="getkage" id="get-kage" aria-labelledby="get-title">
+    <div class="getkage__glow" aria-hidden="true"></div>
+    <div class="wrap">
+      <div class="section-head section-head--center reveal">
+        <img class="section-cat section-cat--bob" src="assets/mascot/kage-balloon-looking-up.svg" width="96" height="90" alt="" loading="lazy" decoding="async">
+        <p class="eyebrow">New to Kage?</p>
+        <h2 id="get-title">Your AI, one keystroke away.</h2>
+        <p class="lede">Kage is a free, open-source launcher for Windows and macOS. Press <kbd data-mac="Option">Alt</kbd>+<kbd>Space</kbd> to open apps, get quick answers, or ask the AI agent you already use.</p>
+        <div class="btn-row btn-row--center">
+          <a class="btn btn--primary btn--lg" href="https://nachmore.github.io/Kage/#download"><svg class="ico" aria-hidden="true"><use href="#i-download"/></svg>Download Kage</a>
+          <a class="btn btn--ghost btn--lg" href="https://nachmore.github.io/Kage/">See what Kage does<svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="wrap footer__inner">
+    <div class="footer__brand">
+      <a class="brand" href="./" aria-label="Kage Extensions, home">
+        <img src="assets/brand/kage-icon-basic.svg" width="34" height="27" alt="">
+        <span>Kage</span><span class="brand__tag">Extensions</span>
+      </a>
+      <p>Extensions and themes for Kage. <span lang="ja">影</span> means “shadow”: out of sight until you call it.</p>
+      <button class="sleepy needs-js" type="button" data-sleepy aria-label="Wake the cat">
+        <img class="sleepy__still" src="assets/mascot/kage-sleeping.svg" width="104" height="98" alt="" loading="lazy" decoding="async">
+        <span class="sleepy__wave" aria-hidden="true">
+          <img src="assets/mascot/waving/kage-waving-f1.svg" width="82" height="70" alt="" loading="lazy" decoding="async">
+          <img src="assets/mascot/waving/kage-waving-f2.svg" width="82" height="70" alt="" loading="lazy" decoding="async">
+          <img src="assets/mascot/waving/kage-waving-f3.svg" width="82" height="70" alt="" loading="lazy" decoding="async">
+          <img src="assets/mascot/waving/kage-waving-f4.svg" width="82" height="70" alt="" loading="lazy" decoding="async">
+          <img src="assets/mascot/waving/kage-waving-f5.svg" width="82" height="70" alt="" loading="lazy" decoding="async">
+        </span>
+      </button>
+    </div>
+    <nav class="footer__cols" aria-label="Footer">
+      <div>
+        <h2>Store</h2>
+        <ul>
+          <li><a href="#browse">Extensions</a></li>
+          <li><a href="#themes">Themes</a></li>
+          <li><a href="#build">Build your own</a></li>
+          <li><a href="catalog.json">catalog.json</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Kage</h2>
+        <ul>
+          <li><a href="https://nachmore.github.io/Kage/">The Kage site</a></li>
+          <li><a href="https://nachmore.github.io/Kage/#download">Download</a></li>
+          <li><a href="https://github.com/nachmore/Kage/blob/main/docs/FEATURES.md">User guide</a></li>
+          <li><a href="https://github.com/nachmore/Kage/blob/main/docs/EXTENSIONS.md">Extension guide</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Project</h2>
+        <ul>
+          <li><a href="https://github.com/nachmore/Kage-Extensions">GitHub</a></li>
+          <li><a href="https://github.com/nachmore/Kage-Extensions/blob/main/CONTRIBUTING.md">Contributing</a></li>
+          <li><a href="https://github.com/nachmore/Kage-Extensions/issues">Report an issue</a></li>
+          <li><a href="https://github.com/nachmore/Kage/blob/main/docs/SECURITY_MODEL.md">Security model</a></li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+  <div class="wrap footer__base">
+    <p>Kage is free and open source under the Apache License 2.0. This page sets no cookies and loads nothing from other sites.</p>
+    <p><span id="generated-at"><!--@built-->Catalog<!--/@built--></span> · <a href="https://github.com/nachmore/Kage-Extensions">Source</a></p>
+  </div>
+</footer>
+
+<dialog class="dlg" id="details" aria-labelledby="dlg-title">
+  <div class="dlg__inner">
+    <div class="dlg__body" data-dlg-body></div>
+  </div>
+  <button type="button" class="dlg__close" data-close aria-label="Close"><svg class="ico" aria-hidden="true"><use href="#i-close"/></svg></button>
+</dialog>
+</body>
 </html>
