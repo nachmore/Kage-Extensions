@@ -1,0 +1,968 @@
+/* Mind Map cards: op / item / help cards, citation chips and the map card.
+ *
+ * Extension CSS is global, so every selector starts with .mm-. Colours come
+ * from Kage's tokens (shared-kage-tokens.css), which flip with the light
+ * theme and with installed themes; translucent surfaces are mixed from
+ * --kage-text so they read on both the floating bubble and chat bubbles.
+ * color-mix() follows a plain fallback (or sits in @supports for custom
+ * properties, which can't fall back) for webviews that predate it.
+ * Positions are classes (the sanitizer drops inline styles); the map uses
+ * physical left/top because view.js mirrors the layout for RTL itself.
+ * The only motion (a 120 ms fade) is opt-in via prefers-reduced-motion.
+ */
+
+.mm-block,
+.mm-cite,
+.mm-cite-x {
+    --mm-c-entity: var(--kage-accent, #319795);
+    --mm-c-doc: #4299e1;
+    --mm-c-note: #9f7aea;
+    --mm-c-meeting: #d69e2e;
+    --mm-c-action: var(--kage-warning, #ed8936);
+    --mm-c-done: var(--kage-success, #48bb78);
+    --mm-line: rgba(128, 128, 128, 0.28);
+    --mm-surface: rgba(128, 128, 128, 0.06);
+    --mm-raised: var(--kage-bg-elevated, #2d3748);
+    --mm-muted: var(--kage-text-muted, #a0aec0);
+}
+@supports (color: color-mix(in srgb, red 50%, blue)) {
+    .mm-block,
+    .mm-cite,
+    .mm-cite-x {
+        --mm-line: color-mix(in srgb, var(--kage-text, #888) 16%, transparent);
+        --mm-surface: color-mix(in srgb, var(--kage-text, #888) 5%, transparent);
+    }
+}
+
+/* ---- Card shell ------------------------------------------------------- */
+
+.mm-block {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-width: 100%;
+    min-width: 0;
+    margin: 8px 0;
+    padding: 10px 12px;
+    border: 1px solid var(--mm-line);
+    border-radius: 10px;
+    background: var(--mm-surface);
+    color: inherit;
+    font-size: 12px;
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+}
+.mm-block.mm-t-op,
+.mm-block.mm-t-item,
+.mm-block.mm-t-help {
+    width: 560px;
+}
+.mm-block.mm-t-map {
+    width: 640px;
+    padding: 8px;
+    gap: 6px;
+}
+.mm-block:first-child {
+    margin-top: 0;
+}
+.mm-block:last-child {
+    margin-bottom: 0;
+}
+.mm-block .mm-acts,
+.mm-block .mm-help,
+.mm-block .mm-list ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.mm-block li {
+    margin: 0;
+}
+
+.mm-muted,
+.mm-meta,
+.mm-cap,
+.mm-note {
+    color: var(--mm-muted);
+}
+.mm-meta,
+.mm-note {
+    font-size: 11px;
+}
+.mm-cap {
+    display: block;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+.mm-loading {
+    font-style: italic;
+}
+
+/* ---- Buttons ------------------------------------------------------------- */
+
+.mm-btn,
+.mm-tool,
+.mm-crumb,
+.mm-rel,
+.mm-echip,
+.mm-li,
+.mm-cite-btn {
+    box-sizing: border-box;
+    margin: 0;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+}
+.mm-btns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 2px;
+}
+.mm-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border: 1px solid var(--mm-line);
+    border-radius: 6px;
+    background: transparent;
+    font-size: 11.5px;
+    line-height: 1.4;
+    white-space: nowrap;
+}
+.mm-btn:hover {
+    border-color: var(--kage-accent, #319795);
+    background: rgba(49, 151, 149, 0.12);
+    background: color-mix(in srgb, var(--kage-accent, #319795) 12%, transparent);
+}
+.mm-btn-primary {
+    border-color: var(--kage-accent, #319795);
+    background: rgba(49, 151, 149, 0.16);
+    background: color-mix(in srgb, var(--kage-accent, #319795) 16%, transparent);
+}
+.mm-btn-danger:hover {
+    border-color: var(--kage-danger, #f56565);
+    background: rgba(245, 101, 101, 0.12);
+    background: color-mix(in srgb, var(--kage-danger, #f56565) 12%, transparent);
+}
+.mm-btn:focus-visible,
+.mm-tool:focus-visible,
+.mm-crumb:focus-visible,
+.mm-rel:focus-visible,
+.mm-echip:focus-visible,
+.mm-li:focus-visible,
+.mm-cite:focus-visible,
+.mm-cite-btn:focus-visible,
+.mm-node:focus-visible,
+.mm-list summary:focus-visible,
+.mm-more summary:focus-visible {
+    outline: 2px solid var(--kage-accent, #319795);
+    outline-offset: 2px;
+}
+
+/* ---- Op card ----------------------------------------------------------- */
+
+.mm-op-head {
+    min-width: 0;
+}
+.mm-op-title {
+    color: var(--kage-accent-light, #81e6d9);
+    font-weight: 600;
+}
+.mm-op-facts {
+    color: var(--mm-muted);
+}
+.mm-op-item,
+.mm-head {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    min-width: 0;
+}
+.mm-op-name {
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.mm-gone .mm-op-name {
+    text-decoration: line-through;
+    opacity: 0.6;
+}
+.mm-badge {
+    flex-shrink: 0;
+    padding: 0 6px;
+    border: 1px solid var(--mm-line);
+    border-radius: 999px;
+    color: var(--mm-muted);
+    font-size: 10.5px;
+}
+
+.mm-acts {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.mm-act {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 2px 8px;
+    padding: 3px 0;
+    border-top: 1px solid var(--mm-line);
+}
+.mm-act:first-child {
+    border-top: 0;
+}
+.mm-ai {
+    flex-shrink: 0;
+    width: 1.2em;
+    text-align: center;
+}
+.mm-at {
+    flex: 1 1 12em;
+    min-width: 0;
+}
+.mm-act.mm-st-done .mm-at,
+.mm-act.mm-st-dismissed .mm-at {
+    text-decoration: line-through;
+    opacity: 0.65;
+}
+.mm-act.mm-sug .mm-at {
+    font-style: italic;
+}
+.mm-ab {
+    display: inline-flex;
+    gap: 4px;
+    margin-inline-start: auto;
+}
+.mm-ab .mm-btn {
+    padding: 1px 8px;
+    font-size: 11px;
+}
+
+.mm-rels,
+.mm-chips,
+.mm-parent {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 6px;
+}
+.mm-rels .mm-cap,
+.mm-parent .mm-cap {
+    width: 100%;
+}
+.mm-rel,
+.mm-echip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    max-width: 100%;
+    padding: 1px 8px;
+    border: 1px solid var(--mm-line);
+    border-radius: 999px;
+    background: var(--mm-raised);
+    font-size: 11.5px;
+    line-height: 1.5;
+}
+.mm-echip {
+    border-color: rgba(49, 151, 149, 0.55);
+    border-color: color-mix(in srgb, var(--mm-c-entity) 55%, transparent);
+}
+.mm-rel:hover,
+.mm-echip:hover {
+    border-color: var(--kage-accent, #319795);
+}
+.mm-rel .mm-nl,
+.mm-echip .mm-nl {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* ---- Item card --------------------------------------------------------- */
+
+.mm-hi {
+    flex-shrink: 0;
+    font-size: 15px;
+}
+.mm-title {
+    font-size: 13.5px;
+    font-weight: 600;
+    min-width: 0;
+}
+.mm-summary {
+    color: var(--mm-muted);
+    font-style: italic;
+}
+.mm-text {
+    white-space: pre-wrap;
+}
+.mm-more summary {
+    color: var(--kage-link, #81e6d9);
+    cursor: pointer;
+    font-size: 11.5px;
+}
+.mm-where {
+    overflow: hidden;
+    color: var(--mm-muted);
+    font-family: var(--kage-font-mono, ui-monospace, monospace);
+    font-size: 11px;
+    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.mm-sec {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+/* ---- Help card ----------------------------------------------------------- */
+
+.mm-help {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+.mm-help li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 2px 10px;
+}
+.mm-help .mm-code {
+    flex: 0 0 13em;
+}
+.mm-help-d {
+    flex: 1 1 14em;
+    min-width: 0;
+}
+.mm-code {
+    display: inline-block;
+    padding: 0 5px;
+    border-radius: 4px;
+    background: rgba(128, 128, 128, 0.12);
+    background: color-mix(in srgb, var(--kage-text, #888) 9%, transparent);
+    font-family: var(--kage-font-mono, ui-monospace, monospace);
+    font-size: 11px;
+    text-align: left;
+    unicode-bidi: isolate;
+}
+.mm-t-help .mm-chips {
+    gap: 4px;
+}
+
+/* ---- Citation chips (inline: they live inside <p>) ------------------------ */
+
+.mm-cite {
+    display: inline;
+    margin: 0 1px;
+    padding: 0 6px;
+    border: 1px solid rgba(49, 151, 149, 0.45);
+    border: 1px solid color-mix(in srgb, var(--mm-c-entity) 45%, transparent);
+    border-radius: 999px;
+    background: rgba(49, 151, 149, 0.1);
+    background: color-mix(in srgb, var(--mm-c-entity) 10%, transparent);
+    color: inherit;
+    font: inherit;
+    font-size: 0.86em;
+    line-height: 1.5;
+    vertical-align: baseline;
+    cursor: pointer;
+    white-space: nowrap;
+}
+.mm-cite:hover {
+    border-color: var(--kage-accent, #319795);
+}
+.mm-cite.mm-k-doc,
+.mm-cite.mm-k-link {
+    border-color: rgba(66, 153, 225, 0.5);
+    border-color: color-mix(in srgb, var(--mm-c-doc) 50%, transparent);
+    background: rgba(66, 153, 225, 0.1);
+    background: color-mix(in srgb, var(--mm-c-doc) 10%, transparent);
+}
+.mm-cite.mm-k-action {
+    border-color: rgba(237, 137, 54, 0.5);
+    border-color: color-mix(in srgb, var(--mm-c-action) 50%, transparent);
+    background: rgba(237, 137, 54, 0.1);
+    background: color-mix(in srgb, var(--mm-c-action) 10%, transparent);
+}
+.mm-cite.mm-cite-missing,
+.mm-cite.mm-cite-wait {
+    border-style: dashed;
+    border-color: var(--mm-line);
+    background: transparent;
+    color: var(--mm-muted);
+}
+.mm-cite.mm-cite-missing {
+    text-decoration: line-through;
+}
+.mm-cite.mm-cite-private {
+    border-color: var(--mm-line);
+    background: var(--mm-surface);
+    color: var(--mm-muted);
+}
+.mm-cite-x {
+    display: inline;
+    margin: 0 2px;
+    padding: 1px 6px;
+    border-radius: 6px;
+    background: var(--mm-surface);
+    color: var(--mm-muted);
+    font-size: 0.86em;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+}
+.mm-cite-meta {
+    color: inherit;
+    font-weight: 600;
+}
+.mm-cite-snip {
+    color: var(--kage-text, inherit);
+}
+.mm-cite-btn {
+    display: inline;
+    margin-inline-start: 4px;
+    padding: 0 6px;
+    border: 1px solid var(--mm-line);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--kage-link, #81e6d9);
+    font-size: 1em;
+    text-decoration: none;
+}
+
+/* ---- Map card ----------------------------------------------------------- */
+
+.mm-t-map .mm-bar {
+    order: -1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4px 8px;
+    min-width: 0;
+    padding: 0 2px;
+}
+.mm-trail {
+    display: flex;
+    flex: 1 1 auto;
+    align-items: center;
+    gap: 4px;
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+}
+.mm-brand {
+    flex-shrink: 0;
+}
+.mm-crumb {
+    flex: 0 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    padding: 1px 4px;
+    border: 0;
+    border-radius: 4px;
+    background: transparent;
+    color: var(--mm-muted);
+    font-size: 11.5px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.mm-bar button.mm-crumb:hover {
+    color: var(--kage-text, inherit);
+    background: var(--mm-surface);
+}
+.mm-crumb.mm-cur {
+    color: var(--kage-text, inherit);
+    font-weight: 600;
+}
+.mm-sep {
+    flex-shrink: 0;
+    color: var(--mm-muted);
+    opacity: 0.7;
+}
+.mm-tools {
+    display: flex;
+    flex-shrink: 0;
+    gap: 2px;
+}
+.mm-tool {
+    padding: 2px 8px;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--mm-muted);
+    font-size: 11.5px;
+    white-space: nowrap;
+}
+.mm-tool:hover {
+    border-color: var(--mm-line);
+    color: var(--kage-text, inherit);
+}
+
+.mm-stage {
+    position: relative;
+    height: 264px;
+    overflow: hidden;
+    border-radius: 8px;
+    background-color: rgba(128, 128, 128, 0.04);
+    background-image:
+        radial-gradient(circle at 50% 50%, rgba(49, 151, 149, 0.16) 0, transparent 46%),
+        radial-gradient(rgba(128, 128, 128, 0.22) 0.8px, transparent 1.2px);
+    background-image:
+        radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--kage-accent, #319795) 15%, transparent) 0, transparent 46%),
+        radial-gradient(color-mix(in srgb, var(--kage-text, #888) 14%, transparent) 0.8px, transparent 1.2px);
+    background-size: 100% 100%, 16px 16px;
+    background-position: center, center;
+}
+.mm-edges {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+}
+.mm-e {
+    --mm-tint: var(--mm-muted);
+    stroke: var(--mm-line);
+    stroke: color-mix(in srgb, var(--mm-tint) 48%, transparent);
+    stroke-width: 1.4;
+    stroke-linecap: round;
+}
+.mm-e-g-entity {
+    --mm-tint: var(--mm-c-entity);
+}
+.mm-e-k-doc,
+.mm-e-k-link {
+    --mm-tint: var(--mm-c-doc);
+}
+.mm-e-k-note {
+    --mm-tint: var(--mm-c-note);
+}
+.mm-e-k-meeting {
+    --mm-tint: var(--mm-c-meeting);
+}
+.mm-e-k-action {
+    --mm-tint: var(--mm-c-action);
+}
+.mm-e-g-stat {
+    --mm-tint: var(--kage-accent, #319795);
+}
+.mm-e-dash {
+    stroke-dasharray: 4 4;
+}
+
+.mm-center {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 2;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    width: 36%;
+    max-height: 148px;
+    overflow: hidden;
+    padding: 8px 10px;
+    border: 1px solid var(--kage-accent, #319795);
+    border-radius: 12px;
+    background: var(--mm-raised);
+    box-shadow:
+        0 0 0 4px var(--kage-accent-glow, rgba(49, 151, 149, 0.3)),
+        0 6px 18px rgba(0, 0, 0, 0.22);
+    text-align: center;
+    transform: translate(-50%, -50%);
+}
+.mm-c-title {
+    display: -webkit-box;
+    max-width: 100%;
+    overflow: hidden;
+    font-size: 13px;
+    font-weight: 650;
+    line-height: 1.3;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+.mm-c-meta {
+    display: -webkit-box;
+    max-width: 100%;
+    overflow: hidden;
+    color: var(--mm-muted);
+    font-size: 10.5px;
+    line-height: 1.3;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+.mm-c-snip {
+    display: -webkit-box;
+    text-wrap: balance;
+    max-width: 100%;
+    overflow: hidden;
+    color: var(--kage-text, inherit);
+    font-size: 11px;
+    line-height: 1.35;
+    opacity: 0.85;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+.mm-hl {
+    color: var(--kage-accent-light, #81e6d9);
+    font-weight: 700;
+}
+.mm-c-btns {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4px;
+    margin-top: 3px;
+}
+.mm-c-btns .mm-btn {
+    padding: 1px 8px;
+    font-size: 11px;
+}
+.mm-center.mm-g-entity {
+    border-color: var(--mm-c-entity);
+}
+.mm-center.mm-k-action {
+    border-color: var(--mm-c-action);
+}
+.mm-center.mm-k-action.mm-st-done {
+    border-color: var(--mm-c-done);
+}
+.mm-center.mm-k-doc,
+.mm-center.mm-k-link {
+    border-color: var(--mm-c-doc);
+}
+
+/* Nodes: opaque chips centred on their slot, so edges vanish under them.
+ * Labels wrap to at most two lines, which roughly doubles what a dense lane
+ * can show. Entities are pills; items are rounded rectangles. */
+.mm-node {
+    --mm-tint: var(--mm-muted);
+    position: absolute;
+    z-index: 3;
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    width: max-content;
+    max-width: 26%;
+    margin: 0;
+    padding: 2px 8px;
+    border: 1px solid rgba(128, 128, 128, 0.45);
+    border: 1px solid color-mix(in srgb, var(--mm-tint) 55%, transparent);
+    border-radius: 7px;
+    background: var(--mm-raised);
+    background: color-mix(in srgb, var(--mm-tint) 13%, var(--mm-raised));
+    color: var(--kage-text, inherit);
+    font: inherit;
+    font-size: 11px;
+    line-height: 1.2;
+    text-align: center;
+    transform: translate(-50%, -50%);
+}
+.mm-stage button.mm-node {
+    cursor: pointer;
+}
+.mm-stage button.mm-node:hover {
+    z-index: 4;
+    border-color: var(--mm-tint);
+    background: color-mix(in srgb, var(--mm-tint) 24%, var(--mm-raised));
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+}
+.mm-node.mm-g-entity {
+    --mm-tint: var(--mm-c-entity);
+    border-radius: 14px;
+}
+.mm-node.mm-k-doc,
+.mm-node.mm-k-link {
+    --mm-tint: var(--mm-c-doc);
+}
+.mm-node.mm-k-note {
+    --mm-tint: var(--mm-c-note);
+}
+.mm-node.mm-k-meeting {
+    --mm-tint: var(--mm-c-meeting);
+}
+.mm-node.mm-k-action {
+    --mm-tint: var(--mm-c-action);
+}
+.mm-node.mm-k-action.mm-st-done {
+    --mm-tint: var(--mm-c-done);
+}
+.mm-node.mm-st-done .mm-nl {
+    text-decoration: line-through;
+    opacity: 0.75;
+}
+.mm-node.mm-sug {
+    border-style: dashed;
+    font-style: italic;
+}
+.mm-node.mm-g-more {
+    border-style: dashed;
+    border-color: var(--mm-line);
+    border-radius: 14px;
+    white-space: nowrap;
+    background: var(--mm-raised);
+    color: var(--mm-muted);
+}
+.mm-node.mm-g-stat {
+    --mm-tint: var(--kage-accent, #319795);
+    border-radius: 14px;
+    cursor: default;
+}
+.mm-node.mm-priv {
+    border-style: dotted;
+}
+.mm-node.mm-sz-m {
+    font-weight: 500;
+}
+.mm-node.mm-sz-l {
+    padding: 3px 10px;
+    font-size: 12px;
+    font-weight: 600;
+}
+.mm-node.mm-w-n {
+    max-width: 15.5%;
+    padding: 2px 6px;
+}
+.mm-node.mm-w-m {
+    max-width: 20%;
+}
+.mm-node.mm-w-w {
+    max-width: 30%;
+}
+.mm-ni {
+    flex-shrink: 0;
+}
+.mm-nl {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.mm-node .mm-nl {
+    display: -webkit-box;
+    overflow-wrap: anywhere;
+    white-space: normal;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+.mm-node .mm-ni {
+    margin-inline-end: 3px;
+}
+/* Counts and "+N more" are short and must read in one go. */
+.mm-node.mm-g-stat,
+.mm-node.mm-g-more {
+    max-width: none;
+}
+.mm-node.mm-g-stat .mm-nl,
+.mm-node.mm-g-more .mm-nl {
+    white-space: nowrap;
+}
+
+.mm-hint {
+    position: absolute;
+    z-index: 1;
+    max-width: 24%;
+    overflow: hidden;
+    color: var(--mm-muted);
+    font-size: 10.5px;
+    font-style: italic;
+    opacity: 0.75;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transform: translate(-50%, -50%);
+}
+
+/* Slot positions (percent of the stage), one class per axis. */
+.mm-x-14 { left: 14%; }
+.mm-x-18 { left: 18%; }
+.mm-x-34 { left: 34%; }
+.mm-x-39 { left: 39%; }
+.mm-x-50 { left: 50%; }
+.mm-x-61 { left: 61%; }
+.mm-x-66 { left: 66%; }
+.mm-x-82 { left: 82%; }
+.mm-x-86 { left: 86%; }
+.mm-y-12 { top: 12%; }
+.mm-y-27 { top: 27%; }
+.mm-y-35 { top: 35%; }
+.mm-y-42 { top: 42%; }
+.mm-y-50 { top: 50%; }
+.mm-y-57 { top: 57%; }
+.mm-y-58 { top: 58%; }
+.mm-y-65 { top: 65%; }
+.mm-y-72 { top: 72%; }
+.mm-y-88 { top: 88%; }
+
+.mm-foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4px 10px;
+    padding: 0 2px;
+}
+.mm-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px 10px;
+    color: var(--mm-muted);
+    font-size: 10.5px;
+}
+.mm-lg {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    white-space: nowrap;
+}
+.mm-lg::before {
+    content: '';
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--mm-muted);
+}
+.mm-lg-entities::before,
+.mm-lg-teams::before,
+.mm-lg-people::before,
+.mm-lg-topics::before,
+.mm-lg-stats::before {
+    background: var(--mm-c-entity);
+}
+.mm-lg-actions::before {
+    background: var(--mm-c-action);
+}
+.mm-lg-docs::before {
+    background: var(--mm-c-doc);
+}
+.mm-lg-notes::before,
+.mm-lg-parent::before {
+    background: var(--mm-c-note);
+}
+.mm-static {
+    color: var(--kage-warning, #ed8936);
+    font-size: 11px;
+}
+
+/* List view: the screen-reader and copy-friendly view of the same lanes. */
+.mm-list {
+    padding: 0 2px;
+}
+.mm-list summary {
+    width: max-content;
+    color: var(--mm-muted);
+    cursor: pointer;
+    font-size: 11px;
+}
+.mm-list[open] summary {
+    margin-bottom: 4px;
+}
+.mm-mode-list .mm-list summary {
+    display: none;
+}
+.mm-list-center {
+    margin-bottom: 4px;
+    font-weight: 600;
+}
+.mm-list-sec {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    margin-bottom: 6px;
+}
+.mm-list-sec:last-child {
+    margin-bottom: 0;
+}
+.mm-list-sec li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0 6px;
+    padding: 1px 0;
+}
+.mm-li {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 5px;
+    max-width: 100%;
+    padding: 0 2px;
+    border: 0;
+    border-radius: 4px;
+    background: transparent;
+    text-align: start;
+}
+.mm-list button.mm-li:hover .mm-nl {
+    color: var(--kage-link-hover, #b2f5ea);
+    text-decoration: underline;
+}
+.mm-li .mm-nl {
+    white-space: normal;
+}
+.mm-li.mm-st-done .mm-nl {
+    text-decoration: line-through;
+    opacity: 0.7;
+}
+
+/* User text keeps its own direction inside a mirrored (RTL) card. */
+.mm-nl,
+.mm-c-title,
+.mm-c-snip,
+.mm-at,
+.mm-op-name,
+.mm-title,
+.mm-text,
+.mm-summary,
+.mm-cite,
+.mm-cite-snip,
+.mm-crumb {
+    unicode-bidi: plaintext;
+}
+
+/* ❔ is drawn white by most emoji fonts; outline it so it reads on light
+ * surfaces too (on dark ones the outline is invisible). */
+.mm-ic-q {
+    text-shadow:
+        0 0 1px var(--kage-text, #2d3748),
+        0 0 1px var(--kage-text, #2d3748);
+}
+
+@keyframes mm-fade {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .mm-node,
+    .mm-center,
+    .mm-edges {
+        animation: mm-fade 120ms ease-out both;
+    }
+}
+
+@media (forced-colors: active) {
+    .mm-node,
+    .mm-center,
+    .mm-cite,
+    .mm-btn {
+        border: 1px solid CanvasText;
+    }
+    .mm-e {
+        stroke: CanvasText;
+    }
+}
