@@ -616,6 +616,10 @@
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
 }
+/* An entity's counts wrap rather than clip ("… · 4 docs · 5 notes"). */
+.mm-center.mm-g-entity .mm-c-snip {
+    -webkit-line-clamp: 3;
+}
 .mm-hl {
     color: var(--kage-accent-light, #81e6d9);
     font-weight: 700;
