@@ -2340,10 +2340,10 @@
     "_source_hash": "e16ecc8e6630a2b9"
   },
   "settings.exported_md": {
-    "message": "Exportado",
+    "message": "{n, plural, one {Se exportó # elemento como Markdown} other {Se exportaron # elementos como Markdown}}",
     "description": "Status after Markdown export",
     "_machine_translated": true,
-    "_source_hash": "23a9f885f659befb"
+    "_source_hash": "64b438c121f9bd69"
   },
   "settings.exported_raw": {
     "message": "{n, plural, one {# copia almacenada exportada} many {# copias almacenadas exportadas} other {# copias almacenadas exportadas}}",
@@ -2386,5 +2386,29 @@
     "description": "Status after import",
     "_machine_translated": true,
     "_source_hash": "fbd8da58b266300e"
+  },
+  "row.ask_found_relaxed": {
+    "message": "{n, plural, one {Sin coincidencias exactas — se envía # nota, la más cercana} other {Sin coincidencias exactas — se envían las # notas más cercanas}}",
+    "description": "Description of the mm? row when the search had to be widened to find notes",
+    "_machine_translated": true,
+    "_source_hash": "ea12ef776c17b88e"
+  },
+  "row.map_nomatch": {
+    "message": "Nada coincide con “{query}” — se muestra la vista general",
+    "description": "Description of the map row when the words after mm map matched no entity or item; {query} is what the user typed",
+    "_machine_translated": true,
+    "_source_hash": "7527774359ea03d9"
+  },
+  "prompt.scope_widened": {
+    "message": "no hubo coincidencias exactas, así que estas son las notas más cercanas del {from} al {to}",
+    "description": "Part of the inferred scope in the mm? prompt when the date range was widened; {from} and {to} are YYYY-MM-DD",
+    "_machine_translated": true,
+    "_source_hash": "b0a4f70188339f81"
+  },
+  "prompt.scope_relaxed": {
+    "message": "no hubo coincidencias exactas, así que estas notas solo coinciden con parte de la pregunta",
+    "description": "Part of the inferred scope in the mm? prompt when a filter was dropped to find anything",
+    "_machine_translated": true,
+    "_source_hash": "bb8ff78e1f16dc8a"
   }
 }

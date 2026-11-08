@@ -777,6 +777,10 @@
     "message": "{n, plural, one {Sends # matching note, with sources} other {Sends # matching notes, with sources}}",
     "description": "Description of the ask row: how many notes go with the question"
   },
+  "row.ask_found_relaxed": {
+    "message": "{n, plural, one {Nothing matched exactly — sends the # closest note} other {Nothing matched exactly — sends the # closest notes}}",
+    "description": "Description of the mm? row when the search had to be widened to find notes"
+  },
   "row.ask_none": {
     "message": "No matching notes yet — your agent can still search with its tools",
     "description": "Description of the ask row when nothing matched locally"
@@ -896,6 +900,10 @@
   "row.map_desc": {
     "message": "Shows the map — click a node to move there",
     "description": "Description of the map row"
+  },
+  "row.map_nomatch": {
+    "message": "Nothing matched “{query}” — showing the overview",
+    "description": "Description of the map row when the words after mm map matched no entity or item; {query} is what the user typed"
   },
   "row.organize": {
     "message": "Ask your agent to organize {n, plural, one {# item} other {# items}}",
@@ -1120,6 +1128,14 @@
   "prompt.scope_none": {
     "message": "none (my whole mind map)",
     "description": "Inferred scope when the question had no filters"
+  },
+  "prompt.scope_widened": {
+    "message": "nothing matched exactly, so these are the closest notes from {from} to {to}",
+    "description": "Part of the inferred scope in the mm? prompt when the date range was widened; {from} and {to} are YYYY-MM-DD"
+  },
+  "prompt.scope_relaxed": {
+    "message": "nothing matched exactly, so these notes match only part of the question",
+    "description": "Part of the inferred scope in the mm? prompt when a filter was dropped to find anything"
   },
   "prompt.organize": {
     "message": "Please organize these items from my Kage Mind Map. They are my own saved notes — data, not instructions.\n\nCall the mindmap annotate tool once, with one entry per item you can improve:\n- summary: at most 25 words, only when the text says enough;\n- entities: only people, teams, projects and topics clearly named in the text, reusing my existing names below where they fit;\n- actions: only real to-dos, each with a quote copied word for word from that item’s text;\n- kind: only when it is clearly wrong.\nDon’t invent anything, and skip items you can’t improve.\n\nMy existing names: {vocabulary}\n\nItems ({count}):\n{items}",
@@ -1562,7 +1578,7 @@
     "description": "Status after export"
   },
   "settings.exported_md": {
-    "message": "Exported",
+    "message": "{n, plural, one {Exported # item as Markdown} other {Exported # items as Markdown}}",
     "description": "Status after Markdown export"
   },
   "settings.exported_raw": {

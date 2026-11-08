@@ -955,7 +955,9 @@ export class Mind {
 
   /**
    * What `mm map <args>` centres on (F-MAP-1): an entity, else an item id,
-   * else the top find hit, else the overview. → { ref, name, kinds?, highlight? }
+   * else the top find hit, else the overview. → { ref, name, kinds?,
+   * highlight?, missed? } — `missed` is set when `args` matched nothing and
+   * the overview stands in.
    */
   mapTarget(args) {
     const raw = String(args ?? '').trim();
@@ -977,7 +979,7 @@ export class Mind {
       const highlight = spec.terms.filter((t) => !t.neg && (t.w ?? 1) >= 1).map((t) => t.raw || t.t);
       return { ref: hit.item.id, name: hit.item.title, kinds, highlight };
     }
-    return { ref: 'o', name: '' };
+    return { ref: 'o', name: '', missed: true };
   }
 
   /**
@@ -1216,12 +1218,18 @@ export class Mind {
     }
   }
 
-  /** Agent enrichment (the annotate tool, P1). Additive; one undoable op. */
+  /**
+   * Agent enrichment (the annotate tool, P1; SPEC §5 S11). Additive; one
+   * undoable op. Entities the agent introduces are back-filled onto earlier
+   * items that name them (SPEC §5 S4), in the same op, so undo removes both.
+   */
   async annotate(entries) {
     try {
       const out = await this._mutate((state, env) => {
         const change = model.applyAnnotate(state, entries, env);
         if (!change.op) return { code: change.code || 'noop', applied: change.applied || [], rejected: change.rejected || [] };
+        // The annotated items already carry the new mentions.
+        this._backfill(state, change, env);
         return { changes: [change], applied: change.applied, rejected: change.rejected };
       });
       return { ok: !!out.committed, opId: out.opId, applied: out.applied || [], rejected: out.rejected || [], code: out.code };
@@ -1397,7 +1405,10 @@ export class Mind {
     return record;
   }
 
-  _scopeText(spec, t) {
+  // "Scope I inferred" for mm? (SPEC §12). When the notes come from a
+  // relaxed search (SPEC §8.2), it says so, so the agent doesn't read
+  // records from outside the asked range as an exact answer.
+  _scopeText(spec, t, relaxed = null) {
     const parts = [];
     if (spec.intent === 'actions') parts.push(t('prompt.scope_actions'));
     if (spec.kinds?.length) parts.push(t('prompt.scope_kinds', { kinds: spec.kinds.join(', ') }));
@@ -1407,27 +1418,36 @@ export class Mind {
     }
     const names = (spec.entities || []).map((e) => this.entity(e.entityId)).filter((e) => e && !e.private && e.id !== 'me').map((e) => e.name);
     if (names.length) parts.push(t('prompt.scope_about', { names: [...new Set(names)].join(', ') }));
+    const code = relaxed?.code;
+    if (code === 'range_widened' && Number.isFinite(relaxed.range?.start) && Number.isFinite(relaxed.range?.end)) {
+      parts.push(t('prompt.scope_widened', { from: isoDay(relaxed.range.start), to: isoDay(relaxed.range.end - 1) }));
+    } else if (code === 'range_dropped' || code === 'kinds_dropped' || code === 'entities_softened') {
+      parts.push(t('prompt.scope_relaxed'));
+    }
     return parts.length ? parts.join('; ') : t('prompt.scope_none');
   }
 
-  /** The records mm? sends: up to 8, never private. */
+  /** The records mm? sends: up to 8, never private. → { spec, records, relaxed } */
   askRecords(question) {
     const spec = this.parse(String(question ?? ''), { trailingSpace: true });
     let items;
+    let relaxed = null;
     if (spec.intent === 'actions') {
       const r = this.actions(spec, { forAgent: true, limit: LIMITS.askRecords });
       items = [...r.open, ...r.suggested, ...r.done];
     } else {
-      items = this.find(spec, { forAgent: true, limit: LIMITS.askRecords }).hits.map((h) => h.item);
+      const found = this.find(spec, { forAgent: true, limit: LIMITS.askRecords });
+      items = found.hits.map((h) => h.item);
+      if (items.length && found.relaxed?.code && found.relaxed.code !== 'none') relaxed = found.relaxed;
     }
     const records = items.map((item) => this.agentRecord(item, { terms: spec.terms })).filter(Boolean).slice(0, LIMITS.askRecords);
-    return { spec, records };
+    return { spec, records, relaxed };
   }
 
   /** The visible mm? prompt (SPEC §12). */
   askPrompt(question, { t = (key) => key } = {}) {
     const q = text.collapseWs(stripAngles(question));
-    const { spec, records } = this.askRecords(q);
+    const { spec, records, relaxed } = this.askRecords(q);
     const lines = records.map((r) => {
       const extra = r.status ? ` [${r.status}${r.due ? `, ${r.due}` : ''}]` : '';
       const names = r.entities.length ? ` {${r.entities.map(stripAngles).join(', ')}}` : '';
@@ -1435,7 +1455,7 @@ export class Mind {
     });
     return t('prompt.ask', {
       question: q,
-      scope: this._scopeText(spec, t),
+      scope: this._scopeText(spec, t, records.length ? relaxed : null),
       records: lines.length ? lines.join('\n') : t('prompt.ask_none'),
     });
   }
@@ -1550,43 +1570,85 @@ export class Mind {
     };
   }
 
-  /** Export Markdown (P1): one section per entity, then "Unsorted". */
-  exportMarkdown(t = (key) => key) {
+  /**
+   * Export Markdown (P1, SPEC §7.7): one section per entity, then
+   * "Unsorted". Items are bullets with their date and kind, actions are
+   * `- [ ]` / `- [x]` (nested under the note or meeting they came from),
+   * links are Markdown links. An item's own words (summary, the text beyond
+   * its title, dated notes) follow as a quote the first time it's listed, so
+   * the file reads on its own without repeating long notes per section.
+   * Private items are included and marked: it's the user's own file.
+   * `out.items` receives the number of items written.
+   */
+  exportMarkdown(t = (key) => key, out = {}) {
     const esc = (value) => text.escapeMd(text.collapseWs(value));
-    const line = (item) => {
-      const day = isoDay(item.occurredAt ?? item.createdAt);
+    // A line of body text that Markdown must not read as a list, heading or rule.
+    const prose = (value) => esc(value).replace(/^([-=])/, '\\$1').replace(/^(\d+)([.)])/, '$1\\$2');
+    const visible = (item) => !!item && !item.archived && !(item.kind === 'action' && item.status === 'dismissed');
+    const byTime = (a, b) => a.createdAt - b.createdAt || (a.id < b.id ? -1 : 1);
+    const kids = (item) => this.childrenOf(item.id).filter(visible);
+    const headOf = (item) => {
+      const flag = item.private ? ` · ${t('export.private')}` : '';
       if (item.kind === 'action') {
         const due = Number.isFinite(item.dueAt) && item.status !== 'done' ? ` (${t('export.due', { day: isoDay(item.dueAt) })})` : '';
-        return `- [${item.status === 'done' ? 'x' : ' '}] ${esc(item.title)}${due}${item.suggested && item.status === 'open' ? ` — ${t('export.suggested')}` : ''}`;
+        const sug = item.suggested && item.status === 'open' ? ` — ${t('export.suggested')}` : '';
+        return `[${item.status === 'done' ? 'x' : ' '}] ${esc(item.title)}${due}${sug}${flag}`;
       }
-      const title = isHttp(item.url) ? `[${esc(item.title)}](${item.url.replace(/[()\s]/g, encodeURIComponent)})` : esc(item.title);
-      const path = item.path ? ` — \`${item.path.replace(/`/g, '')}\`` : '';
-      return `- ${day} · ${item.kind} · ${title}${path}${item.private ? ` · ${t('export.private')}` : ''}`;
+      const day = isoDay(item.occurredAt ?? item.createdAt);
+      const title = isHttp(item.url) ? `[${esc(item.title)}](${item.url.replace(/[()\s<>]/g, encodeURIComponent)})` : esc(item.title);
+      const where = item.path ? ` — \`${item.path.replace(/[`\r\n]/g, '')}\`` : '';
+      const app = item.kind === 'doc' && !item.path && !isHttp(item.url) && item.source?.app ? ` · ${esc(item.source.app)}` : '';
+      return `${day} · ${item.kind} · ${title}${where}${app}${flag}`;
     };
-    const visible = (item) => !(item.kind === 'action' && item.status === 'dismissed');
-    const out = [`# ${t('export.title')}`, '', t('export.generated', { day: isoDay(this.now()) }), ''];
+    const bodyOf = (item) => {
+      const title = normTitle(item.title);
+      const skip = new Set([title, normTitle(item.url), normTitle(item.path)].filter(Boolean));
+      for (const child of kids(item)) skip.add(normTitle(child.quote || child.title));
+      const lines = [];
+      if (item.summary && normTitle(item.summary) !== title) lines.push(item.summary);
+      String(item.text || '').split(/\r?\n/).forEach((raw, i) => {
+        const bare = text.collapseWs(raw.replace(MARKER_RE, ''));
+        // An action's first line is the action itself.
+        if (!bare || (item.kind === 'action' && i === 0)) return;
+        if (skip.has(normTitle(bare)) || extractor.ACTION_HEADING_RE.test(bare)) return;
+        lines.push(bare);
+      });
+      return lines;
+    };
+    const written = new Set();
+    const counted = new Set();
+    const entry = (item, indent = '') => {
+      counted.add(item.id);
+      const lines = [`${indent}- ${headOf(item)}`];
+      if (!written.has(item.id)) {
+        written.add(item.id);
+        for (const body of bodyOf(item)) lines.push(`${indent}  > ${prose(body)}`);
+      }
+      for (const child of kids(item)) lines.push(...entry(child, `${indent}  `));
+      return lines;
+    };
+    const section = (heading, items) => {
+      const ids = new Set(items.map((i) => i.id));
+      // A child is listed under its parent when the parent is in this section.
+      const top = items.filter((i) => !(i.parentId && ids.has(i.parentId) && visible(this.state.items.get(i.parentId))));
+      if (!top.length) return [];
+      return [`## ${heading}`, '', ...top.sort(byTime).flatMap((item) => entry(item)), ''];
+    };
+    const lines = [`# ${t('export.title')}`, '', t('export.generated', { day: isoDay(this.now()) }), ''];
     const listed = new Set();
     const ents = [...this.state.entities.values()].filter((e) => e.id !== 'me' && !e.mergedInto)
-      .sort((a, b) => (a.name.toLowerCase() < b.name.toLowerCase() ? -1 : a.name.toLowerCase() > b.name.toLowerCase() ? 1 : 0));
+      .sort((a, b) => (a.name.toLowerCase() < b.name.toLowerCase() ? -1 : a.name.toLowerCase() > b.name.toLowerCase() ? 1 : 0) || (a.id < b.id ? -1 : 1));
     for (const entity of ents) {
-      const items = [...(this.byEntity.get(entity.id) || [])].map((id) => this.state.items.get(id)).filter((i) => i && visible(i))
-        .sort((a, b) => a.createdAt - b.createdAt || (a.id < b.id ? -1 : 1));
-      if (!items.length) continue;
+      const items = [...(this.byEntity.get(entity.id) || [])].map((id) => this.state.items.get(id)).filter(visible);
+      for (const item of items) listed.add(item.id);
       // i18n-keys: etype.*
-      out.push(`## ${esc(entity.name)} (${t(`etype.${entity.type}`)})`, '');
-      for (const item of items) {
-        out.push(line(item));
-        listed.add(item.id);
-      }
-      out.push('');
+      lines.push(...section(`${esc(entity.name)} (${t(`etype.${entity.type}`)})`, items));
     }
-    const rest = [...this.state.items.values()].filter((i) => !listed.has(i.id) && visible(i)).sort((a, b) => a.createdAt - b.createdAt || (a.id < b.id ? -1 : 1));
-    if (rest.length) {
-      out.push(`## ${t('export.unsorted')}`, '');
-      for (const item of rest) out.push(line(item));
-      out.push('');
-    }
-    return out.join('\n');
+    // Unsorted: whatever no section listed, children with their parents.
+    const rest = [...this.state.items.values()].filter((i) => visible(i) && !listed.has(i.id));
+    lines.push(...section(t('export.unsorted'), rest.filter((i) => !(i.parentId && listed.has(i.parentId)))));
+    out.items = counted.size;
+    return lines.join('\n');
   }
 
   /** Every stored string, primary and twin, for "Export raw copies". */

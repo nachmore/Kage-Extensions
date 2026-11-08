@@ -2340,10 +2340,10 @@
     "_source_hash": "e16ecc8e6630a2b9"
   },
   "settings.exported_md": {
-    "message": "Exportat",
+    "message": "{n, plural, one {S-a exportat # element ca Markdown} few {S-au exportat # elemente ca Markdown} other {S-au exportat # de elemente ca Markdown}}",
     "description": "Status after Markdown export",
     "_machine_translated": true,
-    "_source_hash": "23a9f885f659befb"
+    "_source_hash": "64b438c121f9bd69"
   },
   "settings.exported_raw": {
     "message": "{n, plural, one {S-a exportat # copie stocată} few {S-au exportat # copii stocate} other {S-au exportat # de copii stocate}}",
@@ -2386,5 +2386,29 @@
     "description": "Status after import",
     "_machine_translated": true,
     "_source_hash": "fbd8da58b266300e"
+  },
+  "row.ask_found_relaxed": {
+    "message": "{n, plural, one {Nicio potrivire exactă — trimite cea mai apropiată # notă} few {Nicio potrivire exactă — trimite cele mai apropiate # note} other {Nicio potrivire exactă — trimite cele mai apropiate # de note}}",
+    "description": "Description of the mm? row when the search had to be widened to find notes",
+    "_machine_translated": true,
+    "_source_hash": "ea12ef776c17b88e"
+  },
+  "row.map_nomatch": {
+    "message": "Nicio potrivire pentru „{query}” — se afișează prezentarea generală",
+    "description": "Description of the map row when the words after mm map matched no entity or item; {query} is what the user typed",
+    "_machine_translated": true,
+    "_source_hash": "7527774359ea03d9"
+  },
+  "prompt.scope_widened": {
+    "message": "nicio potrivire exactă, așa că acestea sunt cele mai apropiate note de la {from} până la {to}",
+    "description": "Part of the inferred scope in the mm? prompt when the date range was widened; {from} and {to} are YYYY-MM-DD",
+    "_machine_translated": true,
+    "_source_hash": "b0a4f70188339f81"
+  },
+  "prompt.scope_relaxed": {
+    "message": "nicio potrivire exactă, așa că aceste note corespund doar unei părți a întrebării",
+    "description": "Part of the inferred scope in the mm? prompt when a filter was dropped to find anything",
+    "_machine_translated": true,
+    "_source_hash": "bb8ff78e1f16dc8a"
   }
 }

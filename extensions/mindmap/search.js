@@ -246,8 +246,9 @@ export default class MindMapSearchProvider {
   askRows(question) {
     const q = oneLine(question);
     if (!q) return [this.row('mm:askhint', '💬', this.t('row.ask_hint'), this.t('row.ask_hint_desc'), 90, { a: 'noop' })];
-    const { records } = this.mind.askRecords(q);
-    const desc = records.length ? this.t('row.ask_found', { n: records.length }) : this.t('row.ask_none');
+    const { records, relaxed } = this.mind.askRecords(q);
+    const found = relaxed ? 'row.ask_found_relaxed' : 'row.ask_found';
+    const desc = records.length ? this.t(found, { n: records.length }) : this.t('row.ask_none');
     return [this.row('mm:askgo', '💬', this.t('row.ask_go', { question: clip(q, 80) }), desc, 95, { a: 'ask', question: q })];
   }
 
@@ -538,7 +539,9 @@ export default class MindMapSearchProvider {
     const data = { a: 'map', ref: target.ref };
     if (target.kinds) data.kinds = target.kinds;
     if (target.highlight?.length) data.highlight = target.highlight;
-    return [this.row('mm:map', '🗺️', label, t('row.map_desc'), 95, data)];
+    // Nothing matched the words: say so rather than silently showing the overview.
+    const desc = target.missed ? t('row.map_nomatch', { query: clip(spec.args, 60) }) : t('row.map_desc');
+    return [this.row('mm:map', '🗺️', label, desc, 95, data)];
   }
 
   organizeRows() {

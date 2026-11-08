@@ -2340,10 +2340,10 @@
     "_source_hash": "e16ecc8e6630a2b9"
   },
   "settings.exported_md": {
-    "message": "تم التصدير",
+    "message": "{n, plural, zero {لم يتم تصدير أي عنصر بتنسيق Markdown} one {تم تصدير عنصر واحد بتنسيق Markdown} two {تم تصدير عنصرين بتنسيق Markdown} few {تم تصدير # عناصر بتنسيق Markdown} many {تم تصدير # عنصرًا بتنسيق Markdown} other {تم تصدير # عنصر بتنسيق Markdown}}",
     "description": "Status after Markdown export",
     "_machine_translated": true,
-    "_source_hash": "23a9f885f659befb"
+    "_source_hash": "64b438c121f9bd69"
   },
   "settings.exported_raw": {
     "message": "{n, plural, zero {لم تُصدَّر أي نسخة مخزنة} one {تم تصدير نسخة مخزنة واحدة} two {تم تصدير نسختين مخزنتين} few {تم تصدير # نسخ مخزنة} many {تم تصدير # نسخة مخزنة} other {تم تصدير # نسخة مخزنة}}",
@@ -2386,5 +2386,29 @@
     "description": "Status after import",
     "_machine_translated": true,
     "_source_hash": "fbd8da58b266300e"
+  },
+  "row.ask_found_relaxed": {
+    "message": "{n, plural, zero {لا يوجد تطابق تام — لن تُرسَل أي ملاحظة} one {لا يوجد تطابق تام — يُرسل أقرب ملاحظة} two {لا يوجد تطابق تام — يُرسل أقرب ملاحظتين} few {لا يوجد تطابق تام — يُرسل أقرب # ملاحظات} many {لا يوجد تطابق تام — يُرسل أقرب # ملاحظة} other {لا يوجد تطابق تام — يُرسل أقرب # ملاحظة}}",
+    "description": "Description of the mm? row when the search had to be widened to find notes",
+    "_machine_translated": true,
+    "_source_hash": "ea12ef776c17b88e"
+  },
+  "row.map_nomatch": {
+    "message": "لا شيء يطابق «{query}» — يتم عرض النظرة العامة",
+    "description": "Description of the map row when the words after mm map matched no entity or item; {query} is what the user typed",
+    "_machine_translated": true,
+    "_source_hash": "7527774359ea03d9"
+  },
+  "prompt.scope_widened": {
+    "message": "لا يوجد تطابق تام، لذا هذه أقرب الملاحظات من {from} إلى {to}",
+    "description": "Part of the inferred scope in the mm? prompt when the date range was widened; {from} and {to} are YYYY-MM-DD",
+    "_machine_translated": true,
+    "_source_hash": "b0a4f70188339f81"
+  },
+  "prompt.scope_relaxed": {
+    "message": "لا يوجد تطابق تام، لذا تطابق هذه الملاحظات جزءًا من السؤال فقط",
+    "description": "Part of the inferred scope in the mm? prompt when a filter was dropped to find anything",
+    "_machine_translated": true,
+    "_source_hash": "bb8ff78e1f16dc8a"
   }
 }

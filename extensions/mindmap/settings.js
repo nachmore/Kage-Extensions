@@ -193,9 +193,11 @@ export default class MindMapSettingsProvider {
       }
       if (action === 'export_md') {
         await mind.ready();
+        const counts = {};
+        const content = mind.exportMarkdown(t, counts);
         return {
-          status: t('settings.exported_md'),
-          host: { type: 'download', filename: `mindmap-${today(mind.now())}.md`, content: mind.exportMarkdown(t), mime: 'text/markdown' },
+          status: t('settings.exported_md', { n: counts.items || 0 }),
+          host: { type: 'download', filename: `mindmap-${today(mind.now())}.md`, content, mime: 'text/markdown' },
         };
       }
       if (action === 'export_raw') {

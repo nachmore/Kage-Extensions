@@ -2340,10 +2340,10 @@
     "_source_hash": "e16ecc8e6630a2b9"
   },
   "settings.exported_md": {
-    "message": "내보냈습니다",
+    "message": "{n, plural, other {항목 #개를 Markdown으로 내보냈습니다}}",
     "description": "Status after Markdown export",
     "_machine_translated": true,
-    "_source_hash": "23a9f885f659befb"
+    "_source_hash": "64b438c121f9bd69"
   },
   "settings.exported_raw": {
     "message": "{n, plural, other {저장된 사본 #개를 내보냈습니다}}",
@@ -2386,5 +2386,29 @@
     "description": "Status after import",
     "_machine_translated": true,
     "_source_hash": "fbd8da58b266300e"
+  },
+  "row.ask_found_relaxed": {
+    "message": "{n, plural, other {정확히 일치하는 항목이 없습니다 — 가장 가까운 노트 #개를 보냅니다}}",
+    "description": "Description of the mm? row when the search had to be widened to find notes",
+    "_machine_translated": true,
+    "_source_hash": "ea12ef776c17b88e"
+  },
+  "row.map_nomatch": {
+    "message": "“{query}”와(과) 일치하는 항목이 없습니다 — 개요를 표시합니다",
+    "description": "Description of the map row when the words after mm map matched no entity or item; {query} is what the user typed",
+    "_machine_translated": true,
+    "_source_hash": "7527774359ea03d9"
+  },
+  "prompt.scope_widened": {
+    "message": "정확히 일치하는 항목이 없어 {from}부터 {to}까지의 가장 가까운 노트를 보여 드립니다",
+    "description": "Part of the inferred scope in the mm? prompt when the date range was widened; {from} and {to} are YYYY-MM-DD",
+    "_machine_translated": true,
+    "_source_hash": "b0a4f70188339f81"
+  },
+  "prompt.scope_relaxed": {
+    "message": "정확히 일치하는 항목이 없어 질문의 일부와만 일치하는 노트를 보여 드립니다",
+    "description": "Part of the inferred scope in the mm? prompt when a filter was dropped to find anything",
+    "_machine_translated": true,
+    "_source_hash": "bb8ff78e1f16dc8a"
   }
 }

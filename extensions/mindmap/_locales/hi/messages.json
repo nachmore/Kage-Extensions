@@ -2340,10 +2340,10 @@
     "_source_hash": "e16ecc8e6630a2b9"
   },
   "settings.exported_md": {
-    "message": "एक्सपोर्ट किया गया",
+    "message": "{n, plural, one {# आइटम Markdown के रूप में एक्सपोर्ट किया गया} other {# आइटम Markdown के रूप में एक्सपोर्ट किए गए}}",
     "description": "Status after Markdown export",
     "_machine_translated": true,
-    "_source_hash": "23a9f885f659befb"
+    "_source_hash": "64b438c121f9bd69"
   },
   "settings.exported_raw": {
     "message": "{n, plural, one {# संग्रहीत कॉपी एक्सपोर्ट की गई} other {# संग्रहीत कॉपी एक्सपोर्ट की गईं}}",
@@ -2386,5 +2386,29 @@
     "description": "Status after import",
     "_machine_translated": true,
     "_source_hash": "fbd8da58b266300e"
+  },
+  "row.ask_found_relaxed": {
+    "message": "{n, plural, one {कोई सटीक मिलान नहीं मिला — # सबसे नज़दीकी नोट भेजा जाएगा} other {कोई सटीक मिलान नहीं मिला — # सबसे नज़दीकी नोट भेजे जाएँगे}}",
+    "description": "Description of the mm? row when the search had to be widened to find notes",
+    "_machine_translated": true,
+    "_source_hash": "ea12ef776c17b88e"
+  },
+  "row.map_nomatch": {
+    "message": "“{query}” से कुछ मेल नहीं खाया — अवलोकन दिखाया जा रहा है",
+    "description": "Description of the map row when the words after mm map matched no entity or item; {query} is what the user typed",
+    "_machine_translated": true,
+    "_source_hash": "7527774359ea03d9"
+  },
+  "prompt.scope_widened": {
+    "message": "कोई सटीक मिलान नहीं मिला, इसलिए ये {from} से {to} तक के सबसे नज़दीकी नोट हैं",
+    "description": "Part of the inferred scope in the mm? prompt when the date range was widened; {from} and {to} are YYYY-MM-DD",
+    "_machine_translated": true,
+    "_source_hash": "b0a4f70188339f81"
+  },
+  "prompt.scope_relaxed": {
+    "message": "कोई सटीक मिलान नहीं मिला, इसलिए ये नोट प्रश्न के केवल एक हिस्से से मेल खाते हैं",
+    "description": "Part of the inferred scope in the mm? prompt when a filter was dropped to find anything",
+    "_machine_translated": true,
+    "_source_hash": "bb8ff78e1f16dc8a"
   }
 }
