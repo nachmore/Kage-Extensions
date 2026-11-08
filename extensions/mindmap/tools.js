@@ -311,7 +311,7 @@ export default class MindMapToolProvider {
     else if (/^(?:anyone|everyone|all|any)$/i.test(assignee)) spec.owner = 'anyone';
     else {
       const hit = mind.resolveEntity(assignee.replace(/^@/, ''), 'person');
-      if (!hit) return { groups: [], total: 0, hiddenPrivate: 0, unresolved: [assignee], note: this.note };
+      if (!hit) return { groups: [], total: 0, hiddenPrivate: 0, unresolved: [assignee], suggestions: mind.suggestNames(assignee), note: this.note };
       spec.owner = hit.entityId;
     }
     spec.status = status === 'all' ? 'all' : status;
@@ -384,10 +384,10 @@ export default class MindMapToolProvider {
     const item = id ? mind.item(id) : null;
     if (!item) {
       const entity = id ? mind.entity(id) : null;
-      if (entity && entity.id !== 'me') return entity.private ? { error: 'private' } : this.entity({ name: entity.name });
+      if (entity && entity.id !== 'me') return entity.private ? { error: 'private', note: this.note } : this.entity({ name: entity.name });
       return { error: 'not_found', note: this.note };
     }
-    if (mind.isHidden(item)) return { error: 'private' };
+    if (mind.isHidden(item)) return { error: 'private', note: this.note };
     const record = mind.agentRecord(item);
     const out = {
       cite: record.cite,
@@ -414,10 +414,14 @@ export default class MindMapToolProvider {
     const parent = item.parentId ? mind.item(item.parentId) : null;
     if (parent && !mind.isHidden(parent)) out.parent = { cite: mind.cite(parent.id), title: mind.agentText(parent.title) };
     out.note = this.note;
-    if (JSON.stringify(out).length > LIMITS.toolBytes) {
-      out.text = mind.agentText(item.text, Math.max(200, LIMITS.getText - (JSON.stringify(out).length - LIMITS.toolBytes) - 20), { keepLines: true });
+    // Escaping inflates JSON, so shrink the text until the result fits.
+    let max = LIMITS.getText;
+    for (let size = JSON.stringify(out).length; size > LIMITS.toolBytes && max > 0; size = JSON.stringify(out).length) {
+      max = Math.max(0, max - (size - LIMITS.toolBytes) - 40);
+      out.text = mind.agentText(item.text, max, { keepLines: true });
       out.truncated = true;
     }
+    while (JSON.stringify(out).length > LIMITS.toolBytes && out.related.length) out.related.pop();
     return out;
   }
 
@@ -427,7 +431,7 @@ export default class MindMapToolProvider {
     const hit = name ? mind.resolveEntity(name, null) : null;
     const entity = hit && hit.entityId !== 'me' ? mind.entity(hit.entityId) : null;
     if (!entity) return { error: 'not_found', suggestions: mind.suggestNames(name), note: this.note };
-    if (entity.private) return { error: 'private' };
+    if (entity.private) return { error: 'private', note: this.note };
     const items = mind.itemsOf(entity.id).filter((item) => !item.archived && !mind.isHidden(item));
     const openActions = items.filter((item) => item.kind === 'action' && item.status === 'open' && !item.suggested).length;
     const recent = [...items].sort((a, b) => b.createdAt - a.createdAt || (a.id < b.id ? 1 : -1))
@@ -454,7 +458,7 @@ export default class MindMapToolProvider {
   async capture(p) {
     const mind = this.mind;
     const text = typeof p.text === 'string' ? p.text : str(p.text, LIMITS.captureText * 2);
-    if (!text.trim() && !str(p.url) && !str(p.path)) return { error: 'empty_text' };
+    if (!text.trim() && !str(p.url) && !str(p.path)) return { error: 'empty_text', note: this.note };
     const hint = {};
     if (KINDS.includes(str(p.kind, 20).toLowerCase())) hint.kind = str(p.kind, 20).toLowerCase();
     if (str(p.title)) hint.title = str(p.title, 200);
@@ -474,14 +478,15 @@ export default class MindMapToolProvider {
     const out = await mind.capture(text, { via: 'agent', hint });
     if (out.code) {
       // i18n-keys: err.*
-      return { error: out.code === 'readonly' ? this.t('err.readonly') : out.code };
+      return { error: out.code === 'readonly' ? this.t('err.readonly') : out.code, note: this.note };
     }
     const item = mind.item(out.itemId);
-    if (!item) return { error: 'not_saved' };
+    if (!item) return { error: 'not_saved', note: this.note };
     const actionIds = [...(item.kind === 'action' ? [item.id] : []), ...out.childIds.filter((id) => mind.item(id)?.kind === 'action')];
     const rejected = (out.rejectedActions || []).map((r) => ({ text: str(r.text, 200), reason: r.reason }));
+    const undo = this.t('tool.capture_saved', { cmd: `${mind.trigger} undo` });
     if (mind.isHidden(item)) {
-      return { cite: mind.cite(item.id), private: true, actions: actionIds.map((id) => mind.cite(id)), rejected, deduped: out.dedupedInto ? mind.cite(out.dedupedInto) : null };
+      return { cite: mind.cite(item.id), private: true, actions: actionIds.map((id) => mind.cite(id)), rejected, deduped: out.dedupedInto ? mind.cite(out.dedupedInto) : null, undo, note: this.note };
     }
     return {
       cite: mind.cite(item.id),
@@ -491,7 +496,8 @@ export default class MindMapToolProvider {
       actions: actionIds.map((id) => mind.cite(id)),
       rejected,
       deduped: out.dedupedInto ? mind.cite(out.dedupedInto) : null,
-      note: this.t('tool.capture_saved', { cmd: `${mind.trigger} undo` }),
+      undo,
+      note: this.note,
     };
   }
 
@@ -513,13 +519,14 @@ export default class MindMapToolProvider {
       if (KINDS.includes(str(entry.kind, 20))) clean.kind = str(entry.kind, 20);
       return clean;
     });
-    if (!entries.length) return { applied: [], rejected: [], error: 'no_items' };
+    if (!entries.length) return { applied: [], rejected: [], error: 'no_items', note: this.note };
     const out = await mind.annotate(entries);
-    if (!out.ok && out.code === 'readonly') return { error: this.t('err.readonly') };
+    if (!out.ok && out.code === 'readonly') return { error: this.t('err.readonly'), note: this.note };
     const cite = (id) => (id ? mind.cite(id) : null);
     return {
       applied: (out.applied || []).map(cite),
       rejected: (out.rejected || []).map((r) => ({ cite: cite(r.id), reason: r.reason, ...(r.text ? { text: r.text } : {}) })),
+      note: this.note,
     };
   }
 }

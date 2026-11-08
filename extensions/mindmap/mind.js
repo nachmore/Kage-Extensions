@@ -303,7 +303,8 @@ export class Mind {
       await this.ready();
       return false;
     }
-    if (mono() - this._lastSync < maxAgeMs) return false;
+    // A failed write leaves uncommitted changes in memory: reload at once.
+    if (!this._stale && mono() - this._lastSync < maxAgeMs) return false;
     const changed = await this._sync();
     if (changed) this.requestReformat();
     return changed;
@@ -1615,8 +1616,22 @@ export class Mind {
     }
     try {
       const out = await this._mutate((state, env) => {
+        // The model's counts include entities; the user is told about items.
+        const prior = new Map();
+        for (const raw of Array.isArray(data?.items) ? data.items : []) {
+          if (typeof raw?.id === 'string') prior.set(raw.id, state.items.get(raw.id)?.updatedAt);
+        }
         const change = model.applyImport(state, data, { ...env, via: 'import' });
-        return change.op ? { changes: [change], counts: change.result } : { code: change.code || 'noop' };
+        if (!change.op) return { code: change.code || 'noop' };
+        let added = 0;
+        let updated = 0;
+        for (const [id, at] of prior) {
+          const now = state.items.get(id);
+          if (!now) continue;
+          if (at === undefined) added++;
+          else if (now.updatedAt !== at) updated++;
+        }
+        return { changes: [change], counts: { added, updated, skipped: prior.size - added - updated } };
       });
       if (!out.committed) return { ok: false, code: out.code || 'noop' };
       this._resetIndexes();

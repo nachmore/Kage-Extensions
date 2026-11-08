@@ -31,7 +31,8 @@ import {
 
 // jsdom replaces the global URL, so resolve paths with node:path.
 const HERE = dirname(fileURLToPath(import.meta.url));
-const CATALOG = JSON.parse(readFileSync(join(HERE, '../../docs/mindmap/i18n/view.en.json'), 'utf8'));
+// WP-C's fragment (docs/mindmap/i18n/view.en.json) is merged into the EN catalog.
+const CATALOG = JSON.parse(readFileSync(join(HERE, '_locales/en/messages.json'), 'utf8'));
 
 function icu(template, vars) {
   let out = '';
@@ -1051,12 +1052,15 @@ describe('i18n', () => {
     }
   });
 
-  it('every key requested while rendering exists, and the fragment only holds WP-C namespaces', () => {
+  it('every key requested while rendering exists, in a WP-C namespace', () => {
     // `used` collected keys from every render above (vitest runs this file's tests in order).
     expect(used.size).toBeGreaterThan(60);
-    for (const key of used) expect(CATALOG[key], key).toBeDefined();
-    for (const key of Object.keys(CATALOG)) {
-      expect(key).toMatch(/^(card|map|cite|kind|etype|due|range|relax|chip|help)\./);
+    const WP_C = /^(card|map|cite|kind|etype|due|range|relax|chip|help)\./;
+    for (const key of used) {
+      expect(CATALOG[key], key).toBeDefined();
+      expect(key).toMatch(WP_C);
+    }
+    for (const key of Object.keys(CATALOG).filter((k) => WP_C.test(k))) {
       expect(CATALOG[key].message, key).toBeTypeOf('string');
       expect(CATALOG[key].description, key).toBeTypeOf('string');
     }

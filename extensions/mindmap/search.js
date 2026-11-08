@@ -10,10 +10,7 @@
 // or [] when they would be identical (the host then keeps match()'s rows).
 
 import { getMind } from './mind.js';
-import {
-  KIND_ICONS, ETYPE_ICONS, applyUiAction, doneText, dueText, etypeLabel, fmtDay, interpLabel, itemIcon,
-  kindLabel, parseAction, ui,
-} from './view.js';
+import { KIND_ICONS, ETYPE_ICONS, applyUiAction, doneText, dueText, etypeLabel, fmtDay, interpLabel, itemIcon, kindLabel, parseAction, ui } from './view.js';
 import { DEFAULTS, LIMITS, triggerOf } from './defaults.js';
 
 // view.js resolves these through an alias of t() (dueText, doneText, rangeLabel):
@@ -45,8 +42,9 @@ function md(value) {
   return oneLine(value).replace(/[<>]/g, '').replace(/[\\`*_{}[\]()#+!|~]/g, '\\$&');
 }
 
+// A short escaped plain-text line, then the card token alone in its paragraph (SPEC §10.2).
 function display(line, token) {
-  return { type: 'display', value: `${line}\n\n${token}` };
+  return { type: 'display', value: token ? `${line}\n\n${token}` : line };
 }
 
 // Splits the raw input into (mode, rest) for the configured trigger, or
@@ -196,10 +194,14 @@ export default class MindMapSearchProvider {
     const parts = [];
     parts.push(`${KIND_ICONS[preview.kind] || ''} ${kindLabel(preview.kind, t)}`.trim());
     for (const name of preview.entityNames || []) parts.push(name);
-    if (preview.actionCount) {
-      parts.push(preview.suggestedCount
-        ? t('card.n_actions_suggested', { n: preview.actionCount, s: preview.suggestedCount })
-        : t('card.n_actions', { n: preview.actionCount }));
+    // A one-line action is itself the action: count only its children.
+    const self = preview.extraction?.self;
+    const actions = preview.actionCount - (self ? 1 : 0);
+    const suggested = preview.suggestedCount - (self?.suggested ? 1 : 0);
+    if (actions > 0) {
+      parts.push(suggested > 0
+        ? t('card.n_actions_suggested', { n: actions, s: suggested })
+        : t('card.n_actions', { n: actions }));
     }
     if (preview.linkCount) parts.push(t('row.n_links', { n: preview.linkCount }));
     if (Number.isFinite(preview.nextDue)) parts.push(t('due.on', { day: fmtDay(preview.nextDue, this.locale, { now: this.mind.now() }) }));

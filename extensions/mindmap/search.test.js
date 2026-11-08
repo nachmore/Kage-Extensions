@@ -1,0 +1,277 @@
+// The launcher provider (search.js): keywords, rows and Enter behaviours.
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
+import { F2_WINDOW, FIXTURE_NOW, buildCorpus, captureVia, makeHarness, rowById } from '../../test-helpers/mindmap/corpus.mjs';
+import MindMapSearchProvider, { splitTrigger } from './search.js';
+
+const hits = (rows) => rows.filter((r) => r.id.startsWith('mm:i:'));
+const ROW_ID_RE = /^mm:(?:[a-z]+(?::[a-z]+)?|i:i[0-9a-z]{14}|e:(?:e[0-9a-z]{14}|me))$/;
+
+let h;
+let F;
+
+beforeAll(async () => {
+  vi.useFakeTimers({ toFake: ['Date'] });
+  h = await makeHarness();
+  F = await buildCorpus(h);
+}, 60_000);
+afterAll(() => vi.useRealTimers());
+
+describe('keywords and trigger parsing', () => {
+  it('registers mm, mm+ and mm? with i18n keys, and renames all three', () => {
+    const p = new MindMapSearchProvider();
+    p.initialize({ ...h.context, config: {} });
+    expect(p.getKeywords().map((k) => [k.keyword, k.labelKey, k.descriptionKey, k.acceptsArgs])).toEqual([
+      ['mm', 'keyword.find.label', 'keyword.find.desc', true],
+      ['mm+', 'keyword.capture.label', 'keyword.capture.desc', true],
+      ['mm?', 'keyword.ask.label', 'keyword.ask.desc', true],
+    ]);
+    p.onConfigUpdate({ trigger: 'brain' });
+    expect(p.getKeywords().map((k) => k.keyword)).toEqual(['brain', 'brain+', 'brain?']);
+    p.onConfigUpdate({ trigger: 'Not Valid!' });
+    expect(p.getKeywords().map((k) => k.keyword)).toEqual(['mm', 'mm+', 'mm?']);
+    h.mind.setConfig(h.context.config);
+  });
+
+  it('splits the trigger, keeping brain-dump newlines', () => {
+    expect(splitTrigger('mm', 'mm')).toEqual({ mode: 'find', rest: '', trailingSpace: false });
+    expect(splitTrigger('mm mtc', 'mm')).toEqual({ mode: 'find', rest: 'mtc', trailingSpace: false });
+    expect(splitTrigger('mm+ \nline one\nline two', 'mm')).toEqual({ mode: 'capture', rest: '\nline one\nline two', trailingSpace: false });
+    expect(splitTrigger('mm? why ', 'mm')).toEqual({ mode: 'ask', rest: 'why ', trailingSpace: true });
+    expect(splitTrigger('mmx foo', 'mm')).toBeNull();
+    expect(splitTrigger('todo foo', 'mm')).toBeNull();
+  });
+
+  it('returns nothing when the extension is disabled', async () => {
+    const p = new MindMapSearchProvider();
+    p.initialize({ ...h.context, config: { enabled: false } });
+    expect(p.match('mm')).toEqual([]);
+    expect(await p.matchAsync('mm')).toEqual([]);
+  });
+});
+
+describe('capture rows', () => {
+  it('previews and saves a capture, returning an op card', async () => {
+    const g = await makeHarness();
+    g.at(FIXTURE_NOW);
+    const rows = g.search.match('mm+ todo: email the bingo team about the demo date');
+    // The first keystroke starts loading and already previews the capture.
+    const row = rowById(rows, 'mm:capture');
+    expect(row).toMatchObject({ label: 'Save to Mind Map', score: 95, data: { a: 'capture', text: 'todo: email the bingo team about the demo date' } });
+    expect(row.description).toBe('☐ action · Bingo');
+    const out = await g.search.execute(row);
+    expect(out.type).toBe('display');
+    expect(out.value).toMatch(/^🧠 Saved “email the bingo team about the demo date”\n\n\[mm-card:op:o[0-9a-z]{14}\]$/);
+    expect(g.mind.state.items.size).toBe(1);
+  });
+
+  it('marks private previews and escapes Markdown in the display line', async () => {
+    const g = await makeHarness();
+    g.at(FIXTURE_NOW);
+    await g.mind.ready();
+    expect(rowById(g.search.match('mm+ ! salary *thoughts*'), 'mm:capture').description).toContain('🔒 private');
+    const out = await g.search.execute({ id: 'mm:capture', data: { a: 'capture', text: '<b>bold</b> *stars* [link](x)' } });
+    const line = out.value.split('\n\n')[0];
+    expect(line).not.toMatch(/[<>]/);
+    expect(line).toContain('\\*stars\\*');
+  });
+
+  it('mm+ alone offers the source window (when it has a title) and the hint', async () => {
+    h.sourceWindow = F2_WINDOW;
+    let rows = await h.search.matchAsync('mm+');
+    expect(rows.map((r) => r.id)).toEqual(['mm:window', 'mm:hint']);
+    expect(rows[0].label).toBe('Save the window you came from: “MTCS rollout plan.docx” — Microsoft Word');
+    expect(rows[0].data).toEqual({ a: 'window', title: 'MTCS rollout plan.docx - Word', app: 'Microsoft Word' });
+
+    h.sourceWindow = { title: '', processName: 'Microsoft Word' };
+    rows = await h.search.matchAsync('mm+ ');
+    expect(rows.map((r) => r.id)).toEqual(['mm:hint']);
+    h.sourceWindow = { title: 'Microsoft Word', processName: 'Microsoft Word' };
+    expect((await h.search.matchAsync('mm+')).map((r) => r.id)).toEqual(['mm:hint']);
+    h.sourceWindow = null;
+    expect(rowById(h.search.match('mm+'), 'mm:hint').label).toBe('Type or paste anything to save');
+  });
+
+  it('a slow get_source_window never blocks the rows', async () => {
+    const g = await makeHarness();
+    await g.mind.ready();
+    g.host.calls.length = 0;
+    const slow = new Promise(() => {});
+    g.context.invoke = async (command, args) => (command === 'get_source_window' ? slow : g.host.invoke(command, args));
+    const p = new MindMapSearchProvider();
+    p.initialize(g.context);
+    const start = performance.now();
+    expect((await p.matchAsync('mm+')).map((r) => r.id)).toEqual(['mm:hint']);
+    expect(performance.now() - start).toBeLessThan(2000);
+  });
+});
+
+describe('loading and matchAsync', () => {
+  it('shows a loading row first, real rows from matchAsync, then [] while nothing changed', async () => {
+    const g = await makeHarness();
+    await buildCorpus(g, { only: ['F7'] });
+    // A second window that hasn't loaded yet.
+    const { default: Search } = await import('./search.js');
+    const ctx = { ...g.context, invoke: g.host.connect().invoke };
+    const p = new Search();
+    p.initialize(ctx);
+    expect(p.match('mm bingo')).toEqual([expect.objectContaining({ id: 'mm:loading', label: 'Loading your mind map…' })]);
+    const rows = await p.matchAsync('mm bingo');
+    expect(hits(rows)).toHaveLength(1);
+    expect(p.match('mm bingo').map((r) => r.id)).toEqual(rows.map((r) => r.id));
+    expect(await p.matchAsync('mm bingo')).toEqual([]);
+  });
+
+  it('a load failure says so instead of hanging', async () => {
+    const g = await makeHarness();
+    const ctx = { ...g.context, invoke: async () => { throw new Error('host gone'); } };
+    const p = new MindMapSearchProvider();
+    p.initialize(ctx);
+    const rows = await p.matchAsync('mm walrus');
+    expect(rows.map((r) => r.id)).toEqual(['mm:loaderror']);
+  });
+});
+
+describe('row ids', () => {
+  it('never carry user text (fuzz)', async () => {
+    const words = ['mtcs', 'bingo', 'dana', 'zebra', 'salary', 'walrus', 'doc', 'last week', 'yesterday', 'actions', 'review', 'recent',
+      'undo', 'help', 'map', '@bingo', '#mtcs', 'kind:doc', 'is:open', 'owner:anyone', '"exact phrase"', '-term', 'Q4', 'in october',
+      'é', '中文', '<b>', '../', 'mm:i:x', '\n- [ ] dump line'];
+    let seed = 7;
+    const rand = () => (seed = (seed * 48271) % 2147483647) / 2147483647;
+    for (let n = 0; n < 150; n++) {
+      const text = Array.from({ length: 1 + Math.floor(rand() * 5) }, () => words[Math.floor(rand() * words.length)]).join(' ');
+      const mode = ['mm ', 'mm+ ', 'mm? '][n % 3];
+      for (const row of h.search.match(mode + text)) {
+        expect(row.id, `${mode}${text}`).toMatch(ROW_ID_RE);
+        expect(row.type).toBe('mindmap');
+      }
+    }
+  });
+});
+
+describe('Enter behaviours', () => {
+  it('opens links, focuses or copies docs, and shows cards for the rest', async () => {
+    h.opened.length = 0;
+    expect(await h.search.execute({ id: `mm:i:${F.F4}`, data: { a: 'open', id: F.F4 } })).toBeNull();
+    expect(h.opened).toEqual(['https://example.com/blog/mtcs-intro']);
+
+    h.openWindows = [];
+    expect(await h.search.execute({ id: `mm:i:${F.F3}`, data: { a: 'open', id: F.F3 } }))
+      .toEqual({ type: 'copy', value: '~/Documents/MTCS capacity notes.pdf' });
+    h.openWindows = [{ handle: 7, title: 'MTCS capacity notes.pdf - Preview', process_name: 'Preview' }];
+    h.focused.length = 0;
+    expect(await h.search.execute({ id: `mm:i:${F.F3}`, data: { a: 'open', id: F.F3 } })).toBeNull();
+    expect(h.focused).toEqual([7]);
+    h.openWindows = [];
+
+    const note = await h.search.execute({ id: `mm:i:${F.F5}`, data: { a: 'open', id: F.F5 } });
+    expect(note).toEqual({ type: 'display', value: `📝 Lunch with Dana, talked about MTCS hiring\n\n[mm-card:item:${F.F5}]` });
+    // Ids that aren't item ids are ignored.
+    expect(await h.search.execute({ id: 'mm:i:x', data: { a: 'open', id: '../etc' } })).toBeNull();
+  });
+
+  it('toggles actions and refreshes the same query', async () => {
+    const g = await makeHarness();
+    await buildCorpus(g, { only: ['F7'] });
+    g.at(FIXTURE_NOW);
+    const query = 'mm actions';
+    const row = hits(g.search.match(query))[0];
+    expect(row.data).toEqual({ a: 'toggle', id: F.F7 === undefined ? row.data.id : row.data.id, query });
+    expect(await g.search.execute(row)).toEqual({ type: 'replace_input', value: query });
+    expect(g.mind.item(row.data.id).status).toBe('done');
+    expect(await g.search.execute(hits(g.search.match(query))[0])).toEqual({ type: 'replace_input', value: query });
+    expect(g.mind.item(row.data.id).status).toBe('open');
+  });
+
+  it('mm review lists suggestions and Enter accepts one', async () => {
+    const g = await makeHarness();
+    await buildCorpus(g, { only: ['F6'] });
+    g.at(FIXTURE_NOW);
+    const rows = g.search.match('mm review');
+    expect(rows).toHaveLength(1);
+    expect(rows[0].label).toBe('Dana to share the roadmap deck');
+    expect(rows[0].icon).toBe('❔');
+    expect(rows[0].data.a).toBe('accept');
+    await g.search.execute(rows[0]);
+    expect(g.mind.item(rows[0].data.id).suggested).toBe(false);
+    expect(g.search.match('mm review').map((r) => r.id)).toEqual(['mm:review:none']);
+  });
+
+  it('mm @entity shows the header, its items and related entities to walk to', async () => {
+    const rows = h.search.match('mm @bingo');
+    expect(rows[0].id).toMatch(/^mm:e:e[0-9a-z]{14}$/);
+    expect(rows[0].label).toBe('Bingo (team)');
+    expect(rows[0].description).toMatch(/^4 open actions · 1 suggested · /);
+    const related = rows.filter((r) => r.id.startsWith('mm:e:') && r !== rows[0]);
+    expect(related.map((r) => r.label)).toEqual(expect.arrayContaining(['Dana (person)']));
+    const dana = related.find((r) => r.label === 'Dana (person)');
+    expect(await h.search.execute(dana)).toEqual({ type: 'replace_input', value: 'mm @dana' });
+    // The exact entity name works as well as the marker.
+    expect(h.search.match('mm bingo')[0].id).toBe(rows[0].id);
+  });
+
+  it('mm recent, mm help and refine rows', async () => {
+    const recent = h.search.match('mm recent');
+    expect(hits(recent).length).toBe(10);
+    expect(hits(recent)[0].id).toBe(`mm:i:${F.F10}`);
+    const help = await h.search.execute(h.search.match('mm help')[0]);
+    expect(help).toEqual({ type: 'display', value: '🧠 Mind Map — quick reference\n\n[mm-card:help]' });
+    const prefix = h.search.match('mm mtc');
+    expect(hits(prefix).length).toBeGreaterThanOrEqual(4);
+  });
+
+  it('undoing an op a later change superseded is refused with the reason', async () => {
+    const g = await makeHarness();
+    await buildCorpus(g, { only: ['F7'] });
+    g.at(FIXTURE_NOW);
+    const id = g.mind.recent(1)[0].id;
+    const capture = g.mind.undoTarget().op.opId;
+    await g.mind.setStatus(id, 'done');
+    // The capture's card still offers Undo; the item changed since.
+    const out = await g.search.execute({ id: 'mm:undo', data: { a: 'undo', opId: capture } });
+    expect(out.value).toBe('↶ Can’t undo: a later change touched the same items');
+    expect(g.mind.item(id).status).toBe('done');
+    // mm undo targets the newest op, which still works.
+    const rows = g.search.match('mm undo');
+    expect(rows[0].label).toBe('Undo: Marked “email the bingo team about the demo date” done');
+    expect(rows[0].data.a).toBe('undo');
+  });
+});
+
+describe('formatter actions (onResultAction)', () => {
+  it('routes data verbs to the mind and repaints', async () => {
+    const g = await makeHarness();
+    await buildCorpus(g, { only: ['F7'] });
+    g.at(FIXTURE_NOW);
+    const id = g.mind.recent(1)[0].id;
+    g.context.formatter.requestReformat.mockClear();
+    expect(await g.search.onResultAction(`mm:a:done:${id}`, { resultId: null })).toEqual({});
+    expect(g.mind.item(id).status).toBe('done');
+    expect(g.context.formatter.requestReformat).toHaveBeenCalled();
+    await g.search.onResultAction(`mm:a:reopen:${id}`);
+    expect(g.mind.item(id).status).toBe('open');
+    await g.search.onResultAction(`mm:a:private:${id}`);
+    expect(g.mind.item(id).private).toBe(true);
+    await g.search.onResultAction(`mm:a:share:${id}`);
+    expect(g.mind.item(id).private).toBeUndefined();
+    await g.search.onResultAction(`mm:a:dismiss:${id}`);
+    expect(g.mind.item(id).status).toBe('dismissed');
+    const undoOp = g.mind.undoTarget().op.opId;
+    await g.search.onResultAction(`mm:a:undo:${undoOp}`);
+    expect(g.mind.item(id).status).toBe('open');
+    await g.search.onResultAction(`mm:a:delete:${id}`);
+    expect(g.mind.item(id)).toBeNull();
+  });
+
+  it('ignores junk and routes card navigation to the UI state', async () => {
+    const g = await makeHarness();
+    await g.mind.ready();
+    g.context.formatter.requestReformat.mockClear();
+    for (const junk of [null, 42, '', 'mm:a:done:../x', 'MM:A:DONE:x', 'mm:a:explode:i0000000000000a', 'other:thing', `mm:${'a'.repeat(80)}`]) {
+      expect(await g.search.onResultAction(junk)).toEqual({});
+    }
+    expect(g.context.formatter.requestReformat).not.toHaveBeenCalled();
+    await g.search.onResultAction('mm:c1:x:1:i0000000000000a');
+    expect(g.context.formatter.requestReformat).toHaveBeenCalledTimes(1);
+  });
+});
