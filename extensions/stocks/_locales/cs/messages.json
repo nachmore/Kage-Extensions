@@ -339,12 +339,6 @@
     "message": "{deleted, plural, one {Byl smazán # uložený záznam kotace včetně jeho místních vzorků. Jiná okna nebo probíhající obnovování mohou uložit další.} few {Byly smazány # uložené záznamy kotací včetně jejich místních vzorků. Jiná okna nebo probíhající obnovování mohou uložit další.} other {Počet smazaných uložených záznamů kotací (včetně jejich místních vzorků): #. Jiná okna nebo probíhající obnovování mohou uložit další.}}{failed, plural, =0 {} one { # záznam se nepodařilo smazat. Zkuste to znovu.} few { # záznamy se nepodařilo smazat. Zkuste to znovu.} other { # záznamů se nepodařilo smazat. Zkuste to znovu.}}",
     "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
   },
-  "widget.setup": {
-    "message": "Napište stock a stiskněte Enter. Otevře se nastavení Akcie, kde nastavíte kurzy.",
-    "description": "Compact first-run widget hint; keep stock as the launcher command",
-    "_machine_translated": true,
-    "_source_hash": "9c88d9cf89fa770f"
-  },
   "widget.connection": {
     "message": "Kurzy vyžadují pozornost. Napište stock a stiskněte Enter pro otevření nastavení Akcie.",
     "description": "Compact widget hint for authentication or storage problems; keep stock as the launcher command",

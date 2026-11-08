@@ -339,12 +339,6 @@
     "message": "{deleted, plural, one {Eliminato # record di quotazione salvato insieme ai relativi campioni locali. Altre finestre o aggiornamenti in corso potrebbero salvarne altri.} other {Record di quotazioni salvati eliminati insieme ai relativi campioni locali: #. Altre finestre o aggiornamenti in corso potrebbero salvarne altri.}}{failed, plural, =0 {} one { Impossibile eliminare # record. Riprova.} other { Impossibile eliminare # record. Riprova.}}",
     "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
   },
-  "widget.setup": {
-    "message": "Digita stock e premi Invio per aprire le impostazioni di Stocks e configurare le quotazioni.",
-    "description": "Compact first-run widget hint; keep stock as the launcher command",
-    "_machine_translated": true,
-    "_source_hash": "9c88d9cf89fa770f"
-  },
   "widget.connection": {
     "message": "Le quotazioni richiedono attenzione. Digita stock e premi Invio per aprire le impostazioni di Stocks.",
     "description": "Compact widget hint for authentication or storage problems; keep stock as the launcher command",

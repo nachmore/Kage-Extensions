@@ -339,12 +339,6 @@
     "message": "{deleted, plural, one {S-a șters # înregistrare de cotație salvată și eșantioanele sale locale. Alte ferestre sau reîmprospătări active pot salva altele noi.} other {S-au șters înregistrările de cotații salvate (#) și eșantioanele lor locale. Alte ferestre sau reîmprospătări active pot salva altele noi.}}{failed, plural, =0 {} one { # înregistrare nu a putut fi ștearsă. Încercați din nou.} other { # înregistrări nu au putut fi șterse. Încercați din nou.}}",
     "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
   },
-  "widget.setup": {
-    "message": "Tastați stock și apăsați Enter pentru a deschide setările Stocks și a configura cotațiile.",
-    "description": "Compact first-run widget hint; keep stock as the launcher command",
-    "_machine_translated": true,
-    "_source_hash": "9c88d9cf89fa770f"
-  },
   "widget.connection": {
     "message": "Cotațiile necesită atenție. Tastați stock și apăsați Enter pentru a deschide setările Stocks.",
     "description": "Compact widget hint for authentication or storage problems; keep stock as the launcher command",

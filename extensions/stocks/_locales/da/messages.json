@@ -339,12 +339,6 @@
     "message": "{deleted, plural, one {Slettede # gemt kurspost og dens lokale prøver. Andre vinduer eller igangværende opdateringer kan gemme flere.} other {Slettede # gemte kursposter og deres lokale prøver. Andre vinduer eller igangværende opdateringer kan gemme flere.}}{failed, plural, =0 {} one { # kurspost kunne ikke slettes. Prøv igen.} other { # kursposter kunne ikke slettes. Prøv igen.}}",
     "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
   },
-  "widget.setup": {
-    "message": "Skriv stock, og tryk på Enter for at åbne Stocks-indstillingerne og konfigurere kurser.",
-    "description": "Compact first-run widget hint; keep stock as the launcher command",
-    "_machine_translated": true,
-    "_source_hash": "9c88d9cf89fa770f"
-  },
   "widget.connection": {
     "message": "Kurserne kræver opmærksomhed. Skriv stock, og tryk på Enter for at åbne Stocks-indstillingerne.",
     "description": "Compact widget hint for authentication or storage problems; keep stock as the launcher command",

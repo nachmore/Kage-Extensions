@@ -339,12 +339,6 @@
     "message": "{deleted, plural, one {# رکورد قیمت ذخیره‌شده و نمونه‌های محلی آن حذف شد. ممکن است پنجره‌های دیگر یا به‌روزرسانی‌های در حال اجرا رکوردهای بیشتری ذخیره کنند.} other {# رکورد قیمت ذخیره‌شده و نمونه‌های محلی آن‌ها حذف شدند. ممکن است پنجره‌های دیگر یا به‌روزرسانی‌های در حال اجرا رکوردهای بیشتری ذخیره کنند.}}{failed, plural, =0 {} one { # رکورد حذف نشد. دوباره تلاش کنید.} other { # رکورد حذف نشدند. دوباره تلاش کنید.}}",
     "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
   },
-  "widget.setup": {
-    "message": "برای باز کردن تنظیمات سهام و راه‌اندازی قیمت‌ها، stock را تایپ کنید و Enter را بزنید.",
-    "description": "Compact first-run widget hint; keep stock as the launcher command",
-    "_machine_translated": true,
-    "_source_hash": "9c88d9cf89fa770f"
-  },
   "widget.connection": {
     "message": "قیمت‌ها نیاز به بررسی دارند. برای باز کردن تنظیمات سهام، stock را تایپ کنید و Enter را بزنید.",
     "description": "Compact widget hint for authentication or storage problems; keep stock as the launcher command",

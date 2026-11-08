@@ -368,14 +368,10 @@ describe('round 3: cadence, locale, tools, and mutation guards', () => {
     expect(started.slice(1).map((time, i) => time - started[i])).toEqual(Array(3).fill(seconds * 1000));
   });
 
-  it('shows one setup hint after key removal while retaining cached tiles', async () => {
+  it('shows no watchlist at all after key removal, even with cached quotes', async () => {
     const h = host({ key: null, seed: { quote_AAPL: quote(), quote_MSFT: quote('MSFT') },
       config: { watchlist: 'AAPL MSFT NVDA' } });
-    const result = await init(Widget, h).render();
-    expect(result.html.match(/Type stock and press Enter/g)).toHaveLength(1);
-    expect(result.html).toContain('AAPL');
-    expect(result.html).toContain('MSFT');
-    expect(result.html.match(/Get a free Finnhub key \(about a minute\)/g)).toHaveLength(1);
+    expect(await init(Widget, h).render()).toBeNull();
   });
 
   it('passes the host locale to prices, percentages, and timezone display while keeping copy invariant', async () => {

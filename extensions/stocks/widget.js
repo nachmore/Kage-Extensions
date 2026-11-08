@@ -29,15 +29,17 @@ export default class StocksWatchlistWidget {
     }
     if (!this.symbols.length) return null;
     const quotes = await this.client.getQuotes(this.symbols, this.config);
-    const connection = quotes.find((quote) => ['setup', 'auth', 'storage'].includes(quote.error || quote.reason));
-    const hint = (connection?.reason || connection?.error) === 'setup'
-      ? `${this.t('setup.free_key')}. ${this.t('widget.setup')}` : this.t('widget.connection');
-    if (quotes.every((quote) => ['setup', 'auth', 'storage'].includes(quote.error))) {
+    // Not set up yet (no key): no watchlist and no nagging. Typing `stock` or
+    // `$AAPL` is what leads to setup, when the user actually wants quotes.
+    if (quotes.some((quote) => (quote.error || quote.reason) === 'setup')) return null;
+    const connection = quotes.find((quote) => ['auth', 'storage'].includes(quote.error || quote.reason));
+    const hint = this.t('widget.connection');
+    if (quotes.every((quote) => ['auth', 'storage'].includes(quote.error))) {
       return { className: 'stocks-widget', html: `<span>${escapeHtml(hint)}</span>` };
     }
     const html = await Promise.all(quotes.map(async (quote) => {
       if (quote.error) {
-        if (connection && ['setup', 'auth', 'storage'].includes(quote.error)) return '';
+        if (connection && ['auth', 'storage'].includes(quote.error)) return '';
         return `<span class="stocks-tile"><strong>${escapeHtml(quote.symbol)}</strong><small>${escapeHtml(errorText(quote.error, this.t))}</small></span>`;
       }
       const history = await this.client.getHistory(quote.symbol, '1d', quote);

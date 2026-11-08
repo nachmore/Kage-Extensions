@@ -339,12 +339,6 @@
     "message": "{deleted, plural, one {# registro de cotação salvo excluído, junto com as amostras locais. Outras janelas ou atualizações em andamento podem salvar mais.} other {Registros de cotações salvos excluídos: #, junto com as amostras locais. Outras janelas ou atualizações em andamento podem salvar mais.}}{failed, plural, =0 {} one { Não foi possível excluir # registro. Tente novamente.} other { Não foi possível excluir # registros. Tente novamente.}}",
     "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
   },
-  "widget.setup": {
-    "message": "Digite stock e pressione Enter para abrir as configurações de Ações e configurar as cotações.",
-    "description": "Compact first-run widget hint; keep stock as the launcher command",
-    "_machine_translated": true,
-    "_source_hash": "9c88d9cf89fa770f"
-  },
   "widget.connection": {
     "message": "As cotações precisam de atenção. Digite stock e pressione Enter para abrir as configurações de Ações.",
     "description": "Compact widget hint for authentication or storage problems; keep stock as the launcher command",

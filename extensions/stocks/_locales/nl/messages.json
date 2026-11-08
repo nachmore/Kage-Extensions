@@ -339,12 +339,6 @@
     "message": "{deleted, plural, one {# opgeslagen koersrecord en de bijbehorende lokale samples verwijderd. Andere vensters of actieve vernieuwingen kunnen er meer opslaan.} other {# opgeslagen koersrecords en de bijbehorende lokale samples verwijderd. Andere vensters of actieve vernieuwingen kunnen er meer opslaan.}}{failed, plural, =0 {} one { # record kon niet worden verwijderd. Probeer opnieuw.} other { # records konden niet worden verwijderd. Probeer opnieuw.}}",
     "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
   },
-  "widget.setup": {
-    "message": "Typ stock en druk op Enter om de Stocks-instellingen te openen en koersen in te stellen.",
-    "description": "Compact first-run widget hint; keep stock as the launcher command",
-    "_machine_translated": true,
-    "_source_hash": "9c88d9cf89fa770f"
-  },
   "widget.connection": {
     "message": "Koersen vereisen aandacht. Typ stock en druk op Enter om de Stocks-instellingen te openen.",
     "description": "Compact widget hint for authentication or storage problems; keep stock as the launcher command",

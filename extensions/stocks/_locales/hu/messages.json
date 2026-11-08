@@ -339,12 +339,6 @@
     "message": "{deleted, plural, one {# mentett árfolyamrekord és a hozzá tartozó helyi minták törölve. Más ablakok vagy folyamatban lévő frissítések további rekordokat menthetnek.} other {# mentett árfolyamrekord és a hozzájuk tartozó helyi minták törölve. Más ablakok vagy folyamatban lévő frissítések további rekordokat menthetnek.}}{failed, plural, =0 {} one { # rekordot nem sikerült törölni. Próbálja újra.} other { # rekordot nem sikerült törölni. Próbálja újra.}}",
     "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
   },
-  "widget.setup": {
-    "message": "Írja be a stock parancsot, és nyomja meg az Entert a Stocks beállításainak megnyitásához és az árfolyamok beállításához.",
-    "description": "Compact first-run widget hint; keep stock as the launcher command",
-    "_machine_translated": true,
-    "_source_hash": "9c88d9cf89fa770f"
-  },
   "widget.connection": {
     "message": "Az árfolyamok beavatkozást igényelnek. Írja be a stock parancsot, és nyomja meg az Entert a Stocks beállításainak megnyitásához.",
     "description": "Compact widget hint for authentication or storage problems; keep stock as the launcher command",

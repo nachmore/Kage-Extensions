@@ -339,12 +339,6 @@
     "message": "{deleted, plural, one {ลบบันทึกราคาหุ้นที่บันทึกไว้ # รายการและตัวอย่างข้อมูลในเครื่องที่เกี่ยวข้องแล้ว หน้าต่างอื่นหรือการรีเฟรชที่กำลังทำงานอยู่อาจบันทึกข้อมูลเพิ่มเติมได้} other {ลบบันทึกราคาหุ้นที่บันทึกไว้ # รายการและตัวอย่างข้อมูลในเครื่องที่เกี่ยวข้องแล้ว หน้าต่างอื่นหรือการรีเฟรชที่กำลังทำงานอยู่อาจบันทึกข้อมูลเพิ่มเติมได้}}{failed, plural, =0 {} one { ไม่สามารถลบได้ # รายการ ลองอีกครั้ง} other { ไม่สามารถลบได้ # รายการ ลองอีกครั้ง}}",
     "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
   },
-  "widget.setup": {
-    "message": "พิมพ์ stock แล้วกด Enter เพื่อเปิดการตั้งค่า Stocks และตั้งค่าการแสดงราคา",
-    "description": "Compact first-run widget hint; keep stock as the launcher command",
-    "_machine_translated": true,
-    "_source_hash": "9c88d9cf89fa770f"
-  },
   "widget.connection": {
     "message": "การแสดงราคามีปัญหาที่ต้องแก้ไข พิมพ์ stock แล้วกด Enter เพื่อเปิดการตั้งค่า Stocks",
     "description": "Compact widget hint for authentication or storage problems; keep stock as the launcher command",

@@ -125,16 +125,9 @@ describe('Finnhub setup and migration', () => {
     expect(fetch).not.toHaveBeenCalled();
   });
 
-  it.each([{}, { quote_AAPL: saved }])('shows one widget setup step and any cached tiles for %j', async (seed) => {
+  it.each([{}, { quote_AAPL: saved }])('shows no widget before setup, cached quotes or not, for %j', async (seed) => {
     const h = host({ config: { provider: 'cache', watchlist: 'AAPL MSFT' }, seed });
-    const widget = await init(Widget, h).render();
-    expect(widget.html.split(SETUP)).toHaveLength(2);
-    expect(widget.html).toContain('Type stock and press Enter');
-    if (seed.quote_AAPL) {
-      expect(widget.html).toContain('AAPL 123.45');
-      expect(widget.html).toContain(`As of ${timestampText(saved.quote.timestamp)}`);
-      expect(widget.html).toContain('Cached ');
-    }
+    expect(await init(Widget, h).render()).toBeNull();
     expect(fetch).not.toHaveBeenCalled();
   });
 

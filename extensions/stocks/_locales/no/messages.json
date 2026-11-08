@@ -339,12 +339,6 @@
     "message": "{deleted, plural, one {Slettet # lagret kursoppføring og tilhørende lokale datapunkter. Andre vinduer eller pågående oppdateringer kan lagre flere.} other {Slettet # lagrede kursoppføringer og tilhørende lokale datapunkter. Andre vinduer eller pågående oppdateringer kan lagre flere.}}{failed, plural, =0 {} one { # oppføring kunne ikke slettes. Prøv igjen.} other { # oppføringer kunne ikke slettes. Prøv igjen.}}",
     "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
   },
-  "widget.setup": {
-    "message": "Skriv stock og trykk Enter for å åpne Aksjer-innstillingene og konfigurere kurser.",
-    "description": "Compact first-run widget hint; keep stock as the launcher command",
-    "_machine_translated": true,
-    "_source_hash": "9c88d9cf89fa770f"
-  },
   "widget.connection": {
     "message": "Kursene trenger tilsyn. Skriv stock og trykk Enter for å åpne Aksjer-innstillingene.",
     "description": "Compact widget hint for authentication or storage problems; keep stock as the launcher command",

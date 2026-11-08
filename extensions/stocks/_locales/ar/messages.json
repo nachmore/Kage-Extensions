@@ -339,12 +339,6 @@
     "message": "{deleted, plural, one {تم حذف سجل سعر محفوظ واحد وعيّناته المحلية. قد تحفظ النوافذ الأخرى أو عمليات التحديث الجارية سجلات أخرى.} zero {لم تُحذف أي سجلات أسعار محفوظة. قد تحفظ النوافذ الأخرى أو عمليات التحديث الجارية سجلات أخرى.} =2 {تم حذف سجلَّي أسعار محفوظين وعيّناتهما المحلية. قد تحفظ النوافذ الأخرى أو عمليات التحديث الجارية سجلات أخرى.} two {تم حذف سجلَّي أسعار محفوظين وعيّناتهما المحلية. قد تحفظ النوافذ الأخرى أو عمليات التحديث الجارية سجلات أخرى.} few {تم حذف # سجلات أسعار محفوظة وعيّناتها المحلية. قد تحفظ النوافذ الأخرى أو عمليات التحديث الجارية سجلات أخرى.} many {تم حذف # سجل أسعار محفوظًا وعيّناته المحلية. قد تحفظ النوافذ الأخرى أو عمليات التحديث الجارية سجلات أخرى.} other {تم حذف # من سجلات الأسعار المحفوظة وعيّناتها المحلية. قد تحفظ النوافذ الأخرى أو عمليات التحديث الجارية سجلات أخرى.}}{failed, plural, =0 {} one { تعذر حذف سجل سعر محفوظ واحد. حاول مرة أخرى.} two { تعذر حذف سجلَّي أسعار محفوظين. حاول مرة أخرى.} few { تعذر حذف # سجلات أسعار محفوظة. حاول مرة أخرى.} many { تعذر حذف # سجل أسعار محفوظًا. حاول مرة أخرى.} other { تعذر حذف # من سجلات الأسعار المحفوظة. حاول مرة أخرى.}}",
     "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
   },
-  "widget.setup": {
-    "message": "اكتب stock واضغط Enter لفتح إعدادات الأسهم وإعداد الأسعار.",
-    "description": "Compact first-run widget hint; keep stock as the launcher command",
-    "_machine_translated": true,
-    "_source_hash": "9c88d9cf89fa770f"
-  },
   "widget.connection": {
     "message": "الأسعار تحتاج إلى انتباهك. اكتب stock واضغط Enter لفتح إعدادات الأسهم.",
     "description": "Compact widget hint for authentication or storage problems; keep stock as the launcher command",

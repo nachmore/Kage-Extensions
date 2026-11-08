@@ -339,12 +339,6 @@
     "message": "{deleted, plural, one {Видалено # запис збереженого котирування разом із його локальними зразками. Інші вікна або активні оновлення можуть зберегти нові записи.} few {Видалено # записи збережених котирувань разом із їхніми локальними зразками. Інші вікна або активні оновлення можуть зберегти нові записи.} many {Видалено # записів збережених котирувань разом із їхніми локальними зразками. Інші вікна або активні оновлення можуть зберегти нові записи.} other {Видалено записів збережених котирувань разом із їхніми локальними зразками: #. Інші вікна або активні оновлення можуть зберегти нові записи.}}{failed, plural, =0 {} one { Не вдалося видалити # запис. Спробуйте ще раз.} few { Не вдалося видалити # записи. Спробуйте ще раз.} many { Не вдалося видалити # записів. Спробуйте ще раз.} other { Не вдалося видалити # записів. Спробуйте ще раз.}}",
     "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
   },
-  "widget.setup": {
-    "message": "Введіть stock і натисніть Enter, щоб відкрити налаштування «Акції» та налаштувати котирування.",
-    "description": "Compact first-run widget hint; keep stock as the launcher command",
-    "_machine_translated": true,
-    "_source_hash": "9c88d9cf89fa770f"
-  },
   "widget.connection": {
     "message": "Котирування потребують уваги. Введіть stock і натисніть Enter, щоб відкрити налаштування «Акції».",
     "description": "Compact widget hint for authentication or storage problems; keep stock as the launcher command",

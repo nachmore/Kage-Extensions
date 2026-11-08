@@ -339,12 +339,6 @@
     "message": "{deleted, plural, one {Poistettu # tallennettu noteeraustietue ja sen paikalliset näytteet. Muut ikkunat tai käynnissä olevat päivitykset voivat tallentaa lisää.} other {Poistettu tallennettuja noteeraustietueita ja niiden paikallisia näytteitä: #. Muut ikkunat tai käynnissä olevat päivitykset voivat tallentaa lisää.}}{failed, plural, =0 {} one { # tietuetta ei voitu poistaa. Yritä uudelleen.} other { # tietuetta ei voitu poistaa. Yritä uudelleen.}}",
     "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
   },
-  "widget.setup": {
-    "message": "Kirjoita stock ja paina Enter avataksesi Osakkeet-asetukset ja määrittääksesi kurssit.",
-    "description": "Compact first-run widget hint; keep stock as the launcher command",
-    "_machine_translated": true,
-    "_source_hash": "9c88d9cf89fa770f"
-  },
   "widget.connection": {
     "message": "Kurssit vaativat huomiota. Kirjoita stock ja paina Enter avataksesi Osakkeet-asetukset.",
     "description": "Compact widget hint for authentication or storage problems; keep stock as the launcher command",

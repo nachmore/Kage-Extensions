@@ -140,13 +140,10 @@ describe('review regressions: launcher and UI', () => {
     expect(await search.execute(search.errorRow('AAPL', code))).toEqual({ type: 'open_extension_settings' });
   });
 
-  it('uses a compact first-run widget hint and validates stable symbol actions against current config', async () => {
+  it('shows nothing before setup and validates stable symbol actions against current config', async () => {
     const h = host({ key: null });
     const widget = init(Widget, h);
-    const output = await drive(widget.render());
-    expect(output.html).toContain('Type stock and press Enter');
-    expect(output.html.match(/Type stock/g)).toHaveLength(1);
-    expect(output.html).not.toContain('AAPL');
+    expect(await drive(widget.render())).toBeNull();
     expect(fetch).not.toHaveBeenCalled();
     await h.client.saveKey(GOOD);
     const connected = await drive(widget.render());

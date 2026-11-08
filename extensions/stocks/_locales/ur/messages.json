@@ -339,12 +339,6 @@
     "message": "{deleted, plural, one {# محفوظ شدہ کوٹ ریکارڈ اور اس کے مقامی نمونے حذف کر دیے گئے۔ دیگر ونڈوز یا جاری ریفریش مزید ریکارڈز محفوظ کر سکتے ہیں۔} other {# محفوظ شدہ کوٹ ریکارڈز اور ان کے مقامی نمونے حذف کر دیے گئے۔ دیگر ونڈوز یا جاری ریفریش مزید ریکارڈز محفوظ کر سکتے ہیں۔}}{failed, plural, =0 {} one { # ریکارڈ حذف نہیں کیا جا سکا۔ دوبارہ کوشش کریں۔} other { # ریکارڈز حذف نہیں کیے جا سکے۔ دوبارہ کوشش کریں۔}}",
     "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
   },
-  "widget.setup": {
-    "message": "Stocks کی ترتیبات کھولنے اور کوٹس سیٹ اپ کرنے کے لیے stock ٹائپ کریں اور Enter دبائیں۔",
-    "description": "Compact first-run widget hint; keep stock as the launcher command",
-    "_machine_translated": true,
-    "_source_hash": "9c88d9cf89fa770f"
-  },
   "widget.connection": {
     "message": "کوٹس پر توجہ درکار ہے۔ Stocks کی ترتیبات کھولنے کے لیے stock ٹائپ کریں اور Enter دبائیں۔",
     "description": "Compact widget hint for authentication or storage problems; keep stock as the launcher command",

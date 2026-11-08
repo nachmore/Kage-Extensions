@@ -339,12 +339,6 @@
     "message": "{deleted, plural, one {Διαγράφηκε # αποθηκευμένη εγγραφή τιμής και τα τοπικά δείγματά της. Άλλα παράθυρα ή ενεργές ανανεώσεις ενδέχεται να αποθηκεύσουν περισσότερες.} other {Διαγράφηκαν # αποθηκευμένες εγγραφές τιμών και τα τοπικά δείγματά τους. Άλλα παράθυρα ή ενεργές ανανεώσεις ενδέχεται να αποθηκεύσουν περισσότερες.}}{failed, plural, =0 {} one { # εγγραφή δεν μπόρεσε να διαγραφεί. Δοκιμάστε ξανά.} other { # εγγραφές δεν μπόρεσαν να διαγραφούν. Δοκιμάστε ξανά.}}",
     "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
   },
-  "widget.setup": {
-    "message": "Πληκτρολογήστε stock και πατήστε Enter για να ανοίξετε τις ρυθμίσεις του Stocks και να ρυθμίσετε τις τιμές.",
-    "description": "Compact first-run widget hint; keep stock as the launcher command",
-    "_machine_translated": true,
-    "_source_hash": "9c88d9cf89fa770f"
-  },
   "widget.connection": {
     "message": "Οι τιμές χρειάζονται την προσοχή σας. Πληκτρολογήστε stock και πατήστε Enter για να ανοίξετε τις ρυθμίσεις του Stocks.",
     "description": "Compact widget hint for authentication or storage problems; keep stock as the launcher command",

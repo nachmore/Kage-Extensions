@@ -339,12 +339,6 @@
     "message": "{deleted, plural, one {נמחקה רשומה שמורה אחת של ציטוט מחיר והדגימות המקומיות שלה. חלונות אחרים או רענונים פעילים עשויים לשמור רשומות נוספות.} two {נמחקו שתי רשומות שמורות של ציטוטי מחירים והדגימות המקומיות שלהן. חלונות אחרים או רענונים פעילים עשויים לשמור רשומות נוספות.} other {נמחקו # רשומות שמורות של ציטוטי מחירים והדגימות המקומיות שלהן. חלונות אחרים או רענונים פעילים עשויים לשמור רשומות נוספות.}}{failed, plural, =0 {} one { לא ניתן היה למחוק רשומה אחת. נסו שוב.} two { לא ניתן היה למחוק שתי רשומות. נסו שוב.} other { לא ניתן היה למחוק # רשומות. נסו שוב.}}",
     "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
   },
-  "widget.setup": {
-    "message": "הקלידו stock והקישו Enter כדי לפתוח את הגדרות המניות ולהגדיר ציטוטים.",
-    "description": "Compact first-run widget hint; keep stock as the launcher command",
-    "_machine_translated": true,
-    "_source_hash": "9c88d9cf89fa770f"
-  },
   "widget.connection": {
     "message": "הציטוטים דורשים טיפול. הקלידו stock והקישו Enter כדי לפתוח את הגדרות המניות.",
     "description": "Compact widget hint for authentication or storage problems; keep stock as the launcher command",

@@ -229,10 +229,6 @@
     "message": "{deleted, plural, one {Deleted # saved quote record and its local samples. Other windows or active refreshes may save more.} other {Deleted # saved quote records and their local samples. Other windows or active refreshes may save more.}}{failed, plural, =0 {} one { # saved quote record could not be deleted. Try again.} other { # saved quote records could not be deleted. Try again.}}",
     "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
   },
-  "widget.setup": {
-    "message": "Type stock and press Enter to open Stocks settings and set up quotes.",
-    "description": "Compact first-run widget hint; keep stock as the launcher command"
-  },
   "widget.connection": {
     "message": "Quotes need attention. Type stock and press Enter to open Stocks settings.",
     "description": "Compact widget hint for authentication or storage problems; keep stock as the launcher command"

@@ -339,12 +339,6 @@
     "message": "{deleted, plural, one {已刪除 # 筆已儲存的報價記錄及其本機樣本。 其他視窗或進行中的重新整理可能會再儲存更多記錄。} other {已刪除 # 筆已儲存的報價記錄及其本機樣本。其他視窗或進行中的重新整理可能會再儲存更多記錄。}}{failed, plural, =0 {} one { # 筆記錄無法刪除。請再試一次。} other { # 筆記錄無法刪除。請再試一次。}}",
     "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
   },
-  "widget.setup": {
-    "message": "輸入 stock 並按下 Enter，即可開啟「股票」設定並設定報價。",
-    "description": "Compact first-run widget hint; keep stock as the launcher command",
-    "_machine_translated": true,
-    "_source_hash": "9c88d9cf89fa770f"
-  },
   "widget.connection": {
     "message": "報價需要處理。輸入 stock 並按下 Enter，即可開啟「股票」設定。",
     "description": "Compact widget hint for authentication or storage problems; keep stock as the launcher command",

@@ -339,12 +339,6 @@
     "message": "{deleted, plural, one {Đã xóa # bản ghi báo giá đã lưu cùng các mẫu cục bộ của nó. Các cửa sổ khác hoặc các lần làm mới đang chạy có thể lưu thêm bản ghi.} other {Đã xóa # bản ghi báo giá đã lưu cùng các mẫu cục bộ của chúng. Các cửa sổ khác hoặc các lần làm mới đang chạy có thể lưu thêm bản ghi.}}{failed, plural, =0 {} one { Không thể xóa # bản ghi. Hãy thử lại.} other { Không thể xóa # bản ghi. Hãy thử lại.}}",
     "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
   },
-  "widget.setup": {
-    "message": "Nhập stock rồi nhấn Enter để mở cài đặt Cổ phiếu và thiết lập báo giá.",
-    "description": "Compact first-run widget hint; keep stock as the launcher command",
-    "_machine_translated": true,
-    "_source_hash": "9c88d9cf89fa770f"
-  },
   "widget.connection": {
     "message": "Báo giá cần được xử lý. Nhập stock rồi nhấn Enter để mở cài đặt Cổ phiếu.",
     "description": "Compact widget hint for authentication or storage problems; keep stock as the launcher command",

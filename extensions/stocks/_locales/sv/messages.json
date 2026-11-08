@@ -339,12 +339,6 @@
     "message": "{deleted, plural, one {Raderade # sparad kurspost och dess lokala mätpunkter. Andra fönster eller pågående uppdateringar kan spara fler.} other {Raderade # sparade kursposter och deras lokala mätpunkter. Andra fönster eller pågående uppdateringar kan spara fler.}}{failed, plural, =0 {} one { # kurspost kunde inte raderas. Försök igen.} other { # kursposter kunde inte raderas. Försök igen.}}",
     "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
   },
-  "widget.setup": {
-    "message": "Skriv stock och tryck på Enter för att öppna inställningarna för Stocks och konfigurera kurser.",
-    "description": "Compact first-run widget hint; keep stock as the launcher command",
-    "_machine_translated": true,
-    "_source_hash": "9c88d9cf89fa770f"
-  },
   "widget.connection": {
     "message": "Kurserna kräver åtgärd. Skriv stock och tryck på Enter för att öppna inställningarna för Stocks.",
     "description": "Compact widget hint for authentication or storage problems; keep stock as the launcher command",

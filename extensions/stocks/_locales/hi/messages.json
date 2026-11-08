@@ -339,12 +339,6 @@
     "message": "{deleted, plural, one {# सहेजा गया कोट रिकॉर्ड और उसके स्थानीय सैंपल हटा दिए गए। अन्य विंडो या चल रहे रीफ़्रेश और रिकॉर्ड सहेज सकते हैं।} other {# सहेजे गए कोट रिकॉर्ड और उनके स्थानीय सैंपल हटा दिए गए। अन्य विंडो या चल रहे रीफ़्रेश और रिकॉर्ड सहेज सकते हैं।}}{failed, plural, =0 {} one { # रिकॉर्ड हटाया नहीं जा सका। फिर से प्रयास करें।} other { # रिकॉर्ड हटाए नहीं जा सके। फिर से प्रयास करें।}}",
     "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
   },
-  "widget.setup": {
-    "message": "Stocks सेटिंग्स खोलकर भाव सेट अप करने के लिए stock टाइप करें और Enter दबाएँ।",
-    "description": "Compact first-run widget hint; keep stock as the launcher command",
-    "_machine_translated": true,
-    "_source_hash": "9c88d9cf89fa770f"
-  },
   "widget.connection": {
     "message": "भावों पर ध्यान देने की ज़रूरत है। Stocks सेटिंग्स खोलने के लिए stock टाइप करें और Enter दबाएँ।",
     "description": "Compact widget hint for authentication or storage problems; keep stock as the launcher command",

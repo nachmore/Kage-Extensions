@@ -339,12 +339,6 @@
     "message": "{deleted, plural, one {# catatan kuotasi tersimpan beserta sampel lokalnya telah dihapus. Jendela lain atau penyegaran yang sedang berjalan mungkin menyimpan catatan baru.} other {# catatan kuotasi tersimpan beserta sampel lokalnya telah dihapus. Jendela lain atau penyegaran yang sedang berjalan mungkin menyimpan catatan baru.}}{failed, plural, =0 {} one { # catatan tidak dapat dihapus. Coba lagi.} other { # catatan tidak dapat dihapus. Coba lagi.}}",
     "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
   },
-  "widget.setup": {
-    "message": "Ketik stock dan tekan Enter untuk membuka pengaturan Stocks dan menyiapkan kuotasi.",
-    "description": "Compact first-run widget hint; keep stock as the launcher command",
-    "_machine_translated": true,
-    "_source_hash": "9c88d9cf89fa770f"
-  },
   "widget.connection": {
     "message": "Kuotasi perlu diperiksa. Ketik stock dan tekan Enter untuk membuka pengaturan Stocks.",
     "description": "Compact widget hint for authentication or storage problems; keep stock as the launcher command",

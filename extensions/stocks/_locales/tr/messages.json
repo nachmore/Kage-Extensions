@@ -339,12 +339,6 @@
     "message": "{deleted, plural, one {Kaydedilmiş # fiyat teklifi kaydı ve buna ait yerel örnekler silindi. Diğer pencereler veya devam eden yenilemeler yeni kayıtlar ekleyebilir.} other {Kaydedilmiş # fiyat teklifi kaydı ve bunlara ait yerel örnekler silindi. Diğer pencereler veya devam eden yenilemeler yeni kayıtlar ekleyebilir.}}{failed, plural, =0 {} one { # kayıt silinemedi. Tekrar deneyin.} other { # kayıt silinemedi. Tekrar deneyin.}}",
     "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
   },
-  "widget.setup": {
-    "message": "Stocks ayarlarını açıp fiyatları kurmak için stock yazın ve Enter'a basın.",
-    "description": "Compact first-run widget hint; keep stock as the launcher command",
-    "_machine_translated": true,
-    "_source_hash": "9c88d9cf89fa770f"
-  },
   "widget.connection": {
     "message": "Fiyatlar ilgi gerektiriyor. Stocks ayarlarını açmak için stock yazın ve Enter'a basın.",
     "description": "Compact widget hint for authentication or storage problems; keep stock as the launcher command",
