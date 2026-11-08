@@ -300,6 +300,10 @@ export class Mind {
     keys.add(`mm-items-${dates.utcMonthKey(now)}`);
     keys.add(`mm-items-${prevUtcMonth(now)}`);
     for (const item of this.state.items.values()) keys.add(model.partKey(`items:${model.shardOf(item)}`));
+    // Without a readable mm-meta, its list of month shards is gone: find
+    // them another way, or Export raw, Repair and Delete everything would
+    // only ever see the last two months (and Repair would orphan the rest).
+    if (metaRes.unreadable) for (const key of await this._recoverShardKeys(now)) keys.add(key);
     const loaded = await this._readKeys(keys);
     const unreadable = metaRes.unreadable ? ['mm-meta'] : [];
     const parts = { meta, shards: {}, entities: null, links: null, journal: null };
@@ -345,6 +349,42 @@ export class Mind {
       this._readOnly = null;
       this.store.readOnly = false;
     }
+  }
+
+  // Month-shard keys when mm-meta can't be read: the ones a torn copy still
+  // names, and every month from the oldest record the other parts date
+  // (entities, candidates, journal; at most 10 years) to now.
+  async _recoverShardKeys(now) {
+    const out = new Set();
+    for (const name of ['mm-meta', `${storage.TWIN_PREFIX}mm-meta`]) {
+      try {
+        const raw = await this.store.readRaw(name);
+        for (const m of String(raw ?? '').matchAll(/mm-items-(\d{4}-\d{2})/g)) out.add(`mm-items-${m[1]}`);
+      } catch {
+        // Unreadable: the dated scan below still runs.
+      }
+    }
+    let oldest = now;
+    const consider = (ms) => { if (Number.isFinite(ms) && ms > 0 && ms < oldest) oldest = ms; };
+    for (const [key, res] of await this._readKeys(FIXED_KEYS)) {
+      const v = res.value;
+      if (!v) continue;
+      if (key === 'mm-entities') {
+        for (const e of Array.isArray(v.entities) ? v.entities : []) consider(e?.createdAt);
+        for (const c of Array.isArray(v.candidates) ? v.candidates : []) consider(c?.firstSeen);
+      } else if (key === 'mm-journal') {
+        for (const op of Array.isArray(v.ops) ? v.ops : []) {
+          consider(op?.at);
+          for (const id of op?.created?.items || []) consider(idlib.idTime(id));
+        }
+      }
+    }
+    const floor = Date.UTC(new Date(now).getUTCFullYear() - 10, new Date(now).getUTCMonth(), 1);
+    const d = new Date(Math.max(oldest, floor));
+    for (let ms = Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), 1); ms <= now; ms = Date.UTC(new Date(ms).getUTCFullYear(), new Date(ms).getUTCMonth() + 1, 1)) {
+      out.add(`mm-items-${dates.utcMonthKey(ms)}`);
+    }
+    return [...out].filter((key) => model.keyPart(key));
   }
 
   // Schedules the idle work (P2) once per load, when there is any.

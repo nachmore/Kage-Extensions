@@ -153,3 +153,30 @@ describe('the shipped default week start', () => {
     expect(tool.results.map((r) => r.cite).sort()).toEqual([`[mm:${F.F1}]`, `[mm:${F.F2}]`].sort());
   }, 60_000);
 });
+
+describe('an unreadable mm-meta', () => {
+  it('still finds every month shard for read-only use, Export raw copies, Repair and Delete everything', async () => {
+    vi.useFakeTimers({ toFake: ['Date'] });
+    const h = await makeHarness();
+    for (const m of [6, 7, 8, 9, 10, 11]) {
+      h.at(local(2026, m, 3, 12));
+      await h.mind.capture(`note from month ${m} about the zebra budget`, { via: 'launcher' });
+    }
+    h.at(FIXTURE_NOW);
+    h.host.corrupt('mm-meta');
+    h.host.corrupt('nx-mm-meta');
+    const w = window2(h);
+    await w.ready();
+    expect(w.readOnly).toMatchObject({ code: 'unreadable' });
+    expect(w.state.items.size).toBe(6);
+    const raw = Object.keys(await w.exportRaw()).filter((k) => /^mm-items-/.test(k)).sort();
+    expect(raw).toEqual(['06', '07', '08', '09', '10', '11'].map((m) => `mm-items-2026-${m}`));
+    expect((await w.repair()).ok).toBe(true);
+    const after = window2(h);
+    await after.ready();
+    expect(after.readOnly).toBeNull();
+    expect(after.state.items.size).toBe(6);
+    await after.deleteAll();
+    expect([...h.host.files.keys()].filter((k) => /mm-items/.test(k))).toEqual([]);
+  }, 60_000);
+});
