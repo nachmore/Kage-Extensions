@@ -127,7 +127,7 @@ describe('canUndo', () => {
     const op = edit(state, record, { title: 'a' });
     expect(canUndo(state, null)).toEqual({ ok: false, code: 'missing' });
     expect(canUndo(state, { ...op, opId: 'o-elsewhere' })).toEqual({ ok: false, code: 'missing' });
-    expect(canUndo(state, { ...op, lossy: true })).toEqual({ ok: false, code: 'missing' });
+    expect(canUndo(state, { ...op, lossy: true })).toEqual({ ok: false, code: 'too_large' });
     const undo = applyUndo(state, op, env());
     state.ops = appendOp(state.ops, undo.op);
     expect(canUndo(state, op)).toEqual({ ok: false, code: 'already_undone' });
@@ -229,10 +229,15 @@ describe('appendOp and lastUndoable', () => {
     for (let i = 0; i < 10; i++) ops = appendOp(ops, big(1000), { maxBytes: 4000 });
     expect(new TextEncoder().encode(JSON.stringify(ops)).length).toBeLessThanOrEqual(4000);
     expect(ops.length).toBeLessThan(10);
+    const kept = ops.map((o) => o.opId);
     const huge = big(10_000);
     ops = appendOp(ops, huge, { maxBytes: 4000 });
-    expect(ops).toHaveLength(1);
-    expect(ops[0]).toMatchObject({ opId: huge.opId, lossy: true, before: { items: [] } });
+    // The huge op loses its snapshots first, so it doesn't push the earlier
+    // (still undoable) ops out of the history.
+    expect(ops.at(-1)).toMatchObject({ opId: huge.opId, lossy: true, before: { items: [] } });
+    expect(ops.slice(0, -1).map((o) => o.opId)).toEqual(kept.slice(kept.length - (ops.length - 1)));
+    expect(ops.length).toBeGreaterThan(1);
+    expect(new TextEncoder().encode(JSON.stringify(ops)).length).toBeLessThanOrEqual(4000);
   });
 
   it('replaces an op with the same id in place (a retried mutation)', () => {

@@ -239,7 +239,9 @@ describe('applyCapture', () => {
     expect(book).toMatchObject({ title: 'book the offsite', quote: "I'll book the offsite", owner: 'me' });
     expect(book.entityIds).toContain(bingo.id);
     expect(review.seg).toBe(5);
-    for (const child of [send, share, book, review]) expect(child.entityIds.slice(0, 2)).toEqual([bingo.id, dana.id]);
+    // Children inherit the team; Dana only where their own line names her.
+    for (const child of [send, share]) expect(child.entityIds.slice(0, 2)).toEqual([bingo.id, dana.id]);
+    for (const child of [book, review]) expect(child.entityIds).toEqual([bingo.id]);
 
     expect(change.touched).toEqual(new Set(['items:2026-10', 'entities']));
     expect(change.op).toMatchObject({ kind: 'capture', label: { code: 'capture', params: { itemId: parent.id, count: 5 } } });

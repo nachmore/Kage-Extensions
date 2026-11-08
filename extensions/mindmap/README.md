@@ -47,10 +47,12 @@ gives `brain+` and `brain?`).
 mm remind me which doc spoke about mtcs last week
 ```
 
-finds the docs and links from last week (Mon–Sun) that mention MTCS. Each row
-shows the day, where it came from, the matching words, and why it matched. A
-"🔎" row shows how the question was read — `Docs & links · Mon, Oct 26 –
-Sun, Nov 1 · “mtcs”` — and Enter turns it into exact filters you can edit. If
+finds the docs and links from last week that mention MTCS. "Last week" is the
+previous calendar week, starting on the day your region starts its week (Monday
+in most of Europe, Sunday in the US); **Week starts on** in settings changes it.
+Each row shows the day, where it came from, the matching words, and why it
+matched. A "🔎" row shows how the question was read — `Docs & links · Mon, Oct
+26 – Sun, Nov 1 · “mtcs”` — and Enter turns it into exact filters you can edit. If
 nothing falls in the range, the search widens and says so ("Nothing from Thu,
 Nov 5 — closest matches from Oct 6 – Nov 6").
 
@@ -61,7 +63,9 @@ mm what were my actions for the bingo team
 lists your open Bingo actions (overdue first, then by due date), then the ones
 you finished in the last two weeks. Actions inherit the team of the meeting or
 note they came from, so "book the offsite" counts as a Bingo action. A row
-offers everyone's actions too.
+offers everyone's actions too. `mm my actions for Dana` lists your actions that
+involve Dana (and offers Dana's own); `mm what's due tomorrow`, `mm what's on my
+plate` and `mm what did I finish last week` work too.
 
 You can also just ask your agent in chat — "which doc spoke about mtcs last
 week?" — and it uses Mind Map's tools. Answers cite items as numbered chips;

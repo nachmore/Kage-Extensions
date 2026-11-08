@@ -89,9 +89,9 @@ describe('SPEC §3.1 fixtures F1–F11', () => {
     expect(ex.actions.map((a) => a.seg)).toEqual([1, 2, 3, 5]);
     // Bingo (explicit "Bingo team") and Dana (owner cue) are new; MTCS is known.
     expect(ex.mentions).toEqual([
-      { key: 'bingo', name: 'Bingo', type: 'team', origin: 'rule', explicit: true, seg: 0 },
-      { key: 'dana', name: 'Dana', type: 'person', origin: 'rule', explicit: true, seg: 1 },
-      { entityId: MTCS.entityId, key: 'mtcs', name: 'MTCS', type: 'term', origin: 'rule', explicit: false, seg: 1 },
+      { key: 'bingo', name: 'Bingo', type: 'team', origin: 'rule', explicit: true, seg: 0, segs: [0, 5] },
+      { key: 'dana', name: 'Dana', type: 'person', origin: 'rule', explicit: true, seg: 1, segs: [1, 2] },
+      { entityId: MTCS.entityId, key: 'mtcs', name: 'MTCS', type: 'term', origin: 'rule', explicit: false, seg: 1, segs: [1] },
     ]);
     // Every quote is the source line without its bullet marker.
     const lines = F6.split('\n');
@@ -109,7 +109,7 @@ describe('SPEC §3.1 fixtures F1–F11', () => {
     const ex = run('todo: email the bingo team about the demo date', at(2026, 11, 2, 9), [MTCS, BINGO, DANA]);
     expect(ex).toMatchObject({ kind: 'action', title: 'email the bingo team about the demo date' });
     expect(ex.self).toMatchObject({ status: 'open', owner: 'me', confidence: 1, suggested: false, quote: 'todo: email the bingo team about the demo date' });
-    expect(ex.mentions).toEqual([{ entityId: BINGO.entityId, key: 'bingo', name: 'Bingo', type: 'team', origin: 'rule', explicit: true, seg: 0 }]);
+    expect(ex.mentions).toEqual([{ entityId: BINGO.entityId, key: 'bingo', name: 'Bingo', type: 'team', origin: 'rule', explicit: true, seg: 0, segs: [0] }]);
   });
 
   it('F8: a one-line imperative is an open action; "Zebra team" is a new team', () => {
@@ -196,7 +196,42 @@ describe('SPEC §5 S2 classify', () => {
     const ex = run('call Dana\nemail Robin', now);
     expect(ex.kind).toBe('note');
     expect(ex.self).toBeNull();
-    expect(ex.actions.map((a) => [a.title, a.suggested])).toEqual([['call Dana', true], ['email Robin', true]]);
+    // A list of imperative lines is a to-do list: open actions, not suggestions.
+    expect(ex.actions.map((a) => [a.title, a.suggested])).toEqual([['call Dana', false], ['email Robin', false]]);
+    // One verb line among notes stays a suggestion.
+    const mixed = run('Notes from the vendor call\nthey liked the demo\nprices go up in March\nsend them the deck', now);
+    expect(mixed.actions.map((a) => [a.title, a.suggested])).toEqual([['send them the deck', true]]);
+  });
+
+  it('todos people actually type: need to / gotta / must, to-do lists, "the 1st"', () => {
+    for (const [input, title] of [['Need to update the pricing page by EOW', 'update the pricing page'], ['need to call the bank', 'call the bank'],
+      ['gotta renew the domain', 'renew the domain'], ['must read the security doc', 'read the security doc']]) {
+      const ex = run(input, now);
+      expect(ex.kind, input).toBe('action');
+      expect(ex.self, input).toMatchObject({ title, status: 'open', suggested: false, confidence: 0.8 });
+    }
+    expect(run('should I go to the conference', now).kind).toBe('note');
+    expect(run('need to call the bank?', now).kind).toBe('note');
+    const list = run('Weekly planning\nfinish the budget\nemail Dana the numbers\nbook flights to Berlin', now);
+    expect(list.actions.map((a) => [a.title, a.suggested])).toEqual([['finish the budget', false], ['email Dana the numbers', false], ['book flights to Berlin', false]]);
+    const inLine = run('Pricing discussion with Sarah: talked about tiers. Need to update the pricing page by EOW', now);
+    expect(inLine.actions.map((a) => a.title)).toEqual(['update the pricing page']);
+    const rent = run('remind me to pay rent on the 1st', now);
+    expect(rent.self).toMatchObject({ title: 'pay rent' });
+    expect(new Date(rent.self.dueAt).getDate()).toBe(1);
+    expect(rent.self.dueAt).toBeGreaterThan(now);
+  });
+
+  it('a note that mentions a coming date is not dated by it (S6)', () => {
+    const thu = at(2026, 11, 5, 10);
+    for (const input of ['Sarah said the launch moves to Dec 3 because of the security review', 'deadline is Jan 15 for the RFP',
+      'The conference is on March 3 in Berlin', 'Offsite planning meeting on Dec 10']) {
+      expect(run(input, thu).occurredAt, input).toBeUndefined();
+    }
+    expect(run('dentist appt thu 3pm', at(2026, 11, 6, 10)).occurredAt).toBeUndefined();
+    expect(run('Lunch with Dana on Monday', thu).occurredAt).toBeUndefined();
+    expect(run('met Dana on tuesday about hiring', thu).occurredAt).toBe(at(2026, 11, 3));
+    expect(run('On Oct 3 we chose the vendor', thu).occurredAt).toBe(at(2026, 10, 3));
   });
 
   it('the agent can set the kind', () => {
@@ -221,7 +256,7 @@ describe('SPEC §5 S4 entities', () => {
 
   it('links an explicit mention to an existing entity of another type', () => {
     const ex = run('notes from @bingo', now, [BINGO]);
-    expect(ex.mentions).toEqual([{ entityId: BINGO.entityId, key: 'bingo', name: 'Bingo', type: 'team', origin: 'rule', explicit: true, seg: 0 }]);
+    expect(ex.mentions).toEqual([{ entityId: BINGO.entityId, key: 'bingo', name: 'Bingo', type: 'team', origin: 'rule', explicit: true, seg: 0, segs: [0] }]);
   });
 
   it('my_names and @me map to the me entity', () => {

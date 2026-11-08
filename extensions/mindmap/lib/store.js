@@ -128,6 +128,8 @@ export class Store {
     if (typeof invoke !== 'function') throw new TypeError('mindmap store: invoke is required');
     this.invoke = invoke;
     this.atomic = !!atomic;
+    // Keys whose old-host twin this store already deleted (atomic mode).
+    this.twinsCleared = new Set();
     this.owner = owner || randomOwner();
     this.maxPerSecond = Math.max(1, maxPerSecond);
     this.sleep = sleep || defaultSleep;
@@ -249,6 +251,19 @@ export class Store {
     if (!this.atomic) await this.dataInvoke('save_extension_data', { key: `nx-${key}`, data });
     await this.dataInvoke('save_extension_data', { key, data });
     this.counts.writes++;
+    // With atomic writes the twin isn't kept up to date, so a twin left by an
+    // older host would go stale: the first atomic write of each key deletes
+    // it. A primary that later fails to parse then reads as unreadable
+    // (read-only, Export raw copies) instead of silently falling back to
+    // months-old data.
+    if (this.atomic && !this.twinsCleared.has(key)) {
+      try {
+        await this.dataInvoke('delete_extension_data', { key: `nx-${key}` });
+        this.twinsCleared.add(key);
+      } catch {
+        // Retried with the next write of this key.
+      }
+    }
   }
 
   async remove(key, { force = false } = {}) {

@@ -852,10 +852,10 @@
     "_source_hash": "aa52ff831fee3c8c"
   },
   "map.count_entities": {
-    "message": "{n, plural, other {# người & chủ đề}}",
+    "message": "{n, plural, other {# nhóm, người và chủ đề}}",
     "description": "Count of people, teams, projects and topics in the mind map",
     "_machine_translated": true,
-    "_source_hash": "9b6370038c0cf1d0"
+    "_source_hash": "86f5240f05d0521b"
   },
   "map.count_actions": {
     "message": "{n, plural, other {# hành động đang mở}}",
@@ -1986,10 +1986,10 @@
     "_source_hash": "e4385df6aafbf94c"
   },
   "settings.week_auto": {
-    "message": "Tự động (theo ngôn ngữ của bạn)",
+    "message": "Tự động (theo khu vực của bạn)",
     "description": "Week start option",
     "_machine_translated": true,
-    "_source_hash": "234345df33a50eea"
+    "_source_hash": "d6788aa8bbe51302"
   },
   "settings.week_mon": {
     "message": "Thứ Hai",
@@ -2512,5 +2512,101 @@
     "description": "Status after importing a file that adds or updates nothing",
     "_machine_translated": true,
     "_source_hash": "58e31a315326bea6"
+  },
+  "settings.import_skipped": {
+    "message": "{n, plural, other {# mục trong tệp không đọc được và đã bị bỏ qua.}}",
+    "description": "Appended to the import status when some records were invalid (unknown kind, impossible dates)",
+    "_machine_translated": true,
+    "_source_hash": "6b4582dd72523429"
+  },
+  "settings.import_unreadable": {
+    "message": "Không nhập được gì: không đọc được mục nào trong số {n, plural, other {# mục}} của tệp đó",
+    "description": "Status after importing a file none of whose items this version can read",
+    "_machine_translated": true,
+    "_source_hash": "b0ad8a802832dd5d"
+  },
+  "settings.imported_no_undo": {
+    "message": "Đã nhập {added} mục mới và {updated} mục được cập nhật. Lần nhập này thay đổi quá nhiều nên không thể hoàn tác.",
+    "description": "Status after an import too large for the undo history. {cmd} is unused.",
+    "_machine_translated": true,
+    "_source_hash": "33927bdd2891d7e4"
+  },
+  "err.undo_too_large": {
+    "message": "Thay đổi đó quá lớn để hoàn tác",
+    "description": "Undo refused: the change didn’t fit in the undo history",
+    "_machine_translated": true,
+    "_source_hash": "5d73441055d12445"
+  },
+  "card.me": {
+    "message": "Tôi",
+    "description": "How the user themself appears as a person in the mind map (entity chips, map centre, filters)",
+    "_machine_translated": true,
+    "_source_hash": "689dfcac42c45cc6"
+  },
+  "row.person_actions": {
+    "message": "Hiển thị các hành động của chính {name}",
+    "description": "Row after “my actions for Dana”: list the actions Dana owns instead",
+    "_machine_translated": true,
+    "_source_hash": "42a9440f7196d124"
+  },
+  "relax.terms_dropped": {
+    "message": "Không có gì khớp với “{terms}” — mọi thứ từ {range}",
+    "description": "A time was asked and its words matched nothing anywhere: showing everything from that time. {terms} are the words as typed, {range} the dates",
+    "_machine_translated": true,
+    "_source_hash": "71181e7c6c3dcdfe"
+  },
+  "relax.any_word": {
+    "message": "Không có hành động nào khớp với mọi từ trong “{terms}” — đang hiển thị những hành động khớp một số từ",
+    "description": "Actions list relaxed from all words to any word",
+    "_machine_translated": true,
+    "_source_hash": "dedb3097772e59b8"
+  },
+  "relax.none_for": {
+    "message": "Không có ghi chú nào khớp với “{terms}” — hãy thử ít từ hơn hoặc từ khác",
+    "description": "Nothing matched the words at all. {terms} are the words as typed",
+    "_machine_translated": true,
+    "_source_hash": "a48e611809b689b1"
+  },
+  "row.did_you_mean": {
+    "message": "Có phải ý bạn là “{query}”?",
+    "description": "Row when nothing matched and a word looks like a typo of a word in the notes; Enter searches the corrected text",
+    "_machine_translated": true,
+    "_source_hash": "443dd31e7adb15f8"
+  },
+  "row.saved_link_line": {
+    "message": "Đã lưu một liên kết từ {host}",
+    "description": "First line after saving a link whose page title is still being fetched. {host} is the site, e.g. example.com",
+    "_machine_translated": true,
+    "_source_hash": "20a3e84303656fb9"
+  },
+  "card.more_actions": {
+    "message": "{n, plural, other {Còn # hành động khác}} — xem {cmd}",
+    "description": "Under a long brain dump’s op card: how many saved actions aren’t listed. {cmd} is e.g. “mm actions”",
+    "_machine_translated": true,
+    "_source_hash": "fedb658688cc1f10"
+  },
+  "card.dropped_actions": {
+    "message": "{n, plural, other {# dòng khác không được tạo thành hành động}} (giới hạn là {max}); chúng vẫn nằm trong nội dung ghi chú",
+    "description": "Op card note when a brain dump had more action lines than the per-save limit",
+    "_machine_translated": true,
+    "_source_hash": "de794b6755ff9630"
+  },
+  "row.home_actions_overdue": {
+    "message": "{n, plural, other {# hành động đang mở}} ({o} quá hạn · {m} đến hạn tuần này)",
+    "description": "Home row when some open actions are overdue: total, overdue, and due later this week",
+    "_machine_translated": true,
+    "_source_hash": "a105bd9f8f249bec"
+  },
+  "row.saved_on": {
+    "message": "đã lưu {day}",
+    "description": "Action row: the day an action with no source note was saved, e.g. “saved Sat, Oct 31”",
+    "_machine_translated": true,
+    "_source_hash": "2972894023fc5436"
+  },
+  "row.shown_of": {
+    "message": "{n} trên {total}",
+    "description": "Interpretation row: how many matches are listed out of how many, e.g. “8 of 23”",
+    "_machine_translated": true,
+    "_source_hash": "868a73ebc8627db2"
   }
 }

@@ -238,10 +238,14 @@ export default class MindMapSettingsProvider {
     try {
       if (typeof content !== 'string' || content.length > 64 * 1024 * 1024) return { status: t('err.bad_format') };
       const out = await this.mind.importJson(content);
+      const unreadable = out.invalid ? ` ${t('settings.import_skipped', { n: out.invalid })}` : '';
       // A file whose every record is already here (or older) changes nothing.
-      if (!out.ok && out.code === 'noop') return { status: t('settings.import_nothing') };
+      if (!out.ok && out.code === 'noop') return { status: out.invalid ? t('settings.import_unreadable', { n: out.invalid }) : t('settings.import_nothing') };
       if (!out.ok) return { status: this.errText(out.code) };
-      return { status: t('settings.imported', { added: out.added || 0, updated: out.updated || 0, cmd: `${triggerOf(this.config)} undo` }), host: { type: 'refresh' } };
+      const counts = { added: out.added || 0, updated: out.updated || 0, cmd: `${triggerOf(this.config)} undo` };
+      // i18n-keys: settings.imported, settings.imported_no_undo
+      const done = t(out.undoable === false ? 'settings.imported_no_undo' : 'settings.imported', counts);
+      return { status: `${done}${unreadable}`, host: { type: 'refresh' } };
     } catch (error) {
       return { status: this.errText(error?.code) };
     }

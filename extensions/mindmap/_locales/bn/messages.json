@@ -852,10 +852,10 @@
     "_source_hash": "aa52ff831fee3c8c"
   },
   "map.count_entities": {
-    "message": "{n, plural, one {#জন ব্যক্তি বা বিষয়} other {#টি ব্যক্তি ও বিষয়}}",
+    "message": "{n, plural, one {#টি দল, ব্যক্তি বা বিষয়} other {#টি দল, ব্যক্তি ও বিষয়}}",
     "description": "Count of people, teams, projects and topics in the mind map",
     "_machine_translated": true,
-    "_source_hash": "9b6370038c0cf1d0"
+    "_source_hash": "86f5240f05d0521b"
   },
   "map.count_actions": {
     "message": "{n, plural, one {#টি খোলা অ্যাকশন} other {#টি খোলা অ্যাকশন}}",
@@ -1986,10 +1986,10 @@
     "_source_hash": "e4385df6aafbf94c"
   },
   "settings.week_auto": {
-    "message": "স্বয়ংক্রিয় (আপনার ভাষা অনুযায়ী)",
+    "message": "স্বয়ংক্রিয় (আপনার অঞ্চল অনুযায়ী)",
     "description": "Week start option",
     "_machine_translated": true,
-    "_source_hash": "234345df33a50eea"
+    "_source_hash": "d6788aa8bbe51302"
   },
   "settings.week_mon": {
     "message": "সোমবার",
@@ -2512,5 +2512,101 @@
     "description": "Status after importing a file that adds or updates nothing",
     "_machine_translated": true,
     "_source_hash": "58e31a315326bea6"
+  },
+  "settings.import_skipped": {
+    "message": "{n, plural, one {ফাইলের #টি আইটেম পড়া যায়নি এবং বাদ দেওয়া হয়েছে।} other {ফাইলের #টি আইটেম পড়া যায়নি এবং বাদ দেওয়া হয়েছে।}}",
+    "description": "Appended to the import status when some records were invalid (unknown kind, impossible dates)",
+    "_machine_translated": true,
+    "_source_hash": "6b4582dd72523429"
+  },
+  "settings.import_unreadable": {
+    "message": "কিছুই ইমপোর্ট হয়নি: ওই ফাইলের {n, plural, one {আইটেমটি} other {#টি আইটেমের কোনোটিই}} পড়া যায়নি",
+    "description": "Status after importing a file none of whose items this version can read",
+    "_machine_translated": true,
+    "_source_hash": "b0ad8a802832dd5d"
+  },
+  "settings.imported_no_undo": {
+    "message": "{added}টি নতুন এবং {updated}টি হালনাগাদ আইটেম ইমপোর্ট করা হয়েছে। এই ইমপোর্টে এত বেশি পরিবর্তন হয়েছে যে এটি আর পূর্বাবস্থায় ফেরানো যাবে না।",
+    "description": "Status after an import too large for the undo history. {cmd} is unused.",
+    "_machine_translated": true,
+    "_source_hash": "33927bdd2891d7e4"
+  },
+  "err.undo_too_large": {
+    "message": "পরিবর্তনটি এত বড় যে পূর্বাবস্থায় ফেরানো যাবে না",
+    "description": "Undo refused: the change didn’t fit in the undo history",
+    "_machine_translated": true,
+    "_source_hash": "5d73441055d12445"
+  },
+  "card.me": {
+    "message": "আমি",
+    "description": "How the user themself appears as a person in the mind map (entity chips, map centre, filters)",
+    "_machine_translated": true,
+    "_source_hash": "689dfcac42c45cc6"
+  },
+  "row.person_actions": {
+    "message": "{name}-এর নিজের কাজগুলো দেখুন",
+    "description": "Row after “my actions for Dana”: list the actions Dana owns instead",
+    "_machine_translated": true,
+    "_source_hash": "42a9440f7196d124"
+  },
+  "relax.terms_dropped": {
+    "message": "“{terms}”-এর সাথে কিছুই মেলেনি — {range}-এর সবকিছু",
+    "description": "A time was asked and its words matched nothing anywhere: showing everything from that time. {terms} are the words as typed, {range} the dates",
+    "_machine_translated": true,
+    "_source_hash": "71181e7c6c3dcdfe"
+  },
+  "relax.any_word": {
+    "message": "“{terms}”-এর সব শব্দের সাথে কোনো কাজ মেলেনি — কিছু শব্দের সাথে মেলে এমন কাজগুলো দেখানো হচ্ছে",
+    "description": "Actions list relaxed from all words to any word",
+    "_machine_translated": true,
+    "_source_hash": "dedb3097772e59b8"
+  },
+  "relax.none_for": {
+    "message": "“{terms}”-এর সাথে কোনো নোট মেলেনি — কম বা ভিন্ন শব্দ দিয়ে চেষ্টা করুন",
+    "description": "Nothing matched the words at all. {terms} are the words as typed",
+    "_machine_translated": true,
+    "_source_hash": "a48e611809b689b1"
+  },
+  "row.did_you_mean": {
+    "message": "আপনি কি “{query}” বোঝাতে চেয়েছেন?",
+    "description": "Row when nothing matched and a word looks like a typo of a word in the notes; Enter searches the corrected text",
+    "_machine_translated": true,
+    "_source_hash": "443dd31e7adb15f8"
+  },
+  "row.saved_link_line": {
+    "message": "{host} থেকে একটি লিংক সংরক্ষণ করা হয়েছে",
+    "description": "First line after saving a link whose page title is still being fetched. {host} is the site, e.g. example.com",
+    "_machine_translated": true,
+    "_source_hash": "20a3e84303656fb9"
+  },
+  "card.more_actions": {
+    "message": "{n, plural, one {আরও #টি কাজ} other {আরও #টি কাজ}} — {cmd} দেখুন",
+    "description": "Under a long brain dump’s op card: how many saved actions aren’t listed. {cmd} is e.g. “mm actions”",
+    "_machine_translated": true,
+    "_source_hash": "fedb658688cc1f10"
+  },
+  "card.dropped_actions": {
+    "message": "{n, plural, one {আরও #টি লাইনকে কাজে পরিণত করা হয়নি} other {আরও #টি লাইনকে কাজে পরিণত করা হয়নি}} (সীমা {max}টি); এগুলো নোটের লেখায় থেকে যাবে",
+    "description": "Op card note when a brain dump had more action lines than the per-save limit",
+    "_machine_translated": true,
+    "_source_hash": "de794b6755ff9630"
+  },
+  "row.home_actions_overdue": {
+    "message": "{n, plural, one {#টি অসম্পন্ন কাজ} other {#টি অসম্পন্ন কাজ}} ({o}টির সময়সীমা পেরিয়ে গেছে · {m}টি এই সপ্তাহে করতে হবে)",
+    "description": "Home row when some open actions are overdue: total, overdue, and due later this week",
+    "_machine_translated": true,
+    "_source_hash": "a105bd9f8f249bec"
+  },
+  "row.saved_on": {
+    "message": "সংরক্ষিত {day}",
+    "description": "Action row: the day an action with no source note was saved, e.g. “saved Sat, Oct 31”",
+    "_machine_translated": true,
+    "_source_hash": "2972894023fc5436"
+  },
+  "row.shown_of": {
+    "message": "{total}টির মধ্যে {n}টি",
+    "description": "Interpretation row: how many matches are listed out of how many, e.g. “8 of 23”",
+    "_machine_translated": true,
+    "_source_hash": "868a73ebc8627db2"
   }
 }

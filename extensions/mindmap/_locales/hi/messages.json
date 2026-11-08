@@ -852,10 +852,10 @@
     "_source_hash": "aa52ff831fee3c8c"
   },
   "map.count_entities": {
-    "message": "{n, plural, one {# व्यक्ति या विषय} other {# व्यक्ति और विषय}}",
+    "message": "{n, plural, one {# टीम, व्यक्ति या विषय} other {# टीमें, लोग और विषय}}",
     "description": "Count of people, teams, projects and topics in the mind map",
     "_machine_translated": true,
-    "_source_hash": "9b6370038c0cf1d0"
+    "_source_hash": "86f5240f05d0521b"
   },
   "map.count_actions": {
     "message": "{n, plural, one {# खुला कार्य} other {# खुले कार्य}}",
@@ -1986,10 +1986,10 @@
     "_source_hash": "e4385df6aafbf94c"
   },
   "settings.week_auto": {
-    "message": "स्वचालित (आपकी भाषा के अनुसार)",
+    "message": "स्वचालित (आपके क्षेत्र के अनुसार)",
     "description": "Week start option",
     "_machine_translated": true,
-    "_source_hash": "234345df33a50eea"
+    "_source_hash": "d6788aa8bbe51302"
   },
   "settings.week_mon": {
     "message": "सोमवार",
@@ -2512,5 +2512,101 @@
     "description": "Status after importing a file that adds or updates nothing",
     "_machine_translated": true,
     "_source_hash": "58e31a315326bea6"
+  },
+  "settings.import_skipped": {
+    "message": "{n, plural, one {फ़ाइल का # आइटम पढ़ा नहीं जा सका और उसे छोड़ दिया गया।} other {फ़ाइल के # आइटम पढ़े नहीं जा सके और उन्हें छोड़ दिया गया।}}",
+    "description": "Appended to the import status when some records were invalid (unknown kind, impossible dates)",
+    "_machine_translated": true,
+    "_source_hash": "6b4582dd72523429"
+  },
+  "settings.import_unreadable": {
+    "message": "कुछ भी इम्पोर्ट नहीं हुआ: उस फ़ाइल {n, plural, one {का आइटम पढ़ा नहीं जा सका} other {के सभी # आइटम पढ़े नहीं जा सके}}",
+    "description": "Status after importing a file none of whose items this version can read",
+    "_machine_translated": true,
+    "_source_hash": "b0ad8a802832dd5d"
+  },
+  "settings.imported_no_undo": {
+    "message": "{added} नए और {updated} अपडेट किए गए आइटम इम्पोर्ट किए गए। इस इम्पोर्ट में बहुत अधिक बदलाव हुए, इसलिए इसे पूर्ववत नहीं किया जा सकता।",
+    "description": "Status after an import too large for the undo history. {cmd} is unused.",
+    "_machine_translated": true,
+    "_source_hash": "33927bdd2891d7e4"
+  },
+  "err.undo_too_large": {
+    "message": "वह बदलाव पूर्ववत करने के लिए बहुत बड़ा था",
+    "description": "Undo refused: the change didn’t fit in the undo history",
+    "_machine_translated": true,
+    "_source_hash": "5d73441055d12445"
+  },
+  "card.me": {
+    "message": "मैं",
+    "description": "How the user themself appears as a person in the mind map (entity chips, map centre, filters)",
+    "_machine_translated": true,
+    "_source_hash": "689dfcac42c45cc6"
+  },
+  "row.person_actions": {
+    "message": "{name} की अपनी कार्रवाइयाँ दिखाएँ",
+    "description": "Row after “my actions for Dana”: list the actions Dana owns instead",
+    "_machine_translated": true,
+    "_source_hash": "42a9440f7196d124"
+  },
+  "relax.terms_dropped": {
+    "message": "“{terms}” से कुछ भी मेल नहीं खाया — {range} का सब कुछ",
+    "description": "A time was asked and its words matched nothing anywhere: showing everything from that time. {terms} are the words as typed, {range} the dates",
+    "_machine_translated": true,
+    "_source_hash": "71181e7c6c3dcdfe"
+  },
+  "relax.any_word": {
+    "message": "किसी भी कार्रवाई में “{terms}” के सभी शब्द नहीं मिले — कुछ शब्दों से मेल खाने वाली कार्रवाइयाँ दिखाई जा रही हैं",
+    "description": "Actions list relaxed from all words to any word",
+    "_machine_translated": true,
+    "_source_hash": "dedb3097772e59b8"
+  },
+  "relax.none_for": {
+    "message": "“{terms}” से कोई नोट मेल नहीं खाता — कम या अलग शब्द आज़माएँ",
+    "description": "Nothing matched the words at all. {terms} are the words as typed",
+    "_machine_translated": true,
+    "_source_hash": "a48e611809b689b1"
+  },
+  "row.did_you_mean": {
+    "message": "क्या आपका मतलब “{query}” था?",
+    "description": "Row when nothing matched and a word looks like a typo of a word in the notes; Enter searches the corrected text",
+    "_machine_translated": true,
+    "_source_hash": "443dd31e7adb15f8"
+  },
+  "row.saved_link_line": {
+    "message": "{host} से एक लिंक सहेजा गया",
+    "description": "First line after saving a link whose page title is still being fetched. {host} is the site, e.g. example.com",
+    "_machine_translated": true,
+    "_source_hash": "20a3e84303656fb9"
+  },
+  "card.more_actions": {
+    "message": "{n, plural, one {# और कार्रवाई} other {# और कार्रवाइयाँ}} — {cmd} देखें",
+    "description": "Under a long brain dump’s op card: how many saved actions aren’t listed. {cmd} is e.g. “mm actions”",
+    "_machine_translated": true,
+    "_source_hash": "fedb658688cc1f10"
+  },
+  "card.dropped_actions": {
+    "message": "{n, plural, one {# और पंक्ति को कार्रवाई नहीं बनाया गया} other {# और पंक्तियों को कार्रवाइयाँ नहीं बनाया गया}} (सीमा {max} है); वे नोट के टेक्स्ट में बनी रहती हैं",
+    "description": "Op card note when a brain dump had more action lines than the per-save limit",
+    "_machine_translated": true,
+    "_source_hash": "de794b6755ff9630"
+  },
+  "row.home_actions_overdue": {
+    "message": "{n, plural, one {# खुली कार्रवाई} other {# खुली कार्रवाइयाँ}} ({o} अतिदेय · {m} इस सप्ताह देय)",
+    "description": "Home row when some open actions are overdue: total, overdue, and due later this week",
+    "_machine_translated": true,
+    "_source_hash": "a105bd9f8f249bec"
+  },
+  "row.saved_on": {
+    "message": "{day} को सहेजा गया",
+    "description": "Action row: the day an action with no source note was saved, e.g. “saved Sat, Oct 31”",
+    "_machine_translated": true,
+    "_source_hash": "2972894023fc5436"
+  },
+  "row.shown_of": {
+    "message": "{total} में से {n}",
+    "description": "Interpretation row: how many matches are listed out of how many, e.g. “8 of 23”",
+    "_machine_translated": true,
+    "_source_hash": "868a73ebc8627db2"
   }
 }

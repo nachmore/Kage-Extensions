@@ -157,13 +157,39 @@ export function normalizeKey(s) {
   return v.trim().replace(/\s+/g, ' ');
 }
 
-export function stem(norm) {
-  const w = String(norm ?? '');
-  if (w.length < 5 || /\d/.test(w)) return w;
+const VOWEL = /[aeiouy]/;
+// After dropping -ing / -ed (Porter's step 1b fix-ups): "planning" → "plan",
+// "updated" → "update", "saving" → "save", "onboarded" → "onboard", "added"
+// → "add". Consistency matters more than linguistics: the same stem on both
+// sides of a match.
+function restore(base) {
+  if (/(?:at|bl|iz)$/.test(base)) return `${base}e`;
+  if (base.length >= 4 && /([^aeioulsz])\1$/.test(base)) return base.slice(0, -1);
+  // A short consonant-vowel-consonant stem lost its "e" (sav-ing, shar-ed).
+  if (base.length <= 4 && /^[^aeiou]*[aeiou][^aeiouwxy]$/.test(base)) return `${base}e`;
+  return base;
+}
+
+function plural(w) {
   if (w.endsWith('ies')) return w.slice(0, -3) + 'y';
   if (/(?:sses|xes|zzes|ches|shes)$/.test(w)) return w.slice(0, -2);
   if (w.endsWith('s') && !/(?:ss|us|is)$/.test(w)) return w.slice(0, -1);
   return w;
+}
+
+export function stem(norm) {
+  const w = String(norm ?? '');
+  if (/\d/.test(w)) return w;
+  // Four-letter "-es" words: "owes" → "owe", "uses" → "use" ("docs" stays).
+  if (w.length === 4 && /[a-z]es$/.test(w) && VOWEL.test(w[0])) return w.slice(0, -1);
+  if (w.length < 5) return w;
+  const v = plural(w);
+  // -ing (6+ letters, a vowel left: "string" and "spring" stay; "meetings" →
+  // "meeting" → "meet").
+  if (v.length >= 6 && v.endsWith('ing') && VOWEL.test(v.slice(0, -3))) return restore(v.slice(0, -3));
+  // -ed (5+ letters, not -eed: "need" and "speed" stay).
+  if (v.length >= 5 && v.endsWith('ed') && !v.endsWith('eed') && VOWEL.test(v.slice(0, -2))) return restore(v.slice(0, -2));
+  return v;
 }
 
 // One indexable form per word: acronym plurals fold ("MTCSs" → "mtcs"),

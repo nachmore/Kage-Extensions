@@ -852,10 +852,10 @@
     "_source_hash": "aa52ff831fee3c8c"
   },
   "map.count_entities": {
-    "message": "{n, plural, other {人物・トピック # 件}}",
+    "message": "{n, plural, other {# 件のチーム・人物・トピック}}",
     "description": "Count of people, teams, projects and topics in the mind map",
     "_machine_translated": true,
-    "_source_hash": "9b6370038c0cf1d0"
+    "_source_hash": "86f5240f05d0521b"
   },
   "map.count_actions": {
     "message": "{n, plural, other {未完了のアクション # 件}}",
@@ -1986,10 +1986,10 @@
     "_source_hash": "e4385df6aafbf94c"
   },
   "settings.week_auto": {
-    "message": "自動（言語設定に従う）",
+    "message": "自動（地域に基づく）",
     "description": "Week start option",
     "_machine_translated": true,
-    "_source_hash": "234345df33a50eea"
+    "_source_hash": "d6788aa8bbe51302"
   },
   "settings.week_mon": {
     "message": "月曜日",
@@ -2512,5 +2512,101 @@
     "description": "Status after importing a file that adds or updates nothing",
     "_machine_translated": true,
     "_source_hash": "58e31a315326bea6"
+  },
+  "settings.import_skipped": {
+    "message": "{n, plural, other {ファイル内の # 件の項目を読み取れなかったため、スキップしました。}}",
+    "description": "Appended to the import status when some records were invalid (unknown kind, impossible dates)",
+    "_machine_translated": true,
+    "_source_hash": "6b4582dd72523429"
+  },
+  "settings.import_unreadable": {
+    "message": "何もインポートされませんでした：このファイルの{n, plural, other {項目（# 件）}}はどれも読み取れませんでした",
+    "description": "Status after importing a file none of whose items this version can read",
+    "_machine_translated": true,
+    "_source_hash": "b0ad8a802832dd5d"
+  },
+  "settings.imported_no_undo": {
+    "message": "新規 {added} 件、更新 {updated} 件の項目をインポートしました。このインポートは変更量が多すぎるため、元に戻せません。",
+    "description": "Status after an import too large for the undo history. {cmd} is unused.",
+    "_machine_translated": true,
+    "_source_hash": "33927bdd2891d7e4"
+  },
+  "err.undo_too_large": {
+    "message": "変更が大きすぎるため、元に戻せません",
+    "description": "Undo refused: the change didn’t fit in the undo history",
+    "_machine_translated": true,
+    "_source_hash": "5d73441055d12445"
+  },
+  "card.me": {
+    "message": "自分",
+    "description": "How the user themself appears as a person in the mind map (entity chips, map centre, filters)",
+    "_machine_translated": true,
+    "_source_hash": "689dfcac42c45cc6"
+  },
+  "row.person_actions": {
+    "message": "{name} 自身のアクションを表示",
+    "description": "Row after “my actions for Dana”: list the actions Dana owns instead",
+    "_machine_translated": true,
+    "_source_hash": "42a9440f7196d124"
+  },
+  "relax.terms_dropped": {
+    "message": "「{terms}」に一致するものはありません — {range} のすべてを表示しています",
+    "description": "A time was asked and its words matched nothing anywhere: showing everything from that time. {terms} are the words as typed, {range} the dates",
+    "_machine_translated": true,
+    "_source_hash": "71181e7c6c3dcdfe"
+  },
+  "relax.any_word": {
+    "message": "「{terms}」のすべての語に一致するアクションはありません — 一部の語に一致するものを表示しています",
+    "description": "Actions list relaxed from all words to any word",
+    "_machine_translated": true,
+    "_source_hash": "dedb3097772e59b8"
+  },
+  "relax.none_for": {
+    "message": "「{terms}」に一致するノートはありません — 語数を減らすか、別の語をお試しください",
+    "description": "Nothing matched the words at all. {terms} are the words as typed",
+    "_machine_translated": true,
+    "_source_hash": "a48e611809b689b1"
+  },
+  "row.did_you_mean": {
+    "message": "もしかして「{query}」ですか？",
+    "description": "Row when nothing matched and a word looks like a typo of a word in the notes; Enter searches the corrected text",
+    "_machine_translated": true,
+    "_source_hash": "443dd31e7adb15f8"
+  },
+  "row.saved_link_line": {
+    "message": "{host} のリンクを保存しました",
+    "description": "First line after saving a link whose page title is still being fetched. {host} is the site, e.g. example.com",
+    "_machine_translated": true,
+    "_source_hash": "20a3e84303656fb9"
+  },
+  "card.more_actions": {
+    "message": "{n, plural, other {ほか # 件のアクション}} — {cmd} を参照",
+    "description": "Under a long brain dump’s op card: how many saved actions aren’t listed. {cmd} is e.g. “mm actions”",
+    "_machine_translated": true,
+    "_source_hash": "fedb658688cc1f10"
+  },
+  "card.dropped_actions": {
+    "message": "{n, plural, other {ほか # 行はアクションになりませんでした}}（上限は {max} 件）。これらはノートのテキストに残ります",
+    "description": "Op card note when a brain dump had more action lines than the per-save limit",
+    "_machine_translated": true,
+    "_source_hash": "de794b6755ff9630"
+  },
+  "row.home_actions_overdue": {
+    "message": "{n, plural, other {未完了のアクション # 件}}（期限切れ {o} 件 · 今週期限 {m} 件）",
+    "description": "Home row when some open actions are overdue: total, overdue, and due later this week",
+    "_machine_translated": true,
+    "_source_hash": "a105bd9f8f249bec"
+  },
+  "row.saved_on": {
+    "message": "{day} に保存",
+    "description": "Action row: the day an action with no source note was saved, e.g. “saved Sat, Oct 31”",
+    "_machine_translated": true,
+    "_source_hash": "2972894023fc5436"
+  },
+  "row.shown_of": {
+    "message": "{total} 件中 {n} 件",
+    "description": "Interpretation row: how many matches are listed out of how many, e.g. “8 of 23”",
+    "_machine_translated": true,
+    "_source_hash": "868a73ebc8627db2"
   }
 }

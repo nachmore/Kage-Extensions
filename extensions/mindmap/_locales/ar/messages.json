@@ -852,10 +852,10 @@
     "_source_hash": "aa52ff831fee3c8c"
   },
   "map.count_entities": {
-    "message": "{n, plural, zero {لا يوجد أشخاص أو مواضيع} one {شخص أو موضوع واحد} two {شخصان أو موضوعان} few {# أشخاص ومواضيع} many {# شخصًا وموضوعًا} other {# شخص وموضوع}}",
+    "message": "{n, plural, zero {لا فرق أو أشخاص أو مواضيع} one {فريق أو شخص أو موضوع واحد} two {عنصران من الفرق والأشخاص والمواضيع} few {# عناصر من الفرق والأشخاص والمواضيع} many {# عنصرًا من الفرق والأشخاص والمواضيع} other {# عنصر من الفرق والأشخاص والمواضيع}}",
     "description": "Count of people, teams, projects and topics in the mind map",
     "_machine_translated": true,
-    "_source_hash": "9b6370038c0cf1d0"
+    "_source_hash": "86f5240f05d0521b"
   },
   "map.count_actions": {
     "message": "{n, plural, zero {لا توجد إجراءات مفتوحة} one {إجراء مفتوح واحد} two {إجراءان مفتوحان} few {# إجراءات مفتوحة} many {# إجراءً مفتوحًا} other {# إجراء مفتوح}}",
@@ -1986,10 +1986,10 @@
     "_source_hash": "e4385df6aafbf94c"
   },
   "settings.week_auto": {
-    "message": "تلقائي (حسب لغتك)",
+    "message": "تلقائي (حسب منطقتك)",
     "description": "Week start option",
     "_machine_translated": true,
-    "_source_hash": "234345df33a50eea"
+    "_source_hash": "d6788aa8bbe51302"
   },
   "settings.week_mon": {
     "message": "الاثنين",
@@ -2512,5 +2512,101 @@
     "description": "Status after importing a file that adds or updates nothing",
     "_machine_translated": true,
     "_source_hash": "58e31a315326bea6"
+  },
+  "settings.import_skipped": {
+    "message": "{n, plural, zero {لم يتم تخطي أي عنصر في الملف.} one {تعذّرت قراءة عنصر واحد في الملف وتم تخطيه.} two {تعذّرت قراءة عنصرين في الملف وتم تخطيهما.} few {تعذّرت قراءة # عناصر في الملف وتم تخطيها.} many {تعذّرت قراءة # عنصرًا في الملف وتم تخطيها.} other {تعذّرت قراءة # عنصر في الملف وتم تخطيها.}}",
+    "description": "Appended to the import status when some records were invalid (unknown kind, impossible dates)",
+    "_machine_translated": true,
+    "_source_hash": "6b4582dd72523429"
+  },
+  "settings.import_unreadable": {
+    "message": "لم يتم استيراد أي شيء: تعذّرت قراءة {n, plural, zero {أي عنصر} one {العنصر} two {العنصرين كليهما} few {العناصر الـ# جميعها} many {العناصر الـ# جميعها} other {العناصر الـ# جميعها}} في ذلك الملف",
+    "description": "Status after importing a file none of whose items this version can read",
+    "_machine_translated": true,
+    "_source_hash": "b0ad8a802832dd5d"
+  },
+  "settings.imported_no_undo": {
+    "message": "تم استيراد عناصر جديدة: {added}، وعناصر محدَّثة: {updated}. أجرى هذا الاستيراد تغييرات أكبر من أن يمكن التراجع عنها.",
+    "description": "Status after an import too large for the undo history. {cmd} is unused.",
+    "_machine_translated": true,
+    "_source_hash": "33927bdd2891d7e4"
+  },
+  "err.undo_too_large": {
+    "message": "كان هذا التغيير أكبر من أن يمكن التراجع عنه",
+    "description": "Undo refused: the change didn’t fit in the undo history",
+    "_machine_translated": true,
+    "_source_hash": "5d73441055d12445"
+  },
+  "card.me": {
+    "message": "أنا",
+    "description": "How the user themself appears as a person in the mind map (entity chips, map centre, filters)",
+    "_machine_translated": true,
+    "_source_hash": "689dfcac42c45cc6"
+  },
+  "row.person_actions": {
+    "message": "عرض الإجراءات الخاصة بـ{name}",
+    "description": "Row after “my actions for Dana”: list the actions Dana owns instead",
+    "_machine_translated": true,
+    "_source_hash": "42a9440f7196d124"
+  },
+  "relax.terms_dropped": {
+    "message": "لا شيء يطابق «{terms}» — عرض كل شيء من {range}",
+    "description": "A time was asked and its words matched nothing anywhere: showing everything from that time. {terms} are the words as typed, {range} the dates",
+    "_machine_translated": true,
+    "_source_hash": "71181e7c6c3dcdfe"
+  },
+  "relax.any_word": {
+    "message": "لا يوجد إجراء يطابق كل كلمات «{terms}» — عرض ما يطابق بعضها",
+    "description": "Actions list relaxed from all words to any word",
+    "_machine_translated": true,
+    "_source_hash": "dedb3097772e59b8"
+  },
+  "relax.none_for": {
+    "message": "لا توجد ملاحظات تطابق «{terms}» — جرّب كلمات أقل أو مختلفة",
+    "description": "Nothing matched the words at all. {terms} are the words as typed",
+    "_machine_translated": true,
+    "_source_hash": "a48e611809b689b1"
+  },
+  "row.did_you_mean": {
+    "message": "هل تقصد «{query}»؟",
+    "description": "Row when nothing matched and a word looks like a typo of a word in the notes; Enter searches the corrected text",
+    "_machine_translated": true,
+    "_source_hash": "443dd31e7adb15f8"
+  },
+  "row.saved_link_line": {
+    "message": "تم حفظ رابط من {host}",
+    "description": "First line after saving a link whose page title is still being fetched. {host} is the site, e.g. example.com",
+    "_machine_translated": true,
+    "_source_hash": "20a3e84303656fb9"
+  },
+  "card.more_actions": {
+    "message": "{n, plural, zero {لا إجراءات أخرى} one {إجراء آخر واحد} two {إجراءان آخران} few {# إجراءات أخرى} many {# إجراءً آخر} other {# إجراء آخر}} — راجع {cmd}",
+    "description": "Under a long brain dump’s op card: how many saved actions aren’t listed. {cmd} is e.g. “mm actions”",
+    "_machine_translated": true,
+    "_source_hash": "fedb658688cc1f10"
+  },
+  "card.dropped_actions": {
+    "message": "{n, plural, zero {لم يُحوَّل أي سطر إضافي إلى إجراء} one {لم يُحوَّل سطر إضافي واحد إلى إجراء} two {لم يُحوَّل سطران إضافيان إلى إجراءين} few {لم تُحوَّل # أسطر إضافية إلى إجراءات} many {لم يُحوَّل # سطرًا إضافيًا إلى إجراءات} other {لم يُحوَّل # سطر إضافي إلى إجراءات}} (الحد الأقصى هو {max})؛ وتبقى في نص الملاحظة",
+    "description": "Op card note when a brain dump had more action lines than the per-save limit",
+    "_machine_translated": true,
+    "_source_hash": "de794b6755ff9630"
+  },
+  "row.home_actions_overdue": {
+    "message": "{n, plural, zero {لا إجراءات مفتوحة} one {إجراء مفتوح واحد} two {إجراءان مفتوحان} few {# إجراءات مفتوحة} many {# إجراءً مفتوحًا} other {# إجراء مفتوح}} ({o} متأخر · {m} مستحق هذا الأسبوع)",
+    "description": "Home row when some open actions are overdue: total, overdue, and due later this week",
+    "_machine_translated": true,
+    "_source_hash": "a105bd9f8f249bec"
+  },
+  "row.saved_on": {
+    "message": "حُفظ في {day}",
+    "description": "Action row: the day an action with no source note was saved, e.g. “saved Sat, Oct 31”",
+    "_machine_translated": true,
+    "_source_hash": "2972894023fc5436"
+  },
+  "row.shown_of": {
+    "message": "{n} من {total}",
+    "description": "Interpretation row: how many matches are listed out of how many, e.g. “8 of 23”",
+    "_machine_translated": true,
+    "_source_hash": "868a73ebc8627db2"
   }
 }

@@ -54,6 +54,11 @@ const URL_RE = /(?:\bhttps?:\/\/|\bwww\.|\bfile:\/\/)[^\s<>]+/gi;
 
 const clone = (value) => JSON.parse(JSON.stringify(value));
 const finite = (value) => (typeof value === 'number' && Number.isFinite(value) ? value : undefined);
+// Stored times are ms epoch from 1970 up to the end of year 9999: shards are
+// named by the UTC month (mm-items-YYYY-MM) and Date can't format beyond
+// ±8.64e15, so anything outside is not a time.
+const MAX_TIME = 253402300800000;
+const time = (value) => (finite(value) !== undefined && value >= 0 && value < MAX_TIME ? value : undefined);
 const isItemId = (id) => typeof id === 'string' && ITEM_ID.test(id);
 const isEntityId = (id) => typeof id === 'string' && ENTITY_ID.test(id);
 const byId = (a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0);
@@ -162,20 +167,28 @@ export function keyPart(key) {
 /** Every data part State currently holds (for repair and full rewrites). */
 export function listParts(state) {
   const shards = new Set([...state.items.values()].map(itemPart));
+  for (const part of state.raw?.keys() || []) if (part.startsWith('items:')) shards.add(part);
   return [...[...shards].sort(), 'entities', 'links', 'journal'];
 }
 
 // ---------------------------------------------------------------------------
 // State
 
+const GEN_RE = /^[a-z0-9]{6,32}$/;
+// Entity types a child item inherits from its parent (see applyCapture).
+export const INHERITED_TYPES = Object.freeze(new Set(['team', 'project', 'topic', 'org']));
+
 function meEntity(now) {
   return { id: 'me', type: 'person', name: 'Me', aliases: [], key: 'me', origin: 'user', createdAt: now, updatedAt: now, rev: 1 };
 }
 
-export function emptyState(now = 0, { extractorVersion = 1 } = {}) {
+// `gen` names this store's generation: a fresh store (or Delete
+// everything) starts a new one, so a window that still holds the old data
+// knows to drop it rather than merge it back.
+export function emptyState(now = 0, { extractorVersion = 1, gen = null } = {}) {
   return {
     meta: {
-      schema: SCHEMA, rev: 0, txn: null, keys: {}, counts: { items: 0, entities: 0 },
+      schema: SCHEMA, rev: 0, txn: null, gen: GEN_RE.test(gen ?? '') ? gen : null, keys: {}, counts: { items: 0, entities: 0 },
       extractorVersion, createdAt: now, updatedAt: now,
     },
     items: new Map(),
@@ -186,6 +199,10 @@ export function emptyState(now = 0, { extractorVersion = 1 } = {}) {
     ops: [],
     shardRevs: new Map(),
     partRevs: { entities: 0, links: 0, journal: 0 },
+    // Stored records this version can't read (an unknown kind from a newer
+    // version, a hand-edited file), per part: written back unchanged so a
+    // save never erases them.
+    raw: new Map(),
   };
 }
 
@@ -216,18 +233,18 @@ function validSource(raw) {
 /** A valid Item in canonical form (unknown fields kept), or null when malformed. */
 export function normalizeItem(raw) {
   if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
-  if (!isItemId(raw.id) || !KINDS.includes(raw.kind) || finite(raw.createdAt) === undefined) return null;
+  if (!isItemId(raw.id) || !KINDS.includes(raw.kind) || time(raw.createdAt) === undefined) return null;
   const item = clone(raw);
   item.title = trunc(typeof raw.title === 'string' ? raw.title : '', LIMITS.title);
   item.titleSource = TITLE_SOURCES.includes(raw.titleSource) ? raw.titleSource : 'auto';
   item.text = trunc(typeof raw.text === 'string' ? raw.text : '', LIMITS.text);
-  item.updatedAt = finite(raw.updatedAt) ?? raw.createdAt;
+  item.updatedAt = time(raw.updatedAt) ?? raw.createdAt;
   for (const field of ['truncated', 'private', 'archived', 'pinned']) if (raw[field] !== true) delete item[field];
   for (const field of ['url', 'canonicalUrl', 'path', 'docKey']) {
     if (typeof raw[field] === 'string' && raw[field]) item[field] = trunc(raw[field], LIMITS.url);
     else delete item[field];
   }
-  for (const field of ['occurredAt', 'dueAt', 'doneAt']) if (finite(raw[field]) === undefined) delete item[field];
+  for (const field of ['occurredAt', 'dueAt', 'doneAt']) if (time(raw[field]) === undefined) delete item[field];
   if (!STATUSES.includes(raw.status)) delete item.status;
   if (item.kind === 'action' && !item.status) item.status = 'open';
   if (typeof raw.suggested !== 'boolean') delete item.suggested;
@@ -257,7 +274,7 @@ export function normalizeItem(raw) {
   }
   item.source = validSource(raw.source);
   const enrich = { state: ENRICH_STATES.includes(raw.enrich?.state) ? raw.enrich.state : 'none' };
-  if (finite(raw.enrich?.at) !== undefined) enrich.at = raw.enrich.at;
+  if (time(raw.enrich?.at) !== undefined) enrich.at = raw.enrich.at;
   item.enrich = enrich;
   item.rev = Number.isInteger(raw.rev) && raw.rev > 0 ? raw.rev : 1;
   item.v = Number.isInteger(raw.v) && raw.v > 0 ? raw.v : 1;
@@ -274,8 +291,8 @@ function normalizeEntity(raw) {
   entity.key = typeof raw.key === 'string' && raw.key ? raw.key : foldKey(name);
   entity.aliases = strings(raw.aliases, LIMITS.aliases, LIMITS.entityName);
   entity.origin = ORIGINS.includes(raw.origin) ? raw.origin : 'rule';
-  entity.createdAt = finite(raw.createdAt) ?? 0;
-  entity.updatedAt = finite(raw.updatedAt) ?? entity.createdAt;
+  entity.createdAt = time(raw.createdAt) ?? 0;
+  entity.updatedAt = time(raw.updatedAt) ?? entity.createdAt;
   entity.rev = Number.isInteger(raw.rev) && raw.rev > 0 ? raw.rev : 1;
   if (raw.private !== true) delete entity.private;
   if (!isEntityId(raw.mergedInto) || raw.mergedInto === raw.id) delete entity.mergedInto;
@@ -288,7 +305,7 @@ function normalizeCandidate(raw) {
   candidate.display = clean(raw.display ?? raw.key, LIMITS.entityName) || raw.key;
   candidate.type = CANDIDATE_TYPES.includes(raw.type) ? raw.type : 'term';
   candidate.n = Number.isInteger(raw.n) && raw.n >= 0 ? raw.n : 0;
-  candidate.firstSeen = finite(raw.firstSeen) ?? 0;
+  candidate.firstSeen = time(raw.firstSeen) ?? 0;
   candidate.sample = (Array.isArray(raw.sample) ? raw.sample : []).filter(isItemId).slice(0, LIMITS.sample);
   return candidate;
 }
@@ -299,7 +316,7 @@ function normalizeRelation(raw, types) {
   // kage-sensitive-data: not-sensitive — reviewed: a stored record, not a settings control
   const relation = { s: raw.s, t: raw.t, type: raw.type };
   if (ORIGINS.includes(raw.origin)) relation.origin = raw.origin;
-  relation.at = finite(raw.at) ?? 0;
+  relation.at = time(raw.at) ?? 0;
   return relation;
 }
 
@@ -328,6 +345,7 @@ function normalizeMeta(raw, now) {
     if (finite(raw[field]) !== undefined) meta[field] = raw[field];
   }
   meta.txn = typeof raw.txn === 'string' ? raw.txn : null;
+  meta.gen = typeof raw.gen === 'string' && GEN_RE.test(raw.gen) ? raw.gen : null;
   if (raw.keys && typeof raw.keys === 'object' && !Array.isArray(raw.keys)) {
     for (const [key, rev] of Object.entries(raw.keys)) if (keyPart(key) && Number.isFinite(rev)) meta.keys[key] = rev;
   }
@@ -340,12 +358,19 @@ function normalizeMeta(raw, now) {
 const revOf = (payload) => (Number.isFinite(payload?.rev) ? payload.rev : 0);
 
 // parts = { meta, shards: {[ym]: payload}, entities, links, journal }; any
-// payload may be null (missing). Malformed records are dropped and listed in
-// `problems` ({part, code: 'bad_record'|'duplicate'|'wrong_shard', id?});
-// unusable payloads are skipped with code 'bad_payload' or 'future_schema'.
+// payload may be null (missing). Malformed records are kept aside in
+// `state.raw` (payloadFor writes them back) and listed in `problems`
+// ({part, code: 'bad_record'|'duplicate'|'wrong_shard', id?}); unusable
+// payloads are skipped with code 'bad_payload' or 'future_schema' (the
+// caller goes read-only rather than overwrite them).
 export function fromPersisted(parts = {}, { now = 0 } = {}) {
   const state = emptyState(now);
   const problems = [];
+  const keep = (part, field, raw) => {
+    let bag = state.raw.get(part);
+    if (!bag) state.raw.set(part, (bag = {}));
+    (bag[field] ||= []).push(raw);
+  };
   const open = (payload, part) => {
     if (payload === null || payload === undefined) return null;
     try { return migrate(payload, part); }
@@ -366,7 +391,11 @@ export function fromPersisted(parts = {}, { now = 0 } = {}) {
     state.shardRevs.set(ym, revOf(payload));
     for (const raw of payload.items) {
       const item = normalizeItem(raw);
-      if (!item) { problems.push({ part, code: 'bad_record' }); continue; }
+      if (!item) {
+        problems.push({ part, code: 'bad_record' });
+        keep(part, 'items', raw);
+        continue;
+      }
       if (shardOf(item) !== ym) problems.push({ part, code: 'wrong_shard', id: item.id });
       const existing = state.items.get(item.id);
       if (existing) {
@@ -377,31 +406,52 @@ export function fromPersisted(parts = {}, { now = 0 } = {}) {
     }
   }
 
-  const entities = open(parts.entities, 'entities');
+  const listsOk = (payload, fields) => fields.every((f) => payload[f] === undefined || Array.isArray(payload[f]));
+  let entities = open(parts.entities, 'entities');
+  if (entities && !listsOk(entities, ['entities', 'candidates'])) {
+    problems.push({ part: 'entities', code: 'bad_payload' });
+    entities = null;
+  }
   if (entities) {
     state.partRevs.entities = revOf(entities);
     for (const raw of Array.isArray(entities.entities) ? entities.entities : []) {
       const entity = normalizeEntity(raw);
-      if (!entity) { problems.push({ part: 'entities', code: 'bad_record' }); continue; }
+      if (!entity) {
+        problems.push({ part: 'entities', code: 'bad_record' });
+        keep('entities', 'entities', raw);
+        continue;
+      }
       // The me entity's aliases come from settings, never from storage.
       if (entity.id === 'me') entity.aliases = state.entities.get('me').aliases;
       state.entities.set(entity.id, entity);
     }
     for (const raw of Array.isArray(entities.candidates) ? entities.candidates : []) {
       const candidate = normalizeCandidate(raw);
-      if (!candidate) { problems.push({ part: 'entities', code: 'bad_record' }); continue; }
+      if (!candidate) {
+        problems.push({ part: 'entities', code: 'bad_record' });
+        keep('entities', 'candidates', raw);
+        continue;
+      }
       state.candidates.set(candidate.key, candidate);
     }
   }
 
-  const links = open(parts.links, 'links');
+  let links = open(parts.links, 'links');
+  if (links && !listsOk(links, ['links', 'rejections'])) {
+    problems.push({ part: 'links', code: 'bad_payload' });
+    links = null;
+  }
   if (links) {
     state.partRevs.links = revOf(links);
     for (const [field, types] of [['links', LINK_TYPES], ['rejections', REJECTION_TYPES]]) {
       const seen = new Set();
       for (const raw of Array.isArray(links[field]) ? links[field] : []) {
         const relation = normalizeRelation(raw, types);
-        if (!relation) { problems.push({ part: 'links', code: 'bad_record' }); continue; }
+        if (!relation) {
+          problems.push({ part: 'links', code: 'bad_record' });
+          keep('links', field, raw);
+          continue;
+        }
         if (seen.has(relationId(relation))) continue;
         seen.add(relationId(relation));
         state[field].push(relation);
@@ -425,23 +475,30 @@ export function fromPersisted(parts = {}, { now = 0 } = {}) {
 
 // The persisted object for one part, without rev/txn (the caller stamps those).
 export function payloadFor(state, part) {
+  // Records this version couldn't read go back unchanged, after the rest.
+  const kept = (field) => state.raw?.get(part)?.[field] || [];
   if (typeof part === 'string' && part.startsWith('items:')) {
     const ym = part.slice(6);
     const items = [...state.items.values()].filter((item) => shardOf(item) === ym).sort(byId);
-    return { schema: SCHEMA, items };
+    return { schema: SCHEMA, items: [...items, ...kept('items')] };
   }
   if (part === 'entities') {
     const entities = [...state.entities.values()].sort(byId)
-      .map((entity) => (entity.id === 'me' ? { ...entity, aliases: [] } : entity));
+      .map((entity) => (entity.id === 'me' ? { ...entity, name: 'Me', aliases: [] } : entity));
     const candidates = [...state.candidates.values()].sort((a, b) => (a.key < b.key ? -1 : a.key > b.key ? 1 : 0));
-    return { schema: SCHEMA, entities, candidates };
+    return { schema: SCHEMA, entities: [...entities, ...kept('entities')], candidates: [...candidates, ...kept('candidates')] };
   }
-  if (part === 'links') return { schema: SCHEMA, links: [...state.links].sort(byRelation), rejections: [...state.rejections].sort(byRelation) };
+  if (part === 'links') {
+    return {
+      schema: SCHEMA, links: [...[...state.links].sort(byRelation), ...kept('links')],
+      rejections: [...[...state.rejections].sort(byRelation), ...kept('rejections')],
+    };
+  }
   if (part === 'journal') return { schema: SCHEMA, ops: state.ops };
   if (part === 'meta') {
-    const { keys, extractorVersion, createdAt, updatedAt } = state.meta;
+    const { keys, extractorVersion, createdAt, updatedAt, gen } = state.meta;
     return {
-      schema: SCHEMA, keys: { ...keys }, counts: { items: state.items.size, entities: state.entities.size },
+      schema: SCHEMA, ...(gen ? { gen } : {}), keys: { ...keys }, counts: { items: state.items.size, entities: state.entities.size },
       extractorVersion, createdAt, updatedAt,
     };
   }
@@ -484,7 +541,9 @@ export function entityByKey(state, key, type) {
 const samePath = (a, b) => a === b || (/^[a-z]:\\|^\\\\/i.test(a) && a.toLowerCase() === b.toLowerCase());
 
 /** The existing item this capture duplicates (canonical URL, path, window doc key), or null. */
-export function findDuplicate(state, extraction, { exclude } = {}) {
+// `skip(item)` → true leaves an item out (an agent capture never merges
+// into an item the agent may not see).
+export function findDuplicate(state, extraction, { exclude, skip } = {}) {
   if (!extraction || extraction.isDump) return null;
   const { canonicalUrl, path, docKey } = extraction;
   if (!canonicalUrl && !path && !docKey) return null;
@@ -498,6 +557,7 @@ export function findDuplicate(state, extraction, { exclude } = {}) {
   };
   for (const item of state.items.values()) {
     if (exclude?.has(item.id)) continue;
+    if (typeof skip === 'function' && skip(item)) continue;
     const match = (canonicalUrl && item.canonicalUrl === canonicalUrl)
       || (path && item.path && samePath(item.path, path))
       || (docKey && item.docKey === docKey);
@@ -778,7 +838,8 @@ function annotationText(x, existing) {
   text = text.replace(/\s+/g, ' ').trim().replace(/^[-–—:;,|]+\s*/, '').trim();
   if (!text) return '';
   const folded = foldKey(text);
-  if (folded === foldKey(existing.title) || folded === foldKey(x.title)) return '';
+  // (A title the extractor took from these same words isn't a reason to skip them.)
+  if (folded === foldKey(existing.title) || (!x.titleFromText && folded === foldKey(x.title))) return '';
   return trunc(text, LIMITS.annotation);
 }
 
@@ -812,13 +873,31 @@ export function applyCapture(state, extraction, env) {
   const ownerSlots = ownerActions.map((a) => (a && typeof a.owner === 'object' && a.owner ? env.newId('e') : null));
 
   const ours = new Set([parentId, ...childIds, ...tx.op.created.items]);
-  const dupId = findDuplicate(state, x, { exclude: ours });
+  const skipDuplicate = typeof env.skipDuplicate === 'function' ? env.skipDuplicate : undefined;
+  const dupId = findDuplicate(state, x, { exclude: ours, skip: skipDuplicate });
 
   const resolved = [];
   mentions.forEach((m, i) => {
     const id = m && resolveEntity(tx, m, mentionSlots[i]);
-    if (id) resolved.push({ id, origin: ORIGINS.includes(m.origin) ? m.origin : 'rule' });
+    if (id) resolved.push({ id, origin: ORIGINS.includes(m.origin) ? m.origin : 'rule', segs: Array.isArray(m.segs) ? m.segs : [m.seg] });
   });
+  // What a child inherits from its parent (F-CAP-3): the parent's teams,
+  // projects, topics and orgs, and the names on the heading line; people
+  // and terms only from its own line, so "book the offsite" doesn't become
+  // an MTCS action because a sibling line names MTCS.
+  const childSegs = new Set(specs.map((spec) => (spec.action ? spec.action.seg : spec.link?.seg)).filter(Number.isInteger));
+  const headSeg = (seg) => Number.isInteger(seg) && (seg < 0 || (seg === 0 && !childSegs.has(0)));
+  const inherit = (draft, parent, ownSeg, { fresh = true } = {}) => {
+    for (const eid of parent.entityIds) {
+      const type = state.entities.get(eid)?.type;
+      const r = resolved.find((x) => x.id === eid);
+      const own = Number.isInteger(ownSeg) && r?.segs.includes(ownSeg);
+      if (INHERITED_TYPES.has(type) || own || (fresh && r?.segs.some(headSeg))) addMention(draft, eid, parent.mentionOrigin[eid]);
+    }
+    // A name on the child's own line that the parent doesn't carry (a dedup
+    // merge adds lines to an existing item).
+    if (Number.isInteger(ownSeg)) for (const r of resolved) if (r.segs.includes(ownSeg)) addMention(draft, r.id, r.origin);
+  };
   const owners = ownerActions.map((a, i) => (a ? resolveOwner(tx, a.owner, ownerSlots[i], a.origin) : undefined));
   snapshotCandidates(tx, x.candidates);
   const pendingAliases = attachAliases(tx, x.aliases);
@@ -837,15 +916,16 @@ export function applyCapture(state, extraction, env) {
         enrich: { state: 'none' }, rev: 1, v: x.v ?? 1,
       };
       actionFields(draft, a, owners[i + 1], now);
-      for (const eid of parent.entityIds) addMention(draft, eid, parent.mentionOrigin[eid]);
+      inherit(draft, parent, a.seg, { fresh: parent.id === parentId });
       if (draft.owner && draft.owner !== 'me') addMention(draft, draft.owner, 'rule');
       if (parent.private) draft.private = true;
       return draft;
     }
     const l = spec.link;
     if (!l?.url) return null;
-    if (l.canonicalUrl && findDuplicate(state, { canonicalUrl: l.canonicalUrl }, { exclude: ours })) {
-      linkDupes.push(findDuplicate(state, { canonicalUrl: l.canonicalUrl }, { exclude: ours }));
+    const linkDup = l.canonicalUrl ? findDuplicate(state, { canonicalUrl: l.canonicalUrl }, { exclude: ours, skip: skipDuplicate }) : null;
+    if (linkDup) {
+      linkDupes.push(linkDup);
       return null;
     }
     const draft = {
@@ -855,7 +935,7 @@ export function applyCapture(state, extraction, env) {
       enrich: enrichFor(l.url, env), rev: 1, v: x.v ?? 1,
     };
     if (Number.isInteger(l.seg) && l.seg >= 0) draft.seg = l.seg;
-    for (const eid of parent.entityIds) addMention(draft, eid, parent.mentionOrigin[eid]);
+    inherit(draft, parent, l.seg, { fresh: parent.id === parentId });
     if (parent.private) draft.private = true;
     return draft;
   };
@@ -955,7 +1035,15 @@ export function applyPromotions(state, change, promote, env) {
     ];
     for (const alias of aliasSources) addAlias(tx, state.entities.get(id) || entity, alias);
     const targets = new Set(Array.isArray(p.itemIds) ? p.itemIds : []);
-    if (targets.has(change.itemId)) for (const childId of change.childIds || []) targets.add(childId);
+    // A promoted term or person reaches the captured parent's children only
+    // where their own line names it.
+    if (targets.has(change.itemId)) {
+      const fold = textLib(env).normalizeKey;
+      for (const childId of change.childIds || []) {
+        const child = state.items.get(childId);
+        if (child && ` ${fold(`${child.title} ${child.text}`)} `.includes(` ${p.key} `)) targets.add(childId);
+      }
+    }
     for (const itemId of [...targets].sort()) mention(tx, itemId, id, 'rule');
   }
   // Aliases whose short form is still only a candidate wait on the candidate.

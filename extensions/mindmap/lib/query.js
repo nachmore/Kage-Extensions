@@ -6,6 +6,8 @@
 export const COMMANDS = Object.freeze({
   map: 'map', actions: 'actions', todos: 'actions', tasks: 'actions', review: 'review', recent: 'recent',
   undo: 'undo', help: 'help', organize: 'organize', merge: 'merge', forget: 'forget', rename: 'rename',
+  // Everyone's suggestions to accept or dismiss, as `mm review` lists them.
+  suggestions: 'review',
 });
 
 export const KIND_WORDS = Object.freeze({
@@ -29,7 +31,18 @@ export const FILLER = Object.freeze([
   'was', 'were', 'did', 'do', 'does', 'have', 'has', 'had', 'spoke about', 'talked about', 'talk about', 'wrote about',
   'was about', 'is about', 'about', 'mentioned', 'mentions', 'mentioning', 'regarding', 'related to', 'concerning',
   'the', 'a', 'an', 'that', 'any', 'all', 'from', 'with', 'for', 'of', 'on', 'in', 'to', 'and',
+  // Saving verbs and generic nouns: "what did I save yesterday", "stuff from
+  // Sarah", "everything about MTCS" ask about notes, not about these words.
+  'save', 'saved', 'saving', 'add', 'added', 'capture', 'captured', 'note down', 'noted', 'jot', 'jotted', 'jot down',
+  'write', 'wrote', 'written', 'put', 'store', 'stored', 'keep', 'kept', 'stuff', 'things', 'thing', 'everything',
+  'anything', 'something', 'say', 'said', 'says', 'tell', 'told', 'there', 'got', 'get',
 ]);
+
+// "what did I finish last week": done actions (the range is when they were done).
+const DONE_VERB_RE = /\b(?:i|we)\s+(?:have\s+|had\s+|did\s+|already\s+)?(?:finish(?:ed)?|complete(?:d)?|close(?:d)?|ship(?:ped)?|get\s+done|got\s+done|wrapp?(?:ed)?\s+up|knock(?:ed)?\s+out|tick(?:ed)?\s+off|check(?:ed)?\s+off)\b/i;
+// Questions about what to do: "what's on my plate", "what should I do next",
+// "things I need to do today", "what do I have to do this week".
+const TODO_QUESTION_RE = /\b(?:on\s+my\s+plate|(?:need|have|got|gotta)\s+to\s+do|to\s+do\s+(?=today|tomorrow|this|next)|should\s+i\s+do(?:\s+next)?|do\s+(?:i|we)\s+(?:need|have)\s+to|(?:what(?:['’]s|\s+is)?|anything)\s+(?:left\s+)?(?:to\s+do|next|due|pending|outstanding))\b/i;
 
 export const MINE_WORDS = Object.freeze(['my', 'mine', 'i', 'me', 'myself']);
 export const RECENCY_WORDS = Object.freeze(['recently', 'lately', 'recent']);
@@ -87,7 +100,9 @@ function dueRange(lib, phraseText, mode, dateOpts) {
   const r = lib.dates.parseRange(phraseText, dateOpts);
   if (!r) return null;
   let { start, end } = r;
-  if (r.granularity === 'day') {
+  // "due friday" asked on a Friday includes today.
+  const today = r.code === 'weekday' && r.start === lib.dates.startOfDay(dateOpts.now);
+  if (r.granularity === 'day' && !today) {
     const d = lib.dates.parseDue(phraseText.slice(r.span[0]), dateOpts);
     if (d && d.span[0] === 0) {
       start = d.at;
@@ -181,6 +196,26 @@ export function parseQuery(input, env) {
     if (cmd === 'actions') actionsIntent = true;
   }
 
+  let doneVerb = false;
+  let todoQuestion = false;
+  if (!cmd || cmd === 'actions') {
+    const dv = DONE_VERB_RE.exec(work.rest);
+    if (dv) {
+      doneVerb = true;
+      actionsIntent = true;
+      spec.status = 'done';
+      work.blank(dv.index, dv.index + dv[0].length);
+    }
+    const tq = TODO_QUESTION_RE.exec(work.rest);
+    if (tq) {
+      actionsIntent = true;
+      todoQuestion = true;
+      // "what's due …" keeps the word for the due-range step below.
+      const keep = /\bdue$/i.exec(tq[0]);
+      work.blank(tq.index, tq.index + tq[0].length - (keep ? 3 : 0));
+    }
+  }
+
   // 2. Filter syntax (wins over everything the grammar infers).
   for (const m of work.rest.matchAll(/"([^"]+)"|“([^”]+)”/g)) {
     const phrase = lib.text.collapseWs(m[1] ?? m[2]);
@@ -188,18 +223,19 @@ export function parseQuery(input, env) {
     work.blank(m.index, m.index + m[0].length);
   }
   let filterRangeSet = false;
-  for (const m of work.rest.matchAll(/(?<!\S)(kind|when|due|is|owner):(\S*)/gi)) {
+  for (const m of work.rest.matchAll(/(?<!\S)(kind|when|due|done|is|owner):(\S*)/gi)) {
     const key = m[1].toLowerCase();
     const value = m[2].replace(/[,.;]+$/, (s) => (key === 'kind' ? '' : s));
     work.blank(m.index, m.index + m[0].length);
     if (key === 'kind') {
       for (const v of value.toLowerCase().split(',')) if (KIND_ALIASES[v]) kinds.add(KIND_ALIASES[v]);
-    } else if (key === 'when' || key === 'due') {
+    } else if (key === 'when' || key === 'due' || key === 'done') {
       const r = filterRange(lib, value, key === 'due' ? 'due' : 'any', dateOpts);
       if (r) {
-        spec.range = r;
+        spec.range = key === 'done' ? { ...r, field: 'done' } : r;
         filterRangeSet = true;
-        if (key === 'due') actionsIntent = true;
+        if (key !== 'when') actionsIntent = true;
+        if (key === 'done') doneVerb = true;
       }
     } else if (key === 'is') {
       const v = value.toLowerCase();
@@ -256,8 +292,32 @@ export function parseQuery(input, env) {
   }
   if (kinds.size) spec.kinds = VALID_KINDS.filter((k) => kinds.has(k));
 
-  // 3. Time (a preceding "due" / "due by" makes it a due range).
-  const range = lib.dates.parseRange(work.rest, dateOpts);
+  // 3. Time (a preceding "due" / "due by" makes it a due range). Due
+  // phrases the past-biased range grammar doesn't read ("due tomorrow",
+  // "due eow", "due next friday") go through the due-date grammar.
+  let dueTaken = false;
+  for (const m of work.rest.matchAll(/\bdue(?:\s+(by|before|on|until))?\s+/gi)) {
+    const after = m.index + m[0].length;
+    const tail = work.rest.slice(after);
+    const asRange = lib.dates.parseRange(tail, dateOpts);
+    if (asRange && asRange.span[0] === 0) break;
+    const d = lib.dates.parseDue(tail, dateOpts);
+    if (!d || d.span[0] !== 0) continue;
+    const mode = (m[1] || '').toLowerCase();
+    let start = d.at;
+    let end = lib.dates.addDays(d.at, 1);
+    if (mode === 'by' || mode === 'until') start = 0;
+    else if (mode === 'before') {
+      end = start;
+      start = 0;
+    }
+    if (!filterRangeSet) spec.range = { start, end, granularity: 'day', span: [m.index, after + d.span[1]], code: d.code, field: 'due' };
+    work.blank(m.index, after + d.span[1]);
+    actionsIntent = true;
+    dueTaken = true;
+    break;
+  }
+  const range = dueTaken ? null : lib.dates.parseRange(work.rest, dateOpts);
   if (range) {
     const before = work.rest.slice(0, range.span[0]);
     const due = /\bdue(?:\s+(by|before|on|until))?\s*$/i.exec(before);
@@ -273,6 +333,15 @@ export function parseQuery(input, env) {
     }
     if (r && !filterRangeSet) spec.range = { ...r, span: [from, range.span[1]] };
     work.blank(from, range.span[1]);
+  }
+  // "what did I finish last week": when they were done.
+  // (The range object is this parse's own; it's edited in place.)
+  if (doneVerb && spec.range && spec.range.field === 'any') spec.range.field = 'done';
+  if (doneVerb && !spec.status) spec.status = 'done';
+  // "what do I need to do this week": what's due by then, overdue included.
+  if (todoQuestion && !filterRangeSet && spec.range && spec.range.field === 'any') {
+    spec.range.start = 0;
+    spec.range.field = 'due';
   }
   for (const m of work.rest.matchAll(RECENCY_RE)) {
     spec.recency = true;
@@ -362,14 +431,18 @@ export function parseQuery(input, env) {
     assign(hit);
     work.blank(m.index, m.index + m[0].length);
   }
+  // "my actions for Dana": my actions that involve Dana (a hard filter, I
+  // stay the owner); "actions for Dana" are Dana's. Only "<Name>'s" and
+  // "assigned to" (above) always name the owner.
+  const mine = actionsIntent && [...work.rest.matchAll(MINE_RE)].length > 0;
   for (const m of [...work.rest.matchAll(new RegExp(`\\bfor\\s+(?:the\\s+)?(${NAME})(?:\\s+(${NAME}))?`, 'giud'))]) {
     if (lib.text.STOPWORDS.has(m[1].toLowerCase())) continue;
     const two = m[2] ? resolve(`${m[1]} ${m[2]}`, 'person') : null;
     const hit = two || resolve(m[1], 'person');
     if (!hit) continue;
     const end = two ? m.indices[2][1] : m.indices[1][1];
-    if (hit.type === 'person') assign(hit);
-    else if (actionsIntent) addEntity(hit, true, 'phrase');
+    if (hit.type === 'person' && !mine) assign(hit);
+    else if (hit.type === 'person' || actionsIntent) addEntity(hit, true, 'phrase');
     else continue;
     work.blank(m.index, end);
   }
@@ -496,7 +569,7 @@ export function toSyntax(spec, { nameOf = (id) => id, lib } = {}) {
   if (spec.command && spec.command !== 'actions') parts.push(spec.command);
   else if (spec.intent === 'actions' || spec.command === 'actions') parts.push('actions');
   if (spec.kinds?.length) parts.push('kind:' + VALID_KINDS.filter((k) => spec.kinds.includes(k)).join(','));
-  if (spec.range && lib) parts.push((spec.range.field === 'due' ? 'due:' : 'when:') + rangeSyntax(lib, spec.range));
+  if (spec.range && lib) parts.push((spec.range.field === 'due' ? 'due:' : spec.range.field === 'done' ? 'done:' : 'when:') + rangeSyntax(lib, spec.range));
   for (const e of spec.entities || []) if (e.hard) parts.push('@' + slug(nameOf(e.entityId) ?? e.name ?? e.entityId));
   const actions = spec.intent === 'actions';
   if (spec.owner && !(actions && spec.owner === 'me')) {

@@ -121,9 +121,12 @@ function dtf(locale, opts, name) {
   return f;
 }
 
+// A time Date can represent (±8.64e15 ms); anything else is "no date", so
+// one odd stored value (a nanosecond timestamp from a converted file) never
+// throws inside Intl and empties a whole list.
 function finite(ms) {
   const n = Number(ms);
-  return Number.isFinite(n) ? n : null;
+  return Number.isFinite(n) && Math.abs(n) <= 8.64e15 ? n : null;
 }
 
 function otherYear(ms, now) {
@@ -138,6 +141,7 @@ export function fmtDay(ms, locale = 'en', { now } = {}) {
 }
 
 function fmtShort(ms, locale, now) {
+  if (finite(ms) === null) return '';
   return otherYear(ms, now) ? dtf(locale, SHORT_YEAR_OPTS, 'sy').format(ms) : dtf(locale, SHORT_OPTS, 's').format(ms);
 }
 
@@ -278,6 +282,12 @@ function termParts(spec, opts, t) {
   return out.concat(negatives);
 }
 
+// The words a query asked for, as typed ("bingo retro").
+function askedWords(spec) {
+  const words = (spec?.terms || []).filter((q) => q?.t && !q.neg && !(q.w != null && q.w < 1) && !q.phrase).map((q) => q.raw || q.t);
+  return [...new Set([...words, ...(spec?.phrases || [])])].join(' ');
+}
+
 function statusPart(spec, t) {
   const actions = spec?.intent === 'actions';
   switch (spec?.status) {
@@ -371,13 +381,19 @@ export function relaxText(relaxed, spec, opts = {}) {
       const names = hardEntities(spec).map((e) => e.name || entityName(e.entityId, opts)).filter(Boolean);
       return t('relax.entities_softened', { names: names.join(', ') });
     }
+    case 'terms_dropped':
+      return t('relax.terms_dropped', { terms: askedWords(spec), range: asked });
+    case 'any_word':
+      return t('relax.any_word', { terms: askedWords(spec) });
     case 'none': {
       if (spec?.intent === 'actions') {
         const first = hardEntities(spec)[0];
         const name = spec.unresolved?.[0]?.phrase || first?.name || entityName(first?.entityId, opts);
         return name ? t('relax.no_actions_for', { name }) : t('relax.no_actions');
       }
-      return t('relax.none', { capture: `${opts.trigger || 'mm'}+` });
+      // Say what didn't match, rather than suggesting the note be saved.
+      const words = askedWords(spec);
+      return words ? t('relax.none_for', { terms: words }) : t('relax.none', { capture: `${opts.trigger || 'mm'}+` });
     }
     default:
       return '';
@@ -406,6 +422,14 @@ function cleanSnippet(text, title) {
 
 function attr(name, value) {
   return ` ${name}="${esc(value)}"`;
+}
+
+// A data action is bound to the card that rendered it: `mm:b<blk>:a:<verb>:<id>`.
+// search.js runs it only when that card (block numbers are clock-seeded per
+// window and never sent to the agent) currently shows `id`, so a button an
+// agent writes into its own reply can't share, delete or undo anything.
+function dataAct(blk, verb, id) {
+  return `mm:b${blk}:a:${verb}:${id}`;
 }
 
 function btn(cls, action, label, { title, aria } = {}) {
@@ -587,20 +611,20 @@ function actionRow(a, { t, ctx, buttons }) {
   return `<li${attr('class', cls.join(' '))}>${iconHtml(itemIcon({ kind: 'action', status, suggested: a.suggested }), 'mm-ai')}<span class="mm-at"${attr('title', title)}>${esc(clip(title, 90))}</span>${extra.length ? `<small class="mm-meta">${esc(joinSep(extra, t))}</small>` : ''}${buttons ? `<span class="mm-ab">${buttons}</span>` : ''}</li>`;
 }
 
-function actionButtons(a, t, { full = false } = {}) {
+function actionButtons(a, t, { full = false, blk } = {}) {
   const status = a.status || 'open';
   if (status === 'dismissed') return '';
   const out = [];
   if (a.suggested && status === 'open') {
-    out.push(btn('mm-btn mm-btn-primary', `mm:a:accept:${a.id}`, esc(t('card.accept'))));
-    out.push(btn('mm-btn', `mm:a:dismiss:${a.id}`, esc(t('card.not_action'))));
+    out.push(btn('mm-btn mm-btn-primary', dataAct(blk, 'accept', a.id), esc(t('card.accept'))));
+    out.push(btn('mm-btn', dataAct(blk, 'dismiss', a.id), esc(t('card.not_action'))));
     return out.join('');
   }
   if (full) {
-    if (status === 'done') out.push(btn('mm-btn', `mm:a:reopen:${a.id}`, esc(t('card.reopen'))));
-    else out.push(btn('mm-btn mm-btn-primary', `mm:a:done:${a.id}`, esc(t('card.done'))));
+    if (status === 'done') out.push(btn('mm-btn', dataAct(blk, 'reopen', a.id), esc(t('card.reopen'))));
+    else out.push(btn('mm-btn mm-btn-primary', dataAct(blk, 'done', a.id), esc(t('card.done'))));
   }
-  if (status === 'open') out.push(btn('mm-btn', `mm:a:dismiss:${a.id}`, esc(t('card.not_action'))));
+  if (status === 'open') out.push(btn('mm-btn', dataAct(blk, 'dismiss', a.id), esc(t('card.not_action'))));
   return out.join('');
 }
 
@@ -616,6 +640,9 @@ function relatedChip(c, blk, t, ctx, nav) {
   return btn('mm-rel', `mm:b${blk}:f:${c.id}`, label, { title: tip });
 }
 
+// How many action rows an op card lists before "N more".
+const OP_ACTIONS_SHOWN = 8;
+
 /** Card for a journal op: "✓ Saved · meeting · Bingo · 4 actions · 3 related". */
 export function renderOpCard(vm, ctx = {}) {
   const t = tOf(ctx);
@@ -625,11 +652,14 @@ export function renderOpCard(vm, ctx = {}) {
   if (!vm) return `${open}<span class="mm-muted">${esc(t('card.op_missing'))}</span></div>`;
   const head = opHeadline(vm, t, ctx);
   const facts = [];
+  // A one-line action is itself the action: its row carries the buttons and
+  // the item line isn't repeated, nor counted as "1 action".
+  const self = vm.item?.id ? (vm.actions || []).find((a) => a?.id === vm.item.id) : null;
   if (!vm.undone) {
     if (vm.item?.kind && !vm.dedupedInto) facts.push(kindLabel(vm.item.kind, t));
     const names = (vm.entities || []).filter((e) => e && e.id !== 'me' && e.name).map((e) => e.name);
     if (names.length) facts.push(names.slice(0, 3).join(', ') + (names.length > 3 ? ` +${names.length - 3}` : ''));
-    const actions = (vm.actions || []).filter((a) => a && a.status !== 'dismissed');
+    const actions = (vm.actions || []).filter((a) => a && a.status !== 'dismissed' && a !== self);
     if (actions.length) {
       const s = actions.filter((a) => a.suggested && a.status === 'open').length;
       facts.push(s ? t('card.n_actions_suggested', { n: actions.length, s }) : t('card.n_actions', { n: actions.length }));
@@ -637,21 +667,28 @@ export function renderOpCard(vm, ctx = {}) {
     if (vm.related?.length) facts.push(t('card.n_related', { n: vm.related.length }));
   }
   const parts = [`<div class="mm-op-head"><strong class="mm-op-title">${esc(head)}</strong>${facts.length ? `<span class="mm-op-facts">${esc(t('chip.sep'))}${esc(joinSep(facts, t))}</span>` : ''}</div>`];
-  if (vm.item?.id) {
+  if (vm.item?.id && !(self && !vm.undone)) {
     const priv = vm.item.private ? ` <span class="mm-badge">${esc(t('card.private_badge'))}</span>` : '';
     const title = oneLine(vm.item.title) || '…';
-    parts.push(`<div${attr('class', vm.undone ? 'mm-op-item mm-gone' : 'mm-op-item')}>${iconHtml(itemIcon(vm.item))}<span class="mm-op-name"${attr('title', title)}>${esc(clip(title, 80))}</span>${priv}</div>`);
+    // Undoing a duplicate save removes only the added note: the item stays.
+    const gone = vm.undone && !vm.dedupedInto;
+    parts.push(`<div${attr('class', gone ? 'mm-op-item mm-gone' : 'mm-op-item')}>${iconHtml(itemIcon(vm.item))}<span class="mm-op-name"${attr('title', title)}>${esc(clip(title, 80))}</span>${priv}</div>`);
   }
   if (vm.truncated && !vm.undone) parts.push(`<small class="mm-note">${esc(t('card.truncated', { n: safe(() => (8000).toLocaleString(ctx.locale || 'en'), '8,000') }))}</small>`);
   if (!vm.undone && vm.actions?.length) {
-    const rows = vm.actions.map((a) => actionRow(a, { t, ctx, buttons: nav ? actionButtons(a, t) : '' })).join('');
+    // A long brain dump lists its first actions; the rest wait in review/actions.
+    const shown = vm.actions.slice(0, OP_ACTIONS_SHOWN);
+    const rows = shown.map((a) => actionRow(a, { t, ctx, buttons: nav ? actionButtons(a, t, { blk: b.blk }) : '' })).join('');
     if (rows) parts.push(`<ul class="mm-acts">${rows}</ul>`);
+    if (vm.actions.length > shown.length) parts.push(`<small class="mm-note">${esc(t('card.more_actions', { n: vm.actions.length - shown.length, cmd: `${ctx.trigger || 'mm'} actions` }))}</small>`);
+    if (self && vm.item.private) parts.push(`<span class="mm-badge">${esc(t('card.private_badge'))}</span>`);
   }
+  if (vm.dropped > 0 && !vm.undone) parts.push(`<small class="mm-note">${esc(t('card.dropped_actions', { n: vm.dropped, max: 50 }))}</small>`);
   if (!vm.undone && vm.related?.length) {
     parts.push(`<div class="mm-rels"><small class="mm-cap">${esc(t('card.related'))}</small>${vm.related.slice(0, 5).map((c) => relatedChip(c, b.blk, t, ctx, nav)).join('')}</div>`);
   }
   const buttons = [];
-  if (!vm.undone && vm.canUndo && OP_ID.test(String(vm.opId || ''))) buttons.push(btn('mm-btn', `mm:a:undo:${vm.opId}`, esc(t('card.undo'))));
+  if (!vm.undone && vm.canUndo && OP_ID.test(String(vm.opId || ''))) buttons.push(btn('mm-btn', dataAct(b.blk, 'undo', vm.opId), esc(t('card.undo'))));
   if (!vm.undone && nav && vm.item?.id && ITEM_ID.test(vm.item.id)) buttons.push(btn('mm-btn', `mm:b${b.blk}:map`, esc(t('card.map'))));
   if (buttons.length) parts.push(`<div class="mm-btns">${buttons.join('')}</div>`);
   return `${open}${parts.join('')}</div>`;
@@ -715,7 +752,7 @@ export function renderItemCard(vm, ctx = {}) {
   const chips = (vm.entities || []).map((e) => entityChip(e, b.blk, t, nav)).join('');
   if (chips) parts.push(`<div class="mm-chips">${chips}</div>`);
   if (vm.actions?.length) {
-    const rows = vm.actions.map((a) => actionRow(a, { t, ctx, buttons: nav ? actionButtons(a, t, { full: true }) : '' })).join('');
+    const rows = vm.actions.map((a) => actionRow(a, { t, ctx, buttons: nav ? actionButtons(a, t, { full: true, blk: b.blk }) : '' })).join('');
     if (rows) parts.push(`<div class="mm-sec"><small class="mm-cap">${esc(t('card.actions'))}</small><ul class="mm-acts">${rows}</ul></div>`);
   }
   if (vm.parent?.id) parts.push(`<div class="mm-sec mm-parent"><small class="mm-cap">${esc(t('card.from'))}</small>${relatedChip(vm.parent, b.blk, t, ctx, nav)}</div>`);
@@ -726,14 +763,14 @@ export function renderItemCard(vm, ctx = {}) {
     parts.push(`<div class="mm-rels"><small class="mm-cap">${esc(t('card.related'))}</small>${related.map((c) => relatedChip(c, b.blk, t, ctx, nav)).join('')}</div>`);
   }
   const buttons = [];
-  if (canOpen(vm)) buttons.push(btn('mm-btn mm-btn-primary', `mm:a:open:${vm.id}`, esc(t('card.open'))));
+  if (canOpen(vm)) buttons.push(btn('mm-btn mm-btn-primary', dataAct(b.blk, 'open', vm.id), esc(t('card.open'))));
   if (nav) buttons.push(btn('mm-btn', `mm:b${b.blk}:map`, esc(t('card.map'))));
-  if (nav && vm.kind === 'action') buttons.push(actionButtons(vm, t, { full: true }));
+  if (nav && vm.kind === 'action') buttons.push(actionButtons(vm, t, { full: true, blk: b.blk }));
   if (nav) {
     buttons.push(vm.private
-      ? btn('mm-btn', `mm:a:share:${vm.id}`, esc(t('card.make_shareable')))
-      : btn('mm-btn', `mm:a:private:${vm.id}`, esc(t('card.make_private'))));
-    buttons.push(btn('mm-btn mm-btn-danger', `mm:a:delete:${vm.id}`, esc(t('card.delete'))));
+      ? btn('mm-btn', dataAct(b.blk, 'share', vm.id), esc(t('card.make_shareable')))
+      : btn('mm-btn', dataAct(b.blk, 'private', vm.id), esc(t('card.make_private'))));
+    buttons.push(btn('mm-btn mm-btn-danger', dataAct(b.blk, 'delete', vm.id), esc(t('card.delete'))));
   }
   const row = buttons.filter(Boolean).join('');
   if (row) parts.push(`<div class="mm-btns">${row}</div>`);
@@ -850,11 +887,11 @@ function centerLabel(center, t) {
   return oneLine(center.label) || '…';
 }
 
-function centerButtons(center, nav, t) {
+function centerButtons(center, nav, t, blk) {
   if (center.group !== 'item' || !ITEM_ID.test(String(center.ref))) return '';
   const out = [];
-  if (isHttp(center.url) || center.kind === 'doc' || center.kind === 'link') out.push(btn('mm-btn mm-btn-primary', `mm:a:open:${center.ref}`, esc(t('card.open'))));
-  if (nav && center.kind === 'action') out.push(actionButtons({ id: center.ref, status: center.status, suggested: center.suggested }, t, { full: true }));
+  if (isHttp(center.url) || center.kind === 'doc' || center.kind === 'link') out.push(btn('mm-btn mm-btn-primary', dataAct(blk, 'open', center.ref), esc(t('card.open'))));
+  if (nav && center.kind === 'action') out.push(actionButtons({ id: center.ref, status: center.status, suggested: center.suggested }, t, { full: true, blk }));
   return out.join('');
 }
 
@@ -901,7 +938,7 @@ function centerHtml(neigh, nav, t, ctx) {
     snip = clip(cleanSnippet(c.snippet, c.label), 180);
   }
   if (snip && snip.toLowerCase() === label.toLowerCase()) snip = '';
-  const buttons = centerButtons(c, nav, t);
+  const buttons = centerButtons(c, nav, t, ctx.blk);
   const snipHtml = snip ? `<span class="mm-c-snip">${c.group === 'item' ? highlight(snip, c.highlight) : esc(snip)}</span>` : '';
   return `<div${attr('class', cls.join(' '))}><strong class="mm-c-title"${attr('title', label)}>${iconHtml(icon, 'mm-ci')} ${esc(label)}</strong><small class="mm-c-meta">${esc(meta)}</small>${snipHtml}${buttons ? `<span class="mm-c-btns">${buttons}</span>` : ''}</div>`;
 }
@@ -916,7 +953,7 @@ function stageHtml(neigh, placed, blk, nav, t, ctx) {
   const edges = placed.edges.map(edgeHtml).join('');
   const nodes = placed.nodes.map((n) => nodeHtml(n, neigh.lanes, blk, nav, t, ctx)).join('');
   const hints = placed.hints.map((h) => `<span${attr('class', `mm-hint mm-x-${h.x} mm-y-${h.y}`)}>${esc(laneEmpty(h.role, t))}</span>`).join('');
-  return `<div class="mm-stage"><svg class="mm-edges" role="presentation">${edges}</svg>${centerHtml(neigh, nav, t, ctx)}${nodes}${hints}</div>`;
+  return `<div class="mm-stage"><svg class="mm-edges" role="presentation">${edges}</svg>${centerHtml(neigh, nav, t, { ...ctx, blk })}${nodes}${hints}</div>`;
 }
 
 function listItem(node, lane, blk, nav, t, ctx) {
@@ -1043,7 +1080,7 @@ export function renderHelpCard(ctx = {}) {
 // --- UI actions (ARCHITECTURE §7.2) ------------------------------------------------------
 
 const DATA_VERBS = new Set(['done', 'reopen', 'accept', 'dismiss', 'undo', 'open', 'private', 'share', 'delete']);
-const A_RE = /^mm:a:([a-z]+):([a-z0-9]{15})$/;
+const A_RE = /^mm:b([0-9a-z]{1,12}):a:([a-z]+):([a-z0-9]{15})$/;
 const B_RE = /^mm:b([0-9a-z]{1,12}):(f|back|home|more|mode|map)(?::([a-z0-9]{1,15}))?$/;
 const C_RE = /^mm:c([0-9a-z]{1,12}):(x|map):([a-z0-9:]{2,24})$/;
 
@@ -1052,10 +1089,10 @@ export function parseAction(actionId) {
   if (typeof actionId !== 'string' || actionId.length > 64) return null;
   let m = A_RE.exec(actionId);
   if (m) {
-    const [, verb, id] = m;
+    const [, blk, verb, id] = m;
     if (!DATA_VERBS.has(verb)) return null;
     if (verb === 'undo' ? !OP_ID.test(id) : !ITEM_ID.test(id)) return null;
-    return { scope: 'data', verb, id };
+    return { scope: 'data', blk, verb, id };
   }
   m = B_RE.exec(actionId);
   if (m) {
@@ -1085,8 +1122,10 @@ export function createFormatterState({ start = 1 } = {}) {
 }
 
 // Seeded from the clock so a reloaded sandbox never reuses the counters of
-// cards still on screen from before the reload.
-export const ui = createFormatterState({ start: Date.now() });
+// cards still on screen from before the reload, plus random low digits so
+// block numbers (which bind card buttons, see boundAction) can't be guessed
+// from the time.
+export const ui = createFormatterState({ start: Date.now() * 1024 + Math.floor(Math.random() * 1024) });
 
 function alloc(state) {
   const id = state.next.toString(36);
@@ -1119,6 +1158,7 @@ function newBlockState(blk, type, ref) {
     itemId: type === 'item' ? ref : null,
     dock: false,
     refs: null,
+    acts: null,
     stub: false,
     pending: [],
   };
@@ -1200,8 +1240,31 @@ function blockAction(st, p) {
 }
 
 /**
+ * True when a parsed data action (`mm:b<blk>:a:<verb>:<id>`) came from a card
+ * this window rendered and that card shows `id` (its op, for undo). Anything
+ * else (a button an agent wrote into its reply, a card from before a reload)
+ * is refused; the caller asks for a reformat so live cards get fresh buttons.
+ */
+export function boundAction(state, parsed) {
+  if (!state || parsed?.scope !== 'data' || !parsed.blk) return false;
+  const st = state.blocks.get(parsed.blk);
+  if (!st || st.stub || !st.acts) return false;
+  return st.acts.has(dataAct(parsed.blk, parsed.verb, parsed.id));
+}
+
+// The data actions a rendered card offers (its own buttons only).
+function actsOf(html, blk) {
+  const out = new Set();
+  const prefix = `mm:b${blk}:a:`;
+  for (const m of String(html).matchAll(/data-ext-action="(mm:b[0-9a-z]{1,12}:a:[a-z]+:[a-z0-9]{15})"/g)) {
+    if (m[1].startsWith(prefix)) out.add(m[1]);
+  }
+  return out;
+}
+
+/**
  * Apply a parsed block/cite action to the formatter state. Data actions
- * (`mm:a:*`) belong to mind.js and are ignored here.
+ * (`mm:b<blk>:a:*`) belong to mind.js and are ignored here.
  * @returns {{changed: boolean}}
  */
 export function applyUiAction(state, parsed) {
@@ -1327,6 +1390,12 @@ function collectRefs(vmRefs) {
 }
 
 function renderBlock(st, env) {
+  const html = renderBlockHtml(st, env);
+  st.acts = actsOf(html, st.blk);
+  return html;
+}
+
+function renderBlockHtml(st, env) {
   const ref = currentRef(st);
   const block = { blk: st.blk, rev: st.rev.toString(36), dataRev: env.dataRev, ref, dock: st.dock, mode: st.mode };
   if (!env.loaded) {

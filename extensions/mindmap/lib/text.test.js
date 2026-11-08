@@ -53,6 +53,12 @@ describe('stem and tokenize', () => {
     expect(stem('status')).toBe('status');
     expect(stem('docs')).toBe('docs');
     expect(stem('policies')).toBe('policy');
+    // Light -ing / -ed / four-letter -es, with the same stem on both sides.
+    for (const [a, b] of [['onboarding', 'onboard'], ['onboarded', 'onboard'], ['owes', 'owe'], ['planning', 'plan'], ['planned', 'plan'],
+      ['saving', 'save'], ['saved', 'save'], ['updated', 'update'], ['meetings', 'meeting'], ['added', 'add'], ['hiring', 'hire']]) {
+      expect(stem(a), a).toBe(stem(b));
+    }
+    for (const w of ['string', 'spring', 'need', 'speed', 'docs', 'thing']) expect(stem(w), w).toBe(w);
     expect(stem('boxes')).toBe('box');
     expect(stem('classes')).toBe('class');
     expect(stem('matches')).toBe('match');

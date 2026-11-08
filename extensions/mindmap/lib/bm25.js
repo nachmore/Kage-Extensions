@@ -18,6 +18,27 @@
 export const DEFAULT_FIELDS = Object.freeze({ title: 2.0, kp: 1.5, ent: 1.5, sum: 1.2, body: 1.0, host: 0.5 });
 export const PREFIX_MIN = 2;
 
+// Optimal string alignment distance, giving up (max + 1) once it passes max.
+function editDistance(a, b, max) {
+  let prev2 = null;
+  let prev = Array.from({ length: b.length + 1 }, (_, j) => j);
+  for (let i = 1; i <= a.length; i++) {
+    const cur = [i];
+    let best = i;
+    for (let j = 1; j <= b.length; j++) {
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+      let v = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + cost);
+      if (prev2 && i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) v = Math.min(v, prev2[j - 2] + 1);
+      cur[j] = v;
+      if (v < best) best = v;
+    }
+    if (best > max) return max + 1;
+    prev2 = prev;
+    prev = cur;
+  }
+  return prev[b.length];
+}
+
 const byScoreThenNewest = (a, b) => b.score - a.score || (a.id < b.id ? 1 : a.id > b.id ? -1 : 0);
 
 export function createIndex({ fields = DEFAULT_FIELDS, k1 = 1.2, b = 0.75 } = {}) {
@@ -86,9 +107,10 @@ export function createIndex({ fields = DEFAULT_FIELDS, k1 = 1.2, b = 0.75 } = {}
   // Average field lengths, computed once per query.
   const averages = () => names.map((f) => totalLen[f] / docs.size);
 
-  function weight(doc, term, avgs) {
+  function weight(doc, term, avgs, skip) {
     let w = 0;
     for (let i = 0; i < names.length; i++) {
+      if (skip?.has(names[i])) continue;
       const n = doc.tf[names[i]]?.get(term);
       if (!n) continue;
       const norm = avgs[i] > 0 ? 1 - b + b * (doc.len[names[i]] / avgs[i]) : 1;
@@ -97,8 +119,8 @@ export function createIndex({ fields = DEFAULT_FIELDS, k1 = 1.2, b = 0.75 } = {}
     return w;
   }
 
-  function termScore(doc, term, termIdf, avgs) {
-    const w = weight(doc, term, avgs);
+  function termScore(doc, term, termIdf, avgs, skip) {
+    const w = weight(doc, term, avgs, skip);
     return w > 0 ? termIdf * w * (k1 + 1) / (k1 + w) : 0;
   }
 
@@ -122,9 +144,12 @@ export function createIndex({ fields = DEFAULT_FIELDS, k1 = 1.2, b = 0.75 } = {}
 
   // terms: [{t, w = 1, prefix?, neg?}] → [{id, score, hits, matched}], where
   // hits are the index terms that matched and matched the indexes (into
-  // `terms`) of the query terms a document matched.
-  function search(terms, { filter, limit = 50 } = {}) {
+  // `terms`) of the query terms a document matched. `skip` (field names)
+  // leaves those fields out: a document that has a term only there doesn't
+  // match it.
+  function search(terms, { filter, limit = 50, skip } = {}) {
     const list = Array.isArray(terms) ? terms : [];
+    const skipped = skip && (skip instanceof Set ? skip : new Set(skip));
     const allowed = new Map();
     const ok = (id) => {
       if (!filter) return true;
@@ -146,7 +171,8 @@ export function createIndex({ fields = DEFAULT_FIELDS, k1 = 1.2, b = 0.75 } = {}
         const termIdf = idf(term);
         for (const id of postings.get(term)) {
           if (excluded.has(id) || !ok(id)) continue;
-          const s = termScore(docs.get(id), term, termIdf, avgs);
+          const s = termScore(docs.get(id), term, termIdf, avgs, skipped);
+          if (!(s > 0)) continue;
           const current = best.get(id);
           if (!current || s > current.s) best.set(id, { s, term });
         }
@@ -191,6 +217,20 @@ export function createIndex({ fields = DEFAULT_FIELDS, k1 = 1.2, b = 0.75 } = {}
       .map(({ id: other, score }) => ({ id: other, score }));
   }
 
+  // Index terms within one edit of `term` (two for words of 7+ letters;
+  // transpositions count once), most frequent first: "Did you mean …?".
+  function nearTerms(term, { limit = 3 } = {}) {
+    if (typeof term !== 'string' || term.length < 3) return [];
+    const max = term.length >= 7 ? 2 : 1;
+    const out = [];
+    for (const cand of postings.keys()) {
+      if (cand === term || Math.abs(cand.length - term.length) > max) continue;
+      if (editDistance(term, cand, max) <= max) out.push(cand);
+    }
+    out.sort((x, y) => df(y) - df(x) || (x < y ? -1 : x > y ? 1 : 0));
+    return out.slice(0, limit);
+  }
+
   return {
     add,
     remove,
@@ -205,5 +245,6 @@ export function createIndex({ fields = DEFAULT_FIELDS, k1 = 1.2, b = 0.75 } = {}
     search,
     similar,
     vocabPrefix,
+    nearTerms,
   };
 }

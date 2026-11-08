@@ -37,6 +37,7 @@ const FIXED_KEYS = Object.freeze(['mm-entities', 'mm-links', 'mm-journal']);
 const RETRYABLE = new Set(['busy', 'conflict']);
 const MAX_ATTEMPTS = 4;
 const BACKFILL_MAX = 200;
+const BACKFILL_VERIFY = 600;
 // Idle work after a load (P2): link titles that never arrived, and items an
 // older organizer saw. It waits so it never competes with the first keystrokes.
 const IDLE_DELAY_MS = 20_000;
@@ -56,6 +57,13 @@ const CONTEXT_EDGE_WEIGHT = 0.5;
 const OVERVIEW_DAYS = 90;
 const EMPTY = Object.freeze(new Set());
 const URL_TEXT_RE = /\b(?:https?:\/\/|www\.)\S+/gi;
+// Entity aliases are indexed in their own field: an alias learned from a
+// private note ("Mass Termination Cost Study (MTCS)") must not make the
+// agent's search match public items through it (SPEC §15).
+const INDEX_FIELDS = Object.freeze({ ...bm25.DEFAULT_FIELDS, als: 1.5 });
+const AGENT_SKIP_FIELDS = Object.freeze(new Set(['als']));
+// How many of an entity's items an agent-path alias check reads.
+const ALIAS_SCAN_MAX = 400;
 const NOOP_LOG = Object.freeze({ debug() {}, info() {}, warn() {}, error() {} });
 const KIND_ORDER = Object.freeze(['note', 'link', 'doc', 'action', 'meeting']);
 // Ops about an entity rather than an item (P2 mm merge / forget / rename).
@@ -145,7 +153,7 @@ export class Mind {
     this.extractorVersion = Number.isInteger(extractorVersion) && extractorVersion > 0 ? extractorVersion : extractor.EXTRACTOR_VERSION;
     this.idleDelayMs = Number.isFinite(idleDelayMs) && idleDelayMs >= 0 ? idleDelayMs : IDLE_DELAY_MS + Math.random() * IDLE_JITTER_MS;
     this.store = new storage.Store({ invoke: context.invoke, atomic: storage.hasAtomicWrites(context.hostFeatures) });
-    this.state = model.emptyState(this.now(), { extractorVersion: this.extractorVersion });
+    this.state = model.emptyState(this.now(), { extractorVersion: this.extractorVersion, gen: this._newGen() });
     this.keyRevs = new Map();
     this.dataRev = Math.max(1, Math.floor(Date.now()));
     this.loadRev = this.dataRev;
@@ -169,6 +177,11 @@ export class Mind {
     this.setConfig(context.config);
   }
 
+  // A new store generation id (see model.emptyState): random, never user text.
+  _newGen() {
+    return idlib.newId('o', this.now()).slice(1);
+  }
+
   // --- configuration -------------------------------------------------------
 
   language() {
@@ -177,6 +190,21 @@ export class Mind {
     } catch {
       return 'en';
     }
+  }
+
+  // The locale whose region decides `week_start: auto`: the OS region the
+  // webview reports (en-GB → Monday, en-US → Sunday), else the UI language.
+  // Kage hands extensions a bare UI language ("en"), which has no region.
+  _regionLocale() {
+    const candidates = [];
+    try {
+      candidates.push(...(globalThis.navigator?.languages || []), globalThis.navigator?.language);
+      candidates.push(Intl.DateTimeFormat().resolvedOptions().locale);
+    } catch {
+      // No navigator or Intl data: the UI language below.
+    }
+    for (const c of candidates) if (typeof c === 'string' && /^[a-z]{2,3}(?:-[A-Za-z]{4})?-(?:[A-Z]{2}|\d{3})\b/.test(c)) return c;
+    return this.language();
   }
 
   /** Applies a (possibly partial) config: me aliases, week start, toggles. */
@@ -189,16 +217,27 @@ export class Mind {
     this.settings = next;
     this.trigger = triggerOf(next);
     this.myNames = entities.parseNameList(next.my_names);
-    this.weekStart = dates.resolveWeekStart(next.week_start, this.language());
-    if (namesChanged) {
-      this._applyMe();
-      this._dict = null;
-    }
+    this.weekStart = dates.resolveWeekStart(next.week_start, this._regionLocale());
+    this._applyMe();
+    if (namesChanged) this._dict = null;
   }
 
+  // The me entity's aliases come from settings and its shown name from the
+  // UI language (stored as "Me"; model.payloadFor never persists either).
   _applyMe() {
     const me = this.state?.entities.get('me');
-    if (me) me.aliases = [...(this.myNames || [])];
+    if (!me) return;
+    me.aliases = [...(this.myNames || [])];
+    me.name = this._meName();
+  }
+
+  _meName() {
+    try {
+      const name = this.context.i18n?.t?.('card.me');
+      return typeof name === 'string' && name && name !== 'card.me' ? name : 'Me';
+    } catch {
+      return 'Me';
+    }
   }
 
   // --- lifecycle -------------------------------------------------------------
@@ -278,9 +317,15 @@ export class Mind {
       else parts[part] = res.value;
     }
     const { state, problems } = model.fromPersisted(parts, { now });
+    // No store yet: this window starts a generation (written with its first save).
+    if (!meta) state.meta.gen = this._newGen();
     for (const [key, rev] of revs) if (key !== 'mm-meta' && state.meta.keys[key] === undefined) state.meta.keys[key] = rev;
     const future = problems.some((p) => p.code === 'future_schema');
-    if (problems.length) this.log.warn?.(`mindmap: ${problems.length} stored record(s) skipped`);
+    // A data part whose shape is wrong (items not a list) can't be merged
+    // or rewritten without losing it: read-only, like an unreadable key.
+    for (const p of problems) if (p.code === 'bad_payload' && p.part !== 'journal' && model.partKey(p.part)) unreadable.push(model.partKey(p.part));
+    if (problems.length) this.log.warn?.(`mindmap: ${problems.length} stored record(s) kept aside`);
+    this._misplaced = this._misplacedParts(state, problems);
     const prior = this.state;
     this.state = state;
     this.keyRevs = revs;
@@ -422,6 +467,18 @@ export class Mind {
     return this._absorbMeta(res.value);
   }
 
+  // Items stored in the wrong month shard (a hand-edited file): their own
+  // shard is written with the next save, so rewriting the shard they were
+  // found in doesn't lose them.
+  _misplacedParts(state, problems, into = new Set()) {
+    for (const p of problems) {
+      if (p.code !== 'wrong_shard') continue;
+      const item = state.items.get(p.id);
+      if (item) into.add(`items:${model.shardOf(item)}`);
+    }
+    return into;
+  }
+
   async _absorbMeta(meta) {
     if (!meta) {
       if (!this.keyRevs.size) return false;
@@ -430,6 +487,14 @@ export class Mind {
       return true;
     }
     if (this.keyRevs.get('mm-meta') === meta.rev && meta.txn === this.state.meta.txn) return false;
+    // Another store generation (Delete everything, then a new save in some
+    // window): nothing this window holds belongs to it any more. Merging by
+    // key would keep the deleted shards in memory, show them to the agent
+    // and write them back with the next change.
+    if ((typeof meta.gen === 'string' ? meta.gen : null) !== (this.state.meta.gen || null)) {
+      await this._loadAll();
+      return true;
+    }
     const keys = new Set(FIXED_KEYS);
     for (const key of Object.keys(meta.keys || {})) if (model.keyPart(key) && key !== 'mm-meta') keys.add(key);
     const changedKeys = [...keys].filter((key) => (meta.keys?.[key] ?? 0) !== (this.keyRevs.get(key) ?? 0));
@@ -451,13 +516,24 @@ export class Mind {
       this._readOnly = { code: 'future_schema', keys: [] };
       this.store.readOnly = true;
     }
+    const badShape = problems.filter((p) => p.code === 'bad_payload' && p.part !== 'journal' && model.partKey(p.part)).map((p) => model.partKey(p.part));
+    if (badShape.length && !this._readOnly) {
+      this._readOnly = { code: 'unreadable', keys: badShape };
+      this.store.readOnly = true;
+    }
+    this._misplaced = this._misplacedParts(fresh, problems, this._misplaced || new Set());
+    // A part this version can't take apart stays as it was in memory.
+    const unusable = new Set(problems.filter((p) => p.code === 'bad_payload' || p.code === 'future_schema').map((p) => p.part));
     const state = this.state;
     const changedItems = new Set();
     const changedEntities = new Set();
     for (const [key, res] of loaded) {
       if (res.unreadable) continue;
-      this.keyRevs.set(key, res.value?.rev ?? 0);
       const part = model.keyPart(key);
+      if (unusable.has(part)) continue;
+      this.keyRevs.set(key, res.value?.rev ?? 0);
+      if (fresh.raw.has(part)) state.raw.set(part, fresh.raw.get(part));
+      else state.raw.delete(part);
       if (part.startsWith('items:')) {
         const ym = part.slice(6);
         for (const [id, item] of state.items) {
@@ -588,6 +664,7 @@ export class Mind {
     meta.txn = txn;
     meta.updatedAt = now;
     meta.extractorVersion = this.extractorVersion;
+    meta.gen ||= this._newGen();
     const payload = { ...model.payloadFor(this.state, 'meta'), rev: meta.rev, txn };
     if (lease) await lease.check();
     await this.store.write('mm-meta', payload, { force });
@@ -596,10 +673,11 @@ export class Mind {
 
   async _persist(changes, lease, now) {
     const txn = changes[changes.length - 1].op.opId;
-    const parts = new Set(['journal']);
+    const parts = new Set(['journal', ...(this._misplaced || [])]);
     for (const change of changes) for (const part of change.touched || []) if (part !== 'meta') parts.add(part);
     for (const part of [...parts].sort(partOrder)) await this._writePart(part, txn, lease);
     await this._writeMeta(txn, lease, now);
+    this._misplaced = null;
   }
 
   _afterCommit(changes) {
@@ -623,7 +701,7 @@ export class Mind {
   // --- indexes -------------------------------------------------------------------
 
   _resetIndexes() {
-    this.index = bm25.createIndex();
+    this.index = bm25.createIndex({ fields: INDEX_FIELDS });
     this.byEntity = new Map();
     this.itemEnts = new Map();
     this.children = new Map();
@@ -638,12 +716,13 @@ export class Mind {
 
   _fields(item) {
     const ent = [];
+    const als = [];
     for (const eid of item.entityIds || []) {
       if (eid === 'me') continue;
       const entity = this.state.entities.get(eid);
       if (!entity) continue;
       ent.push(...text.tokenize(entity.name));
-      for (const alias of entity.aliases || []) ent.push(...text.tokenize(alias));
+      for (const alias of entity.aliases || []) als.push(...text.tokenize(alias));
     }
     const host = [];
     for (const link of [item.url, ...url.findUrls(item.text).map((u) => u.url)]) {
@@ -660,6 +739,7 @@ export class Mind {
       title: text.tokenize(item.title),
       kp: text.tokenize([...(item.keyphrases || []), ...(item.terms || [])].join(' . ')),
       ent,
+      als,
       sum: text.tokenize(item.summary || ''),
       body: text.tokenize(withoutUrls(item.text)),
       host,
@@ -704,17 +784,29 @@ export class Mind {
     const items = new Set(itemIds);
     // An entity's name is indexed on every item that mentions it.
     for (const eid of entityIds) for (const iid of this.byEntity.get(eid) || []) items.add(iid);
+    // A card or map centred on an entity (or on a parent) shows its items:
+    // when one of them changes, appears or goes, so does that card.
+    const around = new Set();
+    const note = (id) => {
+      for (const eid of this.itemEnts.get(id) || []) around.add(eid);
+      const parent = this.parentOf.get(id);
+      if (parent) around.add(parent);
+    };
     for (const id of items) {
+      note(id);
       this._unindexItem(id);
       const item = this.state.items.get(id);
-      if (item) this._indexItem(item);
+      if (item) {
+        this._indexItem(item);
+        note(id);
+      }
     }
     this._newest = null;
     if (entityIds.size) {
       this._dict = null;
       this._alias.clear();
     }
-    this._bump([...items, ...entityIds]);
+    this._bump([...items, ...entityIds, ...around]);
   }
 
   _bump(ids) {
@@ -756,30 +848,99 @@ export class Mind {
     const out = [];
     for (const id of this._newestIds()) {
       const item = this.state.items.get(id);
-      const times = field === 'due' ? [item.dueAt] : [item.createdAt, item.occurredAt];
+      const times = field === 'due' ? [item.dueAt] : field === 'done' ? [item.doneAt] : [item.createdAt, item.occurredAt];
       if (times.some((t) => Number.isFinite(t) && t >= lo && t < hi)) out.push(id);
     }
     return out;
   }
 
-  _aliasTerms(eid) {
-    let list = this._alias.get(eid);
+  // The entity's own name tokens (w 1) and its alias tokens (w 0.7). On the
+  // agent path only aliases a visible item backs count (agentAliases).
+  _aliasTerms(eid, { forAgent = false } = {}) {
+    const cache = forAgent ? this._agentCache().alias : this._alias;
+    let list = cache.get(eid);
     if (!list) {
       const entity = this.entity(eid);
       list = [];
       if (entity) {
         const own = new Set(text.tokenize(entity.id === 'me' ? '' : entity.name));
         for (const t of own) list.push({ t, w: 1 });
-        const aliases = entity.id === 'me' ? this.myNames : entity.aliases || [];
+        const aliases = entity.id === 'me' ? this.myNames : forAgent ? this.agentAliases(entity) : entity.aliases || [];
         for (const alias of aliases) {
           for (const t of text.tokenize(alias)) {
             if (!own.has(t) && !list.some((a) => a.t === t)) list.push({ t, w: rank.WEIGHTS.alias });
           }
         }
       }
-      this._alias.set(eid, list);
+      cache.set(eid, list);
     }
     return list;
+  }
+
+  // Per-data-revision caches for the agent path (visibility depends on items).
+  _agentCache() {
+    if (this._agent?.rev !== this.dataRev) this._agent = { rev: this.dataRev, alias: new Map(), visible: new Map(), dict: null };
+    return this._agent;
+  }
+
+  /**
+   * True when the agent may learn that entity `eid` exists: it isn't
+   * private and at least one item the agent may see mentions it. An entity
+   * known only from private notes ("#layoffs" in a private note) never
+   * reaches the agent, by name, relation or suggestion (SPEC §15).
+   */
+  agentVisible(eid) {
+    const entity = this.entity(eid);
+    if (!entity || entity.id === 'me' || entity.private) return false;
+    const cache = this._agentCache().visible;
+    if (cache.has(entity.id)) return cache.get(entity.id);
+    let ok = false;
+    for (const iid of this.byEntity.get(entity.id) || []) {
+      if (!this.isHidden(this.state.items.get(iid))) {
+        ok = true;
+        break;
+      }
+    }
+    cache.set(entity.id, ok);
+    return ok;
+  }
+
+  /**
+   * The aliases of `entity` the agent may see: those spelled out in an item
+   * the agent may see that mentions the entity. An alias learned from a
+   * private note ("Mass Termination Cost Study (MTCS)") stays local.
+   */
+  agentAliases(entity) {
+    const aliases = (entity?.aliases || []).map((alias) => ({ alias, key: text.normalizeKey(alias) })).filter((a) => a.key);
+    if (!aliases.length) return [];
+    const found = new Set();
+    let read = 0;
+    for (const iid of [...(this.byEntity.get(entity.id) || [])].sort(byIdDesc)) {
+      if (read++ >= ALIAS_SCAN_MAX) break;
+      const item = this.state.items.get(iid);
+      if (!item || this.isHidden(item)) continue;
+      const hay = ` ${text.normalizeKey([item.title, item.summary || '', item.text].join(' '))} `;
+      for (const a of aliases) if (!found.has(a.alias) && hay.includes(` ${a.key} `)) found.add(a.alias);
+      if (found.size === aliases.length) break;
+    }
+    return aliases.map((a) => a.alias).filter((alias) => found.has(alias));
+  }
+
+  // The dictionary of entities the agent may see (agent-path parsing).
+  get agentDict() {
+    const cache = this._agentCache();
+    if (!cache.dict) {
+      const list = [];
+      for (const entity of this.state.entities.values()) {
+        if (entity.mergedInto || entity.id === 'me') continue;
+        if (!this.agentVisible(entity.id)) continue;
+        // kage-sensitive-data: not-sensitive — reviewed: an entity view model, not a settings control
+        list.push({ entityId: entity.id, type: entity.type, names: [entity.name, ...this.agentAliases(entity)], key: entity.key });
+      }
+      if (this.myNames.length) list.push({ entityId: 'me', type: 'person', names: this.myNames, key: 'me' });
+      cache.dict = entities.buildDictionary(list, LIB);
+    }
+    return cache.dict;
   }
 
   // --- reads -----------------------------------------------------------------------
@@ -797,7 +958,7 @@ export class Mind {
   nameOf(id) {
     if (id === 'o') return '';
     const entity = this.entity(id);
-    if (entity) return entity.id === 'me' ? entity.name || 'Me' : entity.name;
+    if (entity) return entity.id === 'me' ? this._meName() : entity.name;
     return this.state.items.get(id)?.title || this._seen.get(id)?.title || '';
   }
 
@@ -805,7 +966,7 @@ export class Mind {
     const key = text.normalizeKey(phrase);
     if (!key) return null;
     if (key === 'me' || this.myNames.some((name) => text.normalizeKey(name) === key)) {
-      return { entityId: 'me', name: this.state.entities.get('me')?.name || 'Me', type: 'person' };
+      return { entityId: 'me', name: this._meName(), type: 'person' };
     }
     const entity = model.entityByKey(this.state, key, typeHint || undefined);
     // kage-sensitive-data: not-sensitive — reviewed: an entity view model, not a settings control
@@ -850,13 +1011,22 @@ export class Mind {
     return { ...preview, title: x.title, empty: !!x.empty, extraction: x };
   }
 
-  parse(input, { trailingSpace } = {}) {
+  /**
+   * Parses a query. `forAgent` (tools, mm?) resolves only names the agent
+   * may see, so its scope never confirms a name known only from private
+   * notes.
+   */
+  parse(input, { trailingSpace, forAgent = false } = {}) {
+    const resolve = (phrase, type) => {
+      const hit = this.resolveEntity(phrase, type);
+      return hit && forAgent && hit.entityId !== 'me' && !this.agentVisible(hit.entityId) ? null : hit;
+    };
     return query.parseQuery(String(input ?? ''), {
       lib: LIB,
       now: this.now(),
       weekStart: this.weekStart,
-      resolveEntity: (phrase, type) => this.resolveEntity(phrase, type),
-      dict: this.dict,
+      resolveEntity: resolve,
+      dict: forAgent ? this.agentDict : this.dict,
       trailingSpace,
       nameOf: (id) => this.nameOf(id),
     });
@@ -864,18 +1034,46 @@ export class Mind {
 
   _rankCtx({ forAgent = false, limit = 50 } = {}) {
     const state = this.state;
+    const base = this.index;
+    // The agent's searches leave out the alias field (see INDEX_FIELDS).
+    const index = forAgent
+      ? Object.assign(Object.create(base), { search: (terms, opts = {}) => base.search(terms, { ...opts, skip: AGENT_SKIP_FIELDS }) })
+      : base;
     return {
       now: this.now(),
-      index: this.index,
+      index,
       limit,
       getItem: (id) => state.items.get(id),
       idsNewestFirst: () => this._newestIds(),
       idsInRange: (start, end, field) => this._idsInRange(start, end, field),
       entityItems: (eid) => this.byEntity.get(eid) || EMPTY,
-      aliasTerms: (eid) => this._aliasTerms(eid),
+      aliasTerms: (eid) => this._aliasTerms(eid, { forAgent }),
       groupOf: (item) => this.groupOf(item),
       hidden: forAgent ? (id) => this.isHidden(state.items.get(id)) : undefined,
     };
+  }
+
+  /**
+   * "Did you mean …?" for a query that found nothing: each word the index
+   * has never seen replaced by the most frequent word one typo away, when
+   * that finds something. → the corrected text, or null.
+   */
+  suggestSpelling(input) {
+    const raw = String(input ?? '');
+    const spec = this.parse(raw, { trailingSpace: true });
+    let fixed = raw;
+    let changed = false;
+    for (const term of spec.terms || []) {
+      if (term.neg || term.phrase || !term.raw || this.index.df(term.t)) continue;
+      const near = this.index.nearTerms(term.t, { limit: 1 })[0];
+      if (!near) continue;
+      const re = new RegExp(`(?<![\\p{L}\\p{N}])${term.raw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![\\p{L}\\p{N}])`, 'iu');
+      if (!re.test(fixed)) continue;
+      fixed = fixed.replace(re, near);
+      changed = true;
+    }
+    if (!changed) return null;
+    return this.find(this.parse(fixed, { trailingSpace: true }), { limit: 1 }).hits.length ? fixed.trim() : null;
   }
 
   /** Ranked hits for a QuerySpec (SPEC §8.2). */
@@ -977,12 +1175,17 @@ export class Mind {
     return out.sort();
   }
 
-  /** Entities that share items with `eid`, weighted by how many. */
-  cooccur(eid) {
+  /**
+   * Entities that share items with `eid`, weighted by how many. `forAgent`
+   * counts only items the agent may see, so a relation known only from
+   * private notes never reaches it.
+   */
+  cooccur(eid, { forAgent = false } = {}) {
     const counts = new Map();
     for (const iid of this.byEntity.get(eid) || []) {
       const item = this.state.items.get(iid);
       if (!item || item.archived) continue;
+      if (forAgent && this.isHidden(item)) continue;
       for (const other of item.entityIds || []) {
         if (other === eid || other === 'me') continue;
         counts.set(other, (counts.get(other) || 0) + 1);
@@ -1096,7 +1299,9 @@ export class Mind {
       return { ref: this.entity(direct)?.id || direct, name: this.nameOf(direct) };
     }
     const spec = this.parse(raw, { trailingSpace: true });
-    const kinds = spec.kinds?.length ? [...spec.kinds] : undefined;
+    // Only `kind:` syntax filters the lanes (SPEC §9.3); a kind word like
+    // "1:1" or "doc" just helps pick the centre ("mm map 1:1 with sarah").
+    const kinds = spec.kinds?.length && /(?<!\S)kind:/i.test(raw) ? [...spec.kinds] : undefined;
     const hard = spec.entities.find((e) => e.hard)
       || (spec.entities.length === 1 && !spec.terms.some((t) => !t.neg) ? spec.entities[0] : null);
     if (hard && this.entity(hard.entityId)) {
@@ -1234,24 +1439,43 @@ export class Mind {
     return new Set(state.rejections.filter((r) => r.type === 'entity').map((r) => r.t));
   }
 
+  // Items whose index holds every token of one of `names` (the postings of
+  // the rarest token first, narrowed by the others), newest first.
+  _itemsWithAllTokens(names) {
+    const out = new Set();
+    for (const name of names) {
+      const tokens = [...new Set(text.tokenize(name))];
+      if (!tokens.length) continue;
+      const lists = tokens.map((t) => this.index.postings(t)).sort((a, b) => a.size - b.size);
+      if (!lists[0].size) continue;
+      for (const id of lists[0]) if (lists.every((set) => set.has(id))) out.add(id);
+    }
+    return [...out].sort(byIdDesc);
+  }
+
   // Back-fills every entity this change created onto earlier items whose
-  // text names it (SPEC §5 S4): candidates come from the BM25 postings of
-  // the name's first token, verified by a one-entity dictionary scan.
+  // text names it (SPEC §5 S4): candidates are the items whose index holds
+  // every token of the name (or of an alias), each verified by a one-entity
+  // dictionary scan. At most BACKFILL_VERIFY items are read, so a name
+  // built from common words ("Data Mesh") stays cheap under the lock.
   _backfill(state, change, env) {
     const ours = new Set([change.itemId, ...(change.childIds || [])]);
     for (const eid of [...(change.newEntityIds || [])]) {
       const entity = state.entities.get(eid);
       if (!entity || eid === 'me') continue;
-      const first = text.tokenize(entity.name)[0];
-      if (!first) continue;
+      const names = [entity.name, ...(entity.aliases || [])];
+      const candidates = this._itemsWithAllTokens(names);
+      if (!candidates.length) continue;
       // kage-sensitive-data: not-sensitive — reviewed: an entity view model, not a settings control
-      const dict = entities.buildDictionary([{ entityId: eid, type: entity.type, names: [entity.name, ...(entity.aliases || [])], key: entity.key }], LIB);
+      const dict = entities.buildDictionary([{ entityId: eid, type: entity.type, names, key: entity.key }], LIB);
       const hits = [];
-      for (const id of [...this.index.postings(first)].sort(byIdDesc)) {
-        if (hits.length >= BACKFILL_MAX) break;
+      let read = 0;
+      for (const id of candidates) {
+        if (hits.length >= BACKFILL_MAX || read >= BACKFILL_VERIFY) break;
         if (ours.has(id)) continue;
         const item = state.items.get(id);
         if (!item || item.entityIds.includes(eid)) continue;
+        read++;
         const body = [item.title, withoutUrls(item.text), item.summary || ''].join('\n');
         if (entities.scanDictionary(dict, text.scanWords(body)).length) hits.push(id);
       }
@@ -1280,8 +1504,13 @@ export class Mind {
         const x = this._extract(input, env.now);
         if (x.empty) return { code: 'empty' };
         if (this.settings.new_items_private) x.private = true;
-        const change = model.applyCapture(state, x, { ...env, via, source: keep ? input.source : undefined });
+        // An agent capture never merges into (or reveals) an item the agent
+        // may not see: a URL saved privately becomes a separate item.
+        const skipDuplicate = via === 'agent' && !x.private ? (item) => this.isHidden(item) : undefined;
+        const change = model.applyCapture(state, x, { ...env, via, source: keep ? input.source : undefined, skipDuplicate });
         if (!change.op) return { code: change.code || 'noop' };
+        // The op card says when a dump had more action lines than the limit.
+        if (x.droppedActions > 0 && change.op.label?.params) change.op.label.params.dropped = x.droppedActions;
         this._organize(state, change, x, change.dedupedInto || change.itemId, env);
         return { changes: [change], change };
       });
@@ -1459,7 +1688,10 @@ export class Mind {
       if (enriched.op && after?.enrich?.state === 'done') {
         const x = this._extract({
           text: after.text, via: after.source?.via || 'launcher',
-          hint: { title: after.titleSource === 'auto' ? undefined : after.title, summary: after.summary },
+          hint: {
+            title: after.titleSource === 'auto' ? undefined : after.title, summary: after.summary,
+            fetchedTitle: after.titleSource === 'meta', fetchedSummary: after.summarySource === 'meta',
+          },
         }, env.now);
         const re = model.applyReextract(state, itemId, x, env);
         if (re.op) {
@@ -1479,15 +1711,23 @@ export class Mind {
   _rederiveExtraction(state, item, env) {
     const x = this._extract({
       text: item.text, via: item.source?.via || 'launcher', source: item.source,
-      hint: { title: item.title, summary: item.summary, terms: item.terms },
+      hint: {
+        title: item.title, summary: item.summary, terms: item.terms,
+        fetchedTitle: item.titleSource === 'meta', fetchedSummary: item.summarySource === 'meta',
+      },
     }, env.now);
     if (x.empty) return { v: this.extractorVersion, mentions: [], keyphrases: item.keyphrases, candidates: [], aliases: [], empty: true };
     x.v = this.extractorVersion;
-    // A child keeps the names it inherits from its parent (SPEC §5 S5).
+    // A child keeps the names it inherits from its parent (SPEC §5 S5, as
+    // lib/model.js applyCapture: teams, projects, topics and orgs, and the
+    // names on the parent's heading line).
     const parent = item.parentId ? state.items.get(item.parentId) : null;
+    const heading = parent ? ` ${text.normalizeKey(parent.title)} ` : '';
     for (const eid of parent?.entityIds || []) {
       const entity = state.entities.get(eid);
       if (!entity || x.mentions.some((m) => m.entityId === eid)) continue;
+      const named = [entity.name, ...(entity.aliases || [])].some((n) => { const k = text.normalizeKey(n); return k && heading.includes(` ${k} `); });
+      if (!model.INHERITED_TYPES.has(entity.type) && !named) continue;
       // kage-sensitive-data: not-sensitive — reviewed: an extraction mention, not a settings control
       x.mentions.push({ entityId: eid, key: entity.key, name: entity.name, type: entity.type, origin: 'rule', explicit: false, seg: -3 });
     }
@@ -1592,7 +1832,7 @@ export class Mind {
   entityNames(item) { return this._entityNames(item, { forAgent: true }); }
   ownerName(item) { return this._ownerName(item); }
 
-  /** Up to five entity names that look like `phrase` (for not-found answers). */
+  /** Up to five entity names that look like `phrase` (the agent's not-found answers: visible names only). */
   suggestNames(phrase) {
     const key = text.normalizeKey(phrase);
     if (!key) return [];
@@ -1600,6 +1840,7 @@ export class Mind {
     const out = [];
     for (const entity of this.state.entities.values()) {
       if (entity.id === 'me' || entity.mergedInto || entity.private) continue;
+      if (!this.agentVisible(entity.id)) continue;
       const k = entity.key || text.normalizeKey(entity.name);
       if (k.includes(key) || key.includes(k) || (stem.length >= 3 && k.startsWith(stem))) out.push(entity.name);
     }
@@ -1659,12 +1900,12 @@ export class Mind {
       const from = spec.range.start > 0 ? isoDay(spec.range.start) : '…';
       parts.push(t('prompt.scope_range', { from, to: isoDay(spec.range.end - 1) }));
     }
-    const names = (spec.entities || []).map((e) => this.entity(e.entityId)).filter((e) => e && !e.private && e.id !== 'me').map((e) => e.name);
+    const names = (spec.entities || []).filter((e) => this.agentVisible(e.entityId)).map((e) => this.entity(e.entityId).name);
     if (names.length) parts.push(t('prompt.scope_about', { names: [...new Set(names)].join(', ') }));
     const code = relaxed?.code;
     if (code === 'range_widened' && Number.isFinite(relaxed.range?.start) && Number.isFinite(relaxed.range?.end)) {
       parts.push(t('prompt.scope_widened', { from: isoDay(relaxed.range.start), to: isoDay(relaxed.range.end - 1) }));
-    } else if (code === 'range_dropped' || code === 'kinds_dropped' || code === 'entities_softened') {
+    } else if (code === 'range_dropped' || code === 'kinds_dropped' || code === 'entities_softened' || code === 'terms_dropped') {
       parts.push(t('prompt.scope_relaxed'));
     }
     return parts.length ? parts.join('; ') : t('prompt.scope_none');
@@ -1672,7 +1913,7 @@ export class Mind {
 
   /** The records mm? sends: up to 8, never private. → { spec, records, relaxed } */
   askRecords(question) {
-    const spec = this.parse(String(question ?? ''), { trailingSpace: true });
+    const spec = this.parse(String(question ?? ''), { trailingSpace: true, forAgent: true });
     let items;
     let relaxed = null;
     if (spec.intent === 'actions') {
@@ -1840,7 +2081,8 @@ export class Mind {
       schema: model.SCHEMA,
       exportedAt: new Date(this.now()).toISOString(),
       ...(note ? { note } : {}),
-      items: [...s.items.values()].sort((a, b) => (a.id < b.id ? -1 : 1)),
+      // Records this version can't read are exported as stored, after the rest.
+      items: [...[...s.items.values()].sort((a, b) => (a.id < b.id ? -1 : 1)), ...[...s.raw.values()].flatMap((bag) => bag.items || [])],
       entities: model.payloadFor(s, 'entities').entities,
       links: [...s.links],
       rejections: [...s.rejections],
@@ -2003,12 +2245,15 @@ export class Mind {
     } catch {
       return { ok: false, code: 'bad_format' };
     }
+    // Records this version can't read (an unknown kind, a time outside
+    // 1970–9999) are skipped and counted, never half-imported.
+    const invalid = (Array.isArray(data?.items) ? data.items : []).filter((raw) => !model.normalizeItem(raw)).length;
     try {
       const out = await this._mutate((state, env) => {
         // The model's counts include entities; the user is told about items.
         const prior = new Map();
         for (const raw of Array.isArray(data?.items) ? data.items : []) {
-          if (typeof raw?.id === 'string') prior.set(raw.id, state.items.get(raw.id)?.updatedAt);
+          if (typeof raw?.id === 'string' && model.normalizeItem(raw)) prior.set(raw.id, state.items.get(raw.id)?.updatedAt);
         }
         const change = model.applyImport(state, this._unifyImport(state, data), { ...env, via: 'import' });
         if (!change.op) return { code: change.code || 'noop' };
@@ -2024,11 +2269,14 @@ export class Mind {
         if (change.op.label?.params) change.op.label.params.count = Math.max(1, added + updated);
         return { changes: [change], counts: { added, updated, skipped: prior.size - added - updated } };
       });
-      if (!out.committed) return { ok: false, code: out.code || 'noop' };
+      if (!out.committed) return { ok: false, code: out.code || 'noop', invalid };
       this._resetIndexes();
       for (const item of this.state.items.values()) this._indexItem(item);
       this._bump([...this.state.items.keys(), ...this.state.entities.keys()]);
-      return { ok: true, ...out.counts };
+      // An import that overwrote more than the journal can hold isn't
+      // undoable (its before-snapshots were dropped): say so, never promise Undo.
+      const op = this.state.ops.find((o) => o.opId === out.opId);
+      return { ok: true, ...out.counts, invalid, undoable: !!op && !op.lossy };
     } catch (error) {
       if (error?.code) return { ok: false, code: error.code };
       throw error;
@@ -2053,7 +2301,7 @@ export class Mind {
       // The lock expires on its own.
     }
     const prior = this.state;
-    this.state = model.emptyState(this.now(), { extractorVersion: this.extractorVersion });
+    this.state = model.emptyState(this.now(), { extractorVersion: this.extractorVersion, gen: this._newGen() });
     this.keyRevs = new Map();
     this._applyMe();
     this._resetIndexes();
@@ -2204,6 +2452,7 @@ export class Mind {
       actions,
       related: isCapture && item ? this.related(item.id, 3).map((r) => this._localCite(r.id)).filter(Boolean) : [],
       truncated: !!item?.truncated && isCapture,
+      dropped: isCapture ? Number(params.dropped) || 0 : 0,
     };
   }
 

@@ -20,12 +20,17 @@ export const MEETING_END_RE = /\b(sync|standup|stand-up|1:1|meeting|retro)\s*:?\
 // "call" also starts imperatives ("call the Zebra team"): as a meeting word it
 // needs a meeting-ish follower.
 const CALL_MEETING_RE = /^call\s*(?:$|[:\-–—]|\s(?:with|w\/|notes?|recap|summary)\b)/i;
+// A short first line with a meeting word mid-line: "Launch sync with Sarah
+// and Raj", "Offsite planning meeting on Dec 10".
+const MEETING_MID_RE = /\b(?:sync|meeting|standup|stand-up|1:1|retro|catch[- ]?up|call)\s+(?:with|w\/|on|for|about|re)\b/i;
 const MARKER_RE = /^(?:(?:todo|to\s+do|to-do|action(?:\s+items?)?|ais?|next\s+steps?|follow[- ]?ups?|tasks?)\s*:\s*|(?:todo|to-do)\s+(?=\S))/i;
 const REMIND_RE = /^(?:please\s+)?remind\s+me\s+to\s+/i;
 const COMMIT_ANY_RE = /\b(?:i|we)\s+(?:really\s+)?(?:need\s+to|have\s+to|must|should|will|am\s+going\s+to|are\s+going\s+to)\b|\b(?:i|we)['’]ll\b|\bi['’]m\s+going\s+to\b|\bwe['’]re\s+going\s+to\b|\bdon['’]?t\s+forget\s+to\b|\bmake\s+sure\s+(?:to|you)\b/i;
 const FOLLOW_UP_RE = /^follow[- ]?up\s+(?:with|on)\b/i;
+// "Need to call the bank", "gotta renew the domain": a commitment without "I".
+export const NEED_RE = /^(?:(?:please|also|and|then|so|still|really)\s+)*(?:need\s+to|have\s+to|gotta|got\s+to|must)\s+(?!(?:i|we|you|he|she|they|it|be)\b)\p{L}[^?]*$/iu;
 const ASK_RE = /^ask\s+\p{Lu}[\p{L}'’-]*\s+(?:to|about)\b/u;
-const LEADING_PHRASE_RE = /^(?:(?:please|also|and|then|so)\s+)*(?:(?:i|we)\s+(?:really\s+)?(?:need\s+to|have\s+to|must|should|will|am\s+going\s+to|are\s+going\s+to)|(?:i|we)['’]ll|i['’]m\s+going\s+to|we['’]re\s+going\s+to|don['’]?t\s+forget\s+to|make\s+sure\s+to|remind\s+me\s+to|please)\s+/i;
+const LEADING_PHRASE_RE = /^(?:(?:please|also|and|then|so|still|really)\s+)*(?:(?:i|we)\s+(?:really\s+)?(?:need\s+to|have\s+to|must|should|will|am\s+going\s+to|are\s+going\s+to)|(?:i|we)['’]ll|i['’]m\s+going\s+to|we['’]re\s+going\s+to|don['’]?t\s+forget\s+to|make\s+sure\s+to|remind\s+me\s+to|need\s+to|have\s+to|gotta|got\s+to|must|please)\s+/i;
 const DANGLING_RE = /[\s,;:–—-]*(?:\b(?:by|on|before|until|till|for|due|at|no\s+later\s+than)\b[\s,;:]*)*$/i;
 const NOT_VERB_FOLLOWER = /^(?:of|is|was|are|were|['’]s)\b/i;
 const VALID_KINDS = new Set(['note', 'link', 'doc', 'action', 'meeting']);
@@ -100,12 +105,15 @@ function scoreSegment(lib, seg, opts) {
   const ownerOk = Boolean(cue) && opts.ownerAllowed(cue);
   if (ownerOk && cue.handle) return { confidence: 0.8, status: 'open', owner: cue };
   const commitText = opts.commitText ?? t;
-  if (COMMIT_ANY_RE.test(commitText) || FOLLOW_UP_RE.test(t)) return { confidence: 0.8, status: 'open', owner: null };
+  if (COMMIT_ANY_RE.test(commitText) || FOLLOW_UP_RE.test(t) || NEED_RE.test(t)) return { confidence: 0.8, status: 'open', owner: null };
   const imperative = startsImperative(t);
   if (opts.single && imperative && wordCount(lib, t) <= 20) {
     return { confidence: opts.hasDue ? 0.9 : 0.8, status: 'open', owner: null };
   }
   if (ownerOk) return { confidence: 0.6, status: 'open', owner: cue };
+  // A to-do list (most lines start with a verb, and it isn't a meeting):
+  // its imperative lines are open actions, not suggestions.
+  if (opts.lineStart && imperative && opts.todoList) return { confidence: 0.8, status: 'open', owner: null };
   if (ASK_RE.test(t) || (opts.lineStart && imperative)) return { confidence: 0.6, status: 'open', owner: null };
   return null;
 }
@@ -179,6 +187,11 @@ function cleanHint(lib, hint, via) {
     }
   }
   if (Array.isArray(hint.actions)) out.actions = hint.actions;
+  // A page's own title and description (fetched link metadata) can name
+  // known entities and propose candidates, but never create a team,
+  // project or person by itself ("Company and team OKRs for…").
+  if (hint.fetchedTitle === true) out.fetchedTitle = true;
+  if (hint.fetchedSummary === true) out.fetchedSummary = true;
   return out;
 }
 
@@ -188,7 +201,10 @@ function looksLikeMeeting(first, text) {
   const line = first.text.trim();
   const m = MEETING_FIRST_RE.exec(line);
   if (m && (m[1].toLowerCase() !== 'call' || CALL_MEETING_RE.test(line))) return true;
-  return MEETING_END_RE.test(line);
+  if (MEETING_END_RE.test(line)) return true;
+  // Not a to-do ("schedule a sync with Dana", "need to set up a call with Raj").
+  return MEETING_MID_RE.test(line) && line.split(/\s+/).length <= 8
+    && !startsImperative(line) && !COMMIT_ANY_RE.test(line) && !NEED_RE.test(line) && !REMIND_RE.test(line);
 }
 
 function removeSpans(lib, text, spans) {
@@ -198,21 +214,48 @@ function removeSpans(lib, text, spans) {
 }
 
 const DUE_BEFORE_RE = /\b(?:by|before|until|till|due|no\s+later\s+than)\s*$/i;
+// Phrases that can only mean the past.
+const PAST_CODES = new Set(['yesterday', 'days_ago', 'last_weekday']);
+// Whole past weeks: a meeting about them ("Retro for last week").
+const PAST_WEEK_CODES = new Set(['last_week', 'weeks_ago']);
+// A bare weekday or weekend is a past day only with a past-tense cue
+// ("met Dana on Thursday"), never on its own ("dentist thu 3pm").
+const CUE_CODES = new Set(['weekday', 'this_weekday', 'weekend']);
+export const PAST_CUE_RE = /\b(?:met|had|was|were|did|went|saw|talked|spoke|said|discussed|chatted|caught\s+up|called|presented|reviewed|agreed|decided|happened|held|attended|visited)\b/i;
+export const FUTURE_CUE_RE = /\b(?:will|won['’]t|going\s+to|gonna|moves?\s+to|moved\s+to|plan(?:s|ned)?\s+to|scheduled|upcoming|next|tomorrow|due|deadline|until)\b|['’]ll\b/i;
 
-// S6: the first date on the first line that isn't a due date. Meetings take
-// any range start in the past; notes only a past day named explicitly.
+// S6: when a note or meeting says it happened, from its first line. Only
+// clearly past phrases count (yesterday, N days ago, last <weekday>; whole
+// past weeks for meetings; today for meetings); a weekday needs a past-tense
+// cue. A month and day without a year count only when the nearest such day
+// to the capture is in the past ("Oct 3" said in November), never when it is
+// coming up ("the launch moves to Dec 3"), which is never rolled back a year.
 function occurredFrom(lib, line, dateOpts, meeting) {
   const today = lib.dates.startOfDay(dateOpts.now);
+  const pastCue = PAST_CUE_RE.test(line) && !FUTURE_CUE_RE.test(line);
   let offset = 0;
   for (let guard = 0; guard < 5 && offset < line.length; guard++) {
     const r = lib.dates.parseRange(line.slice(offset), dateOpts);
     if (!r) return undefined;
     const at = offset + r.span[0];
-    if (!DUE_BEFORE_RE.test(line.slice(0, at)) && r.start > 0 && r.start <= dateOpts.now) {
-      if (meeting) return r.start;
-      if (r.granularity === 'day' && r.start < today) return r.start;
-    }
+    const said = line.slice(at, offset + r.span[1]);
     offset += r.span[1];
+    if (DUE_BEFORE_RE.test(line.slice(0, at)) || !(r.start > 0) || r.start > dateOpts.now) continue;
+    let ok = false;
+    if (PAST_CODES.has(r.code)) ok = true;
+    else if (PAST_WEEK_CODES.has(r.code) || r.code === 'today') ok = meeting;
+    else if (CUE_CODES.has(r.code)) ok = pastCue;
+    else if (r.code === 'date') {
+      if (/\d{4}/.test(said)) ok = true;
+      else {
+        const next = lib.dates.parseDue(said, dateOpts);
+        const ahead = next && next.span[0] === 0 ? next.at - today : Infinity;
+        ok = ahead !== 0 && today - r.start < ahead;
+      }
+    }
+    if (!ok) continue;
+    if (meeting) return r.start;
+    if (r.granularity === 'day' && r.start < today) return r.start;
   }
   return undefined;
 }
@@ -289,13 +332,14 @@ export function extract(input, env) {
   const known = (key) => lib.entities.lookupKey(baseDict, key);
   const blocks = [];
   if (text) blocks.push({ text, seg: null });
-  if (hint.title) blocks.push({ text: hint.title, seg: -1 });
+  if (hint.title) blocks.push({ text: hint.title, seg: -1, fetched: !!hint.fetchedTitle });
   if (windowTitle) blocks.push({ text: windowTitle, seg: -1 });
-  if (hint.summary) blocks.push({ text: hint.summary, seg: -2 });
+  if (hint.summary) blocks.push({ text: hint.summary, seg: -2, fetched: !!hint.fetchedSummary });
 
   // S4 explicit mentions.
   const fresh = [];
   blocks.forEach((block, bi) => {
+    if (block.fetched) return;
     for (const m of lib.entities.explicitMentions(block.text, lib, { verbs: IMPERATIVE_VERBS })) {
       fresh.push({ ...m, block: bi, seg: block.seg ?? lineOf(m.start), explicit: true });
     }
@@ -387,6 +431,16 @@ export function extract(input, env) {
   } else if (!agentActions) {
     const single = !isDump;
     const canSelf = single && !hint.kind && kind === 'note';
+    // A dump whose lines (after a heading) mostly start with a verb is a
+    // to-do list: "Weekly planning / finish the budget / email Dana …".
+    let todoList = false;
+    if (isDump && kind !== 'meeting') {
+      const body = lines.filter((l, i) => l.text.trim() && i !== firstIdx && !isHeading(l));
+      const head = first && !startsImperative(first.text.trim()) ? [] : [first];
+      const all = [...head, ...body].filter(Boolean);
+      const verbs = all.filter((l) => startsImperative(l.text.trim().replace(MARKER_RE, ''))).length;
+      todoList = verbs >= 2 && verbs * 3 >= all.length * 2;
+    }
     let inContext = false;
     lines.forEach((line, idx) => {
       const lineText = line.text.trim();
@@ -402,7 +456,7 @@ export function extract(input, env) {
       const boxed = line.bullet === 'box' || line.bullet === 'boxdone';
       const sentences = boxed ? [{ text: lineText, start: 0 }] : lib.text.splitSentences(lineText);
       const score = scoreSegment(lib, { text: lineText, bullet: line.bullet }, {
-        inContext, single, lineStart: isDump, ownerAllowed,
+        inContext, single, lineStart: isDump, ownerAllowed, todoList,
         hasDue: single && Boolean(lib.dates.parseDue(lineText, dateOpts)),
         commitText: sentences.length > 1 ? sentences[0].text : lineText,
       });
@@ -480,6 +534,7 @@ export function extract(input, env) {
     if (prev) {
       prev.explicit = prev.explicit || Boolean(m.explicit);
       if (m.alias && !prev.alias) prev.alias = m.alias;
+      if (!prev.segs.includes(m.seg)) prev.segs.push(m.seg);
       continue;
     }
     // kage-sensitive-data: not-sensitive — reviewed: an extraction mention, not a settings control
@@ -491,6 +546,8 @@ export function extract(input, env) {
       origin: m.origin === 'agent' ? 'agent' : 'rule',
       explicit: Boolean(m.explicit),
       seg: m.seg,
+      // Every line that names it (children take the names on their own line).
+      segs: [m.seg],
       ...(m.alias ? { alias: m.alias } : {}),
       order: [m.block, m.start],
     });
@@ -534,13 +591,18 @@ export function extract(input, env) {
   // Title.
   let title;
   let titleSource = 'auto';
+  let titleFromText = false;
   if (hint.title) {
     title = hint.title;
     titleSource = hint.titleSource;
   } else if (kind === 'action' && self) {
     title = self.title;
   } else if ((kind === 'link' || kind === 'doc') && url) {
-    title = lib.url.urlTitleGuess(url);
+    // "great talk on caching https://…": the user's own words until the
+    // page title arrives (titleSource stays 'auto', so it may replace them).
+    const own = extra && !actions.length && !agentActions ? lib.text.firstLine(extra.replace(MARKER_RE, ''), MAX_TITLE) : '';
+    titleFromText = !!own && lib.text.scanWords(own).length >= 2;
+    title = titleFromText ? own : lib.url.urlTitleGuess(url);
   } else if (kind === 'doc' && path) {
     title = lib.url.baseName(path);
   } else if (kind === 'doc' && windowTitle) {
@@ -576,6 +638,7 @@ export function extract(input, env) {
     kind,
     title,
     titleSource,
+    ...(titleFromText ? { titleFromText: true } : {}),
     ...(url ? { url } : {}),
     ...(canonical ? { canonicalUrl: canonical } : {}),
     ...(normPath ? { path: normPath } : {}),
@@ -592,6 +655,8 @@ export function extract(input, env) {
     links: keptLinks,
     rejectedActions,
     segments: nonEmpty.length,
+    // Action lines past the per-save limit (kept in the text, not made actions).
+    droppedActions: actions.length - keptActions.length,
     isDump,
     extra,
     empty: !text && !windowTitle && !url && !path,

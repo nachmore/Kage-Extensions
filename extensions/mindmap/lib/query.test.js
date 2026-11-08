@@ -218,11 +218,17 @@ describe('natural language', () => {
     const week = parse('what is due this week');
     expect(week).toMatchObject({ intent: 'actions', range: { field: 'due', granularity: 'week' } });
     expect(span(week.range)).toEqual(['2026-11-02', '2026-11-09']);
-    // A weekday after "due" is future-biased (Friday on a Friday → next Friday).
-    expect(span(parse('actions due friday').range)).toEqual(['2026-11-13', '2026-11-14']);
+    // A weekday after "due" is future-biased, but asked on that weekday it
+    // means today ("todos due friday" on a Friday).
+    expect(span(parse('actions due friday').range)).toEqual(['2026-11-06', '2026-11-07']);
+    expect(span(parse('actions due monday').range)).toEqual(['2026-11-09', '2026-11-10']);
     const by = parse('actions due by friday');
     expect(by.range.start).toBe(0);
-    expect(by.range.end).toBe(at(2026, 11, 14));
+    expect(by.range.end).toBe(at(2026, 11, 7));
+    // Due phrases the range grammar doesn't read.
+    expect(span(parse("what's due tomorrow").range)).toEqual(['2026-11-07', '2026-11-08']);
+    expect(parse("what's due tomorrow")).toMatchObject({ intent: 'actions', range: { field: 'due' } });
+    expect(span(parse('actions due eow').range)).toEqual(['2026-11-06', '2026-11-07']);
     expect(parse('what is due').range).toBeNull();
   });
 
@@ -239,7 +245,10 @@ describe('natural language', () => {
 
   it('filler words never become terms', () => {
     expect(terms(parse('can you please show me what was mentioned about the roadmap '))).toEqual(['roadmap']);
-    expect(terms(parse('find notes related to capacity planning '))).toEqual(['capacity', 'planning']);
+    expect(terms(parse('find notes related to capacity planning '))).toEqual(['capacity', 'plan']);
+    // Saving verbs and generic nouns are filler too.
+    expect(terms(parse('what did I save yesterday '))).toEqual([]);
+    expect(terms(parse('stuff and things I added about the roadmap '))).toEqual(['roadmap']);
   });
 
   it('exports the English lexicons', () => {

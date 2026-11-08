@@ -10,7 +10,7 @@
 // or [] when they would be identical (the host then keeps match()'s rows).
 
 import { getMind } from './mind.js';
-import { KIND_ICONS, ETYPE_ICONS, applyUiAction, doneText, dueText, etypeLabel, fmtDay, interpLabel, itemIcon, kindLabel, parseAction, ui } from './view.js';
+import { KIND_ICONS, ETYPE_ICONS, applyUiAction, boundAction, doneText, dueText, etypeLabel, fmtDay, interpLabel, itemIcon, kindLabel, parseAction, ui } from './view.js';
 import { DEFAULTS, LIMITS, triggerOf } from './defaults.js';
 
 // view.js resolves these through an alias of t() (dueText, doneText, rangeLabel):
@@ -314,9 +314,13 @@ export default class MindMapSearchProvider {
     const rows = [this.row('mm:home:capture', '💾', t('row.home_capture'), t('row.home_capture_desc', { cmd: `${m}+` }), 92, this.fill(`${m}+ `))];
     const open = mind.actions(mind.parse('actions', { trailingSpace: true }), { limit: LIMITS.actionsMax * 4 }).open;
     const weekEnd = mind.weekEnd(now);
-    const dueSoon = open.filter((item) => Number.isFinite(item.dueAt) && item.dueAt < weekEnd).length;
+    const today = new Date(now).setHours(0, 0, 0, 0);
+    const overdue = open.filter((item) => Number.isFinite(item.dueAt) && item.dueAt < today).length;
+    const dueSoon = open.filter((item) => Number.isFinite(item.dueAt) && item.dueAt >= today && item.dueAt < weekEnd).length;
     if (stats.openActions) {
-      rows.push(this.row('mm:home:actions', KIND_ICONS.action, t('row.home_actions', { n: stats.openActions, m: dueSoon }), `${m} actions`, 91, this.fill(`${m} actions`)));
+      // i18n-keys: row.home_actions, row.home_actions_overdue
+      const label = overdue ? t('row.home_actions_overdue', { n: stats.openActions, o: overdue, m: dueSoon }) : t('row.home_actions', { n: stats.openActions, m: dueSoon });
+      rows.push(this.row('mm:home:actions', KIND_ICONS.action, label, `${m} actions`, 91, this.fill(`${m} actions`)));
     }
     if (stats.suggestions) {
       rows.push(this.row('mm:home:review', KIND_ICONS.action_suggested, t('row.home_review', { n: stats.suggestions }), `${m} review`, 90, this.fill(`${m} review`)));
@@ -388,7 +392,11 @@ export default class MindMapSearchProvider {
     const syntax = spec.syntax ? `${this.trigger} ${spec.syntax}` : this.trigger;
     // The host draws the icon; chip.interp's leading 🔎 would repeat it.
     const shown = label.startsWith('🔎') ? label.replace(/^🔎\s*/u, '') : label;
-    return this.row('mm:interp', '🔎', shown, this.t('row.refine', { syntax }), score, { a: 'refine', syntax: spec.syntax || '' });
+    let desc = this.t('row.refine', { syntax });
+    // More matches than rows: say how many, so "refine" means something.
+    const listed = result?.hits?.length || 0;
+    if (listed && result.total > listed) desc = `${this.t('row.shown_of', { n: listed, total: result.total })}${this.t('chip.sep')}${desc}`;
+    return this.row('mm:interp', '🔎', shown, desc, score, { a: 'refine', syntax: spec.syntax || '' });
   }
 
   hitRows(spec, args, query) {
@@ -400,6 +408,11 @@ export default class MindMapSearchProvider {
     const interp = this.interpRow(spec, result, empty || result.relaxed ? 93 : 70);
     if (interp) rows.push(interp);
     else if (empty) rows.push(this.row('mm:interp', '🔎', this.t('relax.none', { capture: `${this.trigger}+` }), '', 93, this.fill(`${this.trigger}+ ${oneLine(args)}`)));
+    if (empty) {
+      // A typo ("mm lauch"): offer the spelling the notes use.
+      const fixed = mind.suggestSpelling(args);
+      if (fixed) rows.push(this.row('mm:spelling', '✏️', this.t('row.did_you_mean', { query: clip(fixed, 60) }), `${this.trigger} ${fixed}`, 94, this.fill(`${this.trigger} ${fixed}`)));
+    }
     rows.push(this.askRow(args));
     return rows;
   }
@@ -409,6 +422,12 @@ export default class MindMapSearchProvider {
     const mind = this.mind;
     const t = this.t;
     const result = mind.actions(spec, { limit: LIMITS.actionsMax });
+    // "actions for Sarah" with nothing open: Sarah's suggested actions
+    // ("Sarah to intro me to Raj") are what there is, marked as suggestions.
+    const person = spec.owner && spec.owner !== 'me' && spec.owner !== 'anyone' ? mind.entity(spec.owner) : null;
+    if (person && spec.status === 'open' && !result.open.length) {
+      result.suggested = mind.actions({ ...spec, status: 'suggested' }, { limit: LIMITS.actionsMax }).suggested;
+    }
     const list = [...result.open, ...(spec.status === 'suggested' ? [] : result.suggested), ...result.done];
     if (spec.status === 'suggested') list.unshift(...result.suggested);
     const scores = this.scores(list.length);
@@ -421,12 +440,21 @@ export default class MindMapSearchProvider {
       rows.push(this.row('mm:noactions', '🔎', name ? t('relax.no_actions_for', { name }) : t('relax.no_actions'),
         t('row.try_actions', { cmd: `${this.trigger} actions` }), 92, this.fill(`${this.trigger} actions`)));
     } else {
-      const interp = this.interpRow(spec, null, 70);
+      // "No action matched every word" when only some words matched.
+      const interp = this.interpRow(spec, result.relaxed ? { relaxed: result.relaxed } : null, result.relaxed ? 93 : 70);
       if (interp) rows.push(interp);
     }
     if (spec.owner === 'me') {
       const syntax = `${this.trigger} ${spec.syntax} owner:anyone`.replace(/\s+/g, ' ').trim();
       rows.push(this.row('mm:everyone', '👥', t('row.everyone'), syntax, 65, this.fill(syntax)));
+      // "my actions for Dana" lists mine that involve Dana; Dana's own are one Enter away.
+      const other = spec.entities.find((e) => e.hard && mind.entity(e.entityId)?.type === 'person' && e.entityId !== 'me');
+      if (other) {
+        const entity = mind.entity(other.entityId);
+        const slug = entity.key && /^[a-z0-9-]+$/.test(entity.key) ? entity.key : entity.name.toLowerCase().replace(/\s+/g, '-');
+        const theirs = `${this.trigger} actions owner:${slug}`;
+        rows.push(this.row('mm:theirs', '👤', t('row.person_actions', { name: entity.name }), theirs, 64, this.fill(theirs)));
+      }
     }
     rows.push(this.askRow(args));
     return rows;
@@ -460,6 +488,8 @@ export default class MindMapSearchProvider {
       if (item.owner && item.owner !== 'me') parts.push(t('card.owner', { name: mind.nameOf(item.owner) }));
       const from = fromText();
       if (from) parts.push(from);
+      // A second date after a due date says what it is ("saved Sat, Oct 31").
+      else if (Number.isFinite(item.dueAt)) parts.push(t('row.saved_on', { day: fmtDay(item.createdAt, locale, { now }) }));
       else parts.push(fmtDay(item.createdAt, locale, { now }));
     }
     const icon = item.private ? `${itemIcon(vm)}🔒` : itemIcon(vm);
@@ -707,8 +737,8 @@ export default class MindMapSearchProvider {
   }
 
   undoErr(code) {
-    // i18n-keys: err.undo_superseded, err.undo_already_undone, err.undo_missing, err.undo_nothing
-    return ['superseded', 'already_undone', 'missing', 'nothing'].includes(code) ? this.t(`err.undo_${code}`) : this.errText(code);
+    // i18n-keys: err.undo_superseded, err.undo_already_undone, err.undo_missing, err.undo_nothing, err.undo_too_large
+    return ['superseded', 'already_undone', 'missing', 'nothing', 'too_large'].includes(code) ? this.t(`err.undo_${code}`) : this.errText(code);
   }
 
   // Refusals of mm merge / forget / rename (lib/model.js codes): 'conflict'
@@ -757,7 +787,15 @@ export default class MindMapSearchProvider {
     if (out.code) return display(`⚠️ ${this.errText(out.code)}`, '');
     const item = this.mind.item(out.itemId);
     const title = md(clip(item?.title || '', 80));
-    const line = out.dedupedInto ? t('row.saved_dedup_line', { title }) : t('row.saved_line', { title });
+    // A link whose page title is still being fetched: this line can't
+    // change later, so it names the site, not a guessed title.
+    const guessed = !out.dedupedInto && item?.titleSource === 'auto' && item?.enrich?.state === 'pending' && /^https?:\/\//i.test(item?.url || '');
+    let host = '';
+    if (guessed) {
+      try { host = new URL(item.url).hostname.replace(/^www\./, ''); } catch { host = ''; }
+    }
+    const line = out.dedupedInto ? t('row.saved_dedup_line', { title })
+      : host ? t('row.saved_link_line', { host: md(host) }) : t('row.saved_line', { title });
     return display(`🧠 ${line}`, `[mm-card:op:${out.opId}]`);
   }
 
@@ -782,6 +820,13 @@ export default class MindMapSearchProvider {
     try {
       if (parsed.scope === 'data') {
         if (!DATA_VERBS.has(parsed.verb)) return {};
+        // Only a button on a card this window rendered, for a record that
+        // card shows (view.boundAction): never one an agent wrote itself.
+        if (!boundAction(ui, parsed)) {
+          this.log?.warn?.('mindmap: ignored a card action that no rendered card offers');
+          mind.requestReformat();
+          return {};
+        }
         await mind.ready();
         await this.dataAction(parsed);
         mind.requestReformat();

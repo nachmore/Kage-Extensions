@@ -82,8 +82,9 @@ const labels = (lane) => lane.nodes.map((n) => (n.group === 'more' ? `+${n.more}
 describe('constants', () => {
   it('declares four lanes with the SPEC caps and slot grid', () => {
     expect(LANES).toEqual(['up', 'left', 'right', 'down']);
-    expect(LANE_CAP).toEqual({ up: 5, down: 5, left: 4, right: 4 });
-    expect(SLOTS.up.map((s) => s.x)).toEqual([18, 34, 50, 66, 82]);
+    // Four per row (not SPEC §9.2's five): legible labels at 570 px (BUILD_NOTES).
+    expect(LANE_CAP).toEqual({ up: 4, down: 4, left: 4, right: 4 });
+    expect(SLOTS.up.map((s) => s.x)).toEqual([16, 39, 61, 84]);
     expect(SLOTS.up.every((s) => s.y === 12)).toBe(true);
     expect(SLOTS.down.every((s) => s.y === 88)).toBe(true);
     // side lanes sit at x 14 / 86 and step 15% from 27% (BUILD_NOTES WP-C)
@@ -93,7 +94,7 @@ describe('constants', () => {
   });
 
   it('full lanes use exactly the SPEC slots; partial lanes centre-justify', () => {
-    expect(slotPositions('up', 5)).toEqual(SLOTS.up.map((s) => ({ ...s })));
+    expect(slotPositions('up', 4)).toEqual(SLOTS.up.map((s) => ({ ...s })));
     expect(slotPositions('left', 4)).toEqual(SLOTS.left.map((s) => ({ ...s })));
     expect(slotPositions('up', 1)).toEqual([{ x: 50, y: 12 }]);
     expect(slotPositions('down', 2)).toEqual([{ x: 34, y: 88 }, { x: 66, y: 88 }]);
@@ -338,7 +339,7 @@ describe('layout', () => {
         }
       }
     }
-    expect([...xs].sort((a, b) => a - b)).toEqual([14, 18, 34, 39, 50, 61, 66, 82, 86]);
+    expect([...xs].sort((a, b) => a - b)).toEqual([14, 16, 18, 34, 39, 50, 61, 66, 82, 84, 86]);
     expect([...ys].sort((a, b) => a - b)).toEqual([12, 27, 35, 42, 50, 57, 58, 65, 72, 88]);
   });
 

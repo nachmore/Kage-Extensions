@@ -226,8 +226,15 @@ describe('runQuery: relaxation ladder', () => {
     const softened = runQuery(spec({ range: LAST_WEEK, kinds: ['doc'], terms: [{ t: 'invoices' }], entities: [{ entityId: E.bingo, hard: true, via: 'phrase' }] }), ctx);
     expect(softened.relaxed).toEqual({ code: 'entities_softened' });
     expect(softened.hits.map((h) => h.id)).toEqual([c.F8.id]);
-    expect(runQuery(spec({ range: LAST_WEEK, terms: [{ t: 'walrus' }] }), ctx)).toEqual({ hits: [], relaxed: { code: 'none' }, total: 0, hiddenPrivate: 0 });
-    expect(runQuery(spec({ terms: [{ t: 'walrus' }] }), ctx).relaxed).toEqual({ code: 'none' });
+    // A time was asked and its words match nothing anywhere: everything from that time.
+    const dropped = runQuery(spec({ range: LAST_WEEK, terms: [{ t: 'walrus' }] }), ctx);
+    expect(dropped.relaxed).toEqual({ code: 'terms_dropped', range: LAST_WEEK });
+    expect(dropped.hits.length).toBeGreaterThan(0);
+    for (const hit of dropped.hits) {
+      const item = Object.values(c).find((x) => x.id === hit.id);
+      expect([item.createdAt, item.occurredAt].some((t) => t >= LAST_WEEK.start && t < LAST_WEEK.end)).toBe(true);
+    }
+    expect(runQuery(spec({ terms: [{ t: 'walrus' }] }), ctx)).toEqual({ hits: [], relaxed: { code: 'none' }, total: 0, hiddenPrivate: 0 });
   });
 
   it('reports what the asked scope hid when nothing visible matched', () => {
@@ -259,7 +266,7 @@ describe('runActions', () => {
 
   it('AT-2b: an unknown team searches the word and finds nothing', () => {
     const result = runActions(spec({ intent: 'actions', owner: 'me', terms: [{ t: 'walrus' }] }), makeCtx(Object.values(corpus())));
-    expect(result).toEqual({ open: [], suggested: [], done: [], groups: [], total: 0, hiddenPrivate: 0 });
+    expect(result).toEqual({ open: [], suggested: [], done: [], groups: [], total: 0, hiddenPrivate: 0, relaxed: null });
   });
 
   it('puts overdue first, then due ascending, then undated by newest parent and source order', () => {

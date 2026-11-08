@@ -124,7 +124,8 @@ function onlySilentlyTouched(ops, index, id, rev) {
 }
 
 export function canUndo(state, op) {
-  if (!op || typeof op.opId !== 'string' || op.kind === 'undo' || op.lossy) return { ok: false, code: 'missing' };
+  if (!op || typeof op.opId !== 'string' || op.kind === 'undo') return { ok: false, code: 'missing' };
+  if (op.lossy) return { ok: false, code: 'too_large' };
   if (op.undoneBy) return { ok: false, code: 'already_undone' };
   const ops = state.ops || [];
   const index = ops.findIndex((o) => o.opId === op.opId);
@@ -239,19 +240,22 @@ export function applyUndo(state, op, env) {
 // Returns a new ops array with `op` appended (or replaced in place when an op
 // with its id is already there, as when a retried mutation re-applies),
 // trimmed oldest first to maxOps and maxBytes. An op too big to fit even on
-// its own keeps its created ids but drops its snapshots (`lossy`: not undoable).
+// its own keeps its created ids but drops its snapshots (`lossy`: not
+// undoable) before anything is trimmed, so it never pushes the rest of the
+// undo history out with it.
 export function appendOp(ops, op, { maxOps = 200, maxBytes = 262144 } = {}) {
   const next = Array.isArray(ops) ? [...ops] : [];
-  const at = next.findIndex((o) => o.opId === op.opId);
-  if (at >= 0) next[at] = op;
-  else next.push(op);
+  const entry = 2 + bytes(op) > maxBytes ? { ...op, before: emptyGroups(), lossy: true } : op;
+  const at = next.findIndex((o) => o.opId === entry.opId);
+  if (at >= 0) next[at] = entry;
+  else next.push(entry);
   const sizes = next.map(bytes);
   let total = 2 + sizes.reduce((sum, n) => sum + n, 0) + Math.max(0, next.length - 1);
   while (next.length > 1 && (next.length > maxOps || total > maxBytes)) {
     total -= sizes.shift() + 1;
     next.shift();
   }
-  if (total > maxBytes && next.length === 1) {
+  if (total > maxBytes && next.length === 1 && !next[0].lossy) {
     next[0] = { ...next[0], before: emptyGroups(), lossy: true };
   }
   return next;

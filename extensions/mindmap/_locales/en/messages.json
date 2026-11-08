@@ -570,7 +570,7 @@
     "description": "Count of saved items"
   },
   "map.count_entities": {
-    "message": "{n, plural, one {# person or topic} other {# people & topics}}",
+    "message": "{n, plural, one {# team, person or topic} other {# teams, people & topics}}",
     "description": "Count of people, teams, projects and topics in the mind map"
   },
   "map.count_actions": {
@@ -1406,7 +1406,7 @@
     "description": "Settings label"
   },
   "settings.week_auto": {
-    "message": "Automatic (from your language)",
+    "message": "Automatic (from your region)",
     "description": "Week start option"
   },
   "settings.week_mon": {
@@ -1676,5 +1676,69 @@
   "settings.import_nothing": {
     "message": "Everything in that file is already here",
     "description": "Status after importing a file that adds or updates nothing"
+  },
+  "settings.import_skipped": {
+    "message": "{n, plural, one {# item in the file couldn’t be read and was skipped.} other {# items in the file couldn’t be read and were skipped.}}",
+    "description": "Appended to the import status when some records were invalid (unknown kind, impossible dates)"
+  },
+  "settings.import_unreadable": {
+    "message": "Nothing imported: {n, plural, one {the item} other {all # items}} in that file couldn’t be read",
+    "description": "Status after importing a file none of whose items this version can read"
+  },
+  "settings.imported_no_undo": {
+    "message": "Imported {added} new and {updated} updated items. This import changed too much to undo.",
+    "description": "Status after an import too large for the undo history. {cmd} is unused."
+  },
+  "err.undo_too_large": {
+    "message": "That change was too large to undo",
+    "description": "Undo refused: the change didn’t fit in the undo history"
+  },
+  "card.me": {
+    "message": "Me",
+    "description": "How the user themself appears as a person in the mind map (entity chips, map centre, filters)"
+  },
+  "row.person_actions": {
+    "message": "Show {name}’s own actions",
+    "description": "Row after “my actions for Dana”: list the actions Dana owns instead"
+  },
+  "relax.terms_dropped": {
+    "message": "Nothing matched “{terms}” — everything from {range}",
+    "description": "A time was asked and its words matched nothing anywhere: showing everything from that time. {terms} are the words as typed, {range} the dates"
+  },
+  "relax.any_word": {
+    "message": "No action matched every word of “{terms}” — showing those that match some",
+    "description": "Actions list relaxed from all words to any word"
+  },
+  "relax.none_for": {
+    "message": "No notes match “{terms}” — try fewer or different words",
+    "description": "Nothing matched the words at all. {terms} are the words as typed"
+  },
+  "row.did_you_mean": {
+    "message": "Did you mean “{query}”?",
+    "description": "Row when nothing matched and a word looks like a typo of a word in the notes; Enter searches the corrected text"
+  },
+  "row.saved_link_line": {
+    "message": "Saved a link from {host}",
+    "description": "First line after saving a link whose page title is still being fetched. {host} is the site, e.g. example.com"
+  },
+  "card.more_actions": {
+    "message": "{n, plural, one {# more action} other {# more actions}} — see {cmd}",
+    "description": "Under a long brain dump’s op card: how many saved actions aren’t listed. {cmd} is e.g. “mm actions”"
+  },
+  "card.dropped_actions": {
+    "message": "{n, plural, one {# more line wasn’t made an action} other {# more lines weren’t made actions}} (the limit is {max}); they stay in the note’s text",
+    "description": "Op card note when a brain dump had more action lines than the per-save limit"
+  },
+  "row.home_actions_overdue": {
+    "message": "{n, plural, one {# open action} other {# open actions}} ({o} overdue · {m} due this week)",
+    "description": "Home row when some open actions are overdue: total, overdue, and due later this week"
+  },
+  "row.saved_on": {
+    "message": "saved {day}",
+    "description": "Action row: the day an action with no source note was saved, e.g. “saved Sat, Oct 31”"
+  },
+  "row.shown_of": {
+    "message": "{n} of {total}",
+    "description": "Interpretation row: how many matches are listed out of how many, e.g. “8 of 23”"
   }
 }

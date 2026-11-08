@@ -216,9 +216,11 @@ function groupMentions(text, words, lib, opts) {
       out.push({ type, name, key: lib.text.normalizeKey(name), start: parts[0].start, end: w.end, marker: type });
       continue;
     }
-    // "team Zebra" / "project Atlas": only a capitalized name counts.
+    // "team Zebra" / "project Atlas": only a capitalized name counts, never
+    // a plural acronym ("team OKRs", "team KPIs" are things, not a name).
     const n1 = words[i + 1];
-    if (n1 && !starts.has(i + 1) && gapIsSpace(text, w, n1) && capsLike(n1) && !isStop(n1, lib) && !GROUP_NOUNS.has(n1.norm)) {
+    if (n1 && !starts.has(i + 1) && gapIsSpace(text, w, n1) && capsLike(n1) && !isStop(n1, lib) && !GROUP_NOUNS.has(n1.norm)
+      && !/^\p{Lu}{2,}s$/u.test(n1.raw)) {
       const parts = [n1];
       const n2 = words[i + 2];
       if (n2 && !starts.has(i + 2) && gapIsSpace(text, n1, n2) && capsLike(n2) && !isStop(n2, lib) && !GROUP_NOUNS.has(n2.norm)) parts.push(n2);

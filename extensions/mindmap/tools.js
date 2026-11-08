@@ -213,7 +213,7 @@ export default class MindMapToolProvider {
   search(p) {
     const mind = this.mind;
     const query = str(p.query, 500);
-    const spec = mind.parse(query, { trailingSpace: true });
+    const spec = mind.parse(query, { trailingSpace: true, forAgent: true });
     const wantKinds = toList(p.kinds).map((k) => str(k, 20).toLowerCase()).filter((k) => KINDS.includes(k));
     // The search tool finds items; an "actions" reading becomes a kind filter.
     const find = { ...spec, intent: 'find', command: null };
@@ -230,7 +230,7 @@ export default class MindMapToolProvider {
     const entityName = str(p.entity, 120);
     if (entityName) {
       const hit = mind.resolveEntity(entityName.replace(/^[@#]/, ''), null);
-      if (hit && !mind.entity(hit.entityId)?.private) {
+      if (hit && mind.agentVisible(hit.entityId)) {
         find.entities = [...find.entities.filter((e) => e.entityId !== hit.entityId), { entityId: hit.entityId, hard: true, via: 'marker', name: hit.name, type: hit.type }];
       } else {
         unresolved.push(entityName);
@@ -265,8 +265,7 @@ export default class MindMapToolProvider {
     for (const term of hit.terms || []) out.push(`term:${raw.get(term) || term}`);
     for (const why of hit.why || []) {
       if (why.code === 'entity' || why.code === 'alias') {
-        const entity = this.mind.entity(why.value);
-        if (entity && !entity.private && entity.id !== 'me') out.push(`${why.code}:${entity.name}`);
+        if (this.mind.agentVisible(why.value)) out.push(`${why.code}:${this.mind.entity(why.value).name}`);
       } else if (why.code === 'kind' || why.code === 'title' || why.code === 'range') {
         out.push(why.code === 'kind' ? `kind:${why.value}` : why.code);
       }
@@ -279,8 +278,9 @@ export default class MindMapToolProvider {
     const range = spec.range;
     const entities = [];
     for (const e of spec.entities || []) {
+      if (!mind.agentVisible(e.entityId)) continue;
       const entity = mind.entity(e.entityId);
-      if (entity && !entity.private && entity.id !== 'me' && !entities.includes(entity.name)) entities.push(entity.name);
+      if (!entities.includes(entity.name)) entities.push(entity.name);
     }
     const scope = {
       kinds: spec.kinds?.length ? [...spec.kinds] : null,
@@ -311,14 +311,14 @@ export default class MindMapToolProvider {
     else if (/^(?:anyone|everyone|all|any)$/i.test(assignee)) spec.owner = 'anyone';
     else {
       const hit = mind.resolveEntity(assignee.replace(/^@/, ''), 'person');
-      if (!hit) return { groups: [], total: 0, hiddenPrivate: 0, unresolved: [assignee], suggestions: mind.suggestNames(assignee), note: this.note };
+      if (!hit || !mind.agentVisible(hit.entityId)) return { groups: [], total: 0, hiddenPrivate: 0, unresolved: [assignee], suggestions: mind.suggestNames(assignee), note: this.note };
       spec.owner = hit.entityId;
     }
     spec.status = status === 'all' ? 'all' : status;
     const entityName = str(p.entity, 120);
     if (entityName) {
       const hit = mind.resolveEntity(entityName.replace(/^[@#]/, ''), null);
-      if (!hit || mind.entity(hit.entityId)?.private) {
+      if (!hit || !mind.agentVisible(hit.entityId)) {
         return { groups: [], total: 0, hiddenPrivate: 0, unresolved: [entityName], suggestions: mind.suggestNames(entityName), note: this.note };
       }
       spec.entities.push({ entityId: hit.entityId, hard: true, via: 'marker', name: hit.name, type: hit.type });
@@ -339,7 +339,7 @@ export default class MindMapToolProvider {
       for (const item of actions) placed.add(item.id);
       const records = actions.map((item) => this.actionRecord(item)).filter(Boolean);
       total += records.length;
-      groups.push({ entity: group.entity && !group.entity.private ? group.entity.name : null, actions: records });
+      groups.push({ entity: group.entity && mind.agentVisible(group.entity.id) ? group.entity.name : null, actions: records });
     }
     const rest = pick.filter((item) => wanted.has(item.id) && !placed.has(item.id)).map((item) => this.actionRecord(item)).filter(Boolean);
     if (rest.length) {
@@ -384,7 +384,7 @@ export default class MindMapToolProvider {
     const item = id ? mind.item(id) : null;
     if (!item) {
       const entity = id ? mind.entity(id) : null;
-      if (entity && entity.id !== 'me') return entity.private ? { error: 'private', note: this.note } : this.entity({ name: entity.name });
+      if (entity && mind.agentVisible(entity.id)) return this.entity({ name: entity.name });
       return { error: 'not_found', note: this.note };
     }
     if (mind.isHidden(item)) return { error: 'private', note: this.note };
@@ -429,23 +429,24 @@ export default class MindMapToolProvider {
     const mind = this.mind;
     const name = str(p.name, 120).replace(/^[@#]/, '');
     const hit = name ? mind.resolveEntity(name, null) : null;
-    const entity = hit && hit.entityId !== 'me' ? mind.entity(hit.entityId) : null;
+    // An entity known only from private notes is "not found": the agent
+    // never learns that it exists (SPEC §15).
+    const entity = hit && hit.entityId !== 'me' && mind.agentVisible(hit.entityId) ? mind.entity(hit.entityId) : null;
     if (!entity) return { error: 'not_found', suggestions: mind.suggestNames(name), note: this.note };
-    if (entity.private) return { error: 'private', note: this.note };
     const items = mind.itemsOf(entity.id).filter((item) => !item.archived && !mind.isHidden(item));
     const openActions = items.filter((item) => item.kind === 'action' && item.status === 'open' && !item.suggested).length;
     const recent = [...items].sort((a, b) => b.createdAt - a.createdAt || (a.id < b.id ? 1 : -1))
       .filter((item) => !(item.kind === 'action' && item.status === 'dismissed'))
       .slice(0, 8).map((item) => mind.agentRecord(item)).filter(Boolean);
-    const related = mind.cooccur(entity.id)
+    const related = mind.cooccur(entity.id, { forAgent: true })
+      .filter((r) => mind.agentVisible(r.id))
       .map((r) => ({ entity: mind.entity(r.id), weight: r.w }))
-      .filter((r) => r.entity && !r.entity.private && r.entity.id !== 'me')
       .slice(0, 8)
       .map((r) => ({ name: r.entity.name, type: r.entity.type, weight: r.weight }));
     return capSize({
       name: entity.name,
       type: entity.type,
-      aliases: [...(entity.aliases || [])].slice(0, 20),
+      aliases: mind.agentAliases(entity).slice(0, 20),
       counts: { items: items.length, openActions },
       recent,
       related,
@@ -485,9 +486,9 @@ export default class MindMapToolProvider {
     const actionIds = [...(item.kind === 'action' ? [item.id] : []), ...out.childIds.filter((id) => mind.item(id)?.kind === 'action')];
     const rejected = (out.rejectedActions || []).map((r) => ({ text: str(r.text, 200), reason: r.reason }));
     const undo = this.t('tool.capture_saved', { cmd: `${mind.trigger} undo` });
-    if (mind.isHidden(item)) {
-      return { cite: mind.cite(item.id), private: true, actions: actionIds.map((id) => mind.cite(id)), rejected, deduped: out.dedupedInto ? mind.cite(out.dedupedInto) : null, undo, note: this.note };
-    }
+    // Saved privately (as asked, or because new items are private): the
+    // agent gets no ids it could use and no hint of what was already there.
+    if (mind.isHidden(item)) return { saved: true, private: true, rejected, undo, note: this.note };
     return {
       cite: mind.cite(item.id),
       kind: item.kind,

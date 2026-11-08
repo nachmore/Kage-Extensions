@@ -11,7 +11,9 @@
 
 export const LANES = Object.freeze(['up', 'left', 'right', 'down']);
 
-export const LANE_CAP = Object.freeze({ up: 5, down: 5, left: 4, right: 4 });
+// Four per row, not SPEC §9.2's five: at Kage's 570 px floating window five
+// nodes left about ten characters a label (review finding, BUILD_NOTES).
+export const LANE_CAP = Object.freeze({ up: 4, down: 4, left: 4, right: 4 });
 
 const SIDE_X = 14;
 
@@ -22,8 +24,8 @@ const SIDE_X = 14;
 // nodes that is the widest label that still clears the 36% centre card
 // (docs/mindmap/BUILD_NOTES.md, WP-C).
 export const SLOTS = Object.freeze({
-  up: Object.freeze([18, 34, 50, 66, 82].map((x) => Object.freeze({ x, y: 12 }))),
-  down: Object.freeze([18, 34, 50, 66, 82].map((x) => Object.freeze({ x, y: 88 }))),
+  up: Object.freeze([16, 39, 61, 84].map((x) => Object.freeze({ x, y: 12 }))),
+  down: Object.freeze([16, 39, 61, 84].map((x) => Object.freeze({ x, y: 88 }))),
   left: Object.freeze([27, 42, 57, 72].map((y) => Object.freeze({ x: SIDE_X, y }))),
   right: Object.freeze([27, 42, 57, 72].map((y) => Object.freeze({ x: 100 - SIDE_X, y }))),
   center: Object.freeze({ x: 50, y: 50 }),
@@ -33,7 +35,7 @@ const ROW_X = {
   1: [50],
   2: [34, 66],
   3: [18, 50, 82],
-  4: [18, 39, 61, 82],
+  4: [16, 39, 61, 84],
   5: [18, 34, 50, 66, 82],
 };
 // Side lanes step 15% (SPEC: 16% from 28%): two-line labels then clear the
@@ -69,7 +71,7 @@ export function slotPositions(side, n) {
   if (!n) return [];
   if (side === 'up' || side === 'down') {
     const y = side === 'up' ? 12 : 88;
-    return (ROW_X[n] || ROW_X[5]).slice(0, n).map((x) => ({ x, y }));
+    return (ROW_X[n] || ROW_X[4]).slice(0, n).map((x) => ({ x, y }));
   }
   const x = side === 'left' ? SIDE_X : 100 - SIDE_X;
   return (COL_Y[n] || COL_Y[4]).slice(0, n).map((y) => ({ x, y }));

@@ -43,6 +43,7 @@ const upper = (range) => (Number.isFinite(range?.end) ? range.end : Infinity);
 
 function times(item, range) {
   if (range?.field === 'due') return Number.isFinite(item.dueAt) ? [item.dueAt] : [];
+  if (range?.field === 'done') return Number.isFinite(item.doneAt) ? [item.doneAt] : [];
   return [item.createdAt, item.occurredAt].filter(Number.isFinite);
 }
 
@@ -279,6 +280,12 @@ export function runQuery(spec, ctx) {
     relax.entities = spec.entities.map((e) => ({ ...e, hard: false }));
     steps.push({ spec: { ...spec, ...relax }, relaxed: { code: 'entities_softened' } });
   }
+  // Last: a time was asked and its leftover words match nothing anywhere
+  // ("what did I add on tuesday blah"): everything from that time, as asked.
+  const positive = (spec.terms || []).filter((q) => q?.t && !q.neg);
+  if (originalRange && positive.length) {
+    steps.push({ spec: { ...spec, terms: (spec.terms || []).filter((q) => q?.neg) }, relaxed: { code: 'terms_dropped', range: originalRange } });
+  }
   let first = null;
   for (const step of steps) {
     const result = evaluate(step.spec, ctx, { distanceFrom: step.distanceFrom, originalRange });
@@ -325,43 +332,64 @@ export function runActions(spec, ctx) {
       termMatches.set(hit.id, new Set(hit.matched));
     }
   }
+  // The words of the note an action came from count for it too, from that
+  // note's title only ("my actions from the bingo retro").
+  const parentTitleHas = (item, q) => {
+    if (!item.parentId || typeof ctx.index.fieldTerms !== 'function') return false;
+    const terms = ctx.index.fieldTerms(item.parentId, 'title');
+    return terms.has(q.t) || (!!q.prefix && [...terms].some((t) => t.startsWith(q.t)));
+  };
+  // AND first; when no action has every word, any word (relaxed: 'any_word').
+  let needAll = true;
+  let relaxed = null;
 
-  const source = hard.length ? entityIdsOf(ctx, hard[0].entityId) : ctx.idsNewestFirst();
-  const open = [];
-  const suggested = [];
-  const done = [];
+  const source = hard.length ? entityIdsOf(ctx, hard[0].entityId) : [...ctx.idsNewestFirst()];
+  let open = [];
+  let suggested = [];
+  let done = [];
   let hiddenPrivate = 0;
-  const seen = new Set();
-  for (const id of source) {
-    if (seen.has(id)) continue;
-    seen.add(id);
-    const item = ctx.getItem(id);
-    if (!item || item.kind !== 'action' || item.archived || item.status === 'dismissed') continue;
-    if (spec.privateOnly && !item.private) continue;
-    if (!ownerOk(item, owner)) continue;
-    if (!hard.every((e) => mentions(item, e.entityId, ctx))) continue;
-    if (range && !inRange(item, range)) continue;
-    if (negatives.some((set) => set.has(id))) continue;
-    if (termMatches) {
-      const matched = new Set(termMatches.get(id) || []);
-      for (const n of names) {
-        if (mentions(item, n.entityId, ctx)) positive.forEach((q, i) => { if (n.name.has(q.t)) matched.add(i); });
+  for (let pass = 0; pass < 2; pass++) {
+    open = [];
+    suggested = [];
+    done = [];
+    hiddenPrivate = 0;
+    const seen = new Set();
+    for (const id of source) {
+      if (seen.has(id)) continue;
+      seen.add(id);
+      const item = ctx.getItem(id);
+      if (!item || item.kind !== 'action' || item.archived || item.status === 'dismissed') continue;
+      if (spec.privateOnly && !item.private) continue;
+      if (!ownerOk(item, owner)) continue;
+      if (!hard.every((e) => mentions(item, e.entityId, ctx))) continue;
+      if (range && !inRange(item, range)) continue;
+      if (negatives.some((set) => set.has(id))) continue;
+      if (termMatches) {
+        const matched = new Set(termMatches.get(id) || []);
+        for (const n of names) {
+          if (mentions(item, n.entityId, ctx)) positive.forEach((q, i) => { if (n.name.has(q.t)) matched.add(i); });
+        }
+        positive.forEach((q, i) => { if (!matched.has(i) && parentTitleHas(item, q)) matched.add(i); });
+        if (needAll ? matched.size < positive.length : !matched.size) continue;
       }
-      if (matched.size < positive.length) continue;
+      let bucket = null;
+      if (item.status === 'open' && !item.suggested) {
+        if (status === 'open' || status === 'all') bucket = open;
+        else if (status === 'overdue' && Number.isFinite(item.dueAt) && item.dueAt < today) bucket = open;
+      } else if (item.status === 'open') {
+        if (status === 'suggested' || status === 'all') bucket = suggested;
+      } else if (item.status === 'done') {
+        const at = Number.isFinite(item.doneAt) ? item.doneAt : item.updatedAt;
+        if (status === 'done' || status === 'all' || (status === 'open' && at >= doneSince)) bucket = done;
+      }
+      if (!bucket) continue;
+      if (ctx.hidden?.(id)) { hiddenPrivate++; continue; }
+      bucket.push(item);
     }
-    let bucket = null;
-    if (item.status === 'open' && !item.suggested) {
-      if (status === 'open' || status === 'all') bucket = open;
-      else if (status === 'overdue' && Number.isFinite(item.dueAt) && item.dueAt < today) bucket = open;
-    } else if (item.status === 'open') {
-      if (status === 'suggested' || status === 'all') bucket = suggested;
-    } else if (item.status === 'done') {
-      const at = Number.isFinite(item.doneAt) ? item.doneAt : item.updatedAt;
-      if (status === 'done' || status === 'all' || (status === 'open' && at >= doneSince)) bucket = done;
-    }
-    if (!bucket) continue;
-    if (ctx.hidden?.(id)) { hiddenPrivate++; continue; }
-    bucket.push(item);
+    const found = status === 'suggested' ? suggested : status === 'done' ? done : status === 'all' ? [...open, ...suggested, ...done] : open;
+    if (found.length || !termMatches || positive.length < 2 || !needAll) break;
+    needAll = false;
+    relaxed = { code: 'any_word' };
   }
 
   const parentOf = (item) => (item.parentId ? ctx.getItem(item.parentId) : null) || item;
@@ -400,5 +428,6 @@ export function runActions(spec, ctx) {
   const ids = (list) => list.slice(0, limit).map((item) => item.id);
   return {
     open: ids(open), suggested: ids(suggested), done: ids(done), groups, total: primary.length, hiddenPrivate,
+    relaxed: primary.length ? relaxed : null,
   };
 }

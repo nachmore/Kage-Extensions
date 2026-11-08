@@ -435,6 +435,21 @@ const BASE_DUE_RULES = [
   },
   { re: /\b(\d{4}-\d{2}-\d{2})\b/g, fn: (m) => due(parseIsoDay(m[1]), 'date') },
   {
+    // "pay rent on the 1st": the next such day of the month, today included.
+    re: /\bthe\s+(\d{1,2})(?:st|nd|rd|th)\b(?!\s+(?:of\s+)?(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec))/gi,
+    fn: (m, ctx) => {
+      const day = Number(m[1]);
+      if (!(day >= 1 && day <= 31)) return null;
+      const d = new Date(ctx.today);
+      for (let k = 0; k < 13; k++) {
+        const month = d.getMonth() + k;
+        const at = localDay(d.getFullYear() + Math.floor(month / 12), month % 12, day);
+        if (at !== null && at >= ctx.today) return due(at, 'month_day');
+      }
+      return null;
+    },
+  },
+  {
     re: new RegExp(`\\b${WD}(?:['\\u2019]s)?\\b`, 'gi'),
     fn: (m, ctx) => {
       const wd = WEEKDAY_INDEX.get(m[1].toLowerCase());

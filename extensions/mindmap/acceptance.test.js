@@ -569,7 +569,7 @@ describe('AT-6 map (P1)', () => {
     const { html, card } = await showMap('mm map bingo');
     const node = laneNodes(card, 'left').find((n) => refOf(n) === send.id);
     const centred = await click(h, html, node);
-    const done = mapCard(centred).querySelector(`.mm-center [data-ext-action="mm:a:done:${send.id}"]`);
+    const done = mapCard(centred).querySelector(`.mm-center [data-ext-action$=":a:done:${send.id}"]`);
     expect(done.textContent).toBe('Done');
     await click(h, centred, done);
     expect(h.mind.item(send.id).status).toBe('done');
@@ -1009,7 +1009,8 @@ describe('P2 mm organize (SPEC §12, agent enrichment through a visible prompt)'
     expect(out.value).toContain('Call the mindmap annotate tool once');
     expect(out.value).toContain('copied word for word');
     expect(out.value).toContain('Don’t invent anything');
-    expect(lines).toContain('My existing names: MTCS, Bingo, Dana, Zebra');
+    // Bingo and MTCS each name 7 visible items (ties alphabetical).
+    expect(lines).toContain('My existing names: Bingo, MTCS, Dana, Zebra');
     expect(lines).toContain('Items (9):');
     const items = lines.filter((l) => l.startsWith('- [mm:'));
     // Newest first; top-level only (F6's actions travel with F6); open actions only (not F9); never F10.
@@ -1088,7 +1089,7 @@ describe('P2 mm merge / mm forget / mm rename (undoable entity commands)', () =>
     expect(out.value.split('\n\n')[0]).toBe('🧠 Renamed Zebra to Zebra Crew');
     const html = await g.formatter.format(toHtml(out.value), { streaming: false, role: 'assistant' });
     expect(textOf(html)).toContain('✓ Renamed · Zebra Crew');
-    expect(html).toMatch(/data-ext-action="mm:a:undo:o[0-9a-z]{14}"/);
+    expect(html).toMatch(/data-ext-action="mm:b[0-9a-z]+:a:undo:o[0-9a-z]{14}"/);
     expect(g.mind.entity(zebra)).toMatchObject({ name: 'Zebra Crew', key: 'zebra crew', aliases: ['Zebra'], origin: 'user' });
     // Both names find it; F8 now reads under the new name.
     expect(entityNamed('zebra').entityId).toBe(zebra);
@@ -1200,7 +1201,7 @@ describe('P2 archive (mm archive / mm archived)', () => {
     expect(out.value.split('\n\n')[0]).toBe('🗄️ Archived “update the Bingo dashboard”');
     const html = await g.formatter.format(toHtml(out.value), { streaming: false, role: 'assistant' });
     expect(textOf(html)).toContain('✓ Updated');
-    expect(html).toMatch(/data-ext-action="mm:a:undo:o[0-9a-z]{14}"/);
+    expect(html).toMatch(/data-ext-action="mm:b[0-9a-z]+:a:undo:o[0-9a-z]{14}"/);
     expect(g.mind.item(G.F9).archived).toBe(true);
   });
 
@@ -1340,9 +1341,9 @@ describe('F-CAP and home rows on the corpus', () => {
     expect(text).toContain('Saved');
     expect(text).toMatch(/meeting/);
     expect(text).toMatch(/4 actions/);
-    expect(html).toContain(`data-ext-action="mm:a:undo:${op}"`);
-    expect(html).toMatch(/data-ext-action="mm:a:dismiss:i[0-9a-z]{14}"/);
-    expect(html).toMatch(/data-ext-action="mm:a:accept:i[0-9a-z]{14}"/);
+    expect(html).toMatch(new RegExp(`data-ext-action="mm:b[0-9a-z]+:a:undo:${op}"`));
+    expect(html).toMatch(/data-ext-action="mm:b[0-9a-z]+:a:dismiss:i[0-9a-z]{14}"/);
+    expect(html).toMatch(/data-ext-action="mm:b[0-9a-z]+:a:accept:i[0-9a-z]{14}"/);
   });
 
   it('mm alone shows the home rows', () => {

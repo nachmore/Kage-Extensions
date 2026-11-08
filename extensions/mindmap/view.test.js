@@ -368,12 +368,12 @@ describe('cards', () => {
     expect(acts.map((a) => a.querySelector('.mm-at').textContent)).toEqual(['Send MTCS numbers to Dana', 'Dana to share the roadmap deck', 'book the offsite', 'review the Bingo launch checklist']);
     expect(acts[0].querySelector('.mm-meta').textContent).toBe('due today (Fri, Nov 6)');
     const actions = [...root.querySelectorAll('[data-ext-action]')].map((b) => b.getAttribute('data-ext-action'));
-    expect(actions).toContain(`mm:a:accept:${I.a2}`);
-    expect(actions).toContain(`mm:a:dismiss:${I.a2}`);
-    expect(actions).toContain(`mm:a:dismiss:${I.a1}`);
-    expect(actions).not.toContain(`mm:a:accept:${I.a1}`);
+    expect(actions).toContain(`mm:bk1:a:accept:${I.a2}`);
+    expect(actions).toContain(`mm:bk1:a:dismiss:${I.a2}`);
+    expect(actions).toContain(`mm:bk1:a:dismiss:${I.a1}`);
+    expect(actions).not.toContain(`mm:bk1:a:accept:${I.a1}`);
     expect(actions).toContain(`mm:b k1:f:${I.f1}`.replace(' ', ''));
-    expect(actions).toContain(`mm:a:undo:${OP}`);
+    expect(actions).toContain(`mm:bk1:a:undo:${OP}`);
     expect(actions).toContain('mm:bk1:map');
   });
 
@@ -414,24 +414,24 @@ describe('cards', () => {
     expect([...root.querySelectorAll('.mm-echip')].map((b) => b.getAttribute('data-ext-action'))).toEqual([E.bingo, E.dana, E.mtcs].map((e) => `mm:bk1:f:${e}`));
     expect(root.querySelectorAll('.mm-act')).toHaveLength(4);
     const actions = [...root.querySelectorAll('[data-ext-action]')].map((b) => b.getAttribute('data-ext-action'));
-    expect(actions).toEqual(expect.arrayContaining([`mm:a:done:${I.a1}`, `mm:a:accept:${I.a2}`, 'mm:bk1:map', `mm:a:private:${I.f6}`, `mm:a:delete:${I.f6}`]));
-    expect(actions).not.toContain(`mm:a:open:${I.f6}`); // notes and meetings have nothing to open
+    expect(actions).toEqual(expect.arrayContaining([`mm:bk1:a:done:${I.a1}`, `mm:bk1:a:accept:${I.a2}`, 'mm:bk1:map', `mm:bk1:a:private:${I.f6}`, `mm:bk1:a:delete:${I.f6}`]));
+    expect(actions).not.toContain(`mm:bk1:a:open:${I.f6}`); // notes and meetings have nothing to open
   });
 
   it('item card: doc with url opens; action shows due and parent; private and long text', () => {
     const doc = renderItemCard(port.item(I.f1), ctx);
     assertAllowed(doc);
     const d = frag(doc);
-    expect(d.querySelector('[data-ext-action^="mm:a:open:"]').getAttribute('data-ext-action')).toBe(`mm:a:open:${I.f1}`);
+    expect(d.querySelector('[data-ext-action^="mm:bk1:a:open:"]').getAttribute('data-ext-action')).toBe(`mm:bk1:a:open:${I.f1}`);
     expect(d.querySelector('.mm-where').getAttribute('dir')).toBe('ltr');
     expect(d.querySelector('.mm-summary').textContent).toBe('Failover and capacity plan for MTCS.');
     const act = frag(renderItemCard(port.item(I.a1), ctx));
     expect(act.querySelector('.mm-meta').textContent).toBe('action · Fri, Oct 30 · due today (Fri, Nov 6)');
     expect(act.querySelector('.mm-parent [data-ext-action]').getAttribute('data-ext-action')).toBe(`mm:bk1:f:${I.f6}`);
-    expect(act.querySelector(`[data-ext-action="mm:a:done:${I.a1}"]`)).not.toBeNull();
+    expect(act.querySelector(`[data-ext-action="mm:bk1:a:done:${I.a1}"]`)).not.toBeNull();
     const priv = frag(renderItemCard(port.item(I.f10), ctx));
     expect(priv.querySelector('.mm-badge').textContent).toBe('🔒 private');
-    expect(priv.querySelector(`[data-ext-action="mm:a:share:${I.f10}"]`)).not.toBeNull();
+    expect(priv.querySelector(`[data-ext-action="mm:bk1:a:share:${I.f10}"]`)).not.toBeNull();
     const long = renderItemCard({ ...port.item(I.f6), text: 'word '.repeat(300) }, ctx);
     assertAllowed(long);
     expect(frag(long).querySelector('details.mm-more summary').textContent).toBe('Show more');
@@ -822,11 +822,11 @@ describe('map card (SPEC §9, AT-6)', () => {
 
   it('item focus: centre buttons for an action, Open for a doc', () => {
     const act = frag(render({ type: 'item', id: I.a2 })).querySelector('.mm-center');
-    expect([...act.querySelectorAll('[data-ext-action]')].map((b) => b.getAttribute('data-ext-action'))).toEqual([`mm:a:accept:${I.a2}`, `mm:a:dismiss:${I.a2}`]);
+    expect([...act.querySelectorAll('[data-ext-action]')].map((b) => b.getAttribute('data-ext-action'))).toEqual([`mm:bk9:a:accept:${I.a2}`, `mm:bk9:a:dismiss:${I.a2}`]);
     expect(act.textContent).toContain('❔ Dana to share the roadmap deck');
     const doc = frag(render({ type: 'item', id: I.f2 })).querySelector('.mm-center');
     expect(doc.querySelector('.mm-c-meta').textContent).toBe('doc · Wed, Oct 28 · Microsoft Word');
-    expect(doc.querySelector('[data-ext-action]').getAttribute('data-ext-action')).toBe(`mm:a:open:${I.f2}`);
+    expect(doc.querySelector('[data-ext-action]').getAttribute('data-ext-action')).toBe(`mm:bk9:a:open:${I.f2}`);
   });
 
   it('highlights matched terms in the centre card', () => {
@@ -843,7 +843,7 @@ describe('map card (SPEC §9, AT-6)', () => {
     assertAllowed(html);
     const root = frag(html).firstElementChild;
     expect(root.getAttribute('aria-label')).toBe('Mind Map overview');
-    expect(root.querySelector('.mm-center').textContent).toBe('🧠 Your mind map10 items · 3 people & topics');
+    expect(root.querySelector('.mm-center').textContent).toBe('🧠 Your mind map10 items · 3 teams, people & topics');
     const stats = [...root.querySelectorAll('.mm-node.mm-g-stat')];
     expect(stats.map((s) => s.textContent)).toEqual(['❔1 to review', '☐5 open actions']);
     expect(stats.every((s) => s.tagName === 'SPAN')).toBe(true);
@@ -894,7 +894,7 @@ describe('map card (SPEC §9, AT-6)', () => {
     const done = frag(render({ type: 'item', id: I.f9 })).querySelector('.mm-center');
     expect(done.querySelector('.mm-c-meta').textContent).toBe('done Wed, Nov 4');
     expect(done.classList.contains('mm-st-done')).toBe(true);
-    expect(done.querySelector('[data-ext-action]').getAttribute('data-ext-action')).toBe(`mm:a:reopen:${I.f9}`);
+    expect(done.querySelector('[data-ext-action]').getAttribute('data-ext-action')).toBe(`mm:bk9:a:reopen:${I.f9}`);
   });
 
   it('overview count nodes say how to open them', () => {
@@ -957,9 +957,9 @@ describe('map card (SPEC §9, AT-6)', () => {
 describe('parseAction and applyUiAction', () => {
   it('parses every grammar entry', () => {
     for (const verb of ['done', 'reopen', 'accept', 'dismiss', 'open', 'private', 'share', 'delete']) {
-      expect(parseAction(`mm:a:${verb}:${I.f1}`)).toEqual({ scope: 'data', verb, id: I.f1 });
+      expect(parseAction(`mm:b1a:a:${verb}:${I.f1}`)).toEqual({ scope: 'data', blk: '1a', verb, id: I.f1 });
     }
-    expect(parseAction(`mm:a:undo:${OP}`)).toEqual({ scope: 'data', verb: 'undo', id: OP });
+    expect(parseAction(`mm:b1a:a:undo:${OP}`)).toEqual({ scope: 'data', blk: '1a', verb: 'undo', id: OP });
     expect(parseAction(`mm:b1a:f:${E.bingo}`)).toEqual({ scope: 'block', blk: '1a', verb: 'focus', ref: E.bingo });
     expect(parseAction('mm:b1a:f:me')).toEqual({ scope: 'block', blk: '1a', verb: 'focus', ref: 'me' });
     expect(parseAction('mm:b1a:f:o')).toEqual({ scope: 'block', blk: '1a', verb: 'focus', ref: 'o' });
@@ -974,7 +974,9 @@ describe('parseAction and applyUiAction', () => {
 
   it('rejects junk', () => {
     for (const bad of [
-      '', null, 42, 'mm:a:done', `mm:a:undo:${I.f1}`, `mm:a:done:${OP}`, `mm:a:launch:${I.f1}`, `mm:a:done:${I.f1}x`,
+      '', null, 42, 'mm:a:done', `mm:b1:a:undo:${I.f1}`, `mm:b1:a:done:${OP}`, `mm:b1:a:launch:${I.f1}`, `mm:b1:a:done:${I.f1}x`,
+      // Unbound data actions (the old grammar) are refused.
+      `mm:a:done:${I.f1}`, `mm:a:undo:${OP}`, `mm:a:share:${I.f1}`,
       'mm:b1:f:../x', `mm:b1:f:${OP}`, 'mm:b1:more:center', 'mm:b1:mode:grid', 'mm:b1:back:x', 'mm:bX1:back', 'mm:b:back',
       `mm:c1:x:0:${I.f1}`, `mm:c1:x:1:${OP}`, 'mm:c1:map:o', `mm:c1:zoom:${I.f1}`, `MM:A:DONE:${I.f1}`, `mm:a:done:${I.f1}`.repeat(3),
     ]) {
