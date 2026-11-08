@@ -1230,6 +1230,8 @@ export class Mind {
         if (!change.op) return { code: change.code || 'noop', applied: change.applied || [], rejected: change.rejected || [] };
         // The annotated items already carry the new mentions.
         this._backfill(state, change, env);
+        // The undo label counts the items changed, not the entries sent.
+        if (change.op.label?.params) change.op.label.params.count = Math.max(1, change.applied?.length || 0);
         return { changes: [change], applied: change.applied, rejected: change.rejected };
       });
       return { ok: !!out.committed, opId: out.opId, applied: out.applied || [], rejected: out.rejected || [], code: out.code };
@@ -1595,7 +1597,9 @@ export class Mind {
         return `[${item.status === 'done' ? 'x' : ' '}] ${esc(item.title)}${due}${sug}${flag}`;
       }
       const day = isoDay(item.occurredAt ?? item.createdAt);
-      const title = isHttp(item.url) ? `[${esc(item.title)}](${item.url.replace(/[()\s<>]/g, encodeURIComponent)})` : esc(item.title);
+      // encodeURIComponent leaves ( and ) alone, and they would end the link.
+      const href = isHttp(item.url) ? item.url.replace(/[()\s<>]/g, (c) => `%${c.charCodeAt(0).toString(16).toUpperCase().padStart(2, '0')}`) : '';
+      const title = href ? `[${esc(item.title)}](${href})` : esc(item.title);
       const where = item.path ? ` — \`${item.path.replace(/[`\r\n]/g, '')}\`` : '';
       const app = item.kind === 'doc' && !item.path && !isHttp(item.url) && item.source?.app ? ` · ${esc(item.source.app)}` : '';
       return `${day} · ${item.kind} · ${title}${where}${app}${flag}`;
@@ -1607,7 +1611,7 @@ export class Mind {
       const lines = [];
       if (item.summary && normTitle(item.summary) !== title) lines.push(item.summary);
       String(item.text || '').split(/\r?\n/).forEach((raw, i) => {
-        const bare = text.collapseWs(raw.replace(MARKER_RE, ''));
+        const bare = text.collapseWs(raw.replace(MARKER_RE, '').replace(/^#{1,6}\s+/, ''));
         // An action's first line is the action itself.
         if (!bare || (item.kind === 'action' && i === 0)) return;
         if (skip.has(normTitle(bare)) || extractor.ACTION_HEADING_RE.test(bare)) return;

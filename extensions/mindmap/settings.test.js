@@ -109,8 +109,10 @@ describe('actions', () => {
     expect(data).toMatchObject({ format: 'kage-mindmap', schema: 1, note: 'This export includes private items. Keep it somewhere safe.' });
     expect(data.items.some((i) => i.private)).toBe(true);
     const md = await p.runAction('export_md');
+    expect(md.status).toBe('Exported 7 items as Markdown');
     expect(md.host).toMatchObject({ type: 'download', filename: 'mindmap-2026-11-06.md', mime: 'text/markdown' });
-    expect(md.host.content).toContain('- [ ] Send MTCS numbers to Dana');
+    expect(md.host.content).toContain('  - [ ] Send MTCS numbers to Dana');
+    expect(md.host.content).toContain('· bingo salary thoughts · private');
     expect(await p.runAction('import_json')).toEqual({ host: { type: 'pick_file', accept: '.json', action: 'import_json' } });
     expect(await p.runAction('nonsense')).toEqual({});
   });

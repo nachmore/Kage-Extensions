@@ -225,3 +225,49 @@ describe('capture', () => {
     expect(out).toEqual({ error: 'Mind Map is read-only until repaired', note: NOTE });
   });
 });
+
+describe('annotate (P1)', () => {
+  it('coerces items, entities and actions sent as JSON strings, caps at 15 items, and defaults unknown types', async () => {
+    const g = await makeHarness();
+    g.at(FIXTURE_NOW);
+    const ids = [];
+    for (let i = 0; i < 17; i++) ids.push((await g.mind.capture(`walrus note ${i} about the archive move`, { via: 'launcher' })).itemId);
+    const entries = ids.map((id, i) => ({ id, terms: `archive, move ${i}`, entities: i === 0 ? '[{"name":"Atlas","type":"spaceship"}]' : undefined }));
+    entries[1].actions = '[{"text":"Plan the move","quote":"about the archive move","due":"2026-11-10"}]';
+    const { result } = await g.tools.execute('annotate', { items: JSON.stringify(entries) });
+    expect(result.applied).toHaveLength(15);
+    expect(result.applied.every((c) => CITE.test(c))).toBe(true);
+    expect(result.rejected).toEqual([]);
+    expect(g.mind.item(ids[15]).terms).toBeUndefined();
+    expect(g.mind.item(ids[0]).terms).toEqual(['archive', 'move 0']);
+    expect(g.mind.entity(g.mind.resolveEntity('atlas', null).entityId).type).toBe('topic');
+    const [act] = g.mind.childrenOf(ids[1]);
+    expect(act).toMatchObject({ title: 'Plan the move', suggested: true, origin: 'agent', dueAt: new Date(2026, 10, 10).getTime() });
+    expect(result.note).toBe(NOTE);
+  });
+
+  it('answers with an error for nothing to do, and the read-only message on read-only stores', async () => {
+    const g = await makeHarness();
+    g.at(FIXTURE_NOW);
+    const note = await g.mind.capture('walrus archive note', { via: 'launcher' });
+    expect((await g.tools.execute('annotate', {})).result).toEqual({ applied: [], rejected: [], error: 'no_items', note: NOTE });
+    expect((await g.tools.execute('annotate', { items: 'not json' })).result.error).toBe('no_items');
+    // A call that changes nothing still reports what it looked at.
+    await g.tools.execute('annotate', { items: [{ id: note.itemId, terms: ['archive'] }] });
+    const ops = g.mind.state.ops.length;
+    const same = (await g.tools.execute('annotate', { items: [{ id: note.itemId, terms: ['archive'] }] })).result;
+    expect(same.applied).toEqual([`[mm:${note.itemId}]`]);
+    expect(g.mind.state.ops.length).toBe(ops);
+    g.mind._readOnly = { code: 'unreadable', keys: [] };
+    g.mind.store.readOnly = true;
+    expect((await g.tools.execute('annotate', { items: [{ id: note.itemId, summary: 'x' }] })).result)
+      .toEqual({ error: 'Mind Map is read-only until repaired', note: NOTE });
+  });
+
+  it('never returns private titles, and rejects private items without touching them', async () => {
+    const { result } = await provider().execute('annotate', { items: [{ id: F.F10, summary: 'secret summary', terms: ['secret'] }] });
+    expect(result).toEqual({ applied: [], rejected: [{ cite: `[mm:${F.F10}]`, reason: 'private' }], note: NOTE });
+    expect(h.mind.item(F.F10).summary).toBeUndefined();
+    expect(JSON.stringify(result)).not.toMatch(/salary/i);
+  });
+});

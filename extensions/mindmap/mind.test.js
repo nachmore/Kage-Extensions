@@ -2,10 +2,13 @@
 // safety, read-only mode, link enrichment, window docs, agent records,
 // prompts, export and delete. End-to-end behaviour lives in
 // acceptance.test.js; these tests pin the facade's own contracts.
+import { JSDOM } from 'jsdom';
 import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import { createMemoryHost } from '../../test-helpers/mindmap/memory-host.mjs';
 import { FIXTURE_NOW, local, makeContext } from '../../test-helpers/mindmap/corpus.mjs';
 import { Mind, getMind } from './mind.js';
+import * as idlib from './lib/ids.js';
+import { createFormatterState, formatHtml } from './view.js';
 
 const META = { 'https://example.com/blog/mtcs-intro': { title: 'An intro to MTCS', description: 'What MTCS is <b>for</b>.' } };
 
@@ -28,6 +31,9 @@ function window(host, opts = {}) {
   const ctx = makeContext(host, { invoke: host.connect().invoke, ...opts });
   return new Mind(ctx);
 }
+
+// formatHtml parses with the global DOMParser (the sandbox has one).
+globalThis.DOMParser ??= new JSDOM('').window.DOMParser;
 
 const shard = (ms) => `mm-items-${new Date(ms).toISOString().slice(0, 7)}`;
 
@@ -387,5 +393,147 @@ describe('stats, undo target and the data port', () => {
     expect(port.changedSince(port.rev, [pub.itemId])).toBe(false);
     await mind.setStatus(pub.itemId, 'done');
     expect(port.changedSince(port.rev - 1, [pub.itemId])).toBe(true);
+  });
+});
+
+// --- P1 ------------------------------------------------------------------------------
+
+describe('the map (P1)', () => {
+  it('mapTarget: an entity, else an item id, else the top hit, else the overview', async () => {
+    const { mind } = setup();
+    const sync = await mind.capture('Bingo team sync\n- [ ] send the MTCS numbers', { via: 'launcher' });
+    await mind.capture('MTCS capacity review notes', { via: 'launcher' });
+    const bingo = mind.resolveEntity('bingo', null).entityId;
+    expect(mind.mapTarget('')).toEqual({ ref: 'o', name: '' });
+    expect(mind.mapTarget('@bingo')).toMatchObject({ ref: bingo, name: 'Bingo' });
+    expect(mind.mapTarget(`[mm:${sync.itemId}]`)).toEqual({ ref: sync.itemId, name: 'Bingo team sync' });
+    expect(mind.mapTarget('capacity review')).toMatchObject({ name: 'MTCS capacity review notes', highlight: ['capacity', 'review'] });
+    expect(mind.mapTarget('@bingo kind:doc')).toMatchObject({ ref: bingo, kinds: ['doc'] });
+    expect(mind.mapTarget('zeppelin')).toEqual({ ref: 'o', name: '', missed: true });
+  });
+
+  it('builds a neighbourhood plus HTML within budget at 10,000 items', async () => {
+    const { mind } = setup();
+    await mind.ready();
+    const rand = (n) => { let x = n * 2654435761 % 4294967296; return () => (x = (x * 1664525 + 1013904223) % 4294967296) / 4294967296; };
+    const next = rand(7);
+    const ents = Array.from({ length: 60 }, (_, i) => ({
+      id: idlib.newId('e', FIXTURE_NOW - 400 * 86_400_000 + i), type: ['team', 'person', 'project', 'topic'][i % 4],
+      name: `Name${i}`, aliases: [], key: `name${i}`, origin: 'rule', createdAt: FIXTURE_NOW - 400 * 86_400_000, rev: 1,
+    }));
+    const words = ['capacity', 'failover', 'review', 'budget', 'launch', 'dashboard', 'pricing', 'roadmap', 'hiring', 'invoice'];
+    const items = Array.from({ length: 10_000 }, (_, i) => {
+      const at = FIXTURE_NOW - Math.floor(next() * 300) * 86_400_000 - i;
+      const e1 = ents[Math.floor(next() * ents.length)];
+      const e2 = ents[Math.floor(next() * ents.length)];
+      const kind = ['note', 'link', 'doc', 'action', 'meeting'][i % 5];
+      const text = `${words[i % 10]} ${words[(i * 7) % 10]} item ${i} with ${e1.name} and ${e2.name}`;
+      return {
+        id: idlib.newId('i', at), kind, title: text.slice(0, 60), titleSource: 'auto', text, createdAt: at, updatedAt: at,
+        ...(kind === 'action' ? { status: i % 3 ? 'open' : 'done', owner: 'me' } : {}),
+        entityIds: [...new Set([e1.id, e2.id])], mentionOrigin: { [e1.id]: 'rule', [e2.id]: 'rule' },
+        keyphrases: [words[i % 10]], source: { via: 'import' }, enrich: { state: 'none' }, rev: 1, v: 1,
+      };
+    });
+    const out = await mind.importJson({ format: 'kage-mindmap', schema: 1, items, entities: ents });
+    expect(out).toMatchObject({ ok: true, added: 10_000 });
+    const t = (key, vars) => `${key}${vars ? JSON.stringify(vars) : ''}`;
+    const state = createFormatterState();
+    const busiest = [...mind.byEntity].sort((a, b) => b[1].size - a[1].size)[0][0];
+    const time = (marker) => {
+      const runs = [];
+      for (let i = 0; i < 5; i++) {
+        const start = performance.now();
+        const html = formatHtml(`<p>${marker}</p>`, mind.port, { t, locale: 'en', canReformat: true, state, now: FIXTURE_NOW });
+        runs.push(performance.now() - start);
+        expect(html).toContain('mm-t-map');
+      }
+      return runs.sort((a, b) => a - b)[2];
+    };
+    const results = {
+      entity: time(`[mm-card:map:${busiest}]`),
+      item: time(`[mm-card:map:${items[42].id}]`),
+      overview: time('[mm-card:map:o]'),
+    };
+    for (const [what, ms] of Object.entries(results)) {
+      if (process.env.MM_PERF) console.log(`map ${what} @10k: ${ms.toFixed(1)} ms`);
+      if (ms > 30) console.warn(`map ${what} focus at 10k items: median ${ms.toFixed(1)} ms (budget 30 ms)`);
+      expect(ms, what).toBeLessThan(300);
+    }
+  }, 120_000);
+});
+
+describe('mm? scope (P1)', () => {
+  it('names the widened range when nothing matched the asked one, and nothing else changes', async () => {
+    const { mind } = setup();
+    vi.setSystemTime(local(2026, 10, 20, 9));
+    await mind.capture('walrus capacity notes', { via: 'launcher' });
+    vi.setSystemTime(FIXTURE_NOW);
+    const t = (k, v) => (k === 'prompt.ask' ? v.scope : `${k}${v ? JSON.stringify(v) : ''}`);
+    expect(mind.askPrompt('walrus capacity yesterday', { t }))
+      .toBe('prompt.scope_range{"from":"2026-11-05","to":"2026-11-05"}; prompt.scope_widened{"from":"2026-10-06","to":"2026-11-06"}');
+    expect(mind.askPrompt('walrus capacity', { t })).toBe('prompt.scope_none');
+    // A dropped filter is reported generically.
+    expect(mind.askPrompt('walrus capacity in may 2025', { t })).toMatch(/prompt\.scope_relaxed$/);
+    // With nothing found at all, there is nothing to qualify.
+    expect(mind.askPrompt('zeppelin yesterday', { t })).not.toMatch(/widened|relaxed/);
+  });
+});
+
+describe('annotate (P1)', () => {
+  it('back-fills a new agent entity onto earlier items and labels the op by what changed', async () => {
+    const { mind } = setup();
+    const early = await mind.capture('Atlas autoscaler idea', { via: 'launcher' });
+    const target = await mind.capture('capacity planning notes for next quarter', { via: 'launcher' });
+    expect(mind.resolveEntity('atlas', null)).toBeNull();
+    const out = await mind.annotate([
+      { id: target.itemId, entities: [{ name: 'Atlas', type: 'project' }] },
+      { id: 'i0zzzzzzzzzzzzz', summary: 'nothing here' },
+    ]);
+    expect(out).toMatchObject({ ok: true, applied: [target.itemId], rejected: [{ id: 'i0zzzzzzzzzzzzz', reason: 'not_found' }] });
+    const atlas = mind.resolveEntity('atlas', null).entityId;
+    expect(mind.item(early.itemId).entityIds).toContain(atlas);
+    expect(mind.item(early.itemId).mentionOrigin[atlas]).toBe('rule');
+    const target_ = mind.undoTarget();
+    expect(target_.summary).toMatchObject({ code: 'annotate', count: 1 });
+    expect((await mind.undo()).ok).toBe(true);
+    expect(mind.item(early.itemId).entityIds).not.toContain(atlas);
+    expect(mind.resolveEntity('atlas', null)).toBeNull();
+  });
+
+  it('read-only stores refuse it', async () => {
+    const { host, mind } = setup();
+    const note = await mind.capture('a note to annotate', { via: 'launcher' });
+    host.corrupt(shard(FIXTURE_NOW));
+    host.corrupt(`nx-${shard(FIXTURE_NOW)}`);
+    const other = window(host);
+    await other.ready();
+    expect(await other.annotate([{ id: note.itemId, summary: 'x' }])).toMatchObject({ ok: false, code: 'readonly' });
+  });
+});
+
+describe('Export Markdown (P1)', () => {
+  it('escapes Markdown in user text, links and paths, and keeps body lines from reading as structure', async () => {
+    const { mind } = setup({ meta: { 'https://example.com/a_(b)': { title: 'Tricky *title* [x](y)', description: 'Summary with <b>tags</b>' } } });
+    await mind.capture('https://example.com/a_(b)', { via: 'launcher' });
+    await mind.whenIdle();
+    await mind.capture('# Not a heading _really_\n1. first line\n- second line\n=== rule', { via: 'launcher' });
+    await mind.capture('~/Documents/odd `name`.pdf', { via: 'launcher' });
+    await mind.capture('! private walrus diary', { via: 'launcher' });
+    const counts = {};
+    const md = mind.exportMarkdown((k, v) => (k === 'export.due' ? `due ${v.day}` : k.split('.').pop()), counts);
+    expect(counts.items).toBe(4);
+    expect(md).toContain('[Tricky \\*title\\* \\[x\\]\\(y\\)](https://example.com/a_%28b%29)');
+    expect(md).toContain('  > Summary with btags/b');
+    expect(md).not.toMatch(/<|>(?! )/);
+    // Bullet markers are dropped from body lines (as everywhere a note is shown);
+    // what's left can't start a list, heading or rule.
+    const note = md.split('\n').filter((l) => l.startsWith('  > ')).map((l) => l.slice(4));
+    expect(note).toEqual(expect.arrayContaining(['first line', 'second line', '\\=== rule']));
+    expect(note).not.toContain('\\# Not a heading \\_really\\_');
+    expect(md).toContain("— `~/Documents/odd name.pdf`");
+    expect(md).toMatch(/private walrus diary · private/);
+    // No raw heading from user text.
+    expect(md.split('\n').filter((l) => /^#/.test(l)).every((l) => /^(# title|## )/.test(l))).toBe(true);
   });
 });

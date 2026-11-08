@@ -275,3 +275,48 @@ describe('formatter actions (onResultAction)', () => {
     expect(g.context.formatter.requestReformat).toHaveBeenCalledTimes(1);
   });
 });
+
+describe('map and ask rows (P1)', () => {
+  it('mm map: overview, entity, item id, words (with kinds and highlights) and a miss', async () => {
+    const overview = rowById(h.search.match('mm map'), 'mm:map');
+    expect(overview).toMatchObject({ icon: '🗺️', label: 'Map overview', description: 'Shows the map — click a node to move there', score: 95, data: { a: 'map', ref: 'o' } });
+    expect(await h.search.execute(overview)).toEqual({ type: 'display', value: '🗺️ Overview\n\n[mm-card:map:o]' });
+
+    const dana = h.mind.resolveEntity('dana', null).entityId;
+    expect(rowById(h.search.match('mm map @dana'), 'mm:map')).toMatchObject({ label: 'Map: Dana', data: { a: 'map', ref: dana } });
+    expect(rowById(h.search.match(`mm map ${F.F6}`), 'mm:map')).toMatchObject({ label: 'Map: Bingo team sync', data: { a: 'map', ref: F.F6 } });
+
+    const words = rowById(h.search.match('mm map kind:doc rollout plan'), 'mm:map');
+    expect(words.data).toEqual({ a: 'map', ref: F.F2, kinds: ['doc'], highlight: ['rollout', 'plan'] });
+    expect((await h.search.execute(words)).value).toBe(`🗺️ MTCS rollout plan.docx\n\n[mm-card:map:${F.F2}]`);
+
+    const miss = rowById(h.search.match('mm map zeppelin hangar'), 'mm:map');
+    expect(miss).toMatchObject({ label: 'Map overview', description: 'Nothing matched “zeppelin hangar” — showing the overview' });
+  });
+
+  it('the display line escapes Markdown in the name', async () => {
+    const g = await makeHarness();
+    g.at(FIXTURE_NOW);
+    const out = await g.mind.capture('Notes on *stars* and [links](x) <b>', { via: 'launcher' });
+    const shown = await g.search.execute(rowById(g.search.match(`mm map ${out.itemId}`), 'mm:map'));
+    expect(shown.value.split('\n\n')[0]).toBe('🗺️ Notes on \\*stars\\* and \\[links\\]\\(x\\) b');
+  });
+
+  it('mm?: a hint when empty; otherwise one row whose Enter sends the visible prompt', async () => {
+    expect(h.search.match('mm?')).toEqual([expect.objectContaining({ id: 'mm:askhint', data: { a: 'noop' } })]);
+    const long = `which doc spoke about mtcs last week ${'and more words '.repeat(10)}`.trim();
+    const [row] = h.search.match(`mm? ${long}\nsecond line`);
+    expect(row.id).toBe('mm:askgo');
+    expect(row.label.length).toBeLessThan(110);
+    expect(row.data).toEqual({ a: 'ask', question: `${long} second line` });
+    const out = await h.search.execute(row);
+    expect(out.type).toBe('prompt');
+    expect(out.value).toContain(`Question: ${long} second line`);
+    expect(out.value).toMatch(/\[mm:i[0-9a-z]{14}\]/);
+    // A custom trigger renames the ask keyword too.
+    const custom = new MindMapSearchProvider();
+    custom.initialize({ ...h.context, config: { ...h.context.config, trigger: 'brain' } });
+    expect(custom.match('brain? mtcs')[0].id).toBe('mm:askgo');
+    expect(rowById(custom.match('brain mtcs design'), 'mm:ask').data).toEqual({ a: 'fill', value: 'brain? mtcs design' });
+  });
+});
