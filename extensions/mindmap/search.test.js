@@ -215,7 +215,12 @@ describe('Enter behaviours', () => {
     expect(hits(recent).length).toBe(10);
     expect(hits(recent)[0].id).toBe(`mm:i:${F.F10}`);
     const help = await h.search.execute(h.search.match('mm help')[0]);
-    expect(help).toEqual({ type: 'display', value: '🧠 Mind Map — quick reference\n\n[mm-card:help]' });
+    // The P2 commands the help card doesn't list follow it as one line.
+    expect(help).toEqual({
+      type: 'display',
+      value: '🧠 Mind Map — quick reference\n\n[mm-card:help]\n\n'
+        + 'More: `mm organize` · `mm archive …` · `mm archived` · `mm merge @a into @b` · `mm rename @a to …` · `mm forget @a`',
+    });
     const prefix = h.search.match('mm mtc');
     expect(hits(prefix).length).toBeGreaterThanOrEqual(4);
   });

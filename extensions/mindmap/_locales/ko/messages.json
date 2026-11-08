@@ -1494,10 +1494,10 @@
     "_source_hash": "a009e6bc7f1f0956"
   },
   "op.merge": {
-    "message": "{name}에 병합",
-    "description": "Describes a change (used after Undo:)",
+    "message": "{from}을(를) {name}에 병합",
+    "description": "Describes a change (used after Undo:); from and name are entity names",
     "_machine_translated": true,
-    "_source_hash": "a9844e6899d5ed9f"
+    "_source_hash": "f648df50847fc4ff"
   },
   "op.forget": {
     "message": "{name} 잊기",
@@ -1506,10 +1506,10 @@
     "_source_hash": "5a56eadd8bcf4171"
   },
   "op.rename": {
-    "message": "{name} 이름 변경",
-    "description": "Describes a change (used after Undo:)",
+    "message": "{from}의 이름을 {name}(으)로 변경",
+    "description": "Describes a change (used after Undo:); from is the old name, name the new one",
     "_machine_translated": true,
-    "_source_hash": "2befe02e535bfda3"
+    "_source_hash": "6a8c1628d2675fd3"
   },
   "op.import": {
     "message": "{n, plural, other {항목 #개}} 가져오기",
@@ -2410,5 +2410,101 @@
     "description": "Part of the inferred scope in the mm? prompt when a filter was dropped to find anything",
     "_machine_translated": true,
     "_source_hash": "bb8ff78e1f16dc8a"
+  },
+  "help.more": {
+    "message": "더 보기: {cmds}",
+    "description": "Line after the help card listing more commands; cmds is a list of commands",
+    "_machine_translated": true,
+    "_source_hash": "dcc7794a6c5b5885"
+  },
+  "row.archive_item": {
+    "message": "“{title}” 보관",
+    "description": "Row that archives one item (mm archive)",
+    "_machine_translated": true,
+    "_source_hash": "60026d3ce2985203"
+  },
+  "row.archive_none": {
+    "message": "보관할 항목 중 “{query}”와(과) 일치하는 항목이 없습니다",
+    "description": "Row when mm archive finds nothing",
+    "_machine_translated": true,
+    "_source_hash": "690d1b6e7105acd9"
+  },
+  "row.archive_usage": {
+    "message": "{cmd} 뒤에 몇 단어를 입력하면 보관할 항목을 찾을 수 있습니다",
+    "description": "Usage row for mm archive; cmd is e.g. 'mm archive'",
+    "_machine_translated": true,
+    "_source_hash": "974148a4f519237a"
+  },
+  "row.archive_usage_desc": {
+    "message": "보관된 항목은 목록, 맵, 에이전트 답변에서 제외되지만 내보내기에는 포함됩니다",
+    "description": "Explains what archiving does",
+    "_machine_translated": true,
+    "_source_hash": "cff23383cfb5e7aa"
+  },
+  "row.archived_count": {
+    "message": "{n, plural, other {보관된 항목 #개}}",
+    "description": "Row that lists archived items",
+    "_machine_translated": true,
+    "_source_hash": "3ce95bc7fe6297d9"
+  },
+  "row.archived_on": {
+    "message": "{day}에 보관됨",
+    "description": "When an item was archived; day is a formatted date",
+    "_machine_translated": true,
+    "_source_hash": "cbeb9ff9332b8dae"
+  },
+  "row.archived_restore": {
+    "message": "Enter 키를 눌러 복원",
+    "description": "Hint on an archived item's row",
+    "_machine_translated": true,
+    "_source_hash": "191aaab2aa1941af"
+  },
+  "row.archived_none": {
+    "message": "보관된 항목이 없습니다",
+    "description": "Row when there are no archived items",
+    "_machine_translated": true,
+    "_source_hash": "98c1f0a347790300"
+  },
+  "row.archived_none_for": {
+    "message": "“{query}”와(과) 일치하는 보관된 항목이 없습니다",
+    "description": "Row when no archived item matches the words",
+    "_machine_translated": true,
+    "_source_hash": "eab0aaf1f98c5036"
+  },
+  "row.archived_line": {
+    "message": "“{title}”을(를) 보관했습니다",
+    "description": "Line shown after archiving an item",
+    "_machine_translated": true,
+    "_source_hash": "6fb1a4a33ec6e6e3"
+  },
+  "row.unarchived_line": {
+    "message": "“{title}”을(를) 복원했습니다",
+    "description": "Line shown after restoring an archived item",
+    "_machine_translated": true,
+    "_source_hash": "71c1caa084f3fb67"
+  },
+  "op.archive": {
+    "message": "“{title}” 보관",
+    "description": "Describes a change (used after Undo:)",
+    "_machine_translated": true,
+    "_source_hash": "f8f1681e50a70adf"
+  },
+  "op.unarchive": {
+    "message": "“{title}” 복원",
+    "description": "Describes a change (used after Undo:)",
+    "_machine_translated": true,
+    "_source_hash": "a8856d9760a0080d"
+  },
+  "err.rename_taken": {
+    "message": "이미 같은 이름을 사용하는 항목이 있습니다 — {cmd} 명령으로 둘을 합칠 수 있습니다",
+    "description": "Rename refused because another name matches; cmd is e.g. 'mm merge'",
+    "_machine_translated": true,
+    "_source_hash": "a556fa5a17278fcd"
+  },
+  "err.entity_missing": {
+    "message": "해당 이름이 더 이상 마인드맵에 없습니다",
+    "description": "Merge/forget/rename of a name that no longer exists",
+    "_machine_translated": true,
+    "_source_hash": "7c9b5710e90890ff"
   }
 }

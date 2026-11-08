@@ -1494,10 +1494,10 @@
     "_source_hash": "a009e6bc7f1f0956"
   },
   "op.merge": {
-    "message": "Συγχωνεύτηκε στο {name}",
-    "description": "Describes a change (used after Undo:)",
+    "message": "Συγχώνευση {from} σε {name}",
+    "description": "Describes a change (used after Undo:); from and name are entity names",
     "_machine_translated": true,
-    "_source_hash": "a9844e6899d5ed9f"
+    "_source_hash": "f648df50847fc4ff"
   },
   "op.forget": {
     "message": "Το {name} ξεχάστηκε",
@@ -1506,10 +1506,10 @@
     "_source_hash": "5a56eadd8bcf4171"
   },
   "op.rename": {
-    "message": "Μετονομασία του {name}",
-    "description": "Describes a change (used after Undo:)",
+    "message": "Μετονομασία {from} σε {name}",
+    "description": "Describes a change (used after Undo:); from is the old name, name the new one",
     "_machine_translated": true,
-    "_source_hash": "2befe02e535bfda3"
+    "_source_hash": "6a8c1628d2675fd3"
   },
   "op.import": {
     "message": "Εισαγωγή {n, plural, one {# στοιχείου} other {# στοιχείων}}",
@@ -2410,5 +2410,101 @@
     "description": "Part of the inferred scope in the mm? prompt when a filter was dropped to find anything",
     "_machine_translated": true,
     "_source_hash": "bb8ff78e1f16dc8a"
+  },
+  "help.more": {
+    "message": "Περισσότερα: {cmds}",
+    "description": "Line after the help card listing more commands; cmds is a list of commands",
+    "_machine_translated": true,
+    "_source_hash": "dcc7794a6c5b5885"
+  },
+  "row.archive_item": {
+    "message": "Αρχειοθέτηση «{title}»",
+    "description": "Row that archives one item (mm archive)",
+    "_machine_translated": true,
+    "_source_hash": "60026d3ce2985203"
+  },
+  "row.archive_none": {
+    "message": "Δεν βρέθηκε τίποτα για «{query}» προς αρχειοθέτηση",
+    "description": "Row when mm archive finds nothing",
+    "_machine_translated": true,
+    "_source_hash": "690d1b6e7105acd9"
+  },
+  "row.archive_usage": {
+    "message": "Πληκτρολογήστε {cmd} και μερικές λέξεις για να βρείτε τι θα αρχειοθετήσετε",
+    "description": "Usage row for mm archive; cmd is e.g. 'mm archive'",
+    "_machine_translated": true,
+    "_source_hash": "974148a4f519237a"
+  },
+  "row.archive_usage_desc": {
+    "message": "Τα αρχειοθετημένα στοιχεία αφαιρούνται από τις λίστες σας, τον χάρτη και τις απαντήσεις του βοηθού σας· οι εξαγωγές τα διατηρούν",
+    "description": "Explains what archiving does",
+    "_machine_translated": true,
+    "_source_hash": "cff23383cfb5e7aa"
+  },
+  "row.archived_count": {
+    "message": "{n, plural, one {# αρχειοθετημένο στοιχείο} other {# αρχειοθετημένα στοιχεία}}",
+    "description": "Row that lists archived items",
+    "_machine_translated": true,
+    "_source_hash": "3ce95bc7fe6297d9"
+  },
+  "row.archived_on": {
+    "message": "Αρχειοθετήθηκε {day}",
+    "description": "When an item was archived; day is a formatted date",
+    "_machine_translated": true,
+    "_source_hash": "cbeb9ff9332b8dae"
+  },
+  "row.archived_restore": {
+    "message": "Enter για επαναφορά",
+    "description": "Hint on an archived item's row",
+    "_machine_translated": true,
+    "_source_hash": "191aaab2aa1941af"
+  },
+  "row.archived_none": {
+    "message": "Δεν υπάρχει τίποτα αρχειοθετημένο",
+    "description": "Row when there are no archived items",
+    "_machine_translated": true,
+    "_source_hash": "98c1f0a347790300"
+  },
+  "row.archived_none_for": {
+    "message": "Κανένα αρχειοθετημένο στοιχείο δεν ταιριάζει με «{query}»",
+    "description": "Row when no archived item matches the words",
+    "_machine_translated": true,
+    "_source_hash": "eab0aaf1f98c5036"
+  },
+  "row.archived_line": {
+    "message": "Αρχειοθετήθηκε: «{title}»",
+    "description": "Line shown after archiving an item",
+    "_machine_translated": true,
+    "_source_hash": "6fb1a4a33ec6e6e3"
+  },
+  "row.unarchived_line": {
+    "message": "Επαναφέρθηκε: «{title}»",
+    "description": "Line shown after restoring an archived item",
+    "_machine_translated": true,
+    "_source_hash": "71c1caa084f3fb67"
+  },
+  "op.archive": {
+    "message": "Αρχειοθέτηση «{title}»",
+    "description": "Describes a change (used after Undo:)",
+    "_machine_translated": true,
+    "_source_hash": "f8f1681e50a70adf"
+  },
+  "op.unarchive": {
+    "message": "Επαναφορά «{title}»",
+    "description": "Describes a change (used after Undo:)",
+    "_machine_translated": true,
+    "_source_hash": "a8856d9760a0080d"
+  },
+  "err.rename_taken": {
+    "message": "Κάτι άλλο έχει ήδη αυτό το όνομα — συνδυάστε τα με {cmd}",
+    "description": "Rename refused because another name matches; cmd is e.g. 'mm merge'",
+    "_machine_translated": true,
+    "_source_hash": "a556fa5a17278fcd"
+  },
+  "err.entity_missing": {
+    "message": "Αυτό το όνομα δεν υπάρχει πλέον στον νοητικό σας χάρτη",
+    "description": "Merge/forget/rename of a name that no longer exists",
+    "_machine_translated": true,
+    "_source_hash": "7c9b5710e90890ff"
   }
 }

@@ -25,6 +25,10 @@ const DATA_VERBS = new Set(['done', 'reopen', 'accept', 'dismiss', 'undo', 'open
 // ARCHITECTURE §7.2 values only ever contain [a-z0-9:]; keep anything else out.
 const ACTION_ID_RE = /^mm:[a-z0-9:]{1,60}$/;
 const SOURCE_WAIT_MS = 400;
+// `mm archive <words>` (archive one of the hits) and `mm archived [words]` /
+// `mm unarchive [words]` (archived items; Enter restores). P2.
+const ARCHIVE_RE = /^\s*(archive|archived|unarchive)(?:\s+([\s\S]*))?$/i;
+const ARCHIVE_ROWS = 8;
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -257,8 +261,18 @@ export default class MindMapSearchProvider {
 
   findRows(parsed, query) {
     const mind = this.mind;
-    const spec = mind.parse(parsed.rest, { trailingSpace: parsed.trailingSpace });
     const banner = this.readOnlyRow();
+    // P2 archive commands. The query grammar (lib/query.js) doesn't know
+    // them, so they are recognised here, before parsing, like its own
+    // commands: by the first word.
+    const archive = ARCHIVE_RE.exec(parsed.rest);
+    if (archive) {
+      const verb = archive[1].toLowerCase();
+      const args = archive[2] || '';
+      const rows = verb === 'archive' ? this.archiveRows(args, parsed, query) : this.archivedRows(args, parsed, query);
+      return banner ? [banner, ...rows] : rows;
+    }
+    const spec = mind.parse(parsed.rest, { trailingSpace: parsed.trailingSpace });
     let rows;
     if (spec.intent === 'home') rows = this.homeRows();
     else if (spec.command === 'help') rows = [this.helpRow(95)];
@@ -488,10 +502,10 @@ export default class MindMapSearchProvider {
     const t = this.t;
     const title = clip(summary.title || this.t('row.untitled'), 60);
     const known = new Set(['capture', 'capture_dedup', 'status_done', 'status_open', 'dismiss', 'accept', 'edit', 'privacy_on',
-      'privacy_off', 'delete', 'annotate', 'merge', 'forget', 'rename', 'import']);
+      'privacy_off', 'delete', 'annotate', 'merge', 'forget', 'rename', 'import', 'archive', 'unarchive']);
     const code = known.has(summary.code) ? summary.code : 'generic';
     // i18n-keys: op.*
-    const text = t(`op.${code}`, { title, name: summary.name || title, n: summary.count });
+    const text = t(`op.${code}`, { title, name: summary.name || title, from: summary.from || summary.name || title, n: summary.count });
     return summary.count > 1 && (code === 'capture' || code === 'delete') ? t('op.with_count', { text, n: summary.count }) : text;
   }
 
@@ -565,6 +579,52 @@ export default class MindMapSearchProvider {
       { a: spec.command, from: plan.fromId, into: plan.intoId, name: plan.newName })];
   }
 
+  // P2 `mm archive <words>`: the find hits for the words, each archived on
+  // Enter (undoable). Archived items leave every list, the map and the
+  // agent's results, but stay in exports and in `mm archived`.
+  archiveRows(args, parsed, query) {
+    const mind = this.mind;
+    const t = this.t;
+    const m = this.trigger;
+    const words = oneLine(args);
+    const count = mind.archivedItems('', { limit: Infinity }).length;
+    const rows = [];
+    if (words) {
+      const spec = mind.parse(args, { trailingSpace: parsed.trailingSpace });
+      const hits = mind.find(spec, { limit: ARCHIVE_ROWS }).hits;
+      const scores = this.scores(hits.length);
+      hits.forEach((hit, i) => {
+        const row = this.itemRow(hit.item, { score: scores[i], spec, hit });
+        rows.push({ ...row, icon: '🗄️', label: t('row.archive_item', { title: clip(hit.item.title, 100) }), data: { a: 'archive', id: hit.item.id, query } });
+      });
+      if (!hits.length) rows.push(this.row('mm:archive', '🗄️', t('row.archive_none', { query: clip(words, 60) }), t('row.archive_usage', { cmd: `${m} archive` }), 93, { a: 'noop' }));
+    } else {
+      rows.push(this.row('mm:archive', '🗄️', t('row.archive_usage', { cmd: `${m} archive` }), t('row.archive_usage_desc'), 95, this.fill(`${m} archive `)));
+    }
+    if (count) rows.push(this.row('mm:archived', '🗃️', t('row.archived_count', { n: count }), `${m} archived`, 60, this.fill(`${m} archived`)));
+    return rows;
+  }
+
+  // P2 `mm archived [words]`: archived items, newest first; Enter restores one.
+  archivedRows(args, parsed, query) {
+    const mind = this.mind;
+    const t = this.t;
+    const items = mind.archivedItems(args, { limit: LIMITS.findRows, trailingSpace: parsed.trailingSpace });
+    const scores = this.scores(items.length);
+    const now = mind.now();
+    const rows = items.map((item, i) => {
+      const row = this.itemRow(item, { score: scores[i] });
+      const desc = [t('row.archived_on', { day: fmtDay(item.updatedAt, this.locale, { now }) }), t('row.archived_restore')].join(t('chip.sep'));
+      return { ...row, description: desc, data: { a: 'unarchive', id: item.id, query } };
+    });
+    if (!rows.length) {
+      const words = oneLine(args);
+      rows.push(this.row('mm:archived', '🗃️', words ? t('row.archived_none_for', { query: clip(words, 60) }) : t('row.archived_none'),
+        t('row.archive_usage', { cmd: `${this.trigger} archive` }), 93, { a: 'noop' }));
+    }
+    return rows;
+  }
+
   // --- execute ------------------------------------------------------------------------
 
   async execute(result) {
@@ -620,11 +680,21 @@ export default class MindMapSearchProvider {
         case 'rename': {
           const out = data.a === 'merge' ? await mind.merge(data.from, data.into)
             : data.a === 'forget' ? await mind.forget(data.from) : await mind.rename(data.from, data.name);
+          if (!out.ok) return display(`⚠️ ${this.entityErr(out.code)}`, '');
+          const op = mind.state.ops.find((o) => o.opId === out.opId);
+          return display(`🧠 ${md(op ? this.opText(mind.opSummary(op)) : t('row.done'))}`, `[mm-card:op:${out.opId}]`);
+        }
+        case 'archive':
+        case 'unarchive': {
+          if (!ITEM_ID_RE.test(String(data.id || ''))) return null;
+          const out = await mind.setArchived(data.id, data.a === 'archive');
           if (!out.ok) return display(`⚠️ ${this.errText(out.code)}`, '');
-          return display(`🧠 ${t('row.done')}`, `[mm-card:op:${out.opId}]`);
+          const title = md(clip(mind.item(data.id)?.title || '', 80));
+          // i18n-keys: row.archived_line, row.unarchived_line
+          return display(`${data.a === 'archive' ? '🗄️' : '↩️'} ${t(`row.${data.a}d_line`, { title })}`, `[mm-card:op:${out.opId}]`);
         }
         case 'help':
-          return display(`🧠 ${t('help.title')}`, '[mm-card:help]');
+          return display(`🧠 ${t('help.title')}`, `[mm-card:help]\n\n${this.helpMore()}`);
         case 'settings':
           return { type: 'open_extension_settings' };
         default:
@@ -639,6 +709,21 @@ export default class MindMapSearchProvider {
   undoErr(code) {
     // i18n-keys: err.undo_superseded, err.undo_already_undone, err.undo_missing, err.undo_nothing
     return ['superseded', 'already_undone', 'missing', 'nothing'].includes(code) ? this.t(`err.undo_${code}`) : this.errText(code);
+  }
+
+  // Refusals of mm merge / forget / rename (lib/model.js codes): 'conflict'
+  // is a rename onto a name another entity already has, not a write race.
+  entityErr(code) {
+    if (code === 'conflict') return this.t('err.rename_taken', { cmd: `${this.trigger} merge` });
+    if (code === 'not_found') return this.t('err.entity_missing');
+    return this.errText(code);
+  }
+
+  // The commands the help card doesn't list (P2), as a line after it.
+  helpMore() {
+    const m = this.trigger;
+    const cmds = [`${m} organize`, `${m} archive …`, `${m} archived`, `${m} merge @a into @b`, `${m} rename @a to …`, `${m} forget @a`];
+    return this.t('help.more', { cmds: cmds.map((c) => `\`${c}\``).join(' · ') });
   }
 
   errText(code) {

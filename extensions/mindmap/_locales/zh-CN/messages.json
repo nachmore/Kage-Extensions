@@ -1494,10 +1494,10 @@
     "_source_hash": "a009e6bc7f1f0956"
   },
   "op.merge": {
-    "message": "已合并到 {name}",
-    "description": "Describes a change (used after Undo:)",
+    "message": "将 {from} 合并到 {name}",
+    "description": "Describes a change (used after Undo:); from and name are entity names",
     "_machine_translated": true,
-    "_source_hash": "a9844e6899d5ed9f"
+    "_source_hash": "f648df50847fc4ff"
   },
   "op.forget": {
     "message": "已忘记 {name}",
@@ -1506,10 +1506,10 @@
     "_source_hash": "5a56eadd8bcf4171"
   },
   "op.rename": {
-    "message": "已重命名 {name}",
-    "description": "Describes a change (used after Undo:)",
+    "message": "将 {from} 重命名为 {name}",
+    "description": "Describes a change (used after Undo:); from is the old name, name the new one",
     "_machine_translated": true,
-    "_source_hash": "2befe02e535bfda3"
+    "_source_hash": "6a8c1628d2675fd3"
   },
   "op.import": {
     "message": "已导入 {n, plural, other {# 项}}",
@@ -2410,5 +2410,101 @@
     "description": "Part of the inferred scope in the mm? prompt when a filter was dropped to find anything",
     "_machine_translated": true,
     "_source_hash": "bb8ff78e1f16dc8a"
+  },
+  "help.more": {
+    "message": "更多：{cmds}",
+    "description": "Line after the help card listing more commands; cmds is a list of commands",
+    "_machine_translated": true,
+    "_source_hash": "dcc7794a6c5b5885"
+  },
+  "row.archive_item": {
+    "message": "归档“{title}”",
+    "description": "Row that archives one item (mm archive)",
+    "_machine_translated": true,
+    "_source_hash": "60026d3ce2985203"
+  },
+  "row.archive_none": {
+    "message": "没有与“{query}”匹配的可归档内容",
+    "description": "Row when mm archive finds nothing",
+    "_machine_translated": true,
+    "_source_hash": "690d1b6e7105acd9"
+  },
+  "row.archive_usage": {
+    "message": "输入 {cmd} 和几个关键词，查找要归档的内容",
+    "description": "Usage row for mm archive; cmd is e.g. 'mm archive'",
+    "_machine_translated": true,
+    "_source_hash": "974148a4f519237a"
+  },
+  "row.archive_usage_desc": {
+    "message": "归档的条目将从列表、导图和智能体的回答中移除；导出内容仍会保留它们",
+    "description": "Explains what archiving does",
+    "_machine_translated": true,
+    "_source_hash": "cff23383cfb5e7aa"
+  },
+  "row.archived_count": {
+    "message": "{n, plural, other {# 个已归档条目}}",
+    "description": "Row that lists archived items",
+    "_machine_translated": true,
+    "_source_hash": "3ce95bc7fe6297d9"
+  },
+  "row.archived_on": {
+    "message": "归档于 {day}",
+    "description": "When an item was archived; day is a formatted date",
+    "_machine_translated": true,
+    "_source_hash": "cbeb9ff9332b8dae"
+  },
+  "row.archived_restore": {
+    "message": "按 Enter 恢复",
+    "description": "Hint on an archived item's row",
+    "_machine_translated": true,
+    "_source_hash": "191aaab2aa1941af"
+  },
+  "row.archived_none": {
+    "message": "没有已归档的内容",
+    "description": "Row when there are no archived items",
+    "_machine_translated": true,
+    "_source_hash": "98c1f0a347790300"
+  },
+  "row.archived_none_for": {
+    "message": "没有与“{query}”匹配的已归档条目",
+    "description": "Row when no archived item matches the words",
+    "_machine_translated": true,
+    "_source_hash": "eab0aaf1f98c5036"
+  },
+  "row.archived_line": {
+    "message": "已归档“{title}”",
+    "description": "Line shown after archiving an item",
+    "_machine_translated": true,
+    "_source_hash": "6fb1a4a33ec6e6e3"
+  },
+  "row.unarchived_line": {
+    "message": "已恢复“{title}”",
+    "description": "Line shown after restoring an archived item",
+    "_machine_translated": true,
+    "_source_hash": "71c1caa084f3fb67"
+  },
+  "op.archive": {
+    "message": "归档“{title}”",
+    "description": "Describes a change (used after Undo:)",
+    "_machine_translated": true,
+    "_source_hash": "f8f1681e50a70adf"
+  },
+  "op.unarchive": {
+    "message": "恢复“{title}”",
+    "description": "Describes a change (used after Undo:)",
+    "_machine_translated": true,
+    "_source_hash": "a8856d9760a0080d"
+  },
+  "err.rename_taken": {
+    "message": "已有其他条目使用该名称——可使用 {cmd} 将它们合并",
+    "description": "Rename refused because another name matches; cmd is e.g. 'mm merge'",
+    "_machine_translated": true,
+    "_source_hash": "a556fa5a17278fcd"
+  },
+  "err.entity_missing": {
+    "message": "该名称已不在你的思维导图中",
+    "description": "Merge/forget/rename of a name that no longer exists",
+    "_machine_translated": true,
+    "_source_hash": "7c9b5710e90890ff"
   }
 }

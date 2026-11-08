@@ -46,6 +46,8 @@ const EMPTY = Object.freeze(new Set());
 const URL_TEXT_RE = /\b(?:https?:\/\/|www\.)\S+/gi;
 const NOOP_LOG = Object.freeze({ debug() {}, info() {}, warn() {}, error() {} });
 const KIND_ORDER = Object.freeze(['note', 'link', 'doc', 'action', 'meeting']);
+// Ops about an entity rather than an item (P2 mm merge / forget / rename).
+const ENTITY_OPS = new Set(['merge', 'forget', 'rename']);
 
 const mono = () => globalThis.performance?.now?.() ?? Date.now();
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -1125,8 +1127,13 @@ export class Mind {
     const itemId = params.itemId || op?.created?.items?.[0] || op?.before?.items?.[0]?.id;
     const before = (op?.before?.items || []).find((record) => record.id === itemId);
     const title = this.state.items.get(itemId)?.title || before?.title || this._seen.get(itemId)?.title || '';
-    const entityId = params.entityId || params.intoId || params.fromId;
-    return { code, title, count: Number(params.count) || 1, name: entityId ? this.nameOf(entityId) : '' };
+    const entityId = params.intoId || params.entityId || params.fromId;
+    // A forgotten entity is gone, and a merged one redirects: their own
+    // names are in the op's snapshot.
+    const own = (id) => (op?.before?.entities || []).find((e) => e.id === id)?.name || this.state.entities.get(id)?.name || '';
+    const name = entityId ? this.nameOf(entityId) || own(entityId) : '';
+    const from = params.fromId ? own(params.fromId) : code === 'rename' && params.entityId ? own(params.entityId) : '';
+    return { code, title, count: Number(params.count) || 1, name, from, entityOp: ENTITY_OPS.has(code) };
   }
 
   // --- writes ------------------------------------------------------------------------
@@ -1232,7 +1239,44 @@ export class Mind {
   accept(id) { return this._simple((state, env) => model.applyAccept(state, id, env)); }
   dismiss(id) { return this.setStatus(id, 'dismissed'); }
   setPrivate(id, on) { return this._simple((state, env) => model.applyEdit(state, id, { private: !!on }, env)); }
-  setArchived(id, on) { return this._simple((state, env) => model.applyEdit(state, id, { archived: !!on }, env)); }
+  /** P2 archive: hides an item from lists, the map and the agent (not from exports); undoable. */
+  setArchived(id, on) {
+    return this._simple((state, env) => {
+      const item = state.items.get(id);
+      if (item && !!item.archived === !!on) return { op: null, code: 'noop' };
+      const change = model.applyEdit(state, id, { archived: !!on }, env);
+      // An archive is an edit to the model; its label says which, for Undo.
+      if (change.op) change.op.label = { code: on ? 'archive' : 'unarchive', params: { itemId: id } };
+      return change;
+    });
+  }
+
+  /**
+   * Archived items, most recently archived first (`mm archived`). With
+   * `words`, only items whose title, summary, text or entity names contain
+   * every word (the last one as a prefix while typing).
+   */
+  archivedItems(words = '', { limit = LIMITS.findRows, trailingSpace = true } = {}) {
+    const raw = String(words ?? '').trim();
+    const spec = raw ? this.parse(raw, { trailingSpace }) : null;
+    const want = (spec?.terms || []).filter((term) => !term.neg && (term.w ?? 1) >= 1);
+    // A word that names an entity parses as that entity, not as a term.
+    const ents = (spec?.entities || []).filter((e) => e.hard || e.via === 'dict');
+    const out = [];
+    for (const item of this.state.items.values()) {
+      if (!item.archived) continue;
+      if (want.length || ents.length) {
+        const tokens = new Set(text.tokenize([item.title, item.summary || '', withoutUrls(item.text), ...this._entityNames(item)].join(' \n ')));
+        const has = (term) => tokens.has(term.t) || (term.prefix && [...tokens].some((tok) => tok.startsWith(term.t)));
+        if (!want.every(has)) continue;
+        const named = (e) => (item.entityIds || []).includes(e.entityId) || text.tokenize(this.nameOf(e.entityId)).every((tok) => tokens.has(tok));
+        if (!ents.every(named)) continue;
+      }
+      out.push(item);
+    }
+    out.sort((a, b) => b.updatedAt - a.updatedAt || byIdDesc(a.id, b.id));
+    return Number.isFinite(limit) ? out.slice(0, limit) : out;
+  }
   remove(id) { return this._simple((state, env) => model.applyDelete(state, [id], env)); }
 
   /** Toggles an action: open → done, done → open, suggested → accepted. */
@@ -1505,18 +1549,46 @@ export class Mind {
     });
   }
 
-  /** Items `mm organize` would send: not enriched, not private, newest first. */
+  // True once the agent has organized an item (annotate, SPEC §5 S11). It
+  // sets enrich.state 'done' on every item it touches, but a link's page
+  // metadata does too, so for http links only an agent trace counts.
+  _agentOrganized(item) {
+    if (item.enrich?.state !== 'done') return false;
+    if (!isHttp(item.url)) return true;
+    if (item.summarySource === 'agent' || item.terms?.length) return true;
+    if (Object.values(item.mentionOrigin || {}).includes('agent')) return true;
+    return this.childrenOf(item.id).some((child) => child.origin === 'agent');
+  }
+
+  /**
+   * Items `mm organize` would send (SPEC §12, P2): top-level, not yet
+   * organized by the agent, never private (or mentioning a private
+   * entity), open actions only, newest first, at most 15.
+   */
   organizeItems() {
     const out = [];
     for (const id of this._newestIds()) {
       const item = this.state.items.get(id);
       if (!item || item.parentId || item.archived || this.isHidden(item)) continue;
-      if (item.enrich?.state === 'done' && item.summarySource === 'agent') continue;
       if (item.kind === 'action' && item.status !== 'open') continue;
+      if (this._agentOrganized(item)) continue;
       out.push(item);
       if (out.length >= LIMITS.organizeItems) break;
     }
     return out;
+  }
+
+  // One item as the organize prompt shows it: the title, the summary, then
+  // the text (when it says more than the title), ≤600 characters, no <>.
+  // The agent quotes actions from this text, so the text itself is kept.
+  _organizeBody(item) {
+    const title = text.collapseWs(item.title || '');
+    const body = text.collapseWs(item.text || '');
+    const parts = [];
+    if (title && !body.toLowerCase().startsWith(title.toLowerCase())) parts.push(title);
+    if (item.summary && text.collapseWs(item.summary).toLowerCase() !== title.toLowerCase()) parts.push(text.collapseWs(item.summary));
+    if (body) parts.push(body);
+    return stripAngles(text.truncate(parts.filter(Boolean).join(' — '), LIMITS.organizeChars));
   }
 
   /** The visible mm organize prompt (SPEC §12, P2), or null with nothing to send. */
@@ -1524,13 +1596,19 @@ export class Mind {
     const items = this.organizeItems();
     if (!items.length) return null;
     const lines = items.map((item) => {
-      const body = stripAngles(text.truncate(text.collapseWs(item.summary ? `${item.title}. ${item.summary}. ${item.text}` : item.text || item.title), LIMITS.organizeChars));
       const names = this._entityNames(item, { forAgent: true });
-      return `- ${idlib.cite(item.id)} (${item.kind}) ${body}${names.length ? ` {${names.join(', ')}}` : ''}`;
+      return `- ${idlib.cite(item.id)} (${item.kind}) ${this._organizeBody(item)}${names.length ? ` {${names.map(stripAngles).join(', ')}}` : ''}`;
     });
+    // The vocabulary counts only items the agent may see, so a name known
+    // only from private notes never reaches it.
+    const visible = new Map();
+    for (const item of this.state.items.values()) {
+      if (item.archived || this.isHidden(item)) continue;
+      for (const eid of item.entityIds || []) visible.set(eid, (visible.get(eid) || 0) + 1);
+    }
     const vocabulary = [...this.state.entities.values()]
-      .filter((e) => e.id !== 'me' && !e.mergedInto && !e.private)
-      .map((e) => ({ name: e.name, n: this.byEntity.get(e.id)?.size || 0 }))
+      .filter((e) => e.id !== 'me' && !e.mergedInto && !e.private && visible.get(e.id))
+      .map((e) => ({ name: e.name, n: visible.get(e.id) }))
       .sort((a, b) => b.n - a.n || (a.name < b.name ? -1 : 1))
       .slice(0, LIMITS.organizeVocabulary)
       .map((e) => stripAngles(e.name));
@@ -1877,13 +1955,29 @@ export class Mind {
     if (!op) return null;
     const summary = this.opSummary(op);
     const params = op.label?.params || {};
+    if (summary.entityOp) {
+      // Merge, forget and rename are about an entity: the card names it
+      // (the merge target, the new name, or the forgotten one) and offers
+      // Undo, not the first item the op happened to relabel.
+      const id = params.intoId || params.entityId;
+      const live = this.entity(id);
+      const gone = (op.before?.entities || []).find((e) => e.id === id);
+      const shown = live || gone;
+      return {
+        opId: op.opId, code: summary.code, undone: !!op.undoneBy,
+        canUndo: !op.silent && journal.canUndo(this.state, op).ok, at: op.at,
+        // kage-sensitive-data: not-sensitive — reviewed: an entity view model, not a settings control
+        entities: shown && shown.id !== 'me' ? [{ id: shown.id, name: shown.name, type: shown.type }] : [],
+        actions: [], related: [], truncated: false,
+      };
+    }
     const itemId = params.itemId || op.created?.items?.[0] || op.before?.items?.[0]?.id;
     const item = this.state.items.get(itemId);
     const seen = item || (op.before?.items || []).find((r) => r.id === itemId) || this._seen.get(itemId);
     const created = new Set(op.created?.items || []);
     const actions = [];
     if (item) {
-      if (item.kind === 'action' && (created.has(item.id) || !['capture', 'capture_dedup'].includes(summary.code))) actions.push(this._actionVM(item));
+      if (item.kind === 'action' && (created.has(item.id) || !['capture', 'capture_dedup', 'archive', 'unarchive'].includes(summary.code))) actions.push(this._actionVM(item));
       for (const child of [...(this.children.get(item.id) || [])].sort()) {
         const c = this.state.items.get(child);
         if (c?.kind === 'action' && created.has(child)) actions.push(this._actionVM(c));
@@ -1892,7 +1986,8 @@ export class Mind {
     const isCapture = summary.code === 'capture' || summary.code === 'capture_dedup';
     return {
       opId: op.opId,
-      code: summary.code,
+      // view.js has no archive headline; an archive is an edit ("✓ Updated").
+      code: summary.code === 'archive' || summary.code === 'unarchive' ? 'edit' : summary.code,
       undone: !!op.undoneBy,
       canUndo: !op.silent && journal.canUndo(this.state, op).ok,
       at: op.at,

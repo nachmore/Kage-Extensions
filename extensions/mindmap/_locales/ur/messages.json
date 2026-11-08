@@ -1494,10 +1494,10 @@
     "_source_hash": "a009e6bc7f1f0956"
   },
   "op.merge": {
-    "message": "{name} میں ضم کیا",
-    "description": "Describes a change (used after Undo:)",
+    "message": "{from} کو {name} میں ضم کیا گیا",
+    "description": "Describes a change (used after Undo:); from and name are entity names",
     "_machine_translated": true,
-    "_source_hash": "a9844e6899d5ed9f"
+    "_source_hash": "f648df50847fc4ff"
   },
   "op.forget": {
     "message": "{name} کو بھلا دیا",
@@ -1506,10 +1506,10 @@
     "_source_hash": "5a56eadd8bcf4171"
   },
   "op.rename": {
-    "message": "{name} کا نام تبدیل کیا گیا",
-    "description": "Describes a change (used after Undo:)",
+    "message": "{from} کا نام بدل کر {name} رکھا گیا",
+    "description": "Describes a change (used after Undo:); from is the old name, name the new one",
     "_machine_translated": true,
-    "_source_hash": "2befe02e535bfda3"
+    "_source_hash": "6a8c1628d2675fd3"
   },
   "op.import": {
     "message": "{n, plural, one {# آئٹم درآمد کیا گیا} other {# آئٹمز درآمد کیے گئے}}",
@@ -2410,5 +2410,101 @@
     "description": "Part of the inferred scope in the mm? prompt when a filter was dropped to find anything",
     "_machine_translated": true,
     "_source_hash": "bb8ff78e1f16dc8a"
+  },
+  "help.more": {
+    "message": "مزید: {cmds}",
+    "description": "Line after the help card listing more commands; cmds is a list of commands",
+    "_machine_translated": true,
+    "_source_hash": "dcc7794a6c5b5885"
+  },
+  "row.archive_item": {
+    "message": "“{title}” کو آرکائیو کریں",
+    "description": "Row that archives one item (mm archive)",
+    "_machine_translated": true,
+    "_source_hash": "60026d3ce2985203"
+  },
+  "row.archive_none": {
+    "message": "آرکائیو کرنے کے لیے “{query}” سے کچھ مماثل نہیں ملا",
+    "description": "Row when mm archive finds nothing",
+    "_machine_translated": true,
+    "_source_hash": "690d1b6e7105acd9"
+  },
+  "row.archive_usage": {
+    "message": "آرکائیو کرنے کی چیز تلاش کرنے کے لیے {cmd} اور چند الفاظ ٹائپ کریں",
+    "description": "Usage row for mm archive; cmd is e.g. 'mm archive'",
+    "_machine_translated": true,
+    "_source_hash": "974148a4f519237a"
+  },
+  "row.archive_usage_desc": {
+    "message": "آرکائیو کی گئی اشیاء آپ کی فہرستوں، نقشے اور آپ کے ایجنٹ کے جوابات سے ہٹ جاتی ہیں؛ ایکسپورٹس میں وہ برقرار رہتی ہیں",
+    "description": "Explains what archiving does",
+    "_machine_translated": true,
+    "_source_hash": "cff23383cfb5e7aa"
+  },
+  "row.archived_count": {
+    "message": "{n, plural, one {# آرکائیو شدہ آئٹم} other {# آرکائیو شدہ آئٹمز}}",
+    "description": "Row that lists archived items",
+    "_machine_translated": true,
+    "_source_hash": "3ce95bc7fe6297d9"
+  },
+  "row.archived_on": {
+    "message": "{day} کو آرکائیو کیا گیا",
+    "description": "When an item was archived; day is a formatted date",
+    "_machine_translated": true,
+    "_source_hash": "cbeb9ff9332b8dae"
+  },
+  "row.archived_restore": {
+    "message": "بحال کرنے کے لیے Enter دبائیں",
+    "description": "Hint on an archived item's row",
+    "_machine_translated": true,
+    "_source_hash": "191aaab2aa1941af"
+  },
+  "row.archived_none": {
+    "message": "کچھ بھی آرکائیو نہیں ہے",
+    "description": "Row when there are no archived items",
+    "_machine_translated": true,
+    "_source_hash": "98c1f0a347790300"
+  },
+  "row.archived_none_for": {
+    "message": "کوئی آرکائیو شدہ آئٹم “{query}” سے مماثل نہیں",
+    "description": "Row when no archived item matches the words",
+    "_machine_translated": true,
+    "_source_hash": "eab0aaf1f98c5036"
+  },
+  "row.archived_line": {
+    "message": "“{title}” آرکائیو کر دیا گیا",
+    "description": "Line shown after archiving an item",
+    "_machine_translated": true,
+    "_source_hash": "6fb1a4a33ec6e6e3"
+  },
+  "row.unarchived_line": {
+    "message": "“{title}” بحال کر دیا گیا",
+    "description": "Line shown after restoring an archived item",
+    "_machine_translated": true,
+    "_source_hash": "71c1caa084f3fb67"
+  },
+  "op.archive": {
+    "message": "“{title}” آرکائیو کیا گیا",
+    "description": "Describes a change (used after Undo:)",
+    "_machine_translated": true,
+    "_source_hash": "f8f1681e50a70adf"
+  },
+  "op.unarchive": {
+    "message": "“{title}” بحال کیا گیا",
+    "description": "Describes a change (used after Undo:)",
+    "_machine_translated": true,
+    "_source_hash": "a8856d9760a0080d"
+  },
+  "err.rename_taken": {
+    "message": "یہ نام پہلے سے کسی اور چیز کا ہے — انہیں {cmd} سے یکجا کریں",
+    "description": "Rename refused because another name matches; cmd is e.g. 'mm merge'",
+    "_machine_translated": true,
+    "_source_hash": "a556fa5a17278fcd"
+  },
+  "err.entity_missing": {
+    "message": "یہ نام اب آپ کے مائنڈ میپ میں موجود نہیں ہے",
+    "description": "Merge/forget/rename of a name that no longer exists",
+    "_machine_translated": true,
+    "_source_hash": "7c9b5710e90890ff"
   }
 }
