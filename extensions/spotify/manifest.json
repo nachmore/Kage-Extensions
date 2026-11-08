@@ -1,7 +1,7 @@
 {
   "id": "spotify",
   "name": "__MSG_manifest.name__",
-  "version": "0.4.4",
+  "version": "0.4.5",
   "type": "extension",
   "description": "__MSG_manifest.description__",
   "icon": "🎧",
@@ -34,7 +34,8 @@
     },
     "trigger": {
       "type": "string",
-      "default": "sp"
+      "default": "sp",
+      "backup": "plain"
     }
   },
   "contributes": {

@@ -126,3 +126,151 @@ describe('sensitive manifest metadata', () => {
         expect(issues[1]).toContain(`manifest.json:${sensitiveLine}:`);
     });
 });
+
+describe('settings-only backup declarations', () => {
+    it('accepts typed primitive enums and harmless plain strings', async () => {
+        expect(await validate({
+            config: {
+                mode: { type: 'string', enum: ['metric', 'imperial'] },
+                count: { type: 'number', enum: [0, 1, 1.5] },
+                badge: { type: 'boolean', enum: [true, false] },
+                trigger: { type: 'string', default: 'go', backup: 'plain' },
+                category: { type: 'string', sensitive: false, backup: 'plain' },
+                pinned: { type: 'string', backup: 'plain' },
+                compass: { type: 'string', backup: 'plain' },
+            },
+        })).toEqual([]);
+    });
+
+    it.each([null, 'metric', {}, [], Array.from({ length: 65 }, (_, i) => `${i}`)])(
+        'rejects malformed or oversized enum %j', async (value) => {
+            expect(await validate({ config: { units: { type: 'string', enum: value } } })).toEqual([
+                expect.stringContaining('enum must be a nonempty array of at most 64 primitives'),
+            ]);
+        });
+
+    it.each([
+        ['string', ['metric', 1]],
+        ['string', [null]],
+        ['string', [{}]],
+        ['string', [[]]],
+        ['number', [true]],
+        ['number', ['1']],
+        ['boolean', [0]],
+        ['boolean', ['true']],
+    ])('rejects enum values that do not match %s: %j', async (type, values) => {
+        expect(await validate({ config: { value: { type, enum: values } } })).toEqual([
+            expect.stringContaining(`must be a ${type} primitive`),
+        ]);
+    });
+
+    it('rejects numeric enum overflow parsed from otherwise valid JSON', async () => {
+        const id = `fixture-${++seq}`;
+        const dir = path.join(root, id);
+        mkdirSync(dir);
+        const manifest = {
+            id, name: 'Fixture', version: '1.0.0', type: 'extension',
+            description: 'Test', author: 'Contributor', icon: '🔧', permissions: [],
+            config: { count: { type: 'number', enum: [1] } },
+        };
+        const file = path.join(dir, 'manifest.json');
+        writeFileSync(file, JSON.stringify(manifest).replace('"enum":[1]', '"enum":[1e400]'));
+        expect(await validateManifest(file, 'extension', id)).toEqual([
+            expect.stringContaining('must be a number primitive'),
+        ]);
+    });
+
+    it('requires an explicit supported type for an enum', async () => {
+        expect(await validate({ config: { mode: { enum: ['fast'] } } })).toEqual([
+            expect.stringContaining('enum requires a declared'),
+        ]);
+    });
+
+    it.each(['bool', 'integer', 'String', '', null, {}, []])('rejects unsupported type %j', async (type) => {
+        expect(await validate({ config: { mode: { type } } })).toEqual([
+            expect.stringContaining('type must be one of: boolean, number, string'),
+        ]);
+    });
+
+    it('accepts the host enum limits, including UTF-8 byte boundaries', async () => {
+        expect(await validate({ config: {
+            modes: { type: 'string', enum: Array.from({ length: 64 }, (_, i) => `${i}`) },
+            ascii: { type: 'string', enum: ['a'.repeat(128)] },
+            unicode: { type: 'string', enum: ['é'.repeat(64)] },
+        } })).toEqual([]);
+        expect(await validate({ config: {
+            ascii: { type: 'string', enum: ['a'.repeat(129)] },
+            unicode: { type: 'string', enum: ['é'.repeat(65)] },
+        } })).toEqual([
+            expect.stringContaining('exceeds 128 UTF-8 bytes'),
+            expect.stringContaining('exceeds 128 UTF-8 bytes'),
+        ]);
+    });
+
+    it.each([null, true, false, 1, {}, [], 'Plain', 'encrypted', ''])(
+        'rejects unsupported backup value %j', async (backup) => {
+            expect(await validate({ config: { trigger: { type: 'string', backup } } })).toEqual([
+                expect.stringContaining('backup must be "plain"'),
+            ]);
+        });
+
+    it.each(['boolean', 'number', undefined])('rejects plain backup on type %j', async (type) => {
+        expect(await validate({ config: { value: { type, backup: 'plain' } } })).toEqual([
+            expect.stringContaining('only allowed on string fields'),
+        ]);
+    });
+
+    it.each([
+        'personal_token', 'SECRET', 'credentials', 'creds', 'password', 'passwd',
+        'passphrase', 'passcode', 'API Key', 'api-key', 'apikey',
+        'licenseKey', 'account_key', 'private-key', 'access_key',
+        'auth_method', 'oauth', 'keep_session', 'session_cookie', 'totp',
+        'otp_seed', 'otp-secret', 'mnemonic', 'pin', 'account.pin', 'login-pass', 'my_pwd',
+    ])('rejects plain backup for credential-named field %s, even with an enum', async (field) => {
+        expect(await validate({ config: { [field]: {
+            type: 'string', enum: ['none'], sensitive: false, backup: 'plain',
+        } } })).toEqual([
+            expect.stringContaining('forbidden on credential-named or declared sensitive fields'),
+        ]);
+    });
+
+    it.each([
+        { config: { private_url: { type: 'string', sensitive: true, backup: 'plain' } } },
+        { sensitiveData: ['connection'], config: { connection: { type: 'string', backup: 'plain' } } },
+        { sensitiveData: ['ACCOUNT'], config: { account: { type: 'string', backup: 'plain' } } },
+        { sensitiveData: ['Private_*'], config: { private_url: { type: 'string', backup: 'plain' } } },
+    ])('rejects plain backup conflicting with a sensitive declaration %j', async (metadata) => {
+        expect(await validate(metadata)).toEqual([
+            expect.stringContaining('forbidden on credential-named or declared sensitive fields'),
+        ]);
+    });
+
+    it('allows unmarked personal strings and sensitive fields with types or enums', async () => {
+        expect(await validate({ config: {
+            home_location: { type: 'string', default: '' },
+            personal_token: { type: 'string', sensitive: true },
+            pin: { type: 'number', enum: [0, 1234] },
+            keep_session: { type: 'boolean' },
+        } })).toEqual([]);
+    });
+
+    it('reports exact enum-entry and backup lines for dotted field names', async () => {
+        const id = `fixture-${++seq}`;
+        const dir = path.join(root, id);
+        mkdirSync(dir);
+        const manifest = {
+            id, name: 'Fixture', version: '1.0.0', type: 'extension',
+            description: 'Test', author: 'Contributor', icon: '🔧', permissions: [],
+            config: { 'private.url': { type: 'string', enum: ['safe', 123], sensitive: true, backup: 'plain' } },
+        };
+        const source = JSON.stringify(manifest, null, 2);
+        const file = path.join(dir, 'manifest.json');
+        writeFileSync(file, source);
+        const issues = await validateManifest(file, 'extension', id);
+        const enumLine = source.split('\n').findIndex((line) => line.includes('123')) + 1;
+        const backupLine = source.split('\n').findIndex((line) => line.includes('"backup"')) + 1;
+        expect(issues).toHaveLength(2);
+        expect(issues[0]).toContain(`manifest.json:${enumLine}:`);
+        expect(issues[1]).toContain(`manifest.json:${backupLine}:`);
+    });
+});

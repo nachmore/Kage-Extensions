@@ -1,7 +1,7 @@
 {
   "id": "weather",
   "name": "__MSG_manifest.name__",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "type": "extension",
   "description": "__MSG_manifest.description__",
   "icon": "🌤️",
@@ -18,7 +18,8 @@
   "config": {
     "trigger": {
       "type": "string",
-      "default": "weather"
+      "default": "weather",
+      "backup": "plain"
     },
     "home_location": {
       "type": "string",
@@ -26,7 +27,11 @@
     },
     "units": {
       "type": "string",
-      "default": "metric"
+      "default": "metric",
+      "enum": [
+        "metric",
+        "imperial"
+      ]
     }
   },
   "contributes": {

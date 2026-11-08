@@ -1,7 +1,7 @@
 {
   "id": "color-picker",
   "name": "__MSG_manifest.name__",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "type": "extension",
   "description": "__MSG_manifest.description__",
   "icon": "🎨",
@@ -10,7 +10,13 @@
   "config": {
     "copy_format": {
       "type": "string",
-      "default": "all"
+      "default": "all",
+      "enum": [
+        "all",
+        "hex",
+        "rgb",
+        "hsl"
+      ]
     }
   },
   "contributes": {

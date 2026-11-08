@@ -3,18 +3,24 @@
 // commands. A glob validates its nonempty prefix using the same rules.
 export const SENSITIVE_NAME = /(token|secret|credential|creds|password|passwd|api[-_]?key|auth|oauth|session|cookie)/i;
 
+// Kage 3aedcc9 src/extensions.rs::SENSITIVE_NAME_PATTERN. Plain backups
+// must refuse every credential-named field, even flags, numbers and enums.
+export const BACKUP_SENSITIVE_NAME = /(token|secret|credential|creds|password|passwd|passphrase|passcode|api[-_\s]?key|license[-_]?key|account[-_]?key|private[-_]?key|access[-_]?key|auth|oauth|session|cookie|totp|otp[-_]?(secret|seed)|mnemonic|(^|[-_.])(pin|pass|pwd)$)/i;
+
 export function validSensitivePattern(value) {
     if (typeof value !== 'string') return false;
     const key = value.endsWith('*') ? value.slice(0, -1) : value;
     return /^[A-Za-z0-9_.-]{1,128}$/.test(key) && !key.includes('..') && !/\.json$/i.test(key);
 }
 
-export function declaresSensitiveKey(manifest, key) {
+export function declaresSensitiveKey(manifest, key, { ignoreCase = false } = {}) {
+    const normalize = (value) => ignoreCase ? value.replace(/[A-Z]/g, (c) => c.toLowerCase()) : value;
+    const candidate = normalize(key);
     return (Array.isArray(manifest.sensitiveData) ? manifest.sensitiveData : []).some((pattern) =>
         validSensitivePattern(pattern) &&
         (pattern.endsWith('*')
-            ? key.startsWith(pattern.slice(0, -1))
-            : key === pattern)
+            ? candidate.startsWith(normalize(pattern.slice(0, -1)))
+            : candidate === normalize(pattern))
     );
 }
 

@@ -121,11 +121,30 @@ are slightly looser since theme ids conventionally end in `-theme`.
 | `permissions` | **Required for `type: extension`.** Use `[]` for none.                |
 | `contributes` | What the extension provides — see `docs/EXTENSIONS.md` for the spec.  |
 
+### Settings-only backups
+
+On hosts advertising `export.plain_settings`, unencrypted settings-only
+backups copy only declared safe settings: booleans, numbers, declared enum
+choices, and free-text strings explicitly marked `backup: "plain"`.
+Extension data is excluded. Use `enum` for fixed settings UI choices; it must
+contain 1–64 primitives matching the declared `boolean`, `number`, or `string`
+type, with string choices limited to 128 UTF-8 bytes.
+
+`backup` accepts only `"plain"` on a string field. Opt in only harmless
+preferences such as trigger keywords or default currency codes. Personal
+text, locations, paths, credentials, and private URLs must stay unmarked.
+The validator rejects plain opt-ins on credential-named fields, on
+`sensitive: true` fields, and on fields matching `sensitiveData` (for this
+backup check, matching is ASCII case-insensitive like the host). The host
+checks saved values again and applies its secret scanner.
+See [the field-by-field audit](docs/backup-plain-audit.md) for the current
+decisions, limits, credential-name pattern, and borderline cases.
+
 ### Sensitive data
 
-Declare every stored secret so Kage can label sensitive backup items. A backup
-containing secrets must be encrypted with a password, or those items must be
-left out. Older hosts ignore these manifest fields.
+Declare every stored secret so Kage can protect it during restore.
+Full backups are encrypted with a passphrase; settings-only backups exclude
+secrets and stored data. Older hosts ignore these manifest fields.
 
 Use top-level `sensitiveData` for the **storage key** passed to
 `save_extension_data`, `load_extension_data`, or `delete_extension_data`, without

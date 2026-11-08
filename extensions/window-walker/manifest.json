@@ -1,7 +1,7 @@
 {
   "id": "window-walker",
   "name": "__MSG_manifest.name__",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "type": "extension",
   "description": "__MSG_manifest.description__",
   "icon": "🪟",
@@ -12,7 +12,8 @@
   "config": {
     "trigger": {
       "type": "string",
-      "default": "w "
+      "default": "w ",
+      "backup": "plain"
     },
     "show_icons": {
       "type": "boolean",

@@ -1,7 +1,7 @@
 {
   "id": "focus-tracker",
   "name": "__MSG_manifest.name__",
-  "version": "1.9.0",
+  "version": "1.9.1",
   "type": "extension",
   "description": "__MSG_manifest.description__",
   "icon": "📊",
@@ -13,7 +13,8 @@
   "config": {
     "trigger": {
       "type": "string",
-      "default": "focus"
+      "default": "focus",
+      "backup": "plain"
     },
     "poll_interval": {
       "type": "number",

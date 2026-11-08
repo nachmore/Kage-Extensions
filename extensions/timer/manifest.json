@@ -1,7 +1,7 @@
 {
   "id": "timer",
   "name": "__MSG_manifest.name__",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "type": "extension",
   "description": "__MSG_manifest.description__",
   "icon": "⏱️",
@@ -18,7 +18,16 @@
     },
     "sound_id": {
       "type": "string",
-      "default": "two-tone"
+      "default": "two-tone",
+      "enum": [
+        "two-tone",
+        "chime",
+        "alert",
+        "gentle",
+        "bell",
+        "success",
+        "custom"
+      ]
     },
     "custom_sound_path": {
       "type": "string",

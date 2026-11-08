@@ -1,7 +1,7 @@
 {
   "id": "emoji",
   "name": "__MSG_manifest.name__",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "type": "extension",
   "description": "__MSG_manifest.description__",
   "icon": "😀",
@@ -17,7 +17,8 @@
   "config": {
     "trigger": {
       "type": "string",
-      "default": "emoji"
+      "default": "emoji",
+      "backup": "plain"
     },
     "shortcode_trigger": {
       "type": "boolean",

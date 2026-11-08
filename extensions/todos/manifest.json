@@ -1,7 +1,7 @@
 {
   "id": "todos",
   "name": "__MSG_manifest.name__",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "type": "extension",
   "description": "__MSG_manifest.description__",
   "icon": "✅",
@@ -13,7 +13,8 @@
   "config": {
     "default_category": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "backup": "plain"
     },
     "show_completed": {
       "type": "boolean",
@@ -25,7 +26,13 @@
     },
     "sort_by": {
       "type": "string",
-      "default": "created"
+      "default": "created",
+      "enum": [
+        "created",
+        "due",
+        "priority",
+        "status"
+      ]
     },
     "show_due_banner": {
       "type": "boolean",

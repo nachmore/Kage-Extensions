@@ -24,6 +24,8 @@
 //     from the host's closed activity vocabulary, no duplicates.
 //   - No unknown top-level fields (catches typos like `permission`).
 //   - Required fields for the catalog: `author`.
+//   - Config types, primitive enums (host limits), and string-only plain
+//     backup opt-ins; credentials and sensitive declarations cannot opt in.
 //
 // Single-pass: collect all errors then exit non-zero so a contributor
 // fixes everything in one round trip rather than discovering issues
@@ -33,7 +35,7 @@ import { readdir, readFile, stat } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { KNOWN_CAPABILITIES, MASCOT_ACTIVITIES } from './host-capabilities.mjs';
-import { sensitiveMetadataIssues } from './lib/sensitive-data.mjs';
+import { BACKUP_SENSITIVE_NAME, declaresSensitiveKey, sensitiveMetadataIssues } from './lib/sensitive-data.mjs';
 import { invokedDirectly } from './lib/invoked-directly.mjs';
 import { jsonLine } from './lib/json-lines.mjs';
 
@@ -46,6 +48,10 @@ const ID_PATTERN = /^[a-z0-9][a-z0-9_-]{0,63}$/;
 // and `1.0.0+sha.abc1234` validate. Rejects `v1.0.0`, `1.0`, `1`.
 const SEMVER_PATTERN = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/;
 const VALID_TYPES = new Set(['extension', 'theme', 'commands']);
+const CONFIG_TYPES = new Set(['boolean', 'number', 'string']);
+// Kage src/extensions.rs::config_field_decls; Rust string lengths are bytes.
+const MAX_CONFIG_ENUM_VALUES = 64;
+const MAX_CONFIG_ENUM_BYTES = 128;
 
 // Catalog UX caps. The store cards truncate longer values; keeping
 // them tight at submission time is friendlier than relying on
@@ -144,6 +150,49 @@ export async function validateManifest(manifestPath, expectedKind, dirName) {
         }
     }
     for (const issue of sensitiveMetadataIssues(m, { locations: true })) note(loc, issue.message, issue.path);
+
+    // The host reads exact `type`, `enum`, and `backup` keys on each
+    // config entry. An enum takes precedence over the type's plain rule.
+    if (m.config && typeof m.config === 'object' && !Array.isArray(m.config)) {
+        for (const [field, definition] of Object.entries(m.config)) {
+            // Malformed entries are already reported by sensitiveMetadataIssues.
+            if (!definition || typeof definition !== 'object' || Array.isArray(definition)) continue;
+            const at = ['config', field];
+            if (definition.type !== undefined && !CONFIG_TYPES.has(definition.type)) {
+                note(loc, `config.${field}.type must be one of: boolean, number, string`, [...at, 'type']);
+            }
+            if (definition.enum !== undefined) {
+                const choices = definition.enum;
+                if (!Array.isArray(choices) || choices.length === 0 || choices.length > MAX_CONFIG_ENUM_VALUES) {
+                    note(loc, `config.${field}.enum must be a nonempty array of at most ${MAX_CONFIG_ENUM_VALUES} primitives matching the field's type`, [...at, 'enum']);
+                } else if (!CONFIG_TYPES.has(definition.type)) {
+                    note(loc, `config.${field}.enum requires a declared boolean, number, or string type`, [...at, 'enum']);
+                } else {
+                    for (const [i, value] of choices.entries()) {
+                        if (typeof value !== definition.type ||
+                            (definition.type === 'number' && !Number.isFinite(value))) {
+                            note(loc, `config.${field}.enum entry ${i} must be a ${definition.type} primitive`, [...at, 'enum', i]);
+                        } else if (definition.type === 'string' && Buffer.byteLength(value, 'utf8') > MAX_CONFIG_ENUM_BYTES) {
+                            note(loc, `config.${field}.enum entry ${i} exceeds ${MAX_CONFIG_ENUM_BYTES} UTF-8 bytes`, [...at, 'enum', i]);
+                        }
+                    }
+                }
+            }
+            if (definition.backup !== undefined) {
+                if (definition.backup !== 'plain') {
+                    note(loc, `config.${field}.backup must be "plain"`, [...at, 'backup']);
+                } else {
+                    if (definition.type !== 'string') {
+                        note(loc, `config.${field}.backup: "plain" is only allowed on string fields`, [...at, 'backup']);
+                    }
+                    if (BACKUP_SENSITIVE_NAME.test(field) || definition.sensitive === true ||
+                        declaresSensitiveKey(m, field, { ignoreCase: true })) {
+                        note(loc, `config.${field}.backup: "plain" is forbidden on credential-named or declared sensitive fields`, [...at, 'backup']);
+                    }
+                }
+            }
+        }
+    }
 
     // --- Required field presence + type ---------------------------------
     if (typeof m.id !== 'string' || !ID_PATTERN.test(m.id)) {
