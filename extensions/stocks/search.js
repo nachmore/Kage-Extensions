@@ -72,10 +72,11 @@ export default class StocksSearchProvider {
     for (const quote of quotes) {
       if (quote.error) {
         if (quote.error === 'setup') continue;
-        results.push(this.errorRow(quote.symbol, quote.error, parsed.copy));
+        results.push(this.errorRow(quote.symbol, quote.error, parsed.copy, query, quote.retryAt));
         continue;
       }
-      const history = await this.client.getHistory(quote.symbol, '1d', quote);
+      let history = { samples: [] };
+      try { history = await this.client.getHistory(quote.symbol, '1m', quote, this.config); } catch { /* History never hides a valid quote. */ }
       const label = `${quote.symbol}${quote.name ? ` · ${quote.name}` : ''}  ${priceText(quote.price, { locale: this.locale })}  ${signedText(quote.change, { price: quote.price, locale: this.locale })} (${signedText(quote.percent, { percent: true, locale: this.locale })})`;
       const row = {
         id: `stocks:${quote.symbol}`, type: 'stocks', icon: '📈', score: 95,
@@ -99,11 +100,11 @@ export default class StocksSearchProvider {
     return results;
   }
 
-  errorRow(symbol, code, copy = false, query = this.query) {
+  errorRow(symbol, code, copy = false, query = this.query, retryAt = null) {
     return {
       id: `stocks:error:${symbol || code}`, type: 'stocks', icon: '📈', score: code === 'setup' ? 100 : 90,
       label: code === 'setup' ? this.t('setup.free_key') : symbol || this.t('manifest.name'),
-      description: code === 'setup' ? this.t('error.setup') : errorText(code, this.t),
+      description: code === 'setup' ? this.t('error.setup') : errorText(code, this.t, { retryAt, locale: this.locale }),
       data: { setup: ['setup', 'auth'].includes(code), code, symbol, copy, query },
     };
   }
@@ -118,8 +119,11 @@ export default class StocksSearchProvider {
     }
     if (result?.data?.pending) {
       let symbols = result.data.symbols || [];
+      let provider = 'stocklake';
       try {
-        if (!(await this.client.key())) return { type: 'open_extension_settings' };
+        const connection = await this.client.connection(this.config);
+        provider = connection.provider;
+        if (connection.provider === 'finnhub' && !connection.key) return { type: 'open_extension_settings' };
         if (!symbols.length) {
           symbols = parseSymbols(this.config.watchlist ?? DEFAULTS.watchlist, { allowEmpty: true });
           if (bare) {
@@ -133,7 +137,7 @@ export default class StocksSearchProvider {
         return bare && error.code === 'storage' ? { type: 'open_extension_settings' } : this.keepInput(result);
       }
       symbols = symbols.filter((symbol) => {
-        try { normalizeSymbol(symbol); return true; } catch { return false; }
+        try { normalizeSymbol(symbol, provider); return true; } catch { return false; }
       });
       if (!symbols.length) return this.keepInput(result);
       if (result.data.copy) {
@@ -171,7 +175,7 @@ export default class StocksSearchProvider {
     if (!quote || result.data.copy) return null;
     return {
       className: 'stocks-result',
-      html: `<span class="app-icon">📈</span><span class="app-info"><span class="app-name stocks-${direction(quote)}">${escapeHtml(result.label)}</span><span class="app-description">${escapeHtml(result.description)}</span></span><span class="stocks-${direction(quote)}">${sparkline(result.data.samples || [], this.t('quote.sampled'))}</span>`,
+      html: `<span class="app-icon">📈</span><span class="app-info"><span class="app-name stocks-${direction(quote)}">${escapeHtml(result.label)}</span><span class="app-description">${escapeHtml(result.description)}${quote.source === 'Stocklake' ? ' · <a href="https://stocklake.dev/">Stocklake</a>' : ''}</span></span><span class="stocks-${direction(quote)}">${sparkline(result.data.samples || [], this.t(quote.source === 'Stocklake' ? 'quote.history' : 'quote.sampled'))}</span>`,
     };
   }
 }

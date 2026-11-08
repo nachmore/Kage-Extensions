@@ -23,6 +23,7 @@ const jsonResponse = (data = body(), status = 200, headers = {}) => ({
 function fixture({ config = {}, key = TEST_KEY, seed = {} } = {}) {
   const store = new Map(Object.entries(seed).map(([k, v]) => [k, JSON.stringify(v)]));
   if (key) store.set(CREDENTIALS_KEY, JSON.stringify({ api_key: key }));
+  if (!key && !store.has('credentials')) store.set('credentials', JSON.stringify({ provider: 'finnhub' }));
   const mock = makeContext({
     catalog, config: { agent_tools: true, ...config },
     invokes: {
@@ -69,7 +70,7 @@ describe('symbols and launcher queries', () => {
     expect(normalizeSymbol(' $aapl.us ')).toBe('AAPL');
   });
   it.each(['VOD.L', 'SHOP.TO', '7203.JP'])('rejects international suffix %s explicitly', (symbol) => {
-    expect(() => normalizeSymbol(symbol)).toThrow('unsupported');
+    expect(() => normalizeSymbol(symbol, 'finnhub')).toThrow('unsupported');
   });
   it.each(['AAPL/../../', 'AAPL?token=bad', '<script>', '', null, 12])('rejects unsafe or invalid input %s', (symbol) => {
     expect(() => normalizeSymbol(symbol)).toThrow('invalid_symbols');
@@ -426,7 +427,7 @@ describe('launcher, settings, tools and widget workflows', () => {
     expect(output.status).toContain('rejected the key');
     expect(JSON.stringify(output)).not.toContain(TEST_KEY);
     expect(await f.client.key()).toBeNull();
-    expect((await settings.runAction('test_key', { __api_key: 'https://invalid' })).status).toContain('Paste a Finnhub API key');
+    expect((await settings.runAction('test_key', { __api_key: 'https://invalid' })).status).toContain('Paste an API key');
   });
   it('exposes the requested tools with per-symbol errors and accurately labeled sparse history', async () => {
     const f = fixture();

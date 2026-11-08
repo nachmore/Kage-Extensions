@@ -20,6 +20,7 @@ const quote = (symbol = 'AAPL', fetchedAt = NOW) => ({
 function host({ key = KEY, seed = {}, config = {}, hook, hostFeatures } = {}) {
   const store = new Map(Object.entries(seed).map(([name, value]) => [name, typeof value === 'string' ? value : JSON.stringify(value)]));
   if (key) store.set('credentials', JSON.stringify({ api_key: key }));
+  if (!key && !store.has('credentials')) store.set('credentials', JSON.stringify({ provider: 'finnhub' }));
   const { context } = makeContext({ catalog, config, hostFeatures });
   context.invoke = vi.fn(async (command, args) => {
     const override = await hook?.(command, args, store);

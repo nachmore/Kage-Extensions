@@ -12,10 +12,10 @@
     "_source_hash": "d6d4700604b64b88"
   },
   "manifest.description": {
-    "message": "Online · Kurzy amerických akcií a sledovaný seznam z Finnhubu s vaším bezplatným klíčem. Data z mezipaměti jsou zpožděná; u každého kurzu je uveden čas.",
+    "message": "Online · Bez klíčů: kotace Stocklake se zpožděním ~15 min, 25 denně zdarma; bezplatný klíč limit zvýší na 200. Finnhub je volitelný pro živé kotace z USA.",
     "description": "Store listing; Online and Data delayed communicate network dependency and freshness",
     "_machine_translated": true,
-    "_source_hash": "6feb0a4240dfb80e"
+    "_source_hash": "44f1eb50266b55a3"
   },
   "result.loading": {
     "message": "Vyhledávání akcií…",
@@ -78,16 +78,16 @@
     "_source_hash": "8adbf75fdf5bc595"
   },
   "error.auth": {
-    "message": "Finnhub klíč odmítl. Otevřete nastavení Akcie a otestujte náhradní klíč.",
+    "message": "Poskytovatel klíč odmítl. Otevřete nastavení Stocks a otestujte náhradní klíč.",
     "description": "Authentication error; never include the raw provider response",
     "_machine_translated": true,
-    "_source_hash": "eca735a4f5fb0bce"
+    "_source_hash": "10cd02016931ccf6"
   },
   "error.unknown": {
-    "message": "Pro tento symbol není k dispozici žádný kurz. Zkontrolujte americký ticker včetně případné přípony třídy akcií.",
+    "message": "Pro tento symbol není k dispozici žádná kotace. Zkontrolujte ticker a příponu burzy.",
     "description": "Unknown or zero-valued quote",
     "_machine_translated": true,
-    "_source_hash": "3a30475366fb7002"
+    "_source_hash": "bd84c7f6e9173633"
   },
   "error.unsupported": {
     "message": "Tento poskytovatel podporuje pouze americké tickery. Přípony zahraničních burz vyžadují jiný datový tarif.",
@@ -114,16 +114,16 @@
     "_source_hash": "7d553dee0c6fe94a"
   },
   "error.offline": {
-    "message": "Finnhub není dostupný. Pokud jsou k dispozici, zobrazují se uložená data.",
+    "message": "Poskytovatel kotací není dostupný. Pokud jsou k dispozici, zobrazují se uložená data.",
     "description": "Offline or network failure",
     "_machine_translated": true,
-    "_source_hash": "536dacabe5ed1015"
+    "_source_hash": "6fe79608991e6dfd"
   },
   "error.unavailable": {
-    "message": "Finnhub není dostupný. Zobrazují se uložená data, pokud jsou k dispozici.",
+    "message": "Poskytovatel kotací je nedostupný. Pokud jsou k dispozici, zobrazují se uložená data.",
     "description": "Sanitized provider error",
     "_machine_translated": true,
-    "_source_hash": "2dd30adcc5164ad4"
+    "_source_hash": "e10d9f0c7de280f1"
   },
   "error.busy": {
     "message": "Jiné okno Kage právě obnovuje kurzy. Zkuste to za chvíli znovu.",
@@ -138,10 +138,10 @@
     "_source_hash": "4cbfbb2e9b0adc41"
   },
   "error.invalid_key": {
-    "message": "Vložte klíč API Finnhub a poté jej otestujte a uložte. Nevkládejte URL.",
+    "message": "Vložte API klíč pro vybraného poskytovatele a poté klikněte na Otestovat a použít. Nevkládejte URL.",
     "description": "Malformed or missing API key",
     "_machine_translated": true,
-    "_source_hash": "b972e383a08a0ac1"
+    "_source_hash": "46f77ed69b2c2053"
   },
   "error.invalid_range": {
     "message": "Zvolte rozsah 1d, 1w nebo 1m.",
@@ -150,10 +150,10 @@
     "_source_hash": "f4f4d83dc6129a6c"
   },
   "settings.description": {
-    "message": "Kurzy amerických akcií, sledované tituly a místní historie kurzů. Online · Zdroj: Finnhub. Uložené hodnoty mohou být zpožděné.",
+    "message": "Kotace Stocklake fungují bez klíče: zpoždění ~15 min, 25 volání denně, nebo 200 s bezplatným klíčem. Finnhub nabízí živé kotace z USA s bezplatným klíčem.",
     "description": "Settings summary",
     "_machine_translated": true,
-    "_source_hash": "b91914b96330d6cb"
+    "_source_hash": "deea29d63a6f57a4"
   },
   "settings.connection": {
     "message": "Poskytovatel kurzů a nastavení",
@@ -162,22 +162,22 @@
     "_source_hash": "863fbc4ab994c2eb"
   },
   "setup.intro": {
-    "message": "Pro kurzy amerických akcií použijte vlastní bezplatný klíč Finnhub. Níže získejte klíč, poté jej otestujte a uložte pro připojení.",
+    "message": "Finnhub vyžaduje pro živé kotace z USA bezplatný klíč, s limitem 60 volání za minutu.",
     "description": "User-facing provider setup introduction",
     "_machine_translated": true,
-    "_source_hash": "0686f89d96f514a5"
+    "_source_hash": "41c015a47f8cb6a3"
   },
   "setup.terms": {
-    "message": "Osobní tarify Finnhub jsou určeny pro oprávněné osobní použití. Obchodní použití a sdílení dat nebo odvozených výsledků s třetími stranami vyžaduje souhlas Finnhub. Zkontrolujte podmínky poskytovatele, a to i před odesláním kurzů vzdálenému agentovi.",
+    "message": "Data používejte pro vlastní výzkum a nástroje. Data ani přístup poskytovatele dále neprodávejte, nešiřte ani nesublicencujte a neobcházejte limity. Před sdílením výsledků si ověřte podmínky poskytovatele.",
     "description": "Material provider use restrictions",
     "_machine_translated": true,
-    "_source_hash": "9eb9716ed06ff746"
+    "_source_hash": "7fbb1c4e684b429f"
   },
   "setup.steps": {
-    "message": "1. Otevřete Získat bezplatný klíč Finnhub (asi minuta) a zaregistrujte se u Finnhub. 2. Zkopírujte svůj API klíč z jeho nástěnky. 3. Vložte jej níže a zvolte Otestovat a uložit.",
+    "message": "Stocklake funguje okamžitě bez klíče. Vyberte poskytovatele, případně vložte jeho klíč a poté volbu uložte pomocí Otestovat a použít.",
     "description": "Guided setup steps",
     "_machine_translated": true,
-    "_source_hash": "d850b03495911632"
+    "_source_hash": "d73223e639ab4ff7"
   },
   "setup.saved": {
     "message": "V tomto zařízení je uložen klíč. Chcete-li jej otestovat, ponechte pole prázdné, nebo vložte náhradní. Uložené klíče se zde nikdy nezobrazují.",
@@ -189,13 +189,13 @@
     "message": "Získat bezplatný klíč Finnhub (asi minuta)",
     "description": "Open provider registration in system browser",
     "_machine_translated": true,
-    "_source_hash": "a0566f42e52da139"
+    "_source_hash": "8ee05fe11cb483c9"
   },
   "setup.key": {
-    "message": "API klíč Finnhub",
+    "message": "API klíč poskytovatele (pro Stocklake volitelný)",
     "description": "Scratch field for secret",
     "_machine_translated": true,
-    "_source_hash": "2e7e94ee1be4a2cf"
+    "_source_hash": "3fb2a7de1e62b384"
   },
   "setup.key_hint": {
     "message": "Otestovat a uložit uloží klíč do soukromých dat rozšíření, podobně jako přihlašovací údaje Spotify. Zadáním sem se klíč neuloží s běžným nastavením. Textové pole tohoto hostitele je během psaní viditelné.",
@@ -204,10 +204,10 @@
     "_source_hash": "4c3122d9b4d5daad"
   },
   "setup.test": {
-    "message": "Otestovat a uložit klíč",
+    "message": "Otestovat a použít poskytovatele",
     "description": "Probe quote endpoint and save only on success",
     "_machine_translated": true,
-    "_source_hash": "bc2be6a1a4fb4210"
+    "_source_hash": "d9e72fde7f42a5f5"
   },
   "setup.remove": {
     "message": "Odebrat uložený klíč",
@@ -222,10 +222,10 @@
     "_source_hash": "59cb7317745316bb"
   },
   "setup.success": {
-    "message": "Test kurzů Finnhub proběhl úspěšně; klíč byl uložen.",
+    "message": "Test kotace proběhl úspěšně; poskytovatel byl vybrán a případný zadaný klíč uložen.",
     "description": "Successful guided setup; key is saved independently of watchlist settings",
     "_machine_translated": true,
-    "_source_hash": "76df0b334c35e1f8"
+    "_source_hash": "c4ae3a50e8f0c3e0"
   },
   "settings.watchlist_section": {
     "message": "Sledované tituly a obnovování",
@@ -240,10 +240,10 @@
     "_source_hash": "4fa141d565f4d3cb"
   },
   "settings.watchlist_hint": {
-    "message": "Až {max} amerických symbolů oddělených mezerami nebo čárkami. Prázdný seznam widget skryje.",
+    "message": "Až {max} symbolů oddělených mezerami nebo čárkami. Stocklake přijímá mezinárodní symboly, například SAP.DE; Finnhub podporuje tickery z USA. Panel vyžaduje klíč a zapnuté nastavení viditelnosti.",
     "description": "Watchlist validation; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "18fd9ff917b78911"
+    "_source_hash": "5b779260bb9346da"
   },
   "settings.show": {
     "message": "Zobrazit sledované tituly v plovoucím okně",
@@ -258,10 +258,10 @@
     "_source_hash": "d5d486955acdd4c8"
   },
   "settings.refresh_hint": {
-    "message": "Minimálně {min} s; výchozí {default}. V aktuálních hostitelích Kage se dotazování ve skrytém okně pozastaví. Na tomto zařízení je vyhrazeno nejvýše {budget} požadavků za minutu; do limitů poskytovatele se započítávají i vaše další aplikace.",
+    "message": "Minimálně {min} sekund; výchozí {default}. Kotace Stocklake se ukládají do mezipaměti alespoň na 10 minut, historie na den. Dotazování ve skrytém okně se pozastaví. Finnhub si lokálně vyhrazuje nejvýše {budget} požadavků za minutu.",
     "description": "Request budget and hidden behavior; preserve {min}, {default}, {budget}",
     "_machine_translated": true,
-    "_source_hash": "835954ceb7299192"
+    "_source_hash": "08eb708651c8ce9e"
   },
   "settings.refresh_error": {
     "message": "Interval obnovení musí být mezi {min} a {max} sekundami.",
@@ -270,28 +270,28 @@
     "_source_hash": "45f891673cb1e039"
   },
   "tool.quote": {
-    "message": "Získá kurzy amerických akcií z Finnhub pro osobní použití. Vrací zdroj, časové razítko posledního obchodu, aktuálnost mezipaměti a chyby pro jednotlivé symboly. Vyžaduje bezplatný klíč uživatele; bez souhlasu poskytovatele dále nešiřte.",
+    "message": "Získá kotace akcií od vybraného poskytovatele pro vaši vlastní potřebu. Stocklake má zpoždění ~15 min a nevyžaduje klíč; Finnhub nabízí živé kotace z USA s klíčem. Vrací zdroj, časová razítka, aktuálnost a chyby pro jednotlivé symboly. Data dále nešiřte.",
     "description": "Agent tool description",
     "_machine_translated": true,
-    "_source_hash": "9aa8d167f9bf2f94"
+    "_source_hash": "890f052fdf9e3bbd"
   },
   "tool.symbols": {
-    "message": "Až {max} amerických symbolů, například [\"AAPL\", \"MSFT\", \"BRK.B\"].",
+    "message": "Až {max} symbolů, například [\"AAPL\", \"MSFT\", \"SAP.DE\"]. Finnhub přijímá pouze tickery z USA.",
     "description": "Quote tool parameter description; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "753c9fd4564636f3"
+    "_source_hash": "acbe6e78c6fddb5a"
   },
   "tool.history": {
-    "message": "Získá lokálně vzorkované kotace Finnhub zaznamenané na tomto zařízení za 1d, 1w nebo 1m. Bez síťových požadavků. Neúplné, řídké vzorky, nikoli historické svíčky; prázdný seznam znamená, že nebylo nic shromážděno.",
+    "message": "Získá skutečnou denní historii Stocklake za 1d, 1w nebo 1m z okna 30 obchodních dnů uloženého v mezipaměti na den. Při chybějící mezipaměti stojí jedno volání. Finnhub vrací neúplné lokálně zaznamenané kotace bez požadavku na historii.",
     "description": "Agent tool scope must not imply full historical coverage",
     "_machine_translated": true,
-    "_source_hash": "fcb4dd5f0bdcb792"
+    "_source_hash": "d5343316b6826efa"
   },
   "tool.symbol": {
-    "message": "Symbol americké akcie.",
+    "message": "Symbol akcie, včetně mezinárodních přípon pro Stocklake.",
     "description": "History symbol parameter description",
     "_machine_translated": true,
-    "_source_hash": "31f6b8214e118704"
+    "_source_hash": "bf96519c516306b2"
   },
   "tool.range": {
     "message": "1d, 1w nebo 1m; výchozí 1d.",
@@ -312,10 +312,10 @@
     "_source_hash": "2acdb85e54aa0ed1"
   },
   "error.timeout": {
-    "message": "Finnhub neodpověděl včas. Zkuste to znovu za několik sekund; pokud jsou k dispozici, zobrazují se uložená data.",
+    "message": "Poskytovatel kotací neodpověděl včas. Zkuste to znovu za několik sekund; pokud jsou k dispozici, zobrazují se uložená data.",
     "description": "Request timeout; short local pause, separate from offline backoff",
     "_machine_translated": true,
-    "_source_hash": "23491b785f430a04"
+    "_source_hash": "fb51f909049dd49a"
   },
   "settings.agent_tools": {
     "message": "Povolit agentům nástroje Akcie",
@@ -324,10 +324,10 @@
     "_source_hash": "feaafa8e946fc0b2"
   },
   "settings.agent_tools_hint": {
-    "message": "Nástroje agenta mohou odesílat kotace z Finnhub a odvozené výsledky vašemu poskytovateli agenta. Povolte je pouze tehdy, pokud vaše smlouva s Finnhub takové sdílení umožňuje. Změna se projeví po restartování aplikace Kage.",
+    "message": "Nástroje agenta mohou odesílat kotace a výsledky vašemu poskytovateli agenta. Zapněte je pouze pro vlastní potřebu, pokud to podmínky poskytovatele dovolují. Projeví se po restartu Kage.",
     "description": "Explain opt-in and external agent data flow",
     "_machine_translated": true,
-    "_source_hash": "85852257d902cb3e"
+    "_source_hash": "4b637e7840e5666b"
   },
   "settings.delete_quotes": {
     "message": "Smazat uložené kurzy",
@@ -340,15 +340,57 @@
     "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
   },
   "widget.connection": {
-    "message": "Kurzy vyžadují pozornost. Napište stock a stiskněte Enter pro otevření nastavení Akcie.",
+    "message": "Kotace vyžadují pozornost. Napište stock a stisknutím Enter otevřete nastavení Stocks.",
     "description": "Compact widget hint for authentication or storage problems; keep stock as the launcher command",
     "_machine_translated": true,
-    "_source_hash": "28d7c64fff255e29"
+    "_source_hash": "8dcbef2b531a522b"
   },
   "tool.opt_in": {
-    "message": "Před použitím tohoto nástroje zapněte v nastavení Akcie volbu „Povolit agentům nástroje Akcie“. Ověřte, že vaše smlouva s Finnhubem umožňuje sdílení dat s vaším poskytovatelem agenta.",
+    "message": "Před použitím tohoto nástroje zapněte v nastavení Stocks možnost Povolit nástroje Stocks pro agenty. Ověřte, že podmínky poskytovatele dovolují vaše použití s vaším poskytovatelem agenta.",
     "description": "Actionable agent tool opt-in error",
     "_machine_translated": true,
-    "_source_hash": "a00e5cc3750744f0"
+    "_source_hash": "994b57bbe7f233ae"
+  },
+  "settings.provider": {
+    "message": "Poskytovatel kotací",
+    "description": "Provider selection; Test/use persists the choice",
+    "_machine_translated": true,
+    "_source_hash": "b9f483c14cb7b4dc"
+  },
+  "setup.stocklake": {
+    "message": "Stocklake funguje bez klíče: zpoždění ~15 min, 25 volání denně; volitelný bezplatný klíč tento limit zvýší na 200.",
+    "description": "Keyless default provider description",
+    "_machine_translated": true,
+    "_source_hash": "930e88dd695cf87e"
+  },
+  "setup.stocklake_key": {
+    "message": "Získat bezplatný klíč Stocklake",
+    "description": "Open Stocklake sign-in; emailed code; free 200 calls/day",
+    "_machine_translated": true,
+    "_source_hash": "b21d6e57b9696558"
+  },
+  "quote.stocklake": {
+    "message": "Zpoždění ~15 min · Stocklake",
+    "description": "Visible delayed provider attribution; paired with a link to stocklake.dev",
+    "_machine_translated": true,
+    "_source_hash": "081a46f162590a46"
+  },
+  "quote.history": {
+    "message": "Denní uzavírací ceny ze Stocklake za přibližně 30 obchodních dní. Historie se ukládá do mezipaměti na jeden den; pokud v mezipaměti chybí, spotřebuje se jedno volání. Minigrafy Finnhub používají místní vzorky.",
+    "description": "History accessible label and settings explanation; real daily data for Stocklake",
+    "_machine_translated": true,
+    "_source_hash": "2efd3bfb80984cd7"
+  },
+  "error.daily_limit": {
+    "message": "Denní bezplatné kotace jsou vyčerpány. Obnoví se v {time}. Přidejte bezplatný klíč Stocklake pro 200 denně.",
+    "description": "Guest exhaustion message; preserve {time} for local reset time",
+    "_machine_translated": true,
+    "_source_hash": "22d1ca53ad1f23f9"
+  },
+  "error.key_daily_limit": {
+    "message": "Denní volání Stocklake jsou vyčerpána. Obnoví se v {time}. Pokud jsou k dispozici, zobrazují se uložená data.",
+    "description": "Authenticated daily exhaustion; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "7c2f3494ec238e7e"
   }
 }

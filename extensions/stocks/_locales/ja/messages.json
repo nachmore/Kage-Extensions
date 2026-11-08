@@ -12,10 +12,10 @@
     "_source_hash": "d6d4700604b64b88"
   },
   "manifest.description": {
-    "message": "オンライン · 無料キーを使って Finnhub から米国株の株価とウォッチリストを取得します。キャッシュ使用時はデータが遅延します。各株価にはタイムスタンプが表示されます。",
+    "message": "オンライン · キー不要：Stocklake の株価は約 15 分遅延で、1 日 25 回まで無料です。無料キーを使うと 200 回に増えます。米国株のリアルタイム株価には Finnhub を任意で利用できます。",
     "description": "Store listing; Online and Data delayed communicate network dependency and freshness",
     "_machine_translated": true,
-    "_source_hash": "6feb0a4240dfb80e"
+    "_source_hash": "44f1eb50266b55a3"
   },
   "result.loading": {
     "message": "株価を検索しています…",
@@ -78,16 +78,16 @@
     "_source_hash": "8adbf75fdf5bc595"
   },
   "error.auth": {
-    "message": "Finnhub でキーが拒否されました。Stocks の設定を開いて、新しいキーをテストしてください。",
+    "message": "プロバイダーがキーを拒否しました。Stocks の設定を開いて、別のキーをテストしてください。",
     "description": "Authentication error; never include the raw provider response",
     "_machine_translated": true,
-    "_source_hash": "eca735a4f5fb0bce"
+    "_source_hash": "10cd02016931ccf6"
   },
   "error.unknown": {
-    "message": "このシンボルの株価はありません。株式クラスのサフィックスを含め、米国のティッカーを確認してください。",
+    "message": "このシンボルの株価はありません。ティッカーと取引所サフィックスを確認してください。",
     "description": "Unknown or zero-valued quote",
     "_machine_translated": true,
-    "_source_hash": "3a30475366fb7002"
+    "_source_hash": "bd84c7f6e9173633"
   },
   "error.unsupported": {
     "message": "このプロバイダーは米国のティッカーのみに対応しています。海外取引所のサフィックスには別のデータプランが必要です。",
@@ -114,16 +114,16 @@
     "_source_hash": "7d553dee0c6fe94a"
   },
   "error.offline": {
-    "message": "Finnhub に接続できません。保存済みのデータがある場合はそれを表示しています。",
+    "message": "株価プロバイダーに接続できません。保存済みのデータがある場合は表示します。",
     "description": "Offline or network failure",
     "_machine_translated": true,
-    "_source_hash": "536dacabe5ed1015"
+    "_source_hash": "6fe79608991e6dfd"
   },
   "error.unavailable": {
-    "message": "Finnhub を利用できません。保存済みのデータがあれば表示します。",
+    "message": "株価プロバイダーを利用できません。保存済みのデータがある場合は表示します。",
     "description": "Sanitized provider error",
     "_machine_translated": true,
-    "_source_hash": "2dd30adcc5164ad4"
+    "_source_hash": "e10d9f0c7de280f1"
   },
   "error.busy": {
     "message": "別の Kage ウィンドウが株価を更新しています。しばらくしてからもう一度お試しください。",
@@ -138,10 +138,10 @@
     "_source_hash": "4cbfbb2e9b0adc41"
   },
   "error.invalid_key": {
-    "message": "Finnhub の API キーを貼り付けてから、テストして保存してください。URL は貼り付けないでください。",
+    "message": "選択したプロバイダーの API キーを貼り付けてから、「テストして使用」を押してください。URL は貼り付けないでください。",
     "description": "Malformed or missing API key",
     "_machine_translated": true,
-    "_source_hash": "b972e383a08a0ac1"
+    "_source_hash": "46f77ed69b2c2053"
   },
   "error.invalid_range": {
     "message": "範囲は 1d、1w、1m のいずれかを選択してください。",
@@ -150,10 +150,10 @@
     "_source_hash": "f4f4d83dc6129a6c"
   },
   "settings.description": {
-    "message": "米国株の株価、ウォッチリスト、ローカルの株価履歴。オンライン · ソース：Finnhub。保存された値は遅延している場合があります。",
+    "message": "Stocklake の株価はキーなしで利用できます（約 15 分遅延、1 日 25 回、無料キーで 200 回）。Finnhub では無料キーで米国株のリアルタイム株価を利用できます。",
     "description": "Settings summary",
     "_machine_translated": true,
-    "_source_hash": "b91914b96330d6cb"
+    "_source_hash": "deea29d63a6f57a4"
   },
   "settings.connection": {
     "message": "株価プロバイダーとセットアップ",
@@ -162,22 +162,22 @@
     "_source_hash": "863fbc4ab994c2eb"
   },
   "setup.intro": {
-    "message": "米国株の株価を取得するには、ご自身の無料の Finnhub キーを使用します。下のリンクからキーを取得し、テストして保存すると接続されます。",
+    "message": "Finnhub で米国株のリアルタイム株価を利用するには無料キーが必要です。上限は 1 分あたり 60 回です。",
     "description": "User-facing provider setup introduction",
     "_machine_translated": true,
-    "_source_hash": "0686f89d96f514a5"
+    "_source_hash": "41c015a47f8cb6a3"
   },
   "setup.terms": {
-    "message": "Finnhub の個人向けプランは、対象となる個人利用のためのものです。商用利用や、データまたはそこから派生した結果を第三者と共有するには、Finnhub の承認が必要です。リモートエージェントに株価を送信する前にも、プロバイダーの利用規約をご確認ください。",
+    "message": "データはご自身の調査やツールにのみ使用してください。プロバイダーのデータやアクセスの再販売、再配布、サブライセンス、または制限の回避は行わないでください。結果を共有する前にプロバイダーの利用規約を確認してください。",
     "description": "Material provider use restrictions",
     "_machine_translated": true,
-    "_source_hash": "9eb9716ed06ff746"
+    "_source_hash": "7fbb1c4e684b429f"
   },
   "setup.steps": {
-    "message": "1.「無料の Finnhub キーを取得（約1分）」を開き、Finnhub に登録します。2. ダッシュボードから API キーをコピーします。3. 下に貼り付けて「テストして保存」を選択します。",
+    "message": "Stocklake はキーなしですぐに使用できます。プロバイダーを選択し、必要に応じてキーを貼り付けてから、「テストして使用」で選択内容を保存してください。",
     "description": "Guided setup steps",
     "_machine_translated": true,
-    "_source_hash": "d850b03495911632"
+    "_source_hash": "d73223e639ab4ff7"
   },
   "setup.saved": {
     "message": "このデバイスにキーが保存されています。テストするにはフィールドを空のままにし、置き換えるには新しいキーを貼り付けてください。保存されたキーはここには表示されません。",
@@ -186,16 +186,16 @@
     "_source_hash": "4fba007359b56f1d"
   },
   "setup.free_key": {
-    "message": "無料の Finnhub キーを取得（約1分）",
+    "message": "Finnhub の無料キーを取得（約 1 分）",
     "description": "Open provider registration in system browser",
     "_machine_translated": true,
-    "_source_hash": "a0566f42e52da139"
+    "_source_hash": "8ee05fe11cb483c9"
   },
   "setup.key": {
-    "message": "Finnhub API キー",
+    "message": "プロバイダーの API キー（Stocklake では任意）",
     "description": "Scratch field for secret",
     "_machine_translated": true,
-    "_source_hash": "2e7e94ee1be4a2cf"
+    "_source_hash": "3fb2a7de1e62b384"
   },
   "setup.key_hint": {
     "message": "「テストして保存」を選択すると、Spotify の認証情報と同様に、キーは拡張機能のプライベートデータに保存されます。ここに入力しても、通常の設定と一緒には保存されません。このホストのテキストフィールドは入力中に内容が表示されます。",
@@ -204,10 +204,10 @@
     "_source_hash": "4c3122d9b4d5daad"
   },
   "setup.test": {
-    "message": "キーをテストして保存",
+    "message": "プロバイダーをテストして使用",
     "description": "Probe quote endpoint and save only on success",
     "_machine_translated": true,
-    "_source_hash": "bc2be6a1a4fb4210"
+    "_source_hash": "d9e72fde7f42a5f5"
   },
   "setup.remove": {
     "message": "保存済みのキーを削除",
@@ -222,10 +222,10 @@
     "_source_hash": "59cb7317745316bb"
   },
   "setup.success": {
-    "message": "Finnhub の株価テストに成功し、キーを保存しました。",
+    "message": "株価のテストに成功しました。プロバイダーを選択し、入力されたキーを保存しました。",
     "description": "Successful guided setup; key is saved independently of watchlist settings",
     "_machine_translated": true,
-    "_source_hash": "76df0b334c35e1f8"
+    "_source_hash": "c4ae3a50e8f0c3e0"
   },
   "settings.watchlist_section": {
     "message": "ウォッチリストと更新",
@@ -240,10 +240,10 @@
     "_source_hash": "4fa141d565f4d3cb"
   },
   "settings.watchlist_hint": {
-    "message": "米国株のシンボルを最大 {max} 個まで、スペースまたはカンマで区切って入力します。リストが空の場合、ウィジェットは非表示になります。",
+    "message": "最大 {max} 個のシンボルを、スペースまたはカンマで区切って入力します。Stocklake は SAP.DE などの海外シンボルに対応し、Finnhub は米国のティッカーに対応しています。パネルを表示するには、キーと表示設定の有効化が必要です。",
     "description": "Watchlist validation; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "18fd9ff917b78911"
+    "_source_hash": "5b779260bb9346da"
   },
   "settings.show": {
     "message": "フローティングウィンドウにウォッチリストを表示",
@@ -258,10 +258,10 @@
     "_source_hash": "d5d486955acdd4c8"
   },
   "settings.refresh_hint": {
-    "message": "最小 {min} 秒、既定値は {default} 秒です。現在の Kage ホストでは、ウィンドウが非表示の間はポーリングが一時停止します。このデバイス全体で 1 分あたり最大 {budget} 件のリクエストが確保されます。プロバイダーの制限には、他のアプリからのリクエストも含まれます。",
+    "message": "最小 {min} 秒、既定値 {default} 秒です。Stocklake の株価は 10 分以上、履歴は 1 日キャッシュされます。ウィンドウが非表示の間はポーリングを一時停止します。Finnhub はローカルで 1 分あたり最大 {budget} 件のリクエストを確保します。",
     "description": "Request budget and hidden behavior; preserve {min}, {default}, {budget}",
     "_machine_translated": true,
-    "_source_hash": "835954ceb7299192"
+    "_source_hash": "08eb708651c8ce9e"
   },
   "settings.refresh_error": {
     "message": "更新間隔は {min} 秒から {max} 秒の間で指定してください。",
@@ -270,28 +270,28 @@
     "_source_hash": "45f891673cb1e039"
   },
   "tool.quote": {
-    "message": "個人利用のために Finnhub から米国株の株価を取得します。ソース、最終取引のタイムスタンプ、キャッシュの鮮度、シンボルごとのエラーを返します。ユーザーの無料キーが必要です。プロバイダーの承認なしに再配布しないでください。",
+    "message": "選択したプロバイダーから、ご自身の利用目的で株価を取得します。Stocklake は約 15 分遅延でキー不要、Finnhub はキーを使って米国株のリアルタイム株価を提供します。ソース、タイムスタンプ、鮮度、シンボルごとのエラーを返します。データを再配布しないでください。",
     "description": "Agent tool description",
     "_machine_translated": true,
-    "_source_hash": "9aa8d167f9bf2f94"
+    "_source_hash": "890f052fdf9e3bbd"
   },
   "tool.symbols": {
-    "message": "最大 {max} 個の米国株シンボル（例: [\"AAPL\", \"MSFT\", \"BRK.B\"]）。",
+    "message": "最大 {max} 個のシンボル（例：[\"AAPL\", \"MSFT\", \"SAP.DE\"]）。Finnhub は米国のティッカーのみに対応しています。",
     "description": "Quote tool parameter description; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "753c9fd4564636f3"
+    "_source_hash": "acbe6e78c6fddb5a"
   },
   "tool.history": {
-    "message": "このデバイスでローカルに記録された Finnhub の相場を 1d、1w、または 1m の期間で取得します。ネットワークリクエストは行いません。サンプルは不完全かつまばらで、過去のローソク足データではありません。空のリストは、何も収集されていないことを意味します。",
+    "message": "1 日キャッシュされる 30 取引日分の範囲から、Stocklake の実際の日次履歴を 1d、1w、1m で取得します。キャッシュがない場合は 1 回分を消費します。Finnhub では履歴リクエストは行わず、ローカルで観測した不完全な株価を返します。",
     "description": "Agent tool scope must not imply full historical coverage",
     "_machine_translated": true,
-    "_source_hash": "fcb4dd5f0bdcb792"
+    "_source_hash": "d5343316b6826efa"
   },
   "tool.symbol": {
-    "message": "米国株のシンボル。",
+    "message": "株式のシンボル。Stocklake の場合は海外のサフィックスも含めます。",
     "description": "History symbol parameter description",
     "_machine_translated": true,
-    "_source_hash": "31f6b8214e118704"
+    "_source_hash": "bf96519c516306b2"
   },
   "tool.range": {
     "message": "1d、1w、または 1m。デフォルトは 1d です。",
@@ -312,10 +312,10 @@
     "_source_hash": "2acdb85e54aa0ed1"
   },
   "error.timeout": {
-    "message": "Finnhub からの応答に時間がかかりすぎています。数秒後にもう一度お試しください。保存済みのデータがある場合はそれを表示しています。",
+    "message": "株価プロバイダーの応答に時間がかかりすぎています。数秒後にもう一度お試しください。保存済みのデータがある場合は表示します。",
     "description": "Request timeout; short local pause, separate from offline backoff",
     "_machine_translated": true,
-    "_source_hash": "23491b785f430a04"
+    "_source_hash": "fb51f909049dd49a"
   },
   "settings.agent_tools": {
     "message": "エージェントに Stocks ツールの使用を許可",
@@ -324,10 +324,10 @@
     "_source_hash": "feaafa8e946fc0b2"
   },
   "settings.agent_tools_hint": {
-    "message": "エージェントツールは、Finnhub の株価データとそこから得られた結果をエージェントプロバイダーに送信する場合があります。Finnhub との契約でこの共有が許可されている場合にのみ有効にしてください。設定は Kage の再起動後に反映されます。",
+    "message": "エージェントツールは、株価や結果をエージェントのプロバイダーに送信する場合があります。プロバイダーの利用規約で許可されている場合に限り、ご自身の利用目的でのみ有効にしてください。Kage の再起動後に反映されます。",
     "description": "Explain opt-in and external agent data flow",
     "_machine_translated": true,
-    "_source_hash": "85852257d902cb3e"
+    "_source_hash": "4b637e7840e5666b"
   },
   "settings.delete_quotes": {
     "message": "保存済みの株価を削除",
@@ -340,15 +340,57 @@
     "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
   },
   "widget.connection": {
-    "message": "株価の確認が必要です。stock と入力して Enter キーを押すと、Stocks の設定が開きます。",
+    "message": "株価に問題があります。stock と入力して Enter キーを押すと、Stocks の設定が開きます。",
     "description": "Compact widget hint for authentication or storage problems; keep stock as the launcher command",
     "_machine_translated": true,
-    "_source_hash": "28d7c64fff255e29"
+    "_source_hash": "8dcbef2b531a522b"
   },
   "tool.opt_in": {
-    "message": "このツールを使用する前に、Stocks の設定で「エージェントに Stocks ツールの使用を許可」を有効にしてください。Finnhub との契約で、エージェントプロバイダーとのデータ共有が許可されていることを確認してください。",
+    "message": "このツールを使用する前に、Stocks の設定で「エージェントに Stocks ツールを許可」を有効にしてください。プロバイダーの利用規約で、エージェントのプロバイダーでの利用が許可されていることを確認してください。",
     "description": "Actionable agent tool opt-in error",
     "_machine_translated": true,
-    "_source_hash": "a00e5cc3750744f0"
+    "_source_hash": "994b57bbe7f233ae"
+  },
+  "settings.provider": {
+    "message": "株価プロバイダー",
+    "description": "Provider selection; Test/use persists the choice",
+    "_machine_translated": true,
+    "_source_hash": "b9f483c14cb7b4dc"
+  },
+  "setup.stocklake": {
+    "message": "Stocklake はキーなしで利用できます（約 15 分遅延、1 日 25 回まで）。無料のキーを追加すると 1 日 200 回まで利用できます。",
+    "description": "Keyless default provider description",
+    "_machine_translated": true,
+    "_source_hash": "930e88dd695cf87e"
+  },
+  "setup.stocklake_key": {
+    "message": "無料の Stocklake キーを取得",
+    "description": "Open Stocklake sign-in; emailed code; free 200 calls/day",
+    "_machine_translated": true,
+    "_source_hash": "b21d6e57b9696558"
+  },
+  "quote.stocklake": {
+    "message": "約 15 分遅延 · Stocklake",
+    "description": "Visible delayed provider attribution; paired with a link to stocklake.dev",
+    "_machine_translated": true,
+    "_source_hash": "081a46f162590a46"
+  },
+  "quote.history": {
+    "message": "Stocklake の約 30 取引日分の日次終値です。履歴は 1 日間キャッシュされ、キャッシュがない場合は 1 回分の呼び出しを使用します。Finnhub のスパークラインはローカルのサンプルを使用します。",
+    "description": "History accessible label and settings explanation; real daily data for Stocklake",
+    "_machine_translated": true,
+    "_source_hash": "2efd3bfb80984cd7"
+  },
+  "error.daily_limit": {
+    "message": "本日の無料クォートの上限に達しました。{time} にリセットされます。無料の Stocklake キーを追加すると 1 日 200 回まで利用できます。",
+    "description": "Guest exhaustion message; preserve {time} for local reset time",
+    "_machine_translated": true,
+    "_source_hash": "22d1ca53ad1f23f9"
+  },
+  "error.key_daily_limit": {
+    "message": "本日の Stocklake 呼び出しの上限に達しました。{time} にリセットされます。保存済みのデータがある場合はそれを表示します。",
+    "description": "Authenticated daily exhaustion; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "7c2f3494ec238e7e"
   }
 }

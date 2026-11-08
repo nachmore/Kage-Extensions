@@ -12,10 +12,10 @@
     "_source_hash": "d6d4700604b64b88"
   },
   "manifest.description": {
-    "message": "Online · Cotații din SUA și listă de urmărire de la Finnhub, cu cheia dumneavoastră gratuită. Date întârziate când sunt din cache; fiecare cotație își afișează marcajul de timp.",
+    "message": "Online · Fără chei necesare: cotațiile Stocklake sunt întârziate cu ~15 min, 25 pe zi gratuit; o cheie gratuită ridică limita la 200. Finnhub este opțional pentru cotații live din SUA.",
     "description": "Store listing; Online and Data delayed communicate network dependency and freshness",
     "_machine_translated": true,
-    "_source_hash": "6feb0a4240dfb80e"
+    "_source_hash": "44f1eb50266b55a3"
   },
   "result.loading": {
     "message": "Se caută acțiunile…",
@@ -78,16 +78,16 @@
     "_source_hash": "8adbf75fdf5bc595"
   },
   "error.auth": {
-    "message": "Finnhub a respins cheia. Deschideți setările Stocks pentru a testa o cheie nouă.",
+    "message": "Furnizorul a respins cheia. Deschideți setările Stocks pentru a testa o cheie nouă.",
     "description": "Authentication error; never include the raw provider response",
     "_machine_translated": true,
-    "_source_hash": "eca735a4f5fb0bce"
+    "_source_hash": "10cd02016931ccf6"
   },
   "error.unknown": {
-    "message": "Nu există nicio cotație pentru acest simbol. Verificați simbolul bursier din SUA, inclusiv orice sufix de clasă de acțiuni.",
+    "message": "Nicio cotație pentru acest simbol. Verificați simbolul și sufixul bursei.",
     "description": "Unknown or zero-valued quote",
     "_machine_translated": true,
-    "_source_hash": "3a30475366fb7002"
+    "_source_hash": "bd84c7f6e9173633"
   },
   "error.unsupported": {
     "message": "Acest furnizor acceptă doar simboluri bursiere din SUA. Sufixele burselor internaționale necesită un alt plan de date.",
@@ -114,16 +114,16 @@
     "_source_hash": "7d553dee0c6fe94a"
   },
   "error.offline": {
-    "message": "Finnhub nu poate fi accesat. Se afișează datele salvate, dacă sunt disponibile.",
+    "message": "Furnizorul de cotații nu poate fi accesat. Se afișează datele salvate, dacă sunt disponibile.",
     "description": "Offline or network failure",
     "_machine_translated": true,
-    "_source_hash": "536dacabe5ed1015"
+    "_source_hash": "6fe79608991e6dfd"
   },
   "error.unavailable": {
-    "message": "Finnhub nu este disponibil. Se afișează datele salvate, dacă există.",
+    "message": "Furnizorul de cotații nu este disponibil. Se afișează datele salvate, dacă sunt disponibile.",
     "description": "Sanitized provider error",
     "_machine_translated": true,
-    "_source_hash": "2dd30adcc5164ad4"
+    "_source_hash": "e10d9f0c7de280f1"
   },
   "error.busy": {
     "message": "O altă fereastră Kage actualizează cotațiile. Încercați din nou în curând.",
@@ -138,10 +138,10 @@
     "_source_hash": "4cbfbb2e9b0adc41"
   },
   "error.invalid_key": {
-    "message": "Lipiți o cheie API Finnhub, apoi alegeți Testați și salvați. Nu lipiți un URL.",
+    "message": "Lipiți o cheie API pentru furnizorul selectat, apoi apăsați „Testați și folosiți”. Nu lipiți un URL.",
     "description": "Malformed or missing API key",
     "_machine_translated": true,
-    "_source_hash": "b972e383a08a0ac1"
+    "_source_hash": "46f77ed69b2c2053"
   },
   "error.invalid_range": {
     "message": "Alegeți un interval de 1d, 1w sau 1m.",
@@ -150,10 +150,10 @@
     "_source_hash": "f4f4d83dc6129a6c"
   },
   "settings.description": {
-    "message": "Cotații bursiere din SUA, listă de urmărire și istoric local al cotațiilor. Online · Sursă: Finnhub. Valorile salvate pot avea întârziere.",
+    "message": "Cotațiile Stocklake funcționează fără cheie: întârziate cu ~15 min, 25 de apeluri pe zi sau 200 cu o cheie gratuită. Finnhub oferă cotații live din SUA cu o cheie gratuită.",
     "description": "Settings summary",
     "_machine_translated": true,
-    "_source_hash": "b91914b96330d6cb"
+    "_source_hash": "deea29d63a6f57a4"
   },
   "settings.connection": {
     "message": "Furnizor de cotații și configurare",
@@ -162,22 +162,22 @@
     "_source_hash": "863fbc4ab994c2eb"
   },
   "setup.intro": {
-    "message": "Folosiți propria cheie Finnhub gratuită pentru cotațiile acțiunilor din SUA. Obțineți o cheie mai jos, apoi testați-o și salvați-o pentru a vă conecta.",
+    "message": "Finnhub necesită o cheie gratuită pentru cotații live din SUA, cu o limită de 60 de apeluri pe minut.",
     "description": "User-facing provider setup introduction",
     "_machine_translated": true,
-    "_source_hash": "0686f89d96f514a5"
+    "_source_hash": "41c015a47f8cb6a3"
   },
   "setup.terms": {
-    "message": "Planurile personale Finnhub sunt destinate utilizării personale eligibile. Utilizarea în scop comercial și partajarea datelor sau a rezultatelor derivate cu terți necesită aprobarea Finnhub. Consultați termenii furnizorului, inclusiv înainte de a trimite cotații unui agent la distanță.",
+    "message": "Folosiți datele pentru propriile cercetări și instrumente. Nu revindeți, nu redistribuiți și nu sublicențiați datele sau accesul furnizorului și nu ocoliți limitele. Verificați termenii furnizorului înainte de a partaja rezultatele.",
     "description": "Material provider use restrictions",
     "_machine_translated": true,
-    "_source_hash": "9eb9716ed06ff746"
+    "_source_hash": "7fbb1c4e684b429f"
   },
   "setup.steps": {
-    "message": "1. Deschideți Obțineți o cheie Finnhub gratuită (aproximativ un minut) și înregistrați-vă la Finnhub. 2. Copiați cheia API din panoul de control. 3. Lipiți-o mai jos și alegeți Testați și salvați.",
+    "message": "Stocklake funcționează imediat, fără cheie. Alegeți un furnizor, lipiți opțional cheia acestuia, apoi apăsați „Testați și folosiți” pentru a vă salva alegerea.",
     "description": "Guided setup steps",
     "_machine_translated": true,
-    "_source_hash": "d850b03495911632"
+    "_source_hash": "d73223e639ab4ff7"
   },
   "setup.saved": {
     "message": "O cheie este salvată pe acest dispozitiv. Lăsați câmpul gol pentru a o testa sau lipiți o cheie nouă. Cheile stocate nu sunt afișate niciodată aici.",
@@ -186,16 +186,16 @@
     "_source_hash": "4fba007359b56f1d"
   },
   "setup.free_key": {
-    "message": "Obțineți o cheie Finnhub gratuită (aproximativ un minut)",
+    "message": "Obțineți o cheie Finnhub gratuită (durează cam un minut)",
     "description": "Open provider registration in system browser",
     "_machine_translated": true,
-    "_source_hash": "a0566f42e52da139"
+    "_source_hash": "8ee05fe11cb483c9"
   },
   "setup.key": {
-    "message": "Cheie API Finnhub",
+    "message": "Cheie API a furnizorului (opțională pentru Stocklake)",
     "description": "Scratch field for secret",
     "_machine_translated": true,
-    "_source_hash": "2e7e94ee1be4a2cf"
+    "_source_hash": "3fb2a7de1e62b384"
   },
   "setup.key_hint": {
     "message": "Testați și salvați stochează cheia în datele private ale extensiei, la fel ca datele de autentificare Spotify. Introducerea ei aici nu o salvează împreună cu setările obișnuite. Câmpul de text al acestei gazde este vizibil în timp ce tastați.",
@@ -204,10 +204,10 @@
     "_source_hash": "4c3122d9b4d5daad"
   },
   "setup.test": {
-    "message": "Testați și salvați cheia",
+    "message": "Testați și folosiți furnizorul",
     "description": "Probe quote endpoint and save only on success",
     "_machine_translated": true,
-    "_source_hash": "bc2be6a1a4fb4210"
+    "_source_hash": "d9e72fde7f42a5f5"
   },
   "setup.remove": {
     "message": "Eliminați cheia salvată",
@@ -222,10 +222,10 @@
     "_source_hash": "59cb7317745316bb"
   },
   "setup.success": {
-    "message": "Testul de cotație Finnhub a reușit; cheia a fost salvată.",
+    "message": "Testul cotației a reușit; furnizorul a fost selectat, iar cheia introdusă a fost salvată.",
     "description": "Successful guided setup; key is saved independently of watchlist settings",
     "_machine_translated": true,
-    "_source_hash": "76df0b334c35e1f8"
+    "_source_hash": "c4ae3a50e8f0c3e0"
   },
   "settings.watchlist_section": {
     "message": "Listă de urmărire și reîmprospătare",
@@ -240,10 +240,10 @@
     "_source_hash": "4fa141d565f4d3cb"
   },
   "settings.watchlist_hint": {
-    "message": "Până la {max} simboluri din SUA, separate prin spații sau virgule. O listă goală ascunde widgetul.",
+    "message": "Până la {max} simboluri, separate prin spații sau virgule. Stocklake acceptă simboluri internaționale, cum ar fi SAP.DE; Finnhub acceptă simboluri din SUA. Panoul necesită o cheie și o setare de vizibilitate activată.",
     "description": "Watchlist validation; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "18fd9ff917b78911"
+    "_source_hash": "5b779260bb9346da"
   },
   "settings.show": {
     "message": "Afișați lista de urmărire în fereastra flotantă",
@@ -258,10 +258,10 @@
     "_source_hash": "d5d486955acdd4c8"
   },
   "settings.refresh_hint": {
-    "message": "Minimum: {min} s; implicit: {default} s. Interogările din fereastra ascunsă se întrerup în gazdele Kage actuale. Limita de solicitări rezervată pe acest dispozitiv: {budget} pe minut; limitele furnizorului includ și celelalte aplicații ale dumneavoastră.",
+    "message": "Minimum {min} secunde; implicit {default}. Cotațiile Stocklake sunt păstrate în cache cel puțin 10 minute, iar istoricul o zi. Interogările se întrerup când fereastra este ascunsă. Finnhub rezervă local cel mult {budget} cereri pe minut.",
     "description": "Request budget and hidden behavior; preserve {min}, {default}, {budget}",
     "_machine_translated": true,
-    "_source_hash": "835954ceb7299192"
+    "_source_hash": "08eb708651c8ce9e"
   },
   "settings.refresh_error": {
     "message": "Intervalul de reîmprospătare (în secunde) trebuie să fie între {min} și {max}.",
@@ -270,28 +270,28 @@
     "_source_hash": "45f891673cb1e039"
   },
   "tool.quote": {
-    "message": "Obține cotații bursiere din SUA de la Finnhub pentru uz personal. Returnează sursa, marcajul temporal al ultimei tranzacții, prospețimea cache-ului și erorile pentru fiecare simbol. Necesită cheia gratuită a utilizatorului; nu redistribuiți fără aprobarea furnizorului.",
+    "message": "Obține cotații bursiere de la furnizorul selectat, pentru uz propriu. Stocklake are o întârziere de ~15 min și nu necesită cheie; Finnhub oferă cotații live din SUA cu o cheie. Returnează sursa, marcajele de timp, actualitatea datelor și erorile pentru fiecare simbol. Nu redistribuiți datele.",
     "description": "Agent tool description",
     "_machine_translated": true,
-    "_source_hash": "9aa8d167f9bf2f94"
+    "_source_hash": "890f052fdf9e3bbd"
   },
   "tool.symbols": {
-    "message": "Simboluri din SUA (maximum {max}), de exemplu [\"AAPL\", \"MSFT\", \"BRK.B\"].",
+    "message": "Până la {max} simboluri, de exemplu [\"AAPL\", \"MSFT\", \"SAP.DE\"]. Finnhub acceptă doar simboluri din SUA.",
     "description": "Quote tool parameter description; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "753c9fd4564636f3"
+    "_source_hash": "acbe6e78c6fddb5a"
   },
   "tool.history": {
-    "message": "Obține cotațiile Finnhub eșantionate local, observate pe acest dispozitiv, pentru 1d, 1w sau 1m. Fără solicitări de rețea. Eșantioane incomplete și rare, nu lumânări istorice; o listă goală înseamnă că nu s-a colectat nimic.",
+    "message": "Obține istoricul zilnic real Stocklake pentru 1d, 1w sau 1m dintr-un interval de 30 de zile de tranzacționare, păstrat în cache o zi. Costă un apel dacă datele nu sunt în cache. Finnhub returnează cotații incomplete observate local, fără cerere de istoric.",
     "description": "Agent tool scope must not imply full historical coverage",
     "_machine_translated": true,
-    "_source_hash": "fcb4dd5f0bdcb792"
+    "_source_hash": "d5343316b6826efa"
   },
   "tool.symbol": {
-    "message": "Un simbol bursier din SUA.",
+    "message": "Un simbol bursier, inclusiv cu sufixe internaționale pentru Stocklake.",
     "description": "History symbol parameter description",
     "_machine_translated": true,
-    "_source_hash": "31f6b8214e118704"
+    "_source_hash": "bf96519c516306b2"
   },
   "tool.range": {
     "message": "1d, 1w sau 1m; implicit 1d.",
@@ -312,10 +312,10 @@
     "_source_hash": "2acdb85e54aa0ed1"
   },
   "error.timeout": {
-    "message": "Finnhub a răspuns prea greu. Încercați din nou în câteva secunde; se afișează datele salvate, dacă sunt disponibile.",
+    "message": "Furnizorul de cotații a răspuns prea greu. Încercați din nou în câteva secunde; se afișează datele salvate, dacă sunt disponibile.",
     "description": "Request timeout; short local pause, separate from offline backoff",
     "_machine_translated": true,
-    "_source_hash": "23491b785f430a04"
+    "_source_hash": "fb51f909049dd49a"
   },
   "settings.agent_tools": {
     "message": "Permiteți instrumentele Stocks pentru agenți",
@@ -324,10 +324,10 @@
     "_source_hash": "feaafa8e946fc0b2"
   },
   "settings.agent_tools_hint": {
-    "message": "Instrumentele agentului pot trimite cotațiile Finnhub și rezultatele derivate către furnizorul dvs. de agent. Activați această opțiune doar dacă acordul dvs. cu Finnhub permite această partajare. Modificarea se aplică după ce reporniți Kage.",
+    "message": "Instrumentele pentru agenți pot trimite cotații și rezultate furnizorului agentului dumneavoastră. Activați-le doar pentru uz propriu, atunci când termenii furnizorului permit acest lucru. Modificarea se aplică după repornirea Kage.",
     "description": "Explain opt-in and external agent data flow",
     "_machine_translated": true,
-    "_source_hash": "85852257d902cb3e"
+    "_source_hash": "4b637e7840e5666b"
   },
   "settings.delete_quotes": {
     "message": "Ștergeți cotațiile salvate",
@@ -343,12 +343,54 @@
     "message": "Cotațiile necesită atenție. Tastați stock și apăsați Enter pentru a deschide setările Stocks.",
     "description": "Compact widget hint for authentication or storage problems; keep stock as the launcher command",
     "_machine_translated": true,
-    "_source_hash": "28d7c64fff255e29"
+    "_source_hash": "8dcbef2b531a522b"
   },
   "tool.opt_in": {
-    "message": "Activați „Permiteți instrumentele Stocks pentru agenți” în setările Stocks înainte de a folosi acest instrument. Verificați dacă acordul dumneavoastră Finnhub permite partajarea datelor cu furnizorul agentului.",
+    "message": "Activați „Permiteți instrumentele Stocks pentru agenți” în setările Stocks înainte de a folosi acest instrument. Verificați dacă termenii furnizorului permit utilizarea cu furnizorul agentului dumneavoastră.",
     "description": "Actionable agent tool opt-in error",
     "_machine_translated": true,
-    "_source_hash": "a00e5cc3750744f0"
+    "_source_hash": "994b57bbe7f233ae"
+  },
+  "settings.provider": {
+    "message": "Furnizor de cotații",
+    "description": "Provider selection; Test/use persists the choice",
+    "_machine_translated": true,
+    "_source_hash": "b9f483c14cb7b4dc"
+  },
+  "setup.stocklake": {
+    "message": "Stocklake funcționează fără cheie: întârziere de ~15 min, 25 de apeluri pe zi; o cheie gratuită opțională crește limita la 200.",
+    "description": "Keyless default provider description",
+    "_machine_translated": true,
+    "_source_hash": "930e88dd695cf87e"
+  },
+  "setup.stocklake_key": {
+    "message": "Obțineți o cheie Stocklake gratuită",
+    "description": "Open Stocklake sign-in; emailed code; free 200 calls/day",
+    "_machine_translated": true,
+    "_source_hash": "b21d6e57b9696558"
+  },
+  "quote.stocklake": {
+    "message": "Întârziere ~15 min · Stocklake",
+    "description": "Visible delayed provider attribution; paired with a link to stocklake.dev",
+    "_machine_translated": true,
+    "_source_hash": "081a46f162590a46"
+  },
+  "quote.history": {
+    "message": "Prețurile de închidere zilnice Stocklake pentru aproximativ 30 de zile de tranzacționare. Istoricul este păstrat în cache o zi; dacă nu este în cache, se folosește un apel. Graficele sparkline Finnhub folosesc eșantioane locale.",
+    "description": "History accessible label and settings explanation; real daily data for Stocklake",
+    "_machine_translated": true,
+    "_source_hash": "2efd3bfb80984cd7"
+  },
+  "error.daily_limit": {
+    "message": "Cotațiile gratuite zilnice s-au epuizat. Se resetează la {time}. Adăugați o cheie Stocklake gratuită pentru 200 pe zi.",
+    "description": "Guest exhaustion message; preserve {time} for local reset time",
+    "_machine_translated": true,
+    "_source_hash": "22d1ca53ad1f23f9"
+  },
+  "error.key_daily_limit": {
+    "message": "Apelurile Stocklake zilnice s-au epuizat. Se resetează la {time}. Se afișează datele salvate, când sunt disponibile.",
+    "description": "Authenticated daily exhaustion; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "7c2f3494ec238e7e"
   }
 }

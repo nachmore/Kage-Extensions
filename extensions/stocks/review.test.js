@@ -22,6 +22,7 @@ const response = (status = 200) => ({
 function host({ key = GOOD, config = {}, seed = {}, store, latency = 0, cap = 100, reject } = {}) {
   store ||= new Map(Object.entries(seed).map(([name, value]) => [name, typeof value === 'string' ? value : JSON.stringify(value)]));
   if (key && !store.has('credentials')) store.set('credentials', JSON.stringify({ api_key: key }));
+  if (!key && !store.has('credentials')) store.set('credentials', JSON.stringify({ provider: 'finnhub' }));
   const times = [];
   const stats = { calls: 0, rejected: 0, peak: 0, writes: [] };
   const invoke = vi.fn(async (command, args) => {
@@ -271,7 +272,7 @@ describe('review regressions: storage, budgets and keys', () => {
     await drive(h.client.getQuotes(TEN));
     const second = JSON.parse(h.store.get('request_budget'));
     expect(second.streak).toBe(2);
-    expect(second.backoffUntil).toBe(first.backoffUntil + 120_000);
+    expect(second.backoffUntil).toBe(second.lastFailureAt + 120_000);
     vi.setSystemTime(second.lastFailureAt + 30 * 60_000);
     await drive(h.client.getQuotes(['AAPL']));
     expect(JSON.parse(h.store.get('request_budget')).streak).toBe(1);
@@ -281,11 +282,11 @@ describe('review regressions: storage, budgets and keys', () => {
     const h = host({ key: null });
     fetch.mockImplementation(async (url) => response(new URL(url).searchParams.get('token') === GOOD ? 200 : 401));
     const settings = init(Settings, h);
-    const controls = async () => (await settings.getSettings()).sections.flatMap((section) => section.controls);
-    expect((await settings.runAction('test_key', { __api_key: BAD })).status).toContain('rejected');
+    const controls = async () => (await drive(settings.getSettings())).sections.flatMap((section) => section.controls);
+    expect((await drive(settings.runAction('test_key', { __api_key: BAD }))).status).toContain('rejected');
     expect(JSON.parse(h.store.get('request_budget')).backoffReason).toBeUndefined();
-    await h.client.backoff({ code: 'auth' });
-    expect((await settings.runAction('test_key', { __api_key: GOOD })).status).toContain('key saved');
+    await drive(h.client.backoff({ code: 'auth' }));
+    expect((await drive(settings.runAction('test_key', { __api_key: GOOD }))).status).toContain('key saved');
     expect(fetch).toHaveBeenCalledTimes(2);
     expect(await h.client.key()).toBe(GOOD);
     expect(h.client.localBackoff).toBe(0);
@@ -293,9 +294,9 @@ describe('review regressions: storage, budgets and keys', () => {
     const replacement = (await controls()).find((control) => control.id?.startsWith('__replacement_key'));
     expect(replacement.default).toBe('');
     expect(replacement.id).not.toBe('__api_key');
-    expect((await settings.runAction('test_key', { [replacement.id]: GOOD })).status).toContain('key saved');
+    expect((await drive(settings.runAction('test_key', { [replacement.id]: GOOD }))).status).toContain('key saved');
     expect((await controls()).find((control) => control.id?.startsWith('__replacement_key')).id).not.toBe(replacement.id);
-    expect(JSON.stringify(await settings.getSettings())).not.toContain(GOOD);
+    expect(JSON.stringify(await drive(settings.getSettings()))).not.toContain(GOOD);
   });
 
   it('testing a bad replacement leaves the saved key usable in a different window', async () => {
@@ -356,7 +357,7 @@ describe('review regressions: storage, budgets and keys', () => {
 
 describe('review regressions: symbols, formatting and tools', () => {
   it.each(['ENI.MI', 'SAN.MC', 'EQNR.OL', 'BMW.F', 'PETR4.SA', 'D05.SI', '7203.T', 'NOVO-B.CO', 'VOD.L'])('rejects foreign %s with the correct code', (symbol) => {
-    expect(() => normalizeSymbol(symbol)).toThrow('unsupported');
+    expect(() => normalizeSymbol(symbol, 'finnhub')).toThrow('unsupported');
   });
 
   it('keeps US share classes, isolates bad symbols, and deduplicates before the cap', async () => {

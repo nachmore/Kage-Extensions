@@ -1,0 +1,13 @@
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "content": [
+      {
+        "text": "{\"symbol\":\"AAPL\",\"name\":\"Apple Inc.\",\"price\":342.37,\"prev_close\":344.17,\"change_pct\":-0.52,\"currency\":\"USD\",\"exchange\":\"NMS\",\"volume\":43750861,\"updated_at\":\"2026-11-08T05:11:34.256000+00:00\"}",
+        "type": "text"
+      }
+    ],
+    "isError": false
+  }
+}

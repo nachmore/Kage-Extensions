@@ -12,10 +12,10 @@
     "_source_hash": "d6d4700604b64b88"
   },
   "manifest.description": {
-    "message": "Online · Amerikaanse koersen en volglijst van Finnhub met uw gratis sleutel. Gegevens vertraagd bij cache; elke koers toont het tijdstip.",
+    "message": "Online · Geen sleutels nodig: Stocklake-koersen met ~15 min vertraging, 25 per dag gratis; met een gratis sleutel wordt dit 200. Finnhub is optioneel voor live Amerikaanse koersen.",
     "description": "Store listing; Online and Data delayed communicate network dependency and freshness",
     "_machine_translated": true,
-    "_source_hash": "6feb0a4240dfb80e"
+    "_source_hash": "44f1eb50266b55a3"
   },
   "result.loading": {
     "message": "Aandelen opzoeken…",
@@ -78,16 +78,16 @@
     "_source_hash": "8adbf75fdf5bc595"
   },
   "error.auth": {
-    "message": "Finnhub heeft de sleutel geweigerd. Open de Stocks-instellingen om een nieuwe sleutel te testen.",
+    "message": "De provider heeft de sleutel geweigerd. Open de instellingen van Stocks om een vervangende sleutel te testen.",
     "description": "Authentication error; never include the raw provider response",
     "_machine_translated": true,
-    "_source_hash": "eca735a4f5fb0bce"
+    "_source_hash": "10cd02016931ccf6"
   },
   "error.unknown": {
-    "message": "Geen koers voor dit symbool. Controleer de Amerikaanse ticker, inclusief een eventueel achtervoegsel voor de aandelenklasse.",
+    "message": "Geen koers voor dit symbool. Controleer de ticker en het beursachtervoegsel.",
     "description": "Unknown or zero-valued quote",
     "_machine_translated": true,
-    "_source_hash": "3a30475366fb7002"
+    "_source_hash": "bd84c7f6e9173633"
   },
   "error.unsupported": {
     "message": "Deze provider ondersteunt alleen Amerikaanse tickers. Achtervoegsels van internationale beurzen vereisen een ander dataplan.",
@@ -114,16 +114,16 @@
     "_source_hash": "7d553dee0c6fe94a"
   },
   "error.offline": {
-    "message": "Kan Finnhub niet bereiken. Opgeslagen gegevens worden getoond indien beschikbaar.",
+    "message": "Kan de koersprovider niet bereiken. Opgeslagen gegevens worden getoond indien beschikbaar.",
     "description": "Offline or network failure",
     "_machine_translated": true,
-    "_source_hash": "536dacabe5ed1015"
+    "_source_hash": "6fe79608991e6dfd"
   },
   "error.unavailable": {
-    "message": "Finnhub is niet beschikbaar. Opgeslagen gegevens worden getoond indien beschikbaar.",
+    "message": "De koersprovider is niet beschikbaar. Opgeslagen gegevens worden getoond indien beschikbaar.",
     "description": "Sanitized provider error",
     "_machine_translated": true,
-    "_source_hash": "2dd30adcc5164ad4"
+    "_source_hash": "e10d9f0c7de280f1"
   },
   "error.busy": {
     "message": "Een ander Kage-venster ververst de koersen. Probeer het zo opnieuw.",
@@ -138,10 +138,10 @@
     "_source_hash": "4cbfbb2e9b0adc41"
   },
   "error.invalid_key": {
-    "message": "Plak een Finnhub API-sleutel en kies daarna Testen en opslaan. Plak geen URL.",
+    "message": "Plak een API-sleutel voor de geselecteerde provider en kies daarna Testen en gebruiken. Plak geen URL.",
     "description": "Malformed or missing API key",
     "_machine_translated": true,
-    "_source_hash": "b972e383a08a0ac1"
+    "_source_hash": "46f77ed69b2c2053"
   },
   "error.invalid_range": {
     "message": "Kies een bereik van 1d, 1w of 1m.",
@@ -150,10 +150,10 @@
     "_source_hash": "f4f4d83dc6129a6c"
   },
   "settings.description": {
-    "message": "Amerikaanse aandelenkoersen, volglijst en lokale koersgeschiedenis. Online · Bron: Finnhub. Opgeslagen waarden kunnen vertraagd zijn.",
+    "message": "Stocklake-koersen werken zonder sleutel: ~15 min vertraagd, 25 aanroepen per dag, of 200 met een gratis sleutel. Finnhub biedt live Amerikaanse koersen met een gratis sleutel.",
     "description": "Settings summary",
     "_machine_translated": true,
-    "_source_hash": "b91914b96330d6cb"
+    "_source_hash": "deea29d63a6f57a4"
   },
   "settings.connection": {
     "message": "Koersprovider en configuratie",
@@ -162,22 +162,22 @@
     "_source_hash": "863fbc4ab994c2eb"
   },
   "setup.intro": {
-    "message": "Gebruik uw eigen gratis Finnhub-sleutel voor koersen van Amerikaanse aandelen. Vraag hieronder een sleutel aan en test en sla deze vervolgens op om verbinding te maken.",
+    "message": "Finnhub heeft een gratis sleutel nodig voor live Amerikaanse koersen, met een limiet van 60 aanroepen per minuut.",
     "description": "User-facing provider setup introduction",
     "_machine_translated": true,
-    "_source_hash": "0686f89d96f514a5"
+    "_source_hash": "41c015a47f8cb6a3"
   },
   "setup.terms": {
-    "message": "De persoonlijke abonnementen van Finnhub zijn bedoeld voor toegestaan persoonlijk gebruik. Zakelijk gebruik en het delen van gegevens of afgeleide resultaten met derden vereisen goedkeuring van Finnhub. Raadpleeg de voorwaarden van de provider, ook voordat u koersen naar een externe agent stuurt.",
+    "message": "Gebruik gegevens voor uw eigen onderzoek en tools. Verkoop, verspreid of sublicentieer gegevens of toegang van de provider niet door en omzeil geen limieten. Controleer de voorwaarden van de provider voordat u resultaten deelt.",
     "description": "Material provider use restrictions",
     "_machine_translated": true,
-    "_source_hash": "9eb9716ed06ff746"
+    "_source_hash": "7fbb1c4e684b429f"
   },
   "setup.steps": {
-    "message": "1. Open Gratis Finnhub-sleutel aanvragen (ongeveer een minuut) en registreer u bij Finnhub. 2. Kopieer uw API-sleutel vanuit het dashboard. 3. Plak deze hieronder en kies Testen en opslaan.",
+    "message": "Stocklake werkt direct zonder sleutel. Kies een provider, plak eventueel de bijbehorende sleutel en kies daarna Testen en gebruiken om uw keuze op te slaan.",
     "description": "Guided setup steps",
     "_machine_translated": true,
-    "_source_hash": "d850b03495911632"
+    "_source_hash": "d73223e639ab4ff7"
   },
   "setup.saved": {
     "message": "Er is een sleutel opgeslagen op dit apparaat. Laat het veld leeg om deze te testen, of plak een vervangende sleutel. Opgeslagen sleutels worden hier nooit getoond.",
@@ -189,13 +189,13 @@
     "message": "Gratis Finnhub-sleutel aanvragen (ongeveer een minuut)",
     "description": "Open provider registration in system browser",
     "_machine_translated": true,
-    "_source_hash": "a0566f42e52da139"
+    "_source_hash": "8ee05fe11cb483c9"
   },
   "setup.key": {
-    "message": "Finnhub API-sleutel",
+    "message": "API-sleutel van provider (optioneel voor Stocklake)",
     "description": "Scratch field for secret",
     "_machine_translated": true,
-    "_source_hash": "2e7e94ee1be4a2cf"
+    "_source_hash": "3fb2a7de1e62b384"
   },
   "setup.key_hint": {
     "message": "Testen en opslaan bewaart de sleutel in privégegevens van de extensie, net als Spotify-inloggegevens. Typen in dit veld slaat de sleutel niet op bij de gewone instellingen. Het tekstveld van deze host is zichtbaar terwijl u typt.",
@@ -204,10 +204,10 @@
     "_source_hash": "4c3122d9b4d5daad"
   },
   "setup.test": {
-    "message": "Sleutel testen en opslaan",
+    "message": "Provider testen en gebruiken",
     "description": "Probe quote endpoint and save only on success",
     "_machine_translated": true,
-    "_source_hash": "bc2be6a1a4fb4210"
+    "_source_hash": "d9e72fde7f42a5f5"
   },
   "setup.remove": {
     "message": "Opgeslagen sleutel verwijderen",
@@ -222,10 +222,10 @@
     "_source_hash": "59cb7317745316bb"
   },
   "setup.success": {
-    "message": "Finnhub-koerstest geslaagd; sleutel opgeslagen.",
+    "message": "Koerstest geslaagd; provider geselecteerd en eventueel opgegeven sleutel opgeslagen.",
     "description": "Successful guided setup; key is saved independently of watchlist settings",
     "_machine_translated": true,
-    "_source_hash": "76df0b334c35e1f8"
+    "_source_hash": "c4ae3a50e8f0c3e0"
   },
   "settings.watchlist_section": {
     "message": "Volglijst en vernieuwen",
@@ -240,10 +240,10 @@
     "_source_hash": "4fa141d565f4d3cb"
   },
   "settings.watchlist_hint": {
-    "message": "Maximaal {max} Amerikaanse symbolen, gescheiden door spaties of komma's. Een lege lijst verbergt de widget.",
+    "message": "Maximaal {max} symbolen, gescheiden door spaties of komma's. Stocklake accepteert internationale symbolen zoals SAP.DE; Finnhub ondersteunt Amerikaanse tickers. Het paneel vereist een sleutel en een ingeschakelde zichtbaarheidsinstelling.",
     "description": "Watchlist validation; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "18fd9ff917b78911"
+    "_source_hash": "5b779260bb9346da"
   },
   "settings.show": {
     "message": "Volglijst tonen in het zwevende venster",
@@ -258,10 +258,10 @@
     "_source_hash": "d5d486955acdd4c8"
   },
   "settings.refresh_hint": {
-    "message": "Minimaal {min} seconden; standaard {default}. Bij huidige Kage-hosts wordt het ophalen gepauzeerd als het venster verborgen is. Op dit apparaat zijn maximaal {budget} verzoeken per minuut gereserveerd; de limieten van de provider gelden ook voor uw andere apps.",
+    "message": "Minimaal {min} seconden; standaard {default}. Stocklake-koersen worden minstens 10 minuten in de cache bewaard, historie een dag. Polling pauzeert bij een verborgen venster. Finnhub reserveert lokaal maximaal {budget} verzoeken per minuut.",
     "description": "Request budget and hidden behavior; preserve {min}, {default}, {budget}",
     "_machine_translated": true,
-    "_source_hash": "835954ceb7299192"
+    "_source_hash": "08eb708651c8ce9e"
   },
   "settings.refresh_error": {
     "message": "Het vernieuwingsinterval moet tussen {min} en {max} seconden liggen.",
@@ -270,28 +270,28 @@
     "_source_hash": "45f891673cb1e039"
   },
   "tool.quote": {
-    "message": "Haal Amerikaanse aandelenkoersen op bij Finnhub voor persoonlijk gebruik. Retourneert bron, tijdstempel van de laatste transactie, actualiteit van de cache en fouten per symbool. Vereist de gratis sleutel van de gebruiker; niet herdistribueren zonder goedkeuring van de provider.",
+    "message": "Haal aandelenkoersen op van uw geselecteerde provider voor eigen gebruik. Stocklake is ~15 min vertraagd en heeft geen sleutel nodig; Finnhub biedt live Amerikaanse koersen met een sleutel. Retourneert bron, tijdstempels, actualiteit en fouten per symbool. Verspreid de gegevens niet.",
     "description": "Agent tool description",
     "_machine_translated": true,
-    "_source_hash": "9aa8d167f9bf2f94"
+    "_source_hash": "890f052fdf9e3bbd"
   },
   "tool.symbols": {
-    "message": "Maximaal {max} Amerikaanse symbolen, bijvoorbeeld [\"AAPL\", \"MSFT\", \"BRK.B\"].",
+    "message": "Maximaal {max} symbolen, bijvoorbeeld [\"AAPL\", \"MSFT\", \"SAP.DE\"]. Finnhub accepteert alleen Amerikaanse tickers.",
     "description": "Quote tool parameter description; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "753c9fd4564636f3"
+    "_source_hash": "acbe6e78c6fddb5a"
   },
   "tool.history": {
-    "message": "Haal lokaal verzamelde Finnhub-koersen op die op dit apparaat zijn waargenomen voor 1d, 1w of 1m. Geen netwerkverzoeken. Onvolledige, schaarse steekproeven, geen historische candles; een lege lijst betekent dat er niets is verzameld.",
+    "message": "Haal echte dagelijkse Stocklake-historie op voor 1d, 1w of 1m uit een venster van 30 handelsdagen dat een dag in de cache wordt bewaard. Kost één aanroep als de gegevens niet in de cache staan. Finnhub retourneert onvolledige, lokaal waargenomen koersen zonder historieverzoek.",
     "description": "Agent tool scope must not imply full historical coverage",
     "_machine_translated": true,
-    "_source_hash": "fcb4dd5f0bdcb792"
+    "_source_hash": "d5343316b6826efa"
   },
   "tool.symbol": {
-    "message": "Een Amerikaans aandelensymbool.",
+    "message": "Een aandelensymbool, inclusief internationale achtervoegsels voor Stocklake.",
     "description": "History symbol parameter description",
     "_machine_translated": true,
-    "_source_hash": "31f6b8214e118704"
+    "_source_hash": "bf96519c516306b2"
   },
   "tool.range": {
     "message": "1d, 1w of 1m; standaard 1d.",
@@ -312,10 +312,10 @@
     "_source_hash": "2acdb85e54aa0ed1"
   },
   "error.timeout": {
-    "message": "Finnhub reageerde niet op tijd. Probeer het over een paar seconden opnieuw; opgeslagen gegevens worden getoond indien beschikbaar.",
+    "message": "De koersprovider reageerde te traag. Probeer het over een paar seconden opnieuw; opgeslagen gegevens worden getoond indien beschikbaar.",
     "description": "Request timeout; short local pause, separate from offline backoff",
     "_machine_translated": true,
-    "_source_hash": "23491b785f430a04"
+    "_source_hash": "fb51f909049dd49a"
   },
   "settings.agent_tools": {
     "message": "Stocks-tools toestaan voor agents",
@@ -324,10 +324,10 @@
     "_source_hash": "feaafa8e946fc0b2"
   },
   "settings.agent_tools_hint": {
-    "message": "Agenttools kunnen Finnhub-koersen en afgeleide resultaten naar je agentprovider sturen. Schakel dit alleen in als je Finnhub-overeenkomst dit delen toestaat. Wordt van kracht nadat je Kage opnieuw hebt gestart.",
+    "message": "Agenttools kunnen koersen en resultaten naar uw agentprovider sturen. Schakel dit alleen in voor eigen gebruik als de voorwaarden van de provider dat toestaan. Wordt actief nadat u Kage opnieuw start.",
     "description": "Explain opt-in and external agent data flow",
     "_machine_translated": true,
-    "_source_hash": "85852257d902cb3e"
+    "_source_hash": "4b637e7840e5666b"
   },
   "settings.delete_quotes": {
     "message": "Opgeslagen koersen verwijderen",
@@ -340,15 +340,57 @@
     "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
   },
   "widget.connection": {
-    "message": "Koersen vereisen aandacht. Typ stock en druk op Enter om de Stocks-instellingen te openen.",
+    "message": "Koersen vereisen aandacht. Typ stock en druk op Enter om de instellingen van Stocks te openen.",
     "description": "Compact widget hint for authentication or storage problems; keep stock as the launcher command",
     "_machine_translated": true,
-    "_source_hash": "28d7c64fff255e29"
+    "_source_hash": "8dcbef2b531a522b"
   },
   "tool.opt_in": {
-    "message": "Schakel Stocks-tools toestaan voor agents in via de Stocks-instellingen voordat u deze tool gebruikt. Controleer of uw Finnhub-overeenkomst het delen van gegevens met uw agentprovider toestaat.",
+    "message": "Schakel Stocks-tools voor agents toestaan in de instellingen van Stocks in voordat u deze tool gebruikt. Controleer of de voorwaarden van de provider uw gebruik met uw agentprovider toestaan.",
     "description": "Actionable agent tool opt-in error",
     "_machine_translated": true,
-    "_source_hash": "a00e5cc3750744f0"
+    "_source_hash": "994b57bbe7f233ae"
+  },
+  "settings.provider": {
+    "message": "Koersprovider",
+    "description": "Provider selection; Test/use persists the choice",
+    "_machine_translated": true,
+    "_source_hash": "b9f483c14cb7b4dc"
+  },
+  "setup.stocklake": {
+    "message": "Stocklake werkt zonder sleutel: ~15 min vertraagd, 25 aanroepen per dag; met een optionele gratis sleutel wordt dit 200.",
+    "description": "Keyless default provider description",
+    "_machine_translated": true,
+    "_source_hash": "930e88dd695cf87e"
+  },
+  "setup.stocklake_key": {
+    "message": "Gratis Stocklake-sleutel aanvragen",
+    "description": "Open Stocklake sign-in; emailed code; free 200 calls/day",
+    "_machine_translated": true,
+    "_source_hash": "b21d6e57b9696558"
+  },
+  "quote.stocklake": {
+    "message": "~15 min vertraagd · Stocklake",
+    "description": "Visible delayed provider attribution; paired with a link to stocklake.dev",
+    "_machine_translated": true,
+    "_source_hash": "081a46f162590a46"
+  },
+  "quote.history": {
+    "message": "Dagelijkse slotkoersen van Stocklake voor ongeveer 30 handelsdagen. De geschiedenis wordt een dag in de cache bewaard; als iets niet in de cache staat, kost dat één aanroep. Finnhub-sparklines gebruiken lokale samples.",
+    "description": "History accessible label and settings explanation; real daily data for Stocklake",
+    "_machine_translated": true,
+    "_source_hash": "2efd3bfb80984cd7"
+  },
+  "error.daily_limit": {
+    "message": "Gratis koersen voor vandaag zijn op. Wordt gereset om {time}. Voeg een gratis Stocklake-sleutel toe voor 200 per dag.",
+    "description": "Guest exhaustion message; preserve {time} for local reset time",
+    "_machine_translated": true,
+    "_source_hash": "22d1ca53ad1f23f9"
+  },
+  "error.key_daily_limit": {
+    "message": "Stocklake-aanroepen voor vandaag zijn op. Wordt gereset om {time}. Opgeslagen gegevens worden getoond indien beschikbaar.",
+    "description": "Authenticated daily exhaustion; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "7c2f3494ec238e7e"
   }
 }

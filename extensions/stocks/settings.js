@@ -1,5 +1,5 @@
 import { DEFAULTS, MIN_REFRESH_SECONDS, MAX_REFRESH_SECONDS, MAX_PER_MINUTE, refreshSeconds } from './defaults.js';
-import { FREE_KEY_URL, getClient, validKey } from './client.js';
+import { FREE_KEY_URL, STOCKLAKE_KEY_URL, getClient, migrateProvider, validKey } from './client.js';
 import { MAX_SYMBOLS, parseSymbols } from './symbols.js';
 import { errorText, escapeHtml } from './format.js';
 
@@ -19,7 +19,13 @@ export default class StocksSettingsProvider {
   async getSettings() {
     const t = this.t;
     let hasKey = false, unreadableKey = false;
-    try { hasKey = !!(await this.client.key()); } catch { unreadableKey = true; }
+    let credentials = {};
+    try {
+      await this.client.connection(this.config);
+      credentials = await this.client.read('credentials') || {};
+    } catch { unreadableKey = true; }
+    this.activeProvider = migrateProvider(this.config, credentials);
+    hasKey = validKey(this.activeProvider === 'stocklake' ? credentials.stocklake_key : credentials.api_key);
     this.scratchId = hasKey ? `__replacement_key_${this.keyRevision}`
       : this.keyRevision ? `__api_key_${this.keyRevision}` : '__api_key';
     return {
@@ -28,9 +34,18 @@ export default class StocksSettingsProvider {
         {
           label: t('settings.connection'),
           controls: [
-            { type: 'info', html: `<p>${escapeHtml(t('setup.intro'))}</p><p>${escapeHtml(t('setup.terms'))}</p>` },
+            // Scratch selection reflects migration even on hosts overlaying
+            // manifest defaults. Test/use persists the provider independently
+            // of generic settings Save, just like the keys.
+            { type: 'select', id: '__provider', default: this.activeProvider, label: t('settings.provider'),
+              options: [{ value: 'stocklake', label: 'Stocklake' }, { value: 'finnhub', label: 'Finnhub' }] },
+            { type: 'info', html: `<p>${escapeHtml(t('setup.stocklake'))}</p>`,
+              showWhen: { id: '__provider', equals: 'stocklake' } },
+            { type: 'info', html: `<p>${escapeHtml(t('setup.intro'))}</p>`, showWhen: { id: '__provider', equals: 'finnhub' } },
+            { type: 'info', html: `<p>${escapeHtml(t('setup.terms'))}</p>` },
             { type: 'info', html: `<p>${escapeHtml(hasKey ? t('setup.saved') : t('setup.steps'))}</p>` },
-            { type: 'action', id: 'free_key', action: 'free_key', label: t('setup.free_key') },
+            { type: 'action', id: 'free_key', action: 'free_key', label: t('setup.free_key'), showWhen: { id: '__provider', equals: 'finnhub' } },
+            { type: 'action', id: 'stocklake_key', action: 'free_key', label: t('setup.stocklake_key'), showWhen: { id: '__provider', equals: 'stocklake' } },
             // Scratch field never goes into config or back into the schema.
             // The host has no password control type; an empty text field is
             // the compatible input, as in Spotify's guided setup.
@@ -51,7 +66,7 @@ export default class StocksSettingsProvider {
             },
             { type: 'checkbox', id: 'agent_tools', label: t('settings.agent_tools'), default: DEFAULTS.agent_tools, description: t('settings.agent_tools_hint') },
             { type: 'action', id: 'delete_quotes', action: 'delete_quotes', label: t('settings.delete_quotes') },
-            { type: 'info', html: `<p>${escapeHtml(t('result.help'))}</p><p>${escapeHtml(t('quote.sampled'))}</p>` },
+            { type: 'info', html: `<p>${escapeHtml(t('result.help'))}</p><p>${escapeHtml(t('quote.history'))}</p>` },
           ],
         },
       ],
@@ -60,7 +75,9 @@ export default class StocksSettingsProvider {
 
   validate(values = {}) {
     try {
-      if (values.watchlist !== undefined) parseSymbols(values.watchlist, { allowEmpty: true });
+      if (values.watchlist !== undefined) parseSymbols(values.watchlist, {
+        allowEmpty: true, provider: values.__provider || this.activeProvider || 'stocklake',
+      });
       if (values.refresh_seconds !== undefined) {
         const n = Number(values.refresh_seconds);
         if (!Number.isFinite(n) || n < MIN_REFRESH_SECONDS || n > MAX_REFRESH_SECONDS) {
@@ -72,13 +89,16 @@ export default class StocksSettingsProvider {
   }
 
   normalize(values = {}) {
+    values = values && typeof values === 'object' && !Array.isArray(values) ? values : {};
     const clean = {};
     for (const key of Object.keys(DEFAULTS)) {
       if (Object.hasOwn(values, key)) clean[key] = values[key];
     }
-    // Older hosts merge normalized values into saved config. Reset the
-    // retired provider field to Finnhub; runtime no longer consults it.
-    if (Object.hasOwn(values, 'provider')) clean.provider = 'finnhub';
+    // Canonicalize every retired provider/config shape without resurrecting
+    // an old cache-only provider. The selection action owns modern changes.
+    if (Object.hasOwn(values, 'provider')) clean.provider = this.activeProvider || migrateProvider(values);
+    // Retired config credential fields must never survive another Save.
+    for (const key of ['api_key', 'finnhub_key', 'stocklake_key']) if (Object.hasOwn(values, key)) clean[key] = '';
     if (Object.hasOwn(clean, 'watchlist')) {
       clean.watchlist = parseSymbols(clean.watchlist, { allowEmpty: true }).join(' ');
     }
@@ -86,19 +106,23 @@ export default class StocksSettingsProvider {
     // Older hosts merge normalized fields into controls before saving. Return
     // explicit blanks so their generic Save cannot persist typed credentials.
     if (!this.hostFeatures) {
-      for (const key of Object.keys(values)) if (key.startsWith('__')) clean[key] = '';
+      for (const key of Object.keys(values)) if (key.startsWith('__') && key !== '__provider') clean[key] = '';
     }
+    if (Object.hasOwn(values, '__provider')) clean.__provider = ['stocklake', 'finnhub'].includes(values.__provider)
+      ? values.__provider : this.activeProvider || 'stocklake';
     return { values: clean };
   }
 
   async runAction(action, values = {}) {
     try {
+      const provider = ['stocklake', 'finnhub'].includes(values.__provider)
+        ? values.__provider : this.activeProvider || (await this.client.connection(this.config)).provider;
       if (action === 'free_key') {
-        await this.invoke('open_url', { url: FREE_KEY_URL });
+        await this.invoke('open_url', { url: provider === 'stocklake' ? STOCKLAKE_KEY_URL : FREE_KEY_URL });
         return {};
       }
       if (action === 'remove_key') {
-        await this.client.removeKey();
+        await this.client.removeKey(provider);
         this.keyRevision++;
         return { status: this.t('setup.removed'), host: { type: 'refresh' } };
       }
@@ -107,14 +131,15 @@ export default class StocksSettingsProvider {
         return { status: this.t('settings.quotes_deleted', counts), host: { type: 'refresh' } };
       }
       if (action === 'test_key') {
-        const key = String(values[this.scratchId] || '').trim() || await this.client.key();
-        if (!validKey(key)) return { status: this.t('error.invalid_key') };
-        await this.client.testKey(key);
-        await this.client.saveKey(key);
+        const key = String(values[this.scratchId] || '').trim() || await this.client.providerKey(provider);
+        if ((provider === 'finnhub' || key) && !validKey(key)) return { status: this.t('error.invalid_key') };
+        await this.client.testKey(key, provider);
+        if (key) await this.client.saveKey(key, provider);
+        else await this.client.useProvider(provider);
         this.keyRevision++;
         return { status: this.t('setup.success'), host: { type: 'refresh' } };
       }
       return {};
-    } catch (error) { return { status: errorText(error.code, this.t) }; }
+    } catch (error) { return { status: errorText(error.code, this.t, { retryAt: error.retryAt }) }; }
   }
 }

@@ -12,10 +12,10 @@
     "_source_hash": "d6d4700604b64b88"
   },
   "manifest.description": {
-    "message": "מקוון · ציטוטי מניות ורשימת מעקב בארה״ב מ-Finnhub עם המפתח החינמי שלך. הנתונים מושהים כשהם נשמרים במטמון; לכל ציטוט מוצגת חותמת הזמן שלו.",
+    "message": "מקוון · ללא צורך במפתחות: ציטוטי Stocklake מושהים בכ-15 דקות, 25 ביום בחינם; מפתח חינמי מעלה את המגבלה ל-200. Finnhub הוא אופציונלי לציטוטים בזמן אמת של מניות בארה״ב.",
     "description": "Store listing; Online and Data delayed communicate network dependency and freshness",
     "_machine_translated": true,
-    "_source_hash": "6feb0a4240dfb80e"
+    "_source_hash": "44f1eb50266b55a3"
   },
   "result.loading": {
     "message": "מחפש מניות…",
@@ -78,16 +78,16 @@
     "_source_hash": "8adbf75fdf5bc595"
   },
   "error.auth": {
-    "message": "Finnhub דחה את המפתח. פתחו את הגדרות המניות כדי לבדוק מפתח חלופי.",
+    "message": "הספק דחה את המפתח. יש לפתוח את הגדרות המניות כדי לבדוק מפתח חלופי.",
     "description": "Authentication error; never include the raw provider response",
     "_machine_translated": true,
-    "_source_hash": "eca735a4f5fb0bce"
+    "_source_hash": "10cd02016931ccf6"
   },
   "error.unknown": {
-    "message": "אין ציטוט עבור הסימול הזה. בדקו את סימול המניה האמריקאי, כולל סיומת סוג המניה, אם יש.",
+    "message": "אין ציטוט עבור סימול זה. יש לבדוק את הסימול ואת סיומת הבורסה.",
     "description": "Unknown or zero-valued quote",
     "_machine_translated": true,
-    "_source_hash": "3a30475366fb7002"
+    "_source_hash": "bd84c7f6e9173633"
   },
   "error.unsupported": {
     "message": "ספק זה תומך בסימולי מניות אמריקאיים בלבד. סיומות של בורסות בינלאומיות דורשות תוכנית נתונים אחרת.",
@@ -114,16 +114,16 @@
     "_source_hash": "7d553dee0c6fe94a"
   },
   "error.offline": {
-    "message": "לא ניתן להתחבר ל-Finnhub. מוצגים נתונים שמורים, אם יש כאלה.",
+    "message": "לא ניתן להתחבר לספק הציטוטים. מוצגים נתונים שמורים כשהם זמינים.",
     "description": "Offline or network failure",
     "_machine_translated": true,
-    "_source_hash": "536dacabe5ed1015"
+    "_source_hash": "6fe79608991e6dfd"
   },
   "error.unavailable": {
-    "message": "Finnhub אינו זמין. מוצגים נתונים שמורים כשהם זמינים.",
+    "message": "ספק הציטוטים אינו זמין. מוצגים נתונים שמורים כשהם זמינים.",
     "description": "Sanitized provider error",
     "_machine_translated": true,
-    "_source_hash": "2dd30adcc5164ad4"
+    "_source_hash": "e10d9f0c7de280f1"
   },
   "error.busy": {
     "message": "חלון Kage אחר מרענן ציטוטים. נסו שוב בעוד רגע.",
@@ -138,10 +138,10 @@
     "_source_hash": "4cbfbb2e9b0adc41"
   },
   "error.invalid_key": {
-    "message": "הדביקו מפתח API של Finnhub ולאחר מכן בחרו ב'בדיקה ושמירה'. אין להדביק URL.",
+    "message": "יש להדביק מפתח API עבור הספק שנבחר, ואז ללחוץ על ״בדיקה ושימוש״. אין להדביק URL.",
     "description": "Malformed or missing API key",
     "_machine_translated": true,
-    "_source_hash": "b972e383a08a0ac1"
+    "_source_hash": "46f77ed69b2c2053"
   },
   "error.invalid_range": {
     "message": "בחרו טווח של 1d,‏ 1w או 1m.",
@@ -150,10 +150,10 @@
     "_source_hash": "f4f4d83dc6129a6c"
   },
   "settings.description": {
-    "message": "שערי מניות בארה״ב, רשימת מעקב והיסטוריית שערים מקומית. מקוון · מקור: Finnhub. ייתכן שהערכים השמורים יהיו בעיכוב.",
+    "message": "ציטוטי Stocklake פועלים ללא מפתח: מושהים בכ-15 דקות, 25 קריאות ביום, או 200 עם מפתח חינמי. Finnhub מציע ציטוטים בזמן אמת של מניות בארה״ב עם מפתח חינמי.",
     "description": "Settings summary",
     "_machine_translated": true,
-    "_source_hash": "b91914b96330d6cb"
+    "_source_hash": "deea29d63a6f57a4"
   },
   "settings.connection": {
     "message": "ספק השערים והגדרה",
@@ -162,22 +162,22 @@
     "_source_hash": "863fbc4ab994c2eb"
   },
   "setup.intro": {
-    "message": "השתמשו במפתח Finnhub חינמי משלכם כדי לקבל ציטוטים של מניות בארה״ב. קבלו מפתח למטה, ואז בדקו ושמרו אותו כדי להתחבר.",
+    "message": "Finnhub דורש מפתח חינמי לציטוטים בזמן אמת של מניות בארה״ב, במגבלה של 60 קריאות לדקה.",
     "description": "User-facing provider setup introduction",
     "_machine_translated": true,
-    "_source_hash": "0686f89d96f514a5"
+    "_source_hash": "41c015a47f8cb6a3"
   },
   "setup.terms": {
-    "message": "התוכניות האישיות של Finnhub מיועדות לשימוש אישי מורשה. שימוש עסקי ושיתוף נתונים או תוצאות נגזרות עם צד שלישי מחייבים אישור של Finnhub. יש לבדוק את תנאי הספק, גם לפני שליחת שערים לסוכן מרוחק.",
+    "message": "יש להשתמש בנתונים למחקר ולכלים האישיים שלך בלבד. אין למכור מחדש, להפיץ מחדש או להעניק רישיון משנה לנתוני הספק או לגישה אליו, ואין לעקוף מגבלות. יש לבדוק את תנאי הספק לפני שיתוף תוצאות.",
     "description": "Material provider use restrictions",
     "_machine_translated": true,
-    "_source_hash": "9eb9716ed06ff746"
+    "_source_hash": "7fbb1c4e684b429f"
   },
   "setup.steps": {
-    "message": "1. יש לפתוח את „קבלו מפתח Finnhub בחינם (כדקה)” ולהירשם ב-Finnhub. 2. יש להעתיק את מפתח ה-API מלוח הבקרה. 3. יש להדביק אותו למטה ולבחור „בדיקה ושמירה”.",
+    "message": "Stocklake פועל מיד ללא מפתח. יש לבחור ספק, להדביק את המפתח שלו (אופציונלי), ואז ללחוץ על ״בדיקה ושימוש״ כדי לשמור את הבחירה.",
     "description": "Guided setup steps",
     "_machine_translated": true,
-    "_source_hash": "d850b03495911632"
+    "_source_hash": "d73223e639ab4ff7"
   },
   "setup.saved": {
     "message": "מפתח שמור במכשיר זה. אפשר להשאיר את השדה ריק כדי לבדוק אותו, או להדביק מפתח חלופי. מפתחות שמורים אף פעם לא מוצגים כאן.",
@@ -186,16 +186,16 @@
     "_source_hash": "4fba007359b56f1d"
   },
   "setup.free_key": {
-    "message": "קבלו מפתח Finnhub בחינם (כדקה)",
+    "message": "קבלת מפתח Finnhub חינמי (כדקה)",
     "description": "Open provider registration in system browser",
     "_machine_translated": true,
-    "_source_hash": "a0566f42e52da139"
+    "_source_hash": "8ee05fe11cb483c9"
   },
   "setup.key": {
-    "message": "מפתח API של Finnhub",
+    "message": "מפתח API של הספק (אופציונלי עבור Stocklake)",
     "description": "Scratch field for secret",
     "_machine_translated": true,
-    "_source_hash": "2e7e94ee1be4a2cf"
+    "_source_hash": "3fb2a7de1e62b384"
   },
   "setup.key_hint": {
     "message": "„בדיקה ושמירה” שומרת את המפתח בנתוני התוסף הפרטיים, כמו פרטי ההתחברות של Spotify. הקלדה כאן אינה שומרת אותו עם ההגדרות הרגילות. שדה הטקסט של המארח גלוי בזמן ההקלדה.",
@@ -204,10 +204,10 @@
     "_source_hash": "4c3122d9b4d5daad"
   },
   "setup.test": {
-    "message": "בדיקה ושמירה של המפתח",
+    "message": "בדיקה ושימוש בספק",
     "description": "Probe quote endpoint and save only on success",
     "_machine_translated": true,
-    "_source_hash": "bc2be6a1a4fb4210"
+    "_source_hash": "d9e72fde7f42a5f5"
   },
   "setup.remove": {
     "message": "הסרת המפתח השמור",
@@ -222,10 +222,10 @@
     "_source_hash": "59cb7317745316bb"
   },
   "setup.success": {
-    "message": "בדיקת השערים של Finnhub עברה בהצלחה; המפתח נשמר.",
+    "message": "בדיקת הציטוט עברה בהצלחה; הספק נבחר וכל מפתח שסופק נשמר.",
     "description": "Successful guided setup; key is saved independently of watchlist settings",
     "_machine_translated": true,
-    "_source_hash": "76df0b334c35e1f8"
+    "_source_hash": "c4ae3a50e8f0c3e0"
   },
   "settings.watchlist_section": {
     "message": "רשימת מעקב ורענון",
@@ -240,10 +240,10 @@
     "_source_hash": "4fa141d565f4d3cb"
   },
   "settings.watchlist_hint": {
-    "message": "עד {max} סימולים בארה״ב, מופרדים ברווחים או בפסיקים. רשימה ריקה מסתירה את הווידג׳ט.",
+    "message": "עד {max} סימולים, מופרדים ברווחים או בפסיקים. Stocklake מקבל סימולים בינלאומיים כגון SAP.DE; Finnhub תומך בסימולים של ארה״ב. הלוח דורש מפתח והגדרת תצוגה מופעלת.",
     "description": "Watchlist validation; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "18fd9ff917b78911"
+    "_source_hash": "5b779260bb9346da"
   },
   "settings.show": {
     "message": "הצגת רשימת המעקב בחלון הצף",
@@ -258,10 +258,10 @@
     "_source_hash": "d5d486955acdd4c8"
   },
   "settings.refresh_hint": {
-    "message": "מינימום {min} שניות; ברירת מחדל {default}. בגרסאות הנוכחיות של Kage, הבדיקות מושהות כשהחלון מוסתר. לכל היותר {budget} בקשות לדקה שמורות במכשיר הזה; מגבלות הספק כוללות גם את האפליקציות האחרות שלכם.",
+    "message": "מינימום {min} שניות; ברירת מחדל {default}. ציטוטי Stocklake נשמרים במטמון ל-10 דקות לפחות; היסטוריה ליום. הבדיקות מושהות כשהחלון מוסתר. Finnhub שומר מקומית לכל היותר {budget} בקשות לדקה.",
     "description": "Request budget and hidden behavior; preserve {min}, {default}, {budget}",
     "_machine_translated": true,
-    "_source_hash": "835954ceb7299192"
+    "_source_hash": "08eb708651c8ce9e"
   },
   "settings.refresh_error": {
     "message": "מרווח הרענון חייב להיות בין {min} ל-{max} שניות.",
@@ -270,28 +270,28 @@
     "_source_hash": "45f891673cb1e039"
   },
   "tool.quote": {
-    "message": "קבלת שערי מניות בארה״ב מ-Finnhub לשימוש אישי. מחזיר מקור, חותמת זמן של העסקה האחרונה, עדכניות המטמון ושגיאות לכל סימול. נדרש המפתח החינמי של המשתמש; אין להפיץ מחדש ללא אישור הספק.",
+    "message": "קבלת ציטוטי מניות מהספק שבחרת לשימושך האישי. Stocklake מושהה בכ-15 דקות ואינו דורש מפתח; Finnhub מציע ציטוטים בזמן אמת של מניות בארה״ב עם מפתח. מחזיר מקור, חותמות זמן, עדכניות ושגיאות לכל סימול. אין להפיץ את הנתונים מחדש.",
     "description": "Agent tool description",
     "_machine_translated": true,
-    "_source_hash": "9aa8d167f9bf2f94"
+    "_source_hash": "890f052fdf9e3bbd"
   },
   "tool.symbols": {
-    "message": "עד {max} סימולים של מניות בארה״ב, לדוגמה [\"AAPL\", \"MSFT\", \"BRK.B\"].",
+    "message": "עד {max} סימולים, לדוגמה [\"AAPL\", \"MSFT\", \"SAP.DE\"]. Finnhub מקבל סימולים של ארה״ב בלבד.",
     "description": "Quote tool parameter description; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "753c9fd4564636f3"
+    "_source_hash": "acbe6e78c6fddb5a"
   },
   "tool.history": {
-    "message": "קבלת שערי Finnhub שנדגמו באופן מקומי ונצפו במכשיר זה עבור 1d, 1w או 1m. ללא בקשות רשת. דגימות חלקיות ודלילות, לא נרות היסטוריים; רשימה ריקה פירושה שלא נאסף דבר.",
+    "message": "קבלת היסטוריה יומית אמיתית מ-Stocklake עבור 1d, 1w או 1m מתוך חלון של 30 ימי מסחר שנשמר במטמון ליום. עולה קריאה אחת כשהנתונים אינם במטמון. Finnhub מחזיר ציטוטים חלקיים שנצפו מקומית, ללא בקשת היסטוריה.",
     "description": "Agent tool scope must not imply full historical coverage",
     "_machine_translated": true,
-    "_source_hash": "fcb4dd5f0bdcb792"
+    "_source_hash": "d5343316b6826efa"
   },
   "tool.symbol": {
-    "message": "סימול של מניה אמריקאית.",
+    "message": "סימול מניה, כולל סיומות בינלאומיות עבור Stocklake.",
     "description": "History symbol parameter description",
     "_machine_translated": true,
-    "_source_hash": "31f6b8214e118704"
+    "_source_hash": "bf96519c516306b2"
   },
   "tool.range": {
     "message": "1d, 1w או 1m; ברירת המחדל היא 1d.",
@@ -312,10 +312,10 @@
     "_source_hash": "2acdb85e54aa0ed1"
   },
   "error.timeout": {
-    "message": "Finnhub לא הגיב בזמן. נסו שוב בעוד כמה שניות; מוצגים נתונים שמורים, אם יש כאלה.",
+    "message": "ספק הציטוטים לא הגיב בזמן. יש לנסות שוב בעוד מספר שניות; מוצגים נתונים שמורים כשהם זמינים.",
     "description": "Request timeout; short local pause, separate from offline backoff",
     "_machine_translated": true,
-    "_source_hash": "23491b785f430a04"
+    "_source_hash": "fb51f909049dd49a"
   },
   "settings.agent_tools": {
     "message": "לאפשר לסוכנים להשתמש בכלי המניות",
@@ -324,10 +324,10 @@
     "_source_hash": "feaafa8e946fc0b2"
   },
   "settings.agent_tools_hint": {
-    "message": "כלי הסוכן עשויים לשלוח ציטוטי מחירים מ-Finnhub ותוצאות הנגזרות מהם לספק הסוכן שלך. יש להפעיל רק אם ההסכם שלך עם Finnhub מתיר שיתוף כזה. השינוי ייכנס לתוקף לאחר הפעלה מחדש של Kage.",
+    "message": "כלי סוכן עשויים לשלוח ציטוטים ותוצאות לספק הסוכן שלך. יש להפעיל רק לשימוש אישי כאשר תנאי הספק מתירים זאת. השינוי ייכנס לתוקף לאחר הפעלה מחדש של Kage.",
     "description": "Explain opt-in and external agent data flow",
     "_machine_translated": true,
-    "_source_hash": "85852257d902cb3e"
+    "_source_hash": "4b637e7840e5666b"
   },
   "settings.delete_quotes": {
     "message": "מחיקת ציטוטים שמורים",
@@ -340,15 +340,57 @@
     "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
   },
   "widget.connection": {
-    "message": "הציטוטים דורשים טיפול. הקלידו stock והקישו Enter כדי לפתוח את הגדרות המניות.",
+    "message": "הציטוטים דורשים טיפול. יש להקליד stock ולהקיש Enter כדי לפתוח את הגדרות המניות.",
     "description": "Compact widget hint for authentication or storage problems; keep stock as the launcher command",
     "_machine_translated": true,
-    "_source_hash": "28d7c64fff255e29"
+    "_source_hash": "8dcbef2b531a522b"
   },
   "tool.opt_in": {
-    "message": "לפני השימוש בכלי הזה, הפעילו את האפשרות ״לאפשר לסוכנים להשתמש בכלי המניות״ בהגדרות המניות. ודאו שההסכם שלכם עם Finnhub מתיר שיתוף נתונים עם ספק הסוכן שלכם.",
+    "message": "יש להפעיל את ״אפשר כלי מניות לסוכנים״ בהגדרות המניות לפני השימוש בכלי זה. יש לוודא שתנאי הספק מתירים את השימוש שלך עם ספק הסוכן שלך.",
     "description": "Actionable agent tool opt-in error",
     "_machine_translated": true,
-    "_source_hash": "a00e5cc3750744f0"
+    "_source_hash": "994b57bbe7f233ae"
+  },
+  "settings.provider": {
+    "message": "ספק ציטוטים",
+    "description": "Provider selection; Test/use persists the choice",
+    "_machine_translated": true,
+    "_source_hash": "b9f483c14cb7b4dc"
+  },
+  "setup.stocklake": {
+    "message": "Stocklake פועל ללא מפתח: עיכוב של כ-15 דקות, 25 קריאות ביום; מפתח חינמי אופציונלי מגדיל את המכסה ל-200.",
+    "description": "Keyless default provider description",
+    "_machine_translated": true,
+    "_source_hash": "930e88dd695cf87e"
+  },
+  "setup.stocklake_key": {
+    "message": "קבלת מפתח Stocklake חינמי",
+    "description": "Open Stocklake sign-in; emailed code; free 200 calls/day",
+    "_machine_translated": true,
+    "_source_hash": "b21d6e57b9696558"
+  },
+  "quote.stocklake": {
+    "message": "עיכוב של כ-15 דקות · Stocklake",
+    "description": "Visible delayed provider attribution; paired with a link to stocklake.dev",
+    "_machine_translated": true,
+    "_source_hash": "081a46f162590a46"
+  },
+  "quote.history": {
+    "message": "מחירי סגירה יומיים מ-Stocklake לכ-30 ימי מסחר. ההיסטוריה נשמרת במטמון ליום אחד; כשהנתונים לא נמצאים במטמון נעשה שימוש בקריאה אחת. גרפי המגמה של Finnhub מבוססים על דגימות מקומיות.",
+    "description": "History accessible label and settings explanation; real daily data for Stocklake",
+    "_machine_translated": true,
+    "_source_hash": "2efd3bfb80984cd7"
+  },
+  "error.daily_limit": {
+    "message": "המכסה היומית של הציטוטים החינמיים נוצלה. היא תתאפס בשעה {time}. אפשר להוסיף מפתח Stocklake חינמי כדי לקבל 200 ביום.",
+    "description": "Guest exhaustion message; preserve {time} for local reset time",
+    "_machine_translated": true,
+    "_source_hash": "22d1ca53ad1f23f9"
+  },
+  "error.key_daily_limit": {
+    "message": "המכסה היומית של קריאות Stocklake נוצלה. היא תתאפס בשעה {time}. מוצגים נתונים שמורים כשהם זמינים.",
+    "description": "Authenticated daily exhaustion; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "7c2f3494ec238e7e"
   }
 }

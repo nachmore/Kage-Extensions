@@ -1,195 +1,160 @@
 # Stocks
 
-**Online · Source: [Finnhub](https://finnhub.io/) · Data delayed when cached.**
+**Online · No keys needed · [Stocklake](https://stocklake.dev/) quotes delayed
+about 15 minutes · 25 calls a day free, or 200 with a free key.**
+[Finnhub](https://finnhub.io/) is optional for live US quotes with your own
+free key (60 calls/minute).
 
-Look up `$AAPL`, `stock msft`, or `stock aapl msft nvda`. Each quote shows
-the symbol, company name when known, USD price, absolute and percentage
-day change, direction in both text and color, source, and last-trade time.
-Enter opens a public TradingView chart. Select the separate **Copy** action,
-or enter `stock copy AAPL`, to copy text such as `AAPL 189.12 +1.3%`.
-`stock` alone looks up the watchlist.
+Type `$AAPL`, `stock msft`, or `stock aapl msft nvda`. Quotes show the symbol,
+company, currency, price, day change, provider, and **As of** time. Enter opens
+a public TradingView chart. Choose the separate **Copy** action, or type
+`stock copy AAPL`, to copy invariant text such as `AAPL 189.12 +1.3%`.
+Bare `stock` looks up your watchlist. Search still leaves prose with the agent,
+waits for a 600 ms typing pause on cache misses, and suppresses superseded results.
+There is no persistent setup hint. `$AAPL` works immediately on Stocklake.
 
-## Setup
+## Providers and migration
 
-1. Open Stocks settings.
-2. Choose **Get a free Finnhub key (about a minute)** to open https://finnhub.io/register in your
-   system browser. Register and copy the API key from your dashboard.
-3. Paste the key and choose **Test and save key**. The extension probes the
-   AAPL quote endpoint and saves the key only after a valid quote response.
-4. Edit the watchlist (up to 10 distinct symbols) and refresh interval, then
-   save regular settings. Agent tools are disabled until explicitly enabled.
+Stocklake is the default for new installations and existing installations
+without a Finnhub key. An existing Finnhub key keeps Finnhub, regardless of
+retired `provider` values (`cache`, missing, or otherwise). Retired config keys
+are moved to private credential storage before normalization blanks them.
+An explicitly selected provider takes precedence over migration thereafter.
+Stocklake accepts US and international tickers such as `SAP.DE`, `VOD.L`,
+`NOVO-B.CO`, and `7203.T`. Finnhub retains its US-only suffix restriction;
+`AAPL.US` remains an alias for `AAPL`. Queries/watchlists accept up to ten
+unique symbols. Unknown symbols never become zero-price quotes.
 
-No shared/demo credentials are shipped. Keys use the same
-`save_extension_data` storage as Spotify credentials, separate from config.
-That host storage is **not an encrypted vault**. The compatible setup text
-input is visible while typing, but a saved key is never rendered back into
-settings. The key is sent only to `https://finnhub.io/api/v1/quote`, using
-the documented `token` query parameter because the live header-auth
-preflight is not allowed. Requests omit cookies/referrers and reject
-redirects. No request URLs, credentials, or raw provider errors are logged.
-Remove the key in settings to stop authenticated requests.
+In Stocks settings, choose **Stocklake** or **Finnhub**. Each choice has a
+short explanation, a key field, and **Test and use provider**. That button
+saves the provider choice and saves a supplied key only after a valid AAPL
+quote test. A Stocklake key is optional; its free sign-in uses an emailed code.
+Leave the field empty to test a saved key, or guest Stocklake when none is saved.
+The test consumes one call. Regular Save updates watchlist/display/tool settings;
+**Test and use provider** applies the provider selection on both old and new
+hosts. Keys for both providers are retained when switching. **Remove saved key**
+removes the selected provider's key; removing a Stocklake key returns to guest use.
 
-Without a key, launcher searches, the watchlist widget and agent tools guide
-you to the same Finnhub setup. Quotes saved on this device remain available
-for up to 31 days, clearly marked as cached with their original **As of** time.
-Stocks also shows the last saved quote when offline, rate-limited or erroring.
+## Budget and caching
 
-## Data and limits
+Stocklake refreshes prices about every ten minutes on trading days and is
+about fifteen minutes behind the market. Every Stocklake quote says
+**Delayed ~15 min · Stocklake**, with a provider link. Its timestamp is the
+provider's `updated_at` snapshot time, not a newly invented last-trade time.
 
-Finnhub documents real-time US quotes, with a free limit of **60 calls per
-minute** and a global **30 calls per second** ceiling. Stocks reserves at
-most 40/minute and 20/second locally, uses a 300-second default refresh and a 60-second
-minimum, deduplicates concurrent same-symbol requests inside a window,
-and shares quote caches, request budgets and backoff across Kage windows.
-Your other applications using the same key also consume Finnhub's limit.
-Persistent storage has no atomic compare-and-swap, so cross-window budget
-coordination is best effort, as in Spotify. Each batch reads the key once
-and reserves its requests in one budget transaction. Storage errors,
-empty files and torn JSON are repaired where possible: an unreadable lock
-expires, a twice-unreadable budget closes requests for 60 seconds, and a
-successful refresh replaces a torn quote. Transient host invoke-limit errors
-are retried. Short lock leases use nonce checks and retry lost ownership
-with jitter; coordination remains best effort without host atomic writes. A 429 response
-applies shared exponential backoff once per failure episode, capped at
-15 minutes; the streak decays after 30 minutes without failures. The browser
-does not expose Finnhub's `Retry-After` header, so Stocks uses a minimum
-60-second pause. Network, server and authentication failures also back off;
-a 2.2-second timeout uses a separate 3-second local pause. HTTP 403 is a
-per-symbol plan/unsupported error and never sets an authentication backoff.
-Candidate-key tests bypass authentication backoff, respect network/server
-and rate-limit pauses, and still count toward the request budget;
-rejected candidates never set auth backoff. Saving/removing a key clears it.
-Cached values keep their original last-trade and retrieval timestamps.
+- Quotes are cached for **at least ten minutes**, even if the refresh setting
+  is shorter. A longer configured interval is respected.
+- Uncached multi-symbol lookups use `get_stocks`, reserving **one call per
+  symbol**; batching does not turn ten symbols into one billed call.
+- Guest requests reserve a durable local **25/day** budget before fetching.
+  A key starts at **200/day**. The separate guest count survives key additions,
+  removals and provider switches; switching keys never replenishes a count.
+- Readable `x-ratelimit-limit`, `x-ratelimit-remaining`, and
+  `x-ratelimit-reset` headers synchronize that budget conservatively. Counts
+  never increase mid-day from a late response. Reset epochs are respected;
+  otherwise the reset is **midnight UTC**.
+- The live API currently does not expose those headers through
+  `Access-Control-Expose-Headers`. A browser therefore retains its conservative
+  local count when headers cannot be read. Other apps sharing the IP/key can
+  exhaust the service first; guest HTTP 401 and HTTP 429 close the local budget
+  until reset, with no retry. There is no proxy or sharing between users.
+- On exhaustion, saved quotes keep their original **As of** time and say:
+  **Daily free quotes used up. Resets at &lt;local time&gt;. Add a free Stocklake key
+  for 200 a day.** The same reset message appears for an uncached symbol.
+- The watchlist panel **requires a key** as well as its visibility setting.
+  Guest installations never poll or display a setup nag, including old configs
+  with the panel enabled. This saves the small guest allowance for deliberate
+  searches. Keyed Stocklake polling still uses the ten-minute cache and hard
+  daily budget. Current hosts and the extension pause hidden-window polling.
 
-The floating-window widget uses the same cache. Current Kage hosts skip
-widget polls while hidden; the extension also honors document visibility.
-Closed markets retain the last reported trade; values older than 15 minutes
-say **Data delayed / market may be closed**. This is a freshness label, not
-an exchange calendar or a guarantee of market state.
+Finnhub keeps its 300-second default refresh, 60-second minimum, local ceilings
+of 40 requests/minute and 20/second, negative caching, shared exponential
+backoff, and 2.2-second request timeout. Stocklake also uses that timeout and
+short pauses after transport/authentication failures. No provider request is
+retried to avoid a limit. Candidate-key tests respect budgets and do not poison
+the saved key's authentication state.
 
-US symbols and share classes such as `BRK.B` are accepted; `AAPL.US` is an
-alias for `AAPL`. International suffixes such as `.L`, `.TO` and `.JP`
-produce an explanation instead of being silently stripped or mapped to a
-different US stock. Unknown symbols never turn into zero-price quotes.
-Unknown and plan-restricted symbols are cached for ten minutes to avoid
-repeated unsuccessful requests.
+Caches, budgets and nonce-checked storage leases coordinate only this user's
+Kage windows. The host offers no atomic compare-and-swap, so coordination is
+best effort. Budget I/O failures fail closed before any network request. A torn
+Stocklake budget stays closed until midnight rather than granting another
+allowance. Cached quotes remain usable when offline or limited. Quotes older
+than fifteen minutes also indicate possible delay/closed markets; that label
+is not an exchange calendar. Saved quotes are retained for up to 31 days.
 
-### Sparklines and agent tools
+## History, sparklines and agent tools
 
-The optional sparkline uses **locally sampled quotes**, collecting actual
-provider timestamps as the extension is used. It does not make additional
-requests, fill gaps, or imply a complete trading-day series. The cache
-returns at most 512 samples per queried symbol in a rolling 31-day window.
-An index tracks queried records; maintenance runs after returning quotes,
-pruning up to 20 records per daily pass. Files may remain on disk longer.
-The `qidx` index migrates the old index and avoids a filename collision with
-the `INDEX` ticker. Today's host cannot enumerate data files, so a torn
-index starts fresh and previously untracked files may remain.
-**Delete saved quotes** reports the number of records it actually deleted,
-retaining the API key. Other windows and active refreshes may save more.
+Stocklake sparklines use **real daily closing prices**, obtained from
+`get_stock_history(symbol, days: 30)` and cached for **one day**. Each history
+cache miss costs one call, so a first search normally costs a quote plus history.
+History failure never hides a valid quote. There are no AI research or news
+requests. Guest/free history supports up to 365 trading days, but this extension
+requests only about 30. The same cached window serves the tools' `1d` (latest
+bar), `1w` (latest five bars), and `1m` (latest thirty bars) ranges.
 
-- Enable **Allow Stocks tools for agents** in settings to expose the tools.
-  Takes effect after you restart Kage.
-  They are off by default because their output can reach an external agent
-  provider; enable them only when your Finnhub agreement permits sharing.
-- `get_quote(symbols)` returns quotes, source, currency, ISO trade/fetch/retry
-  times, open/high/low, cache status, and per-symbol error messages. Invalid
-  symbols do not prevent valid siblings from succeeding. An all-setup,
-  authentication or storage failure also returns an actionable tool error.
-- `get_history(symbol, range)` returns local samples for `1d`, `1w`, or
-  `1m`, explicitly marked `kind: locally_sampled_quotes` and
-  `complete: false`. It performs no network requests. It can be empty.
+Finnhub sparklines and history continue to use actual locally observed quotes,
+with gaps, capped at 512 samples over 31 days. Finnhub's premium candle endpoint
+is never called. Provider changes do not relabel another provider's quote cache.
+**Delete saved quotes** also deletes tracked daily-history caches, retaining
+both keys, the provider selection, and rate budgets. Maintenance prunes up to
+20 tracked symbols per daily pass; the `qidx` index retains its old-index migration
+and `INDEX` ticker collision protection. Other windows can save records again.
 
-Finnhub's `/stock/candle` endpoint requires premium access. Stocks never
-calls it or describes local observations as historical candles.
+Agent tools are **off by default**. Enable **Allow Stocks tools for agents**
+and restart Kage if provider terms allow your use with your agent provider.
 
-### Provider terms
+- `get_quote(symbols)` returns prices, currency, source, exchange/volume where
+  provided, cache status, ISO snapshot/fetch/retry times, and per-symbol messages.
+  Malformed symbols do not prevent valid siblings from succeeding.
+- `get_history(symbol, range)` returns Stocklake `kind: daily_history` with real
+  daily OHLCV and close prices, or Finnhub `kind: locally_sampled_quotes` with
+  `complete: false`. Stocklake failures/exhaustion can return saved daily history.
 
-[Finnhub terms](https://finnhub.io/terms-of-service) restrict personal plans
-to eligible personal, non-business use and prohibit sharing data or derived
-results with third parties without written approval. These restrictions
-also matter for copied data and externally hosted AI agents. Distribution
-of this open-source extension does not grant redistribution rights for
-market data. Every displayed quote identifies Finnhub; no separate
-mandatory attribution format was found in the terms inspected.
+## Credentials, transport and terms
 
-## Why a key is required
+No shared or demo credentials are shipped. Both keys and provider selection use
+`save_extension_data` under **credentials**, separately from regular config,
+covered by `sensitiveData: ["credentials"]`. Host storage is **not an encrypted
+vault**. The compatible text input is visible while typing; saved keys are never
+rendered back. Normalization blanks retired config keys and credential scratch
+fields on older hosts. Tests assert keys cannot appear in schemas or results.
 
-The requested no-setup delayed source was checked on **2026-11-06**, before
-choosing a provider. This release uses the authorized guided-key fallback:
+Stocklake uses stateless HTTP JSON-RPC POST to **https://api.stocklake.dev/mcp**,
+with `Content-Type: application/json` and
+`Accept: application/json, text/event-stream`; no session header is required.
+An optional key uses documented `Authorization: Bearer`. CORS permits anonymous
+sandbox fetches. Finnhub uses its documented `token` query parameter only on
+**https://finnhub.io/api/v1/quote**, because its live header-auth preflight is
+not supported. Fetches omit cookies/referrers and reject redirects. Destinations
+are fixed constants in code, never supplied by config or data. Neither request
+URLs, secrets nor raw provider errors are logged or returned.
 
-| Candidate | Live curl findings | Decision |
-| --- | --- | --- |
-| Stooq | `https://stooq.com/q/l/?s=aapl.us&f=sd2t2ohlcv&h&e=csv` returned **404**, as did `.pl` and non-US/unknown-symbol variants. `https://stooq.com/q/d/l/?s=aapl.us&i=d` returned **200 HTML with a JavaScript proof-of-work browser challenge**, not CSV. | No challenge bypass or scraping. No functioning keyless quote endpoint was verified. Its `https://stooq.com/t/` terms page was also challenged, so current usage rights, attribution, and a free request limit could not be verified. The commonly cited “15-minute delay” is not treated as a current guarantee. |
-| Finnhub | Quote/candle requests without a key returned **401 “Please use an API key.”** An intentionally invalid key returned **401 “Invalid API key”**, including header authentication. Null-origin OPTIONS returned **200** but omitted `Access-Control-Allow-Headers`, so custom-token-header authentication cannot be used by browser fetch. | BYO free key, simple CORS GET. No valid personal key was available for a successful authenticated live probe; parser and workflows are tested with mocked documented responses. |
-| Twelve Data | `quote` and five daily `time_series` points for AAPL with the public documentation `demo` credential returned **200 JSON**. Missing/invalid credentials returned **401**. | Excluded. Current [pricing](https://twelvedata.com/pricing) lists Basic **8 API credits/minute, 800/day**, but explicitly limits it to testing/evaluation/development and forbids user display or production. Do not infer production rights from a working demo. |
+[Stocklake legal](https://stocklake.dev/legal) permits normal personal/internal
+client use and forbids reselling, redistributing or sublicensing data/access,
+circumventing limits, and building downstream feeds/mirrors. Each user's own Kage
+calls the API for that user's own use. The extension does not grant redistribution
+rights. [Finnhub terms](https://finnhub.io/terms-of-service) also restrict
+personal plans and third-party sharing; check your agreement before sending
+results to external agents or using them for business.
 
-Primary sources inspected:
+Product, [getting-started docs](https://stocklake.dev/docs),
+[tool reference](https://stocklake.dev/docs/tools), and legal were re-read on
+**2026-11-08**. Two live guest calls verified the `price` field, JSON-in-MCP-text
+response shape, real daily history, CORS, and daily rate headers. Trimmed response
+fixtures preserve those wire shapes. All development tests mock network calls.
 
-- https://finnhub.io/pricing — current free 60/minute table, rendered from
-  its public page's JavaScript bundle.
-- https://finnhub.io/docs/api/rate-limit — HTTP 429 and 30/second ceiling.
-- https://finnhub.io/docs/api/quote — real-time US quotes; constant polling
-  discouraged; international live quotes require Enterprise access.
-- https://finnhub.io/docs/api/stock-candles — premium candle endpoint.
-- https://finnhub.io/terms-of-service — personal-use and redistribution terms.
-- https://twelvedata.com/pricing — Basic limits and production/display restriction.
-- https://twelvedata.com/terms — internal use and external-display license requirements.
-- https://support.twelvedata.com/en/articles/12647398-attribution-guidelines-for-using-twelve-data
-  — external display requires visible “Data provided by Twelve Data” with
-  a dofollow provider link unless contracted otherwise; private/internal
-  use is exempt, subject to market-specific rules.
+## Host compatibility and development
 
-Some Twelve Data support pages still describe the older free plan as
-including live US quotes. The current pricing restriction is the reason
-that provider is not implemented here.
-
-## Host compatibility
-
-The existing host supports search, widgets, settings, and tools. No host
-changes are needed to run this release. Only `storage` and `urls`
-capabilities are requested. Kage currently has **no manifest field for
-exact-domain fetch permissions**; its `network` capability covers Rust
-metadata commands, not sandbox `fetch`. The only fetch destination is
-enforced in extension code: `finnhub.io`. Browser navigation is limited to
-the Finnhub setup/source links and `www.tradingview.com` charts.
-
-Search accepts ticker lists on both paths, rejecting malformed tokens,
-question/exclamation/colon punctuation and multi-word prose with stopwords.
-The `stock` path also rejects bare words of six or more letters and common
-single-word prompts such as `price`, `news`, and `now`. Use `$NOW` or
-`stock copy NOW` for NOW; `stock up` still selects the real UP ticker.
-Prompts such as `$PATH is not set` and `stock price of nvda` stay with the
-agent. Exact cache hits return immediately. Other lookups wait for a 600 ms
-pause, including after a trailing space/comma; pauses longer than 600 ms
-can still request typed prefixes. A generation counter suppresses superseded results.
-Pending Enter opens a valid chart (or fetches before copying), using the
-watchlist for bare `stock`/`stock copy`. Missing keys open settings.
-Bare `stock` also opens settings when a quote reports an authentication
-or storage problem. Unknown symbols and failed copy commands
-preserve the input with the host's `replace_input` action.
-Widgets poll at the minimum interval, use request-start cache timestamps,
-and re-check configured freshness with 1.5 seconds of slack so small tick
-jitter cannot skip a refresh. Intervals round to the nearest minute, within
-the configured limits, so widget polling follows the selected cadence.
-On hosts without feature detection, normalization explicitly blanks scratch
-credential fields before generic Save writes the controls to regular config.
-Display numbers and times use the user's language and local timezone;
-clipboard text and tool timestamps remain invariant.
-
-The host rewrites shared imports in a single pass. Provider transport is
-folded into `client.js`; shared dependencies are leaves and there are no
-re-exports. `host-loader.test.js` checks import depth and loads all providers
-through the same rewrite, including a failing nested-graph control.
-
-Potential host improvements, not implemented in Kage: exact-origin fetch
-grants, atomic extension-data transactions, password/masked scratch
-controls, and handling `copy` effects returned by `onResultAction` so a
-quote row can have an inline clipboard button.
-
-## Development
-
-All tests stub `fetch`; they never request live market data. Run:
+Only `storage` and `urls` permissions are requested. This host has **no manifest
+field for exact-domain fetch permissions**; both API origins are declared and
+enforced in `client.js`, the same way Finnhub was previously declared. Navigation
+uses provider links and public TradingView charts. No host/repo changes are needed.
+The scratch provider selector avoids manifest-default overlays breaking key
+migration; Test/use saves it in extension data. Generic Save never saves keys.
+Provider transport stays in `client.js` and its shared dependencies remain leaves
+for the host's single-pass module rewriting; host-loader tests exercise all four
+providers. Display numbers/reset times use local language/timezone; clipboard and
+tool timestamps remain invariant.
 
 ```sh
 npx vitest run extensions/stocks
@@ -197,7 +162,6 @@ npm run check:all
 npm test
 ```
 
-English is canonical. The other 31 locales use Kage's existing
-`scripts/translate.py` Claude-CLI workflow, scoped to this extension's
-catalog through its task-building functions. Machine translations retain
-the workflow's source hashes and flags; human review is welcome.
+English is canonical. All other 31 catalogs use Kage's existing
+`scripts/translate.py` Claude-CLI workflow, scoped to this extension through its
+task-building functions. Source hashes and machine-translation flags are retained.

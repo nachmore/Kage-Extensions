@@ -10,7 +10,7 @@
     "description": "Extension display name"
   },
   "manifest.description": {
-    "message": "Online · US quotes and watchlist from Finnhub with your free key. Data delayed when cached; every quote shows its timestamp.",
+    "message": "Online · No keys needed: Stocklake quotes delayed ~15 min, 25 a day free; a free key raises this to 200. Finnhub is optional for live US quotes.",
     "description": "Store listing; Online and Data delayed communicate network dependency and freshness"
   },
   "result.loading": {
@@ -54,11 +54,11 @@
     "description": "No stored key"
   },
   "error.auth": {
-    "message": "Finnhub rejected the key. Open Stocks settings to test a replacement.",
+    "message": "The provider rejected the key. Open Stocks settings to test a replacement.",
     "description": "Authentication error; never include the raw provider response"
   },
   "error.unknown": {
-    "message": "No quote for this symbol. Check the US ticker, including any share-class suffix.",
+    "message": "No quote for this symbol. Check the ticker and exchange suffix.",
     "description": "Unknown or zero-valued quote"
   },
   "error.unsupported": {
@@ -78,11 +78,11 @@
     "description": "Rate limit backoff"
   },
   "error.offline": {
-    "message": "Cannot reach Finnhub. Showing saved data when available.",
+    "message": "Cannot reach the quote provider. Showing saved data when available.",
     "description": "Offline or network failure"
   },
   "error.unavailable": {
-    "message": "Finnhub is unavailable. Showing saved data when available.",
+    "message": "The quote provider is unavailable. Showing saved data when available.",
     "description": "Sanitized provider error"
   },
   "error.busy": {
@@ -94,7 +94,7 @@
     "description": "Fail closed when rate budget cannot persist"
   },
   "error.invalid_key": {
-    "message": "Paste a Finnhub API key, then Test and save. Do not paste a URL.",
+    "message": "Paste an API key for the selected provider, then Test and use. Do not paste a URL.",
     "description": "Malformed or missing API key"
   },
   "error.invalid_range": {
@@ -102,7 +102,7 @@
     "description": "Agent history range validation"
   },
   "settings.description": {
-    "message": "US stock quotes, watchlist, and local quote history. Online · Source: Finnhub. Saved values may be delayed.",
+    "message": "Stocklake quotes work without a key: delayed ~15 min, 25 calls a day, or 200 with a free key. Finnhub offers live US quotes with a free key.",
     "description": "Settings summary"
   },
   "settings.connection": {
@@ -110,15 +110,15 @@
     "description": "Connection section heading"
   },
   "setup.intro": {
-    "message": "Use your own free Finnhub key for US stock quotes. Get a key below, then test and save it to connect.",
+    "message": "Finnhub needs a free key for live US quotes, with a limit of 60 calls per minute.",
     "description": "User-facing provider setup introduction"
   },
   "setup.terms": {
-    "message": "Finnhub's personal plans are for eligible personal use. Business use and sharing data or derived results with third parties require Finnhub approval. Check the provider's terms, including before sending quotes to a remote agent.",
+    "message": "Use data for your own research and tools. Do not resell, redistribute or sublicense provider data or access, or circumvent limits. Check provider terms before sharing results.",
     "description": "Material provider use restrictions"
   },
   "setup.steps": {
-    "message": "1. Open Get a free Finnhub key (about a minute) and register at Finnhub. 2. Copy your API key from its dashboard. 3. Paste it below and choose Test and save.",
+    "message": "Stocklake works immediately without a key. Choose a provider, optionally paste its key, then Test and use to save your choice.",
     "description": "Guided setup steps"
   },
   "setup.saved": {
@@ -130,7 +130,7 @@
     "description": "Open provider registration in system browser"
   },
   "setup.key": {
-    "message": "Finnhub API key",
+    "message": "Provider API key (optional for Stocklake)",
     "description": "Scratch field for secret"
   },
   "setup.key_hint": {
@@ -138,7 +138,7 @@
     "description": "Storage and host input behavior"
   },
   "setup.test": {
-    "message": "Test and save key",
+    "message": "Test and use provider",
     "description": "Probe quote endpoint and save only on success"
   },
   "setup.remove": {
@@ -150,7 +150,7 @@
     "description": "Removal success"
   },
   "setup.success": {
-    "message": "Finnhub quote test passed; key saved.",
+    "message": "Quote test passed; provider selected and any supplied key saved.",
     "description": "Successful guided setup; key is saved independently of watchlist settings"
   },
   "settings.watchlist_section": {
@@ -162,7 +162,7 @@
     "description": "Editable list label"
   },
   "settings.watchlist_hint": {
-    "message": "Up to {max} US symbols, separated by spaces or commas. An empty list hides the widget.",
+    "message": "Up to {max} symbols, separated by spaces or commas. Stocklake accepts international symbols such as SAP.DE; Finnhub supports US tickers. The panel requires a key and an enabled visibility setting.",
     "description": "Watchlist validation; preserve {max}"
   },
   "settings.show": {
@@ -174,7 +174,7 @@
     "description": "Quote cache and widget refresh interval"
   },
   "settings.refresh_hint": {
-    "message": "Minimum {min} seconds; default {default}. Hidden-window polls pause on current Kage hosts. At most {budget} requests per minute are reserved across this device; provider limits also include your other apps.",
+    "message": "Minimum {min} seconds; default {default}. Stocklake quotes are cached for at least 10 minutes; history for a day. Hidden-window polls pause. Finnhub reserves at most {budget} requests per minute locally.",
     "description": "Request budget and hidden behavior; preserve {min}, {default}, {budget}"
   },
   "settings.refresh_error": {
@@ -182,19 +182,19 @@
     "description": "Invalid interval; preserve {min}, {max}"
   },
   "tool.quote": {
-    "message": "Get US stock quotes from Finnhub for personal use. Returns source, last-trade timestamp, cache freshness and per-symbol errors. Requires the user's free key; do not redistribute without provider approval.",
+    "message": "Get stock quotes from your selected provider for your own use. Stocklake is delayed ~15 min and needs no key; Finnhub offers live US quotes with a key. Returns source, timestamps, freshness and per-symbol errors. Do not redistribute data.",
     "description": "Agent tool description"
   },
   "tool.symbols": {
-    "message": "Up to {max} US symbols, for example [\"AAPL\", \"MSFT\", \"BRK.B\"].",
+    "message": "Up to {max} symbols, for example [\"AAPL\", \"MSFT\", \"SAP.DE\"]. Finnhub accepts US tickers only.",
     "description": "Quote tool parameter description; preserve {max}"
   },
   "tool.history": {
-    "message": "Get locally sampled Finnhub quotes observed on this device for 1d, 1w or 1m. No network requests. Incomplete, sparse samples, not historical candles; an empty list means nothing was collected.",
+    "message": "Get real Stocklake daily history for 1d, 1w or 1m from a 30-trading-day window cached for a day. Costs one call on a cache miss. Finnhub returns incomplete locally observed quotes with no history request.",
     "description": "Agent tool scope must not imply full historical coverage"
   },
   "tool.symbol": {
-    "message": "A US stock symbol.",
+    "message": "A stock symbol, including international suffixes for Stocklake.",
     "description": "History symbol parameter description"
   },
   "tool.range": {
@@ -210,7 +210,7 @@
     "description": "Unrecognized tool execution"
   },
   "error.timeout": {
-    "message": "Finnhub took too long to respond. Try again in a few seconds; showing saved data when available.",
+    "message": "The quote provider took too long to respond. Try again in a few seconds; showing saved data when available.",
     "description": "Request timeout; short local pause, separate from offline backoff"
   },
   "settings.agent_tools": {
@@ -218,7 +218,7 @@
     "description": "Optional agent tool access; disabled by default"
   },
   "settings.agent_tools_hint": {
-    "message": "Agent tools may send Finnhub quotes and derived results to your agent provider. Enable only when your Finnhub agreement permits this sharing. Takes effect after you restart Kage.",
+    "message": "Agent tools may send quotes and results to your agent provider. Enable only for your own use when provider terms permit it. Takes effect after you restart Kage.",
     "description": "Explain opt-in and external agent data flow"
   },
   "settings.delete_quotes": {
@@ -226,7 +226,7 @@
     "description": "Delete cached quotes and locally sampled history, retaining the key"
   },
   "settings.quotes_deleted": {
-    "message": "{deleted, plural, one {Deleted # saved quote record and its local samples. Other windows or active refreshes may save more.} other {Deleted # saved quote records and their local samples. Other windows or active refreshes may save more.}}{failed, plural, =0 {} one { # saved quote record could not be deleted. Try again.} other { # saved quote records could not be deleted. Try again.}}",
+    "message": "{deleted, plural, one {Deleted # saved quote or history record. Other windows or active refreshes may save more.} other {Deleted # saved quote or history records. Other windows or active refreshes may save more.}}{failed, plural, =0 {} one { # saved record could not be deleted. Try again.} other { # saved records could not be deleted. Try again.}}",
     "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
   },
   "widget.connection": {
@@ -234,7 +234,35 @@
     "description": "Compact widget hint for authentication or storage problems; keep stock as the launcher command"
   },
   "tool.opt_in": {
-    "message": "Enable Allow Stocks tools for agents in Stocks settings before using this tool. Check that your Finnhub agreement permits sharing data with your agent provider.",
+    "message": "Enable Allow Stocks tools for agents in Stocks settings before using this tool. Check that provider terms permit your use with your agent provider.",
     "description": "Actionable agent tool opt-in error"
+  },
+  "settings.provider": {
+    "message": "Quote provider",
+    "description": "Provider selection; Test/use persists the choice"
+  },
+  "setup.stocklake": {
+    "message": "Stocklake works without a key: delayed ~15 min, 25 calls a day; an optional free key raises this to 200.",
+    "description": "Keyless default provider description"
+  },
+  "setup.stocklake_key": {
+    "message": "Get a free Stocklake key",
+    "description": "Open Stocklake sign-in; emailed code; free 200 calls/day"
+  },
+  "quote.stocklake": {
+    "message": "Delayed ~15 min · Stocklake",
+    "description": "Visible delayed provider attribution; paired with a link to stocklake.dev"
+  },
+  "quote.history": {
+    "message": "Stocklake daily closing prices for about 30 trading days. History is cached for a day; a cache miss uses one call. Finnhub sparklines use local samples.",
+    "description": "History accessible label and settings explanation; real daily data for Stocklake"
+  },
+  "error.daily_limit": {
+    "message": "Daily free quotes used up. Resets at {time}. Add a free Stocklake key for 200 a day.",
+    "description": "Guest exhaustion message; preserve {time} for local reset time"
+  },
+  "error.key_daily_limit": {
+    "message": "Daily Stocklake calls used up. Resets at {time}. Showing saved data when available.",
+    "description": "Authenticated daily exhaustion; preserve {time}"
   }
 }

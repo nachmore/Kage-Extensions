@@ -12,10 +12,10 @@
     "_source_hash": "d6d4700604b64b88"
   },
   "manifest.description": {
-    "message": "Çevrimiçi · Ücretsiz anahtarınızla Finnhub'dan ABD fiyatları ve izleme listesi. Önbellekteki veriler gecikmelidir; her fiyatta zaman damgası gösterilir.",
+    "message": "Çevrimiçi · Anahtar gerekmez: Stocklake fiyatları ~15 dk gecikmelidir, günde 25 ücretsiz sorgu; ücretsiz bir anahtarla bu sayı 200'e çıkar. Canlı ABD fiyatları için Finnhub isteğe bağlıdır.",
     "description": "Store listing; Online and Data delayed communicate network dependency and freshness",
     "_machine_translated": true,
-    "_source_hash": "6feb0a4240dfb80e"
+    "_source_hash": "44f1eb50266b55a3"
   },
   "result.loading": {
     "message": "Hisse senetleri aranıyor…",
@@ -78,16 +78,16 @@
     "_source_hash": "8adbf75fdf5bc595"
   },
   "error.auth": {
-    "message": "Finnhub anahtarı reddetti. Yeni bir anahtarı test etmek için Stocks ayarlarını açın.",
+    "message": "Sağlayıcı anahtarı reddetti. Yeni bir anahtarı test etmek için Hisseler ayarlarını açın.",
     "description": "Authentication error; never include the raw provider response",
     "_machine_translated": true,
-    "_source_hash": "eca735a4f5fb0bce"
+    "_source_hash": "10cd02016931ccf6"
   },
   "error.unknown": {
-    "message": "Bu sembol için fiyat yok. Varsa hisse sınıfı ekiyle birlikte ABD sembolünü kontrol edin.",
+    "message": "Bu sembol için fiyat yok. Hisse kodunu ve borsa sonekini kontrol edin.",
     "description": "Unknown or zero-valued quote",
     "_machine_translated": true,
-    "_source_hash": "3a30475366fb7002"
+    "_source_hash": "bd84c7f6e9173633"
   },
   "error.unsupported": {
     "message": "Bu sağlayıcı yalnızca ABD sembollerini destekler. Uluslararası borsa ekleri farklı bir veri planı gerektirir.",
@@ -114,16 +114,16 @@
     "_source_hash": "7d553dee0c6fe94a"
   },
   "error.offline": {
-    "message": "Finnhub'a ulaşılamıyor. Varsa kayıtlı veriler gösteriliyor.",
+    "message": "Fiyat sağlayıcısına ulaşılamıyor. Varsa kayıtlı veriler gösteriliyor.",
     "description": "Offline or network failure",
     "_machine_translated": true,
-    "_source_hash": "536dacabe5ed1015"
+    "_source_hash": "6fe79608991e6dfd"
   },
   "error.unavailable": {
-    "message": "Finnhub kullanılamıyor. Varsa kayıtlı veriler gösteriliyor.",
+    "message": "Fiyat sağlayıcısı kullanılamıyor. Varsa kayıtlı veriler gösteriliyor.",
     "description": "Sanitized provider error",
     "_machine_translated": true,
-    "_source_hash": "2dd30adcc5164ad4"
+    "_source_hash": "e10d9f0c7de280f1"
   },
   "error.busy": {
     "message": "Başka bir Kage penceresi fiyatları yeniliyor. Kısa bir süre sonra tekrar deneyin.",
@@ -138,10 +138,10 @@
     "_source_hash": "4cbfbb2e9b0adc41"
   },
   "error.invalid_key": {
-    "message": "Bir Finnhub API anahtarı yapıştırın, ardından Test et ve kaydet'i kullanın. URL yapıştırmayın.",
+    "message": "Seçili sağlayıcı için bir API anahtarı yapıştırın, ardından Test et ve kullan'a tıklayın. URL yapıştırmayın.",
     "description": "Malformed or missing API key",
     "_machine_translated": true,
-    "_source_hash": "b972e383a08a0ac1"
+    "_source_hash": "46f77ed69b2c2053"
   },
   "error.invalid_range": {
     "message": "1d, 1w veya 1m aralığından birini seçin.",
@@ -150,10 +150,10 @@
     "_source_hash": "f4f4d83dc6129a6c"
   },
   "settings.description": {
-    "message": "ABD hisse senedi fiyatları, izleme listesi ve yerel fiyat geçmişi. Çevrimiçi · Kaynak: Finnhub. Kaydedilen değerler gecikmeli olabilir.",
+    "message": "Stocklake fiyatları anahtarsız çalışır: ~15 dk gecikmeli, günde 25 sorgu veya ücretsiz bir anahtarla 200. Finnhub, ücretsiz bir anahtarla canlı ABD fiyatları sunar.",
     "description": "Settings summary",
     "_machine_translated": true,
-    "_source_hash": "b91914b96330d6cb"
+    "_source_hash": "deea29d63a6f57a4"
   },
   "settings.connection": {
     "message": "Fiyat sağlayıcısı ve kurulum",
@@ -162,22 +162,22 @@
     "_source_hash": "863fbc4ab994c2eb"
   },
   "setup.intro": {
-    "message": "ABD hisse senedi fiyatları için kendi ücretsiz Finnhub anahtarınızı kullanın. Aşağıdan bir anahtar alın, ardından bağlanmak için test edip kaydedin.",
+    "message": "Finnhub, canlı ABD fiyatları için ücretsiz bir anahtar gerektirir; dakikada 60 sorgu sınırı vardır.",
     "description": "User-facing provider setup introduction",
     "_machine_translated": true,
-    "_source_hash": "0686f89d96f514a5"
+    "_source_hash": "41c015a47f8cb6a3"
   },
   "setup.terms": {
-    "message": "Finnhub'ın kişisel planları uygun kişisel kullanım içindir. Ticari kullanım ve verilerin veya bunlardan elde edilen sonuçların üçüncü taraflarla paylaşılması Finnhub onayı gerektirir. Fiyatları uzak bir agent'a göndermeden önce de dahil olmak üzere sağlayıcının koşullarını inceleyin.",
+    "message": "Verileri yalnızca kendi araştırmanız ve araçlarınız için kullanın. Sağlayıcı verilerini veya erişimini yeniden satmayın, yeniden dağıtmayın, alt lisanslamayın ya da sınırları aşmaya çalışmayın. Sonuçları paylaşmadan önce sağlayıcı koşullarını kontrol edin.",
     "description": "Material provider use restrictions",
     "_machine_translated": true,
-    "_source_hash": "9eb9716ed06ff746"
+    "_source_hash": "7fbb1c4e684b429f"
   },
   "setup.steps": {
-    "message": "1. Ücretsiz Finnhub anahtarı al (yaklaşık bir dakika)'ı açın ve Finnhub'a kaydolun. 2. API anahtarınızı Finnhub panelinden kopyalayın. 3. Aşağıya yapıştırın ve Test et ve kaydet'i seçin.",
+    "message": "Stocklake anahtar olmadan hemen çalışır. Bir sağlayıcı seçin, isterseniz anahtarını yapıştırın, ardından seçiminizi kaydetmek için Test et ve kullan'a tıklayın.",
     "description": "Guided setup steps",
     "_machine_translated": true,
-    "_source_hash": "d850b03495911632"
+    "_source_hash": "d73223e639ab4ff7"
   },
   "setup.saved": {
     "message": "Bu cihazda kayıtlı bir anahtar var. Test etmek için alanı boş bırakın veya yerine yenisini yapıştırın. Kayıtlı anahtarlar burada asla gösterilmez.",
@@ -186,16 +186,16 @@
     "_source_hash": "4fba007359b56f1d"
   },
   "setup.free_key": {
-    "message": "Ücretsiz Finnhub anahtarı al (yaklaşık bir dakika)",
+    "message": "Ücretsiz Finnhub anahtarı alın (yaklaşık bir dakika)",
     "description": "Open provider registration in system browser",
     "_machine_translated": true,
-    "_source_hash": "a0566f42e52da139"
+    "_source_hash": "8ee05fe11cb483c9"
   },
   "setup.key": {
-    "message": "Finnhub API anahtarı",
+    "message": "Sağlayıcı API anahtarı (Stocklake için isteğe bağlı)",
     "description": "Scratch field for secret",
     "_machine_translated": true,
-    "_source_hash": "2e7e94ee1be4a2cf"
+    "_source_hash": "3fb2a7de1e62b384"
   },
   "setup.key_hint": {
     "message": "Test et ve kaydet, anahtarı Spotify kimlik bilgileri gibi özel uzantı verilerinde saklar. Buraya yazmak, anahtarı normal ayarlarla birlikte kaydetmez. Bu ana uygulamanın metin alanı, yazarken görünür durumdadır.",
@@ -204,10 +204,10 @@
     "_source_hash": "4c3122d9b4d5daad"
   },
   "setup.test": {
-    "message": "Anahtarı test et ve kaydet",
+    "message": "Sağlayıcıyı test et ve kullan",
     "description": "Probe quote endpoint and save only on success",
     "_machine_translated": true,
-    "_source_hash": "bc2be6a1a4fb4210"
+    "_source_hash": "d9e72fde7f42a5f5"
   },
   "setup.remove": {
     "message": "Kayıtlı anahtarı kaldır",
@@ -222,10 +222,10 @@
     "_source_hash": "59cb7317745316bb"
   },
   "setup.success": {
-    "message": "Finnhub fiyat testi başarılı; anahtar kaydedildi.",
+    "message": "Fiyat testi başarılı; sağlayıcı seçildi ve girilen anahtar kaydedildi.",
     "description": "Successful guided setup; key is saved independently of watchlist settings",
     "_machine_translated": true,
-    "_source_hash": "76df0b334c35e1f8"
+    "_source_hash": "c4ae3a50e8f0c3e0"
   },
   "settings.watchlist_section": {
     "message": "İzleme listesi ve yenileme",
@@ -240,10 +240,10 @@
     "_source_hash": "4fa141d565f4d3cb"
   },
   "settings.watchlist_hint": {
-    "message": "Boşluk veya virgülle ayrılmış en fazla {max} ABD sembolü. Boş bir liste widget'ı gizler.",
+    "message": "Boşluk veya virgülle ayrılmış en fazla {max} sembol. Stocklake, SAP.DE gibi uluslararası sembolleri kabul eder; Finnhub ABD hisse kodlarını destekler. Panel için bir anahtar ve etkin bir görünürlük ayarı gerekir.",
     "description": "Watchlist validation; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "18fd9ff917b78911"
+    "_source_hash": "5b779260bb9346da"
   },
   "settings.show": {
     "message": "İzleme listesini kayan pencerede göster",
@@ -258,10 +258,10 @@
     "_source_hash": "d5d486955acdd4c8"
   },
   "settings.refresh_hint": {
-    "message": "En az {min} saniye; varsayılan {default}. Güncel Kage sürümlerinde gizli penceredeyken sorgulama duraklatılır. Bu cihazda dakikada en fazla {budget} istek ayrılır; sağlayıcı sınırlarına diğer uygulamalarınız da dahildir.",
+    "message": "En az {min} saniye; varsayılan {default}. Stocklake fiyatları en az 10 dakika, geçmiş veriler bir gün önbellekte tutulur. Pencere gizliyken sorgular duraklatılır. Finnhub yerel olarak dakikada en fazla {budget} istek ayırır.",
     "description": "Request budget and hidden behavior; preserve {min}, {default}, {budget}",
     "_machine_translated": true,
-    "_source_hash": "835954ceb7299192"
+    "_source_hash": "08eb708651c8ce9e"
   },
   "settings.refresh_error": {
     "message": "Yenileme aralığı {min} ile {max} saniye arasında olmalıdır.",
@@ -270,28 +270,28 @@
     "_source_hash": "45f891673cb1e039"
   },
   "tool.quote": {
-    "message": "Kişisel kullanım için Finnhub'dan ABD hisse senedi fiyatlarını alır. Kaynağı, son işlem zaman damgasını, önbellek güncelliğini ve sembol bazında hataları döndürür. Kullanıcının ücretsiz anahtarını gerektirir; sağlayıcı onayı olmadan yeniden dağıtmayın.",
+    "message": "Seçili sağlayıcınızdan kendi kullanımınız için hisse fiyatlarını alın. Stocklake ~15 dk gecikmelidir ve anahtar gerektirmez; Finnhub bir anahtarla canlı ABD fiyatları sunar. Kaynak, zaman damgaları, güncellik ve sembol bazında hataları döndürür. Verileri yeniden dağıtmayın.",
     "description": "Agent tool description",
     "_machine_translated": true,
-    "_source_hash": "9aa8d167f9bf2f94"
+    "_source_hash": "890f052fdf9e3bbd"
   },
   "tool.symbols": {
-    "message": "En fazla {max} ABD sembolü, örneğin [\"AAPL\", \"MSFT\", \"BRK.B\"].",
+    "message": "En fazla {max} sembol, örneğin [\"AAPL\", \"MSFT\", \"SAP.DE\"]. Finnhub yalnızca ABD hisse kodlarını kabul eder.",
     "description": "Quote tool parameter description; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "753c9fd4564636f3"
+    "_source_hash": "acbe6e78c6fddb5a"
   },
   "tool.history": {
-    "message": "Bu cihazda 1d, 1w veya 1m için gözlemlenen, yerel olarak örneklenmiş Finnhub fiyatlarını alın. Ağ isteği yapılmaz. Örnekler eksik ve seyrektir, geçmiş mum verileri değildir; boş liste hiçbir şey toplanmadığı anlamına gelir.",
+    "message": "Bir gün önbellekte tutulan 30 işlem günlük bir aralıktan 1g, 1h veya 1a için gerçek Stocklake günlük geçmişini alın. Önbellekte yoksa bir sorgu harcar. Finnhub, geçmiş isteği yapmadan yerel olarak gözlemlenmiş eksik fiyatları döndürür.",
     "description": "Agent tool scope must not imply full historical coverage",
     "_machine_translated": true,
-    "_source_hash": "fcb4dd5f0bdcb792"
+    "_source_hash": "d5343316b6826efa"
   },
   "tool.symbol": {
-    "message": "Bir ABD hisse senedi sembolü.",
+    "message": "Stocklake için uluslararası sonekler dahil bir hisse sembolü.",
     "description": "History symbol parameter description",
     "_machine_translated": true,
-    "_source_hash": "31f6b8214e118704"
+    "_source_hash": "bf96519c516306b2"
   },
   "tool.range": {
     "message": "1d, 1w veya 1m; varsayılan 1d.",
@@ -312,10 +312,10 @@
     "_source_hash": "2acdb85e54aa0ed1"
   },
   "error.timeout": {
-    "message": "Finnhub'ın yanıt vermesi çok uzun sürdü. Birkaç saniye sonra tekrar deneyin; varsa kayıtlı veriler gösteriliyor.",
+    "message": "Fiyat sağlayıcısının yanıt vermesi çok uzun sürdü. Birkaç saniye sonra tekrar deneyin; varsa kayıtlı veriler gösteriliyor.",
     "description": "Request timeout; short local pause, separate from offline backoff",
     "_machine_translated": true,
-    "_source_hash": "23491b785f430a04"
+    "_source_hash": "fb51f909049dd49a"
   },
   "settings.agent_tools": {
     "message": "Ajanlar için Stocks araçlarına izin ver",
@@ -324,10 +324,10 @@
     "_source_hash": "feaafa8e946fc0b2"
   },
   "settings.agent_tools_hint": {
-    "message": "Ajan araçları, Finnhub fiyat tekliflerini ve bunlardan türetilen sonuçları ajan sağlayıcınıza gönderebilir. Bunu yalnızca Finnhub sözleşmeniz bu paylaşıma izin veriyorsa etkinleştirin. Değişiklik, Kage'i yeniden başlattıktan sonra geçerli olur.",
+    "message": "Ajan araçları fiyatları ve sonuçları ajan sağlayıcınıza gönderebilir. Yalnızca kendi kullanımınız için ve sağlayıcı koşulları izin veriyorsa etkinleştirin. Kage'i yeniden başlattıktan sonra geçerli olur.",
     "description": "Explain opt-in and external agent data flow",
     "_machine_translated": true,
-    "_source_hash": "85852257d902cb3e"
+    "_source_hash": "4b637e7840e5666b"
   },
   "settings.delete_quotes": {
     "message": "Kayıtlı fiyatları sil",
@@ -340,15 +340,57 @@
     "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
   },
   "widget.connection": {
-    "message": "Fiyatlar ilgi gerektiriyor. Stocks ayarlarını açmak için stock yazın ve Enter'a basın.",
+    "message": "Fiyatlar ilgi gerektiriyor. Hisseler ayarlarını açmak için stock yazıp Enter'a basın.",
     "description": "Compact widget hint for authentication or storage problems; keep stock as the launcher command",
     "_machine_translated": true,
-    "_source_hash": "28d7c64fff255e29"
+    "_source_hash": "8dcbef2b531a522b"
   },
   "tool.opt_in": {
-    "message": "Bu aracı kullanmadan önce Stocks ayarlarında \"Ajanlar için Stocks araçlarına izin ver\" seçeneğini etkinleştirin. Finnhub sözleşmenizin ajan sağlayıcınızla veri paylaşımına izin verdiğinden emin olun.",
+    "message": "Bu aracı kullanmadan önce Hisseler ayarlarında Ajanlar için Hisseler araçlarına izin ver seçeneğini etkinleştirin. Sağlayıcı koşullarının ajan sağlayıcınızla bu kullanıma izin verdiğini kontrol edin.",
     "description": "Actionable agent tool opt-in error",
     "_machine_translated": true,
-    "_source_hash": "a00e5cc3750744f0"
+    "_source_hash": "994b57bbe7f233ae"
+  },
+  "settings.provider": {
+    "message": "Fiyat sağlayıcısı",
+    "description": "Provider selection; Test/use persists the choice",
+    "_machine_translated": true,
+    "_source_hash": "b9f483c14cb7b4dc"
+  },
+  "setup.stocklake": {
+    "message": "Stocklake anahtar olmadan çalışır: ~15 dk gecikmeli, günde 25 çağrı; isteğe bağlı ücretsiz bir anahtar bu sınırı 200'e çıkarır.",
+    "description": "Keyless default provider description",
+    "_machine_translated": true,
+    "_source_hash": "930e88dd695cf87e"
+  },
+  "setup.stocklake_key": {
+    "message": "Ücretsiz Stocklake anahtarı alın",
+    "description": "Open Stocklake sign-in; emailed code; free 200 calls/day",
+    "_machine_translated": true,
+    "_source_hash": "b21d6e57b9696558"
+  },
+  "quote.stocklake": {
+    "message": "~15 dk gecikmeli · Stocklake",
+    "description": "Visible delayed provider attribution; paired with a link to stocklake.dev",
+    "_machine_translated": true,
+    "_source_hash": "081a46f162590a46"
+  },
+  "quote.history": {
+    "message": "Yaklaşık 30 işlem gününe ait Stocklake günlük kapanış fiyatları. Geçmiş bir gün boyunca önbellekte tutulur; önbellekte bulunmadığında bir çağrı kullanılır. Finnhub mini grafikleri yerel örnekleri kullanır.",
+    "description": "History accessible label and settings explanation; real daily data for Stocklake",
+    "_machine_translated": true,
+    "_source_hash": "2efd3bfb80984cd7"
+  },
+  "error.daily_limit": {
+    "message": "Günlük ücretsiz fiyat sorgusu hakkınız doldu. {time} itibarıyla sıfırlanır. Günde 200 sorgu için ücretsiz bir Stocklake anahtarı ekleyin.",
+    "description": "Guest exhaustion message; preserve {time} for local reset time",
+    "_machine_translated": true,
+    "_source_hash": "22d1ca53ad1f23f9"
+  },
+  "error.key_daily_limit": {
+    "message": "Günlük Stocklake çağrı hakkınız doldu. {time} itibarıyla sıfırlanır. Mümkün olduğunda kaydedilmiş veriler gösteriliyor.",
+    "description": "Authenticated daily exhaustion; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "7c2f3494ec238e7e"
   }
 }

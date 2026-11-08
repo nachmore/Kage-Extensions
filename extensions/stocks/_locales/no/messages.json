@@ -12,10 +12,10 @@
     "_source_hash": "d6d4700604b64b88"
   },
   "manifest.description": {
-    "message": "Tilkoblet · Amerikanske kurser og overvåkningsliste fra Finnhub med din gratis nøkkel. Data er forsinket når de er bufret; hver kurs viser tidsstempelet sitt.",
+    "message": "Tilkoblet · Ingen nøkler nødvendig: Stocklake-kurser er forsinket ~15 min, 25 gratis per dag; en gratis nøkkel øker dette til 200. Finnhub er valgfritt for sanntidskurser fra USA.",
     "description": "Store listing; Online and Data delayed communicate network dependency and freshness",
     "_machine_translated": true,
-    "_source_hash": "6feb0a4240dfb80e"
+    "_source_hash": "44f1eb50266b55a3"
   },
   "result.loading": {
     "message": "Slår opp aksjer …",
@@ -78,16 +78,16 @@
     "_source_hash": "8adbf75fdf5bc595"
   },
   "error.auth": {
-    "message": "Finnhub avviste nøkkelen. Åpne Aksjer-innstillingene for å teste en ny nøkkel.",
+    "message": "Leverandøren avviste nøkkelen. Åpne Stocks-innstillingene for å teste en ny nøkkel.",
     "description": "Authentication error; never include the raw provider response",
     "_machine_translated": true,
-    "_source_hash": "eca735a4f5fb0bce"
+    "_source_hash": "10cd02016931ccf6"
   },
   "error.unknown": {
-    "message": "Ingen kurs for dette symbolet. Kontroller det amerikanske tickersymbolet, inkludert eventuelt suffiks for aksjeklasse.",
+    "message": "Ingen kurs for dette symbolet. Kontroller tickeren og børssuffikset.",
     "description": "Unknown or zero-valued quote",
     "_machine_translated": true,
-    "_source_hash": "3a30475366fb7002"
+    "_source_hash": "bd84c7f6e9173633"
   },
   "error.unsupported": {
     "message": "Denne leverandøren støtter bare amerikanske tickersymboler. Suffikser for internasjonale børser krever et annet dataabonnement.",
@@ -114,16 +114,16 @@
     "_source_hash": "7d553dee0c6fe94a"
   },
   "error.offline": {
-    "message": "Kan ikke nå Finnhub. Viser lagrede data når de er tilgjengelige.",
+    "message": "Får ikke kontakt med kursleverandøren. Viser lagrede data når de er tilgjengelige.",
     "description": "Offline or network failure",
     "_machine_translated": true,
-    "_source_hash": "536dacabe5ed1015"
+    "_source_hash": "6fe79608991e6dfd"
   },
   "error.unavailable": {
-    "message": "Finnhub er utilgjengelig. Viser lagrede data når de er tilgjengelige.",
+    "message": "Kursleverandøren er utilgjengelig. Viser lagrede data når de er tilgjengelige.",
     "description": "Sanitized provider error",
     "_machine_translated": true,
-    "_source_hash": "2dd30adcc5164ad4"
+    "_source_hash": "e10d9f0c7de280f1"
   },
   "error.busy": {
     "message": "Et annet Kage-vindu oppdaterer kursene. Prøv igjen om litt.",
@@ -138,10 +138,10 @@
     "_source_hash": "4cbfbb2e9b0adc41"
   },
   "error.invalid_key": {
-    "message": "Lim inn en Finnhub-API-nøkkel, og velg deretter Test og lagre. Ikke lim inn en URL.",
+    "message": "Lim inn en API-nøkkel for valgt leverandør, og velg deretter Test og bruk. Ikke lim inn en URL.",
     "description": "Malformed or missing API key",
     "_machine_translated": true,
-    "_source_hash": "b972e383a08a0ac1"
+    "_source_hash": "46f77ed69b2c2053"
   },
   "error.invalid_range": {
     "message": "Velg et intervall på 1d, 1w eller 1m.",
@@ -150,10 +150,10 @@
     "_source_hash": "f4f4d83dc6129a6c"
   },
   "settings.description": {
-    "message": "Amerikanske aksjekurser, overvåkningsliste og lokal kurshistorikk. Tilkoblet · Kilde: Finnhub. Lagrede verdier kan være forsinket.",
+    "message": "Stocklake-kurser fungerer uten nøkkel: forsinket ~15 min, 25 kall per dag, eller 200 med en gratis nøkkel. Finnhub tilbyr sanntidskurser fra USA med en gratis nøkkel.",
     "description": "Settings summary",
     "_machine_translated": true,
-    "_source_hash": "b91914b96330d6cb"
+    "_source_hash": "deea29d63a6f57a4"
   },
   "settings.connection": {
     "message": "Kursleverandør og oppsett",
@@ -162,22 +162,22 @@
     "_source_hash": "863fbc4ab994c2eb"
   },
   "setup.intro": {
-    "message": "Bruk din egen gratis Finnhub-nøkkel for kurser på amerikanske aksjer. Skaff en nøkkel nedenfor, og test og lagre den for å koble til.",
+    "message": "Finnhub krever en gratis nøkkel for sanntidskurser fra USA, med en grense på 60 kall per minutt.",
     "description": "User-facing provider setup introduction",
     "_machine_translated": true,
-    "_source_hash": "0686f89d96f514a5"
+    "_source_hash": "41c015a47f8cb6a3"
   },
   "setup.terms": {
-    "message": "Finnhubs personlige abonnementer er for kvalifisert personlig bruk. Kommersiell bruk og deling av data eller avledede resultater med tredjeparter krever godkjenning fra Finnhub. Sjekk leverandørens vilkår, også før du sender kurser til en ekstern agent.",
+    "message": "Bruk dataene til egen research og egne verktøy. Ikke videreselg, videredistribuer eller underlisensier leverandørdata eller -tilgang, og ikke omgå grenser. Sjekk leverandørens vilkår før du deler resultater.",
     "description": "Material provider use restrictions",
     "_machine_translated": true,
-    "_source_hash": "9eb9716ed06ff746"
+    "_source_hash": "7fbb1c4e684b429f"
   },
   "setup.steps": {
-    "message": "1. Åpne Få en gratis Finnhub-nøkkel (omtrent ett minutt) og registrer deg hos Finnhub. 2. Kopier API-nøkkelen fra kontrollpanelet. 3. Lim den inn nedenfor og velg Test og lagre.",
+    "message": "Stocklake fungerer umiddelbart uten nøkkel. Velg en leverandør, lim eventuelt inn nøkkelen, og velg deretter Test og bruk for å lagre valget.",
     "description": "Guided setup steps",
     "_machine_translated": true,
-    "_source_hash": "d850b03495911632"
+    "_source_hash": "d73223e639ab4ff7"
   },
   "setup.saved": {
     "message": "En nøkkel er lagret på denne enheten. La feltet stå tomt for å teste den, eller lim inn en ny. Lagrede nøkler vises aldri her.",
@@ -186,16 +186,16 @@
     "_source_hash": "4fba007359b56f1d"
   },
   "setup.free_key": {
-    "message": "Få en gratis Finnhub-nøkkel (omtrent ett minutt)",
+    "message": "Skaff en gratis Finnhub-nøkkel (tar omtrent ett minutt)",
     "description": "Open provider registration in system browser",
     "_machine_translated": true,
-    "_source_hash": "a0566f42e52da139"
+    "_source_hash": "8ee05fe11cb483c9"
   },
   "setup.key": {
-    "message": "Finnhub API-nøkkel",
+    "message": "API-nøkkel for leverandør (valgfritt for Stocklake)",
     "description": "Scratch field for secret",
     "_machine_translated": true,
-    "_source_hash": "2e7e94ee1be4a2cf"
+    "_source_hash": "3fb2a7de1e62b384"
   },
   "setup.key_hint": {
     "message": "Test og lagre lagrer nøkkelen i private utvidelsesdata, på samme måte som Spotify-legitimasjon. Å skrive den her lagrer den ikke sammen med vanlige innstillinger. Tekstfeltet i denne verten er synlig mens du skriver.",
@@ -204,10 +204,10 @@
     "_source_hash": "4c3122d9b4d5daad"
   },
   "setup.test": {
-    "message": "Test og lagre nøkkel",
+    "message": "Test og bruk leverandør",
     "description": "Probe quote endpoint and save only on success",
     "_machine_translated": true,
-    "_source_hash": "bc2be6a1a4fb4210"
+    "_source_hash": "d9e72fde7f42a5f5"
   },
   "setup.remove": {
     "message": "Fjern lagret nøkkel",
@@ -222,10 +222,10 @@
     "_source_hash": "59cb7317745316bb"
   },
   "setup.success": {
-    "message": "Finnhub-kurstesten var vellykket; nøkkelen er lagret.",
+    "message": "Kurstesten bestått; leverandøren er valgt, og eventuell oppgitt nøkkel er lagret.",
     "description": "Successful guided setup; key is saved independently of watchlist settings",
     "_machine_translated": true,
-    "_source_hash": "76df0b334c35e1f8"
+    "_source_hash": "c4ae3a50e8f0c3e0"
   },
   "settings.watchlist_section": {
     "message": "Overvåkningsliste og oppdatering",
@@ -240,10 +240,10 @@
     "_source_hash": "4fa141d565f4d3cb"
   },
   "settings.watchlist_hint": {
-    "message": "Opptil {max} amerikanske symboler, atskilt med mellomrom eller komma. En tom liste skjuler widgeten.",
+    "message": "Opptil {max} symboler, adskilt med mellomrom eller komma. Stocklake godtar internasjonale symboler som SAP.DE; Finnhub støtter amerikanske tickere. Panelet krever en nøkkel og en aktivert synlighetsinnstilling.",
     "description": "Watchlist validation; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "18fd9ff917b78911"
+    "_source_hash": "5b779260bb9346da"
   },
   "settings.show": {
     "message": "Vis overvåkningslisten i det flytende vinduet",
@@ -258,10 +258,10 @@
     "_source_hash": "d5d486955acdd4c8"
   },
   "settings.refresh_hint": {
-    "message": "Minimum {min} sekunder; standard {default}. Oppdatering i skjulte vinduer settes på pause i nåværende Kage-verter. Maksimalt {budget} forespørsler per minutt er reservert på tvers av denne enheten; leverandørens grenser omfatter også de andre appene dine.",
+    "message": "Minimum {min} sekunder; standard {default}. Stocklake-kurser bufres i minst 10 minutter, historikk i ett døgn. Oppdatering stopper når vinduet er skjult. Finnhub reserverer lokalt maks {budget} forespørsler per minutt.",
     "description": "Request budget and hidden behavior; preserve {min}, {default}, {budget}",
     "_machine_translated": true,
-    "_source_hash": "835954ceb7299192"
+    "_source_hash": "08eb708651c8ce9e"
   },
   "settings.refresh_error": {
     "message": "Oppdateringsintervallet må være mellom {min} og {max} sekunder.",
@@ -270,28 +270,28 @@
     "_source_hash": "45f891673cb1e039"
   },
   "tool.quote": {
-    "message": "Hent amerikanske aksjekurser fra Finnhub for personlig bruk. Returnerer kilde, tidsstempel for siste handel, hurtigbufferens aktualitet og feil per symbol. Krever brukerens gratis nøkkel; skal ikke videredistribueres uten godkjenning fra leverandøren.",
+    "message": "Hent aksjekurser fra valgt leverandør til eget bruk. Stocklake er forsinket ~15 min og krever ingen nøkkel; Finnhub tilbyr sanntidskurser fra USA med nøkkel. Returnerer kilde, tidsstempler, aktualitet og feil per symbol. Ikke videredistribuer data.",
     "description": "Agent tool description",
     "_machine_translated": true,
-    "_source_hash": "9aa8d167f9bf2f94"
+    "_source_hash": "890f052fdf9e3bbd"
   },
   "tool.symbols": {
-    "message": "Opptil {max} amerikanske symboler, for eksempel [\"AAPL\", \"MSFT\", \"BRK.B\"].",
+    "message": "Opptil {max} symboler, for eksempel [\"AAPL\", \"MSFT\", \"SAP.DE\"]. Finnhub godtar bare amerikanske tickere.",
     "description": "Quote tool parameter description; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "753c9fd4564636f3"
+    "_source_hash": "acbe6e78c6fddb5a"
   },
   "tool.history": {
-    "message": "Hent lokalt innsamlede Finnhub-kurser observert på denne enheten for 1d, 1w eller 1m. Ingen nettverksforespørsler. Ufullstendige, spredte målinger, ikke historiske candlesticks; en tom liste betyr at ingenting ble samlet inn.",
+    "message": "Hent faktisk daglig historikk fra Stocklake for 1d, 1w eller 1m fra et vindu på 30 handelsdager som bufres i ett døgn. Koster ett kall når data ikke finnes i bufferen. Finnhub returnerer ufullstendige, lokalt observerte kurser uten historikkforespørsel.",
     "description": "Agent tool scope must not imply full historical coverage",
     "_machine_translated": true,
-    "_source_hash": "fcb4dd5f0bdcb792"
+    "_source_hash": "d5343316b6826efa"
   },
   "tool.symbol": {
-    "message": "Et amerikansk aksjesymbol.",
+    "message": "Et aksjesymbol, inkludert internasjonale suffikser for Stocklake.",
     "description": "History symbol parameter description",
     "_machine_translated": true,
-    "_source_hash": "31f6b8214e118704"
+    "_source_hash": "bf96519c516306b2"
   },
   "tool.range": {
     "message": "1d, 1w eller 1m; standard er 1d.",
@@ -312,10 +312,10 @@
     "_source_hash": "2acdb85e54aa0ed1"
   },
   "error.timeout": {
-    "message": "Finnhub brukte for lang tid på å svare. Prøv igjen om noen sekunder; viser lagrede data når de er tilgjengelige.",
+    "message": "Kursleverandøren brukte for lang tid på å svare. Prøv igjen om noen sekunder; viser lagrede data når de er tilgjengelige.",
     "description": "Request timeout; short local pause, separate from offline backoff",
     "_machine_translated": true,
-    "_source_hash": "23491b785f430a04"
+    "_source_hash": "fb51f909049dd49a"
   },
   "settings.agent_tools": {
     "message": "Tillat Aksjer-verktøy for agenter",
@@ -324,10 +324,10 @@
     "_source_hash": "feaafa8e946fc0b2"
   },
   "settings.agent_tools_hint": {
-    "message": "Agentverktøy kan sende Finnhub-kurser og avledede resultater til agentleverandøren din. Aktiver bare hvis Finnhub-avtalen din tillater slik deling. Endringen trer i kraft etter at du starter Kage på nytt.",
+    "message": "Agentverktøy kan sende kurser og resultater til agentleverandøren din. Aktiver bare til eget bruk når leverandørens vilkår tillater det. Trer i kraft etter at du starter Kage på nytt.",
     "description": "Explain opt-in and external agent data flow",
     "_machine_translated": true,
-    "_source_hash": "85852257d902cb3e"
+    "_source_hash": "4b637e7840e5666b"
   },
   "settings.delete_quotes": {
     "message": "Slett lagrede kurser",
@@ -340,15 +340,57 @@
     "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
   },
   "widget.connection": {
-    "message": "Kursene trenger tilsyn. Skriv stock og trykk Enter for å åpne Aksjer-innstillingene.",
+    "message": "Kursene trenger oppmerksomhet. Skriv stock og trykk Enter for å åpne Stocks-innstillingene.",
     "description": "Compact widget hint for authentication or storage problems; keep stock as the launcher command",
     "_machine_translated": true,
-    "_source_hash": "28d7c64fff255e29"
+    "_source_hash": "8dcbef2b531a522b"
   },
   "tool.opt_in": {
-    "message": "Aktiver Tillat Aksjer-verktøy for agenter i Aksjer-innstillingene før du bruker dette verktøyet. Kontroller at Finnhub-avtalen din tillater deling av data med agentleverandøren din.",
+    "message": "Aktiver Tillat Stocks-verktøy for agenter i Stocks-innstillingene før du bruker dette verktøyet. Kontroller at leverandørens vilkår tillater bruken din med agentleverandøren.",
     "description": "Actionable agent tool opt-in error",
     "_machine_translated": true,
-    "_source_hash": "a00e5cc3750744f0"
+    "_source_hash": "994b57bbe7f233ae"
+  },
+  "settings.provider": {
+    "message": "Kursleverandør",
+    "description": "Provider selection; Test/use persists the choice",
+    "_machine_translated": true,
+    "_source_hash": "b9f483c14cb7b4dc"
+  },
+  "setup.stocklake": {
+    "message": "Stocklake fungerer uten nøkkel: forsinket ~15 min, 25 kall per dag. En valgfri gratis nøkkel øker dette til 200.",
+    "description": "Keyless default provider description",
+    "_machine_translated": true,
+    "_source_hash": "930e88dd695cf87e"
+  },
+  "setup.stocklake_key": {
+    "message": "Få en gratis Stocklake-nøkkel",
+    "description": "Open Stocklake sign-in; emailed code; free 200 calls/day",
+    "_machine_translated": true,
+    "_source_hash": "b21d6e57b9696558"
+  },
+  "quote.stocklake": {
+    "message": "Forsinket ~15 min · Stocklake",
+    "description": "Visible delayed provider attribution; paired with a link to stocklake.dev",
+    "_machine_translated": true,
+    "_source_hash": "081a46f162590a46"
+  },
+  "quote.history": {
+    "message": "Daglige sluttkurser fra Stocklake for omtrent 30 handelsdager. Historikken bufres i én dag, og hvis den ikke finnes i bufferen, brukes ett kall. Finnhub-minigrafer bruker lokale målinger.",
+    "description": "History accessible label and settings explanation; real daily data for Stocklake",
+    "_machine_translated": true,
+    "_source_hash": "2efd3bfb80984cd7"
+  },
+  "error.daily_limit": {
+    "message": "Dagens gratis kurser er brukt opp. Tilbakestilles kl. {time}. Legg til en gratis Stocklake-nøkkel for å få 200 per dag.",
+    "description": "Guest exhaustion message; preserve {time} for local reset time",
+    "_machine_translated": true,
+    "_source_hash": "22d1ca53ad1f23f9"
+  },
+  "error.key_daily_limit": {
+    "message": "Dagens Stocklake-kall er brukt opp. Tilbakestilles kl. {time}. Viser lagrede data når de er tilgjengelige.",
+    "description": "Authenticated daily exhaustion; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "7c2f3494ec238e7e"
   }
 }

@@ -22,6 +22,7 @@ const saved = {
 function host({ config = {}, seed = {}, key = null, hostFeatures, keyReadError = false } = {}) {
   const store = new Map(Object.entries(seed).map(([name, value]) => [name, JSON.stringify(value)]));
   if (key) store.set('credentials', JSON.stringify({ api_key: key }));
+  if (!key && !store.has('credentials')) store.set('credentials', JSON.stringify({ provider: 'finnhub' }));
   const { context } = makeContext({
     catalog, config, hostFeatures,
     invokes: {
@@ -65,14 +66,15 @@ afterEach(() => {
 });
 
 describe('Finnhub setup and migration', () => {
-  it.each([undefined, ['config.manifest_defaults']])('normalizes the retired provider on host features %j without a selector', async (hostFeatures) => {
+  it.each([undefined, ['config.manifest_defaults']])('normalizes retired config and exposes the provider selector on host features %j', async (hostFeatures) => {
     const settings = init(Settings, host({ hostFeatures, config: { provider: 'cache' } }));
     expect(settings.validate({ provider: 'cache', watchlist: 'aapl' })).toEqual({ valid: true });
+    await settings.getSettings();
     expect(settings.normalize({ provider: 'cache', watchlist: 'aapl' })).toEqual({
       values: { provider: 'finnhub', watchlist: 'AAPL' },
     });
     const controls = (await settings.getSettings()).sections.flatMap((section) => section.controls);
-    expect(controls.some((control) => control.id === 'provider' || control.type === 'select')).toBe(false);
+    expect(controls.find((control) => control.id === '__provider').options.map((option) => option.value)).toEqual(['stocklake', 'finnhub']);
     expect(controls.find((control) => control.id === 'free_key').label).toBe(SETUP);
     expect(DEFAULTS).not.toHaveProperty('provider');
     const manifest = JSON.parse(readFileSync(new URL('./manifest.json', import.meta.url)));

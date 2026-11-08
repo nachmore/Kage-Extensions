@@ -12,10 +12,10 @@
     "_source_hash": "d6d4700604b64b88"
   },
   "manifest.description": {
-    "message": "Онлайн · Котирування акцій США та список спостереження від Finnhub із вашим безкоштовним ключем. Кешовані дані можуть надходити із затримкою; кожне котирування показує свій час.",
+    "message": "Онлайн · Ключі не потрібні: котирування Stocklake із затримкою ~15 хв, 25 на день безкоштовно; безкоштовний ключ збільшує ліміт до 200. Finnhub — за бажанням, для котирувань США в реальному часі.",
     "description": "Store listing; Online and Data delayed communicate network dependency and freshness",
     "_machine_translated": true,
-    "_source_hash": "6feb0a4240dfb80e"
+    "_source_hash": "44f1eb50266b55a3"
   },
   "result.loading": {
     "message": "Пошук акцій…",
@@ -78,16 +78,16 @@
     "_source_hash": "8adbf75fdf5bc595"
   },
   "error.auth": {
-    "message": "Finnhub відхилив ключ. Відкрийте налаштування «Акції», щоб перевірити інший ключ.",
+    "message": "Постачальник відхилив ключ. Відкрийте налаштування «Акції», щоб перевірити інший ключ.",
     "description": "Authentication error; never include the raw provider response",
     "_machine_translated": true,
-    "_source_hash": "eca735a4f5fb0bce"
+    "_source_hash": "10cd02016931ccf6"
   },
   "error.unknown": {
-    "message": "Немає котирування для цього символу. Перевірте тікер США, зокрема суфікс класу акцій.",
+    "message": "Немає котирування для цього символу. Перевірте тікер і суфікс біржі.",
     "description": "Unknown or zero-valued quote",
     "_machine_translated": true,
-    "_source_hash": "3a30475366fb7002"
+    "_source_hash": "bd84c7f6e9173633"
   },
   "error.unsupported": {
     "message": "Цей постачальник підтримує лише тікери США. Для суфіксів міжнародних бірж потрібен інший тарифний план даних.",
@@ -114,16 +114,16 @@
     "_source_hash": "7d553dee0c6fe94a"
   },
   "error.offline": {
-    "message": "Не вдається підключитися до Finnhub. Показано збережені дані, якщо вони є.",
+    "message": "Не вдається з’єднатися з постачальником котирувань. Показуються збережені дані, якщо вони є.",
     "description": "Offline or network failure",
     "_machine_translated": true,
-    "_source_hash": "536dacabe5ed1015"
+    "_source_hash": "6fe79608991e6dfd"
   },
   "error.unavailable": {
-    "message": "Finnhub недоступний. Показуються збережені дані, якщо вони є.",
+    "message": "Постачальник котирувань недоступний. Показуються збережені дані, якщо вони є.",
     "description": "Sanitized provider error",
     "_machine_translated": true,
-    "_source_hash": "2dd30adcc5164ad4"
+    "_source_hash": "e10d9f0c7de280f1"
   },
   "error.busy": {
     "message": "Інше вікно Kage оновлює котирування. Спробуйте трохи пізніше.",
@@ -138,10 +138,10 @@
     "_source_hash": "4cbfbb2e9b0adc41"
   },
   "error.invalid_key": {
-    "message": "Вставте ключ API Finnhub, а потім перевірте й збережіть його. Не вставляйте URL.",
+    "message": "Вставте API-ключ вибраного постачальника, а потім натисніть «Перевірити й використати». Не вставляйте URL.",
     "description": "Malformed or missing API key",
     "_machine_translated": true,
-    "_source_hash": "b972e383a08a0ac1"
+    "_source_hash": "46f77ed69b2c2053"
   },
   "error.invalid_range": {
     "message": "Виберіть діапазон 1d, 1w або 1m.",
@@ -150,10 +150,10 @@
     "_source_hash": "f4f4d83dc6129a6c"
   },
   "settings.description": {
-    "message": "Котирування акцій США, список спостереження та локальна історія котирувань. Онлайн · Джерело: Finnhub. Збережені значення можуть бути із затримкою.",
+    "message": "Котирування Stocklake працюють без ключа: затримка ~15 хв, 25 запитів на день або 200 з безкоштовним ключем. Finnhub надає котирування США в реальному часі з безкоштовним ключем.",
     "description": "Settings summary",
     "_machine_translated": true,
-    "_source_hash": "b91914b96330d6cb"
+    "_source_hash": "deea29d63a6f57a4"
   },
   "settings.connection": {
     "message": "Постачальник котирувань і налаштування",
@@ -162,22 +162,22 @@
     "_source_hash": "863fbc4ab994c2eb"
   },
   "setup.intro": {
-    "message": "Використовуйте власний безплатний ключ Finnhub для котирувань акцій США. Отримайте ключ нижче, а потім перевірте та збережіть його, щоб підключитися.",
+    "message": "Для котирувань США в реальному часі Finnhub потрібен безкоштовний ключ; ліміт — 60 запитів на хвилину.",
     "description": "User-facing provider setup introduction",
     "_machine_translated": true,
-    "_source_hash": "0686f89d96f514a5"
+    "_source_hash": "41c015a47f8cb6a3"
   },
   "setup.terms": {
-    "message": "Особисті плани Finnhub призначені для відповідного особистого використання. Комерційне використання, а також передавання даних або похідних результатів третім особам потребують схвалення Finnhub. Ознайомтеся з умовами постачальника, зокрема перед надсиланням котирувань віддаленому агенту.",
+    "message": "Використовуйте дані для власних досліджень та інструментів. Не перепродавайте, не поширюйте й не передавайте за сублікензією дані чи доступ постачальника та не обходьте ліміти. Перш ніж ділитися результатами, ознайомтеся з умовами постачальника.",
     "description": "Material provider use restrictions",
     "_machine_translated": true,
-    "_source_hash": "9eb9716ed06ff746"
+    "_source_hash": "7fbb1c4e684b429f"
   },
   "setup.steps": {
-    "message": "1. Натисніть «Отримати безкоштовний ключ Finnhub (близько хвилини)» і зареєструйтеся у Finnhub. 2. Скопіюйте свій API-ключ з панелі керування. 3. Вставте його нижче й виберіть «Перевірити й зберегти».",
+    "message": "Stocklake працює одразу без ключа. Виберіть постачальника, за бажанням вставте його ключ, а потім натисніть «Перевірити й використати», щоб зберегти вибір.",
     "description": "Guided setup steps",
     "_machine_translated": true,
-    "_source_hash": "d850b03495911632"
+    "_source_hash": "d73223e639ab4ff7"
   },
   "setup.saved": {
     "message": "На цьому пристрої збережено ключ. Залиште поле порожнім, щоб перевірити його, або вставте новий. Збережені ключі тут ніколи не відображаються.",
@@ -186,16 +186,16 @@
     "_source_hash": "4fba007359b56f1d"
   },
   "setup.free_key": {
-    "message": "Отримати безкоштовний ключ Finnhub (близько хвилини)",
+    "message": "Отримати безкоштовний ключ Finnhub (приблизно хвилина)",
     "description": "Open provider registration in system browser",
     "_machine_translated": true,
-    "_source_hash": "a0566f42e52da139"
+    "_source_hash": "8ee05fe11cb483c9"
   },
   "setup.key": {
-    "message": "API-ключ Finnhub",
+    "message": "API-ключ постачальника (необов’язковий для Stocklake)",
     "description": "Scratch field for secret",
     "_machine_translated": true,
-    "_source_hash": "2e7e94ee1be4a2cf"
+    "_source_hash": "3fb2a7de1e62b384"
   },
   "setup.key_hint": {
     "message": "«Перевірити й зберегти» зберігає ключ у приватних даних розширення, як облікові дані Spotify. Введення ключа тут не зберігає його разом зі звичайними налаштуваннями. Текстове поле цього хоста видиме під час введення.",
@@ -204,10 +204,10 @@
     "_source_hash": "4c3122d9b4d5daad"
   },
   "setup.test": {
-    "message": "Перевірити й зберегти ключ",
+    "message": "Перевірити й використати постачальника",
     "description": "Probe quote endpoint and save only on success",
     "_machine_translated": true,
-    "_source_hash": "bc2be6a1a4fb4210"
+    "_source_hash": "d9e72fde7f42a5f5"
   },
   "setup.remove": {
     "message": "Видалити збережений ключ",
@@ -222,10 +222,10 @@
     "_source_hash": "59cb7317745316bb"
   },
   "setup.success": {
-    "message": "Перевірку котирувань Finnhub пройдено; ключ збережено.",
+    "message": "Перевірку котирувань пройдено; постачальника вибрано, а наданий ключ збережено.",
     "description": "Successful guided setup; key is saved independently of watchlist settings",
     "_machine_translated": true,
-    "_source_hash": "76df0b334c35e1f8"
+    "_source_hash": "c4ae3a50e8f0c3e0"
   },
   "settings.watchlist_section": {
     "message": "Список спостереження й оновлення",
@@ -240,10 +240,10 @@
     "_source_hash": "4fa141d565f4d3cb"
   },
   "settings.watchlist_hint": {
-    "message": "До {max} символів США, розділених пробілами або комами. Якщо список порожній, віджет приховано.",
+    "message": "До {max} символів, розділених пробілами або комами. Stocklake приймає міжнародні символи, як-от SAP.DE; Finnhub підтримує тікери США. Для панелі потрібні ключ і ввімкнений параметр видимості.",
     "description": "Watchlist validation; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "18fd9ff917b78911"
+    "_source_hash": "5b779260bb9346da"
   },
   "settings.show": {
     "message": "Показувати список спостереження в плаваючому вікні",
@@ -258,10 +258,10 @@
     "_source_hash": "d5d486955acdd4c8"
   },
   "settings.refresh_hint": {
-    "message": "Мінімум {min} с; за замовчуванням {default}. У поточних хостах Kage опитування в прихованому вікні призупиняється. На цьому пристрої зарезервовано не більше {budget} запитів на хвилину; ліміти провайдера також враховують ваші інші застосунки.",
+    "message": "Мінімум {min} с; за замовчуванням {default}. Котирування Stocklake кешуються щонайменше на 10 хвилин, історія — на день. Опитування в прихованому вікні призупиняються. Finnhub локально резервує не більше {budget} запитів на хвилину.",
     "description": "Request budget and hidden behavior; preserve {min}, {default}, {budget}",
     "_machine_translated": true,
-    "_source_hash": "835954ceb7299192"
+    "_source_hash": "08eb708651c8ce9e"
   },
   "settings.refresh_error": {
     "message": "Інтервал оновлення має бути від {min} до {max} с.",
@@ -270,28 +270,28 @@
     "_source_hash": "45f891673cb1e039"
   },
   "tool.quote": {
-    "message": "Отримує котирування акцій США з Finnhub для особистого використання. Повертає джерело, час останньої угоди, актуальність кешу та помилки для кожного символу. Потребує безкоштовного ключа користувача; не поширюйте дані без схвалення постачальника.",
+    "message": "Отримує котирування акцій від вибраного постачальника для власного використання. Stocklake має затримку ~15 хв і не потребує ключа; Finnhub надає котирування США в реальному часі з ключем. Повертає джерело, позначки часу, актуальність і помилки для кожного символу. Не поширюйте дані.",
     "description": "Agent tool description",
     "_machine_translated": true,
-    "_source_hash": "9aa8d167f9bf2f94"
+    "_source_hash": "890f052fdf9e3bbd"
   },
   "tool.symbols": {
-    "message": "До {max} символів США, наприклад [\"AAPL\", \"MSFT\", \"BRK.B\"].",
+    "message": "До {max} символів, наприклад [\"AAPL\", \"MSFT\", \"SAP.DE\"]. Finnhub приймає лише тікери США.",
     "description": "Quote tool parameter description; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "753c9fd4564636f3"
+    "_source_hash": "acbe6e78c6fddb5a"
   },
   "tool.history": {
-    "message": "Отримати котирування Finnhub, локально зібрані на цьому пристрої за 1d, 1w або 1m. Без мережевих запитів. Це неповні, розріджені вибірки, а не історичні свічки; порожній список означає, що нічого не зібрано.",
+    "message": "Отримує справжню щоденну історію Stocklake за 1d, 1w або 1m із 30-денного вікна торгових днів, що кешується на день. Коштує один запит, якщо даних немає в кеші. Finnhub повертає неповні локально зібрані котирування без запиту історії.",
     "description": "Agent tool scope must not imply full historical coverage",
     "_machine_translated": true,
-    "_source_hash": "fcb4dd5f0bdcb792"
+    "_source_hash": "d5343316b6826efa"
   },
   "tool.symbol": {
-    "message": "Тікер акції США.",
+    "message": "Символ акції, зокрема з міжнародними суфіксами для Stocklake.",
     "description": "History symbol parameter description",
     "_machine_translated": true,
-    "_source_hash": "31f6b8214e118704"
+    "_source_hash": "bf96519c516306b2"
   },
   "tool.range": {
     "message": "1d, 1w або 1m; за замовчуванням 1d.",
@@ -312,10 +312,10 @@
     "_source_hash": "2acdb85e54aa0ed1"
   },
   "error.timeout": {
-    "message": "Finnhub не відповів вчасно. Спробуйте ще раз за кілька секунд; показано збережені дані, якщо вони є.",
+    "message": "Постачальник котирувань не відповів вчасно. Спробуйте ще раз за кілька секунд; показуються збережені дані, якщо вони є.",
     "description": "Request timeout; short local pause, separate from offline backoff",
     "_machine_translated": true,
-    "_source_hash": "23491b785f430a04"
+    "_source_hash": "fb51f909049dd49a"
   },
   "settings.agent_tools": {
     "message": "Дозволити агентам інструменти «Акції»",
@@ -324,10 +324,10 @@
     "_source_hash": "feaafa8e946fc0b2"
   },
   "settings.agent_tools_hint": {
-    "message": "Інструменти агента можуть надсилати котирування Finnhub і похідні результати вашому постачальнику агента. Вмикайте лише тоді, коли ваша угода з Finnhub дозволяє такий обмін даними. Зміни наберуть чинності після перезапуску Kage.",
+    "message": "Інструменти агентів можуть надсилати котирування й результати постачальнику вашого агента. Вмикайте лише для власного використання, якщо це дозволяють умови постачальника. Набуває чинності після перезапуску Kage.",
     "description": "Explain opt-in and external agent data flow",
     "_machine_translated": true,
-    "_source_hash": "85852257d902cb3e"
+    "_source_hash": "4b637e7840e5666b"
   },
   "settings.delete_quotes": {
     "message": "Видалити збережені котирування",
@@ -343,12 +343,54 @@
     "message": "Котирування потребують уваги. Введіть stock і натисніть Enter, щоб відкрити налаштування «Акції».",
     "description": "Compact widget hint for authentication or storage problems; keep stock as the launcher command",
     "_machine_translated": true,
-    "_source_hash": "28d7c64fff255e29"
+    "_source_hash": "8dcbef2b531a522b"
   },
   "tool.opt_in": {
-    "message": "Перш ніж використовувати цей інструмент, увімкніть параметр «Дозволити агентам інструменти «Акції»» у налаштуваннях «Акції». Переконайтеся, що ваша угода з Finnhub дозволяє обмін даними з вашим провайдером агентів.",
+    "message": "Перш ніж використовувати цей інструмент, увімкніть «Дозволити інструменти «Акції» для агентів» у налаштуваннях «Акції». Переконайтеся, що умови постачальника дозволяють таке використання з постачальником вашого агента.",
     "description": "Actionable agent tool opt-in error",
     "_machine_translated": true,
-    "_source_hash": "a00e5cc3750744f0"
+    "_source_hash": "994b57bbe7f233ae"
+  },
+  "settings.provider": {
+    "message": "Постачальник котирувань",
+    "description": "Provider selection; Test/use persists the choice",
+    "_machine_translated": true,
+    "_source_hash": "b9f483c14cb7b4dc"
+  },
+  "setup.stocklake": {
+    "message": "Stocklake працює без ключа: затримка ~15 хв, 25 запитів на день; необов’язковий безплатний ключ збільшує ліміт до 200.",
+    "description": "Keyless default provider description",
+    "_machine_translated": true,
+    "_source_hash": "930e88dd695cf87e"
+  },
+  "setup.stocklake_key": {
+    "message": "Отримати безплатний ключ Stocklake",
+    "description": "Open Stocklake sign-in; emailed code; free 200 calls/day",
+    "_machine_translated": true,
+    "_source_hash": "b21d6e57b9696558"
+  },
+  "quote.stocklake": {
+    "message": "Затримка ~15 хв · Stocklake",
+    "description": "Visible delayed provider attribution; paired with a link to stocklake.dev",
+    "_machine_translated": true,
+    "_source_hash": "081a46f162590a46"
+  },
+  "quote.history": {
+    "message": "Щоденні ціни закриття Stocklake приблизно за 30 торгових днів. Історія кешується на день; якщо даних у кеші немає, використовується один запит. Спарклайни Finnhub використовують локальні вибірки.",
+    "description": "History accessible label and settings explanation; real daily data for Stocklake",
+    "_machine_translated": true,
+    "_source_hash": "2efd3bfb80984cd7"
+  },
+  "error.daily_limit": {
+    "message": "Денний ліміт безплатних котирувань вичерпано. Скидання о {time}. Додайте безплатний ключ Stocklake, щоб отримати 200 запитів на день.",
+    "description": "Guest exhaustion message; preserve {time} for local reset time",
+    "_machine_translated": true,
+    "_source_hash": "22d1ca53ad1f23f9"
+  },
+  "error.key_daily_limit": {
+    "message": "Денний ліміт запитів Stocklake вичерпано. Скидання о {time}. Показуються збережені дані, якщо вони є.",
+    "description": "Authenticated daily exhaustion; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "7c2f3494ec238e7e"
   }
 }

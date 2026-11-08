@@ -12,10 +12,10 @@
     "_source_hash": "d6d4700604b64b88"
   },
   "manifest.description": {
-    "message": "Verkossa · Yhdysvaltain osakekurssit ja seurantalista Finnhubista ilmaisella avaimellasi. Välimuistissa olevat tiedot ovat viiveellä; jokaisessa kurssissa näkyy sen aikaleima.",
+    "message": "Verkossa · Avaimia ei tarvita: Stocklake-kurssit ~15 min viiveellä, 25 päivässä ilmaiseksi; ilmaisella avaimella 200. Finnhub on valinnainen reaaliaikaisille Yhdysvaltain kursseille.",
     "description": "Store listing; Online and Data delayed communicate network dependency and freshness",
     "_machine_translated": true,
-    "_source_hash": "6feb0a4240dfb80e"
+    "_source_hash": "44f1eb50266b55a3"
   },
   "result.loading": {
     "message": "Haetaan osakkeita…",
@@ -78,16 +78,16 @@
     "_source_hash": "8adbf75fdf5bc595"
   },
   "error.auth": {
-    "message": "Finnhub hylkäsi avaimen. Avaa Osakkeet-asetukset ja testaa uusi avain.",
+    "message": "Palveluntarjoaja hylkäsi avaimen. Avaa Stocks-asetukset ja testaa uusi avain.",
     "description": "Authentication error; never include the raw provider response",
     "_machine_translated": true,
-    "_source_hash": "eca735a4f5fb0bce"
+    "_source_hash": "10cd02016931ccf6"
   },
   "error.unknown": {
-    "message": "Tälle symbolille ei löytynyt kurssia. Tarkista Yhdysvaltain osaketunnus mahdollinen osakesarjan pääte mukaan lukien.",
+    "message": "Tälle symbolille ei ole kurssia. Tarkista tunnus ja pörssin pääte.",
     "description": "Unknown or zero-valued quote",
     "_machine_translated": true,
-    "_source_hash": "3a30475366fb7002"
+    "_source_hash": "bd84c7f6e9173633"
   },
   "error.unsupported": {
     "message": "Tämä palveluntarjoaja tukee vain Yhdysvaltain osaketunnuksia. Kansainvälisten pörssien päätteet vaativat toisen datasopimuksen.",
@@ -114,16 +114,16 @@
     "_source_hash": "7d553dee0c6fe94a"
   },
   "error.offline": {
-    "message": "Finnhubiin ei saada yhteyttä. Näytetään tallennetut tiedot, jos niitä on saatavilla.",
+    "message": "Kurssipalveluun ei saada yhteyttä. Tallennetut tiedot näytetään, jos niitä on.",
     "description": "Offline or network failure",
     "_machine_translated": true,
-    "_source_hash": "536dacabe5ed1015"
+    "_source_hash": "6fe79608991e6dfd"
   },
   "error.unavailable": {
-    "message": "Finnhub ei ole käytettävissä. Tallennetut tiedot näytetään, jos niitä on saatavilla.",
+    "message": "Kurssipalvelu ei ole käytettävissä. Tallennetut tiedot näytetään, jos niitä on.",
     "description": "Sanitized provider error",
     "_machine_translated": true,
-    "_source_hash": "2dd30adcc5164ad4"
+    "_source_hash": "e10d9f0c7de280f1"
   },
   "error.busy": {
     "message": "Toinen Kage-ikkuna päivittää kursseja. Yritä hetken kuluttua uudelleen.",
@@ -138,10 +138,10 @@
     "_source_hash": "4cbfbb2e9b0adc41"
   },
   "error.invalid_key": {
-    "message": "Liitä Finnhub API -avain ja valitse sitten Testaa ja tallenna. Älä liitä URL-osoitetta.",
+    "message": "Liitä valitun palveluntarjoajan API-avain ja valitse sitten Testaa ja käytä. Älä liitä URL-osoitetta.",
     "description": "Malformed or missing API key",
     "_machine_translated": true,
-    "_source_hash": "b972e383a08a0ac1"
+    "_source_hash": "46f77ed69b2c2053"
   },
   "error.invalid_range": {
     "message": "Valitse aikaväliksi 1d, 1w tai 1m.",
@@ -150,10 +150,10 @@
     "_source_hash": "f4f4d83dc6129a6c"
   },
   "settings.description": {
-    "message": "Yhdysvaltain osakekurssit, seurantalista ja paikallinen kurssihistoria. Verkossa · Lähde: Finnhub. Tallennetut arvot voivat olla viiveellisiä.",
+    "message": "Stocklake-kurssit toimivat ilman avainta: ~15 min viive, 25 kutsua päivässä tai 200 ilmaisella avaimella. Finnhub tarjoaa reaaliaikaiset Yhdysvaltain kurssit ilmaisella avaimella.",
     "description": "Settings summary",
     "_machine_translated": true,
-    "_source_hash": "b91914b96330d6cb"
+    "_source_hash": "deea29d63a6f57a4"
   },
   "settings.connection": {
     "message": "Kurssipalvelu ja käyttöönotto",
@@ -162,22 +162,22 @@
     "_source_hash": "863fbc4ab994c2eb"
   },
   "setup.intro": {
-    "message": "Käytä omaa maksutonta Finnhub-avaintasi Yhdysvaltain osakekursseihin. Hanki avain alta, testaa se ja tallenna se yhdistääksesi.",
+    "message": "Finnhub vaatii ilmaisen avaimen reaaliaikaisiin Yhdysvaltain kursseihin, ja rajana on 60 kutsua minuutissa.",
     "description": "User-facing provider setup introduction",
     "_machine_translated": true,
-    "_source_hash": "0686f89d96f514a5"
+    "_source_hash": "41c015a47f8cb6a3"
   },
   "setup.terms": {
-    "message": "Finnhubin henkilökohtaiset paketit on tarkoitettu ehdot täyttävään henkilökohtaiseen käyttöön. Kaupallinen käyttö sekä tietojen tai niistä johdettujen tulosten jakaminen kolmansille osapuolille edellyttävät Finnhubin hyväksyntää. Tarkista palveluntarjoajan ehdot, myös ennen kuin lähetät kursseja etäagentille.",
+    "message": "Käytä tietoja omaan tutkimukseesi ja omiin työkaluihisi. Älä myy edelleen, levitä tai alilisensoi palveluntarjoajan tietoja tai käyttöoikeutta äläkä kierrä rajoituksia. Tarkista palveluntarjoajan ehdot ennen tulosten jakamista.",
     "description": "Material provider use restrictions",
     "_machine_translated": true,
-    "_source_hash": "9eb9716ed06ff746"
+    "_source_hash": "7fbb1c4e684b429f"
   },
   "setup.steps": {
-    "message": "1. Valitse Hanki ilmainen Finnhub-avain (noin minuutti) ja rekisteröidy Finnhubiin. 2. Kopioi API-avaimesi Finnhubin hallintapaneelista. 3. Liitä se alle ja valitse Testaa ja tallenna avain.",
+    "message": "Stocklake toimii heti ilman avainta. Valitse palveluntarjoaja, liitä halutessasi sen avain ja tallenna valintasi valitsemalla Testaa ja käytä.",
     "description": "Guided setup steps",
     "_machine_translated": true,
-    "_source_hash": "d850b03495911632"
+    "_source_hash": "d73223e639ab4ff7"
   },
   "setup.saved": {
     "message": "Tälle laitteelle on tallennettu avain. Jätä kenttä tyhjäksi testataksesi sitä tai liitä tilalle uusi avain. Tallennettuja avaimia ei koskaan näytetä täällä.",
@@ -189,13 +189,13 @@
     "message": "Hanki ilmainen Finnhub-avain (noin minuutti)",
     "description": "Open provider registration in system browser",
     "_machine_translated": true,
-    "_source_hash": "a0566f42e52da139"
+    "_source_hash": "8ee05fe11cb483c9"
   },
   "setup.key": {
-    "message": "Finnhub API -avain",
+    "message": "Palveluntarjoajan API-avain (valinnainen Stocklakelle)",
     "description": "Scratch field for secret",
     "_machine_translated": true,
-    "_source_hash": "2e7e94ee1be4a2cf"
+    "_source_hash": "3fb2a7de1e62b384"
   },
   "setup.key_hint": {
     "message": "Testaa ja tallenna avain -toiminto tallentaa avaimen laajennuksen yksityisiin tietoihin, kuten Spotify-tunnukset. Pelkkä kirjoittaminen tähän ei tallenna sitä tavallisiin asetuksiin. Tämän isäntäsovelluksen tekstikenttä näkyy kirjoittaessasi.",
@@ -204,10 +204,10 @@
     "_source_hash": "4c3122d9b4d5daad"
   },
   "setup.test": {
-    "message": "Testaa ja tallenna avain",
+    "message": "Testaa ja käytä palveluntarjoajaa",
     "description": "Probe quote endpoint and save only on success",
     "_machine_translated": true,
-    "_source_hash": "bc2be6a1a4fb4210"
+    "_source_hash": "d9e72fde7f42a5f5"
   },
   "setup.remove": {
     "message": "Poista tallennettu avain",
@@ -222,10 +222,10 @@
     "_source_hash": "59cb7317745316bb"
   },
   "setup.success": {
-    "message": "Finnhub-kurssitesti onnistui; avain tallennettu.",
+    "message": "Kurssitesti onnistui; palveluntarjoaja valittu ja mahdollinen avain tallennettu.",
     "description": "Successful guided setup; key is saved independently of watchlist settings",
     "_machine_translated": true,
-    "_source_hash": "76df0b334c35e1f8"
+    "_source_hash": "c4ae3a50e8f0c3e0"
   },
   "settings.watchlist_section": {
     "message": "Seurantalista ja päivitys",
@@ -240,10 +240,10 @@
     "_source_hash": "4fa141d565f4d3cb"
   },
   "settings.watchlist_hint": {
-    "message": "Enintään {max} Yhdysvaltain osaketunnusta välilyönneillä tai pilkuilla erotettuina. Tyhjä lista piilottaa widgetin.",
+    "message": "Enintään {max} symbolia välilyönneillä tai pilkuilla erotettuina. Stocklake hyväksyy kansainväliset symbolit, kuten SAP.DE; Finnhub tukee Yhdysvaltain tunnuksia. Paneeli vaatii avaimen ja käyttöön otetun näkyvyysasetuksen.",
     "description": "Watchlist validation; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "18fd9ff917b78911"
+    "_source_hash": "5b779260bb9346da"
   },
   "settings.show": {
     "message": "Näytä seurantalista kelluvassa ikkunassa",
@@ -258,10 +258,10 @@
     "_source_hash": "d5d486955acdd4c8"
   },
   "settings.refresh_hint": {
-    "message": "Vähintään {min} sekuntia; oletus {default}. Piilotetun ikkunan kyselyt keskeytetään nykyisissä Kage-isännissä. Tällä laitteella varataan enintään {budget} pyyntöä minuutissa; palveluntarjoajan rajoihin lasketaan myös muut sovelluksesi.",
+    "message": "Vähintään {min} sekuntia; oletus {default}. Stocklake-kurssit tallennetaan välimuistiin vähintään 10 minuutiksi ja historia päiväksi. Kyselyt keskeytyvät, kun ikkuna on piilotettu. Finnhub varaa paikallisesti enintään {budget} pyyntöä minuutissa.",
     "description": "Request budget and hidden behavior; preserve {min}, {default}, {budget}",
     "_machine_translated": true,
-    "_source_hash": "835954ceb7299192"
+    "_source_hash": "08eb708651c8ce9e"
   },
   "settings.refresh_error": {
     "message": "Päivitysvälin on oltava {min}–{max} sekuntia.",
@@ -270,28 +270,28 @@
     "_source_hash": "45f891673cb1e039"
   },
   "tool.quote": {
-    "message": "Hae Yhdysvaltain osakekursseja Finnhubista henkilökohtaiseen käyttöön. Palauttaa lähteen, viimeisimmän kaupan aikaleiman, välimuistin tuoreuden ja osaketunnuskohtaiset virheet. Edellyttää käyttäjän ilmaista avainta; älä jaa tietoja edelleen ilman palveluntarjoajan hyväksyntää.",
+    "message": "Hae osakekursseja valitulta palveluntarjoajalta omaan käyttöösi. Stocklake on ~15 min viiveellä eikä vaadi avainta; Finnhub tarjoaa avaimella reaaliaikaiset Yhdysvaltain kurssit. Palauttaa lähteen, aikaleimat, tuoreuden ja symbolikohtaiset virheet. Älä levitä tietoja edelleen.",
     "description": "Agent tool description",
     "_machine_translated": true,
-    "_source_hash": "9aa8d167f9bf2f94"
+    "_source_hash": "890f052fdf9e3bbd"
   },
   "tool.symbols": {
-    "message": "Enintään {max} Yhdysvaltain symbolia, esimerkiksi [\"AAPL\", \"MSFT\", \"BRK.B\"].",
+    "message": "Enintään {max} symbolia, esimerkiksi [\"AAPL\", \"MSFT\", \"SAP.DE\"]. Finnhub hyväksyy vain Yhdysvaltain tunnukset.",
     "description": "Quote tool parameter description; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "753c9fd4564636f3"
+    "_source_hash": "acbe6e78c6fddb5a"
   },
   "tool.history": {
-    "message": "Hae tällä laitteella paikallisesti tallennetut Finnhub-kurssit ajalta 1d, 1w tai 1m. Ei verkkopyyntöjä. Näytteet ovat puutteellisia ja harvoja, eivätkä ne ole historiallisia kynttilöitä. Tyhjä luettelo tarkoittaa, ettei tietoja ole kerätty.",
+    "message": "Hae todellinen Stocklake-päivähistoria jaksoille 1d, 1w tai 1m 30 kaupankäyntipäivän ikkunasta, joka on välimuistissa päivän. Maksaa yhden kutsun, jos tietoa ei ole välimuistissa. Finnhub palauttaa puutteelliset paikallisesti havaitut kurssit ilman historiapyyntöä.",
     "description": "Agent tool scope must not imply full historical coverage",
     "_machine_translated": true,
-    "_source_hash": "fcb4dd5f0bdcb792"
+    "_source_hash": "d5343316b6826efa"
   },
   "tool.symbol": {
-    "message": "Yhdysvaltalaisen osakkeen tunnus.",
+    "message": "Osakesymboli, Stocklakessa myös kansainväliset päätteet.",
     "description": "History symbol parameter description",
     "_machine_translated": true,
-    "_source_hash": "31f6b8214e118704"
+    "_source_hash": "bf96519c516306b2"
   },
   "tool.range": {
     "message": "1d, 1w tai 1m; oletus 1d.",
@@ -312,10 +312,10 @@
     "_source_hash": "2acdb85e54aa0ed1"
   },
   "error.timeout": {
-    "message": "Finnhub vastasi liian hitaasti. Yritä uudelleen muutaman sekunnin kuluttua; näytetään tallennetut tiedot, jos niitä on saatavilla.",
+    "message": "Kurssipalvelu ei vastannut ajoissa. Yritä uudelleen muutaman sekunnin kuluttua; tallennetut tiedot näytetään, jos niitä on.",
     "description": "Request timeout; short local pause, separate from offline backoff",
     "_machine_translated": true,
-    "_source_hash": "23491b785f430a04"
+    "_source_hash": "fb51f909049dd49a"
   },
   "settings.agent_tools": {
     "message": "Salli Osakkeet-työkalut agenteille",
@@ -324,10 +324,10 @@
     "_source_hash": "feaafa8e946fc0b2"
   },
   "settings.agent_tools_hint": {
-    "message": "Agenttityökalut voivat lähettää Finnhub-noteerauksia ja niistä johdettuja tuloksia agenttipalveluntarjoajallesi. Ota käyttöön vain, jos Finnhub-sopimuksesi sallii tämän jakamisen. Muutos tulee voimaan, kun käynnistät Kagen uudelleen.",
+    "message": "Agenttityökalut voivat lähettää kursseja ja tuloksia agenttisi palveluntarjoajalle. Ota käyttöön vain omaan käyttöön, kun palveluntarjoajan ehdot sallivat sen. Muutos tulee voimaan, kun käynnistät Kagen uudelleen.",
     "description": "Explain opt-in and external agent data flow",
     "_machine_translated": true,
-    "_source_hash": "85852257d902cb3e"
+    "_source_hash": "4b637e7840e5666b"
   },
   "settings.delete_quotes": {
     "message": "Poista tallennetut kurssit",
@@ -340,15 +340,57 @@
     "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
   },
   "widget.connection": {
-    "message": "Kurssit vaativat huomiota. Kirjoita stock ja paina Enter avataksesi Osakkeet-asetukset.",
+    "message": "Kurssit vaativat huomiota. Kirjoita stock ja avaa Stocks-asetukset painamalla Enter.",
     "description": "Compact widget hint for authentication or storage problems; keep stock as the launcher command",
     "_machine_translated": true,
-    "_source_hash": "28d7c64fff255e29"
+    "_source_hash": "8dcbef2b531a522b"
   },
   "tool.opt_in": {
-    "message": "Ota Osakkeet-asetuksissa käyttöön Salli Osakkeet-työkalut agenteille ennen tämän työkalun käyttämistä. Varmista, että Finnhub-sopimuksesi sallii tietojen jakamisen agenttisi palveluntarjoajan kanssa.",
+    "message": "Ota Stocks-asetuksista käyttöön Salli Stocks-työkalut agenteille ennen tämän työkalun käyttöä. Tarkista, että palveluntarjoajan ehdot sallivat käyttösi agenttisi palveluntarjoajan kanssa.",
     "description": "Actionable agent tool opt-in error",
     "_machine_translated": true,
-    "_source_hash": "a00e5cc3750744f0"
+    "_source_hash": "994b57bbe7f233ae"
+  },
+  "settings.provider": {
+    "message": "Kurssipalvelu",
+    "description": "Provider selection; Test/use persists the choice",
+    "_machine_translated": true,
+    "_source_hash": "b9f483c14cb7b4dc"
+  },
+  "setup.stocklake": {
+    "message": "Stocklake toimii ilman avainta: viive noin 15 min, 25 kutsua päivässä. Valinnainen ilmainen avain nostaa rajan 200:aan.",
+    "description": "Keyless default provider description",
+    "_machine_translated": true,
+    "_source_hash": "930e88dd695cf87e"
+  },
+  "setup.stocklake_key": {
+    "message": "Hanki ilmainen Stocklake-avain",
+    "description": "Open Stocklake sign-in; emailed code; free 200 calls/day",
+    "_machine_translated": true,
+    "_source_hash": "b21d6e57b9696558"
+  },
+  "quote.stocklake": {
+    "message": "Viive noin 15 min · Stocklake",
+    "description": "Visible delayed provider attribution; paired with a link to stocklake.dev",
+    "_machine_translated": true,
+    "_source_hash": "081a46f162590a46"
+  },
+  "quote.history": {
+    "message": "Stocklaken päivittäiset päätöskurssit noin 30 kaupankäyntipäivältä. Historia tallennetaan välimuistiin päiväksi; jos tietoa ei ole välimuistissa, se kuluttaa yhden kutsun. Finnhubin minikaaviot käyttävät paikallisia näytteitä.",
+    "description": "History accessible label and settings explanation; real daily data for Stocklake",
+    "_machine_translated": true,
+    "_source_hash": "2efd3bfb80984cd7"
+  },
+  "error.daily_limit": {
+    "message": "Päivän ilmaiset kurssihaut on käytetty. Nollautuu {time}. Lisää ilmainen Stocklake-avain, niin saat 200 päivässä.",
+    "description": "Guest exhaustion message; preserve {time} for local reset time",
+    "_machine_translated": true,
+    "_source_hash": "22d1ca53ad1f23f9"
+  },
+  "error.key_daily_limit": {
+    "message": "Päivän Stocklake-kutsut on käytetty. Nollautuu {time}. Tallennetut tiedot näytetään, jos niitä on saatavilla.",
+    "description": "Authenticated daily exhaustion; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "7c2f3494ec238e7e"
   }
 }

@@ -17,34 +17,34 @@ export class StockError extends Error {
   }
 }
 
-export function normalizeSymbol(value) {
+export function normalizeSymbol(value, provider = 'stocklake') {
   if (typeof value !== 'string') throw new StockError('invalid_symbols');
   const symbol = value.trim().replace(/^\$/, '').toUpperCase().replace(/\.US$/, '');
-  if (FOREIGN_SUFFIX.test(symbol)) throw new StockError('unsupported');
-  if (!/^[A-Z][A-Z0-9]{0,11}(?:[.-][A-Z0-9]{1,4})?$/.test(symbol)) {
+  if (provider === 'finnhub' && FOREIGN_SUFFIX.test(symbol)) throw new StockError('unsupported');
+  if (!/^(?:[A-Z][A-Z0-9]{0,11}(?:[.-][A-Z0-9]{1,4}){0,2}|[0-9]{1,8}\.[A-Z]{1,4})$/.test(symbol)) {
     throw new StockError('invalid_symbols');
   }
   return symbol;
 }
 
-export function parseSymbols(input, { allowEmpty = false } = {}) {
+export function parseSymbols(input, { allowEmpty = false, provider = 'stocklake' } = {}) {
   const parts = Array.isArray(input)
     ? input
     : typeof input === 'string' ? input.trim().split(/[\s,]+/).filter(Boolean) : [];
   if (!parts.length && !allowEmpty) throw new StockError('invalid_symbols');
-  const symbols = [...new Set(parts.map(normalizeSymbol))];
+  const symbols = [...new Set(parts.map((part) => normalizeSymbol(part, provider)))];
   if (symbols.length > MAX_SYMBOLS) throw new StockError('too_many');
   return symbols;
 }
 
-export function symbolEntries(input) {
+export function symbolEntries(input, provider = 'stocklake') {
   const parts = Array.isArray(input) ? input
     : typeof input === 'string' ? input.trim().split(/[\s,]+/).filter(Boolean) : [];
   if (!parts.length) throw new StockError('invalid_symbols');
   const entries = new Map();
   for (const part of parts) {
     let entry;
-    try { entry = { symbol: normalizeSymbol(part) }; }
+    try { entry = { symbol: normalizeSymbol(part, provider) }; }
     catch (error) {
       entry = { symbol: String(part ?? '').trim().replace(/^\$+/, '').toUpperCase(), error: error.code };
     }

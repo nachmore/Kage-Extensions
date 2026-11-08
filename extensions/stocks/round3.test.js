@@ -24,6 +24,7 @@ const response = (status = 200) => ({
 function host({ seed = {}, key = KEY, latency = 0, language = 'en', config = {}, hook, store } = {}) {
   store ||= new Map(Object.entries(seed).map(([name, value]) => [name, typeof value === 'string' ? value : JSON.stringify(value)]));
   if (key && !store.has('credentials')) store.set('credentials', JSON.stringify({ api_key: key }));
+  if (!key && !store.has('credentials')) store.set('credentials', JSON.stringify({ provider: 'finnhub' }));
   const handler = async (command, args) => {
     if (latency) await new Promise((resolve) => setTimeout(resolve, latency));
     const override = await hook?.(command, args, store);
@@ -225,17 +226,19 @@ describe('round 3: self healing storage and safe key changes', () => {
       if (cmd === 'load_extension_data' && args.key === 'request_lock') throw new Error('budget unavailable');
     } });
     await h.client[action]('replacement-fixture-key');
-    if (action === 'removeKey') expect(h.store.has('credentials')).toBe(false);
+    if (action === 'removeKey') expect(await h.client.key()).toBeNull();
     else expect(await h.client.key()).toBe('replacement-fixture-key');
     const calls = h.context.invoke.mock.calls;
-    expect(calls[0][0]).toBe(action === 'removeKey' ? 'delete_extension_data' : 'save_extension_data');
-    expect(calls[0][1].key).toBe('credentials');
+    const saved = calls.findIndex(([cmd, args]) => cmd === 'save_extension_data' && args.key === 'credentials');
+    const cleanup = calls.findIndex(([cmd, args]) => cmd === 'load_extension_data' && args.key === 'request_lock');
+    expect(saved).toBeGreaterThanOrEqual(0);
+    expect(cleanup).toBeGreaterThan(saved);
   });
 
   it('removes the key despite a busy lease', async () => {
     const h = host({ seed: { request_lock: { owner: 'other', expiresAt: NOW + 10_000 } } });
     await drive(h.client.removeKey());
-    expect(h.store.has('credentials')).toBe(false);
+    expect(await h.client.key()).toBeNull();
   });
 
   it.each(['rate_limit', 'offline'])('key testing respects a non-auth %s pause', async (reason) => {

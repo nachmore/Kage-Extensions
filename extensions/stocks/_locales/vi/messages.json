@@ -12,10 +12,10 @@
     "_source_hash": "d6d4700604b64b88"
   },
   "manifest.description": {
-    "message": "Trực tuyến · Giá cổ phiếu Mỹ và danh sách theo dõi từ Finnhub bằng khóa miễn phí của bạn. Dữ liệu bị trễ khi dùng bộ nhớ đệm; mỗi báo giá đều hiển thị thời điểm cập nhật.",
+    "message": "Trực tuyến · Không cần khóa: báo giá Stocklake trễ khoảng 15 phút, miễn phí 25 lượt mỗi ngày; khóa miễn phí nâng lên 200. Finnhub là tùy chọn cho báo giá Mỹ theo thời gian thực.",
     "description": "Store listing; Online and Data delayed communicate network dependency and freshness",
     "_machine_translated": true,
-    "_source_hash": "6feb0a4240dfb80e"
+    "_source_hash": "44f1eb50266b55a3"
   },
   "result.loading": {
     "message": "Đang tra cứu cổ phiếu…",
@@ -78,16 +78,16 @@
     "_source_hash": "8adbf75fdf5bc595"
   },
   "error.auth": {
-    "message": "Finnhub đã từ chối khóa. Hãy mở cài đặt Cổ phiếu để thử một khóa thay thế.",
+    "message": "Nhà cung cấp đã từ chối khóa. Mở cài đặt Stocks để kiểm tra khóa thay thế.",
     "description": "Authentication error; never include the raw provider response",
     "_machine_translated": true,
-    "_source_hash": "eca735a4f5fb0bce"
+    "_source_hash": "10cd02016931ccf6"
   },
   "error.unknown": {
-    "message": "Không có báo giá cho mã này. Hãy kiểm tra mã cổ phiếu Mỹ, bao gồm cả hậu tố loại cổ phần (nếu có).",
+    "message": "Không có báo giá cho mã này. Hãy kiểm tra mã chứng khoán và hậu tố sàn giao dịch.",
     "description": "Unknown or zero-valued quote",
     "_machine_translated": true,
-    "_source_hash": "3a30475366fb7002"
+    "_source_hash": "bd84c7f6e9173633"
   },
   "error.unsupported": {
     "message": "Nhà cung cấp này chỉ hỗ trợ mã cổ phiếu Mỹ. Hậu tố sàn giao dịch quốc tế cần gói dữ liệu khác.",
@@ -114,16 +114,16 @@
     "_source_hash": "7d553dee0c6fe94a"
   },
   "error.offline": {
-    "message": "Không thể kết nối với Finnhub. Đang hiển thị dữ liệu đã lưu nếu có.",
+    "message": "Không thể kết nối với nhà cung cấp báo giá. Đang hiển thị dữ liệu đã lưu nếu có.",
     "description": "Offline or network failure",
     "_machine_translated": true,
-    "_source_hash": "536dacabe5ed1015"
+    "_source_hash": "6fe79608991e6dfd"
   },
   "error.unavailable": {
-    "message": "Finnhub hiện không khả dụng. Đang hiển thị dữ liệu đã lưu nếu có.",
+    "message": "Nhà cung cấp báo giá hiện không khả dụng. Đang hiển thị dữ liệu đã lưu nếu có.",
     "description": "Sanitized provider error",
     "_machine_translated": true,
-    "_source_hash": "2dd30adcc5164ad4"
+    "_source_hash": "e10d9f0c7de280f1"
   },
   "error.busy": {
     "message": "Một cửa sổ Kage khác đang làm mới báo giá. Vui lòng thử lại sau giây lát.",
@@ -138,10 +138,10 @@
     "_source_hash": "4cbfbb2e9b0adc41"
   },
   "error.invalid_key": {
-    "message": "Dán khóa API Finnhub, sau đó chọn Kiểm tra và lưu. Không dán URL.",
+    "message": "Dán khóa API của nhà cung cấp đã chọn, rồi chọn Kiểm tra và dùng. Không dán URL.",
     "description": "Malformed or missing API key",
     "_machine_translated": true,
-    "_source_hash": "b972e383a08a0ac1"
+    "_source_hash": "46f77ed69b2c2053"
   },
   "error.invalid_range": {
     "message": "Chọn khoảng thời gian 1d, 1w hoặc 1m.",
@@ -150,10 +150,10 @@
     "_source_hash": "f4f4d83dc6129a6c"
   },
   "settings.description": {
-    "message": "Báo giá cổ phiếu Mỹ, danh sách theo dõi và lịch sử báo giá cục bộ. Trực tuyến · Nguồn: Finnhub. Giá trị đã lưu có thể bị trễ.",
+    "message": "Báo giá Stocklake hoạt động không cần khóa: trễ khoảng 15 phút, 25 lượt gọi mỗi ngày, hoặc 200 lượt với khóa miễn phí. Finnhub cung cấp báo giá Mỹ theo thời gian thực với khóa miễn phí.",
     "description": "Settings summary",
     "_machine_translated": true,
-    "_source_hash": "b91914b96330d6cb"
+    "_source_hash": "deea29d63a6f57a4"
   },
   "settings.connection": {
     "message": "Nhà cung cấp báo giá và thiết lập",
@@ -162,22 +162,22 @@
     "_source_hash": "863fbc4ab994c2eb"
   },
   "setup.intro": {
-    "message": "Hãy dùng khóa Finnhub miễn phí của riêng bạn để xem giá cổ phiếu Mỹ. Lấy khóa bên dưới, sau đó kiểm tra và lưu để kết nối.",
+    "message": "Finnhub cần khóa miễn phí để lấy báo giá Mỹ theo thời gian thực, giới hạn 60 lượt gọi mỗi phút.",
     "description": "User-facing provider setup introduction",
     "_machine_translated": true,
-    "_source_hash": "0686f89d96f514a5"
+    "_source_hash": "41c015a47f8cb6a3"
   },
   "setup.terms": {
-    "message": "Các gói cá nhân của Finnhub dành cho mục đích sử dụng cá nhân hợp lệ. Việc sử dụng cho doanh nghiệp và chia sẻ dữ liệu hoặc kết quả phái sinh với bên thứ ba cần được Finnhub chấp thuận. Hãy xem điều khoản của nhà cung cấp, kể cả trước khi gửi báo giá đến một agent từ xa.",
+    "message": "Chỉ dùng dữ liệu cho nghiên cứu và công cụ của riêng bạn. Không bán lại, phân phối lại hoặc cấp phép lại dữ liệu hay quyền truy cập của nhà cung cấp, và không lách giới hạn. Hãy xem điều khoản của nhà cung cấp trước khi chia sẻ kết quả.",
     "description": "Material provider use restrictions",
     "_machine_translated": true,
-    "_source_hash": "9eb9716ed06ff746"
+    "_source_hash": "7fbb1c4e684b429f"
   },
   "setup.steps": {
-    "message": "1. Mở Lấy khóa Finnhub miễn phí (khoảng một phút) và đăng ký tại Finnhub. 2. Sao chép API key từ bảng điều khiển của Finnhub. 3. Dán vào bên dưới và chọn Kiểm tra và lưu.",
+    "message": "Stocklake hoạt động ngay mà không cần khóa. Chọn nhà cung cấp, dán khóa nếu muốn, rồi chọn Kiểm tra và dùng để lưu lựa chọn.",
     "description": "Guided setup steps",
     "_machine_translated": true,
-    "_source_hash": "d850b03495911632"
+    "_source_hash": "d73223e639ab4ff7"
   },
   "setup.saved": {
     "message": "Đã lưu một khóa trên thiết bị này. Để trống trường để kiểm tra khóa đó, hoặc dán khóa thay thế. Khóa đã lưu không bao giờ được hiển thị ở đây.",
@@ -189,13 +189,13 @@
     "message": "Lấy khóa Finnhub miễn phí (khoảng một phút)",
     "description": "Open provider registration in system browser",
     "_machine_translated": true,
-    "_source_hash": "a0566f42e52da139"
+    "_source_hash": "8ee05fe11cb483c9"
   },
   "setup.key": {
-    "message": "API key Finnhub",
+    "message": "Khóa API của nhà cung cấp (không bắt buộc với Stocklake)",
     "description": "Scratch field for secret",
     "_machine_translated": true,
-    "_source_hash": "2e7e94ee1be4a2cf"
+    "_source_hash": "3fb2a7de1e62b384"
   },
   "setup.key_hint": {
     "message": "Kiểm tra và lưu sẽ lưu khóa vào dữ liệu riêng tư của tiện ích mở rộng, giống như thông tin đăng nhập Spotify. Việc nhập khóa ở đây không lưu nó cùng các cài đặt thông thường. Trường văn bản của máy chủ này hiển thị nội dung khi bạn nhập.",
@@ -204,10 +204,10 @@
     "_source_hash": "4c3122d9b4d5daad"
   },
   "setup.test": {
-    "message": "Kiểm tra và lưu khóa",
+    "message": "Kiểm tra và dùng nhà cung cấp",
     "description": "Probe quote endpoint and save only on success",
     "_machine_translated": true,
-    "_source_hash": "bc2be6a1a4fb4210"
+    "_source_hash": "d9e72fde7f42a5f5"
   },
   "setup.remove": {
     "message": "Xóa khóa đã lưu",
@@ -222,10 +222,10 @@
     "_source_hash": "59cb7317745316bb"
   },
   "setup.success": {
-    "message": "Kiểm tra báo giá Finnhub thành công; đã lưu khóa.",
+    "message": "Kiểm tra báo giá thành công; đã chọn nhà cung cấp và lưu khóa đã nhập (nếu có).",
     "description": "Successful guided setup; key is saved independently of watchlist settings",
     "_machine_translated": true,
-    "_source_hash": "76df0b334c35e1f8"
+    "_source_hash": "c4ae3a50e8f0c3e0"
   },
   "settings.watchlist_section": {
     "message": "Danh sách theo dõi và làm mới",
@@ -240,10 +240,10 @@
     "_source_hash": "4fa141d565f4d3cb"
   },
   "settings.watchlist_hint": {
-    "message": "Tối đa {max} mã cổ phiếu Mỹ, phân tách bằng dấu cách hoặc dấu phẩy. Danh sách trống sẽ ẩn tiện ích.",
+    "message": "Tối đa {max} mã, phân tách bằng dấu cách hoặc dấu phẩy. Stocklake chấp nhận mã quốc tế như SAP.DE; Finnhub hỗ trợ mã chứng khoán Mỹ. Bảng điều khiển yêu cầu có khóa và bật cài đặt hiển thị.",
     "description": "Watchlist validation; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "18fd9ff917b78911"
+    "_source_hash": "5b779260bb9346da"
   },
   "settings.show": {
     "message": "Hiển thị danh sách theo dõi trong cửa sổ nổi",
@@ -258,10 +258,10 @@
     "_source_hash": "d5d486955acdd4c8"
   },
   "settings.refresh_hint": {
-    "message": "Tối thiểu {min} giây; mặc định {default}. Trên các máy chủ Kage hiện tại, việc cập nhật sẽ tạm dừng khi cửa sổ bị ẩn. Thiết bị này dành tối đa {budget} yêu cầu mỗi phút; giới hạn của nhà cung cấp cũng tính cả các ứng dụng khác của bạn.",
+    "message": "Tối thiểu {min} giây; mặc định {default}. Báo giá Stocklake được lưu đệm ít nhất 10 phút; lịch sử được lưu đệm một ngày. Việc cập nhật tạm dừng khi cửa sổ bị ẩn. Finnhub dành tối đa {budget} yêu cầu mỗi phút trên máy.",
     "description": "Request budget and hidden behavior; preserve {min}, {default}, {budget}",
     "_machine_translated": true,
-    "_source_hash": "835954ceb7299192"
+    "_source_hash": "08eb708651c8ce9e"
   },
   "settings.refresh_error": {
     "message": "Khoảng thời gian làm mới phải từ {min} đến {max} giây.",
@@ -270,28 +270,28 @@
     "_source_hash": "45f891673cb1e039"
   },
   "tool.quote": {
-    "message": "Lấy báo giá cổ phiếu Mỹ từ Finnhub để sử dụng cá nhân. Trả về nguồn, dấu thời gian giao dịch gần nhất, độ mới của bộ nhớ đệm và lỗi theo từng mã. Yêu cầu khóa miễn phí của người dùng; không phân phối lại khi chưa được nhà cung cấp chấp thuận.",
+    "message": "Lấy báo giá cổ phiếu từ nhà cung cấp đã chọn để bạn sử dụng riêng. Stocklake trễ khoảng 15 phút và không cần khóa; Finnhub cung cấp báo giá Mỹ theo thời gian thực khi có khóa. Trả về nguồn, dấu thời gian, độ mới và lỗi theo từng mã. Không phân phối lại dữ liệu.",
     "description": "Agent tool description",
     "_machine_translated": true,
-    "_source_hash": "9aa8d167f9bf2f94"
+    "_source_hash": "890f052fdf9e3bbd"
   },
   "tool.symbols": {
-    "message": "Tối đa {max} mã cổ phiếu Mỹ, ví dụ [\"AAPL\", \"MSFT\", \"BRK.B\"].",
+    "message": "Tối đa {max} mã, ví dụ [\"AAPL\", \"MSFT\", \"SAP.DE\"]. Finnhub chỉ chấp nhận mã chứng khoán Mỹ.",
     "description": "Quote tool parameter description; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "753c9fd4564636f3"
+    "_source_hash": "acbe6e78c6fddb5a"
   },
   "tool.history": {
-    "message": "Lấy các báo giá Finnhub được lấy mẫu cục bộ, ghi nhận trên thiết bị này trong 1d, 1w hoặc 1m. Không gửi yêu cầu mạng. Đây là các mẫu thưa thớt, không đầy đủ, không phải nến lịch sử; danh sách trống nghĩa là chưa thu thập được dữ liệu nào.",
+    "message": "Lấy lịch sử theo ngày thực tế từ Stocklake cho 1d, 1w hoặc 1m, trong khoảng 30 ngày giao dịch được lưu đệm một ngày. Tốn một lượt gọi khi không có trong bộ đệm. Finnhub trả về các báo giá quan sát cục bộ chưa đầy đủ, không gửi yêu cầu lịch sử.",
     "description": "Agent tool scope must not imply full historical coverage",
     "_machine_translated": true,
-    "_source_hash": "fcb4dd5f0bdcb792"
+    "_source_hash": "d5343316b6826efa"
   },
   "tool.symbol": {
-    "message": "Mã cổ phiếu Mỹ.",
+    "message": "Mã cổ phiếu, bao gồm cả hậu tố quốc tế đối với Stocklake.",
     "description": "History symbol parameter description",
     "_machine_translated": true,
-    "_source_hash": "31f6b8214e118704"
+    "_source_hash": "bf96519c516306b2"
   },
   "tool.range": {
     "message": "1d, 1w hoặc 1m; mặc định là 1d.",
@@ -312,10 +312,10 @@
     "_source_hash": "2acdb85e54aa0ed1"
   },
   "error.timeout": {
-    "message": "Finnhub phản hồi quá lâu. Hãy thử lại sau vài giây; đang hiển thị dữ liệu đã lưu nếu có.",
+    "message": "Nhà cung cấp báo giá phản hồi quá lâu. Hãy thử lại sau vài giây; đang hiển thị dữ liệu đã lưu nếu có.",
     "description": "Request timeout; short local pause, separate from offline backoff",
     "_machine_translated": true,
-    "_source_hash": "23491b785f430a04"
+    "_source_hash": "fb51f909049dd49a"
   },
   "settings.agent_tools": {
     "message": "Cho phép tác nhân dùng công cụ Cổ phiếu",
@@ -324,10 +324,10 @@
     "_source_hash": "feaafa8e946fc0b2"
   },
   "settings.agent_tools_hint": {
-    "message": "Công cụ của agent có thể gửi báo giá Finnhub và các kết quả được tính từ đó đến nhà cung cấp agent của bạn. Chỉ bật khi thỏa thuận Finnhub của bạn cho phép chia sẻ như vậy. Thay đổi có hiệu lực sau khi bạn khởi động lại Kage.",
+    "message": "Công cụ cho tác tử có thể gửi báo giá và kết quả đến nhà cung cấp tác tử của bạn. Chỉ bật để sử dụng riêng khi điều khoản của nhà cung cấp cho phép. Có hiệu lực sau khi bạn khởi động lại Kage.",
     "description": "Explain opt-in and external agent data flow",
     "_machine_translated": true,
-    "_source_hash": "85852257d902cb3e"
+    "_source_hash": "4b637e7840e5666b"
   },
   "settings.delete_quotes": {
     "message": "Xóa giá đã lưu",
@@ -340,15 +340,57 @@
     "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
   },
   "widget.connection": {
-    "message": "Báo giá cần được xử lý. Nhập stock rồi nhấn Enter để mở cài đặt Cổ phiếu.",
+    "message": "Báo giá cần được xử lý. Gõ stock và nhấn Enter để mở cài đặt Stocks.",
     "description": "Compact widget hint for authentication or storage problems; keep stock as the launcher command",
     "_machine_translated": true,
-    "_source_hash": "28d7c64fff255e29"
+    "_source_hash": "8dcbef2b531a522b"
   },
   "tool.opt_in": {
-    "message": "Hãy bật Cho phép tác nhân dùng công cụ Cổ phiếu trong cài đặt Cổ phiếu trước khi dùng công cụ này. Kiểm tra xem thỏa thuận Finnhub của bạn có cho phép chia sẻ dữ liệu với nhà cung cấp tác nhân hay không.",
+    "message": "Bật Cho phép tác tử dùng công cụ Stocks trong cài đặt Stocks trước khi dùng công cụ này. Hãy kiểm tra xem điều khoản của nhà cung cấp có cho phép bạn sử dụng với nhà cung cấp tác tử của mình không.",
     "description": "Actionable agent tool opt-in error",
     "_machine_translated": true,
-    "_source_hash": "a00e5cc3750744f0"
+    "_source_hash": "994b57bbe7f233ae"
+  },
+  "settings.provider": {
+    "message": "Nhà cung cấp báo giá",
+    "description": "Provider selection; Test/use persists the choice",
+    "_machine_translated": true,
+    "_source_hash": "b9f483c14cb7b4dc"
+  },
+  "setup.stocklake": {
+    "message": "Stocklake hoạt động mà không cần khóa: trễ khoảng 15 phút, 25 lượt gọi mỗi ngày; khóa miễn phí tùy chọn sẽ nâng mức này lên 200.",
+    "description": "Keyless default provider description",
+    "_machine_translated": true,
+    "_source_hash": "930e88dd695cf87e"
+  },
+  "setup.stocklake_key": {
+    "message": "Nhận khóa Stocklake miễn phí",
+    "description": "Open Stocklake sign-in; emailed code; free 200 calls/day",
+    "_machine_translated": true,
+    "_source_hash": "b21d6e57b9696558"
+  },
+  "quote.stocklake": {
+    "message": "Trễ khoảng 15 phút · Stocklake",
+    "description": "Visible delayed provider attribution; paired with a link to stocklake.dev",
+    "_machine_translated": true,
+    "_source_hash": "081a46f162590a46"
+  },
+  "quote.history": {
+    "message": "Giá đóng cửa hằng ngày của Stocklake trong khoảng 30 ngày giao dịch. Lịch sử được lưu vào bộ nhớ đệm trong một ngày; nếu không có trong bộ nhớ đệm, sẽ dùng một lượt gọi. Biểu đồ mini của Finnhub dùng dữ liệu mẫu cục bộ.",
+    "description": "History accessible label and settings explanation; real daily data for Stocklake",
+    "_machine_translated": true,
+    "_source_hash": "2efd3bfb80984cd7"
+  },
+  "error.daily_limit": {
+    "message": "Đã hết lượt báo giá miễn phí trong ngày. Đặt lại lúc {time}. Thêm khóa Stocklake miễn phí để có 200 lượt mỗi ngày.",
+    "description": "Guest exhaustion message; preserve {time} for local reset time",
+    "_machine_translated": true,
+    "_source_hash": "22d1ca53ad1f23f9"
+  },
+  "error.key_daily_limit": {
+    "message": "Đã hết lượt gọi Stocklake trong ngày. Đặt lại lúc {time}. Đang hiển thị dữ liệu đã lưu nếu có.",
+    "description": "Authenticated daily exhaustion; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "7c2f3494ec238e7e"
   }
 }

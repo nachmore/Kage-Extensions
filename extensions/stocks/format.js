@@ -48,25 +48,27 @@ export function timestampText(value, { locale, invariant = false } = {}) {
 
 export function quoteDescription(quote, t, locale) {
   const parts = [
-    'Finnhub · USD',
+    quote.source === 'Stocklake' ? `${t('quote.stocklake')}${quote.currency ? ` · ${quote.currency}` : ''}` : 'Finnhub · USD',
     t('quote.as_of', { time: timestampText(quote.timestamp, { locale }) }),
   ];
   if (quote.timestamp * 1000 < Date.now() - 15 * 60_000) parts.push(t('quote.delayed'));
   if (quote.cached) parts.push(t('quote.cached', { time: timestampText(quote.fetchedAt / 1000, { locale }) }));
-  if (quote.reason) parts.push(errorText(quote.reason, t));
-  if (quote.retryAt) parts.push(t('quote.retry', { time: timestampText(quote.retryAt / 1000, { locale }) }));
+  if (quote.reason) parts.push(errorText(quote.reason, t, { retryAt: quote.retryAt, locale }));
+  if (quote.retryAt && !['daily_limit', 'key_daily_limit'].includes(quote.reason)) parts.push(t('quote.retry', { time: timestampText(quote.retryAt / 1000, { locale }) }));
   return parts.join(' · ');
 }
 
 // i18n-keys: error.*
-export function errorText(code, t) {
+export function errorText(code, t, { retryAt, locale } = {}) {
   if (code === 'setup') return `${t('setup.free_key')}. ${t('error.setup')}`;
   const known = new Set([
     'setup', 'auth', 'unknown', 'unsupported', 'invalid_symbols', 'too_many',
     'rate_limit', 'offline', 'unavailable', 'busy', 'storage',
-    'invalid_key', 'invalid_range', 'timeout',
+    'invalid_key', 'invalid_range', 'timeout', 'daily_limit', 'key_daily_limit',
   ]);
-  return t(`error.${known.has(code) ? code : 'unavailable'}`, { max: MAX_SYMBOLS });
+  return t(`error.${known.has(code) ? code : 'unavailable'}`, {
+    max: MAX_SYMBOLS, time: timestampText(retryAt / 1000, { locale }),
+  });
 }
 
 export function sparkline(samples, label) {

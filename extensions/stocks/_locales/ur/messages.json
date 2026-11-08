@@ -12,10 +12,10 @@
     "_source_hash": "d6d4700604b64b88"
   },
   "manifest.description": {
-    "message": "آن لائن · آپ کی مفت key کے ساتھ Finnhub سے امریکی قیمتیں اور واچ لسٹ۔ محفوظ شدہ ہونے پر ڈیٹا میں تاخیر ہوتی ہے؛ ہر قیمت کے ساتھ اس کا وقت دکھایا جاتا ہے۔",
+    "message": "آن لائن · کسی کلید کی ضرورت نہیں: Stocklake کی قیمتیں تقریباً 15 منٹ تاخیر سے، روزانہ 25 مفت؛ مفت کلید سے یہ حد 200 ہو جاتی ہے۔ امریکی قیمتیں براہِ راست دیکھنے کے لیے Finnhub اختیاری ہے۔",
     "description": "Store listing; Online and Data delayed communicate network dependency and freshness",
     "_machine_translated": true,
-    "_source_hash": "6feb0a4240dfb80e"
+    "_source_hash": "44f1eb50266b55a3"
   },
   "result.loading": {
     "message": "اسٹاکس تلاش کیے جا رہے ہیں…",
@@ -78,16 +78,16 @@
     "_source_hash": "8adbf75fdf5bc595"
   },
   "error.auth": {
-    "message": "Finnhub نے کلید مسترد کر دی۔ متبادل کلید آزمانے کے لیے Stocks کی ترتیبات کھولیں۔",
+    "message": "فراہم کنندہ نے کلید مسترد کر دی۔ متبادل کلید جانچنے کے لیے Stocks کی ترتیبات کھولیں۔",
     "description": "Authentication error; never include the raw provider response",
     "_machine_translated": true,
-    "_source_hash": "eca735a4f5fb0bce"
+    "_source_hash": "10cd02016931ccf6"
   },
   "error.unknown": {
-    "message": "اس علامت کی کوئی قیمت نہیں ملی۔ امریکی ٹکر چیک کریں، بشمول شیئر کلاس کا لاحقہ اگر کوئی ہو۔",
+    "message": "اس علامت کی کوئی قیمت دستیاب نہیں۔ ٹکر اور ایکسچینج لاحقہ چیک کریں۔",
     "description": "Unknown or zero-valued quote",
     "_machine_translated": true,
-    "_source_hash": "3a30475366fb7002"
+    "_source_hash": "bd84c7f6e9173633"
   },
   "error.unsupported": {
     "message": "یہ فراہم کنندہ صرف امریکی ٹکرز کو سپورٹ کرتا ہے۔ بین الاقوامی ایکسچینج لاحقوں کے لیے مختلف ڈیٹا پلان درکار ہے۔",
@@ -114,16 +114,16 @@
     "_source_hash": "7d553dee0c6fe94a"
   },
   "error.offline": {
-    "message": "Finnhub تک رسائی نہیں ہو سکی۔ دستیاب ہونے پر محفوظ کردہ ڈیٹا دکھایا جا رہا ہے۔",
+    "message": "قیمت فراہم کنندہ تک رسائی نہیں ہو سکی۔ دستیاب ہونے پر محفوظ کردہ ڈیٹا دکھایا جا رہا ہے۔",
     "description": "Offline or network failure",
     "_machine_translated": true,
-    "_source_hash": "536dacabe5ed1015"
+    "_source_hash": "6fe79608991e6dfd"
   },
   "error.unavailable": {
-    "message": "Finnhub دستیاب نہیں ہے۔ دستیاب ہونے پر محفوظ شدہ ڈیٹا دکھایا جا رہا ہے۔",
+    "message": "قیمت فراہم کنندہ دستیاب نہیں ہے۔ دستیاب ہونے پر محفوظ کردہ ڈیٹا دکھایا جا رہا ہے۔",
     "description": "Sanitized provider error",
     "_machine_translated": true,
-    "_source_hash": "2dd30adcc5164ad4"
+    "_source_hash": "e10d9f0c7de280f1"
   },
   "error.busy": {
     "message": "Kage کی ایک اور ونڈو قیمتیں تازہ کر رہی ہے۔ تھوڑی دیر بعد دوبارہ کوشش کریں۔",
@@ -138,10 +138,10 @@
     "_source_hash": "4cbfbb2e9b0adc41"
   },
   "error.invalid_key": {
-    "message": "Finnhub کی API key پیسٹ کریں، پھر ٹیسٹ اور محفوظ کریں۔ URL پیسٹ نہ کریں۔",
+    "message": "منتخب فراہم کنندہ کی API کلید پیسٹ کریں، پھر جانچیں اور استعمال کریں دبائیں۔ URL پیسٹ نہ کریں۔",
     "description": "Malformed or missing API key",
     "_machine_translated": true,
-    "_source_hash": "b972e383a08a0ac1"
+    "_source_hash": "46f77ed69b2c2053"
   },
   "error.invalid_range": {
     "message": "1d، 1w یا 1m میں سے کوئی رینج منتخب کریں۔",
@@ -150,10 +150,10 @@
     "_source_hash": "f4f4d83dc6129a6c"
   },
   "settings.description": {
-    "message": "امریکی اسٹاک کی قیمتیں، واچ لسٹ، اور مقامی قیمتوں کی تاریخ۔ آن لائن · ماخذ: Finnhub۔ محفوظ کردہ اقدار میں تاخیر ہو سکتی ہے۔",
+    "message": "Stocklake کی قیمتیں بغیر کلید کے کام کرتی ہیں: تقریباً 15 منٹ تاخیر سے، روزانہ 25 کالز، یا مفت کلید کے ساتھ 200۔ Finnhub مفت کلید کے ساتھ امریکی قیمتیں براہِ راست فراہم کرتا ہے۔",
     "description": "Settings summary",
     "_machine_translated": true,
-    "_source_hash": "b91914b96330d6cb"
+    "_source_hash": "deea29d63a6f57a4"
   },
   "settings.connection": {
     "message": "قیمت فراہم کنندہ اور سیٹ اپ",
@@ -162,22 +162,22 @@
     "_source_hash": "863fbc4ab994c2eb"
   },
   "setup.intro": {
-    "message": "امریکی اسٹاک کوٹس کے لیے اپنی مفت Finnhub کلید استعمال کریں۔ نیچے سے کلید حاصل کریں، پھر منسلک ہونے کے لیے اسے آزما کر محفوظ کریں۔",
+    "message": "امریکی قیمتیں براہِ راست دیکھنے کے لیے Finnhub کو مفت کلید درکار ہے، جس کی حد 60 کالز فی منٹ ہے۔",
     "description": "User-facing provider setup introduction",
     "_machine_translated": true,
-    "_source_hash": "0686f89d96f514a5"
+    "_source_hash": "41c015a47f8cb6a3"
   },
   "setup.terms": {
-    "message": "Finnhub کے ذاتی پلان اہل ذاتی استعمال کے لیے ہیں۔ کاروباری استعمال اور ڈیٹا یا اس سے حاصل شدہ نتائج تیسرے فریق کے ساتھ شیئر کرنے کے لیے Finnhub کی منظوری درکار ہے۔ فراہم کنندہ کی شرائط چیک کریں، بشمول قیمتیں کسی ریموٹ ایجنٹ کو بھیجنے سے پہلے۔",
+    "message": "ڈیٹا صرف اپنی تحقیق اور ٹولز کے لیے استعمال کریں۔ فراہم کنندہ کا ڈیٹا یا رسائی دوبارہ فروخت، دوبارہ تقسیم یا ذیلی لائسنس نہ کریں، اور حدود سے گریز نہ کریں۔ نتائج شیئر کرنے سے پہلے فراہم کنندہ کی شرائط چیک کریں۔",
     "description": "Material provider use restrictions",
     "_machine_translated": true,
-    "_source_hash": "9eb9716ed06ff746"
+    "_source_hash": "7fbb1c4e684b429f"
   },
   "setup.steps": {
-    "message": "1۔ \"مفت Finnhub کلید حاصل کریں (تقریباً ایک منٹ)\" کھولیں اور Finnhub پر رجسٹر کریں۔ 2۔ اس کے ڈیش بورڈ سے اپنی API کلید کاپی کریں۔ 3۔ اسے نیچے پیسٹ کریں اور \"جانچیں اور محفوظ کریں\" منتخب کریں۔",
+    "message": "Stocklake بغیر کلید کے فوراً کام کرتا ہے۔ فراہم کنندہ منتخب کریں، چاہیں تو اس کی کلید پیسٹ کریں، پھر اپنا انتخاب محفوظ کرنے کے لیے جانچیں اور استعمال کریں دبائیں۔",
     "description": "Guided setup steps",
     "_machine_translated": true,
-    "_source_hash": "d850b03495911632"
+    "_source_hash": "d73223e639ab4ff7"
   },
   "setup.saved": {
     "message": "اس آلے پر ایک کلید محفوظ ہے۔ اسے جانچنے کے لیے فیلڈ خالی چھوڑ دیں، یا متبادل کلید پیسٹ کریں۔ محفوظ کردہ کلیدیں یہاں کبھی نہیں دکھائی جاتیں۔",
@@ -189,13 +189,13 @@
     "message": "مفت Finnhub کلید حاصل کریں (تقریباً ایک منٹ)",
     "description": "Open provider registration in system browser",
     "_machine_translated": true,
-    "_source_hash": "a0566f42e52da139"
+    "_source_hash": "8ee05fe11cb483c9"
   },
   "setup.key": {
-    "message": "Finnhub API کلید",
+    "message": "فراہم کنندہ کی API کلید (Stocklake کے لیے اختیاری)",
     "description": "Scratch field for secret",
     "_machine_translated": true,
-    "_source_hash": "2e7e94ee1be4a2cf"
+    "_source_hash": "3fb2a7de1e62b384"
   },
   "setup.key_hint": {
     "message": "\"جانچیں اور محفوظ کریں\" کلید کو نجی ایکسٹینشن ڈیٹا میں محفوظ کرتا ہے، جیسے Spotify کی اسناد۔ یہاں ٹائپ کرنے سے یہ عام ترتیبات کے ساتھ محفوظ نہیں ہوتی۔ ٹائپ کرتے وقت اس ہوسٹ کا ٹیکسٹ فیلڈ نظر آتا ہے۔",
@@ -204,10 +204,10 @@
     "_source_hash": "4c3122d9b4d5daad"
   },
   "setup.test": {
-    "message": "کلید جانچیں اور محفوظ کریں",
+    "message": "فراہم کنندہ کو جانچیں اور استعمال کریں",
     "description": "Probe quote endpoint and save only on success",
     "_machine_translated": true,
-    "_source_hash": "bc2be6a1a4fb4210"
+    "_source_hash": "d9e72fde7f42a5f5"
   },
   "setup.remove": {
     "message": "محفوظ کردہ کلید ہٹائیں",
@@ -222,10 +222,10 @@
     "_source_hash": "59cb7317745316bb"
   },
   "setup.success": {
-    "message": "Finnhub قیمت کی جانچ کامیاب رہی؛ کلید محفوظ ہو گئی۔",
+    "message": "قیمت کی جانچ کامیاب رہی؛ فراہم کنندہ منتخب ہو گیا اور فراہم کردہ کلید محفوظ کر لی گئی۔",
     "description": "Successful guided setup; key is saved independently of watchlist settings",
     "_machine_translated": true,
-    "_source_hash": "76df0b334c35e1f8"
+    "_source_hash": "c4ae3a50e8f0c3e0"
   },
   "settings.watchlist_section": {
     "message": "واچ لسٹ اور ریفریش",
@@ -240,10 +240,10 @@
     "_source_hash": "4fa141d565f4d3cb"
   },
   "settings.watchlist_hint": {
-    "message": "زیادہ سے زیادہ {max} امریکی علامات، اسپیس یا کوما سے الگ کردہ۔ خالی فہرست ویجیٹ کو چھپا دیتی ہے۔",
+    "message": "زیادہ سے زیادہ {max} علامتیں، اسپیس یا کوما سے الگ کی ہوئی۔ Stocklake بین الاقوامی علامتیں جیسے SAP.DE قبول کرتا ہے؛ Finnhub امریکی ٹکرز کو سپورٹ کرتا ہے۔ پینل کے لیے کلید اور فعال مرئیت کی ترتیب درکار ہے۔",
     "description": "Watchlist validation; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "18fd9ff917b78911"
+    "_source_hash": "5b779260bb9346da"
   },
   "settings.show": {
     "message": "تیرتی ونڈو میں واچ لسٹ دکھائیں",
@@ -258,10 +258,10 @@
     "_source_hash": "d5d486955acdd4c8"
   },
   "settings.refresh_hint": {
-    "message": "کم از کم {min} سیکنڈ؛ طے شدہ {default}۔ موجودہ Kage ہوسٹس پر پوشیدہ ونڈو کی پولنگ رک جاتی ہے۔ اس آلے پر فی منٹ زیادہ سے زیادہ {budget} درخواستیں مختص ہیں؛ فراہم کنندہ کی حدود میں آپ کی دیگر ایپس بھی شامل ہیں۔",
+    "message": "کم از کم {min} سیکنڈ؛ طے شدہ {default}۔ Stocklake کی قیمتیں کم از کم 10 منٹ کے لیے اور تاریخ ایک دن کے لیے کیش کی جاتی ہے۔ ونڈو چھپی ہونے پر پولنگ رک جاتی ہے۔ Finnhub مقامی طور پر فی منٹ زیادہ سے زیادہ {budget} درخواستیں مختص کرتا ہے۔",
     "description": "Request budget and hidden behavior; preserve {min}, {default}, {budget}",
     "_machine_translated": true,
-    "_source_hash": "835954ceb7299192"
+    "_source_hash": "08eb708651c8ce9e"
   },
   "settings.refresh_error": {
     "message": "ریفریش کا وقفہ {min} اور {max} سیکنڈ کے درمیان ہونا چاہیے۔",
@@ -270,28 +270,28 @@
     "_source_hash": "45f891673cb1e039"
   },
   "tool.quote": {
-    "message": "ذاتی استعمال کے لیے Finnhub سے امریکی اسٹاک کی قیمتیں حاصل کریں۔ ماخذ، آخری ٹریڈ کا ٹائم اسٹیمپ، کیشے کی تازگی اور ہر علامت کی خرابیاں واپس کرتا ہے۔ صارف کی مفت کلید درکار ہے؛ فراہم کنندہ کی منظوری کے بغیر دوبارہ تقسیم نہ کریں۔",
+    "message": "اپنے ذاتی استعمال کے لیے منتخب فراہم کنندہ سے اسٹاک کی قیمتیں حاصل کریں۔ Stocklake تقریباً 15 منٹ تاخیر سے ہے اور کلید کی ضرورت نہیں؛ Finnhub کلید کے ساتھ امریکی قیمتیں براہِ راست فراہم کرتا ہے۔ ماخذ، ٹائم اسٹیمپس، تازگی اور ہر علامت کی خرابیاں واپس کرتا ہے۔ ڈیٹا دوبارہ تقسیم نہ کریں۔",
     "description": "Agent tool description",
     "_machine_translated": true,
-    "_source_hash": "9aa8d167f9bf2f94"
+    "_source_hash": "890f052fdf9e3bbd"
   },
   "tool.symbols": {
-    "message": "زیادہ سے زیادہ {max} امریکی علامتیں، مثال کے طور پر [\"AAPL\", \"MSFT\", \"BRK.B\"]۔",
+    "message": "زیادہ سے زیادہ {max} علامتیں، مثال کے طور پر [\"AAPL\", \"MSFT\", \"SAP.DE\"]۔ Finnhub صرف امریکی ٹکرز قبول کرتا ہے۔",
     "description": "Quote tool parameter description; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "753c9fd4564636f3"
+    "_source_hash": "acbe6e78c6fddb5a"
   },
   "tool.history": {
-    "message": "اس ڈیوائس پر 1d، 1w یا 1m کے لیے مقامی طور پر جمع کیے گئے Finnhub کوٹس حاصل کریں۔ کوئی نیٹ ورک درخواست نہیں کی جاتی۔ یہ نامکمل اور کم نمونے ہیں، تاریخی کینڈلز نہیں؛ خالی فہرست کا مطلب ہے کہ کچھ بھی جمع نہیں کیا گیا۔",
+    "message": "30 تجارتی دنوں کی ونڈو سے، جو ایک دن کے لیے کیش ہوتی ہے، 1d، 1w یا 1m کی حقیقی Stocklake یومیہ تاریخ حاصل کریں۔ کیش میں نہ ملنے پر ایک کال خرچ ہوتی ہے۔ Finnhub تاریخ کی درخواست کے بغیر مقامی طور پر مشاہدہ کردہ نامکمل قیمتیں واپس کرتا ہے۔",
     "description": "Agent tool scope must not imply full historical coverage",
     "_machine_translated": true,
-    "_source_hash": "fcb4dd5f0bdcb792"
+    "_source_hash": "d5343316b6826efa"
   },
   "tool.symbol": {
-    "message": "امریکی اسٹاک کی علامت۔",
+    "message": "اسٹاک کی علامت، بشمول Stocklake کے لیے بین الاقوامی لاحقے۔",
     "description": "History symbol parameter description",
     "_machine_translated": true,
-    "_source_hash": "31f6b8214e118704"
+    "_source_hash": "bf96519c516306b2"
   },
   "tool.range": {
     "message": "1d، 1w یا 1m؛ ڈیفالٹ 1d۔",
@@ -312,10 +312,10 @@
     "_source_hash": "2acdb85e54aa0ed1"
   },
   "error.timeout": {
-    "message": "Finnhub نے جواب دینے میں بہت دیر لگائی۔ چند سیکنڈ بعد دوبارہ کوشش کریں؛ دستیاب ہونے پر محفوظ کردہ ڈیٹا دکھایا جا رہا ہے۔",
+    "message": "قیمت فراہم کنندہ نے جواب دینے میں بہت دیر لگائی۔ چند سیکنڈ بعد دوبارہ کوشش کریں؛ دستیاب ہونے پر محفوظ کردہ ڈیٹا دکھایا جا رہا ہے۔",
     "description": "Request timeout; short local pause, separate from offline backoff",
     "_machine_translated": true,
-    "_source_hash": "23491b785f430a04"
+    "_source_hash": "fb51f909049dd49a"
   },
   "settings.agent_tools": {
     "message": "ایجنٹس کے لیے Stocks ٹولز کی اجازت دیں",
@@ -324,10 +324,10 @@
     "_source_hash": "feaafa8e946fc0b2"
   },
   "settings.agent_tools_hint": {
-    "message": "ایجنٹ ٹولز Finnhub کے کوٹس اور ان سے حاصل شدہ نتائج آپ کے ایجنٹ فراہم کنندہ کو بھیج سکتے ہیں۔ صرف اسی صورت میں فعال کریں جب آپ کا Finnhub معاہدہ اس اشتراک کی اجازت دیتا ہو۔ یہ تبدیلی Kage دوبارہ شروع کرنے کے بعد مؤثر ہوگی۔",
+    "message": "ایجنٹ ٹولز قیمتیں اور نتائج آپ کے ایجنٹ فراہم کنندہ کو بھیج سکتے ہیں۔ صرف اپنے ذاتی استعمال کے لیے اور تب ہی فعال کریں جب فراہم کنندہ کی شرائط اجازت دیں۔ Kage دوبارہ شروع کرنے کے بعد مؤثر ہوگا۔",
     "description": "Explain opt-in and external agent data flow",
     "_machine_translated": true,
-    "_source_hash": "85852257d902cb3e"
+    "_source_hash": "4b637e7840e5666b"
   },
   "settings.delete_quotes": {
     "message": "محفوظ کردہ کوٹس حذف کریں",
@@ -340,15 +340,57 @@
     "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
   },
   "widget.connection": {
-    "message": "کوٹس پر توجہ درکار ہے۔ Stocks کی ترتیبات کھولنے کے لیے stock ٹائپ کریں اور Enter دبائیں۔",
+    "message": "قیمتوں پر توجہ درکار ہے۔ Stocks کی ترتیبات کھولنے کے لیے stock ٹائپ کریں اور Enter دبائیں۔",
     "description": "Compact widget hint for authentication or storage problems; keep stock as the launcher command",
     "_machine_translated": true,
-    "_source_hash": "28d7c64fff255e29"
+    "_source_hash": "8dcbef2b531a522b"
   },
   "tool.opt_in": {
-    "message": "یہ ٹول استعمال کرنے سے پہلے Stocks کی ترتیبات میں \"ایجنٹس کے لیے Stocks ٹولز کی اجازت دیں\" فعال کریں۔ تصدیق کریں کہ آپ کا Finnhub معاہدہ آپ کے ایجنٹ فراہم کنندہ کے ساتھ ڈیٹا کے اشتراک کی اجازت دیتا ہے۔",
+    "message": "یہ ٹول استعمال کرنے سے پہلے Stocks کی ترتیبات میں ایجنٹس کے لیے Stocks ٹولز کی اجازت دیں کو فعال کریں۔ چیک کریں کہ فراہم کنندہ کی شرائط آپ کے ایجنٹ فراہم کنندہ کے ساتھ آپ کے استعمال کی اجازت دیتی ہیں۔",
     "description": "Actionable agent tool opt-in error",
     "_machine_translated": true,
-    "_source_hash": "a00e5cc3750744f0"
+    "_source_hash": "994b57bbe7f233ae"
+  },
+  "settings.provider": {
+    "message": "قیمت فراہم کنندہ",
+    "description": "Provider selection; Test/use persists the choice",
+    "_machine_translated": true,
+    "_source_hash": "b9f483c14cb7b4dc"
+  },
+  "setup.stocklake": {
+    "message": "Stocklake کلید کے بغیر کام کرتا ہے: تقریباً 15 منٹ کی تاخیر، روزانہ 25 کالز؛ ایک اختیاری مفت کلید اسے 200 تک بڑھا دیتی ہے۔",
+    "description": "Keyless default provider description",
+    "_machine_translated": true,
+    "_source_hash": "930e88dd695cf87e"
+  },
+  "setup.stocklake_key": {
+    "message": "مفت Stocklake کلید حاصل کریں",
+    "description": "Open Stocklake sign-in; emailed code; free 200 calls/day",
+    "_machine_translated": true,
+    "_source_hash": "b21d6e57b9696558"
+  },
+  "quote.stocklake": {
+    "message": "تقریباً 15 منٹ کی تاخیر · Stocklake",
+    "description": "Visible delayed provider attribution; paired with a link to stocklake.dev",
+    "_machine_translated": true,
+    "_source_hash": "081a46f162590a46"
+  },
+  "quote.history": {
+    "message": "تقریباً 30 تجارتی دنوں کی Stocklake روزانہ اختتامی قیمتیں۔ ہسٹری ایک دن کے لیے کیش کی جاتی ہے؛ کیش میں نہ ملنے پر ایک کال استعمال ہوتی ہے۔ Finnhub اسپارک لائنز مقامی نمونے استعمال کرتی ہیں۔",
+    "description": "History accessible label and settings explanation; real daily data for Stocklake",
+    "_machine_translated": true,
+    "_source_hash": "2efd3bfb80984cd7"
+  },
+  "error.daily_limit": {
+    "message": "روزانہ کے مفت کوٹس ختم ہو گئے۔ {time} پر دوبارہ شروع ہوں گے۔ روزانہ 200 کے لیے مفت Stocklake کلید شامل کریں۔",
+    "description": "Guest exhaustion message; preserve {time} for local reset time",
+    "_machine_translated": true,
+    "_source_hash": "22d1ca53ad1f23f9"
+  },
+  "error.key_daily_limit": {
+    "message": "روزانہ کی Stocklake کالز ختم ہو گئیں۔ {time} پر دوبارہ شروع ہوں گی۔ دستیاب ہونے پر محفوظ شدہ ڈیٹا دکھایا جا رہا ہے۔",
+    "description": "Authenticated daily exhaustion; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "7c2f3494ec238e7e"
   }
 }

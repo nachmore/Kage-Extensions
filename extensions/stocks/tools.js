@@ -37,8 +37,8 @@ export default class StocksToolProvider {
         const quotes = await this.client.getQuotes(params.symbols, this.config);
         const result = quotes.map(({ timestamp, fetchedAt, retryAt, samples, ...quote }) => ({
           ...quote,
-          ...(quote.error ? { message: errorText(quote.error, this.t) } : { tradeTime: iso(timestamp * 1000), fetchedAt: iso(fetchedAt) }),
-          ...(!quote.error && quote.reason ? { message: errorText(quote.reason, this.t) } : {}),
+          ...(quote.error ? { message: errorText(quote.error, this.t, { retryAt }) } : { tradeTime: iso(timestamp * 1000), fetchedAt: iso(fetchedAt) }),
+          ...(!quote.error && quote.reason ? { message: errorText(quote.reason, this.t, { retryAt }) } : {}),
           ...(retryAt ? { retryAt: iso(retryAt) } : {}),
         }));
         const connection = quotes.findIndex((quote) => ['setup', 'auth', 'storage'].includes(quote.error));
@@ -47,13 +47,14 @@ export default class StocksToolProvider {
         if (connection >= 0 && quotes.every((quote) => quote.error)) {
           return { error: details, result };
         }
-        if (quotes.every((quote) => quote.error) && !(await this.client.key())) return { error: `${errorText('setup', this.t)} ${details}`, result };
+        const connectionInfo = await this.client.connection(this.config);
+        if (quotes.every((quote) => quote.error) && connectionInfo.provider === 'finnhub' && !connectionInfo.key) return { error: `${errorText('setup', this.t)} ${details}`, result };
         return { result };
       }
       if (name === 'get_history') {
-        const history = await this.client.getHistory(params.symbol, params.range);
+        const history = await this.client.getHistory(params.symbol, params.range, undefined, this.config);
         try {
-          if (!(await this.client.key())) history.note += ` ${errorText('setup', this.t)}`;
+          if (history.source === 'Finnhub' && !(await this.client.key())) history.note += ` ${errorText('setup', this.t)}`;
         } catch (error) {
           // Local samples remain useful when credential storage is unavailable.
           history.note += ` ${errorText(error.code, this.t)}`;
@@ -62,7 +63,7 @@ export default class StocksToolProvider {
           samples: history.samples.map((sample) => ({ ...sample, timestamp: iso(sample.timestamp * 1000) })) } };
       }
       return { error: this.t('tool.unknown') };
-    } catch (error) { return { error: errorText(error.code, this.t) }; }
+    } catch (error) { return { error: errorText(error.code, this.t, { retryAt: error.retryAt }) }; }
   }
 }
 

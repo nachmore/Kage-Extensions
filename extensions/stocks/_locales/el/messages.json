@@ -12,10 +12,10 @@
     "_source_hash": "d6d4700604b64b88"
   },
   "manifest.description": {
-    "message": "Online · Τιμές μετοχών ΗΠΑ και λίστα παρακολούθησης από το Finnhub με το δωρεάν κλειδί σας. Τα δεδομένα από την προσωρινή μνήμη έχουν καθυστέρηση· κάθε τιμή εμφανίζει τη χρονοσφραγίδα της.",
+    "message": "Online · Χωρίς κλειδιά: οι τιμές του Stocklake έχουν καθυστέρηση ~15 λεπτών, 25 δωρεάν την ημέρα· με δωρεάν κλειδί το όριο αυξάνεται σε 200. Το Finnhub είναι προαιρετικό για ζωντανές τιμές ΗΠΑ.",
     "description": "Store listing; Online and Data delayed communicate network dependency and freshness",
     "_machine_translated": true,
-    "_source_hash": "6feb0a4240dfb80e"
+    "_source_hash": "44f1eb50266b55a3"
   },
   "result.loading": {
     "message": "Αναζήτηση μετοχών…",
@@ -78,16 +78,16 @@
     "_source_hash": "8adbf75fdf5bc595"
   },
   "error.auth": {
-    "message": "Το Finnhub απέρριψε το κλειδί. Ανοίξτε τις ρυθμίσεις του Stocks για να δοκιμάσετε ένα νέο κλειδί.",
+    "message": "Ο πάροχος απέρριψε το κλειδί. Ανοίξτε τις ρυθμίσεις του Stocks για να δοκιμάσετε άλλο κλειδί.",
     "description": "Authentication error; never include the raw provider response",
     "_machine_translated": true,
-    "_source_hash": "eca735a4f5fb0bce"
+    "_source_hash": "10cd02016931ccf6"
   },
   "error.unknown": {
-    "message": "Δεν υπάρχει τιμή για αυτό το σύμβολο. Ελέγξτε το σύμβολο ΗΠΑ, συμπεριλαμβανομένου τυχόν επιθήματος κατηγορίας μετοχών.",
+    "message": "Δεν υπάρχει τιμή για αυτό το σύμβολο. Ελέγξτε το σύμβολο και την κατάληξη του χρηματιστηρίου.",
     "description": "Unknown or zero-valued quote",
     "_machine_translated": true,
-    "_source_hash": "3a30475366fb7002"
+    "_source_hash": "bd84c7f6e9173633"
   },
   "error.unsupported": {
     "message": "Αυτός ο πάροχος υποστηρίζει μόνο σύμβολα ΗΠΑ. Τα επιθήματα διεθνών χρηματιστηρίων απαιτούν διαφορετικό πρόγραμμα δεδομένων.",
@@ -114,16 +114,16 @@
     "_source_hash": "7d553dee0c6fe94a"
   },
   "error.offline": {
-    "message": "Δεν είναι δυνατή η σύνδεση με το Finnhub. Εμφανίζονται αποθηκευμένα δεδομένα, όταν υπάρχουν.",
+    "message": "Δεν είναι δυνατή η σύνδεση με τον πάροχο τιμών. Εμφανίζονται αποθηκευμένα δεδομένα, όταν υπάρχουν.",
     "description": "Offline or network failure",
     "_machine_translated": true,
-    "_source_hash": "536dacabe5ed1015"
+    "_source_hash": "6fe79608991e6dfd"
   },
   "error.unavailable": {
-    "message": "Το Finnhub δεν είναι διαθέσιμο. Εμφανίζονται αποθηκευμένα δεδομένα όταν είναι διαθέσιμα.",
+    "message": "Ο πάροχος τιμών δεν είναι διαθέσιμος. Εμφανίζονται αποθηκευμένα δεδομένα, όταν υπάρχουν.",
     "description": "Sanitized provider error",
     "_machine_translated": true,
-    "_source_hash": "2dd30adcc5164ad4"
+    "_source_hash": "e10d9f0c7de280f1"
   },
   "error.busy": {
     "message": "Ένα άλλο παράθυρο του Kage ανανεώνει τις τιμές. Δοκιμάστε ξανά σε λίγο.",
@@ -138,10 +138,10 @@
     "_source_hash": "4cbfbb2e9b0adc41"
   },
   "error.invalid_key": {
-    "message": "Επικολλήστε ένα κλειδί API του Finnhub και, στη συνέχεια, επιλέξτε Δοκιμή και αποθήκευση. Μην επικολλήσετε URL.",
+    "message": "Επικολλήστε ένα κλειδί API για τον επιλεγμένο πάροχο και πατήστε «Δοκιμή και χρήση». Μην επικολλήσετε URL.",
     "description": "Malformed or missing API key",
     "_machine_translated": true,
-    "_source_hash": "b972e383a08a0ac1"
+    "_source_hash": "46f77ed69b2c2053"
   },
   "error.invalid_range": {
     "message": "Επιλέξτε εύρος 1d, 1w ή 1m.",
@@ -150,10 +150,10 @@
     "_source_hash": "f4f4d83dc6129a6c"
   },
   "settings.description": {
-    "message": "Τιμές μετοχών ΗΠΑ, λίστα παρακολούθησης και τοπικό ιστορικό τιμών. Online · Πηγή: Finnhub. Οι αποθηκευμένες τιμές ενδέχεται να έχουν καθυστέρηση.",
+    "message": "Οι τιμές του Stocklake λειτουργούν χωρίς κλειδί: καθυστέρηση ~15 λεπτών, 25 κλήσεις την ημέρα ή 200 με δωρεάν κλειδί. Το Finnhub προσφέρει ζωντανές τιμές ΗΠΑ με δωρεάν κλειδί.",
     "description": "Settings summary",
     "_machine_translated": true,
-    "_source_hash": "b91914b96330d6cb"
+    "_source_hash": "deea29d63a6f57a4"
   },
   "settings.connection": {
     "message": "Πάροχος τιμών και ρύθμιση",
@@ -162,22 +162,22 @@
     "_source_hash": "863fbc4ab994c2eb"
   },
   "setup.intro": {
-    "message": "Χρησιμοποιήστε το δικό σας δωρεάν κλειδί Finnhub για τιμές μετοχών των ΗΠΑ. Αποκτήστε ένα κλειδί παρακάτω και, στη συνέχεια, δοκιμάστε το και αποθηκεύστε το για να συνδεθείτε.",
+    "message": "Το Finnhub χρειάζεται δωρεάν κλειδί για ζωντανές τιμές ΗΠΑ, με όριο 60 κλήσεων ανά λεπτό.",
     "description": "User-facing provider setup introduction",
     "_machine_translated": true,
-    "_source_hash": "0686f89d96f514a5"
+    "_source_hash": "41c015a47f8cb6a3"
   },
   "setup.terms": {
-    "message": "Τα προσωπικά προγράμματα της Finnhub προορίζονται για επιλέξιμη προσωπική χρήση. Η επαγγελματική χρήση και η κοινοποίηση δεδομένων ή παράγωγων αποτελεσμάτων σε τρίτους απαιτούν έγκριση από τη Finnhub. Ελέγξτε τους όρους του παρόχου, και πριν από την αποστολή τιμών σε απομακρυσμένο agent.",
+    "message": "Χρησιμοποιήστε τα δεδομένα για τη δική σας έρευνα και τα δικά σας εργαλεία. Μην μεταπωλείτε, αναδιανέμετε ή παραχωρείτε υποάδεια για τα δεδομένα ή την πρόσβαση του παρόχου και μην παρακάμπτετε τα όρια. Ελέγξτε τους όρους του παρόχου πριν κοινοποιήσετε αποτελέσματα.",
     "description": "Material provider use restrictions",
     "_machine_translated": true,
-    "_source_hash": "9eb9716ed06ff746"
+    "_source_hash": "7fbb1c4e684b429f"
   },
   "setup.steps": {
-    "message": "1. Ανοίξτε το «Λήψη δωρεάν κλειδιού Finnhub (περίπου ένα λεπτό)» και εγγραφείτε στη Finnhub. 2. Αντιγράψτε το API key σας από τον πίνακα ελέγχου. 3. Επικολλήστε το παρακάτω και επιλέξτε «Δοκιμή και αποθήκευση».",
+    "message": "Το Stocklake λειτουργεί αμέσως χωρίς κλειδί. Επιλέξτε πάροχο, προαιρετικά επικολλήστε το κλειδί του και πατήστε «Δοκιμή και χρήση» για να αποθηκεύσετε την επιλογή σας.",
     "description": "Guided setup steps",
     "_machine_translated": true,
-    "_source_hash": "d850b03495911632"
+    "_source_hash": "d73223e639ab4ff7"
   },
   "setup.saved": {
     "message": "Υπάρχει αποθηκευμένο κλειδί σε αυτήν τη συσκευή. Αφήστε το πεδίο κενό για να το δοκιμάσετε ή επικολλήστε ένα νέο. Τα αποθηκευμένα κλειδιά δεν εμφανίζονται ποτέ εδώ.",
@@ -186,16 +186,16 @@
     "_source_hash": "4fba007359b56f1d"
   },
   "setup.free_key": {
-    "message": "Λήψη δωρεάν κλειδιού Finnhub (περίπου ένα λεπτό)",
+    "message": "Αποκτήστε δωρεάν κλειδί Finnhub (περίπου ένα λεπτό)",
     "description": "Open provider registration in system browser",
     "_machine_translated": true,
-    "_source_hash": "a0566f42e52da139"
+    "_source_hash": "8ee05fe11cb483c9"
   },
   "setup.key": {
-    "message": "Finnhub API key",
+    "message": "Κλειδί API παρόχου (προαιρετικό για το Stocklake)",
     "description": "Scratch field for secret",
     "_machine_translated": true,
-    "_source_hash": "2e7e94ee1be4a2cf"
+    "_source_hash": "3fb2a7de1e62b384"
   },
   "setup.key_hint": {
     "message": "Η «Δοκιμή και αποθήκευση» αποθηκεύει το κλειδί στα ιδιωτικά δεδομένα της επέκτασης, όπως τα διαπιστευτήρια του Spotify. Η πληκτρολόγησή του εδώ δεν το αποθηκεύει μαζί με τις κανονικές ρυθμίσεις. Το πεδίο κειμένου αυτού του host είναι ορατό κατά την πληκτρολόγηση.",
@@ -204,10 +204,10 @@
     "_source_hash": "4c3122d9b4d5daad"
   },
   "setup.test": {
-    "message": "Δοκιμή και αποθήκευση κλειδιού",
+    "message": "Δοκιμή και χρήση παρόχου",
     "description": "Probe quote endpoint and save only on success",
     "_machine_translated": true,
-    "_source_hash": "bc2be6a1a4fb4210"
+    "_source_hash": "d9e72fde7f42a5f5"
   },
   "setup.remove": {
     "message": "Αφαίρεση αποθηκευμένου κλειδιού",
@@ -222,10 +222,10 @@
     "_source_hash": "59cb7317745316bb"
   },
   "setup.success": {
-    "message": "Η δοκιμή τιμών Finnhub ολοκληρώθηκε επιτυχώς· το κλειδί αποθηκεύτηκε.",
+    "message": "Η δοκιμή τιμών ολοκληρώθηκε· ο πάροχος επιλέχθηκε και τυχόν κλειδί που δόθηκε αποθηκεύτηκε.",
     "description": "Successful guided setup; key is saved independently of watchlist settings",
     "_machine_translated": true,
-    "_source_hash": "76df0b334c35e1f8"
+    "_source_hash": "c4ae3a50e8f0c3e0"
   },
   "settings.watchlist_section": {
     "message": "Λίστα παρακολούθησης και ανανέωση",
@@ -240,10 +240,10 @@
     "_source_hash": "4fa141d565f4d3cb"
   },
   "settings.watchlist_hint": {
-    "message": "Έως {max} σύμβολα ΗΠΑ, χωρισμένα με κενά ή κόμματα. Μια κενή λίστα αποκρύπτει το widget.",
+    "message": "Έως {max} σύμβολα, διαχωρισμένα με κενά ή κόμματα. Το Stocklake δέχεται διεθνή σύμβολα, όπως SAP.DE· το Finnhub υποστηρίζει σύμβολα ΗΠΑ. Ο πίνακας απαιτεί κλειδί και ενεργοποιημένη ρύθμιση ορατότητας.",
     "description": "Watchlist validation; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "18fd9ff917b78911"
+    "_source_hash": "5b779260bb9346da"
   },
   "settings.show": {
     "message": "Εμφάνιση λίστας παρακολούθησης στο αιωρούμενο παράθυρο",
@@ -258,10 +258,10 @@
     "_source_hash": "d5d486955acdd4c8"
   },
   "settings.refresh_hint": {
-    "message": "Ελάχιστο {min} δευτερόλεπτα· προεπιλογή {default}. Οι ενημερώσεις σε κρυφά παράθυρα τίθενται σε παύση στους τρέχοντες κεντρικούς υπολογιστές του Kage. Δεσμεύονται έως {budget} αιτήματα ανά λεπτό σε όλη αυτή τη συσκευή· τα όρια του παρόχου περιλαμβάνουν και τις άλλες εφαρμογές σας.",
+    "message": "Ελάχιστο {min} δευτερόλεπτα· προεπιλογή {default}. Οι τιμές του Stocklake αποθηκεύονται προσωρινά για τουλάχιστον 10 λεπτά και το ιστορικό για μία ημέρα. Οι ενημερώσεις διακόπτονται όταν το παράθυρο είναι κρυφό. Για το Finnhub δεσμεύονται τοπικά έως {budget} αιτήματα ανά λεπτό.",
     "description": "Request budget and hidden behavior; preserve {min}, {default}, {budget}",
     "_machine_translated": true,
-    "_source_hash": "835954ceb7299192"
+    "_source_hash": "08eb708651c8ce9e"
   },
   "settings.refresh_error": {
     "message": "Το διάστημα ανανέωσης πρέπει να είναι μεταξύ {min} και {max} δευτερολέπτων.",
@@ -270,28 +270,28 @@
     "_source_hash": "45f891673cb1e039"
   },
   "tool.quote": {
-    "message": "Λήψη τιμών μετοχών ΗΠΑ από τη Finnhub για προσωπική χρήση. Επιστρέφει την πηγή, τη χρονοσφραγίδα τελευταίας συναλλαγής, την επικαιρότητα της cache και σφάλματα ανά σύμβολο. Απαιτεί το δωρεάν κλειδί του χρήστη· μην αναδιανέμετε χωρίς έγκριση του παρόχου.",
+    "message": "Λήψη τιμών μετοχών από τον επιλεγμένο πάροχο για δική σας χρήση. Το Stocklake έχει καθυστέρηση ~15 λεπτών και δεν χρειάζεται κλειδί· το Finnhub προσφέρει ζωντανές τιμές ΗΠΑ με κλειδί. Επιστρέφει πηγή, χρονικές σημάνσεις, επικαιρότητα και σφάλματα ανά σύμβολο. Μην αναδιανέμετε τα δεδομένα.",
     "description": "Agent tool description",
     "_machine_translated": true,
-    "_source_hash": "9aa8d167f9bf2f94"
+    "_source_hash": "890f052fdf9e3bbd"
   },
   "tool.symbols": {
-    "message": "Έως {max} σύμβολα ΗΠΑ, για παράδειγμα [\"AAPL\", \"MSFT\", \"BRK.B\"].",
+    "message": "Έως {max} σύμβολα, για παράδειγμα [\"AAPL\", \"MSFT\", \"SAP.DE\"]. Το Finnhub δέχεται μόνο σύμβολα ΗΠΑ.",
     "description": "Quote tool parameter description; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "753c9fd4564636f3"
+    "_source_hash": "acbe6e78c6fddb5a"
   },
   "tool.history": {
-    "message": "Λήψη τιμών Finnhub που καταγράφηκαν τοπικά σε αυτήν τη συσκευή για 1d, 1w ή 1m. Χωρίς αιτήματα δικτύου. Ελλιπή, αραιά δείγματα, όχι ιστορικά κεριά· μια κενή λίστα σημαίνει ότι δεν συλλέχθηκε τίποτα.",
+    "message": "Λήψη πραγματικού ημερήσιου ιστορικού Stocklake για 1d, 1w ή 1m από ένα παράθυρο 30 ημερών συναλλαγών που αποθηκεύεται προσωρινά για μία ημέρα. Κοστίζει μία κλήση όταν δεν υπάρχει στην προσωρινή μνήμη. Το Finnhub επιστρέφει ελλιπείς τιμές που καταγράφηκαν τοπικά, χωρίς αίτημα ιστορικού.",
     "description": "Agent tool scope must not imply full historical coverage",
     "_machine_translated": true,
-    "_source_hash": "fcb4dd5f0bdcb792"
+    "_source_hash": "d5343316b6826efa"
   },
   "tool.symbol": {
-    "message": "Ένα σύμβολο μετοχής των ΗΠΑ.",
+    "message": "Ένα σύμβολο μετοχής, συμπεριλαμβανομένων διεθνών καταλήξεων για το Stocklake.",
     "description": "History symbol parameter description",
     "_machine_translated": true,
-    "_source_hash": "31f6b8214e118704"
+    "_source_hash": "bf96519c516306b2"
   },
   "tool.range": {
     "message": "1d, 1w ή 1m· προεπιλογή 1d.",
@@ -312,10 +312,10 @@
     "_source_hash": "2acdb85e54aa0ed1"
   },
   "error.timeout": {
-    "message": "Το Finnhub άργησε πολύ να απαντήσει. Δοκιμάστε ξανά σε λίγα δευτερόλεπτα· εμφανίζονται αποθηκευμένα δεδομένα, όταν υπάρχουν.",
+    "message": "Ο πάροχος τιμών άργησε πολύ να απαντήσει. Δοκιμάστε ξανά σε λίγα δευτερόλεπτα· εμφανίζονται αποθηκευμένα δεδομένα, όταν υπάρχουν.",
     "description": "Request timeout; short local pause, separate from offline backoff",
     "_machine_translated": true,
-    "_source_hash": "23491b785f430a04"
+    "_source_hash": "fb51f909049dd49a"
   },
   "settings.agent_tools": {
     "message": "Να επιτρέπονται τα εργαλεία Stocks για πράκτορες",
@@ -324,10 +324,10 @@
     "_source_hash": "feaafa8e946fc0b2"
   },
   "settings.agent_tools_hint": {
-    "message": "Τα εργαλεία του agent ενδέχεται να στέλνουν τιμές του Finnhub και παράγωγα αποτελέσματα στον πάροχο του agent σας. Ενεργοποιήστε τα μόνο εάν η συμφωνία σας με το Finnhub επιτρέπει αυτήν την κοινοποίηση. Η αλλαγή εφαρμόζεται μετά την επανεκκίνηση του Kage.",
+    "message": "Τα εργαλεία πρακτόρων μπορεί να στέλνουν τιμές και αποτελέσματα στον πάροχο του πράκτορά σας. Ενεργοποιήστε τα μόνο για δική σας χρήση, όταν το επιτρέπουν οι όροι του παρόχου. Η αλλαγή ισχύει μετά την επανεκκίνηση του Kage.",
     "description": "Explain opt-in and external agent data flow",
     "_machine_translated": true,
-    "_source_hash": "85852257d902cb3e"
+    "_source_hash": "4b637e7840e5666b"
   },
   "settings.delete_quotes": {
     "message": "Διαγραφή αποθηκευμένων τιμών",
@@ -340,15 +340,57 @@
     "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
   },
   "widget.connection": {
-    "message": "Οι τιμές χρειάζονται την προσοχή σας. Πληκτρολογήστε stock και πατήστε Enter για να ανοίξετε τις ρυθμίσεις του Stocks.",
+    "message": "Οι τιμές χρειάζονται προσοχή. Πληκτρολογήστε stock και πατήστε Enter για να ανοίξετε τις ρυθμίσεις του Stocks.",
     "description": "Compact widget hint for authentication or storage problems; keep stock as the launcher command",
     "_machine_translated": true,
-    "_source_hash": "28d7c64fff255e29"
+    "_source_hash": "8dcbef2b531a522b"
   },
   "tool.opt_in": {
-    "message": "Ενεργοποιήστε την επιλογή «Να επιτρέπονται τα εργαλεία Stocks για πράκτορες» στις ρυθμίσεις του Stocks πριν χρησιμοποιήσετε αυτό το εργαλείο. Βεβαιωθείτε ότι η συμφωνία σας με το Finnhub επιτρέπει την κοινοποίηση δεδομένων στον πάροχο του πράκτορά σας.",
+    "message": "Ενεργοποιήστε την επιλογή «Να επιτρέπονται τα εργαλεία Stocks για πράκτορες» στις ρυθμίσεις του Stocks πριν χρησιμοποιήσετε αυτό το εργαλείο. Ελέγξτε ότι οι όροι του παρόχου επιτρέπουν τη χρήση σας με τον πάροχο του πράκτορά σας.",
     "description": "Actionable agent tool opt-in error",
     "_machine_translated": true,
-    "_source_hash": "a00e5cc3750744f0"
+    "_source_hash": "994b57bbe7f233ae"
+  },
+  "settings.provider": {
+    "message": "Πάροχος τιμών",
+    "description": "Provider selection; Test/use persists the choice",
+    "_machine_translated": true,
+    "_source_hash": "b9f483c14cb7b4dc"
+  },
+  "setup.stocklake": {
+    "message": "Το Stocklake λειτουργεί χωρίς κλειδί: καθυστέρηση ~15 λεπτά, 25 κλήσεις την ημέρα· ένα προαιρετικό δωρεάν κλειδί αυξάνει το όριο σε 200.",
+    "description": "Keyless default provider description",
+    "_machine_translated": true,
+    "_source_hash": "930e88dd695cf87e"
+  },
+  "setup.stocklake_key": {
+    "message": "Λήψη δωρεάν κλειδιού Stocklake",
+    "description": "Open Stocklake sign-in; emailed code; free 200 calls/day",
+    "_machine_translated": true,
+    "_source_hash": "b21d6e57b9696558"
+  },
+  "quote.stocklake": {
+    "message": "Καθυστέρηση ~15 λεπτά · Stocklake",
+    "description": "Visible delayed provider attribution; paired with a link to stocklake.dev",
+    "_machine_translated": true,
+    "_source_hash": "081a46f162590a46"
+  },
+  "quote.history": {
+    "message": "Ημερήσιες τιμές κλεισίματος Stocklake για περίπου 30 ημέρες συναλλαγών. Το ιστορικό αποθηκεύεται στην προσωρινή μνήμη για μία ημέρα· αν δεν υπάρχει στην προσωρινή μνήμη, χρησιμοποιείται μία κλήση. Τα sparklines του Finnhub χρησιμοποιούν τοπικά δείγματα.",
+    "description": "History accessible label and settings explanation; real daily data for Stocklake",
+    "_machine_translated": true,
+    "_source_hash": "2efd3bfb80984cd7"
+  },
+  "error.daily_limit": {
+    "message": "Οι δωρεάν ημερήσιες τιμές εξαντλήθηκαν. Επαναφορά στις {time}. Προσθέστε ένα δωρεάν κλειδί Stocklake για 200 την ημέρα.",
+    "description": "Guest exhaustion message; preserve {time} for local reset time",
+    "_machine_translated": true,
+    "_source_hash": "22d1ca53ad1f23f9"
+  },
+  "error.key_daily_limit": {
+    "message": "Οι ημερήσιες κλήσεις Stocklake εξαντλήθηκαν. Επαναφορά στις {time}. Εμφανίζονται αποθηκευμένα δεδομένα, όταν υπάρχουν.",
+    "description": "Authenticated daily exhaustion; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "7c2f3494ec238e7e"
   }
 }

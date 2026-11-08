@@ -12,10 +12,10 @@
     "_source_hash": "d6d4700604b64b88"
   },
   "manifest.description": {
-    "message": "Online · Quotazioni USA e watchlist da Finnhub con la tua chiave gratuita. Dati in ritardo se memorizzati nella cache; ogni quotazione mostra il proprio orario.",
+    "message": "Online · Nessuna chiave necessaria: le quotazioni Stocklake sono ritardate di ~15 min, 25 al giorno gratis; una chiave gratuita porta il limite a 200. Finnhub è facoltativo per le quotazioni USA in tempo reale.",
     "description": "Store listing; Online and Data delayed communicate network dependency and freshness",
     "_machine_translated": true,
-    "_source_hash": "6feb0a4240dfb80e"
+    "_source_hash": "44f1eb50266b55a3"
   },
   "result.loading": {
     "message": "Ricerca azioni…",
@@ -78,16 +78,16 @@
     "_source_hash": "8adbf75fdf5bc595"
   },
   "error.auth": {
-    "message": "Finnhub ha rifiutato la chiave. Apri le impostazioni di Stocks per provarne una nuova.",
+    "message": "Il provider ha rifiutato la chiave. Apri le impostazioni di Stocks per provarne un'altra.",
     "description": "Authentication error; never include the raw provider response",
     "_machine_translated": true,
-    "_source_hash": "eca735a4f5fb0bce"
+    "_source_hash": "10cd02016931ccf6"
   },
   "error.unknown": {
-    "message": "Nessuna quotazione per questo simbolo. Controlla il ticker USA, incluso l'eventuale suffisso della classe di azioni.",
+    "message": "Nessuna quotazione per questo simbolo. Controlla il ticker e il suffisso della borsa.",
     "description": "Unknown or zero-valued quote",
     "_machine_translated": true,
-    "_source_hash": "3a30475366fb7002"
+    "_source_hash": "bd84c7f6e9173633"
   },
   "error.unsupported": {
     "message": "Questo provider supporta solo ticker USA. I suffissi delle borse internazionali richiedono un piano dati diverso.",
@@ -114,16 +114,16 @@
     "_source_hash": "7d553dee0c6fe94a"
   },
   "error.offline": {
-    "message": "Impossibile raggiungere Finnhub. Vengono mostrati i dati salvati, se disponibili.",
+    "message": "Impossibile raggiungere il provider delle quotazioni. Vengono mostrati i dati salvati, se disponibili.",
     "description": "Offline or network failure",
     "_machine_translated": true,
-    "_source_hash": "536dacabe5ed1015"
+    "_source_hash": "6fe79608991e6dfd"
   },
   "error.unavailable": {
-    "message": "Finnhub non è disponibile. Vengono mostrati i dati salvati, se disponibili.",
+    "message": "Il provider delle quotazioni non è disponibile. Vengono mostrati i dati salvati, se disponibili.",
     "description": "Sanitized provider error",
     "_machine_translated": true,
-    "_source_hash": "2dd30adcc5164ad4"
+    "_source_hash": "e10d9f0c7de280f1"
   },
   "error.busy": {
     "message": "Un'altra finestra di Kage sta aggiornando le quotazioni. Riprova tra poco.",
@@ -138,10 +138,10 @@
     "_source_hash": "4cbfbb2e9b0adc41"
   },
   "error.invalid_key": {
-    "message": "Incolla una chiave API Finnhub, quindi usa Verifica e salva. Non incollare un URL.",
+    "message": "Incolla una API key per il provider selezionato, quindi scegli Prova e usa. Non incollare un URL.",
     "description": "Malformed or missing API key",
     "_machine_translated": true,
-    "_source_hash": "b972e383a08a0ac1"
+    "_source_hash": "46f77ed69b2c2053"
   },
   "error.invalid_range": {
     "message": "Scegli un intervallo tra 1d, 1w o 1m.",
@@ -150,10 +150,10 @@
     "_source_hash": "f4f4d83dc6129a6c"
   },
   "settings.description": {
-    "message": "Quotazioni di azioni USA, watchlist e cronologia locale delle quotazioni. Online · Fonte: Finnhub. I valori salvati potrebbero essere in ritardo.",
+    "message": "Le quotazioni Stocklake funzionano senza chiave: ritardate di ~15 min, 25 chiamate al giorno, o 200 con una chiave gratuita. Finnhub offre quotazioni USA in tempo reale con una chiave gratuita.",
     "description": "Settings summary",
     "_machine_translated": true,
-    "_source_hash": "b91914b96330d6cb"
+    "_source_hash": "deea29d63a6f57a4"
   },
   "settings.connection": {
     "message": "Provider delle quotazioni e configurazione",
@@ -162,22 +162,22 @@
     "_source_hash": "863fbc4ab994c2eb"
   },
   "setup.intro": {
-    "message": "Usa la tua chiave Finnhub gratuita per le quotazioni delle azioni USA. Ottieni una chiave qui sotto, poi verificala e salvala per connetterti.",
+    "message": "Finnhub richiede una chiave gratuita per le quotazioni USA in tempo reale, con un limite di 60 chiamate al minuto.",
     "description": "User-facing provider setup introduction",
     "_machine_translated": true,
-    "_source_hash": "0686f89d96f514a5"
+    "_source_hash": "41c015a47f8cb6a3"
   },
   "setup.terms": {
-    "message": "I piani personali di Finnhub sono destinati a un uso personale idoneo. L'uso aziendale e la condivisione di dati o risultati derivati con terze parti richiedono l'approvazione di Finnhub. Consulta i termini del provider, anche prima di inviare quotazioni a un agente remoto.",
+    "message": "Usa i dati per le tue ricerche e i tuoi strumenti. Non rivendere, ridistribuire o concedere in sublicenza i dati o l'accesso del provider, né aggirare i limiti. Controlla i termini del provider prima di condividere i risultati.",
     "description": "Material provider use restrictions",
     "_machine_translated": true,
-    "_source_hash": "9eb9716ed06ff746"
+    "_source_hash": "7fbb1c4e684b429f"
   },
   "setup.steps": {
-    "message": "1. Apri Ottieni una chiave Finnhub gratuita (circa un minuto) e registrati su Finnhub. 2. Copia la tua chiave API dalla dashboard. 3. Incollala qui sotto e scegli Verifica e salva.",
+    "message": "Stocklake funziona subito senza chiave. Scegli un provider, incolla facoltativamente la sua chiave, quindi scegli Prova e usa per salvare la scelta.",
     "description": "Guided setup steps",
     "_machine_translated": true,
-    "_source_hash": "d850b03495911632"
+    "_source_hash": "d73223e639ab4ff7"
   },
   "setup.saved": {
     "message": "Su questo dispositivo è salvata una chiave. Lascia il campo vuoto per verificarla o incollane una nuova. Le chiavi memorizzate non vengono mai mostrate qui.",
@@ -189,13 +189,13 @@
     "message": "Ottieni una chiave Finnhub gratuita (circa un minuto)",
     "description": "Open provider registration in system browser",
     "_machine_translated": true,
-    "_source_hash": "a0566f42e52da139"
+    "_source_hash": "8ee05fe11cb483c9"
   },
   "setup.key": {
-    "message": "Chiave API Finnhub",
+    "message": "API key del provider (facoltativa per Stocklake)",
     "description": "Scratch field for secret",
     "_machine_translated": true,
-    "_source_hash": "2e7e94ee1be4a2cf"
+    "_source_hash": "3fb2a7de1e62b384"
   },
   "setup.key_hint": {
     "message": "Verifica e salva memorizza la chiave nei dati privati dell'estensione, come le credenziali di Spotify. Digitarla qui non la salva insieme alle impostazioni normali. Il campo di testo di questo host è visibile durante la digitazione.",
@@ -204,10 +204,10 @@
     "_source_hash": "4c3122d9b4d5daad"
   },
   "setup.test": {
-    "message": "Verifica e salva chiave",
+    "message": "Prova e usa il provider",
     "description": "Probe quote endpoint and save only on success",
     "_machine_translated": true,
-    "_source_hash": "bc2be6a1a4fb4210"
+    "_source_hash": "d9e72fde7f42a5f5"
   },
   "setup.remove": {
     "message": "Rimuovi chiave salvata",
@@ -222,10 +222,10 @@
     "_source_hash": "59cb7317745316bb"
   },
   "setup.success": {
-    "message": "Test delle quotazioni Finnhub superato; chiave salvata.",
+    "message": "Test della quotazione superato; provider selezionato ed eventuale chiave fornita salvata.",
     "description": "Successful guided setup; key is saved independently of watchlist settings",
     "_machine_translated": true,
-    "_source_hash": "76df0b334c35e1f8"
+    "_source_hash": "c4ae3a50e8f0c3e0"
   },
   "settings.watchlist_section": {
     "message": "Watchlist e aggiornamento",
@@ -240,10 +240,10 @@
     "_source_hash": "4fa141d565f4d3cb"
   },
   "settings.watchlist_hint": {
-    "message": "Fino a {max} simboli USA, separati da spazi o virgole. Un elenco vuoto nasconde il widget.",
+    "message": "Fino a {max} simboli, separati da spazi o virgole. Stocklake accetta simboli internazionali come SAP.DE; Finnhub supporta i ticker USA. Il pannello richiede una chiave e un'impostazione di visibilità attiva.",
     "description": "Watchlist validation; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "18fd9ff917b78911"
+    "_source_hash": "5b779260bb9346da"
   },
   "settings.show": {
     "message": "Mostra la watchlist nella finestra mobile",
@@ -258,10 +258,10 @@
     "_source_hash": "d5d486955acdd4c8"
   },
   "settings.refresh_hint": {
-    "message": "Minimo {min} secondi; predefinito {default}. Sugli host Kage attuali gli aggiornamenti si sospendono quando la finestra è nascosta. Su questo dispositivo sono riservate al massimo {budget} richieste al minuto; i limiti del provider includono anche le tue altre app.",
+    "message": "Minimo {min} secondi; predefinito {default}. Le quotazioni Stocklake restano in cache per almeno 10 minuti, lo storico per un giorno. Gli aggiornamenti si sospendono con la finestra nascosta. Finnhub riserva localmente al massimo {budget} richieste al minuto.",
     "description": "Request budget and hidden behavior; preserve {min}, {default}, {budget}",
     "_machine_translated": true,
-    "_source_hash": "835954ceb7299192"
+    "_source_hash": "08eb708651c8ce9e"
   },
   "settings.refresh_error": {
     "message": "L'intervallo di aggiornamento deve essere compreso tra {min} e {max} secondi.",
@@ -270,28 +270,28 @@
     "_source_hash": "45f891673cb1e039"
   },
   "tool.quote": {
-    "message": "Ottiene da Finnhub quotazioni di azioni USA per uso personale. Restituisce fonte, timestamp dell'ultima negoziazione, aggiornamento della cache ed errori per simbolo. Richiede la chiave gratuita dell'utente; non ridistribuire senza l'approvazione del provider.",
+    "message": "Ottieni quotazioni azionarie dal provider selezionato per uso personale. Stocklake è ritardato di ~15 min e non richiede chiave; Finnhub offre quotazioni USA in tempo reale con una chiave. Restituisce fonte, timestamp, aggiornamento dei dati ed errori per simbolo. Non ridistribuire i dati.",
     "description": "Agent tool description",
     "_machine_translated": true,
-    "_source_hash": "9aa8d167f9bf2f94"
+    "_source_hash": "890f052fdf9e3bbd"
   },
   "tool.symbols": {
-    "message": "Fino a {max} simboli USA, ad esempio [\"AAPL\", \"MSFT\", \"BRK.B\"].",
+    "message": "Fino a {max} simboli, ad esempio [\"AAPL\", \"MSFT\", \"SAP.DE\"]. Finnhub accetta solo ticker USA.",
     "description": "Quote tool parameter description; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "753c9fd4564636f3"
+    "_source_hash": "acbe6e78c6fddb5a"
   },
   "tool.history": {
-    "message": "Ottieni le quotazioni Finnhub campionate localmente e osservate su questo dispositivo per 1d, 1w o 1m. Nessuna richiesta di rete. Campioni incompleti e sparsi, non candele storiche; un elenco vuoto significa che non è stato raccolto nulla.",
+    "message": "Ottieni lo storico giornaliero reale di Stocklake per 1d, 1w o 1m da una finestra di 30 giorni di borsa in cache per un giorno. Costa una chiamata se i dati non sono in cache. Finnhub restituisce quotazioni incomplete osservate localmente, senza richiesta di storico.",
     "description": "Agent tool scope must not imply full historical coverage",
     "_machine_translated": true,
-    "_source_hash": "fcb4dd5f0bdcb792"
+    "_source_hash": "d5343316b6826efa"
   },
   "tool.symbol": {
-    "message": "Un simbolo azionario statunitense.",
+    "message": "Un simbolo azionario, inclusi i suffissi internazionali per Stocklake.",
     "description": "History symbol parameter description",
     "_machine_translated": true,
-    "_source_hash": "31f6b8214e118704"
+    "_source_hash": "bf96519c516306b2"
   },
   "tool.range": {
     "message": "1d, 1w o 1m; predefinito 1d.",
@@ -312,10 +312,10 @@
     "_source_hash": "2acdb85e54aa0ed1"
   },
   "error.timeout": {
-    "message": "Finnhub ha impiegato troppo tempo a rispondere. Riprova tra qualche secondo; vengono mostrati i dati salvati, se disponibili.",
+    "message": "Il provider delle quotazioni ha impiegato troppo tempo a rispondere. Riprova tra qualche secondo; vengono mostrati i dati salvati, se disponibili.",
     "description": "Request timeout; short local pause, separate from offline backoff",
     "_machine_translated": true,
-    "_source_hash": "23491b785f430a04"
+    "_source_hash": "fb51f909049dd49a"
   },
   "settings.agent_tools": {
     "message": "Consenti gli strumenti Stocks agli agenti",
@@ -324,10 +324,10 @@
     "_source_hash": "feaafa8e946fc0b2"
   },
   "settings.agent_tools_hint": {
-    "message": "Gli strumenti dell'agente potrebbero inviare le quotazioni Finnhub e i risultati derivati al tuo provider dell'agente. Attiva questa opzione solo se il tuo contratto con Finnhub consente questa condivisione. La modifica avrà effetto dopo il riavvio di Kage.",
+    "message": "Gli strumenti per agenti possono inviare quotazioni e risultati al provider del tuo agente. Attivali solo per uso personale, se i termini del provider lo consentono. La modifica ha effetto dopo il riavvio di Kage.",
     "description": "Explain opt-in and external agent data flow",
     "_machine_translated": true,
-    "_source_hash": "85852257d902cb3e"
+    "_source_hash": "4b637e7840e5666b"
   },
   "settings.delete_quotes": {
     "message": "Elimina le quotazioni salvate",
@@ -343,12 +343,54 @@
     "message": "Le quotazioni richiedono attenzione. Digita stock e premi Invio per aprire le impostazioni di Stocks.",
     "description": "Compact widget hint for authentication or storage problems; keep stock as the launcher command",
     "_machine_translated": true,
-    "_source_hash": "28d7c64fff255e29"
+    "_source_hash": "8dcbef2b531a522b"
   },
   "tool.opt_in": {
-    "message": "Prima di usare questo strumento, attiva «Consenti gli strumenti Stocks agli agenti» nelle impostazioni di Stocks. Verifica che il tuo contratto con Finnhub consenta di condividere i dati con il tuo provider di agenti.",
+    "message": "Attiva Consenti strumenti Stocks agli agenti nelle impostazioni di Stocks prima di usare questo strumento. Verifica che i termini del provider consentano il tuo utilizzo con il provider del tuo agente.",
     "description": "Actionable agent tool opt-in error",
     "_machine_translated": true,
-    "_source_hash": "a00e5cc3750744f0"
+    "_source_hash": "994b57bbe7f233ae"
+  },
+  "settings.provider": {
+    "message": "Provider delle quotazioni",
+    "description": "Provider selection; Test/use persists the choice",
+    "_machine_translated": true,
+    "_source_hash": "b9f483c14cb7b4dc"
+  },
+  "setup.stocklake": {
+    "message": "Stocklake funziona senza chiave: ritardo di ~15 min, 25 chiamate al giorno; una chiave gratuita facoltativa aumenta il limite a 200.",
+    "description": "Keyless default provider description",
+    "_machine_translated": true,
+    "_source_hash": "930e88dd695cf87e"
+  },
+  "setup.stocklake_key": {
+    "message": "Ottieni una chiave Stocklake gratuita",
+    "description": "Open Stocklake sign-in; emailed code; free 200 calls/day",
+    "_machine_translated": true,
+    "_source_hash": "b21d6e57b9696558"
+  },
+  "quote.stocklake": {
+    "message": "Ritardo di ~15 min · Stocklake",
+    "description": "Visible delayed provider attribution; paired with a link to stocklake.dev",
+    "_machine_translated": true,
+    "_source_hash": "081a46f162590a46"
+  },
+  "quote.history": {
+    "message": "Prezzi di chiusura giornalieri di Stocklake per circa 30 giorni di borsa. La cronologia resta in cache per un giorno; se non è in cache, viene usata una chiamata. I grafici sparkline di Finnhub usano campioni locali.",
+    "description": "History accessible label and settings explanation; real daily data for Stocklake",
+    "_machine_translated": true,
+    "_source_hash": "2efd3bfb80984cd7"
+  },
+  "error.daily_limit": {
+    "message": "Quotazioni gratuite giornaliere esaurite. Il limite si azzera alle {time}. Aggiungi una chiave Stocklake gratuita per averne 200 al giorno.",
+    "description": "Guest exhaustion message; preserve {time} for local reset time",
+    "_machine_translated": true,
+    "_source_hash": "22d1ca53ad1f23f9"
+  },
+  "error.key_daily_limit": {
+    "message": "Chiamate Stocklake giornaliere esaurite. Il limite si azzera alle {time}. Vengono mostrati i dati salvati, se disponibili.",
+    "description": "Authenticated daily exhaustion; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "7c2f3494ec238e7e"
   }
 }
