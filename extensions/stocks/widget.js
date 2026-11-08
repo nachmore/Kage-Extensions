@@ -52,7 +52,7 @@ export default class StocksWatchlistWidget {
       let history = { samples: [] };
       try { history = await this.client.getHistory(quote.symbol, '1m', quote, this.config); } catch { /* Quotes remain useful without history. */ }
       const description = quoteDescription(connectionIssue ? { ...quote, reason: null } : quote, this.t, this.locale);
-      return `<button class="stocks-tile stocks-${direction(quote)}" data-ext-action="chart:${escapeHtml(quote.symbol)}" title="${escapeHtml(description)}"><strong>${escapeHtml(quote.symbol)} ${priceText(quote.price, { locale: this.locale })}</strong><span>${signedText(quote.change, { price: quote.price, locale: this.locale })} (${signedText(quote.percent, { percent: true, locale: this.locale })})</span>${sparkline(history.samples, this.t(quote.source === 'Stocklake' ? 'quote.history' : 'quote.sampled'))}<small>${escapeHtml(description)}</small></button>`;
+      return `<button class="stocks-tile stocks-${direction(quote)}" data-ext-action="chart:${escapeHtml(quote.symbol)}" title="${escapeHtml(description)}"><strong>${escapeHtml(quote.symbol)} ${priceText(quote.price, { locale: this.locale, currency: quote.currency })}</strong><span>${signedText(quote.change, { price: quote.price, locale: this.locale })} (${signedText(quote.percent, { percent: true, locale: this.locale })})</span>${sparkline(history.samples, this.t(quote.source === 'Stocklake' ? 'quote.history' : 'quote.sampled'))}<small>${escapeHtml(description)}</small></button>`;
     }));
     return {
       className: 'extension-bar stocks-widget',

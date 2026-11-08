@@ -22,7 +22,7 @@ const guestBudget = 'request_budget_stocklake_guest';
 const keyedBudget = 'request_budget_stocklake_key';
 const envelope = (body) => ({ jsonrpc: '2.0', id: 1, result: { content: [{ type: 'text', text: JSON.stringify(body) }] } });
 const response = (body = stock, status = 200, headers = {}) => ({
-  ok: status >= 200 && status < 300, status, headers: new Headers(headers), json: async () => envelope(body),
+  ok: status >= 200 && status < 300, status, headers: new Headers(headers), json: async () => envelope(body?.price ? { count: 1, symbols: { [body.symbol]: body } } : body),
 });
 const budget = (remaining, extra = {}) => ({ limit: 25, remaining, resetAt: RESET, ...extra });
 
@@ -50,7 +50,7 @@ function init(Provider, h) { const provider = new Provider(); provider.initializ
 const saved = (age = 0, source = 'Stocklake') => ({
   quote: { ...parseStocklakeQuote(stock, 'AAPL'), source }, fetchedAt: NOW - age,
 });
-async function settle(promise) { await vi.advanceTimersByTimeAsync(650); return promise; }
+async function settle(promise) { await vi.advanceTimersByTimeAsync(1350); return promise; }
 
 beforeEach(() => {
   vi.useFakeTimers({ toFake: ['Date', 'setTimeout', 'clearTimeout', 'performance'] });
@@ -106,7 +106,7 @@ describe('verified Stocklake wire format', () => {
 });
 
 describe('keyless quotes, batching and provider-specific symbols', () => {
-  it('makes $AAPL work after settling with no key, with real history and attribution', async () => {
+  it('makes $AAPL work with one guest lookup and plain-text attribution', async () => {
     const h = host();
     fetch.mockImplementation(async (_, options) => {
       const name = JSON.parse(options.body).params.name;
@@ -117,9 +117,9 @@ describe('keyless quotes, batching and provider-specific symbols', () => {
     expect(rows[0].data.quote).toMatchObject({ price: stock.price, source: 'Stocklake', stale: false });
     expect(rows[0].description).toContain('Delayed ~15 min · Stocklake');
     expect(rows.some((row) => row.data.setup)).toBe(false);
-    expect(search.renderCustom(rows[0]).html).toContain('href="https://stocklake.dev/"');
-    expect(rows[0].data.samples).toHaveLength(3);
-    expect(JSON.parse(h.store.get(guestBudget)).remaining).toBe(23);
+    expect(search.renderCustom(rows[0]).html).not.toContain('<a ');
+    expect(rows[0].data.samples).toHaveLength(0);
+    expect(JSON.parse(h.store.get(guestBudget)).remaining).toBe(24);
     expect(await search.execute(rows[1])).toEqual({ type: 'copy', value: 'AAPL 342.37 -0.52%' });
   });
   it('uses one get_stocks request, billing each distinct symbol and preserving skipped-symbol errors', async () => {
@@ -195,7 +195,7 @@ describe('daily reservations, response headers and fail-closed storage', () => {
     expect(quote).toMatchObject({ price: stock.price, cached: true, reason: 'daily_limit', retryAt: RESET });
     const text = quoteDescription(quote, h.context.i18n.t);
     expect(text).toContain(`Daily free quotes used up. Resets at ${timestampText(RESET / 1000)}. Add a free Stocklake key for 200 a day.`);
-    expect(text).toContain(`As of ${timestampText(quote.timestamp)}`);
+    expect(text).toContain(`Updated ${timestampText(quote.timestamp)}`);
     h.store.set('quote_AAPL', JSON.stringify(saved()));
     expect((await h.client.getQuote('AAPL')).reason).toBe('daily_limit');
     expect(fetch).not.toHaveBeenCalled();
@@ -280,17 +280,19 @@ describe('migration, switching, and real history', () => {
     expect(controls.find((control) => control.id === '__provider').default).toBe('finnhub');
     expect(settings.normalize({ provider: config.provider }).values.provider).toBe('finnhub');
   });
-  it.each(['api_key', 'finnhub_key'])('moves legacy %s config credentials before normalization blanks them', async (field) => {
+  it.each(['api_key', 'finnhub_key'])('ignores never-released %s config credential fields', async (field) => {
     const h = host({ config: { [field]: KEY } }); const settings = init(Settings, h);
     await settings.getSettings();
-    expect(JSON.parse(h.store.get('credentials'))).toMatchObject({ api_key: KEY, provider: 'finnhub' });
-    expect(settings.normalize({ [field]: KEY }).values[field]).toBe('');
+    expect(h.store.has('credentials')).toBe(false);
+    expect((await h.client.connection()).provider).toBe('stocklake');
+    expect(settings.normalize({ [field]: KEY }).values).not.toHaveProperty(field);
   });
   it('selects keyless Stocklake with Test/use, retaining the old Finnhub key and ignoring its cache', async () => {
     const h = host({ credentials: { api_key: KEY }, seed: { quote_AAPL: saved(0, 'Finnhub') } });
     const settings = init(Settings, h); await settings.getSettings();
     fetch.mockResolvedValue(response());
-    expect((await settings.runAction('test_key', { __provider: 'stocklake' })).status).toContain('Quote test passed');
+    expect((await settings.runAction('test_key', { __provider: 'stocklake' })).status).toContain('Provider selected');
+    expect(fetch).not.toHaveBeenCalled();
     expect(JSON.parse(h.store.get('credentials'))).toMatchObject({ provider: 'stocklake', api_key: KEY });
     expect((await h.client.getQuote('AAPL')).source).toBe('Stocklake');
     await h.client.useProvider('finnhub');

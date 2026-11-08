@@ -12,10 +12,10 @@
     "_source_hash": "d6d4700604b64b88"
   },
   "manifest.description": {
-    "message": "ऑनलाइन · किसी कुंजी की ज़रूरत नहीं: Stocklake कोट ~15 मिनट विलंबित, प्रतिदिन 25 मुफ़्त; मुफ़्त कुंजी से यह सीमा 200 हो जाती है। लाइव US कोट के लिए Finnhub वैकल्पिक है।",
+    "message": "ऑनलाइन · Stocklake कोट लगभग 15 मिनट देरी से: बिना key के दिन में लगभग 25 सिंबल लुकअप, या मुफ़्त key के साथ 200। लाइव US कोट के लिए Finnhub वैकल्पिक है।",
     "description": "Store listing; Online and Data delayed communicate network dependency and freshness",
     "_machine_translated": true,
-    "_source_hash": "44f1eb50266b55a3"
+    "_source_hash": "0a0e960d0b709ac1"
   },
   "result.loading": {
     "message": "स्टॉक खोजे जा रहे हैं…",
@@ -72,10 +72,10 @@
     "_source_hash": "693535460d4db418"
   },
   "error.setup": {
-    "message": "Stocks सेटिंग खोलें, एक मुफ़्त Finnhub key प्राप्त करें, फिर उसका परीक्षण करें और सहेजें।",
+    "message": "Stocks सेटिंग्स खोलें, मुफ़्त Finnhub key प्राप्त करें, फिर \"जाँचें और उपयोग करें\" चुनें।",
     "description": "No stored key",
     "_machine_translated": true,
-    "_source_hash": "8adbf75fdf5bc595"
+    "_source_hash": "2be9c6223cc5fff8"
   },
   "error.auth": {
     "message": "प्रदाता ने कुंजी अस्वीकार कर दी। दूसरी कुंजी का परीक्षण करने के लिए Stocks सेटिंग खोलें।",
@@ -150,10 +150,10 @@
     "_source_hash": "f4f4d83dc6129a6c"
   },
   "settings.description": {
-    "message": "Stocklake कोट बिना कुंजी के काम करते हैं: ~15 मिनट विलंबित, प्रतिदिन 25 कॉल, या मुफ़्त कुंजी के साथ 200। Finnhub मुफ़्त कुंजी के साथ लाइव US कोट देता है।",
+    "message": "Stocklake कोट बिना key के काम करते हैं: लगभग 15 मिनट देरी से, दिन में लगभग 25 सिंबल लुकअप, या मुफ़्त key के साथ 200। Finnhub मुफ़्त key के साथ लाइव US कोट देता है।",
     "description": "Settings summary",
     "_machine_translated": true,
-    "_source_hash": "deea29d63a6f57a4"
+    "_source_hash": "0f8ec107dbd56b33"
   },
   "settings.connection": {
     "message": "भाव प्रदाता और सेटअप",
@@ -172,12 +172,6 @@
     "description": "Material provider use restrictions",
     "_machine_translated": true,
     "_source_hash": "7fbb1c4e684b429f"
-  },
-  "setup.steps": {
-    "message": "Stocklake बिना कुंजी के तुरंत काम करता है। कोई प्रदाता चुनें, चाहें तो उसकी कुंजी पेस्ट करें, फिर अपना चयन सहेजने के लिए \"परीक्षण करें और उपयोग करें\" चुनें।",
-    "description": "Guided setup steps",
-    "_machine_translated": true,
-    "_source_hash": "d73223e639ab4ff7"
   },
   "setup.saved": {
     "message": "इस डिवाइस पर एक कुंजी सहेजी गई है। उसे जाँचने के लिए फ़ील्ड खाली छोड़ें, या बदलने के लिए नई कुंजी पेस्ट करें। सहेजी गई कुंजियाँ यहाँ कभी नहीं दिखाई जातीं।",
@@ -198,10 +192,10 @@
     "_source_hash": "3fb2a7de1e62b384"
   },
   "setup.key_hint": {
-    "message": "जाँचें और सहेजें कुंजी को निजी एक्सटेंशन डेटा में संग्रहित करता है, Spotify क्रेडेंशियल की तरह। यहाँ टाइप करने से वह सामान्य सेटिंग के साथ सहेजी नहीं जाती। टाइप करते समय इस होस्ट का टेक्स्ट फ़ील्ड दिखाई देता है।",
+    "message": "\"जाँचें और उपयोग करें\" key को निजी एक्सटेंशन डेटा में संग्रहीत करता है। यहाँ टाइप करने से यह सामान्य सेटिंग्स के साथ सहेजी नहीं जाती। सहेजी गई keys कभी दिखाई नहीं जातीं।",
     "description": "Storage and host input behavior",
     "_machine_translated": true,
-    "_source_hash": "4c3122d9b4d5daad"
+    "_source_hash": "84263c95dae6f748"
   },
   "setup.test": {
     "message": "प्रदाता का परीक्षण करें और उपयोग करें",
@@ -222,10 +216,10 @@
     "_source_hash": "59cb7317745316bb"
   },
   "setup.success": {
-    "message": "कोट परीक्षण सफल रहा; प्रदाता चुन लिया गया और दी गई कुंजी सहेज ली गई।",
+    "message": "प्रदाता चुना गया और दी गई key सहेजी गई। key वाले कनेक्शन कोट जाँच में सफल रहे।",
     "description": "Successful guided setup; key is saved independently of watchlist settings",
     "_machine_translated": true,
-    "_source_hash": "c4ae3a50e8f0c3e0"
+    "_source_hash": "118c046747156cd2"
   },
   "settings.watchlist_section": {
     "message": "वॉचलिस्ट और रीफ़्रेश",
@@ -270,22 +264,22 @@
     "_source_hash": "45f891673cb1e039"
   },
   "tool.quote": {
-    "message": "अपने उपयोग के लिए चुने गए प्रदाता से स्टॉक कोट पाएँ। Stocklake ~15 मिनट विलंबित है और इसे कुंजी की ज़रूरत नहीं; Finnhub कुंजी के साथ लाइव US कोट देता है। स्रोत, टाइमस्टैम्प, ताज़गी और प्रति-सिंबल त्रुटियाँ लौटाता है। डेटा पुनर्वितरित न करें।",
+    "message": "अपने उपयोग के लिए स्टॉक कोट प्राप्त करें। Stocklake लगभग 15 मिनट देरी से है; अतिथि उपयोगकर्ता प्रति IP दिन में लगभग 25 सिंबल लुकअप साझा करते हैं। हर बिना-कैश सिंबल गिना जाता है, बैच में भी। अनुरोधित सिंबल एक साथ बैच करें और अनुमान पर आधारित या दोहराए गए लुकअप से बचें। मुफ़्त key से दिन में 200 मिलते हैं। Finnhub key के साथ लाइव US कोट देता है। source, Stocklake अपडेट के लिए asOf, Finnhub के लिए tradeTime, ताज़गी और प्रति-सिंबल त्रुटियाँ लौटाता है। डेटा का पुनर्वितरण न करें।",
     "description": "Agent tool description",
     "_machine_translated": true,
-    "_source_hash": "890f052fdf9e3bbd"
+    "_source_hash": "99f5d285678b43e5"
   },
   "tool.symbols": {
-    "message": "अधिकतम {max} सिंबल, उदाहरण के लिए [\"AAPL\", \"MSFT\", \"SAP.DE\"]। Finnhub केवल US टिकर स्वीकार करता है।",
+    "message": "अधिकतम {max} अनुरोधित सिंबल बैच करें, जैसे [\"AAPL\", \"MSFT\", \"SAP.DE\"]। हर बिना-कैश Stocklake सिंबल दिन में लगभग 25 की अतिथि सीमा में गिना जाता है। Finnhub केवल US टिकर स्वीकार करता है।",
     "description": "Quote tool parameter description; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "acbe6e78c6fddb5a"
+    "_source_hash": "0b1952ac06ea6daf"
   },
   "tool.history": {
-    "message": "एक दिन के लिए कैश की गई 30 कारोबारी दिनों की अवधि से 1d, 1w या 1m का वास्तविक Stocklake दैनिक इतिहास पाएँ। कैश न मिलने पर एक कॉल खर्च होती है। Finnhub बिना इतिहास अनुरोध के, स्थानीय रूप से देखे गए अधूरे कोट लौटाता है।",
+    "message": "1d, 1w या 1m (डिफ़ॉल्ट 1m) के लिए आवश्यकता पर Stocklake का दैनिक इतिहास प्राप्त करें, लगभग 30 ट्रेडिंग दिनों से। एक दिन के लिए कैश किया जाता है। बिना-कैश इतिहास अनुरोध प्रति IP साझा लगभग 25 दैनिक सिंबल लुकअप की अतिथि सीमा में से एक का उपयोग करता है। स्वचालित इतिहास लुकअप से बचें; केवल ज़रूरत होने पर अनुरोध करें।",
     "description": "Agent tool scope must not imply full historical coverage",
     "_machine_translated": true,
-    "_source_hash": "d5343316b6826efa"
+    "_source_hash": "ef221a7846ff22d5"
   },
   "tool.symbol": {
     "message": "एक स्टॉक सिंबल, Stocklake के लिए अंतरराष्ट्रीय प्रत्यय सहित।",
@@ -294,10 +288,10 @@
     "_source_hash": "bf96519c516306b2"
   },
   "tool.range": {
-    "message": "1d, 1w या 1m; डिफ़ॉल्ट 1d।",
+    "message": "1d, 1w या 1m; डिफ़ॉल्ट 1m।",
     "description": "History range parameter description",
     "_machine_translated": true,
-    "_source_hash": "992fdef4270c7170"
+    "_source_hash": "0a2d7005b36be66b"
   },
   "tool.disabled": {
     "message": "Stocks अक्षम है।",
@@ -336,8 +330,10 @@
     "_source_hash": "c3ae84bf8010f20d"
   },
   "settings.quotes_deleted": {
-    "message": "{deleted, plural, one {# सहेजा गया कोट रिकॉर्ड और उसके स्थानीय सैंपल हटा दिए गए। अन्य विंडो या चल रहे रीफ़्रेश और रिकॉर्ड सहेज सकते हैं।} other {# सहेजे गए कोट रिकॉर्ड और उनके स्थानीय सैंपल हटा दिए गए। अन्य विंडो या चल रहे रीफ़्रेश और रिकॉर्ड सहेज सकते हैं।}}{failed, plural, =0 {} one { # रिकॉर्ड हटाया नहीं जा सका। फिर से प्रयास करें।} other { # रिकॉर्ड हटाए नहीं जा सके। फिर से प्रयास करें।}}",
-    "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
+    "message": "{deleted, plural, one {# सहेजा गया कोट या इतिहास रिकॉर्ड हटाया गया। अन्य विंडो या चालू रीफ़्रेश और रिकॉर्ड सहेज सकते हैं।} other {# सहेजे गए कोट या इतिहास रिकॉर्ड हटाए गए। अन्य विंडो या चालू रीफ़्रेश और रिकॉर्ड सहेज सकते हैं।}}{failed, plural, =0 {} one { # सहेजा गया रिकॉर्ड हटाया नहीं जा सका। फिर से प्रयास करें।} other { # सहेजे गए रिकॉर्ड हटाए नहीं जा सके। फिर से प्रयास करें।}}",
+    "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records",
+    "_machine_translated": true,
+    "_source_hash": "45eb5a0d8cf6b318"
   },
   "widget.connection": {
     "message": "कोट पर ध्यान देने की ज़रूरत है। Stocks सेटिंग खोलने के लिए stock टाइप करें और Enter दबाएँ।",
@@ -358,10 +354,10 @@
     "_source_hash": "b9f483c14cb7b4dc"
   },
   "setup.stocklake": {
-    "message": "Stocklake बिना key के काम करता है: लगभग 15 मिनट की देरी, प्रतिदिन 25 कॉल; एक वैकल्पिक मुफ़्त key से यह सीमा 200 हो जाती है।",
+    "message": "Stocklake बिना key के काम करता है: लगभग 15 मिनट देरी से, प्रति IP साझा दिन में लगभग 25 सिंबल लुकअप; मुफ़्त key से दिन में 200 मिलते हैं। हर बिना-कैश सिंबल गिना जाता है।",
     "description": "Keyless default provider description",
     "_machine_translated": true,
-    "_source_hash": "930e88dd695cf87e"
+    "_source_hash": "4fb2147ce025156d"
   },
   "setup.stocklake_key": {
     "message": "मुफ़्त Stocklake key पाएँ",
@@ -370,16 +366,16 @@
     "_source_hash": "b21d6e57b9696558"
   },
   "quote.stocklake": {
-    "message": "लगभग 15 मिनट की देरी · Stocklake",
-    "description": "Visible delayed provider attribution; paired with a link to stocklake.dev",
+    "message": "लगभग 15 मिनट देरी से · Stocklake",
+    "description": "Visible delayed provider attribution in plain text",
     "_machine_translated": true,
-    "_source_hash": "081a46f162590a46"
+    "_source_hash": "bede5ed980930c08"
   },
   "quote.history": {
-    "message": "लगभग 30 ट्रेडिंग दिनों के Stocklake दैनिक क्लोज़िंग मूल्य। इतिहास एक दिन के लिए कैश किया जाता है; कैश में न मिलने पर एक कॉल खर्च होती है। Finnhub स्पार्कलाइन स्थानीय सैंपल का उपयोग करती हैं।",
+    "message": "लगभग 30 ट्रेडिंग दिनों के Stocklake दैनिक समापन मूल्य। एक दिन के लिए कैश किया जाता है; बिना-कैश इतिहास लाने में एक दैनिक लुकअप लगता है। अतिथि स्पार्कलाइन केवल सहेजे गए इतिहास का उपयोग करती हैं।",
     "description": "History accessible label and settings explanation; real daily data for Stocklake",
     "_machine_translated": true,
-    "_source_hash": "2efd3bfb80984cd7"
+    "_source_hash": "8e6435e7874868ff"
   },
   "error.daily_limit": {
     "message": "आज के मुफ़्त कोट समाप्त हो गए हैं। {time} पर रीसेट होंगे। प्रतिदिन 200 कॉल के लिए मुफ़्त Stocklake key जोड़ें।",
@@ -392,5 +388,47 @@
     "description": "Authenticated daily exhaustion; preserve {time}",
     "_machine_translated": true,
     "_source_hash": "7c2f3494ec238e7e"
+  },
+  "result.type_symbol": {
+    "message": "कोई सिंबल टाइप करें, जैसे stock aapl",
+    "description": "Bare guest stock command; no lookup is made",
+    "_machine_translated": true,
+    "_source_hash": "7d079e375ba5f9cb"
+  },
+  "quote.updated": {
+    "message": "{time} पर अपडेट किया गया",
+    "description": "Stocklake refresh time, not last trade time; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "3dec8682dcb844dc"
+  },
+  "setup.stocklake_steps": {
+    "message": "Stocklake को बिना key के उपयोग करें, या मुफ़्त key पेस्ट करें। बदलने के लिए \"जाँचें और उपयोग करें\" चुनें; अतिथि चयन में कोई लुकअप नहीं लगता।",
+    "description": "Stocklake setup steps",
+    "_machine_translated": true,
+    "_source_hash": "96be4a9668009051"
+  },
+  "setup.finnhub_steps": {
+    "message": "मुफ़्त Finnhub key प्राप्त करें, उसे पेस्ट करें, फिर लाइव US कोट के लिए \"जाँचें और उपयोग करें\" चुनें।",
+    "description": "Finnhub setup steps",
+    "_machine_translated": true,
+    "_source_hash": "a7736e058dc5a82e"
+  },
+  "setup.switch": {
+    "message": "प्रदाता बदलने के लिए \"जाँचें और उपयोग करें\" का उपयोग करें। \"सहेजें\" सक्रिय प्रदाता की सेटिंग्स लागू करता है।",
+    "description": "Provider selection requires explicit Test and use; generic Save must explain this",
+    "_machine_translated": true,
+    "_source_hash": "1a8c271c436d2d7b"
+  },
+  "setup.removed_fallback": {
+    "message": "Finnhub key हटा दी गई। अब Stocklake अतिथि सक्रिय है। सहेजे गए कोट उपलब्ध रहेंगे।",
+    "description": "Explicit fallback after removing the active Finnhub key",
+    "_machine_translated": true,
+    "_source_hash": "49e5908c4fdee494"
+  },
+  "error.storage_until": {
+    "message": "कोट संग्रहण सीमा को ट्रैक नहीं कर सका। अनुरोध {time} तक रोके गए हैं; उपलब्ध होने पर सहेजा गया डेटा दिखाया जा रहा है।",
+    "description": "Storage lockout expiry; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "ebf9f622c5b939d6"
   }
 }

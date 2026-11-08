@@ -10,7 +10,7 @@
     "description": "Extension display name"
   },
   "manifest.description": {
-    "message": "Online · No keys needed: Stocklake quotes delayed ~15 min, 25 a day free; a free key raises this to 200. Finnhub is optional for live US quotes.",
+    "message": "Online · Stocklake quotes delayed ~15 min: about 25 symbol lookups a day without a key, or 200 with a free key. Finnhub is optional for live US quotes.",
     "description": "Store listing; Online and Data delayed communicate network dependency and freshness"
   },
   "result.loading": {
@@ -50,7 +50,7 @@
     "description": "Visible provider attribution"
   },
   "error.setup": {
-    "message": "Open Stocks settings, get a free Finnhub key, then Test and save it.",
+    "message": "Open Stocks settings, get a free Finnhub key, then Test and use it.",
     "description": "No stored key"
   },
   "error.auth": {
@@ -102,7 +102,7 @@
     "description": "Agent history range validation"
   },
   "settings.description": {
-    "message": "Stocklake quotes work without a key: delayed ~15 min, 25 calls a day, or 200 with a free key. Finnhub offers live US quotes with a free key.",
+    "message": "Stocklake quotes work without a key: delayed ~15 min, about 25 symbol lookups a day, or 200 with a free key. Finnhub offers live US quotes with a free key.",
     "description": "Settings summary"
   },
   "settings.connection": {
@@ -117,10 +117,6 @@
     "message": "Use data for your own research and tools. Do not resell, redistribute or sublicense provider data or access, or circumvent limits. Check provider terms before sharing results.",
     "description": "Material provider use restrictions"
   },
-  "setup.steps": {
-    "message": "Stocklake works immediately without a key. Choose a provider, optionally paste its key, then Test and use to save your choice.",
-    "description": "Guided setup steps"
-  },
   "setup.saved": {
     "message": "A key is saved on this device. Leave the field empty to test it, or paste a replacement. Stored keys are never shown here.",
     "description": "Connected setup state without secret disclosure"
@@ -134,7 +130,7 @@
     "description": "Scratch field for secret"
   },
   "setup.key_hint": {
-    "message": "Test and save stores the key in private extension data, like Spotify credentials. Typing it here does not save it with regular settings. This host's text field is visible while you type.",
+    "message": "Test and use stores the key in private extension data. Typing it here does not save it with regular settings. Saved keys are never shown.",
     "description": "Storage and host input behavior"
   },
   "setup.test": {
@@ -150,7 +146,7 @@
     "description": "Removal success"
   },
   "setup.success": {
-    "message": "Quote test passed; provider selected and any supplied key saved.",
+    "message": "Provider selected and any supplied key saved. Keyed connections passed a quote test.",
     "description": "Successful guided setup; key is saved independently of watchlist settings"
   },
   "settings.watchlist_section": {
@@ -182,15 +178,15 @@
     "description": "Invalid interval; preserve {min}, {max}"
   },
   "tool.quote": {
-    "message": "Get stock quotes from your selected provider for your own use. Stocklake is delayed ~15 min and needs no key; Finnhub offers live US quotes with a key. Returns source, timestamps, freshness and per-symbol errors. Do not redistribute data.",
+    "message": "Get stock quotes for your own use. Stocklake is delayed ~15 min; guests share about 25 symbol lookups a day per IP. Each uncached symbol counts, even in a batch. Batch requested symbols together and avoid speculative or repeated lookups. A free key allows 200 a day. Finnhub offers live US quotes with a key. Returns source, asOf for Stocklake updates, tradeTime for Finnhub, freshness and per-symbol errors. Do not redistribute data.",
     "description": "Agent tool description"
   },
   "tool.symbols": {
-    "message": "Up to {max} symbols, for example [\"AAPL\", \"MSFT\", \"SAP.DE\"]. Finnhub accepts US tickers only.",
+    "message": "Batch up to {max} requested symbols, e.g. [\"AAPL\", \"MSFT\", \"SAP.DE\"]. Each uncached Stocklake symbol counts toward the guest limit of about 25 a day. Finnhub accepts US tickers only.",
     "description": "Quote tool parameter description; preserve {max}"
   },
   "tool.history": {
-    "message": "Get real Stocklake daily history for 1d, 1w or 1m from a 30-trading-day window cached for a day. Costs one call on a cache miss. Finnhub returns incomplete locally observed quotes with no history request.",
+    "message": "Fetch Stocklake daily history on demand for 1d, 1w or 1m (default 1m), from about 30 trading days. Cached for a day. An uncached history request uses one of the guest allowance of about 25 daily symbol lookups shared per IP. Avoid automatic history lookups; request only when needed.",
     "description": "Agent tool scope must not imply full historical coverage"
   },
   "tool.symbol": {
@@ -198,7 +194,7 @@
     "description": "History symbol parameter description"
   },
   "tool.range": {
-    "message": "1d, 1w or 1m; default 1d.",
+    "message": "1d, 1w or 1m; default 1m.",
     "description": "History range parameter description"
   },
   "tool.disabled": {
@@ -242,7 +238,7 @@
     "description": "Provider selection; Test/use persists the choice"
   },
   "setup.stocklake": {
-    "message": "Stocklake works without a key: delayed ~15 min, 25 calls a day; an optional free key raises this to 200.",
+    "message": "Stocklake works without a key: delayed ~15 min, about 25 symbol lookups a day shared per IP; a free key allows 200 a day. Each uncached symbol counts.",
     "description": "Keyless default provider description"
   },
   "setup.stocklake_key": {
@@ -251,10 +247,10 @@
   },
   "quote.stocklake": {
     "message": "Delayed ~15 min · Stocklake",
-    "description": "Visible delayed provider attribution; paired with a link to stocklake.dev"
+    "description": "Visible delayed provider attribution in plain text"
   },
   "quote.history": {
-    "message": "Stocklake daily closing prices for about 30 trading days. History is cached for a day; a cache miss uses one call. Finnhub sparklines use local samples.",
+    "message": "Stocklake daily closing prices for about 30 trading days. Cached for a day; fetching uncached history uses one daily lookup. Guest sparklines use saved history only.",
     "description": "History accessible label and settings explanation; real daily data for Stocklake"
   },
   "error.daily_limit": {
@@ -264,5 +260,33 @@
   "error.key_daily_limit": {
     "message": "Daily Stocklake calls used up. Resets at {time}. Showing saved data when available.",
     "description": "Authenticated daily exhaustion; preserve {time}"
+  },
+  "result.type_symbol": {
+    "message": "Type a symbol, e.g. stock aapl",
+    "description": "Bare guest stock command; no lookup is made"
+  },
+  "quote.updated": {
+    "message": "Updated {time}",
+    "description": "Stocklake refresh time, not last trade time; preserve {time}"
+  },
+  "setup.stocklake_steps": {
+    "message": "Use Stocklake without a key, or paste a free key. Select Test and use to switch; guest selection uses no lookup.",
+    "description": "Stocklake setup steps"
+  },
+  "setup.finnhub_steps": {
+    "message": "Get a free Finnhub key, paste it, then select Test and use for live US quotes.",
+    "description": "Finnhub setup steps"
+  },
+  "setup.switch": {
+    "message": "Use Test and use to switch providers. Save applies settings for the active provider.",
+    "description": "Provider selection requires explicit Test and use; generic Save must explain this"
+  },
+  "setup.removed_fallback": {
+    "message": "Finnhub key removed. Stocklake guest is now active. Saved quotes remain available.",
+    "description": "Explicit fallback after removing the active Finnhub key"
+  },
+  "error.storage_until": {
+    "message": "Quote storage could not track the limit. Requests are paused until {time}; showing saved data when available.",
+    "description": "Storage lockout expiry; preserve {time}"
   }
 }

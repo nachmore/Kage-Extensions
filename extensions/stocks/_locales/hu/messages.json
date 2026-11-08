@@ -12,10 +12,10 @@
     "_source_hash": "d6d4700604b64b88"
   },
   "manifest.description": {
-    "message": "Online · Nem kell kulcs: a Stocklake árfolyamai kb. 15 perc késéssel érkeznek, napi 25 lekérés ingyenes; ingyenes kulccsal ez 200-ra nő. A Finnhub opcionális, élő amerikai árfolyamokhoz.",
+    "message": "Online · Stocklake-árfolyamok kb. 15 perc késéssel: kulcs nélkül naponta kb. 25 szimbólumlekérdezés, ingyenes kulccsal 200. A Finnhub opcionális az élő amerikai árfolyamokhoz.",
     "description": "Store listing; Online and Data delayed communicate network dependency and freshness",
     "_machine_translated": true,
-    "_source_hash": "44f1eb50266b55a3"
+    "_source_hash": "0a0e960d0b709ac1"
   },
   "result.loading": {
     "message": "Részvények keresése…",
@@ -72,10 +72,10 @@
     "_source_hash": "693535460d4db418"
   },
   "error.setup": {
-    "message": "Nyissa meg a Részvények beállításait, szerezzen egy ingyenes Finnhub-kulcsot, majd tesztelje és mentse.",
+    "message": "Nyissa meg a Részvények beállításait, szerezzen be egy ingyenes Finnhub-kulcsot, majd válassza a Tesztelés és használat lehetőséget.",
     "description": "No stored key",
     "_machine_translated": true,
-    "_source_hash": "8adbf75fdf5bc595"
+    "_source_hash": "2be9c6223cc5fff8"
   },
   "error.auth": {
     "message": "A szolgáltató elutasította a kulcsot. Nyissa meg a Stocks beállításait, és teszteljen egy másik kulcsot.",
@@ -150,10 +150,10 @@
     "_source_hash": "f4f4d83dc6129a6c"
   },
   "settings.description": {
-    "message": "A Stocklake árfolyamai kulcs nélkül is működnek: kb. 15 perc késéssel, napi 25 lekéréssel, ingyenes kulccsal 200-zal. A Finnhub ingyenes kulccsal élő amerikai árfolyamokat kínál.",
+    "message": "A Stocklake-árfolyamok kulcs nélkül is működnek: kb. 15 perc késéssel, naponta kb. 25 szimbólumlekérdezéssel, ingyenes kulccsal 200-zal. A Finnhub ingyenes kulccsal élő amerikai árfolyamokat kínál.",
     "description": "Settings summary",
     "_machine_translated": true,
-    "_source_hash": "deea29d63a6f57a4"
+    "_source_hash": "0f8ec107dbd56b33"
   },
   "settings.connection": {
     "message": "Árfolyam-szolgáltató és beállítás",
@@ -172,12 +172,6 @@
     "description": "Material provider use restrictions",
     "_machine_translated": true,
     "_source_hash": "7fbb1c4e684b429f"
-  },
-  "setup.steps": {
-    "message": "A Stocklake kulcs nélkül, azonnal működik. Válasszon szolgáltatót, igény szerint illessze be a kulcsát, majd a választás mentéséhez kattintson a Tesztelés és használat gombra.",
-    "description": "Guided setup steps",
-    "_machine_translated": true,
-    "_source_hash": "d73223e639ab4ff7"
   },
   "setup.saved": {
     "message": "Ezen az eszközön van mentett kulcs. A teszteléshez hagyja üresen a mezőt, vagy illesszen be egy új kulcsot. A tárolt kulcsok itt soha nem jelennek meg.",
@@ -198,10 +192,10 @@
     "_source_hash": "3fb2a7de1e62b384"
   },
   "setup.key_hint": {
-    "message": "A Tesztelés és mentés a kulcsot a bővítmény privát adataiban tárolja, a Spotify hitelesítő adataihoz hasonlóan. Az ide beírt kulcs nem mentődik a normál beállításokkal. A gazdaalkalmazás szövegmezője gépelés közben látható.",
+    "message": "A Tesztelés és használat a kulcsot a bővítmény privát adataiban tárolja. Az itt beírt kulcs nem mentődik a normál beállításokkal. A mentett kulcsok soha nem jelennek meg.",
     "description": "Storage and host input behavior",
     "_machine_translated": true,
-    "_source_hash": "4c3122d9b4d5daad"
+    "_source_hash": "84263c95dae6f748"
   },
   "setup.test": {
     "message": "Szolgáltató tesztelése és használata",
@@ -222,10 +216,10 @@
     "_source_hash": "59cb7317745316bb"
   },
   "setup.success": {
-    "message": "Az árfolyamteszt sikeres; a szolgáltató kiválasztva, a megadott kulcs mentve.",
+    "message": "Szolgáltató kiválasztva, a megadott kulcs mentve. A kulcsos kapcsolatok sikeresen teljesítették az árfolyamtesztet.",
     "description": "Successful guided setup; key is saved independently of watchlist settings",
     "_machine_translated": true,
-    "_source_hash": "c4ae3a50e8f0c3e0"
+    "_source_hash": "118c046747156cd2"
   },
   "settings.watchlist_section": {
     "message": "Figyelőlista és frissítés",
@@ -270,22 +264,22 @@
     "_source_hash": "45f891673cb1e039"
   },
   "tool.quote": {
-    "message": "Részvényárfolyamokat kér le a kiválasztott szolgáltatótól saját használatra. A Stocklake kb. 15 perc késéssel működik, és nem kell hozzá kulcs; a Finnhub kulccsal élő amerikai árfolyamokat kínál. Visszaadja a forrást, az időbélyegeket, a frissességet és a szimbólumonkénti hibákat. Az adatokat ne terjessze tovább.",
+    "message": "Részvényárfolyamok lekérése saját használatra. A Stocklake kb. 15 perc késéssel működik; a vendégek IP-címenként naponta kb. 25 szimbólumlekérdezésen osztoznak. Minden nem gyorsítótárazott szimbólum számít, kötegben is. A kért szimbólumokat kérje le együtt, és kerülje a spekulatív vagy ismételt lekérdezéseket. Ingyenes kulccsal napi 200 lekérdezés érhető el. A Finnhub kulccsal élő amerikai árfolyamokat kínál. Visszaadja a forrást, a Stocklake-frissítések asOf értékét, a Finnhub tradeTime értékét, a frissességet és a szimbólumonkénti hibákat. Az adatokat ne terjessze tovább.",
     "description": "Agent tool description",
     "_machine_translated": true,
-    "_source_hash": "890f052fdf9e3bbd"
+    "_source_hash": "99f5d285678b43e5"
   },
   "tool.symbols": {
-    "message": "Legfeljebb {max} szimbólum, például [\"AAPL\", \"MSFT\", \"SAP.DE\"]. A Finnhub csak amerikai tickereket fogad el.",
+    "message": "Legfeljebb {max} kért szimbólum kötegelése, pl. [\"AAPL\", \"MSFT\", \"SAP.DE\"]. Minden nem gyorsítótárazott Stocklake-szimbólum beleszámít a napi kb. 25-ös vendégkorlátba. A Finnhub csak amerikai tickereket fogad el.",
     "description": "Quote tool parameter description; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "acbe6e78c6fddb5a"
+    "_source_hash": "0b1952ac06ea6daf"
   },
   "tool.history": {
-    "message": "Valós Stocklake napi előzményeket kér le 1d, 1w vagy 1m időszakra egy 30 kereskedési napos, egy napig gyorsítótárazott ablakból. Gyorsítótár-hiány esetén egy lekérésbe kerül. A Finnhub hiányos, helyben megfigyelt árfolyamokat ad vissza, előzménykérés nélkül.",
+    "message": "Stocklake napi előzmények lekérése igény szerint 1d, 1w vagy 1m időszakra (alapértelmezés: 1m), kb. 30 kereskedési nap adataiból. Egy napig gyorsítótárazva. Egy nem gyorsítótárazott előzménykérés felhasznál egyet az IP-címenként közös, napi kb. 25 szimbólumlekérdezésből álló vendégkeretből. Kerülje az automatikus előzménylekérdezéseket; csak szükség esetén kérje le.",
     "description": "Agent tool scope must not imply full historical coverage",
     "_machine_translated": true,
-    "_source_hash": "d5343316b6826efa"
+    "_source_hash": "ef221a7846ff22d5"
   },
   "tool.symbol": {
     "message": "Részvényszimbólum, Stocklake esetén a nemzetközi utótagokkal együtt.",
@@ -294,10 +288,10 @@
     "_source_hash": "bf96519c516306b2"
   },
   "tool.range": {
-    "message": "1d, 1w vagy 1m; alapértelmezés: 1d.",
+    "message": "1d, 1w vagy 1m; alapértelmezés: 1m.",
     "description": "History range parameter description",
     "_machine_translated": true,
-    "_source_hash": "992fdef4270c7170"
+    "_source_hash": "0a2d7005b36be66b"
   },
   "tool.disabled": {
     "message": "A Stocks ki van kapcsolva.",
@@ -336,8 +330,10 @@
     "_source_hash": "c3ae84bf8010f20d"
   },
   "settings.quotes_deleted": {
-    "message": "{deleted, plural, one {# mentett árfolyamrekord és a hozzá tartozó helyi minták törölve. Más ablakok vagy folyamatban lévő frissítések további rekordokat menthetnek.} other {# mentett árfolyamrekord és a hozzájuk tartozó helyi minták törölve. Más ablakok vagy folyamatban lévő frissítések további rekordokat menthetnek.}}{failed, plural, =0 {} one { # rekordot nem sikerült törölni. Próbálja újra.} other { # rekordot nem sikerült törölni. Próbálja újra.}}",
-    "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
+    "message": "{deleted, plural, one {# mentett árfolyam vagy előzményrekord törölve. Más ablakok vagy aktív frissítések továbbiakat menthetnek.} other {# mentett árfolyam vagy előzményrekord törölve. Más ablakok vagy aktív frissítések továbbiakat menthetnek.}}{failed, plural, =0 {} one { # mentett rekordot nem sikerült törölni. Próbálja újra.} other { # mentett rekordot nem sikerült törölni. Próbálja újra.}}",
+    "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records",
+    "_machine_translated": true,
+    "_source_hash": "45eb5a0d8cf6b318"
   },
   "widget.connection": {
     "message": "Az árfolyamok figyelmet igényelnek. A Stocks beállításainak megnyitásához írja be: stock, majd nyomja meg az Enter billentyűt.",
@@ -358,10 +354,10 @@
     "_source_hash": "b9f483c14cb7b4dc"
   },
   "setup.stocklake": {
-    "message": "A Stocklake kulcs nélkül is működik: kb. 15 perces késéssel, napi 25 hívással; egy opcionális ingyenes kulccsal ez 200-ra nő.",
+    "message": "A Stocklake kulcs nélkül is működik: kb. 15 perc késéssel, IP-címenként közös napi kb. 25 szimbólumlekérdezéssel; ingyenes kulccsal napi 200 érhető el. Minden nem gyorsítótárazott szimbólum számít.",
     "description": "Keyless default provider description",
     "_machine_translated": true,
-    "_source_hash": "930e88dd695cf87e"
+    "_source_hash": "4fb2147ce025156d"
   },
   "setup.stocklake_key": {
     "message": "Ingyenes Stocklake kulcs igénylése",
@@ -370,16 +366,16 @@
     "_source_hash": "b21d6e57b9696558"
   },
   "quote.stocklake": {
-    "message": "Kb. 15 perces késés · Stocklake",
-    "description": "Visible delayed provider attribution; paired with a link to stocklake.dev",
+    "message": "Kb. 15 perc késés · Stocklake",
+    "description": "Visible delayed provider attribution in plain text",
     "_machine_translated": true,
-    "_source_hash": "081a46f162590a46"
+    "_source_hash": "bede5ed980930c08"
   },
   "quote.history": {
-    "message": "Stocklake napi záróárak körülbelül 30 kereskedési napra. Az előzmények egy napig gyorsítótárazva vannak; ha nincsenek a gyorsítótárban, a lekérés egy hívást használ. A Finnhub mini diagramjai helyi mintákat használnak.",
+    "message": "Stocklake napi záróárak kb. 30 kereskedési napra. Egy napig gyorsítótárazva; a nem gyorsítótárazott előzmények lekérése egy napi lekérdezést használ fel. A vendég mini diagramok csak mentett előzményeket használnak.",
     "description": "History accessible label and settings explanation; real daily data for Stocklake",
     "_machine_translated": true,
-    "_source_hash": "2efd3bfb80984cd7"
+    "_source_hash": "8e6435e7874868ff"
   },
   "error.daily_limit": {
     "message": "Elfogytak a napi ingyenes árfolyamlekérések. Visszaállítás: {time}. Adjon hozzá egy ingyenes Stocklake kulcsot a napi 200 lekéréshez.",
@@ -392,5 +388,47 @@
     "description": "Authenticated daily exhaustion; preserve {time}",
     "_machine_translated": true,
     "_source_hash": "7c2f3494ec238e7e"
+  },
+  "result.type_symbol": {
+    "message": "Írjon be egy szimbólumot, pl. stock aapl",
+    "description": "Bare guest stock command; no lookup is made",
+    "_machine_translated": true,
+    "_source_hash": "7d079e375ba5f9cb"
+  },
+  "quote.updated": {
+    "message": "Frissítve: {time}",
+    "description": "Stocklake refresh time, not last trade time; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "3dec8682dcb844dc"
+  },
+  "setup.stocklake_steps": {
+    "message": "Használja a Stocklake-et kulcs nélkül, vagy illesszen be egy ingyenes kulcsot. A váltáshoz válassza a Tesztelés és használat lehetőséget; a vendég mód kiválasztása nem használ lekérdezést.",
+    "description": "Stocklake setup steps",
+    "_machine_translated": true,
+    "_source_hash": "96be4a9668009051"
+  },
+  "setup.finnhub_steps": {
+    "message": "Szerezzen be egy ingyenes Finnhub-kulcsot, illessze be, majd az élő amerikai árfolyamokhoz válassza a Tesztelés és használat lehetőséget.",
+    "description": "Finnhub setup steps",
+    "_machine_translated": true,
+    "_source_hash": "a7736e058dc5a82e"
+  },
+  "setup.switch": {
+    "message": "A szolgáltatóváltáshoz használja a Tesztelés és használat lehetőséget. A Mentés az aktív szolgáltató beállításait alkalmazza.",
+    "description": "Provider selection requires explicit Test and use; generic Save must explain this",
+    "_machine_translated": true,
+    "_source_hash": "1a8c271c436d2d7b"
+  },
+  "setup.removed_fallback": {
+    "message": "Finnhub-kulcs eltávolítva. Most a Stocklake vendég mód aktív. A mentett árfolyamok továbbra is elérhetők.",
+    "description": "Explicit fallback after removing the active Finnhub key",
+    "_machine_translated": true,
+    "_source_hash": "49e5908c4fdee494"
+  },
+  "error.storage_until": {
+    "message": "Az árfolyamtároló nem tudta követni a korlátot. A kérések szünetelnek eddig: {time}; ha vannak, a mentett adatok jelennek meg.",
+    "description": "Storage lockout expiry; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "ebf9f622c5b939d6"
   }
 }

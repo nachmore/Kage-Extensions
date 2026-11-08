@@ -296,15 +296,17 @@ describe('cache, budgets, backoff and concurrent windows', () => {
     expect(stored.samples[0].timestamp).toBeGreaterThan(NOW / 1000 - 31 * 86_400);
     expect(stored.samples.at(-1)).toEqual({ timestamp: NOW / 1000, price: 189.12 });
   });
-  it('does not request without keys and reads changed credentials through shared storage', async () => {
+  it('does not charge offline guests and reads changed credentials through shared storage', async () => {
     const f = fixture({ key: null });
-    await expect(f.client.getQuote('AAPL')).rejects.toThrow('setup');
+    navigator.onLine = false;
+    await expect(f.client.getQuote('AAPL')).rejects.toThrow('offline');
     expect(fetch).not.toHaveBeenCalled();
+    navigator.onLine = true;
     await f.client.saveKey(TEST_KEY);
     fetch.mockResolvedValue(jsonResponse());
     expect((await f.client.getQuote('AAPL')).price).toBe(189.12);
     await f.client.removeKey();
-    expect((await f.client.getQuote('AAPL')).reason).toBe('setup');
+    expect((await f.client.connection()).provider).toBe('stocklake');
     expect(await f.client.key()).toBeNull();
   });
   it('does not use a corrupt cache, and fails closed on budget write errors', async () => {
@@ -369,13 +371,13 @@ describe('launcher, settings, tools and widget workflows', () => {
     expect((await search.execute(copy[0])).type).toBe('copy');
     expect(search.renderCustom(single[0]).html).toContain('stocks-up');
   });
-  it('surfaces unknown symbols, setup, and invalid queries without hiding rows', async () => {
+  it('surfaces guest errors, unknown symbols and invalid queries without a setup nag', async () => {
     const f = fixture({ key: null });
     const search = init(Search, f);
     const rows = await search.matchAsync('stock msft');
-    expect(rows[0].description).toContain('free Finnhub key');
-    expect(await search.execute(rows[0])).toEqual({ type: 'open_extension_settings' });
-    expect((await search.matchAsync('stock VOD.L'))[0].description).toContain('US tickers only');
+    expect(rows[0].description).toContain('Cannot reach');
+    expect(await search.execute(rows[0])).toEqual({ type: 'custom', data: {} });
+    expect((await search.matchAsync('stock VOD.L'))[0].description).not.toContain('US tickers only');
     expect(search.match('stockholm')).toEqual([]);
     await f.client.saveKey(TEST_KEY);
     fetch.mockResolvedValue(jsonResponse({ c: 0, t: 0 }));
@@ -402,7 +404,7 @@ describe('launcher, settings, tools and widget workflows', () => {
     }
     expect(settings.normalize({ ...DEFAULTS, __api_key: TEST_KEY, unknown: 1 })).toEqual({ values: { ...DEFAULTS, __api_key: '' } });
     expect(settings.validate(DEFAULTS)).toEqual({ valid: true });
-    expect(settings.validate({ watchlist: 'VOD.L' }).valid).toBe(false);
+    expect(settings.validate({ watchlist: 'VOD.L' }).valid).toBe(true);
     expect(settings.validate({ refresh_seconds: 5 }).valid).toBe(false);
     expect(settings.validate({ refresh_seconds: 4000 }).valid).toBe(false);
     expect(settings.normalize({ watchlist: '$aapl.us, msft', refresh_seconds: '60' }).values).toEqual({ watchlist: 'AAPL MSFT', refresh_seconds: 60 });
@@ -410,10 +412,10 @@ describe('launcher, settings, tools and widget workflows', () => {
   it('guides free-key setup, tests before saving, hides stored keys, and supports removal', async () => {
     const f = fixture({ key: null });
     const settings = init(Settings, f);
-    await settings.runAction('free_key');
+    await settings.runAction('free_key', { __provider: 'finnhub' });
     expect(f.invoke).toHaveBeenCalledWith('open_url', { url: 'https://finnhub.io/register' });
     fetch.mockResolvedValueOnce(jsonResponse());
-    expect((await settings.runAction('test_key', { __api_key: TEST_KEY })).status).toContain('key saved');
+    expect((await settings.runAction('test_key', { __provider: 'finnhub', __api_key: TEST_KEY })).status).toContain('key saved');
     expect(await f.client.key()).toBe(TEST_KEY);
     expect(JSON.stringify(await settings.getSettings())).not.toContain(TEST_KEY);
     await settings.runAction('remove_key');
@@ -423,7 +425,7 @@ describe('launcher, settings, tools and widget workflows', () => {
     const f = fixture({ key: null });
     const settings = init(Settings, f);
     fetch.mockResolvedValue(jsonResponse({ error: TEST_KEY }, 401));
-    const output = await settings.runAction('test_key', { __api_key: TEST_KEY });
+    const output = await settings.runAction('test_key', { __provider: 'finnhub', __api_key: TEST_KEY });
     expect(output.status).toContain('rejected the key');
     expect(JSON.stringify(output)).not.toContain(TEST_KEY);
     expect(await f.client.key()).toBeNull();

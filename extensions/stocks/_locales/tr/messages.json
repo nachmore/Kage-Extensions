@@ -12,10 +12,10 @@
     "_source_hash": "d6d4700604b64b88"
   },
   "manifest.description": {
-    "message": "Çevrimiçi · Anahtar gerekmez: Stocklake fiyatları ~15 dk gecikmelidir, günde 25 ücretsiz sorgu; ücretsiz bir anahtarla bu sayı 200'e çıkar. Canlı ABD fiyatları için Finnhub isteğe bağlıdır.",
+    "message": "Çevrimiçi · Stocklake fiyatları ~15 dk gecikmelidir: anahtar olmadan günde yaklaşık 25 sembol sorgusu, ücretsiz anahtarla 200. Canlı ABD fiyatları için Finnhub isteğe bağlıdır.",
     "description": "Store listing; Online and Data delayed communicate network dependency and freshness",
     "_machine_translated": true,
-    "_source_hash": "44f1eb50266b55a3"
+    "_source_hash": "0a0e960d0b709ac1"
   },
   "result.loading": {
     "message": "Hisse senetleri aranıyor…",
@@ -72,10 +72,10 @@
     "_source_hash": "693535460d4db418"
   },
   "error.setup": {
-    "message": "Hisse senetleri ayarlarını açın, ücretsiz bir Finnhub anahtarı alın, ardından Test et ve kaydet'i kullanın.",
+    "message": "Hisseler ayarlarını açın, ücretsiz bir Finnhub anahtarı alın, ardından Test et ve kullan'ı seçin.",
     "description": "No stored key",
     "_machine_translated": true,
-    "_source_hash": "8adbf75fdf5bc595"
+    "_source_hash": "2be9c6223cc5fff8"
   },
   "error.auth": {
     "message": "Sağlayıcı anahtarı reddetti. Yeni bir anahtarı test etmek için Hisseler ayarlarını açın.",
@@ -150,10 +150,10 @@
     "_source_hash": "f4f4d83dc6129a6c"
   },
   "settings.description": {
-    "message": "Stocklake fiyatları anahtarsız çalışır: ~15 dk gecikmeli, günde 25 sorgu veya ücretsiz bir anahtarla 200. Finnhub, ücretsiz bir anahtarla canlı ABD fiyatları sunar.",
+    "message": "Stocklake fiyatları anahtar olmadan çalışır: ~15 dk gecikmeli, günde yaklaşık 25 sembol sorgusu veya ücretsiz anahtarla 200. Finnhub, ücretsiz bir anahtarla canlı ABD fiyatları sunar.",
     "description": "Settings summary",
     "_machine_translated": true,
-    "_source_hash": "deea29d63a6f57a4"
+    "_source_hash": "0f8ec107dbd56b33"
   },
   "settings.connection": {
     "message": "Fiyat sağlayıcısı ve kurulum",
@@ -172,12 +172,6 @@
     "description": "Material provider use restrictions",
     "_machine_translated": true,
     "_source_hash": "7fbb1c4e684b429f"
-  },
-  "setup.steps": {
-    "message": "Stocklake anahtar olmadan hemen çalışır. Bir sağlayıcı seçin, isterseniz anahtarını yapıştırın, ardından seçiminizi kaydetmek için Test et ve kullan'a tıklayın.",
-    "description": "Guided setup steps",
-    "_machine_translated": true,
-    "_source_hash": "d73223e639ab4ff7"
   },
   "setup.saved": {
     "message": "Bu cihazda kayıtlı bir anahtar var. Test etmek için alanı boş bırakın veya yerine yenisini yapıştırın. Kayıtlı anahtarlar burada asla gösterilmez.",
@@ -198,10 +192,10 @@
     "_source_hash": "3fb2a7de1e62b384"
   },
   "setup.key_hint": {
-    "message": "Test et ve kaydet, anahtarı Spotify kimlik bilgileri gibi özel uzantı verilerinde saklar. Buraya yazmak, anahtarı normal ayarlarla birlikte kaydetmez. Bu ana uygulamanın metin alanı, yazarken görünür durumdadır.",
+    "message": "Test et ve kullan, anahtarı gizli uzantı verilerinde saklar. Buraya yazmak, anahtarı normal ayarlarla birlikte kaydetmez. Kaydedilen anahtarlar hiçbir zaman gösterilmez.",
     "description": "Storage and host input behavior",
     "_machine_translated": true,
-    "_source_hash": "4c3122d9b4d5daad"
+    "_source_hash": "84263c95dae6f748"
   },
   "setup.test": {
     "message": "Sağlayıcıyı test et ve kullan",
@@ -222,10 +216,10 @@
     "_source_hash": "59cb7317745316bb"
   },
   "setup.success": {
-    "message": "Fiyat testi başarılı; sağlayıcı seçildi ve girilen anahtar kaydedildi.",
+    "message": "Sağlayıcı seçildi ve girilen anahtar kaydedildi. Anahtarlı bağlantılar fiyat testini geçti.",
     "description": "Successful guided setup; key is saved independently of watchlist settings",
     "_machine_translated": true,
-    "_source_hash": "c4ae3a50e8f0c3e0"
+    "_source_hash": "118c046747156cd2"
   },
   "settings.watchlist_section": {
     "message": "İzleme listesi ve yenileme",
@@ -270,22 +264,22 @@
     "_source_hash": "45f891673cb1e039"
   },
   "tool.quote": {
-    "message": "Seçili sağlayıcınızdan kendi kullanımınız için hisse fiyatlarını alın. Stocklake ~15 dk gecikmelidir ve anahtar gerektirmez; Finnhub bir anahtarla canlı ABD fiyatları sunar. Kaynak, zaman damgaları, güncellik ve sembol bazında hataları döndürür. Verileri yeniden dağıtmayın.",
+    "message": "Kendi kullanımınız için hisse senedi fiyatlarını alın. Stocklake ~15 dk gecikmelidir; misafirler IP başına günde yaklaşık 25 sembol sorgusunu paylaşır. Önbellekte olmayan her sembol, toplu istekte bile sayılır. İstenen sembolleri birlikte toplu olarak isteyin ve tahmine dayalı veya tekrarlanan sorgulardan kaçının. Ücretsiz bir anahtar günde 200 sorguya izin verir. Finnhub, anahtarla canlı ABD fiyatları sunar. Kaynağı, Stocklake güncellemeleri için asOf'u, Finnhub için tradeTime'ı, güncelliği ve sembol başına hataları döndürür. Verileri yeniden dağıtmayın.",
     "description": "Agent tool description",
     "_machine_translated": true,
-    "_source_hash": "890f052fdf9e3bbd"
+    "_source_hash": "99f5d285678b43e5"
   },
   "tool.symbols": {
-    "message": "En fazla {max} sembol, örneğin [\"AAPL\", \"MSFT\", \"SAP.DE\"]. Finnhub yalnızca ABD hisse kodlarını kabul eder.",
+    "message": "İstenen en fazla {max} sembolü toplu olarak gönderin, ör. [\"AAPL\", \"MSFT\", \"SAP.DE\"]. Önbellekte olmayan her Stocklake sembolü, günde yaklaşık 25 olan misafir limitine sayılır. Finnhub yalnızca ABD sembollerini kabul eder.",
     "description": "Quote tool parameter description; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "acbe6e78c6fddb5a"
+    "_source_hash": "0b1952ac06ea6daf"
   },
   "tool.history": {
-    "message": "Bir gün önbellekte tutulan 30 işlem günlük bir aralıktan 1g, 1h veya 1a için gerçek Stocklake günlük geçmişini alın. Önbellekte yoksa bir sorgu harcar. Finnhub, geçmiş isteği yapmadan yerel olarak gözlemlenmiş eksik fiyatları döndürür.",
+    "message": "Stocklake günlük geçmişini 1d, 1w veya 1m için (varsayılan 1m) yaklaşık 30 işlem gününden, talep üzerine getirin. Bir gün boyunca önbellekte tutulur. Önbellekte olmayan bir geçmiş isteği, IP başına paylaşılan yaklaşık 25 günlük sembol sorgusundan oluşan misafir hakkından birini kullanır. Otomatik geçmiş sorgularından kaçının; yalnızca gerektiğinde isteyin.",
     "description": "Agent tool scope must not imply full historical coverage",
     "_machine_translated": true,
-    "_source_hash": "d5343316b6826efa"
+    "_source_hash": "ef221a7846ff22d5"
   },
   "tool.symbol": {
     "message": "Stocklake için uluslararası sonekler dahil bir hisse sembolü.",
@@ -294,10 +288,10 @@
     "_source_hash": "bf96519c516306b2"
   },
   "tool.range": {
-    "message": "1d, 1w veya 1m; varsayılan 1d.",
+    "message": "1d, 1w veya 1m; varsayılan 1m.",
     "description": "History range parameter description",
     "_machine_translated": true,
-    "_source_hash": "992fdef4270c7170"
+    "_source_hash": "0a2d7005b36be66b"
   },
   "tool.disabled": {
     "message": "Stocks devre dışı.",
@@ -336,8 +330,10 @@
     "_source_hash": "c3ae84bf8010f20d"
   },
   "settings.quotes_deleted": {
-    "message": "{deleted, plural, one {Kaydedilmiş # fiyat teklifi kaydı ve buna ait yerel örnekler silindi. Diğer pencereler veya devam eden yenilemeler yeni kayıtlar ekleyebilir.} other {Kaydedilmiş # fiyat teklifi kaydı ve bunlara ait yerel örnekler silindi. Diğer pencereler veya devam eden yenilemeler yeni kayıtlar ekleyebilir.}}{failed, plural, =0 {} one { # kayıt silinemedi. Tekrar deneyin.} other { # kayıt silinemedi. Tekrar deneyin.}}",
-    "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
+    "message": "{deleted, plural, one {# kayıtlı fiyat veya geçmiş kaydı silindi. Diğer pencereler veya etkin yenilemeler daha fazlasını kaydedebilir.} other {# kayıtlı fiyat veya geçmiş kaydı silindi. Diğer pencereler veya etkin yenilemeler daha fazlasını kaydedebilir.}}{failed, plural, =0 {} one { # kayıtlı kayıt silinemedi. Tekrar deneyin.} other { # kayıtlı kayıt silinemedi. Tekrar deneyin.}}",
+    "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records",
+    "_machine_translated": true,
+    "_source_hash": "45eb5a0d8cf6b318"
   },
   "widget.connection": {
     "message": "Fiyatlar ilgi gerektiriyor. Hisseler ayarlarını açmak için stock yazıp Enter'a basın.",
@@ -358,10 +354,10 @@
     "_source_hash": "b9f483c14cb7b4dc"
   },
   "setup.stocklake": {
-    "message": "Stocklake anahtar olmadan çalışır: ~15 dk gecikmeli, günde 25 çağrı; isteğe bağlı ücretsiz bir anahtar bu sınırı 200'e çıkarır.",
+    "message": "Stocklake anahtar olmadan çalışır: ~15 dk gecikmeli, IP başına paylaşılan günde yaklaşık 25 sembol sorgusu; ücretsiz bir anahtar günde 200 sorguya izin verir. Önbellekte olmayan her sembol sayılır.",
     "description": "Keyless default provider description",
     "_machine_translated": true,
-    "_source_hash": "930e88dd695cf87e"
+    "_source_hash": "4fb2147ce025156d"
   },
   "setup.stocklake_key": {
     "message": "Ücretsiz Stocklake anahtarı alın",
@@ -371,15 +367,15 @@
   },
   "quote.stocklake": {
     "message": "~15 dk gecikmeli · Stocklake",
-    "description": "Visible delayed provider attribution; paired with a link to stocklake.dev",
+    "description": "Visible delayed provider attribution in plain text",
     "_machine_translated": true,
-    "_source_hash": "081a46f162590a46"
+    "_source_hash": "bede5ed980930c08"
   },
   "quote.history": {
-    "message": "Yaklaşık 30 işlem gününe ait Stocklake günlük kapanış fiyatları. Geçmiş bir gün boyunca önbellekte tutulur; önbellekte bulunmadığında bir çağrı kullanılır. Finnhub mini grafikleri yerel örnekleri kullanır.",
+    "message": "Yaklaşık 30 işlem günü için Stocklake günlük kapanış fiyatları. Bir gün boyunca önbellekte tutulur; önbellekte olmayan geçmişi getirmek bir günlük sorgu kullanır. Misafir mini grafikleri yalnızca kayıtlı geçmişi kullanır.",
     "description": "History accessible label and settings explanation; real daily data for Stocklake",
     "_machine_translated": true,
-    "_source_hash": "2efd3bfb80984cd7"
+    "_source_hash": "8e6435e7874868ff"
   },
   "error.daily_limit": {
     "message": "Günlük ücretsiz fiyat sorgusu hakkınız doldu. {time} itibarıyla sıfırlanır. Günde 200 sorgu için ücretsiz bir Stocklake anahtarı ekleyin.",
@@ -392,5 +388,47 @@
     "description": "Authenticated daily exhaustion; preserve {time}",
     "_machine_translated": true,
     "_source_hash": "7c2f3494ec238e7e"
+  },
+  "result.type_symbol": {
+    "message": "Bir sembol yazın, ör. stock aapl",
+    "description": "Bare guest stock command; no lookup is made",
+    "_machine_translated": true,
+    "_source_hash": "7d079e375ba5f9cb"
+  },
+  "quote.updated": {
+    "message": "Güncelleme: {time}",
+    "description": "Stocklake refresh time, not last trade time; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "3dec8682dcb844dc"
+  },
+  "setup.stocklake_steps": {
+    "message": "Stocklake'i anahtar olmadan kullanın veya ücretsiz bir anahtar yapıştırın. Geçiş yapmak için Test et ve kullan'ı seçin; misafir seçimi sorgu kullanmaz.",
+    "description": "Stocklake setup steps",
+    "_machine_translated": true,
+    "_source_hash": "96be4a9668009051"
+  },
+  "setup.finnhub_steps": {
+    "message": "Ücretsiz bir Finnhub anahtarı alın, yapıştırın, ardından canlı ABD fiyatları için Test et ve kullan'ı seçin.",
+    "description": "Finnhub setup steps",
+    "_machine_translated": true,
+    "_source_hash": "a7736e058dc5a82e"
+  },
+  "setup.switch": {
+    "message": "Sağlayıcı değiştirmek için Test et ve kullan'ı kullanın. Kaydet, etkin sağlayıcının ayarlarını uygular.",
+    "description": "Provider selection requires explicit Test and use; generic Save must explain this",
+    "_machine_translated": true,
+    "_source_hash": "1a8c271c436d2d7b"
+  },
+  "setup.removed_fallback": {
+    "message": "Finnhub anahtarı kaldırıldı. Artık Stocklake misafir modu etkin. Kayıtlı fiyatlar kullanılabilir olmaya devam ediyor.",
+    "description": "Explicit fallback after removing the active Finnhub key",
+    "_machine_translated": true,
+    "_source_hash": "49e5908c4fdee494"
+  },
+  "error.storage_until": {
+    "message": "Fiyat depolaması limiti takip edemedi. İstekler şu zamana kadar duraklatıldı: {time}; mevcut olduğunda kayıtlı veriler gösteriliyor.",
+    "description": "Storage lockout expiry; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "ebf9f622c5b939d6"
   }
 }

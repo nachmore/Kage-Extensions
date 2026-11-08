@@ -283,10 +283,10 @@ describe('review regressions: storage, budgets and keys', () => {
     fetch.mockImplementation(async (url) => response(new URL(url).searchParams.get('token') === GOOD ? 200 : 401));
     const settings = init(Settings, h);
     const controls = async () => (await drive(settings.getSettings())).sections.flatMap((section) => section.controls);
-    expect((await drive(settings.runAction('test_key', { __api_key: BAD }))).status).toContain('rejected');
+    expect((await drive(settings.runAction('test_key', { __provider: 'finnhub', __api_key: BAD }))).status).toContain('rejected');
     expect(JSON.parse(h.store.get('request_budget')).backoffReason).toBeUndefined();
     await drive(h.client.backoff({ code: 'auth' }));
-    expect((await drive(settings.runAction('test_key', { __api_key: GOOD }))).status).toContain('key saved');
+    expect((await drive(settings.runAction('test_key', { __provider: 'finnhub', __api_key: GOOD }))).status).toContain('key saved');
     expect(fetch).toHaveBeenCalledTimes(2);
     expect(await h.client.key()).toBe(GOOD);
     expect(h.client.localBackoff).toBe(0);
@@ -396,16 +396,18 @@ describe('review regressions: symbols, formatting and tools', () => {
     expect(copyText({ symbol: 'AAPL', price: 1234.56, percent: -0.001 })).toBe('AAPL 1234.56 0%');
   });
 
-  it('makes agent sharing opt-in and returns actionable setup errors with ISO times and OHLC', async () => {
+  it('makes agent sharing opt-in and returns guest errors and keyed ISO times and OHLC', async () => {
     const h = host({ key: null });
     const tools = init(Tools, h);
     expect(tools.getTools()).toEqual([]);
     expect((await tools.execute('get_quote', { symbols: ['AAPL'] })).error).toContain('Enable');
     expect(h.stats.calls).toBe(0);
     tools.onConfigUpdate({ agent_tools: true });
-    const setup = await drive(tools.execute('get_quote', { symbols: ['AAPL', 'MSFT'] }));
-    expect(setup.error).toContain('free Finnhub key');
-    expect(setup.result.every((quote) => quote.message.includes('free Finnhub key'))).toBe(true);
+    navigator.onLine = false;
+    const guest = await drive(tools.execute('get_quote', { symbols: ['AAPL', 'MSFT'] }));
+    expect(guest.error).toBeUndefined();
+    expect(guest.result.every((quote) => quote.error === 'offline')).toBe(true);
+    navigator.onLine = true;
     await h.client.saveKey(GOOD);
     const mixed = await drive(tools.execute('get_quote', { symbols: ['AAPL', 'SAP.DE'] }));
     expect(mixed.error).toBeUndefined();

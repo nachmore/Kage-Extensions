@@ -45,7 +45,7 @@ function init(Provider, h) {
 }
 
 async function settle(promise) {
-  await vi.advanceTimersByTimeAsync(601);
+  await vi.advanceTimersByTimeAsync(1400);
   return promise;
 }
 
@@ -53,9 +53,16 @@ beforeEach(() => {
   vi.useFakeTimers();
   vi.setSystemTime(NOW);
   vi.stubGlobal('navigator', { onLine: true });
-  vi.stubGlobal('fetch', vi.fn(async () => ({
-    status: 200, ok: true,
-    json: async () => ({ c: 124, d: 1, dp: 0.82, t: NOW / 1000 }),
+  vi.stubGlobal('fetch', vi.fn(async (_, options) => ({
+    status: 200, ok: true, headers: new Headers(),
+    json: async () => {
+      if (!options.body) return { c: 124, d: 1, dp: 0.82, t: NOW / 1000 };
+      const { name, arguments: args } = JSON.parse(options.body).params;
+      const file = name === 'get_stock_history' ? './get_stock_history.fixture.json' : './get_stock.fixture.json';
+      const body = JSON.parse(JSON.parse(readFileSync(new URL(file, import.meta.url))).result.content[0].text);
+      const data = name === 'get_stock_history' ? body : { symbols: Object.fromEntries(args.symbols.map((s) => [s, { ...body, symbol: s }])) };
+      return { result: { content: [{ text: JSON.stringify(data) }] } };
+    },
   })));
 });
 
@@ -71,7 +78,7 @@ describe('Finnhub setup and migration', () => {
     expect(settings.validate({ provider: 'cache', watchlist: 'aapl' })).toEqual({ valid: true });
     await settings.getSettings();
     expect(settings.normalize({ provider: 'cache', watchlist: 'aapl' })).toEqual({
-      values: { provider: 'finnhub', watchlist: 'AAPL' },
+      values: { provider: 'stocklake', watchlist: 'AAPL' },
     });
     const controls = (await settings.getSettings()).sections.flatMap((section) => section.controls);
     expect(controls.find((control) => control.id === '__provider').options.map((option) => option.value)).toEqual(['stocklake', 'finnhub']);
@@ -81,16 +88,14 @@ describe('Finnhub setup and migration', () => {
     expect(manifest.config).not.toHaveProperty('provider');
   });
 
-  it.each([{}, { quote_AAPL: saved }])('treats an unmigrated provider exactly like default config, preserving cache %j', async (seed) => {
+  it.each([{}, { quote_AAPL: saved }])('falls back from keyless Finnhub to Stocklake for retired config and saved cache %j', async (seed) => {
     const legacy = host({ config: { provider: 'cache' }, seed });
     const fresh = host({ seed });
     const expected = await fresh.client.getQuotes(['AAPL']);
     expect(await legacy.client.getQuotes(['AAPL'], legacy.context.config)).toEqual(expected);
     expect(await legacy.client.exactCache(['AAPL'], legacy.context.config)).toEqual(await fresh.client.exactCache(['AAPL']));
-    expect(expected[0]).toMatchObject(seed.quote_AAPL
-      ? { cached: true, stale: true, reason: 'setup', timestamp: saved.quote.timestamp }
-      : { error: 'setup' });
-    expect(fetch).not.toHaveBeenCalled();
+    expect(expected[0]).toMatchObject({ source: 'Stocklake', cached: false });
+    expect(fetch).toHaveBeenCalledTimes(2);
   });
 
   it('uses a saved Finnhub key even before the retired provider field is normalized', async () => {
@@ -99,32 +104,26 @@ describe('Finnhub setup and migration', () => {
     expect(fetch).toHaveBeenCalledTimes(1);
   });
 
-  it.each(['stock aapl', '$AAPL', 'stock aapl msft', 'stock copy AAPL'])('routes pending and loaded %s to one setup action without a key', async (query) => {
+  it.each(['stock aapl', '$AAPL', 'stock aapl msft', 'stock copy AAPL'])('routes pending and loaded %s to guest quotes without a setup nag', async (query) => {
     const h = host({ config: { provider: 'cache' } });
     const search = init(Search, h);
-    expect(await search.execute(search.match(query)[0])).toEqual({ type: 'open_extension_settings' });
+    expect((await search.execute(search.match(query)[0])).type).toBe(query.includes('copy') ? 'copy' : 'custom');
     const rows = await settle(search.matchAsync(query));
-    expect(rows).toHaveLength(1);
-    expect(rows[0].label).toBe(SETUP);
-    expect(await search.execute(rows[0])).toEqual({ type: 'open_extension_settings' });
-    expect(h.context.invoke).not.toHaveBeenCalledWith('open_url', expect.anything());
-    expect(fetch).not.toHaveBeenCalled();
+    expect(rows.some((row) => row.data.setup)).toBe(false);
+    expect(rows[0].data.quote.source).toBe('Stocklake');
+    expect((await search.execute(rows[0])).type).toBe(query.includes('copy') ? 'copy' : 'custom');
+    expect(fetch).toHaveBeenCalledTimes(1);
   });
 
-  it.each(['stock aapl', '$AAPL'])('offers one setup action alongside cached quotes for %s', async (query) => {
+  it.each(['stock aapl', '$AAPL'])('replaces old Finnhub caches with usable guest quotes for %s', async (query) => {
     const h = host({ config: { provider: 'cache' }, seed: { quote_AAPL: saved } });
     const search = init(Search, h);
     const rows = await settle(search.matchAsync(query));
-    const setup = rows.filter((row) => row.data.setup);
-    expect(setup).toHaveLength(1);
-    expect(setup[0].label).toBe(SETUP);
+    expect(rows.filter((row) => row.data.setup)).toHaveLength(0);
     const quote = rows.find((row) => row.data.quote && !row.data.copy);
-    expect(quote.data.quote).toMatchObject({ cached: true, stale: true, reason: 'setup' });
-    expect(quote.description).toContain(`As of ${timestampText(saved.quote.timestamp)}`);
-    expect(quote.description).toContain('Cached ');
-    expect(setup[0].score).toBeGreaterThan(quote.score);
-    expect(await search.execute(setup[0])).toEqual({ type: 'open_extension_settings' });
-    expect(fetch).not.toHaveBeenCalled();
+    expect(quote.data.quote).toMatchObject({ cached: false, source: 'Stocklake' });
+    expect(quote.description).toContain('Updated ');
+    expect(fetch).toHaveBeenCalledTimes(1);
   });
 
   it.each([{}, { quote_AAPL: saved }])('shows no widget before setup, cached quotes or not, for %j', async (seed) => {
@@ -133,22 +132,17 @@ describe('Finnhub setup and migration', () => {
     expect(fetch).not.toHaveBeenCalled();
   });
 
-  it.each([{}, { quote_AAPL: saved }])('guides both tools to setup while retaining cached quotes and history for %j', async (seed) => {
+  it.each([{}, { quote_AAPL: saved }])('gives opted-in agents guest quotes and on-demand history for %j', async (seed) => {
     const h = host({ config: { provider: 'cache', agent_tools: true }, seed });
     const tools = init(Tools, h);
     const quotes = await tools.execute('get_quote', { symbols: ['AAPL'] });
-    expect(quotes.result[0].message).toContain(SETUP);
-    if (seed.quote_AAPL) {
-      expect(quotes.result[0]).toMatchObject({ cached: true, reason: 'setup', price: 123.45 });
-      expect(quotes.result[0].tradeTime).toBe(new Date(saved.quote.timestamp * 1000).toISOString());
-    } else {
-      expect(quotes.error).toContain(SETUP);
-    }
+    expect(quotes.error).toBeUndefined();
+    expect(quotes.result[0]).toMatchObject({ source: 'Stocklake', price: 342.37 });
+    expect(quotes.result[0].asOf).toMatch(/Z$/);
     const history = await tools.execute('get_history', { symbol: 'AAPL' });
-    expect(history.result.note).toContain(SETUP);
-    expect(history.result).toMatchObject({ kind: 'locally_sampled_quotes', complete: false });
-    expect(history.result.samples).toHaveLength(seed.quote_AAPL ? 1 : 0);
-    expect(fetch).not.toHaveBeenCalled();
+    expect(history.result).toMatchObject({ kind: 'daily_history', complete: true, range: '1m' });
+    expect(history.result.samples).toHaveLength(3);
+    expect(fetch).toHaveBeenCalledTimes(2);
   });
 
   it('keeps local history available when credential storage fails', async () => {
@@ -156,7 +150,7 @@ describe('Finnhub setup and migration', () => {
     const history = await init(Tools, h).execute('get_history', { symbol: 'AAPL' });
     expect(history.error).toBeUndefined();
     expect(history.result.samples).toHaveLength(1);
-    expect(history.result.note).toContain(catalog['error.storage'].message);
+    expect(history.result.note).toContain('Locally sampled');
     expect(fetch).not.toHaveBeenCalled();
   });
 });

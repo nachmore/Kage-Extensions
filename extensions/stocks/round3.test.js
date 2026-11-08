@@ -148,9 +148,9 @@ describe('round 3: prompt intent and settling', () => {
     expect(await search.execute(search.errorRow('', 'too_many'))).toEqual({ type: 'replace_input', value: '$VOD.L' });
   });
 
-  it('pending bare Enter opens settings only without a key', async () => {
+  it('pending bare Enter keeps guest input without a lookup', async () => {
     const search = init(Search, host({ key: null }));
-    expect(await search.execute(search.match('stock')[0])).toEqual({ type: 'open_extension_settings' });
+    expect(await search.execute(search.match('stock')[0])).toEqual({ type: 'replace_input', value: 'stock' });
   });
 });
 
@@ -159,8 +159,8 @@ describe('round 3: self healing storage and safe key changes', () => {
     const h = host({ seed: { credentials } });
     const settings = init(Settings, h);
     const controls = (await settings.getSettings()).sections.flatMap((section) => section.controls);
-    expect(controls.find((control) => control.id === 'remove_key').disabled).toBe(false);
-    expect((await settings.runAction('remove_key')).status).toContain('Key removed');
+    expect(controls.find((control) => control.id === 'remove_stocklake_key').disabled).toBe(false);
+    expect((await settings.runAction('remove_stocklake_key')).status).toContain('Key removed');
     expect(h.store.has('credentials')).toBe(false);
   });
 
@@ -346,7 +346,8 @@ describe('round 3: index, pruning and deletion', () => {
   it('cached() excludes data beyond retention when no key is saved', async () => {
     const h = host({ key: null, seed: { quote_AAPL: quote('AAPL', 32 * DAY) } });
     expect(await h.client.cached('AAPL')).toBeNull();
-    expect((await h.client.getQuotes(['AAPL']))[0].error).toBe('setup');
+    navigator.onLine = false;
+    expect((await h.client.getQuotes(['AAPL']))[0].error).toBe('offline');
     expect(fetch).not.toHaveBeenCalled();
   });
 });
@@ -382,17 +383,19 @@ describe('round 3: cadence, locale, tools, and mutation guards', () => {
     const rows = await init(Search, h).matchAsync('$AAPL');
     expect(rows[0].label).toContain('1.234,56');
     expect(rows[0].label).toContain('0\u00a0%');
-    expect(rows[0].description).toContain(new Intl.DateTimeFormat('de-DE', { dateStyle: 'medium', timeStyle: 'long' }).format(new Date(quote().quote.timestamp * 1000)));
+    expect(rows[0].description).toContain(new Intl.DateTimeFormat('de-DE', { hour: 'numeric', minute: '2-digit' }).format(new Date(quote().quote.timestamp * 1000)));
     expect((await init(Widget, h).render()).html).toContain('1.234,56');
     expect(copyText(quote().quote)).toBe('AAPL 1234.56 0%');
     expect(direction(quote().quote)).toBe('flat');
     expect(signedText(1.3, { percent: true, locale: 'de-DE' })).toBe('+1,3\u00a0%');
-    expect(timestampText(NOW / 1000, { locale: 'ja-JP' })).toBe(new Intl.DateTimeFormat('ja-JP', { dateStyle: 'medium', timeStyle: 'long' }).format(new Date(Math.floor(NOW / 1000) * 1000)));
+    expect(timestampText(NOW / 1000, { locale: 'ja-JP' })).toBe(new Intl.DateTimeFormat('ja-JP', { hour: 'numeric', minute: '2-digit' }).format(new Date(Math.floor(NOW / 1000) * 1000)));
   });
 
-  it.each([['VOD.L'], ['bad/symbol'], ['AAPL', 'VOD.L', 'bad/symbol']])('get_quote without a key has a top-level setup error for %j', async (symbols) => {
+  it.each([['VOD.L'], ['bad/symbol'], ['AAPL', 'VOD.L', 'bad/symbol']])('get_quote without a key returns per-symbol errors without a setup nag for %j', async (symbols) => {
     const tools = init(Tools, host({ key: null, config: { agent_tools: true } }));
-    expect((await tools.execute('get_quote', { symbols })).error).toContain('free Finnhub key');
+    const result = await tools.execute('get_quote', { symbols });
+    expect(result.error).toBeUndefined();
+    expect(result.result.every((quote) => quote.error && !quote.message.includes('free Finnhub key'))).toBe(true);
   });
 
   it('tool retryAt is a precise ISO millisecond conversion on a fractional clock', async () => {

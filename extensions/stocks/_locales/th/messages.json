@@ -12,10 +12,10 @@
     "_source_hash": "d6d4700604b64b88"
   },
   "manifest.description": {
-    "message": "ออนไลน์ · ไม่ต้องใช้คีย์: ราคาจาก Stocklake ล่าช้าประมาณ 15 นาที ใช้ฟรี 25 ครั้งต่อวัน หากใช้คีย์ฟรีจะเพิ่มเป็น 200 ครั้ง ส่วน Finnhub ใช้หรือไม่ก็ได้ สำหรับราคาสหรัฐฯ แบบเรียลไทม์",
+    "message": "ออนไลน์ · ราคาจาก Stocklake ล่าช้าประมาณ 15 นาที: ค้นหาสัญลักษณ์ได้ประมาณ 25 ครั้งต่อวันโดยไม่ต้องใช้คีย์ หรือ 200 ครั้งเมื่อใช้คีย์ฟรี ส่วน Finnhub ใช้หรือไม่ก็ได้ สำหรับราคาหุ้นสหรัฐฯ แบบเรียลไทม์",
     "description": "Store listing; Online and Data delayed communicate network dependency and freshness",
     "_machine_translated": true,
-    "_source_hash": "44f1eb50266b55a3"
+    "_source_hash": "0a0e960d0b709ac1"
   },
   "result.loading": {
     "message": "กำลังค้นหาหุ้น…",
@@ -72,10 +72,10 @@
     "_source_hash": "693535460d4db418"
   },
   "error.setup": {
-    "message": "เปิดการตั้งค่าหุ้น รับคีย์ Finnhub ฟรี แล้วกด ทดสอบและบันทึก",
+    "message": "เปิดการตั้งค่า Stocks รับคีย์ Finnhub ฟรี แล้วเลือก “ทดสอบและใช้”",
     "description": "No stored key",
     "_machine_translated": true,
-    "_source_hash": "8adbf75fdf5bc595"
+    "_source_hash": "2be9c6223cc5fff8"
   },
   "error.auth": {
     "message": "ผู้ให้บริการปฏิเสธคีย์ โปรดเปิดการตั้งค่า Stocks เพื่อทดสอบคีย์ใหม่",
@@ -150,10 +150,10 @@
     "_source_hash": "f4f4d83dc6129a6c"
   },
   "settings.description": {
-    "message": "ราคาจาก Stocklake ใช้ได้โดยไม่ต้องมีคีย์: ล่าช้าประมาณ 15 นาที 25 ครั้งต่อวัน หรือ 200 ครั้งหากใช้คีย์ฟรี ส่วน Finnhub ให้ราคาสหรัฐฯ แบบเรียลไทม์เมื่อใช้คีย์ฟรี",
+    "message": "ราคาจาก Stocklake ใช้งานได้โดยไม่ต้องมีคีย์: ล่าช้าประมาณ 15 นาที ค้นหาสัญลักษณ์ได้ประมาณ 25 ครั้งต่อวัน หรือ 200 ครั้งเมื่อใช้คีย์ฟรี ส่วน Finnhub ให้ราคาหุ้นสหรัฐฯ แบบเรียลไทม์เมื่อใช้คีย์ฟรี",
     "description": "Settings summary",
     "_machine_translated": true,
-    "_source_hash": "deea29d63a6f57a4"
+    "_source_hash": "0f8ec107dbd56b33"
   },
   "settings.connection": {
     "message": "ผู้ให้บริการราคาและการตั้งค่า",
@@ -172,12 +172,6 @@
     "description": "Material provider use restrictions",
     "_machine_translated": true,
     "_source_hash": "7fbb1c4e684b429f"
-  },
-  "setup.steps": {
-    "message": "Stocklake ใช้งานได้ทันทีโดยไม่ต้องมีคีย์ เลือกผู้ให้บริการ วางคีย์หากต้องการ แล้วกด ทดสอบและใช้ เพื่อบันทึกตัวเลือกของคุณ",
-    "description": "Guided setup steps",
-    "_machine_translated": true,
-    "_source_hash": "d73223e639ab4ff7"
   },
   "setup.saved": {
     "message": "มีคีย์บันทึกไว้ในอุปกรณ์นี้แล้ว เว้นช่องว่างไว้เพื่อทดสอบ หรือวางคีย์ใหม่เพื่อแทนที่ คีย์ที่จัดเก็บไว้จะไม่แสดงที่นี่",
@@ -198,10 +192,10 @@
     "_source_hash": "3fb2a7de1e62b384"
   },
   "setup.key_hint": {
-    "message": "ทดสอบและบันทึก จะจัดเก็บคีย์ไว้ในข้อมูลส่วนตัวของส่วนขยาย เช่นเดียวกับข้อมูลรับรอง Spotify การพิมพ์ที่นี่จะไม่บันทึกคีย์ไปกับการตั้งค่าทั่วไป ช่องข้อความของโฮสต์นี้จะแสดงข้อความขณะที่คุณพิมพ์",
+    "message": "“ทดสอบและใช้” จะจัดเก็บคีย์ไว้ในข้อมูลส่วนตัวของส่วนขยาย การพิมพ์คีย์ที่นี่จะไม่บันทึกคีย์ไปกับการตั้งค่าทั่วไป และจะไม่แสดงคีย์ที่บันทึกไว้",
     "description": "Storage and host input behavior",
     "_machine_translated": true,
-    "_source_hash": "4c3122d9b4d5daad"
+    "_source_hash": "84263c95dae6f748"
   },
   "setup.test": {
     "message": "ทดสอบและใช้ผู้ให้บริการ",
@@ -222,10 +216,10 @@
     "_source_hash": "59cb7317745316bb"
   },
   "setup.success": {
-    "message": "ทดสอบราคาผ่านแล้ว เลือกผู้ให้บริการและบันทึกคีย์ที่ระบุไว้แล้ว",
+    "message": "เลือกผู้ให้บริการและบันทึกคีย์ที่ระบุไว้แล้ว การเชื่อมต่อที่ใช้คีย์ผ่านการทดสอบราคาแล้ว",
     "description": "Successful guided setup; key is saved independently of watchlist settings",
     "_machine_translated": true,
-    "_source_hash": "c4ae3a50e8f0c3e0"
+    "_source_hash": "118c046747156cd2"
   },
   "settings.watchlist_section": {
     "message": "รายการเฝ้าดูและการรีเฟรช",
@@ -270,22 +264,22 @@
     "_source_hash": "45f891673cb1e039"
   },
   "tool.quote": {
-    "message": "ดึงราคาหุ้นจากผู้ให้บริการที่คุณเลือกเพื่อการใช้งานส่วนตัว Stocklake ล่าช้าประมาณ 15 นาทีและไม่ต้องใช้คีย์ ส่วน Finnhub ให้ราคาสหรัฐฯ แบบเรียลไทม์เมื่อใช้คีย์ ส่งคืนแหล่งที่มา เวลา ความสดใหม่ของข้อมูล และข้อผิดพลาดรายสัญลักษณ์ ห้ามแจกจ่ายข้อมูลต่อ",
+    "message": "รับราคาหุ้นสำหรับการใช้งานส่วนตัว Stocklake ล่าช้าประมาณ 15 นาที ผู้ใช้แบบไม่มีคีย์ใช้โควตาร่วมกันประมาณ 25 การค้นหาสัญลักษณ์ต่อวันต่อ IP สัญลักษณ์แต่ละตัวที่ไม่ได้แคชไว้จะถูกนับ แม้จะอยู่ในชุดเดียวกัน ให้รวมสัญลักษณ์ที่ร้องขอไว้ในคำขอเดียวกัน และหลีกเลี่ยงการค้นหาแบบคาดเดาหรือซ้ำ คีย์ฟรีให้ 200 ครั้งต่อวัน Finnhub ให้ราคาหุ้นสหรัฐฯ แบบเรียลไทม์เมื่อใช้คีย์ ส่งคืน source, asOf สำหรับการอัปเดตของ Stocklake, tradeTime สำหรับ Finnhub, freshness และข้อผิดพลาดรายสัญลักษณ์ ห้ามเผยแพร่ข้อมูลต่อ",
     "description": "Agent tool description",
     "_machine_translated": true,
-    "_source_hash": "890f052fdf9e3bbd"
+    "_source_hash": "99f5d285678b43e5"
   },
   "tool.symbols": {
-    "message": "สูงสุด {max} สัญลักษณ์ เช่น [\"AAPL\", \"MSFT\", \"SAP.DE\"] Finnhub รองรับเฉพาะชื่อย่อหุ้นสหรัฐฯ",
+    "message": "รวมสัญลักษณ์ที่ร้องขอได้สูงสุด {max} รายการในชุดเดียว เช่น [\"AAPL\", \"MSFT\", \"SAP.DE\"] สัญลักษณ์ Stocklake แต่ละตัวที่ไม่ได้แคชไว้จะนับรวมในขีดจำกัดสำหรับผู้ใช้แบบไม่มีคีย์ประมาณ 25 ครั้งต่อวัน Finnhub รองรับเฉพาะสัญลักษณ์หุ้นสหรัฐฯ",
     "description": "Quote tool parameter description; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "acbe6e78c6fddb5a"
+    "_source_hash": "0b1952ac06ea6daf"
   },
   "tool.history": {
-    "message": "ดึงประวัติราคารายวันจริงจาก Stocklake สำหรับ 1d, 1w หรือ 1m จากช่วง 30 วันทำการที่แคชไว้ 1 วัน ใช้ 1 ครั้งเมื่อไม่มีข้อมูลในแคช Finnhub จะส่งคืนเฉพาะราคาที่สังเกตได้ในเครื่องซึ่งไม่ครบถ้วน โดยไม่มีการขอประวัติราคา",
+    "message": "ดึงประวัติรายวันจาก Stocklake เมื่อต้องการสำหรับ 1d, 1w หรือ 1m (ค่าเริ่มต้น 1m) จากข้อมูลประมาณ 30 วันซื้อขาย แคชไว้หนึ่งวัน คำขอประวัติที่ไม่ได้แคชไว้จะใช้โควตาสำหรับผู้ใช้แบบไม่มีคีย์หนึ่งครั้ง จากการค้นหาสัญลักษณ์ประมาณ 25 ครั้งต่อวันที่ใช้ร่วมกันต่อ IP หลีกเลี่ยงการค้นหาประวัติโดยอัตโนมัติ และขอเฉพาะเมื่อจำเป็น",
     "description": "Agent tool scope must not imply full historical coverage",
     "_machine_translated": true,
-    "_source_hash": "d5343316b6826efa"
+    "_source_hash": "ef221a7846ff22d5"
   },
   "tool.symbol": {
     "message": "สัญลักษณ์หุ้น รวมถึงส่วนต่อท้ายต่างประเทศสำหรับ Stocklake",
@@ -294,10 +288,10 @@
     "_source_hash": "bf96519c516306b2"
   },
   "tool.range": {
-    "message": "1d, 1w หรือ 1m ค่าเริ่มต้นคือ 1d",
+    "message": "1d, 1w หรือ 1m; ค่าเริ่มต้นคือ 1m",
     "description": "History range parameter description",
     "_machine_translated": true,
-    "_source_hash": "992fdef4270c7170"
+    "_source_hash": "0a2d7005b36be66b"
   },
   "tool.disabled": {
     "message": "Stocks ถูกปิดใช้งานอยู่",
@@ -336,8 +330,10 @@
     "_source_hash": "c3ae84bf8010f20d"
   },
   "settings.quotes_deleted": {
-    "message": "{deleted, plural, one {ลบบันทึกราคาหุ้นที่บันทึกไว้ # รายการและตัวอย่างข้อมูลในเครื่องที่เกี่ยวข้องแล้ว หน้าต่างอื่นหรือการรีเฟรชที่กำลังทำงานอยู่อาจบันทึกข้อมูลเพิ่มเติมได้} other {ลบบันทึกราคาหุ้นที่บันทึกไว้ # รายการและตัวอย่างข้อมูลในเครื่องที่เกี่ยวข้องแล้ว หน้าต่างอื่นหรือการรีเฟรชที่กำลังทำงานอยู่อาจบันทึกข้อมูลเพิ่มเติมได้}}{failed, plural, =0 {} one { ไม่สามารถลบได้ # รายการ ลองอีกครั้ง} other { ไม่สามารถลบได้ # รายการ ลองอีกครั้ง}}",
-    "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
+    "message": "{deleted, plural, other {ลบราคาหรือบันทึกประวัติที่บันทึกไว้ # รายการแล้ว หน้าต่างอื่นหรือการรีเฟรชที่กำลังทำงานอยู่อาจบันทึกข้อมูลเพิ่มอีก}}{failed, plural, =0 {} other { ไม่สามารถลบรายการที่บันทึกไว้ # รายการ โปรดลองอีกครั้ง}}",
+    "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records",
+    "_machine_translated": true,
+    "_source_hash": "45eb5a0d8cf6b318"
   },
   "widget.connection": {
     "message": "ราคาต้องได้รับการตรวจสอบ พิมพ์ stock แล้วกด Enter เพื่อเปิดการตั้งค่า Stocks",
@@ -358,10 +354,10 @@
     "_source_hash": "b9f483c14cb7b4dc"
   },
   "setup.stocklake": {
-    "message": "Stocklake ใช้งานได้โดยไม่ต้องมีคีย์: ข้อมูลล่าช้าประมาณ 15 นาที จำกัด 25 ครั้งต่อวัน และหากใช้คีย์ฟรี (ไม่บังคับ) จะเพิ่มเป็น 200 ครั้ง",
+    "message": "Stocklake ใช้งานได้โดยไม่ต้องมีคีย์: ล่าช้าประมาณ 15 นาที ค้นหาสัญลักษณ์ได้ประมาณ 25 ครั้งต่อวันซึ่งใช้ร่วมกันต่อ IP; คีย์ฟรีให้ 200 ครั้งต่อวัน สัญลักษณ์แต่ละตัวที่ไม่ได้แคชไว้จะถูกนับ",
     "description": "Keyless default provider description",
     "_machine_translated": true,
-    "_source_hash": "930e88dd695cf87e"
+    "_source_hash": "4fb2147ce025156d"
   },
   "setup.stocklake_key": {
     "message": "รับคีย์ Stocklake ฟรี",
@@ -371,15 +367,15 @@
   },
   "quote.stocklake": {
     "message": "ล่าช้าประมาณ 15 นาที · Stocklake",
-    "description": "Visible delayed provider attribution; paired with a link to stocklake.dev",
+    "description": "Visible delayed provider attribution in plain text",
     "_machine_translated": true,
-    "_source_hash": "081a46f162590a46"
+    "_source_hash": "bede5ed980930c08"
   },
   "quote.history": {
-    "message": "ราคาปิดรายวันจาก Stocklake ย้อนหลังประมาณ 30 วันทำการ ประวัติจะถูกแคชไว้หนึ่งวัน หากไม่มีในแคชจะใช้ 1 ครั้ง ส่วนกราฟเส้นขนาดเล็กของ Finnhub ใช้ข้อมูลตัวอย่างในเครื่อง",
+    "message": "ราคาปิดรายวันจาก Stocklake ประมาณ 30 วันซื้อขาย แคชไว้หนึ่งวัน การดึงประวัติที่ไม่ได้แคชไว้จะใช้การค้นหารายวันหนึ่งครั้ง กราฟเส้นขนาดเล็กสำหรับผู้ใช้แบบไม่มีคีย์จะใช้เฉพาะประวัติที่บันทึกไว้",
     "description": "History accessible label and settings explanation; real daily data for Stocklake",
     "_machine_translated": true,
-    "_source_hash": "2efd3bfb80984cd7"
+    "_source_hash": "8e6435e7874868ff"
   },
   "error.daily_limit": {
     "message": "ใช้โควตาราคาฟรีของวันนี้หมดแล้ว จะรีเซ็ตเวลา {time} เพิ่มคีย์ Stocklake ฟรีเพื่อใช้ได้ 200 ครั้งต่อวัน",
@@ -392,5 +388,47 @@
     "description": "Authenticated daily exhaustion; preserve {time}",
     "_machine_translated": true,
     "_source_hash": "7c2f3494ec238e7e"
+  },
+  "result.type_symbol": {
+    "message": "พิมพ์สัญลักษณ์ เช่น stock aapl",
+    "description": "Bare guest stock command; no lookup is made",
+    "_machine_translated": true,
+    "_source_hash": "7d079e375ba5f9cb"
+  },
+  "quote.updated": {
+    "message": "อัปเดตเมื่อ {time}",
+    "description": "Stocklake refresh time, not last trade time; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "3dec8682dcb844dc"
+  },
+  "setup.stocklake_steps": {
+    "message": "ใช้ Stocklake โดยไม่ต้องมีคีย์ หรือวางคีย์ฟรี เลือก “ทดสอบและใช้” เพื่อสลับ การเลือกแบบไม่มีคีย์จะไม่ใช้การค้นหา",
+    "description": "Stocklake setup steps",
+    "_machine_translated": true,
+    "_source_hash": "96be4a9668009051"
+  },
+  "setup.finnhub_steps": {
+    "message": "รับคีย์ Finnhub ฟรี วางคีย์ แล้วเลือก “ทดสอบและใช้” เพื่อรับราคาหุ้นสหรัฐฯ แบบเรียลไทม์",
+    "description": "Finnhub setup steps",
+    "_machine_translated": true,
+    "_source_hash": "a7736e058dc5a82e"
+  },
+  "setup.switch": {
+    "message": "ใช้ “ทดสอบและใช้” เพื่อสลับผู้ให้บริการ ส่วน “บันทึก” จะใช้การตั้งค่ากับผู้ให้บริการที่ใช้งานอยู่",
+    "description": "Provider selection requires explicit Test and use; generic Save must explain this",
+    "_machine_translated": true,
+    "_source_hash": "1a8c271c436d2d7b"
+  },
+  "setup.removed_fallback": {
+    "message": "ลบคีย์ Finnhub แล้ว ขณะนี้ใช้ Stocklake แบบไม่มีคีย์ ราคาที่บันทึกไว้ยังคงใช้งานได้",
+    "description": "Explicit fallback after removing the active Finnhub key",
+    "_machine_translated": true,
+    "_source_hash": "49e5908c4fdee494"
+  },
+  "error.storage_until": {
+    "message": "ที่เก็บราคาไม่สามารถติดตามขีดจำกัดได้ คำขอถูกหยุดชั่วคราวจนถึง {time} และจะแสดงข้อมูลที่บันทึกไว้หากมี",
+    "description": "Storage lockout expiry; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "ebf9f622c5b939d6"
   }
 }

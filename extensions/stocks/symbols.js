@@ -27,6 +27,12 @@ export function normalizeSymbol(value, provider = 'stocklake') {
   return symbol;
 }
 
+export function stocklakeSymbol(value) {
+  const symbol = normalizeSymbol(value);
+  return /^[A-Z]{1,5}\.[A-Z]$/.test(symbol) && !FOREIGN_SUFFIX.test(symbol)
+    ? symbol.replace('.', '-') : symbol;
+}
+
 export function parseSymbols(input, { allowEmpty = false, provider = 'stocklake' } = {}) {
   const parts = Array.isArray(input)
     ? input

@@ -1,26 +1,24 @@
 # Stocks
 
 **Online · No keys needed · [Stocklake](https://stocklake.dev/) quotes delayed
-about 15 minutes · 25 calls a day free, or 200 with a free key.**
+about 15 minutes · about 25 symbol lookups a day without a key, or 200 with a free key.**
 [Finnhub](https://finnhub.io/) is optional for live US quotes with your own
 free key (60 calls/minute).
 
 Type `$AAPL`, `stock msft`, or `stock aapl msft nvda`. Quotes show the symbol,
-company, currency, price, day change, provider, and **As of** time. Enter opens
+company, currency, price, day change, provider, and **Updated** time for Stocklake (its refresh time), or **As of** for Finnhub. Enter opens
 a public TradingView chart. Choose the separate **Copy** action, or type
 `stock copy AAPL`, to copy invariant text such as `AAPL 189.12 +1.3%`.
-Bare `stock` looks up your watchlist. Search still leaves prose with the agent,
-waits for a 600 ms typing pause on cache misses, and suppresses superseded results.
+Bare `stock` asks guests to type a symbol without fetching; keyed users see their watchlist. Search leaves prose with the agent, waits for a 1.3-second guest typing pause (600 ms with a key) on cache misses, and checks for a newer query before every network step.
 There is no persistent setup hint. `$AAPL` works immediately on Stocklake.
 
 ## Providers and migration
 
 Stocklake is the default for new installations and existing installations
 without a Finnhub key. An existing Finnhub key keeps Finnhub, regardless of
-retired `provider` values (`cache`, missing, or otherwise). Retired config keys
-are moved to private credential storage before normalization blanks them.
-An explicitly selected provider takes precedence over migration thereafter.
-Stocklake accepts US and international tickers such as `SAP.DE`, `VOD.L`,
+retired `provider` values (`cache`, missing, or otherwise).
+An explicitly selected provider takes precedence thereafter while its required key is saved. Removing the last Finnhub key falls back to Stocklake, including records saved by 1.1.0.
+Stocklake maps share classes such as `BRK.B` to `BRK-B` on the wire, keeping your spelling in results. Exchange suffixes are preserved. It accepts US and international tickers such as `SAP.DE`, `VOD.L`,
 `NOVO-B.CO`, and `7203.T`. Finnhub retains its US-only suffix restriction;
 `AAPL.US` remains an alias for `AAPL`. Queries/watchlists accept up to ten
 unique symbols. Unknown symbols never become zero-price quotes.
@@ -29,38 +27,37 @@ In Stocks settings, choose **Stocklake** or **Finnhub**. Each choice has a
 short explanation, a key field, and **Test and use provider**. That button
 saves the provider choice and saves a supplied key only after a valid AAPL
 quote test. A Stocklake key is optional; its free sign-in uses an emailed code.
-Leave the field empty to test a saved key, or guest Stocklake when none is saved.
-The test consumes one call. Regular Save updates watchlist/display/tool settings;
-**Test and use provider** applies the provider selection on both old and new
-hosts. Keys for both providers are retained when switching. **Remove saved key**
-removes the selected provider's key; removing a Stocklake key returns to guest use.
+Leave the field empty to test a saved key, or select guest Stocklake when none is saved. A keyed test consumes one lookup; selecting guest Stocklake skips the test and consumes nothing. Regular Save updates watchlist/display/tool settings;
+**Test and use provider** applies the provider selection on both old and new hosts. Save explains this if you changed the selection, and validates against the active provider. Keys for both providers are retained when switching. Each provider has its own saved-key status and **Remove saved key** action. Removing a key preserves the active provider, except removing the active Finnhub key explicitly switches to Stocklake guest and says so.
 
 ## Budget and caching
 
 Stocklake refreshes prices about every ten minutes on trading days and is
 about fifteen minutes behind the market. Every Stocklake quote says
-**Delayed ~15 min · Stocklake**, with a provider link. Its timestamp is the
+**Delayed ~15 min · Stocklake · EUR · Updated 10:41 PM** (with the quote's own currency and local time). Search rows have plain-text credit so clicking the credit cannot also open a chart. Its timestamp is the
 provider's `updated_at` snapshot time, not a newly invented last-trade time.
 
 - Quotes are cached for **at least ten minutes**, even if the refresh setting
   is shorter. A longer configured interval is respected.
-- Uncached multi-symbol lookups use `get_stocks`, reserving **one call per
-  symbol**; batching does not turn ten symbols into one billed call.
+- All uncached lookups use `get_stocks`, reserving **one lookup per
+  symbol**; batching does not turn ten symbols into one billed lookup.
+- Unknown tickers are negatively cached for ten minutes and never pause other lookups.
+- Offline and superseded queries are checked before reserving; unsent network failures refund their reservation. A paid response is kept even if header/budget synchronization fails.
 - Guest requests reserve a durable local **25/day** budget before fetching.
   A key starts at **200/day**. The separate guest count survives key additions,
   removals and provider switches; switching keys never replenishes a count.
 - Readable `x-ratelimit-limit`, `x-ratelimit-remaining`, and
   `x-ratelimit-reset` headers synchronize that budget conservatively. Counts
-  never increase mid-day from a late response. Reset epochs are respected;
+  never increase mid-day from a late response. Reset epochs are clamped to at most 24 hours ahead;
   otherwise the reset is **midnight UTC**.
 - The live API currently does not expose those headers through
   `Access-Control-Expose-Headers`. A browser therefore retains its conservative
   local count when headers cannot be read. Other apps sharing the IP/key can
   exhaust the service first; guest HTTP 401 and HTTP 429 close the local budget
   until reset, with no retry. There is no proxy or sharing between users.
-- On exhaustion, saved quotes keep their original **As of** time and say:
+- On exhaustion, saved quotes keep their original **Updated** time and say:
   **Daily free quotes used up. Resets at &lt;local time&gt;. Add a free Stocklake key
-  for 200 a day.** The same reset message appears for an uncached symbol.
+  for 200 a day.** Reset times are short, such as **7:00 PM** or **Mon 9:00 AM**. Enter on an exhausted row opens settings. The same reset message appears for an uncached symbol.
 - The watchlist panel **requires a key** as well as its visibility setting.
   Guest installations never poll or display a setup nag, including old configs
   with the panel enabled. This saves the small guest allowance for deliberate
@@ -78,16 +75,12 @@ Caches, budgets and nonce-checked storage leases coordinate only this user's
 Kage windows. The host offers no atomic compare-and-swap, so coordination is
 best effort. Budget I/O failures fail closed before any network request. A torn
 Stocklake budget stays closed until midnight rather than granting another
-allowance. Cached quotes remain usable when offline or limited. Quotes older
-than fifteen minutes also indicate possible delay/closed markets; that label
-is not an exchange calendar. Saved quotes are retained for up to 31 days.
+allowance; the message includes the end time. Cached quotes remain usable when offline or limited. Finnhub quotes older than fifteen minutes indicate possible delay/closed markets; Stocklake shows its delay label once. Saved quotes are retained for up to 31 days.
 
 ## History, sparklines and agent tools
 
 Stocklake sparklines use **real daily closing prices**, obtained from
-`get_stock_history(symbol, days: 30)` and cached for **one day**. Each history
-cache miss costs one call, so a first search normally costs a quote plus history.
-History failure never hides a valid quote. There are no AI research or news
+`get_stock_history(symbol, days: 30)` and cached for **one day**. Guests only show already saved history; a cold search costs one lookup per symbol and never fetches history automatically. Keyed search returns quote rows first and fetches history in parallel afterward, checking for newer queries before each request. The host has no search push-update API, so newly fetched history is available on subsequent renders. History failure never hides a valid quote. There are no AI research or news
 requests. Guest/free history supports up to 365 trading days, but this extension
 requests only about 30. The same cached window serves the tools' `1d` (latest
 bar), `1w` (latest five bars), and `1m` (latest thirty bars) ranges.
@@ -106,8 +99,8 @@ and restart Kage if provider terms allow your use with your agent provider.
 - `get_quote(symbols)` returns prices, currency, source, exchange/volume where
   provided, cache status, ISO snapshot/fetch/retry times, and per-symbol messages.
   Malformed symbols do not prevent valid siblings from succeeding.
-- `get_history(symbol, range)` returns Stocklake `kind: daily_history` with real
-  daily OHLCV and close prices, or Finnhub `kind: locally_sampled_quotes` with
+- `get_history(symbol, range = "1m")` returns Stocklake `kind: daily_history` with real
+  daily OHLCV and close prices on demand (one daily lookup on a cache miss, including for guests), or Finnhub `kind: locally_sampled_quotes` with
   `complete: false`. Stocklake failures/exhaustion can return saved daily history.
 
 ## Credentials, transport and terms
@@ -116,8 +109,7 @@ No shared or demo credentials are shipped. Both keys and provider selection use
 `save_extension_data` under **credentials**, separately from regular config,
 covered by `sensitiveData: ["credentials"]`. Host storage is **not an encrypted
 vault**. The compatible text input is visible while typing; saved keys are never
-rendered back. Normalization blanks retired config keys and credential scratch
-fields on older hosts. Tests assert keys cannot appear in schemas or results.
+rendered back. Normalization keeps keys out of regular config and blanks credential scratch fields on older hosts. Tests assert keys cannot appear in schemas or results.
 
 Stocklake uses stateless HTTP JSON-RPC POST to **https://api.stocklake.dev/mcp**,
 with `Content-Type: application/json` and
@@ -139,9 +131,9 @@ results to external agents or using them for business.
 
 Product, [getting-started docs](https://stocklake.dev/docs),
 [tool reference](https://stocklake.dev/docs/tools), and legal were re-read on
-**2026-11-08**. Two live guest calls verified the `price` field, JSON-in-MCP-text
+**2026-11-08**. The captured live guest responses verified the `price` field, JSON-in-MCP-text
 response shape, real daily history, CORS, and daily rate headers. Trimmed response
-fixtures preserve those wire shapes. All development tests mock network calls.
+fixtures preserve those wire shapes, including the supplied batch response and headers. No new live Stocklake calls were made for 1.1.1. All development tests mock network calls.
 
 ## Host compatibility and development
 

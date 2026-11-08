@@ -43,15 +43,22 @@ export default class StocksSettingsProvider {
               showWhen: { id: '__provider', equals: 'stocklake' } },
             { type: 'info', html: `<p>${escapeHtml(t('setup.intro'))}</p>`, showWhen: { id: '__provider', equals: 'finnhub' } },
             { type: 'info', html: `<p>${escapeHtml(t('setup.terms'))}</p>` },
-            { type: 'info', html: `<p>${escapeHtml(hasKey ? t('setup.saved') : t('setup.steps'))}</p>` },
+            { type: 'info', html: `<p>Stocklake: ${escapeHtml(t(validKey(credentials.stocklake_key) ? 'setup.saved' : 'setup.stocklake_steps'))}</p>`,
+              showWhen: { id: '__provider', equals: 'stocklake' } },
+            { type: 'info', html: `<p>Finnhub: ${escapeHtml(t(validKey(credentials.api_key) ? 'setup.saved' : 'setup.finnhub_steps'))}</p>`,
+              showWhen: { id: '__provider', equals: 'finnhub' } },
+            { type: 'info', html: `<p>${escapeHtml(t('setup.switch'))}</p>` },
             { type: 'action', id: 'free_key', action: 'free_key', label: t('setup.free_key'), showWhen: { id: '__provider', equals: 'finnhub' } },
             { type: 'action', id: 'stocklake_key', action: 'free_key', label: t('setup.stocklake_key'), showWhen: { id: '__provider', equals: 'stocklake' } },
             // Scratch field never goes into config or back into the schema.
             // The host has no password control type; an empty text field is
-            // the compatible input, as in Spotify's guided setup.
+            // the compatible input. Never return a stored key.
             { type: 'text', id: this.scratchId, default: '', label: t('setup.key'), description: t('setup.key_hint') },
             { type: 'action', id: 'test_key', action: 'test_key', label: t('setup.test'), variant: 'primary' },
-            { type: 'action', id: 'remove_key', action: 'remove_key', label: t('setup.remove'), disabled: !hasKey && !unreadableKey },
+            { type: 'action', id: 'remove_stocklake_key', action: 'remove_stocklake_key', label: `${t('setup.remove')} · Stocklake`,
+              disabled: !validKey(credentials.stocklake_key) && !unreadableKey, showWhen: { id: '__provider', equals: 'stocklake' } },
+            { type: 'action', id: 'remove_finnhub_key', action: 'remove_finnhub_key', label: `${t('setup.remove')} · Finnhub`,
+              disabled: !validKey(credentials.api_key) && !unreadableKey, showWhen: { id: '__provider', equals: 'finnhub' } },
           ],
         },
         {
@@ -75,8 +82,11 @@ export default class StocksSettingsProvider {
 
   validate(values = {}) {
     try {
+      if (values.__provider && values.__provider !== (this.activeProvider || 'stocklake')) {
+        return { valid: false, error: this.t('setup.switch') };
+      }
       if (values.watchlist !== undefined) parseSymbols(values.watchlist, {
-        allowEmpty: true, provider: values.__provider || this.activeProvider || 'stocklake',
+        allowEmpty: true, provider: this.activeProvider || 'stocklake',
       });
       if (values.refresh_seconds !== undefined) {
         const n = Number(values.refresh_seconds);
@@ -97,8 +107,6 @@ export default class StocksSettingsProvider {
     // Canonicalize every retired provider/config shape without resurrecting
     // an old cache-only provider. The selection action owns modern changes.
     if (Object.hasOwn(values, 'provider')) clean.provider = this.activeProvider || migrateProvider(values);
-    // Retired config credential fields must never survive another Save.
-    for (const key of ['api_key', 'finnhub_key', 'stocklake_key']) if (Object.hasOwn(values, key)) clean[key] = '';
     if (Object.hasOwn(clean, 'watchlist')) {
       clean.watchlist = parseSymbols(clean.watchlist, { allowEmpty: true }).join(' ');
     }
@@ -121,10 +129,14 @@ export default class StocksSettingsProvider {
         await this.invoke('open_url', { url: provider === 'stocklake' ? STOCKLAKE_KEY_URL : FREE_KEY_URL });
         return {};
       }
-      if (action === 'remove_key') {
-        await this.client.removeKey(provider);
+      if (['remove_stocklake_key', 'remove_finnhub_key', 'remove_key'].includes(action)) {
+        const removeProvider = action === 'remove_stocklake_key' ? 'stocklake'
+          : action === 'remove_finnhub_key' ? 'finnhub' : this.activeProvider || provider;
+        const before = (await this.client.connection(this.config).catch(() => null))?.provider;
+        await this.client.removeKey(removeProvider);
         this.keyRevision++;
-        return { status: this.t('setup.removed'), host: { type: 'refresh' } };
+        return { status: this.t(removeProvider === 'finnhub' && before === 'finnhub'
+          ? 'setup.removed_fallback' : 'setup.removed'), host: { type: 'refresh' } };
       }
       if (action === 'delete_quotes') {
         const counts = await this.client.deleteQuotes(parseSymbols(this.config.watchlist ?? DEFAULTS.watchlist, { allowEmpty: true }));
@@ -136,6 +148,7 @@ export default class StocksSettingsProvider {
         await this.client.testKey(key, provider);
         if (key) await this.client.saveKey(key, provider);
         else await this.client.useProvider(provider);
+        this.activeProvider = provider;
         this.keyRevision++;
         return { status: this.t('setup.success'), host: { type: 'refresh' } };
       }

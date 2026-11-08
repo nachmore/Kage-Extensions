@@ -142,7 +142,8 @@ describe('SF4: honest deletion and ICU counts', () => {
     for (const locale of ['ar', 'bn', 'cs', 'da', 'de', 'el', 'en', 'es', 'fa', 'fi', 'fr', 'he', 'hi', 'hu', 'id', 'it', 'ja', 'ko', 'nl', 'no', 'pl', 'pt', 'ro', 'ru', 'sv', 'th', 'tr', 'uk', 'ur', 'vi', 'zh-CN', 'zh-TW']) {
       const message = JSON.parse(readFileSync(new URL(`./_locales/${locale}/messages.json`, import.meta.url)))['settings.quotes_deleted'].message;
       expect(message).toContain('{deleted, plural,');
-      expect(message).toContain('{failed, plural, =0 {} one {');
+      expect(message).toContain('{failed, plural, =0 {}');
+      expect(message).toMatch(/\{failed, plural,[\s\S]*other \{/);
       expect(message).not.toContain('{count}');
       expect(message).not.toContain('undefined');
     }
@@ -150,7 +151,7 @@ describe('SF4: honest deletion and ICU counts', () => {
 });
 
 describe('SF5: widget connection hints open settings', () => {
-  it.each(['setup', 'auth', 'storage'])('routes a cached bare stock row with %s to settings', async (reason) => {
+  it.each(['auth', 'storage'])('routes a cached bare stock row with %s to settings', async (reason) => {
     const h = host({ key: reason === 'setup' ? null : KEY, seed: {
       quote_AAPL: quote(),
       ...(reason === 'auth' || reason === 'storage' ? { request_budget: { attempts: [], backoffUntil: NOW + 60_000, backoffReason: reason } } : {}),
@@ -168,9 +169,9 @@ describe('SF5: widget connection hints open settings', () => {
     const explicit = await drive(search.matchAsync('$AAPL'));
     expect(await search.execute(explicit[0])).toEqual({ type: 'custom', data: {} });
   });
-  it('opens settings on pending bare stock without a saved key', async () => {
+  it('preserves input on pending bare stock for a guest', async () => {
     const search = init(Search, host({ key: null }));
-    expect(await search.execute(search.match('stock')[0])).toEqual({ type: 'open_extension_settings' });
+    expect(await search.execute(search.match('stock')[0])).toEqual({ type: 'replace_input', value: 'stock' });
     expect(fetch).not.toHaveBeenCalled();
   });
 });
@@ -196,12 +197,13 @@ describe('SF6: refresh cadence under tick jitter', () => {
 });
 
 describe('final nits: storage and tool output', () => {
-  it('keeps per-symbol messages in the host-visible no-key error and never echoes $$$ as $$', async () => {
+  it('keeps per-symbol guest errors without a setup nag and never echoes $$$ as $$', async () => {
     const tools = init(Tools, host({ key: null, config: { agent_tools: true } }));
     const result = await tools.execute('get_quote', { symbols: ['AAPL', 'VOD.L', '$$$'] });
-    expect(result.error).toContain('AAPL:');
-    expect(result.error).toContain('VOD.L:');
-    expect(result.error).toContain(catalog['error.invalid_symbols'].message);
+    expect(result.error).toBeUndefined();
+    expect(result.result[0]).toMatchObject({ symbol: 'AAPL', error: 'unavailable' });
+    expect(result.result[1]).toMatchObject({ symbol: 'VOD.L', error: 'unavailable' });
+    expect(result.result[2].message).toBe(catalog['error.invalid_symbols'].message);
     expect(JSON.stringify(result)).not.toContain('$$');
   });
   it('translates the locally sampled history note and omits missing copy percentages', async () => {

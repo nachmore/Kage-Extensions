@@ -12,10 +12,10 @@
     "_source_hash": "d6d4700604b64b88"
   },
   "manifest.description": {
-    "message": "অনলাইন · কোনো কী লাগবে না: Stocklake-এর কোট ~১৫ মিনিট বিলম্বিত, দিনে ২৫টি বিনামূল্যে; একটি বিনামূল্যের কী দিলে এটি বেড়ে ২০০ হয়। লাইভ US কোটের জন্য Finnhub ঐচ্ছিক।",
+    "message": "অনলাইন · Stocklake কোট ~১৫ মিনিট বিলম্বিত: কী ছাড়া দিনে প্রায় ২৫টি সিম্বল লুকআপ, অথবা বিনামূল্যের কী দিয়ে ২০০টি। লাইভ US কোটের জন্য Finnhub ঐচ্ছিক।",
     "description": "Store listing; Online and Data delayed communicate network dependency and freshness",
     "_machine_translated": true,
-    "_source_hash": "44f1eb50266b55a3"
+    "_source_hash": "0a0e960d0b709ac1"
   },
   "result.loading": {
     "message": "স্টক খোঁজা হচ্ছে…",
@@ -72,10 +72,10 @@
     "_source_hash": "693535460d4db418"
   },
   "error.setup": {
-    "message": "স্টক সেটিংস খুলুন, একটি বিনামূল্যের Finnhub কী নিন, তারপর পরীক্ষা করে সংরক্ষণ করুন।",
+    "message": "Stocks সেটিংস খুলুন, একটি বিনামূল্যের Finnhub কী নিন, তারপর পরীক্ষা করে ব্যবহার করুন।",
     "description": "No stored key",
     "_machine_translated": true,
-    "_source_hash": "8adbf75fdf5bc595"
+    "_source_hash": "2be9c6223cc5fff8"
   },
   "error.auth": {
     "message": "প্রদানকারী কী-টি প্রত্যাখ্যান করেছে। বিকল্প কী পরীক্ষা করতে Stocks সেটিংস খুলুন।",
@@ -150,10 +150,10 @@
     "_source_hash": "f4f4d83dc6129a6c"
   },
   "settings.description": {
-    "message": "Stocklake-এর কোট কী ছাড়াই কাজ করে: ~১৫ মিনিট বিলম্বিত, দিনে ২৫টি কল, অথবা বিনামূল্যের কী দিয়ে ২০০টি। Finnhub বিনামূল্যের কী দিয়ে লাইভ US কোট দেয়।",
+    "message": "Stocklake কোট কী ছাড়াই কাজ করে: ~১৫ মিনিট বিলম্বিত, দিনে প্রায় ২৫টি সিম্বল লুকআপ, অথবা বিনামূল্যের কী দিয়ে ২০০টি। Finnhub বিনামূল্যের কী দিয়ে লাইভ US কোট দেয়।",
     "description": "Settings summary",
     "_machine_translated": true,
-    "_source_hash": "deea29d63a6f57a4"
+    "_source_hash": "0f8ec107dbd56b33"
   },
   "settings.connection": {
     "message": "দর প্রদানকারী ও সেটআপ",
@@ -172,12 +172,6 @@
     "description": "Material provider use restrictions",
     "_machine_translated": true,
     "_source_hash": "7fbb1c4e684b429f"
-  },
-  "setup.steps": {
-    "message": "Stocklake কী ছাড়াই সঙ্গে সঙ্গে কাজ করে। একটি প্রদানকারী বেছে নিন, চাইলে তার কী পেস্ট করুন, তারপর আপনার পছন্দ সংরক্ষণ করতে পরীক্ষা করে ব্যবহার করুন।",
-    "description": "Guided setup steps",
-    "_machine_translated": true,
-    "_source_hash": "d73223e639ab4ff7"
   },
   "setup.saved": {
     "message": "এই ডিভাইসে একটি কী সংরক্ষিত আছে। এটি পরীক্ষা করতে ঘরটি খালি রাখুন, অথবা নতুন কী পেস্ট করুন। সংরক্ষিত কী এখানে কখনো দেখানো হয় না।",
@@ -198,10 +192,10 @@
     "_source_hash": "3fb2a7de1e62b384"
   },
   "setup.key_hint": {
-    "message": "পরীক্ষা করে সংরক্ষণ করলে কীটি Spotify ক্রেডেনশিয়ালের মতো এক্সটেনশনের ব্যক্তিগত ডেটায় রাখা হয়। এখানে টাইপ করলে তা সাধারণ সেটিংসের সঙ্গে সংরক্ষিত হয় না। টাইপ করার সময় এই হোস্টের টেক্সট ঘরটি দৃশ্যমান থাকে।",
+    "message": "\"পরীক্ষা করে ব্যবহার করুন\" কী-টি ব্যক্তিগত এক্সটেনশন ডেটায় সংরক্ষণ করে। এখানে টাইপ করলে তা সাধারণ সেটিংসের সাথে সংরক্ষিত হয় না। সংরক্ষিত কী কখনো দেখানো হয় না।",
     "description": "Storage and host input behavior",
     "_machine_translated": true,
-    "_source_hash": "4c3122d9b4d5daad"
+    "_source_hash": "84263c95dae6f748"
   },
   "setup.test": {
     "message": "প্রদানকারী পরীক্ষা করে ব্যবহার করুন",
@@ -222,10 +216,10 @@
     "_source_hash": "59cb7317745316bb"
   },
   "setup.success": {
-    "message": "কোট পরীক্ষা সফল; প্রদানকারী নির্বাচিত হয়েছে এবং দেওয়া কী সংরক্ষিত হয়েছে।",
+    "message": "প্রোভাইডার নির্বাচিত হয়েছে এবং দেওয়া কী সংরক্ষিত হয়েছে। কী-যুক্ত সংযোগগুলো কোট পরীক্ষায় উত্তীর্ণ হয়েছে।",
     "description": "Successful guided setup; key is saved independently of watchlist settings",
     "_machine_translated": true,
-    "_source_hash": "c4ae3a50e8f0c3e0"
+    "_source_hash": "118c046747156cd2"
   },
   "settings.watchlist_section": {
     "message": "ওয়াচলিস্ট ও রিফ্রেশ",
@@ -270,22 +264,22 @@
     "_source_hash": "45f891673cb1e039"
   },
   "tool.quote": {
-    "message": "নিজের ব্যবহারের জন্য আপনার নির্বাচিত প্রদানকারী থেকে স্টক কোট নিন। Stocklake ~১৫ মিনিট বিলম্বিত এবং কোনো কী লাগে না; Finnhub কী দিয়ে লাইভ US কোট দেয়। উৎস, টাইমস্ট্যাম্প, সতেজতা এবং প্রতিটি সিম্বলের ত্রুটি ফেরত দেয়। ডেটা পুনর্বিতরণ করবেন না।",
+    "message": "নিজের ব্যবহারের জন্য স্টক কোট নিন। Stocklake ~১৫ মিনিট বিলম্বিত; অতিথিরা প্রতি IP-তে দিনে প্রায় ২৫টি সিম্বল লুকআপ ভাগ করে নেন। ব্যাচে থাকলেও প্রতিটি ক্যাশ-বহির্ভূত সিম্বল গণনা হয়। অনুরোধ করা সিম্বলগুলো একসাথে ব্যাচ করুন এবং অনুমাননির্ভর বা পুনরাবৃত্ত লুকআপ এড়িয়ে চলুন। বিনামূল্যের কী দিয়ে দিনে ২০০টি সম্ভব। Finnhub কী দিয়ে লাইভ US কোট দেয়। source, Stocklake আপডেটের জন্য asOf, Finnhub-এর জন্য tradeTime, freshness এবং প্রতি-সিম্বল ত্রুটি ফেরত দেয়। ডেটা পুনর্বিতরণ করবেন না।",
     "description": "Agent tool description",
     "_machine_translated": true,
-    "_source_hash": "890f052fdf9e3bbd"
+    "_source_hash": "99f5d285678b43e5"
   },
   "tool.symbols": {
-    "message": "সর্বোচ্চ {max}টি সিম্বল, যেমন [\"AAPL\", \"MSFT\", \"SAP.DE\"]। Finnhub শুধু US টিকার গ্রহণ করে।",
+    "message": "অনুরোধ করা সর্বোচ্চ {max}টি সিম্বল ব্যাচ করুন, যেমন [\"AAPL\", \"MSFT\", \"SAP.DE\"]। প্রতিটি ক্যাশ-বহির্ভূত Stocklake সিম্বল দিনে প্রায় ২৫টির অতিথি সীমায় গণনা হয়। Finnhub শুধু US টিকার গ্রহণ করে।",
     "description": "Quote tool parameter description; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "acbe6e78c6fddb5a"
+    "_source_hash": "0b1952ac06ea6daf"
   },
   "tool.history": {
-    "message": "এক দিনের জন্য ক্যাশ করা ৩০ ট্রেডিং দিনের উইন্ডো থেকে 1d, 1w বা 1m-এর প্রকৃত Stocklake দৈনিক ইতিহাস নিন। ক্যাশে না থাকলে একটি কল খরচ হয়। Finnhub কোনো ইতিহাস অনুরোধ ছাড়াই স্থানীয়ভাবে পর্যবেক্ষিত অসম্পূর্ণ কোট ফেরত দেয়।",
+    "message": "প্রয়োজনে 1d, 1w বা 1m (ডিফল্ট 1m)-এর জন্য Stocklake দৈনিক ইতিহাস আনুন, প্রায় ৩০ ট্রেডিং দিনের ডেটা থেকে। এক দিনের জন্য ক্যাশ করা হয়। একটি ক্যাশ-বহির্ভূত ইতিহাস অনুরোধ প্রতি IP-তে ভাগ করা দৈনিক প্রায় ২৫টি সিম্বল লুকআপের অতিথি বরাদ্দ থেকে একটি ব্যবহার করে। স্বয়ংক্রিয় ইতিহাস লুকআপ এড়িয়ে চলুন; শুধু প্রয়োজন হলে অনুরোধ করুন।",
     "description": "Agent tool scope must not imply full historical coverage",
     "_machine_translated": true,
-    "_source_hash": "d5343316b6826efa"
+    "_source_hash": "ef221a7846ff22d5"
   },
   "tool.symbol": {
     "message": "একটি স্টক সিম্বল, Stocklake-এর জন্য আন্তর্জাতিক সাফিক্সসহ।",
@@ -294,10 +288,10 @@
     "_source_hash": "bf96519c516306b2"
   },
   "tool.range": {
-    "message": "1d, 1w বা 1m; ডিফল্ট 1d।",
+    "message": "1d, 1w বা 1m; ডিফল্ট 1m।",
     "description": "History range parameter description",
     "_machine_translated": true,
-    "_source_hash": "992fdef4270c7170"
+    "_source_hash": "0a2d7005b36be66b"
   },
   "tool.disabled": {
     "message": "Stocks নিষ্ক্রিয় করা আছে।",
@@ -336,8 +330,10 @@
     "_source_hash": "c3ae84bf8010f20d"
   },
   "settings.quotes_deleted": {
-    "message": "{deleted, plural, one {#টি সংরক্ষিত দরের রেকর্ড এবং সেটির স্থানীয় নমুনা মুছে ফেলা হয়েছে। অন্য উইন্ডো বা চলমান রিফ্রেশ আরও রেকর্ড সংরক্ষণ করতে পারে।} other {#টি সংরক্ষিত দরের রেকর্ড এবং সেগুলোর স্থানীয় নমুনা মুছে ফেলা হয়েছে। অন্য উইন্ডো বা চলমান রিফ্রেশ আরও রেকর্ড সংরক্ষণ করতে পারে।}}{failed, plural, =0 {} one { #টি রেকর্ড মুছে ফেলা যায়নি। আবার চেষ্টা করুন।} other { #টি রেকর্ড মুছে ফেলা যায়নি। আবার চেষ্টা করুন।}}",
-    "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
+    "message": "{deleted, plural, one {#টি সংরক্ষিত কোট বা ইতিহাস রেকর্ড মুছে ফেলা হয়েছে। অন্য উইন্ডো বা চলমান রিফ্রেশ আরও সংরক্ষণ করতে পারে।} other {#টি সংরক্ষিত কোট বা ইতিহাস রেকর্ড মুছে ফেলা হয়েছে। অন্য উইন্ডো বা চলমান রিফ্রেশ আরও সংরক্ষণ করতে পারে।}}{failed, plural, =0 {} one { #টি সংরক্ষিত রেকর্ড মুছে ফেলা যায়নি। আবার চেষ্টা করুন।} other { #টি সংরক্ষিত রেকর্ড মুছে ফেলা যায়নি। আবার চেষ্টা করুন।}}",
+    "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records",
+    "_machine_translated": true,
+    "_source_hash": "45eb5a0d8cf6b318"
   },
   "widget.connection": {
     "message": "কোটে মনোযোগ প্রয়োজন। Stocks সেটিংস খুলতে stock লিখে Enter চাপুন।",
@@ -358,10 +354,10 @@
     "_source_hash": "b9f483c14cb7b4dc"
   },
   "setup.stocklake": {
-    "message": "Stocklake কোনো কী ছাড়াই কাজ করে: প্রায় ১৫ মিনিট বিলম্বিত, দিনে ২৫টি কল; একটি ঐচ্ছিক বিনামূল্যের কী এটি ২০০-তে বাড়িয়ে দেয়।",
+    "message": "Stocklake কী ছাড়াই কাজ করে: ~১৫ মিনিট বিলম্বিত, প্রতি IP-তে ভাগ করা দিনে প্রায় ২৫টি সিম্বল লুকআপ; বিনামূল্যের কী দিয়ে দিনে ২০০টি। প্রতিটি ক্যাশ-বহির্ভূত সিম্বল গণনা হয়।",
     "description": "Keyless default provider description",
     "_machine_translated": true,
-    "_source_hash": "930e88dd695cf87e"
+    "_source_hash": "4fb2147ce025156d"
   },
   "setup.stocklake_key": {
     "message": "বিনামূল্যে একটি Stocklake কী নিন",
@@ -370,16 +366,16 @@
     "_source_hash": "b21d6e57b9696558"
   },
   "quote.stocklake": {
-    "message": "প্রায় ১৫ মিনিট বিলম্বিত · Stocklake",
-    "description": "Visible delayed provider attribution; paired with a link to stocklake.dev",
+    "message": "~১৫ মিনিট বিলম্বিত · Stocklake",
+    "description": "Visible delayed provider attribution in plain text",
     "_machine_translated": true,
-    "_source_hash": "081a46f162590a46"
+    "_source_hash": "bede5ed980930c08"
   },
   "quote.history": {
-    "message": "প্রায় ৩০টি ট্রেডিং দিনের Stocklake দৈনিক সমাপনী মূল্য। ইতিহাস এক দিনের জন্য ক্যাশে রাখা হয়; ক্যাশে না পেলে একটি কল খরচ হয়। Finnhub স্পার্কলাইন স্থানীয় নমুনা ব্যবহার করে।",
+    "message": "প্রায় ৩০ ট্রেডিং দিনের Stocklake দৈনিক সমাপনী মূল্য। এক দিনের জন্য ক্যাশ করা হয়; ক্যাশ-বহির্ভূত ইতিহাস আনতে একটি দৈনিক লুকআপ লাগে। অতিথি স্পার্কলাইন শুধু সংরক্ষিত ইতিহাস ব্যবহার করে।",
     "description": "History accessible label and settings explanation; real daily data for Stocklake",
     "_machine_translated": true,
-    "_source_hash": "2efd3bfb80984cd7"
+    "_source_hash": "8e6435e7874868ff"
   },
   "error.daily_limit": {
     "message": "দৈনিক বিনামূল্যের কোট শেষ হয়ে গেছে। {time}-এ রিসেট হবে। দিনে ২০০টির জন্য একটি বিনামূল্যের Stocklake কী যোগ করুন।",
@@ -392,5 +388,47 @@
     "description": "Authenticated daily exhaustion; preserve {time}",
     "_machine_translated": true,
     "_source_hash": "7c2f3494ec238e7e"
+  },
+  "result.type_symbol": {
+    "message": "একটি সিম্বল টাইপ করুন, যেমন stock aapl",
+    "description": "Bare guest stock command; no lookup is made",
+    "_machine_translated": true,
+    "_source_hash": "7d079e375ba5f9cb"
+  },
+  "quote.updated": {
+    "message": "আপডেট হয়েছে {time}",
+    "description": "Stocklake refresh time, not last trade time; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "3dec8682dcb844dc"
+  },
+  "setup.stocklake_steps": {
+    "message": "কী ছাড়াই Stocklake ব্যবহার করুন, অথবা একটি বিনামূল্যের কী পেস্ট করুন। পরিবর্তন করতে \"পরীক্ষা করে ব্যবহার করুন\" নির্বাচন করুন; অতিথি নির্বাচনে কোনো লুকআপ লাগে না।",
+    "description": "Stocklake setup steps",
+    "_machine_translated": true,
+    "_source_hash": "96be4a9668009051"
+  },
+  "setup.finnhub_steps": {
+    "message": "একটি বিনামূল্যের Finnhub কী নিন, পেস্ট করুন, তারপর লাইভ US কোটের জন্য \"পরীক্ষা করে ব্যবহার করুন\" নির্বাচন করুন।",
+    "description": "Finnhub setup steps",
+    "_machine_translated": true,
+    "_source_hash": "a7736e058dc5a82e"
+  },
+  "setup.switch": {
+    "message": "প্রোভাইডার পরিবর্তন করতে \"পরীক্ষা করে ব্যবহার করুন\" ব্যবহার করুন। \"সংরক্ষণ\" সক্রিয় প্রোভাইডারের সেটিংস প্রয়োগ করে।",
+    "description": "Provider selection requires explicit Test and use; generic Save must explain this",
+    "_machine_translated": true,
+    "_source_hash": "1a8c271c436d2d7b"
+  },
+  "setup.removed_fallback": {
+    "message": "Finnhub কী সরানো হয়েছে। এখন Stocklake অতিথি সক্রিয়। সংরক্ষিত কোট উপলব্ধ থাকবে।",
+    "description": "Explicit fallback after removing the active Finnhub key",
+    "_machine_translated": true,
+    "_source_hash": "49e5908c4fdee494"
+  },
+  "error.storage_until": {
+    "message": "কোট স্টোরেজ সীমা ট্র্যাক করতে পারেনি। {time} পর্যন্ত অনুরোধ স্থগিত; উপলব্ধ থাকলে সংরক্ষিত ডেটা দেখানো হচ্ছে।",
+    "description": "Storage lockout expiry; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "ebf9f622c5b939d6"
   }
 }

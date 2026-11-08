@@ -12,10 +12,10 @@
     "_source_hash": "d6d4700604b64b88"
   },
   "manifest.description": {
-    "message": "متصل · لا حاجة إلى مفاتيح: أسعار Stocklake متأخرة بنحو 15 دقيقة، و25 طلبًا يوميًا مجانًا؛ ويرفع مفتاح مجاني هذا الحد إلى 200. Finnhub اختياري للأسعار الفورية في الولايات المتحدة.",
+    "message": "متصل · أسعار Stocklake متأخرة بنحو 15 دقيقة: نحو 25 عملية بحث عن الرموز يوميًا بدون مفتاح، أو 200 مع مفتاح مجاني. Finnhub اختياري للأسعار الأمريكية المباشرة.",
     "description": "Store listing; Online and Data delayed communicate network dependency and freshness",
     "_machine_translated": true,
-    "_source_hash": "44f1eb50266b55a3"
+    "_source_hash": "0a0e960d0b709ac1"
   },
   "result.loading": {
     "message": "جارٍ البحث عن الأسهم…",
@@ -72,10 +72,10 @@
     "_source_hash": "693535460d4db418"
   },
   "error.setup": {
-    "message": "افتح إعدادات «الأسهم»، واحصل على مفتاح Finnhub مجاني، ثم اختر «اختبار وحفظ».",
+    "message": "افتح إعدادات الأسهم، واحصل على مفتاح Finnhub مجاني، ثم اختر «اختبار واستخدام».",
     "description": "No stored key",
     "_machine_translated": true,
-    "_source_hash": "8adbf75fdf5bc595"
+    "_source_hash": "2be9c6223cc5fff8"
   },
   "error.auth": {
     "message": "رفض المزوّد المفتاح. افتح إعدادات الأسهم لاختبار مفتاح بديل.",
@@ -150,10 +150,10 @@
     "_source_hash": "f4f4d83dc6129a6c"
   },
   "settings.description": {
-    "message": "تعمل أسعار Stocklake دون مفتاح: متأخرة بنحو 15 دقيقة، و25 طلبًا يوميًا، أو 200 باستخدام مفتاح مجاني. يوفر Finnhub أسعارًا فورية في الولايات المتحدة باستخدام مفتاح مجاني.",
+    "message": "تعمل أسعار Stocklake بدون مفتاح: متأخرة بنحو 15 دقيقة، ونحو 25 عملية بحث عن الرموز يوميًا، أو 200 مع مفتاح مجاني. يوفر Finnhub أسعارًا أمريكية مباشرة مع مفتاح مجاني.",
     "description": "Settings summary",
     "_machine_translated": true,
-    "_source_hash": "deea29d63a6f57a4"
+    "_source_hash": "0f8ec107dbd56b33"
   },
   "settings.connection": {
     "message": "مزوّد الأسعار والإعداد",
@@ -172,12 +172,6 @@
     "description": "Material provider use restrictions",
     "_machine_translated": true,
     "_source_hash": "7fbb1c4e684b429f"
-  },
-  "setup.steps": {
-    "message": "يعمل Stocklake فورًا دون مفتاح. اختر مزوّدًا، والصق مفتاحه اختياريًا، ثم اختر «اختبار واستخدام» لحفظ اختيارك.",
-    "description": "Guided setup steps",
-    "_machine_translated": true,
-    "_source_hash": "d73223e639ab4ff7"
   },
   "setup.saved": {
     "message": "يوجد مفتاح محفوظ على هذا الجهاز. اترك الحقل فارغًا لاختباره، أو الصق مفتاحًا بديلًا. لا تُعرض المفاتيح المخزّنة هنا أبدًا.",
@@ -198,10 +192,10 @@
     "_source_hash": "3fb2a7de1e62b384"
   },
   "setup.key_hint": {
-    "message": "يخزّن «اختبار المفتاح وحفظه» المفتاح في بيانات الإضافة الخاصة، مثل بيانات اعتماد Spotify. كتابته هنا لا تحفظه مع الإعدادات العادية. حقل النص في هذا المضيف يكون مرئيًا أثناء الكتابة.",
+    "message": "يحفظ «اختبار واستخدام» المفتاح في بيانات الإضافة الخاصة. كتابته هنا لا تحفظه مع الإعدادات العادية. لا تُعرض المفاتيح المحفوظة أبدًا.",
     "description": "Storage and host input behavior",
     "_machine_translated": true,
-    "_source_hash": "4c3122d9b4d5daad"
+    "_source_hash": "84263c95dae6f748"
   },
   "setup.test": {
     "message": "اختبار المزوّد واستخدامه",
@@ -222,10 +216,10 @@
     "_source_hash": "59cb7317745316bb"
   },
   "setup.success": {
-    "message": "نجح اختبار الأسعار؛ تم تحديد المزوّد وحفظ أي مفتاح مُدخل.",
+    "message": "تم اختيار المزوّد وحفظ أي مفتاح تم إدخاله. اجتازت الاتصالات التي تستخدم مفتاحًا اختبار الأسعار.",
     "description": "Successful guided setup; key is saved independently of watchlist settings",
     "_machine_translated": true,
-    "_source_hash": "c4ae3a50e8f0c3e0"
+    "_source_hash": "118c046747156cd2"
   },
   "settings.watchlist_section": {
     "message": "قائمة المراقبة والتحديث",
@@ -270,22 +264,22 @@
     "_source_hash": "45f891673cb1e039"
   },
   "tool.quote": {
-    "message": "احصل على أسعار الأسهم من المزوّد المحدد لاستخدامك الخاص. أسعار Stocklake متأخرة بنحو 15 دقيقة ولا تحتاج إلى مفتاح؛ ويوفر Finnhub أسعارًا فورية في الولايات المتحدة باستخدام مفتاح. يُرجع المصدر والطوابع الزمنية ومدى حداثة البيانات والأخطاء لكل رمز. لا تُعِد توزيع البيانات.",
+    "message": "احصل على أسعار الأسهم لاستخدامك الخاص. أسعار Stocklake متأخرة بنحو 15 دقيقة؛ ويتشارك الضيوف نحو 25 عملية بحث عن الرموز يوميًا لكل عنوان IP. يُحتسب كل رمز غير مخزّن مؤقتًا، حتى ضمن دفعة واحدة. اجمع الرموز المطلوبة في دفعة واحدة وتجنّب عمليات البحث التخمينية أو المتكررة. يتيح المفتاح المجاني 200 عملية يوميًا. يوفر Finnhub أسعارًا أمريكية مباشرة مع مفتاح. يُرجع المصدر، وasOf لتحديثات Stocklake، وtradeTime لـ Finnhub، ومدى حداثة البيانات، والأخطاء لكل رمز. لا تُعِد توزيع البيانات.",
     "description": "Agent tool description",
     "_machine_translated": true,
-    "_source_hash": "890f052fdf9e3bbd"
+    "_source_hash": "99f5d285678b43e5"
   },
   "tool.symbols": {
-    "message": "حتى {max} من الرموز، على سبيل المثال [\"AAPL\", \"MSFT\", \"SAP.DE\"]. يقبل Finnhub رموز الأسهم الأمريكية فقط.",
+    "message": "اجمع ما يصل إلى {max} من الرموز المطلوبة في دفعة واحدة، مثل [\"AAPL\", \"MSFT\", \"SAP.DE\"]. يُحتسب كل رمز Stocklake غير مخزّن مؤقتًا ضمن حد الضيف البالغ نحو 25 يوميًا. يقبل Finnhub رموز الأسهم الأمريكية فقط.",
     "description": "Quote tool parameter description; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "acbe6e78c6fddb5a"
+    "_source_hash": "0b1952ac06ea6daf"
   },
   "tool.history": {
-    "message": "احصل على السجل اليومي الفعلي من Stocklake لمدة 1d أو 1w أو 1m من نافذة تمتد 30 يوم تداول ومخزنة مؤقتًا لمدة يوم. يستهلك طلبًا واحدًا عند عدم وجود البيانات في الذاكرة المؤقتة. يُرجع Finnhub أسعارًا غير مكتملة مرصودة محليًا دون طلب سجل.",
+    "message": "اجلب السجل اليومي من Stocklake عند الطلب لمدة 1d أو 1w أو 1m (الافتراضي 1m)، من نحو 30 يوم تداول. يُخزَّن مؤقتًا ليوم واحد. يستهلك طلب السجل غير المخزّن مؤقتًا عملية واحدة من حصة الضيف البالغة نحو 25 عملية بحث يومية عن الرموز، والمشتركة لكل عنوان IP. تجنّب عمليات البحث التلقائية في السجل؛ واطلبه عند الحاجة فقط.",
     "description": "Agent tool scope must not imply full historical coverage",
     "_machine_translated": true,
-    "_source_hash": "d5343316b6826efa"
+    "_source_hash": "ef221a7846ff22d5"
   },
   "tool.symbol": {
     "message": "رمز سهم، بما في ذلك اللواحق الدولية لـ Stocklake.",
@@ -294,10 +288,10 @@
     "_source_hash": "bf96519c516306b2"
   },
   "tool.range": {
-    "message": "1d أو 1w أو 1m؛ القيمة الافتراضية 1d.",
+    "message": "1d أو 1w أو 1m؛ الافتراضي 1m.",
     "description": "History range parameter description",
     "_machine_translated": true,
-    "_source_hash": "992fdef4270c7170"
+    "_source_hash": "0a2d7005b36be66b"
   },
   "tool.disabled": {
     "message": "الأسهم معطّلة.",
@@ -336,8 +330,10 @@
     "_source_hash": "c3ae84bf8010f20d"
   },
   "settings.quotes_deleted": {
-    "message": "{deleted, plural, one {تم حذف سجل سعر محفوظ واحد وعيّناته المحلية. قد تحفظ النوافذ الأخرى أو عمليات التحديث الجارية سجلات أخرى.} zero {لم تُحذف أي سجلات أسعار محفوظة. قد تحفظ النوافذ الأخرى أو عمليات التحديث الجارية سجلات أخرى.} =2 {تم حذف سجلَّي أسعار محفوظين وعيّناتهما المحلية. قد تحفظ النوافذ الأخرى أو عمليات التحديث الجارية سجلات أخرى.} two {تم حذف سجلَّي أسعار محفوظين وعيّناتهما المحلية. قد تحفظ النوافذ الأخرى أو عمليات التحديث الجارية سجلات أخرى.} few {تم حذف # سجلات أسعار محفوظة وعيّناتها المحلية. قد تحفظ النوافذ الأخرى أو عمليات التحديث الجارية سجلات أخرى.} many {تم حذف # سجل أسعار محفوظًا وعيّناته المحلية. قد تحفظ النوافذ الأخرى أو عمليات التحديث الجارية سجلات أخرى.} other {تم حذف # من سجلات الأسعار المحفوظة وعيّناتها المحلية. قد تحفظ النوافذ الأخرى أو عمليات التحديث الجارية سجلات أخرى.}}{failed, plural, =0 {} one { تعذر حذف سجل سعر محفوظ واحد. حاول مرة أخرى.} two { تعذر حذف سجلَّي أسعار محفوظين. حاول مرة أخرى.} few { تعذر حذف # سجلات أسعار محفوظة. حاول مرة أخرى.} many { تعذر حذف # سجل أسعار محفوظًا. حاول مرة أخرى.} other { تعذر حذف # من سجلات الأسعار المحفوظة. حاول مرة أخرى.}}",
-    "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
+    "message": "{deleted, plural, zero {لم يُحذف أي سعر أو سجل محفوظ. قد تحفظ النوافذ الأخرى أو عمليات التحديث النشطة المزيد.} one {تم حذف سعر أو سجل محفوظ واحد. قد تحفظ النوافذ الأخرى أو عمليات التحديث النشطة المزيد.} two {تم حذف سعرين أو سجلين محفوظين. قد تحفظ النوافذ الأخرى أو عمليات التحديث النشطة المزيد.} few {تم حذف # أسعار أو سجلات محفوظة. قد تحفظ النوافذ الأخرى أو عمليات التحديث النشطة المزيد.} many {تم حذف # سعرًا أو سجلًا محفوظًا. قد تحفظ النوافذ الأخرى أو عمليات التحديث النشطة المزيد.} other {تم حذف # سعر أو سجل محفوظ. قد تحفظ النوافذ الأخرى أو عمليات التحديث النشطة المزيد.}}{failed, plural, =0 {} zero {} one { تعذّر حذف سجل محفوظ واحد. حاول مرة أخرى.} two { تعذّر حذف سجلين محفوظين. حاول مرة أخرى.} few { تعذّر حذف # سجلات محفوظة. حاول مرة أخرى.} many { تعذّر حذف # سجلًا محفوظًا. حاول مرة أخرى.} other { تعذّر حذف # سجل محفوظ. حاول مرة أخرى.}}",
+    "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records",
+    "_machine_translated": true,
+    "_source_hash": "45eb5a0d8cf6b318"
   },
   "widget.connection": {
     "message": "الأسعار تحتاج إلى انتباهك. اكتب stock واضغط Enter لفتح إعدادات الأسهم.",
@@ -358,10 +354,10 @@
     "_source_hash": "b9f483c14cb7b4dc"
   },
   "setup.stocklake": {
-    "message": "تعمل Stocklake بدون مفتاح: بتأخير ~15 دقيقة و25 طلبًا يوميًا؛ ويرفع مفتاح مجاني اختياري هذا الحد إلى 200.",
+    "message": "يعمل Stocklake بدون مفتاح: متأخر بنحو 15 دقيقة، ونحو 25 عملية بحث عن الرموز يوميًا مشتركة لكل عنوان IP؛ ويتيح المفتاح المجاني 200 عملية يوميًا. يُحتسب كل رمز غير مخزّن مؤقتًا.",
     "description": "Keyless default provider description",
     "_machine_translated": true,
-    "_source_hash": "930e88dd695cf87e"
+    "_source_hash": "4fb2147ce025156d"
   },
   "setup.stocklake_key": {
     "message": "احصل على مفتاح Stocklake مجاني",
@@ -370,16 +366,16 @@
     "_source_hash": "b21d6e57b9696558"
   },
   "quote.stocklake": {
-    "message": "بتأخير ~15 دقيقة · Stocklake",
-    "description": "Visible delayed provider attribution; paired with a link to stocklake.dev",
+    "message": "متأخر بنحو 15 دقيقة · Stocklake",
+    "description": "Visible delayed provider attribution in plain text",
     "_machine_translated": true,
-    "_source_hash": "081a46f162590a46"
+    "_source_hash": "bede5ed980930c08"
   },
   "quote.history": {
-    "message": "أسعار الإغلاق اليومية من Stocklake لنحو 30 يوم تداول. يُخزَّن السجل مؤقتًا ليوم واحد، وعند عدم توفره في الذاكرة المؤقتة يُستهلك طلب واحد. تستخدم المخططات المصغّرة من Finnhub عينات محلية.",
+    "message": "أسعار الإغلاق اليومية من Stocklake لنحو 30 يوم تداول. تُخزَّن مؤقتًا ليوم واحد؛ ويستهلك جلب السجل غير المخزّن مؤقتًا عملية بحث يومية واحدة. تستخدم الرسوم البيانية المصغّرة للضيوف السجل المحفوظ فقط.",
     "description": "History accessible label and settings explanation; real daily data for Stocklake",
     "_machine_translated": true,
-    "_source_hash": "2efd3bfb80984cd7"
+    "_source_hash": "8e6435e7874868ff"
   },
   "error.daily_limit": {
     "message": "نفدت الأسعار المجانية اليومية. يُعاد التعيين في {time}. أضف مفتاح Stocklake مجانيًا للحصول على 200 طلب يوميًا.",
@@ -392,5 +388,47 @@
     "description": "Authenticated daily exhaustion; preserve {time}",
     "_machine_translated": true,
     "_source_hash": "7c2f3494ec238e7e"
+  },
+  "result.type_symbol": {
+    "message": "اكتب رمزًا، مثل stock aapl",
+    "description": "Bare guest stock command; no lookup is made",
+    "_machine_translated": true,
+    "_source_hash": "7d079e375ba5f9cb"
+  },
+  "quote.updated": {
+    "message": "تم التحديث {time}",
+    "description": "Stocklake refresh time, not last trade time; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "3dec8682dcb844dc"
+  },
+  "setup.stocklake_steps": {
+    "message": "استخدم Stocklake بدون مفتاح، أو الصق مفتاحًا مجانيًا. اختر «اختبار واستخدام» للتبديل؛ لا يستهلك اختيار وضع الضيف أي عملية بحث.",
+    "description": "Stocklake setup steps",
+    "_machine_translated": true,
+    "_source_hash": "96be4a9668009051"
+  },
+  "setup.finnhub_steps": {
+    "message": "احصل على مفتاح Finnhub مجاني، والصقه، ثم اختر «اختبار واستخدام» للحصول على أسعار أمريكية مباشرة.",
+    "description": "Finnhub setup steps",
+    "_machine_translated": true,
+    "_source_hash": "a7736e058dc5a82e"
+  },
+  "setup.switch": {
+    "message": "استخدم «اختبار واستخدام» للتبديل بين المزوّدين. يطبّق «حفظ» الإعدادات على المزوّد النشط.",
+    "description": "Provider selection requires explicit Test and use; generic Save must explain this",
+    "_machine_translated": true,
+    "_source_hash": "1a8c271c436d2d7b"
+  },
+  "setup.removed_fallback": {
+    "message": "تمت إزالة مفتاح Finnhub. وضع الضيف في Stocklake نشط الآن. تظل الأسعار المحفوظة متاحة.",
+    "description": "Explicit fallback after removing the active Finnhub key",
+    "_machine_translated": true,
+    "_source_hash": "49e5908c4fdee494"
+  },
+  "error.storage_until": {
+    "message": "تعذّر على مخزن الأسعار تتبّع الحد. الطلبات متوقفة مؤقتًا حتى {time}؛ وتُعرض البيانات المحفوظة عند توفرها.",
+    "description": "Storage lockout expiry; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "ebf9f622c5b939d6"
   }
 }

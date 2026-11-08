@@ -12,10 +12,10 @@
     "_source_hash": "d6d4700604b64b88"
   },
   "manifest.description": {
-    "message": "線上 · 無需金鑰：Stocklake 報價延遲約 15 分鐘，每天免費 25 次；使用免費金鑰可提高至 200 次。Finnhub 為選用，提供美股即時報價。",
+    "message": "線上 · Stocklake 報價延遲約 15 分鐘：未使用金鑰時每天約可查詢 25 個代號，使用免費金鑰則可查詢 200 個。Finnhub 為選用，可提供美股即時報價。",
     "description": "Store listing; Online and Data delayed communicate network dependency and freshness",
     "_machine_translated": true,
-    "_source_hash": "44f1eb50266b55a3"
+    "_source_hash": "0a0e960d0b709ac1"
   },
   "result.loading": {
     "message": "正在查詢股票…",
@@ -72,10 +72,10 @@
     "_source_hash": "693535460d4db418"
   },
   "error.setup": {
-    "message": "請開啟「股票」設定，取得免費的 Finnhub 金鑰，然後點選「測試並儲存」。",
+    "message": "請開啟股票設定，取得免費的 Finnhub 金鑰，然後選取「測試並使用」。",
     "description": "No stored key",
     "_machine_translated": true,
-    "_source_hash": "8adbf75fdf5bc595"
+    "_source_hash": "2be9c6223cc5fff8"
   },
   "error.auth": {
     "message": "供應商拒絕了此金鑰。請開啟股票設定以測試替代金鑰。",
@@ -150,10 +150,10 @@
     "_source_hash": "f4f4d83dc6129a6c"
   },
   "settings.description": {
-    "message": "Stocklake 報價無需金鑰即可使用：延遲約 15 分鐘，每天 25 次呼叫，使用免費金鑰可達 200 次。Finnhub 使用免費金鑰即可提供美股即時報價。",
+    "message": "Stocklake 報價無需金鑰即可使用：延遲約 15 分鐘，每天約可查詢 25 個代號，使用免費金鑰則可查詢 200 個。Finnhub 使用免費金鑰即可提供美股即時報價。",
     "description": "Settings summary",
     "_machine_translated": true,
-    "_source_hash": "deea29d63a6f57a4"
+    "_source_hash": "0f8ec107dbd56b33"
   },
   "settings.connection": {
     "message": "報價提供者與設定",
@@ -172,12 +172,6 @@
     "description": "Material provider use restrictions",
     "_machine_translated": true,
     "_source_hash": "7fbb1c4e684b429f"
-  },
-  "setup.steps": {
-    "message": "Stocklake 無需金鑰即可立即使用。請選擇供應商，視需要貼上其金鑰，然後點選「測試並使用」以儲存您的選擇。",
-    "description": "Guided setup steps",
-    "_machine_translated": true,
-    "_source_hash": "d73223e639ab4ff7"
   },
   "setup.saved": {
     "message": "此裝置上已儲存一組金鑰。將欄位留空即可測試該金鑰，或貼上新的金鑰加以取代。已儲存的金鑰絕不會顯示於此。",
@@ -198,10 +192,10 @@
     "_source_hash": "3fb2a7de1e62b384"
   },
   "setup.key_hint": {
-    "message": "「測試並儲存」會將金鑰存放在私人擴充功能資料中，與 Spotify 憑證相同。在此輸入不會將其與一般設定一併儲存。輸入時，此主機的文字欄位內容為可見。",
+    "message": "「測試並使用」會將金鑰儲存在擴充功能的私人資料中。在此輸入金鑰不會隨一般設定一併儲存。已儲存的金鑰一律不會顯示。",
     "description": "Storage and host input behavior",
     "_machine_translated": true,
-    "_source_hash": "4c3122d9b4d5daad"
+    "_source_hash": "84263c95dae6f748"
   },
   "setup.test": {
     "message": "測試並使用供應商",
@@ -222,10 +216,10 @@
     "_source_hash": "59cb7317745316bb"
   },
   "setup.success": {
-    "message": "報價測試通過；已選取供應商，並已儲存所提供的金鑰。",
+    "message": "已選取供應商，並已儲存所提供的金鑰。使用金鑰的連線已通過報價測試。",
     "description": "Successful guided setup; key is saved independently of watchlist settings",
     "_machine_translated": true,
-    "_source_hash": "c4ae3a50e8f0c3e0"
+    "_source_hash": "118c046747156cd2"
   },
   "settings.watchlist_section": {
     "message": "自選清單與重新整理",
@@ -270,22 +264,22 @@
     "_source_hash": "45f891673cb1e039"
   },
   "tool.quote": {
-    "message": "從您所選的供應商取得股票報價，僅供您自己使用。Stocklake 延遲約 15 分鐘且無需金鑰；Finnhub 使用金鑰可提供美股即時報價。會傳回來源、時間戳記、資料新鮮度及各代號的錯誤。請勿重新散布資料。",
+    "message": "取得供您自用的股票報價。Stocklake 報價延遲約 15 分鐘；訪客每個 IP 每天共用約 25 次代號查詢。每個未快取的代號都會計入，即使是批次查詢也一樣。請將要查詢的代號合併成一次批次，並避免臆測性或重複的查詢。免費金鑰每天可查詢 200 次。Finnhub 使用金鑰即可提供美股即時報價。傳回內容包括來源、Stocklake 更新時間 asOf、Finnhub 成交時間 tradeTime、資料新鮮度及各代號的錯誤。請勿轉散布資料。",
     "description": "Agent tool description",
     "_machine_translated": true,
-    "_source_hash": "890f052fdf9e3bbd"
+    "_source_hash": "99f5d285678b43e5"
   },
   "tool.symbols": {
-    "message": "最多 {max} 個代號，例如 [\"AAPL\", \"MSFT\", \"SAP.DE\"]。Finnhub 僅接受美股代號。",
+    "message": "最多可批次查詢 {max} 個代號，例如 [\"AAPL\", \"MSFT\", \"SAP.DE\"]。每個未快取的 Stocklake 代號都會計入訪客每天約 25 次的上限。Finnhub 僅接受美股代號。",
     "description": "Quote tool parameter description; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "acbe6e78c6fddb5a"
+    "_source_hash": "0b1952ac06ea6daf"
   },
   "tool.history": {
-    "message": "從快取一天的 30 個交易日區間中，取得 Stocklake 1d、1w 或 1m 的實際每日歷史資料。快取未命中時會消耗一次呼叫。Finnhub 不發出歷史資料請求，僅傳回在本機觀察到的不完整報價。",
+    "message": "視需要擷取 Stocklake 的每日歷史資料，範圍為 1d、1w 或 1m（預設為 1m），取自約 30 個交易日。資料會快取一天。每次未快取的歷史資料請求會使用一次訪客額度，該額度為每個 IP 共用、每天約 25 次代號查詢。請避免自動查詢歷史資料，僅在需要時才提出請求。",
     "description": "Agent tool scope must not imply full historical coverage",
     "_machine_translated": true,
-    "_source_hash": "d5343316b6826efa"
+    "_source_hash": "ef221a7846ff22d5"
   },
   "tool.symbol": {
     "message": "股票代號，Stocklake 可包含國際後綴。",
@@ -294,10 +288,10 @@
     "_source_hash": "bf96519c516306b2"
   },
   "tool.range": {
-    "message": "1d、1w 或 1m；預設為 1d。",
+    "message": "1d、1w 或 1m；預設為 1m。",
     "description": "History range parameter description",
     "_machine_translated": true,
-    "_source_hash": "992fdef4270c7170"
+    "_source_hash": "0a2d7005b36be66b"
   },
   "tool.disabled": {
     "message": "股票功能已停用。",
@@ -336,8 +330,10 @@
     "_source_hash": "c3ae84bf8010f20d"
   },
   "settings.quotes_deleted": {
-    "message": "{deleted, plural, one {已刪除 # 筆已儲存的報價記錄及其本機樣本。 其他視窗或進行中的重新整理可能會再儲存更多記錄。} other {已刪除 # 筆已儲存的報價記錄及其本機樣本。其他視窗或進行中的重新整理可能會再儲存更多記錄。}}{failed, plural, =0 {} one { # 筆記錄無法刪除。請再試一次。} other { # 筆記錄無法刪除。請再試一次。}}",
-    "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
+    "message": "{deleted, plural, other {已刪除 # 筆已儲存的報價或歷史記錄。其他視窗或進行中的重新整理可能會儲存更多記錄。}}{failed, plural, =0 {} other {有 # 筆已儲存的記錄無法刪除，請再試一次。}}",
+    "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records",
+    "_machine_translated": true,
+    "_source_hash": "45eb5a0d8cf6b318"
   },
   "widget.connection": {
     "message": "報價需要處理。輸入 stock 並按 Enter 以開啟股票設定。",
@@ -358,10 +354,10 @@
     "_source_hash": "b9f483c14cb7b4dc"
   },
   "setup.stocklake": {
-    "message": "Stocklake 無需金鑰即可使用：資料延遲約 15 分鐘，每日 25 次呼叫；可選用免費金鑰將上限提高至 200 次。",
+    "message": "Stocklake 無需金鑰即可使用：延遲約 15 分鐘，每個 IP 每天共用約 25 次代號查詢；免費金鑰每天可查詢 200 次。每個未快取的代號都會計入。",
     "description": "Keyless default provider description",
     "_machine_translated": true,
-    "_source_hash": "930e88dd695cf87e"
+    "_source_hash": "4fb2147ce025156d"
   },
   "setup.stocklake_key": {
     "message": "取得免費 Stocklake 金鑰",
@@ -371,15 +367,15 @@
   },
   "quote.stocklake": {
     "message": "延遲約 15 分鐘 · Stocklake",
-    "description": "Visible delayed provider attribution; paired with a link to stocklake.dev",
+    "description": "Visible delayed provider attribution in plain text",
     "_machine_translated": true,
-    "_source_hash": "081a46f162590a46"
+    "_source_hash": "bede5ed980930c08"
   },
   "quote.history": {
-    "message": "Stocklake 約 30 個交易日的每日收盤價。歷史資料會快取一天；未命中快取時會使用一次呼叫。Finnhub 走勢圖使用本機取樣資料。",
+    "message": "Stocklake 約 30 個交易日的每日收盤價。資料會快取一天；擷取未快取的歷史資料會使用一次每日查詢。訪客的走勢圖僅使用已儲存的歷史資料。",
     "description": "History accessible label and settings explanation; real daily data for Stocklake",
     "_machine_translated": true,
-    "_source_hash": "2efd3bfb80984cd7"
+    "_source_hash": "8e6435e7874868ff"
   },
   "error.daily_limit": {
     "message": "今日免費報價次數已用完，將於 {time} 重設。新增免費 Stocklake 金鑰即可每日使用 200 次。",
@@ -392,5 +388,47 @@
     "description": "Authenticated daily exhaustion; preserve {time}",
     "_machine_translated": true,
     "_source_hash": "7c2f3494ec238e7e"
+  },
+  "result.type_symbol": {
+    "message": "請輸入代號，例如 stock aapl",
+    "description": "Bare guest stock command; no lookup is made",
+    "_machine_translated": true,
+    "_source_hash": "7d079e375ba5f9cb"
+  },
+  "quote.updated": {
+    "message": "更新時間：{time}",
+    "description": "Stocklake refresh time, not last trade time; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "3dec8682dcb844dc"
+  },
+  "setup.stocklake_steps": {
+    "message": "可不使用金鑰直接使用 Stocklake，或貼上免費金鑰。選取「測試並使用」即可切換；選取訪客模式不會使用查詢次數。",
+    "description": "Stocklake setup steps",
+    "_machine_translated": true,
+    "_source_hash": "96be4a9668009051"
+  },
+  "setup.finnhub_steps": {
+    "message": "取得免費的 Finnhub 金鑰並貼上，然後選取「測試並使用」以取得美股即時報價。",
+    "description": "Finnhub setup steps",
+    "_machine_translated": true,
+    "_source_hash": "a7736e058dc5a82e"
+  },
+  "setup.switch": {
+    "message": "請使用「測試並使用」切換供應商。「儲存」會套用目前供應商的設定。",
+    "description": "Provider selection requires explicit Test and use; generic Save must explain this",
+    "_machine_translated": true,
+    "_source_hash": "1a8c271c436d2d7b"
+  },
+  "setup.removed_fallback": {
+    "message": "已移除 Finnhub 金鑰，目前改用 Stocklake 訪客模式。已儲存的報價仍可使用。",
+    "description": "Explicit fallback after removing the active Finnhub key",
+    "_machine_translated": true,
+    "_source_hash": "49e5908c4fdee494"
+  },
+  "error.storage_until": {
+    "message": "報價儲存空間無法追蹤用量上限。請求已暫停至 {time}；如有已儲存的資料，將會顯示。",
+    "description": "Storage lockout expiry; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "ebf9f622c5b939d6"
   }
 }

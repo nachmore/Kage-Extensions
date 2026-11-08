@@ -12,10 +12,10 @@
     "_source_hash": "d6d4700604b64b88"
   },
   "manifest.description": {
-    "message": "在线 · 无需密钥：Stocklake 行情延迟约 15 分钟，每天免费 25 次；使用免费密钥可提升至 200 次。Finnhub 为可选项，提供美股实时行情。",
+    "message": "在线 · Stocklake 行情延迟约 15 分钟：无密钥每天约可查询 25 个代码，使用免费密钥每天可查询 200 个。Finnhub 为可选项，提供美股实时行情。",
     "description": "Store listing; Online and Data delayed communicate network dependency and freshness",
     "_machine_translated": true,
-    "_source_hash": "44f1eb50266b55a3"
+    "_source_hash": "0a0e960d0b709ac1"
   },
   "result.loading": {
     "message": "正在查询股票…",
@@ -72,10 +72,10 @@
     "_source_hash": "693535460d4db418"
   },
   "error.setup": {
-    "message": "请打开“股票”设置，获取免费的 Finnhub 密钥，然后点击“测试并保存”。",
+    "message": "请打开股票设置，获取免费的 Finnhub 密钥，然后点击“测试并使用”。",
     "description": "No stored key",
     "_machine_translated": true,
-    "_source_hash": "8adbf75fdf5bc595"
+    "_source_hash": "2be9c6223cc5fff8"
   },
   "error.auth": {
     "message": "服务商拒绝了该密钥。请打开股票设置测试新的密钥。",
@@ -150,10 +150,10 @@
     "_source_hash": "f4f4d83dc6129a6c"
   },
   "settings.description": {
-    "message": "Stocklake 行情无需密钥即可使用：延迟约 15 分钟，每天 25 次调用，使用免费密钥可达 200 次。Finnhub 使用免费密钥即可提供美股实时行情。",
+    "message": "Stocklake 行情无需密钥即可使用：延迟约 15 分钟，每天约可查询 25 个代码，使用免费密钥每天可查询 200 个。Finnhub 使用免费密钥即可提供美股实时行情。",
     "description": "Settings summary",
     "_machine_translated": true,
-    "_source_hash": "deea29d63a6f57a4"
+    "_source_hash": "0f8ec107dbd56b33"
   },
   "settings.connection": {
     "message": "行情提供方与设置",
@@ -172,12 +172,6 @@
     "description": "Material provider use restrictions",
     "_machine_translated": true,
     "_source_hash": "7fbb1c4e684b429f"
-  },
-  "setup.steps": {
-    "message": "Stocklake 无需密钥即可立即使用。选择服务商，可选择粘贴其密钥，然后点击“测试并使用”以保存您的选择。",
-    "description": "Guided setup steps",
-    "_machine_translated": true,
-    "_source_hash": "d73223e639ab4ff7"
   },
   "setup.saved": {
     "message": "此设备上已保存一个密钥。将字段留空可测试该密钥，或粘贴新密钥进行替换。已存储的密钥永远不会在此显示。",
@@ -198,10 +192,10 @@
     "_source_hash": "3fb2a7de1e62b384"
   },
   "setup.key_hint": {
-    "message": "“测试并保存”会将密钥存储在扩展的私有数据中，与 Spotify 凭据的存储方式相同。在此输入不会将其随常规设置一起保存。输入时，此宿主的文本字段内容是可见的。",
+    "message": "“测试并使用”会将密钥存储在扩展的私有数据中。在此处输入密钥不会随常规设置一起保存。已保存的密钥不会显示。",
     "description": "Storage and host input behavior",
     "_machine_translated": true,
-    "_source_hash": "4c3122d9b4d5daad"
+    "_source_hash": "84263c95dae6f748"
   },
   "setup.test": {
     "message": "测试并使用服务商",
@@ -222,10 +216,10 @@
     "_source_hash": "59cb7317745316bb"
   },
   "setup.success": {
-    "message": "行情测试通过；已选择服务商，并已保存所提供的密钥。",
+    "message": "已选择数据源，并已保存所提供的密钥。使用密钥的连接已通过行情测试。",
     "description": "Successful guided setup; key is saved independently of watchlist settings",
     "_machine_translated": true,
-    "_source_hash": "c4ae3a50e8f0c3e0"
+    "_source_hash": "118c046747156cd2"
   },
   "settings.watchlist_section": {
     "message": "自选股列表与刷新",
@@ -270,22 +264,22 @@
     "_source_hash": "45f891673cb1e039"
   },
   "tool.quote": {
-    "message": "从您所选的服务商获取股票行情，仅供您自己使用。Stocklake 延迟约 15 分钟且无需密钥；Finnhub 使用密钥可提供美股实时行情。返回来源、时间戳、新鲜度及各代码的错误。请勿再分发数据。",
+    "message": "获取股票行情，仅供个人使用。Stocklake 行情延迟约 15 分钟；访客每个 IP 每天共享约 25 次代码查询。每个未缓存的代码都会计数，批量查询也不例外。请将所需代码合并为一次批量请求，避免推测性或重复查询。使用免费密钥每天可查询 200 次。Finnhub 使用密钥可提供美股实时行情。返回数据来源、Stocklake 更新时间 asOf、Finnhub 成交时间 tradeTime、数据新鲜度以及各代码的错误信息。请勿转发数据。",
     "description": "Agent tool description",
     "_machine_translated": true,
-    "_source_hash": "890f052fdf9e3bbd"
+    "_source_hash": "99f5d285678b43e5"
   },
   "tool.symbols": {
-    "message": "最多 {max} 个代码，例如 [\"AAPL\", \"MSFT\", \"SAP.DE\"]。Finnhub 仅支持美股代码。",
+    "message": "批量查询最多 {max} 个所需代码，例如 [\"AAPL\", \"MSFT\", \"SAP.DE\"]。每个未缓存的 Stocklake 代码都会计入访客每天约 25 次的限额。Finnhub 仅支持美股代码。",
     "description": "Quote tool parameter description; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "acbe6e78c6fddb5a"
+    "_source_hash": "0b1952ac06ea6daf"
   },
   "tool.history": {
-    "message": "从缓存一天的 30 个交易日窗口中获取 Stocklake 真实的 1d、1w 或 1m 日线历史数据。缓存未命中时消耗一次调用。Finnhub 不发起历史数据请求，仅返回本地记录的不完整行情。",
+    "message": "按需获取 Stocklake 每日历史数据，范围为 1d、1w 或 1m（默认 1m），数据约覆盖 30 个交易日。缓存一天。每次未缓存的历史数据请求会占用访客每个 IP 每天共享的约 25 次代码查询额度中的一次。请避免自动查询历史数据，仅在需要时请求。",
     "description": "Agent tool scope must not imply full historical coverage",
     "_machine_translated": true,
-    "_source_hash": "d5343316b6826efa"
+    "_source_hash": "ef221a7846ff22d5"
   },
   "tool.symbol": {
     "message": "股票代码，Stocklake 支持包含国际后缀的代码。",
@@ -294,10 +288,10 @@
     "_source_hash": "bf96519c516306b2"
   },
   "tool.range": {
-    "message": "1d、1w 或 1m；默认为 1d。",
+    "message": "1d、1w 或 1m；默认 1m。",
     "description": "History range parameter description",
     "_machine_translated": true,
-    "_source_hash": "992fdef4270c7170"
+    "_source_hash": "0a2d7005b36be66b"
   },
   "tool.disabled": {
     "message": "股票功能已停用。",
@@ -336,8 +330,10 @@
     "_source_hash": "c3ae84bf8010f20d"
   },
   "settings.quotes_deleted": {
-    "message": "{deleted, plural, one {已删除 # 条已保存的报价记录及其本地样本。 其他窗口或正在进行的刷新可能会保存更多记录。} other {已删除 # 条已保存的报价记录及其本地样本。其他窗口或正在进行的刷新可能会保存更多记录。}}{failed, plural, =0 {} one { # 条记录无法删除。请重试。} other { # 条记录无法删除。请重试。}}",
-    "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
+    "message": "{deleted, plural, other {已删除 # 条保存的行情或历史记录。其他窗口或正在进行的刷新可能会保存更多记录。}}{failed, plural, =0 {} other {有 # 条保存的记录无法删除，请重试。}}",
+    "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records",
+    "_machine_translated": true,
+    "_source_hash": "45eb5a0d8cf6b318"
   },
   "widget.connection": {
     "message": "行情需要处理。输入 stock 并按 Enter 打开股票设置。",
@@ -358,10 +354,10 @@
     "_source_hash": "b9f483c14cb7b4dc"
   },
   "setup.stocklake": {
-    "message": "Stocklake 无需密钥即可使用：数据延迟约 15 分钟，每天 25 次调用；可选的免费密钥可将其提高到 200 次。",
+    "message": "Stocklake 无需密钥即可使用：延迟约 15 分钟，每个 IP 每天共享约 25 次代码查询；使用免费密钥每天可查询 200 次。每个未缓存的代码都会计数。",
     "description": "Keyless default provider description",
     "_machine_translated": true,
-    "_source_hash": "930e88dd695cf87e"
+    "_source_hash": "4fb2147ce025156d"
   },
   "setup.stocklake_key": {
     "message": "获取免费 Stocklake 密钥",
@@ -371,15 +367,15 @@
   },
   "quote.stocklake": {
     "message": "延迟约 15 分钟 · Stocklake",
-    "description": "Visible delayed provider attribution; paired with a link to stocklake.dev",
+    "description": "Visible delayed provider attribution in plain text",
     "_machine_translated": true,
-    "_source_hash": "081a46f162590a46"
+    "_source_hash": "bede5ed980930c08"
   },
   "quote.history": {
-    "message": "Stocklake 提供约 30 个交易日的每日收盘价。历史数据缓存一天；未命中缓存时会消耗一次调用。Finnhub 走势图使用本地采样数据。",
+    "message": "Stocklake 约 30 个交易日的每日收盘价。缓存一天；获取未缓存的历史数据会占用一次每日查询。访客的迷你走势图仅使用已保存的历史数据。",
     "description": "History accessible label and settings explanation; real daily data for Stocklake",
     "_machine_translated": true,
-    "_source_hash": "2efd3bfb80984cd7"
+    "_source_hash": "8e6435e7874868ff"
   },
   "error.daily_limit": {
     "message": "今日免费报价次数已用完，将于 {time} 重置。添加免费 Stocklake 密钥即可每天使用 200 次。",
@@ -392,5 +388,47 @@
     "description": "Authenticated daily exhaustion; preserve {time}",
     "_machine_translated": true,
     "_source_hash": "7c2f3494ec238e7e"
+  },
+  "result.type_symbol": {
+    "message": "请输入代码，例如 stock aapl",
+    "description": "Bare guest stock command; no lookup is made",
+    "_machine_translated": true,
+    "_source_hash": "7d079e375ba5f9cb"
+  },
+  "quote.updated": {
+    "message": "更新于 {time}",
+    "description": "Stocklake refresh time, not last trade time; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "3dec8682dcb844dc"
+  },
+  "setup.stocklake_steps": {
+    "message": "无需密钥即可使用 Stocklake，也可粘贴免费密钥。选择“测试并使用”进行切换；选择访客模式不会占用查询次数。",
+    "description": "Stocklake setup steps",
+    "_machine_translated": true,
+    "_source_hash": "96be4a9668009051"
+  },
+  "setup.finnhub_steps": {
+    "message": "获取免费的 Finnhub 密钥并粘贴，然后选择“测试并使用”以获取美股实时行情。",
+    "description": "Finnhub setup steps",
+    "_machine_translated": true,
+    "_source_hash": "a7736e058dc5a82e"
+  },
+  "setup.switch": {
+    "message": "请使用“测试并使用”切换数据源。“保存”仅应用当前数据源的设置。",
+    "description": "Provider selection requires explicit Test and use; generic Save must explain this",
+    "_machine_translated": true,
+    "_source_hash": "1a8c271c436d2d7b"
+  },
+  "setup.removed_fallback": {
+    "message": "已移除 Finnhub 密钥。现已启用 Stocklake 访客模式。已保存的行情仍可使用。",
+    "description": "Explicit fallback after removing the active Finnhub key",
+    "_machine_translated": true,
+    "_source_hash": "49e5908c4fdee494"
+  },
+  "error.storage_until": {
+    "message": "行情存储无法记录限额。请求已暂停至 {time}；如有已保存的数据，将显示这些数据。",
+    "description": "Storage lockout expiry; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "ebf9f622c5b939d6"
   }
 }

@@ -12,10 +12,10 @@
     "_source_hash": "d6d4700604b64b88"
   },
   "manifest.description": {
-    "message": "Trực tuyến · Không cần khóa: báo giá Stocklake trễ khoảng 15 phút, miễn phí 25 lượt mỗi ngày; khóa miễn phí nâng lên 200. Finnhub là tùy chọn cho báo giá Mỹ theo thời gian thực.",
+    "message": "Trực tuyến · Báo giá Stocklake trễ khoảng 15 phút: khoảng 25 lượt tra cứu mã mỗi ngày khi không có khóa, hoặc 200 lượt với khóa miễn phí. Finnhub là tùy chọn để có báo giá trực tiếp tại Mỹ.",
     "description": "Store listing; Online and Data delayed communicate network dependency and freshness",
     "_machine_translated": true,
-    "_source_hash": "44f1eb50266b55a3"
+    "_source_hash": "0a0e960d0b709ac1"
   },
   "result.loading": {
     "message": "Đang tra cứu cổ phiếu…",
@@ -72,10 +72,10 @@
     "_source_hash": "693535460d4db418"
   },
   "error.setup": {
-    "message": "Mở cài đặt Cổ phiếu, lấy khóa Finnhub miễn phí, sau đó chọn Kiểm tra và lưu.",
+    "message": "Mở cài đặt Stocks, lấy khóa Finnhub miễn phí, rồi chọn Kiểm tra và dùng.",
     "description": "No stored key",
     "_machine_translated": true,
-    "_source_hash": "8adbf75fdf5bc595"
+    "_source_hash": "2be9c6223cc5fff8"
   },
   "error.auth": {
     "message": "Nhà cung cấp đã từ chối khóa. Mở cài đặt Stocks để kiểm tra khóa thay thế.",
@@ -150,10 +150,10 @@
     "_source_hash": "f4f4d83dc6129a6c"
   },
   "settings.description": {
-    "message": "Báo giá Stocklake hoạt động không cần khóa: trễ khoảng 15 phút, 25 lượt gọi mỗi ngày, hoặc 200 lượt với khóa miễn phí. Finnhub cung cấp báo giá Mỹ theo thời gian thực với khóa miễn phí.",
+    "message": "Báo giá Stocklake hoạt động không cần khóa: trễ khoảng 15 phút, khoảng 25 lượt tra cứu mã mỗi ngày, hoặc 200 lượt với khóa miễn phí. Finnhub cung cấp báo giá trực tiếp tại Mỹ với khóa miễn phí.",
     "description": "Settings summary",
     "_machine_translated": true,
-    "_source_hash": "deea29d63a6f57a4"
+    "_source_hash": "0f8ec107dbd56b33"
   },
   "settings.connection": {
     "message": "Nhà cung cấp báo giá và thiết lập",
@@ -172,12 +172,6 @@
     "description": "Material provider use restrictions",
     "_machine_translated": true,
     "_source_hash": "7fbb1c4e684b429f"
-  },
-  "setup.steps": {
-    "message": "Stocklake hoạt động ngay mà không cần khóa. Chọn nhà cung cấp, dán khóa nếu muốn, rồi chọn Kiểm tra và dùng để lưu lựa chọn.",
-    "description": "Guided setup steps",
-    "_machine_translated": true,
-    "_source_hash": "d73223e639ab4ff7"
   },
   "setup.saved": {
     "message": "Đã lưu một khóa trên thiết bị này. Để trống trường để kiểm tra khóa đó, hoặc dán khóa thay thế. Khóa đã lưu không bao giờ được hiển thị ở đây.",
@@ -198,10 +192,10 @@
     "_source_hash": "3fb2a7de1e62b384"
   },
   "setup.key_hint": {
-    "message": "Kiểm tra và lưu sẽ lưu khóa vào dữ liệu riêng tư của tiện ích mở rộng, giống như thông tin đăng nhập Spotify. Việc nhập khóa ở đây không lưu nó cùng các cài đặt thông thường. Trường văn bản của máy chủ này hiển thị nội dung khi bạn nhập.",
+    "message": "Kiểm tra và dùng sẽ lưu khóa trong dữ liệu riêng của tiện ích. Nhập khóa tại đây không lưu khóa cùng các cài đặt thông thường. Khóa đã lưu sẽ không bao giờ được hiển thị.",
     "description": "Storage and host input behavior",
     "_machine_translated": true,
-    "_source_hash": "4c3122d9b4d5daad"
+    "_source_hash": "84263c95dae6f748"
   },
   "setup.test": {
     "message": "Kiểm tra và dùng nhà cung cấp",
@@ -222,10 +216,10 @@
     "_source_hash": "59cb7317745316bb"
   },
   "setup.success": {
-    "message": "Kiểm tra báo giá thành công; đã chọn nhà cung cấp và lưu khóa đã nhập (nếu có).",
+    "message": "Đã chọn nhà cung cấp và lưu khóa đã nhập (nếu có). Các kết nối dùng khóa đã vượt qua bài kiểm tra báo giá.",
     "description": "Successful guided setup; key is saved independently of watchlist settings",
     "_machine_translated": true,
-    "_source_hash": "c4ae3a50e8f0c3e0"
+    "_source_hash": "118c046747156cd2"
   },
   "settings.watchlist_section": {
     "message": "Danh sách theo dõi và làm mới",
@@ -270,22 +264,22 @@
     "_source_hash": "45f891673cb1e039"
   },
   "tool.quote": {
-    "message": "Lấy báo giá cổ phiếu từ nhà cung cấp đã chọn để bạn sử dụng riêng. Stocklake trễ khoảng 15 phút và không cần khóa; Finnhub cung cấp báo giá Mỹ theo thời gian thực khi có khóa. Trả về nguồn, dấu thời gian, độ mới và lỗi theo từng mã. Không phân phối lại dữ liệu.",
+    "message": "Lấy báo giá cổ phiếu cho mục đích sử dụng riêng của bạn. Stocklake trễ khoảng 15 phút; khách dùng chung khoảng 25 lượt tra cứu mã mỗi ngày trên mỗi IP. Mỗi mã chưa được lưu bộ nhớ đệm đều được tính, kể cả trong một lô. Hãy gộp các mã được yêu cầu vào cùng một lô và tránh tra cứu phỏng đoán hoặc lặp lại. Khóa miễn phí cho phép 200 lượt mỗi ngày. Finnhub cung cấp báo giá trực tiếp tại Mỹ khi có khóa. Trả về source, asOf cho các lần cập nhật Stocklake, tradeTime cho Finnhub, độ mới của dữ liệu và lỗi theo từng mã. Không phân phối lại dữ liệu.",
     "description": "Agent tool description",
     "_machine_translated": true,
-    "_source_hash": "890f052fdf9e3bbd"
+    "_source_hash": "99f5d285678b43e5"
   },
   "tool.symbols": {
-    "message": "Tối đa {max} mã, ví dụ [\"AAPL\", \"MSFT\", \"SAP.DE\"]. Finnhub chỉ chấp nhận mã chứng khoán Mỹ.",
+    "message": "Gộp tối đa {max} mã được yêu cầu, ví dụ [\"AAPL\", \"MSFT\", \"SAP.DE\"]. Mỗi mã Stocklake chưa được lưu bộ nhớ đệm đều được tính vào giới hạn khách khoảng 25 lượt mỗi ngày. Finnhub chỉ chấp nhận mã cổ phiếu Mỹ.",
     "description": "Quote tool parameter description; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "acbe6e78c6fddb5a"
+    "_source_hash": "0b1952ac06ea6daf"
   },
   "tool.history": {
-    "message": "Lấy lịch sử theo ngày thực tế từ Stocklake cho 1d, 1w hoặc 1m, trong khoảng 30 ngày giao dịch được lưu đệm một ngày. Tốn một lượt gọi khi không có trong bộ đệm. Finnhub trả về các báo giá quan sát cục bộ chưa đầy đủ, không gửi yêu cầu lịch sử.",
+    "message": "Lấy lịch sử theo ngày của Stocklake khi cần cho 1d, 1w hoặc 1m (mặc định 1m), từ khoảng 30 ngày giao dịch. Được lưu bộ nhớ đệm trong một ngày. Mỗi yêu cầu lịch sử chưa được lưu bộ nhớ đệm sẽ dùng một trong khoảng 25 lượt tra cứu mã hằng ngày dành cho khách, dùng chung trên mỗi IP. Tránh tự động tra cứu lịch sử; chỉ yêu cầu khi cần.",
     "description": "Agent tool scope must not imply full historical coverage",
     "_machine_translated": true,
-    "_source_hash": "d5343316b6826efa"
+    "_source_hash": "ef221a7846ff22d5"
   },
   "tool.symbol": {
     "message": "Mã cổ phiếu, bao gồm cả hậu tố quốc tế đối với Stocklake.",
@@ -294,10 +288,10 @@
     "_source_hash": "bf96519c516306b2"
   },
   "tool.range": {
-    "message": "1d, 1w hoặc 1m; mặc định là 1d.",
+    "message": "1d, 1w hoặc 1m; mặc định 1m.",
     "description": "History range parameter description",
     "_machine_translated": true,
-    "_source_hash": "992fdef4270c7170"
+    "_source_hash": "0a2d7005b36be66b"
   },
   "tool.disabled": {
     "message": "Stocks đã bị tắt.",
@@ -336,8 +330,10 @@
     "_source_hash": "c3ae84bf8010f20d"
   },
   "settings.quotes_deleted": {
-    "message": "{deleted, plural, one {Đã xóa # bản ghi báo giá đã lưu cùng các mẫu cục bộ của nó. Các cửa sổ khác hoặc các lần làm mới đang chạy có thể lưu thêm bản ghi.} other {Đã xóa # bản ghi báo giá đã lưu cùng các mẫu cục bộ của chúng. Các cửa sổ khác hoặc các lần làm mới đang chạy có thể lưu thêm bản ghi.}}{failed, plural, =0 {} one { Không thể xóa # bản ghi. Hãy thử lại.} other { Không thể xóa # bản ghi. Hãy thử lại.}}",
-    "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
+    "message": "{deleted, plural, other {Đã xóa # báo giá hoặc bản ghi lịch sử đã lưu. Các cửa sổ khác hoặc các lần làm mới đang chạy có thể lưu thêm.}}{failed, plural, =0 {} other { Không thể xóa # bản ghi đã lưu. Hãy thử lại.}}",
+    "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records",
+    "_machine_translated": true,
+    "_source_hash": "45eb5a0d8cf6b318"
   },
   "widget.connection": {
     "message": "Báo giá cần được xử lý. Gõ stock và nhấn Enter để mở cài đặt Stocks.",
@@ -358,10 +354,10 @@
     "_source_hash": "b9f483c14cb7b4dc"
   },
   "setup.stocklake": {
-    "message": "Stocklake hoạt động mà không cần khóa: trễ khoảng 15 phút, 25 lượt gọi mỗi ngày; khóa miễn phí tùy chọn sẽ nâng mức này lên 200.",
+    "message": "Stocklake hoạt động không cần khóa: trễ khoảng 15 phút, khoảng 25 lượt tra cứu mã mỗi ngày dùng chung trên mỗi IP; khóa miễn phí cho phép 200 lượt mỗi ngày. Mỗi mã chưa được lưu bộ nhớ đệm đều được tính.",
     "description": "Keyless default provider description",
     "_machine_translated": true,
-    "_source_hash": "930e88dd695cf87e"
+    "_source_hash": "4fb2147ce025156d"
   },
   "setup.stocklake_key": {
     "message": "Nhận khóa Stocklake miễn phí",
@@ -371,15 +367,15 @@
   },
   "quote.stocklake": {
     "message": "Trễ khoảng 15 phút · Stocklake",
-    "description": "Visible delayed provider attribution; paired with a link to stocklake.dev",
+    "description": "Visible delayed provider attribution in plain text",
     "_machine_translated": true,
-    "_source_hash": "081a46f162590a46"
+    "_source_hash": "bede5ed980930c08"
   },
   "quote.history": {
-    "message": "Giá đóng cửa hằng ngày của Stocklake trong khoảng 30 ngày giao dịch. Lịch sử được lưu vào bộ nhớ đệm trong một ngày; nếu không có trong bộ nhớ đệm, sẽ dùng một lượt gọi. Biểu đồ mini của Finnhub dùng dữ liệu mẫu cục bộ.",
+    "message": "Giá đóng cửa hằng ngày của Stocklake trong khoảng 30 ngày giao dịch. Được lưu bộ nhớ đệm trong một ngày; lấy lịch sử chưa được lưu bộ nhớ đệm sẽ dùng một lượt tra cứu hằng ngày. Biểu đồ thu nhỏ ở chế độ khách chỉ dùng lịch sử đã lưu.",
     "description": "History accessible label and settings explanation; real daily data for Stocklake",
     "_machine_translated": true,
-    "_source_hash": "2efd3bfb80984cd7"
+    "_source_hash": "8e6435e7874868ff"
   },
   "error.daily_limit": {
     "message": "Đã hết lượt báo giá miễn phí trong ngày. Đặt lại lúc {time}. Thêm khóa Stocklake miễn phí để có 200 lượt mỗi ngày.",
@@ -392,5 +388,47 @@
     "description": "Authenticated daily exhaustion; preserve {time}",
     "_machine_translated": true,
     "_source_hash": "7c2f3494ec238e7e"
+  },
+  "result.type_symbol": {
+    "message": "Nhập một mã, ví dụ stock aapl",
+    "description": "Bare guest stock command; no lookup is made",
+    "_machine_translated": true,
+    "_source_hash": "7d079e375ba5f9cb"
+  },
+  "quote.updated": {
+    "message": "Đã cập nhật {time}",
+    "description": "Stocklake refresh time, not last trade time; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "3dec8682dcb844dc"
+  },
+  "setup.stocklake_steps": {
+    "message": "Dùng Stocklake không cần khóa, hoặc dán khóa miễn phí. Chọn Kiểm tra và dùng để chuyển đổi; chọn chế độ khách không tốn lượt tra cứu nào.",
+    "description": "Stocklake setup steps",
+    "_machine_translated": true,
+    "_source_hash": "96be4a9668009051"
+  },
+  "setup.finnhub_steps": {
+    "message": "Lấy khóa Finnhub miễn phí, dán vào, rồi chọn Kiểm tra và dùng để có báo giá trực tiếp tại Mỹ.",
+    "description": "Finnhub setup steps",
+    "_machine_translated": true,
+    "_source_hash": "a7736e058dc5a82e"
+  },
+  "setup.switch": {
+    "message": "Dùng Kiểm tra và dùng để chuyển nhà cung cấp. Lưu sẽ áp dụng cài đặt cho nhà cung cấp đang hoạt động.",
+    "description": "Provider selection requires explicit Test and use; generic Save must explain this",
+    "_machine_translated": true,
+    "_source_hash": "1a8c271c436d2d7b"
+  },
+  "setup.removed_fallback": {
+    "message": "Đã xóa khóa Finnhub. Stocklake ở chế độ khách hiện đang hoạt động. Các báo giá đã lưu vẫn khả dụng.",
+    "description": "Explicit fallback after removing the active Finnhub key",
+    "_machine_translated": true,
+    "_source_hash": "49e5908c4fdee494"
+  },
+  "error.storage_until": {
+    "message": "Bộ nhớ báo giá không thể theo dõi giới hạn. Các yêu cầu bị tạm dừng đến {time}; dữ liệu đã lưu sẽ được hiển thị khi có.",
+    "description": "Storage lockout expiry; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "ebf9f622c5b939d6"
   }
 }

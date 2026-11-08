@@ -12,10 +12,10 @@
     "_source_hash": "d6d4700604b64b88"
   },
   "manifest.description": {
-    "message": "آن لائن · کسی کلید کی ضرورت نہیں: Stocklake کی قیمتیں تقریباً 15 منٹ تاخیر سے، روزانہ 25 مفت؛ مفت کلید سے یہ حد 200 ہو جاتی ہے۔ امریکی قیمتیں براہِ راست دیکھنے کے لیے Finnhub اختیاری ہے۔",
+    "message": "آن لائن · Stocklake کی قیمتیں تقریباً 15 منٹ تاخیر سے: کلید کے بغیر روزانہ تقریباً 25 علامات کی تلاش، یا مفت کلید کے ساتھ 200۔ امریکی براہ راست قیمتوں کے لیے Finnhub اختیاری ہے۔",
     "description": "Store listing; Online and Data delayed communicate network dependency and freshness",
     "_machine_translated": true,
-    "_source_hash": "44f1eb50266b55a3"
+    "_source_hash": "0a0e960d0b709ac1"
   },
   "result.loading": {
     "message": "اسٹاکس تلاش کیے جا رہے ہیں…",
@@ -72,10 +72,10 @@
     "_source_hash": "693535460d4db418"
   },
   "error.setup": {
-    "message": "اسٹاکس کی ترتیبات کھولیں، Finnhub کی مفت key حاصل کریں، پھر اسے ٹیسٹ اور محفوظ کریں۔",
+    "message": "اسٹاکس کی ترتیبات کھولیں، Finnhub کی مفت کلید حاصل کریں، پھر آزمائیں اور استعمال کریں منتخب کریں۔",
     "description": "No stored key",
     "_machine_translated": true,
-    "_source_hash": "8adbf75fdf5bc595"
+    "_source_hash": "2be9c6223cc5fff8"
   },
   "error.auth": {
     "message": "فراہم کنندہ نے کلید مسترد کر دی۔ متبادل کلید جانچنے کے لیے Stocks کی ترتیبات کھولیں۔",
@@ -150,10 +150,10 @@
     "_source_hash": "f4f4d83dc6129a6c"
   },
   "settings.description": {
-    "message": "Stocklake کی قیمتیں بغیر کلید کے کام کرتی ہیں: تقریباً 15 منٹ تاخیر سے، روزانہ 25 کالز، یا مفت کلید کے ساتھ 200۔ Finnhub مفت کلید کے ساتھ امریکی قیمتیں براہِ راست فراہم کرتا ہے۔",
+    "message": "Stocklake کی قیمتیں کلید کے بغیر کام کرتی ہیں: تقریباً 15 منٹ تاخیر سے، روزانہ تقریباً 25 علامات کی تلاش، یا مفت کلید کے ساتھ 200۔ Finnhub مفت کلید کے ساتھ امریکی براہ راست قیمتیں فراہم کرتا ہے۔",
     "description": "Settings summary",
     "_machine_translated": true,
-    "_source_hash": "deea29d63a6f57a4"
+    "_source_hash": "0f8ec107dbd56b33"
   },
   "settings.connection": {
     "message": "قیمت فراہم کنندہ اور سیٹ اپ",
@@ -172,12 +172,6 @@
     "description": "Material provider use restrictions",
     "_machine_translated": true,
     "_source_hash": "7fbb1c4e684b429f"
-  },
-  "setup.steps": {
-    "message": "Stocklake بغیر کلید کے فوراً کام کرتا ہے۔ فراہم کنندہ منتخب کریں، چاہیں تو اس کی کلید پیسٹ کریں، پھر اپنا انتخاب محفوظ کرنے کے لیے جانچیں اور استعمال کریں دبائیں۔",
-    "description": "Guided setup steps",
-    "_machine_translated": true,
-    "_source_hash": "d73223e639ab4ff7"
   },
   "setup.saved": {
     "message": "اس آلے پر ایک کلید محفوظ ہے۔ اسے جانچنے کے لیے فیلڈ خالی چھوڑ دیں، یا متبادل کلید پیسٹ کریں۔ محفوظ کردہ کلیدیں یہاں کبھی نہیں دکھائی جاتیں۔",
@@ -198,10 +192,10 @@
     "_source_hash": "3fb2a7de1e62b384"
   },
   "setup.key_hint": {
-    "message": "\"جانچیں اور محفوظ کریں\" کلید کو نجی ایکسٹینشن ڈیٹا میں محفوظ کرتا ہے، جیسے Spotify کی اسناد۔ یہاں ٹائپ کرنے سے یہ عام ترتیبات کے ساتھ محفوظ نہیں ہوتی۔ ٹائپ کرتے وقت اس ہوسٹ کا ٹیکسٹ فیلڈ نظر آتا ہے۔",
+    "message": "آزمائیں اور استعمال کریں کلید کو ایکسٹینشن کے نجی ڈیٹا میں محفوظ کرتا ہے۔ یہاں ٹائپ کرنے سے یہ عام ترتیبات کے ساتھ محفوظ نہیں ہوتی۔ محفوظ شدہ کلیدیں کبھی نہیں دکھائی جاتیں۔",
     "description": "Storage and host input behavior",
     "_machine_translated": true,
-    "_source_hash": "4c3122d9b4d5daad"
+    "_source_hash": "84263c95dae6f748"
   },
   "setup.test": {
     "message": "فراہم کنندہ کو جانچیں اور استعمال کریں",
@@ -222,10 +216,10 @@
     "_source_hash": "59cb7317745316bb"
   },
   "setup.success": {
-    "message": "قیمت کی جانچ کامیاب رہی؛ فراہم کنندہ منتخب ہو گیا اور فراہم کردہ کلید محفوظ کر لی گئی۔",
+    "message": "فراہم کنندہ منتخب ہو گیا اور فراہم کردہ کلید محفوظ ہو گئی۔ کلید والے کنکشنز نے قیمت کا ٹیسٹ پاس کر لیا۔",
     "description": "Successful guided setup; key is saved independently of watchlist settings",
     "_machine_translated": true,
-    "_source_hash": "c4ae3a50e8f0c3e0"
+    "_source_hash": "118c046747156cd2"
   },
   "settings.watchlist_section": {
     "message": "واچ لسٹ اور ریفریش",
@@ -270,22 +264,22 @@
     "_source_hash": "45f891673cb1e039"
   },
   "tool.quote": {
-    "message": "اپنے ذاتی استعمال کے لیے منتخب فراہم کنندہ سے اسٹاک کی قیمتیں حاصل کریں۔ Stocklake تقریباً 15 منٹ تاخیر سے ہے اور کلید کی ضرورت نہیں؛ Finnhub کلید کے ساتھ امریکی قیمتیں براہِ راست فراہم کرتا ہے۔ ماخذ، ٹائم اسٹیمپس، تازگی اور ہر علامت کی خرابیاں واپس کرتا ہے۔ ڈیٹا دوبارہ تقسیم نہ کریں۔",
+    "message": "اپنے ذاتی استعمال کے لیے اسٹاک کی قیمتیں حاصل کریں۔ Stocklake تقریباً 15 منٹ تاخیر سے ہے؛ مہمان صارفین فی IP روزانہ تقریباً 25 علامات کی تلاش مشترکہ طور پر استعمال کرتے ہیں۔ ہر غیر کیش شدہ علامت شمار ہوتی ہے، بیچ میں بھی۔ مطلوبہ علامات کو ایک ساتھ بیچ میں بھیجیں اور قیاسی یا بار بار تلاش سے گریز کریں۔ مفت کلید روزانہ 200 کی اجازت دیتی ہے۔ Finnhub کلید کے ساتھ امریکی براہ راست قیمتیں فراہم کرتا ہے۔ ماخذ، Stocklake اپ ڈیٹس کے لیے asOf، Finnhub کے لیے tradeTime، تازگی اور ہر علامت کی خرابیاں واپس کرتا ہے۔ ڈیٹا دوبارہ تقسیم نہ کریں۔",
     "description": "Agent tool description",
     "_machine_translated": true,
-    "_source_hash": "890f052fdf9e3bbd"
+    "_source_hash": "99f5d285678b43e5"
   },
   "tool.symbols": {
-    "message": "زیادہ سے زیادہ {max} علامتیں، مثال کے طور پر [\"AAPL\", \"MSFT\", \"SAP.DE\"]۔ Finnhub صرف امریکی ٹکرز قبول کرتا ہے۔",
+    "message": "زیادہ سے زیادہ {max} مطلوبہ علامات بیچ میں بھیجیں، مثلاً [\"AAPL\", \"MSFT\", \"SAP.DE\"]۔ ہر غیر کیش شدہ Stocklake علامت روزانہ تقریباً 25 کی مہمان حد میں شمار ہوتی ہے۔ Finnhub صرف امریکی ٹکرز قبول کرتا ہے۔",
     "description": "Quote tool parameter description; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "acbe6e78c6fddb5a"
+    "_source_hash": "0b1952ac06ea6daf"
   },
   "tool.history": {
-    "message": "30 تجارتی دنوں کی ونڈو سے، جو ایک دن کے لیے کیش ہوتی ہے، 1d، 1w یا 1m کی حقیقی Stocklake یومیہ تاریخ حاصل کریں۔ کیش میں نہ ملنے پر ایک کال خرچ ہوتی ہے۔ Finnhub تاریخ کی درخواست کے بغیر مقامی طور پر مشاہدہ کردہ نامکمل قیمتیں واپس کرتا ہے۔",
+    "message": "ضرورت پڑنے پر 1d، 1w یا 1m (طے شدہ 1m) کے لیے Stocklake کی روزانہ تاریخ حاصل کریں، تقریباً 30 تجارتی دنوں سے۔ ایک دن کے لیے کیش کی جاتی ہے۔ غیر کیش شدہ تاریخ کی درخواست فی IP مشترکہ تقریباً 25 روزانہ علامات کی مہمان حد میں سے ایک استعمال کرتی ہے۔ خودکار تاریخ کی تلاش سے گریز کریں؛ صرف ضرورت کے وقت درخواست کریں۔",
     "description": "Agent tool scope must not imply full historical coverage",
     "_machine_translated": true,
-    "_source_hash": "d5343316b6826efa"
+    "_source_hash": "ef221a7846ff22d5"
   },
   "tool.symbol": {
     "message": "اسٹاک کی علامت، بشمول Stocklake کے لیے بین الاقوامی لاحقے۔",
@@ -294,10 +288,10 @@
     "_source_hash": "bf96519c516306b2"
   },
   "tool.range": {
-    "message": "1d، 1w یا 1m؛ ڈیفالٹ 1d۔",
+    "message": "1d، 1w یا 1m؛ طے شدہ 1m۔",
     "description": "History range parameter description",
     "_machine_translated": true,
-    "_source_hash": "992fdef4270c7170"
+    "_source_hash": "0a2d7005b36be66b"
   },
   "tool.disabled": {
     "message": "Stocks غیر فعال ہے۔",
@@ -336,8 +330,10 @@
     "_source_hash": "c3ae84bf8010f20d"
   },
   "settings.quotes_deleted": {
-    "message": "{deleted, plural, one {# محفوظ شدہ کوٹ ریکارڈ اور اس کے مقامی نمونے حذف کر دیے گئے۔ دیگر ونڈوز یا جاری ریفریش مزید ریکارڈز محفوظ کر سکتے ہیں۔} other {# محفوظ شدہ کوٹ ریکارڈز اور ان کے مقامی نمونے حذف کر دیے گئے۔ دیگر ونڈوز یا جاری ریفریش مزید ریکارڈز محفوظ کر سکتے ہیں۔}}{failed, plural, =0 {} one { # ریکارڈ حذف نہیں کیا جا سکا۔ دوبارہ کوشش کریں۔} other { # ریکارڈز حذف نہیں کیے جا سکے۔ دوبارہ کوشش کریں۔}}",
-    "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
+    "message": "{deleted, plural, one {# محفوظ شدہ قیمت یا تاریخ کا ریکارڈ حذف کر دیا گیا۔ دیگر ونڈوز یا جاری ریفریش مزید محفوظ کر سکتے ہیں۔} other {# محفوظ شدہ قیمتوں یا تاریخ کے ریکارڈز حذف کر دیے گئے۔ دیگر ونڈوز یا جاری ریفریش مزید محفوظ کر سکتے ہیں۔}}{failed, plural, =0 {} one { # محفوظ شدہ ریکارڈ حذف نہیں ہو سکا۔ دوبارہ کوشش کریں۔} other { # محفوظ شدہ ریکارڈز حذف نہیں ہو سکے۔ دوبارہ کوشش کریں۔}}",
+    "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records",
+    "_machine_translated": true,
+    "_source_hash": "45eb5a0d8cf6b318"
   },
   "widget.connection": {
     "message": "قیمتوں پر توجہ درکار ہے۔ Stocks کی ترتیبات کھولنے کے لیے stock ٹائپ کریں اور Enter دبائیں۔",
@@ -358,10 +354,10 @@
     "_source_hash": "b9f483c14cb7b4dc"
   },
   "setup.stocklake": {
-    "message": "Stocklake کلید کے بغیر کام کرتا ہے: تقریباً 15 منٹ کی تاخیر، روزانہ 25 کالز؛ ایک اختیاری مفت کلید اسے 200 تک بڑھا دیتی ہے۔",
+    "message": "Stocklake کلید کے بغیر کام کرتا ہے: تقریباً 15 منٹ تاخیر سے، فی IP مشترکہ روزانہ تقریباً 25 علامات کی تلاش؛ مفت کلید روزانہ 200 کی اجازت دیتی ہے۔ ہر غیر کیش شدہ علامت شمار ہوتی ہے۔",
     "description": "Keyless default provider description",
     "_machine_translated": true,
-    "_source_hash": "930e88dd695cf87e"
+    "_source_hash": "4fb2147ce025156d"
   },
   "setup.stocklake_key": {
     "message": "مفت Stocklake کلید حاصل کریں",
@@ -370,16 +366,16 @@
     "_source_hash": "b21d6e57b9696558"
   },
   "quote.stocklake": {
-    "message": "تقریباً 15 منٹ کی تاخیر · Stocklake",
-    "description": "Visible delayed provider attribution; paired with a link to stocklake.dev",
+    "message": "تقریباً 15 منٹ تاخیر · Stocklake",
+    "description": "Visible delayed provider attribution in plain text",
     "_machine_translated": true,
-    "_source_hash": "081a46f162590a46"
+    "_source_hash": "bede5ed980930c08"
   },
   "quote.history": {
-    "message": "تقریباً 30 تجارتی دنوں کی Stocklake روزانہ اختتامی قیمتیں۔ ہسٹری ایک دن کے لیے کیش کی جاتی ہے؛ کیش میں نہ ملنے پر ایک کال استعمال ہوتی ہے۔ Finnhub اسپارک لائنز مقامی نمونے استعمال کرتی ہیں۔",
+    "message": "تقریباً 30 تجارتی دنوں کی Stocklake روزانہ اختتامی قیمتیں۔ ایک دن کے لیے کیش کی جاتی ہیں؛ غیر کیش شدہ تاریخ حاصل کرنے پر ایک روزانہ تلاش استعمال ہوتی ہے۔ مہمان اسپارک لائنز صرف محفوظ شدہ تاریخ استعمال کرتی ہیں۔",
     "description": "History accessible label and settings explanation; real daily data for Stocklake",
     "_machine_translated": true,
-    "_source_hash": "2efd3bfb80984cd7"
+    "_source_hash": "8e6435e7874868ff"
   },
   "error.daily_limit": {
     "message": "روزانہ کے مفت کوٹس ختم ہو گئے۔ {time} پر دوبارہ شروع ہوں گے۔ روزانہ 200 کے لیے مفت Stocklake کلید شامل کریں۔",
@@ -392,5 +388,47 @@
     "description": "Authenticated daily exhaustion; preserve {time}",
     "_machine_translated": true,
     "_source_hash": "7c2f3494ec238e7e"
+  },
+  "result.type_symbol": {
+    "message": "علامت ٹائپ کریں، مثلاً stock aapl",
+    "description": "Bare guest stock command; no lookup is made",
+    "_machine_translated": true,
+    "_source_hash": "7d079e375ba5f9cb"
+  },
+  "quote.updated": {
+    "message": "اپ ڈیٹ {time}",
+    "description": "Stocklake refresh time, not last trade time; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "3dec8682dcb844dc"
+  },
+  "setup.stocklake_steps": {
+    "message": "Stocklake کو کلید کے بغیر استعمال کریں، یا مفت کلید پیسٹ کریں۔ تبدیل کرنے کے لیے آزمائیں اور استعمال کریں منتخب کریں؛ مہمان انتخاب کوئی تلاش استعمال نہیں کرتا۔",
+    "description": "Stocklake setup steps",
+    "_machine_translated": true,
+    "_source_hash": "96be4a9668009051"
+  },
+  "setup.finnhub_steps": {
+    "message": "Finnhub کی مفت کلید حاصل کریں، اسے پیسٹ کریں، پھر امریکی براہ راست قیمتوں کے لیے آزمائیں اور استعمال کریں منتخب کریں۔",
+    "description": "Finnhub setup steps",
+    "_machine_translated": true,
+    "_source_hash": "a7736e058dc5a82e"
+  },
+  "setup.switch": {
+    "message": "فراہم کنندہ تبدیل کرنے کے لیے آزمائیں اور استعمال کریں استعمال کریں۔ محفوظ کریں فعال فراہم کنندہ کی ترتیبات لاگو کرتا ہے۔",
+    "description": "Provider selection requires explicit Test and use; generic Save must explain this",
+    "_machine_translated": true,
+    "_source_hash": "1a8c271c436d2d7b"
+  },
+  "setup.removed_fallback": {
+    "message": "Finnhub کلید ہٹا دی گئی۔ اب Stocklake مہمان فعال ہے۔ محفوظ شدہ قیمتیں دستیاب رہیں گی۔",
+    "description": "Explicit fallback after removing the active Finnhub key",
+    "_machine_translated": true,
+    "_source_hash": "49e5908c4fdee494"
+  },
+  "error.storage_until": {
+    "message": "قیمتوں کا اسٹوریج حد کا حساب نہیں رکھ سکا۔ درخواستیں {time} تک موقوف ہیں؛ دستیاب ہونے پر محفوظ شدہ ڈیٹا دکھایا جا رہا ہے۔",
+    "description": "Storage lockout expiry; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "ebf9f622c5b939d6"
   }
 }

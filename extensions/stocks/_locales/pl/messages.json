@@ -12,10 +12,10 @@
     "_source_hash": "d6d4700604b64b88"
   },
   "manifest.description": {
-    "message": "Online · Bez kluczy: notowania Stocklake opóźnione o ok. 15 min, 25 dziennie za darmo; darmowy klucz zwiększa limit do 200. Finnhub jest opcjonalny dla notowań na żywo z USA.",
+    "message": "Online · Notowania Stocklake opóźnione o ~15 min: ok. 25 wyszukiwań symboli dziennie bez klucza lub 200 z darmowym kluczem. Finnhub jest opcjonalny dla notowań z USA na żywo.",
     "description": "Store listing; Online and Data delayed communicate network dependency and freshness",
     "_machine_translated": true,
-    "_source_hash": "44f1eb50266b55a3"
+    "_source_hash": "0a0e960d0b709ac1"
   },
   "result.loading": {
     "message": "Wyszukiwanie akcji…",
@@ -72,10 +72,10 @@
     "_source_hash": "693535460d4db418"
   },
   "error.setup": {
-    "message": "Otwórz ustawienia Akcji, uzyskaj darmowy klucz Finnhub, a następnie przetestuj go i zapisz.",
+    "message": "Otwórz ustawienia Stocks, uzyskaj darmowy klucz Finnhub, a następnie wybierz Przetestuj i użyj.",
     "description": "No stored key",
     "_machine_translated": true,
-    "_source_hash": "8adbf75fdf5bc595"
+    "_source_hash": "2be9c6223cc5fff8"
   },
   "error.auth": {
     "message": "Dostawca odrzucił klucz. Otwórz ustawienia Stocks, aby przetestować nowy klucz.",
@@ -150,10 +150,10 @@
     "_source_hash": "f4f4d83dc6129a6c"
   },
   "settings.description": {
-    "message": "Notowania Stocklake działają bez klucza: opóźnienie ok. 15 min, 25 wywołań dziennie lub 200 z darmowym kluczem. Finnhub oferuje notowania na żywo z USA z darmowym kluczem.",
+    "message": "Notowania Stocklake działają bez klucza: opóźnione o ~15 min, ok. 25 wyszukiwań symboli dziennie lub 200 z darmowym kluczem. Finnhub oferuje notowania z USA na żywo z darmowym kluczem.",
     "description": "Settings summary",
     "_machine_translated": true,
-    "_source_hash": "deea29d63a6f57a4"
+    "_source_hash": "0f8ec107dbd56b33"
   },
   "settings.connection": {
     "message": "Dostawca notowań i konfiguracja",
@@ -172,12 +172,6 @@
     "description": "Material provider use restrictions",
     "_machine_translated": true,
     "_source_hash": "7fbb1c4e684b429f"
-  },
-  "setup.steps": {
-    "message": "Stocklake działa od razu bez klucza. Wybierz dostawcę, opcjonalnie wklej jego klucz, a następnie kliknij Przetestuj i użyj, aby zapisać wybór.",
-    "description": "Guided setup steps",
-    "_machine_translated": true,
-    "_source_hash": "d73223e639ab4ff7"
   },
   "setup.saved": {
     "message": "Klucz jest zapisany na tym urządzeniu. Pozostaw pole puste, aby go przetestować, lub wklej nowy. Zapisane klucze nigdy nie są tu wyświetlane.",
@@ -198,10 +192,10 @@
     "_source_hash": "3fb2a7de1e62b384"
   },
   "setup.key_hint": {
-    "message": "Przetestuj i zapisz przechowuje klucz w prywatnych danych rozszerzenia, podobnie jak dane logowania Spotify. Wpisanie go tutaj nie zapisuje go razem ze zwykłymi ustawieniami. Pole tekstowe tego hosta jest widoczne podczas pisania.",
+    "message": "Przetestuj i użyj zapisuje klucz w prywatnych danych rozszerzenia. Wpisanie go tutaj nie zapisuje go w zwykłych ustawieniach. Zapisane klucze nigdy nie są wyświetlane.",
     "description": "Storage and host input behavior",
     "_machine_translated": true,
-    "_source_hash": "4c3122d9b4d5daad"
+    "_source_hash": "84263c95dae6f748"
   },
   "setup.test": {
     "message": "Przetestuj i użyj dostawcy",
@@ -222,10 +216,10 @@
     "_source_hash": "59cb7317745316bb"
   },
   "setup.success": {
-    "message": "Test notowań zakończony powodzeniem; dostawca wybrany, a podany klucz zapisany.",
+    "message": "Wybrano dostawcę i zapisano podany klucz. Połączenia z kluczem przeszły test notowań.",
     "description": "Successful guided setup; key is saved independently of watchlist settings",
     "_machine_translated": true,
-    "_source_hash": "c4ae3a50e8f0c3e0"
+    "_source_hash": "118c046747156cd2"
   },
   "settings.watchlist_section": {
     "message": "Lista obserwowanych i odświeżanie",
@@ -270,22 +264,22 @@
     "_source_hash": "45f891673cb1e039"
   },
   "tool.quote": {
-    "message": "Pobiera notowania akcji od wybranego dostawcy do własnego użytku. Stocklake ma opóźnienie ok. 15 min i nie wymaga klucza; Finnhub oferuje notowania na żywo z USA z kluczem. Zwraca źródło, znaczniki czasu, aktualność i błędy dla poszczególnych symboli. Nie rozpowszechniaj danych.",
+    "message": "Pobiera notowania akcji na własny użytek. Stocklake jest opóźniony o ~15 min; goście współdzielą ok. 25 wyszukiwań symboli dziennie na IP. Każdy symbol spoza pamięci podręcznej się liczy, nawet w partii. Grupuj żądane symbole razem i unikaj spekulacyjnych lub powtarzanych wyszukiwań. Darmowy klucz pozwala na 200 dziennie. Finnhub oferuje notowania z USA na żywo z kluczem. Zwraca source, asOf dla aktualizacji Stocklake, tradeTime dla Finnhub, aktualność danych i błędy dla poszczególnych symboli. Nie rozpowszechniaj danych.",
     "description": "Agent tool description",
     "_machine_translated": true,
-    "_source_hash": "890f052fdf9e3bbd"
+    "_source_hash": "99f5d285678b43e5"
   },
   "tool.symbols": {
-    "message": "Maksymalnie {max} symboli, na przykład [\"AAPL\", \"MSFT\", \"SAP.DE\"]. Finnhub akceptuje tylko tickery z USA.",
+    "message": "Partia do {max} żądanych symboli, np. [\"AAPL\", \"MSFT\", \"SAP.DE\"]. Każdy symbol Stocklake spoza pamięci podręcznej wlicza się do limitu gościa wynoszącego ok. 25 dziennie. Finnhub akceptuje tylko symbole z USA.",
     "description": "Quote tool parameter description; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "acbe6e78c6fddb5a"
+    "_source_hash": "0b1952ac06ea6daf"
   },
   "tool.history": {
-    "message": "Pobiera rzeczywistą dzienną historię Stocklake dla 1d, 1w lub 1m z okna 30 dni sesyjnych buforowanego przez dzień. Przy braku danych w pamięci podręcznej zużywa jedno wywołanie. Finnhub zwraca niepełne, lokalnie zaobserwowane notowania bez żądania historii.",
+    "message": "Pobiera na żądanie dzienną historię Stocklake dla 1d, 1w lub 1m (domyślnie 1m), z ok. 30 dni sesyjnych. Przechowywana w pamięci podręcznej przez dzień. Żądanie historii spoza pamięci podręcznej zużywa jedno z ok. 25 dziennych wyszukiwań symboli przysługujących gościom, współdzielonych na IP. Unikaj automatycznego pobierania historii; żądaj jej tylko w razie potrzeby.",
     "description": "Agent tool scope must not imply full historical coverage",
     "_machine_translated": true,
-    "_source_hash": "d5343316b6826efa"
+    "_source_hash": "ef221a7846ff22d5"
   },
   "tool.symbol": {
     "message": "Symbol akcji, w tym z sufiksami międzynarodowymi dla Stocklake.",
@@ -294,10 +288,10 @@
     "_source_hash": "bf96519c516306b2"
   },
   "tool.range": {
-    "message": "1d, 1w lub 1m; domyślnie 1d.",
+    "message": "1d, 1w lub 1m; domyślnie 1m.",
     "description": "History range parameter description",
     "_machine_translated": true,
-    "_source_hash": "992fdef4270c7170"
+    "_source_hash": "0a2d7005b36be66b"
   },
   "tool.disabled": {
     "message": "Stocks jest wyłączone.",
@@ -336,8 +330,10 @@
     "_source_hash": "c3ae84bf8010f20d"
   },
   "settings.quotes_deleted": {
-    "message": "{deleted, plural, one {Usunięto # zapisany rekord notowania wraz z jego lokalnymi próbkami. Inne okna lub aktywne odświeżania mogą zapisać kolejne.} few {Usunięto # zapisane rekordy notowań wraz z ich lokalnymi próbkami. Inne okna lub aktywne odświeżania mogą zapisać kolejne.} many {Usunięto # zapisanych rekordów notowań wraz z ich lokalnymi próbkami. Inne okna lub aktywne odświeżania mogą zapisać kolejne.} other {Usunięto zapisane rekordy notowań wraz z ich lokalnymi próbkami (liczba: #). Inne okna lub aktywne odświeżania mogą zapisać kolejne.}}{failed, plural, =0 {} one { Nie udało się usunąć # rekordu. Spróbuj ponownie.} few { Nie udało się usunąć # rekordów. Spróbuj ponownie.} many { Nie udało się usunąć # rekordów. Spróbuj ponownie.} other { Nie udało się usunąć # rekordów. Spróbuj ponownie.}}",
-    "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
+    "message": "{deleted, plural, one {Usunięto # zapisane notowanie lub rekord historii. Inne okna lub aktywne odświeżania mogą zapisać kolejne.} few {Usunięto # zapisane notowania lub rekordy historii. Inne okna lub aktywne odświeżania mogą zapisać kolejne.} many {Usunięto # zapisanych notowań lub rekordów historii. Inne okna lub aktywne odświeżania mogą zapisać kolejne.} other {Usunięto # zapisanego notowania lub rekordu historii. Inne okna lub aktywne odświeżania mogą zapisać kolejne.}}{failed, plural, =0 {} one { Nie udało się usunąć # zapisanego rekordu. Spróbuj ponownie.} few { Nie udało się usunąć # zapisanych rekordów. Spróbuj ponownie.} many { Nie udało się usunąć # zapisanych rekordów. Spróbuj ponownie.} other { Nie udało się usunąć # zapisanego rekordu. Spróbuj ponownie.}}",
+    "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records",
+    "_machine_translated": true,
+    "_source_hash": "45eb5a0d8cf6b318"
   },
   "widget.connection": {
     "message": "Notowania wymagają uwagi. Wpisz stock i naciśnij Enter, aby otworzyć ustawienia Stocks.",
@@ -358,10 +354,10 @@
     "_source_hash": "b9f483c14cb7b4dc"
   },
   "setup.stocklake": {
-    "message": "Stocklake działa bez klucza: opóźnienie ok. 15 min, 25 zapytań dziennie; opcjonalny darmowy klucz zwiększa ten limit do 200.",
+    "message": "Stocklake działa bez klucza: opóźnienie ~15 min, ok. 25 wyszukiwań symboli dziennie współdzielonych na IP; darmowy klucz pozwala na 200 dziennie. Każdy symbol spoza pamięci podręcznej się liczy.",
     "description": "Keyless default provider description",
     "_machine_translated": true,
-    "_source_hash": "930e88dd695cf87e"
+    "_source_hash": "4fb2147ce025156d"
   },
   "setup.stocklake_key": {
     "message": "Uzyskaj darmowy klucz Stocklake",
@@ -370,16 +366,16 @@
     "_source_hash": "b21d6e57b9696558"
   },
   "quote.stocklake": {
-    "message": "Opóźnienie ok. 15 min · Stocklake",
-    "description": "Visible delayed provider attribution; paired with a link to stocklake.dev",
+    "message": "Opóźnione o ~15 min · Stocklake",
+    "description": "Visible delayed provider attribution in plain text",
     "_machine_translated": true,
-    "_source_hash": "081a46f162590a46"
+    "_source_hash": "bede5ed980930c08"
   },
   "quote.history": {
-    "message": "Dzienne ceny zamknięcia ze Stocklake z ok. 30 dni sesyjnych. Historia jest przechowywana w pamięci podręcznej przez jeden dzień; jej brak w pamięci podręcznej zużywa jedno zapytanie. Wykresy Finnhub korzystają z lokalnych próbek.",
+    "message": "Dzienne ceny zamknięcia Stocklake z ok. 30 dni sesyjnych. Przechowywane w pamięci podręcznej przez dzień; pobranie historii spoza pamięci podręcznej zużywa jedno dzienne wyszukiwanie. Wykresy gościa korzystają tylko z zapisanej historii.",
     "description": "History accessible label and settings explanation; real daily data for Stocklake",
     "_machine_translated": true,
-    "_source_hash": "2efd3bfb80984cd7"
+    "_source_hash": "8e6435e7874868ff"
   },
   "error.daily_limit": {
     "message": "Wykorzystano dzienny limit darmowych notowań. Reset o {time}. Dodaj darmowy klucz Stocklake, aby mieć 200 zapytań dziennie.",
@@ -392,5 +388,47 @@
     "description": "Authenticated daily exhaustion; preserve {time}",
     "_machine_translated": true,
     "_source_hash": "7c2f3494ec238e7e"
+  },
+  "result.type_symbol": {
+    "message": "Wpisz symbol, np. stock aapl",
+    "description": "Bare guest stock command; no lookup is made",
+    "_machine_translated": true,
+    "_source_hash": "7d079e375ba5f9cb"
+  },
+  "quote.updated": {
+    "message": "Zaktualizowano {time}",
+    "description": "Stocklake refresh time, not last trade time; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "3dec8682dcb844dc"
+  },
+  "setup.stocklake_steps": {
+    "message": "Używaj Stocklake bez klucza lub wklej darmowy klucz. Wybierz Przetestuj i użyj, aby przełączyć; wybór trybu gościa nie zużywa wyszukiwania.",
+    "description": "Stocklake setup steps",
+    "_machine_translated": true,
+    "_source_hash": "96be4a9668009051"
+  },
+  "setup.finnhub_steps": {
+    "message": "Uzyskaj darmowy klucz Finnhub, wklej go, a następnie wybierz Przetestuj i użyj, aby otrzymywać notowania z USA na żywo.",
+    "description": "Finnhub setup steps",
+    "_machine_translated": true,
+    "_source_hash": "a7736e058dc5a82e"
+  },
+  "setup.switch": {
+    "message": "Użyj opcji Przetestuj i użyj, aby przełączyć dostawcę. Zapisz stosuje ustawienia dla aktywnego dostawcy.",
+    "description": "Provider selection requires explicit Test and use; generic Save must explain this",
+    "_machine_translated": true,
+    "_source_hash": "1a8c271c436d2d7b"
+  },
+  "setup.removed_fallback": {
+    "message": "Usunięto klucz Finnhub. Aktywny jest teraz tryb gościa Stocklake. Zapisane notowania pozostają dostępne.",
+    "description": "Explicit fallback after removing the active Finnhub key",
+    "_machine_translated": true,
+    "_source_hash": "49e5908c4fdee494"
+  },
+  "error.storage_until": {
+    "message": "Magazyn notowań nie mógł śledzić limitu. Żądania są wstrzymane do {time}; wyświetlane są zapisane dane, jeśli są dostępne.",
+    "description": "Storage lockout expiry; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "ebf9f622c5b939d6"
   }
 }

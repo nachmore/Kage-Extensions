@@ -1,0 +1,21 @@
+HTTP/2 200
+access-control-allow-headers: Authorization, X-API-Key, Content-Type, Accept
+access-control-allow-methods: GET, POST, OPTIONS
+access-control-allow-origin: *
+access-control-max-age: 86400
+alt-svc: h3=":443"; ma=2592000
+cache-control: no-store
+content-security-policy-report-only: default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://api.stocklake.dev https://stocklake.dev; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'; report-uri /csp-report
+content-type: application/json
+cross-origin-opener-policy: same-origin
+date: Sun, 08 Nov 2026 06:35:12 GMT
+permissions-policy: camera=(), microphone=(), geolocation=(), payment=()
+referrer-policy: strict-origin-when-cross-origin
+strict-transport-security: max-age=31536000
+via: 1.1 Caddy
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+x-ratelimit-limit: 25
+x-ratelimit-remaining: 20
+x-ratelimit-reset: 1794182400
+content-length: 16406

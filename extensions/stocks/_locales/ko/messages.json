@@ -12,10 +12,10 @@
     "_source_hash": "d6d4700604b64b88"
   },
   "manifest.description": {
-    "message": "온라인 · 키 불필요: Stocklake 시세는 약 15분 지연되며 하루 25회 무료입니다. 무료 키를 사용하면 200회로 늘어납니다. 실시간 미국 시세용 Finnhub는 선택 사항입니다.",
+    "message": "온라인 · Stocklake 시세는 약 15분 지연됩니다. 키 없이 하루 약 25회, 무료 키로는 하루 200회 종목을 조회할 수 있습니다. 실시간 미국 시세를 제공하는 Finnhub는 선택 사항입니다.",
     "description": "Store listing; Online and Data delayed communicate network dependency and freshness",
     "_machine_translated": true,
-    "_source_hash": "44f1eb50266b55a3"
+    "_source_hash": "0a0e960d0b709ac1"
   },
   "result.loading": {
     "message": "주식 조회 중…",
@@ -72,10 +72,10 @@
     "_source_hash": "693535460d4db418"
   },
   "error.setup": {
-    "message": "주식 설정을 열고 무료 Finnhub 키를 받은 다음 테스트 후 저장하십시오.",
+    "message": "주식 설정을 열어 무료 Finnhub 키를 발급받은 후 '테스트 후 사용'을 선택하십시오.",
     "description": "No stored key",
     "_machine_translated": true,
-    "_source_hash": "8adbf75fdf5bc595"
+    "_source_hash": "2be9c6223cc5fff8"
   },
   "error.auth": {
     "message": "제공업체에서 키를 거부했습니다. Stocks 설정을 열어 다른 키를 테스트하십시오.",
@@ -150,10 +150,10 @@
     "_source_hash": "f4f4d83dc6129a6c"
   },
   "settings.description": {
-    "message": "Stocklake 시세는 키 없이 사용할 수 있습니다. 약 15분 지연되며 하루 25회, 무료 키 사용 시 200회까지 호출할 수 있습니다. Finnhub는 무료 키로 실시간 미국 시세를 제공합니다.",
+    "message": "Stocklake 시세는 키 없이 사용할 수 있습니다. 약 15분 지연되며 하루 약 25회, 무료 키로는 200회 종목을 조회할 수 있습니다. Finnhub는 무료 키로 실시간 미국 시세를 제공합니다.",
     "description": "Settings summary",
     "_machine_translated": true,
-    "_source_hash": "deea29d63a6f57a4"
+    "_source_hash": "0f8ec107dbd56b33"
   },
   "settings.connection": {
     "message": "시세 제공업체 및 설정",
@@ -172,12 +172,6 @@
     "description": "Material provider use restrictions",
     "_machine_translated": true,
     "_source_hash": "7fbb1c4e684b429f"
-  },
-  "setup.steps": {
-    "message": "Stocklake는 키 없이 바로 사용할 수 있습니다. 제공업체를 선택하고 필요하면 키를 붙여넣은 다음 테스트 후 사용을 눌러 선택을 저장하십시오.",
-    "description": "Guided setup steps",
-    "_machine_translated": true,
-    "_source_hash": "d73223e639ab4ff7"
   },
   "setup.saved": {
     "message": "이 기기에 키가 저장되어 있습니다. 저장된 키를 테스트하려면 필드를 비워 두고, 교체하려면 새 키를 붙여넣으십시오. 저장된 키는 여기에 표시되지 않습니다.",
@@ -198,10 +192,10 @@
     "_source_hash": "3fb2a7de1e62b384"
   },
   "setup.key_hint": {
-    "message": "테스트 후 저장을 선택하면 Spotify 자격 증명과 마찬가지로 키가 비공개 확장 프로그램 데이터에 저장됩니다. 여기에 입력하는 것만으로는 일반 설정과 함께 저장되지 않습니다. 입력하는 동안 이 호스트의 텍스트 필드 내용이 표시됩니다.",
+    "message": "'테스트 후 사용'을 선택하면 키가 비공개 확장 프로그램 데이터에 저장됩니다. 여기에 입력해도 일반 설정과 함께 저장되지 않습니다. 저장된 키는 표시되지 않습니다.",
     "description": "Storage and host input behavior",
     "_machine_translated": true,
-    "_source_hash": "4c3122d9b4d5daad"
+    "_source_hash": "84263c95dae6f748"
   },
   "setup.test": {
     "message": "제공업체 테스트 후 사용",
@@ -222,10 +216,10 @@
     "_source_hash": "59cb7317745316bb"
   },
   "setup.success": {
-    "message": "시세 테스트를 통과했습니다. 제공업체가 선택되었으며 입력한 키가 저장되었습니다.",
+    "message": "제공자를 선택했으며 입력한 키를 저장했습니다. 키를 사용하는 연결은 시세 테스트를 통과했습니다.",
     "description": "Successful guided setup; key is saved independently of watchlist settings",
     "_machine_translated": true,
-    "_source_hash": "c4ae3a50e8f0c3e0"
+    "_source_hash": "118c046747156cd2"
   },
   "settings.watchlist_section": {
     "message": "관심 종목 및 새로 고침",
@@ -270,22 +264,22 @@
     "_source_hash": "45f891673cb1e039"
   },
   "tool.quote": {
-    "message": "선택한 제공업체에서 본인 사용 목적으로 주식 시세를 가져옵니다. Stocklake는 약 15분 지연되며 키가 필요 없고, Finnhub는 키를 사용해 실시간 미국 시세를 제공합니다. 출처, 타임스탬프, 최신성 및 종목별 오류를 반환합니다. 데이터를 재배포하지 마십시오.",
+    "message": "사용자 본인이 사용할 주식 시세를 가져옵니다. Stocklake는 약 15분 지연되며, 게스트는 IP당 하루 약 25회의 종목 조회를 공유합니다. 일괄 요청이라도 캐시되지 않은 종목은 각각 1회로 계산됩니다. 요청된 종목은 한 번에 묶어 조회하고, 추측성 조회나 반복 조회는 피하십시오. 무료 키를 사용하면 하루 200회까지 조회할 수 있습니다. Finnhub는 키를 사용해 실시간 미국 시세를 제공합니다. source, Stocklake 업데이트 시각인 asOf, Finnhub의 tradeTime, 최신성 정보 및 종목별 오류를 반환합니다. 데이터를 재배포하지 마십시오.",
     "description": "Agent tool description",
     "_machine_translated": true,
-    "_source_hash": "890f052fdf9e3bbd"
+    "_source_hash": "99f5d285678b43e5"
   },
   "tool.symbols": {
-    "message": "최대 {max}개 종목 코드(예: [\"AAPL\", \"MSFT\", \"SAP.DE\"]). Finnhub는 미국 티커만 지원합니다.",
+    "message": "요청된 종목을 최대 {max}개까지 묶어 조회합니다. 예: [\"AAPL\", \"MSFT\", \"SAP.DE\"]. 캐시되지 않은 Stocklake 종목은 각각 하루 약 25회인 게스트 한도에 포함됩니다. Finnhub는 미국 티커만 지원합니다.",
     "description": "Quote tool parameter description; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "acbe6e78c6fddb5a"
+    "_source_hash": "0b1952ac06ea6daf"
   },
   "tool.history": {
-    "message": "하루 동안 캐시되는 30거래일 범위에서 1d, 1w 또는 1m의 실제 Stocklake 일별 기록을 가져옵니다. 캐시에 없으면 호출 1회가 사용됩니다. Finnhub는 기록 요청 없이 로컬에서 관측한 불완전한 시세를 반환합니다.",
+    "message": "필요할 때 Stocklake 일별 기록을 1d, 1w 또는 1m(기본값 1m) 범위로 가져옵니다. 최근 약 30거래일의 데이터를 기반으로 합니다. 하루 동안 캐시됩니다. 캐시되지 않은 기록 요청은 IP당 공유되는 하루 약 25회의 게스트 종목 조회 한도 중 1회를 사용합니다. 기록을 자동으로 조회하지 말고 필요할 때만 요청하십시오.",
     "description": "Agent tool scope must not imply full historical coverage",
     "_machine_translated": true,
-    "_source_hash": "d5343316b6826efa"
+    "_source_hash": "ef221a7846ff22d5"
   },
   "tool.symbol": {
     "message": "주식 종목 코드입니다. Stocklake의 경우 해외 거래소 접미사를 포함할 수 있습니다.",
@@ -294,10 +288,10 @@
     "_source_hash": "bf96519c516306b2"
   },
   "tool.range": {
-    "message": "1d, 1w 또는 1m이며 기본값은 1d입니다.",
+    "message": "1d, 1w 또는 1m. 기본값은 1m입니다.",
     "description": "History range parameter description",
     "_machine_translated": true,
-    "_source_hash": "992fdef4270c7170"
+    "_source_hash": "0a2d7005b36be66b"
   },
   "tool.disabled": {
     "message": "주식 기능이 비활성화되어 있습니다.",
@@ -336,8 +330,10 @@
     "_source_hash": "c3ae84bf8010f20d"
   },
   "settings.quotes_deleted": {
-    "message": "{deleted, plural, one {저장된 시세 기록 #개와 해당 로컬 샘플을 삭제했습니다. 다른 창이나 진행 중인 새로 고침에서 기록이 추가로 저장될 수 있습니다.} other {저장된 시세 기록 #개와 해당 로컬 샘플을 삭제했습니다. 다른 창이나 진행 중인 새로 고침에서 기록이 추가로 저장될 수 있습니다.}}{failed, plural, =0 {} one { #개의 기록을 삭제하지 못했습니다. 다시 시도하세요.} other { #개의 기록을 삭제하지 못했습니다. 다시 시도하세요.}}",
-    "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
+    "message": "{deleted, plural, other {저장된 시세 또는 기록 #개를 삭제했습니다. 다른 창이나 진행 중인 새로 고침에서 추가로 저장할 수 있습니다.}}{failed, plural, =0 {} other { 저장된 기록 #개를 삭제할 수 없습니다. 다시 시도하십시오.}}",
+    "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records",
+    "_machine_translated": true,
+    "_source_hash": "45eb5a0d8cf6b318"
   },
   "widget.connection": {
     "message": "시세에 확인이 필요합니다. stock을 입력하고 Enter 키를 눌러 Stocks 설정을 여십시오.",
@@ -358,10 +354,10 @@
     "_source_hash": "b9f483c14cb7b4dc"
   },
   "setup.stocklake": {
-    "message": "Stocklake는 키 없이도 사용할 수 있습니다. 약 15분 지연되며 하루 25회 호출할 수 있습니다. 무료 키(선택 사항)를 사용하면 하루 200회로 늘어납니다.",
+    "message": "Stocklake는 키 없이 사용할 수 있습니다. 약 15분 지연되며 IP당 하루 약 25회의 종목 조회를 공유합니다. 무료 키를 사용하면 하루 200회까지 조회할 수 있습니다. 캐시되지 않은 종목은 각각 1회로 계산됩니다.",
     "description": "Keyless default provider description",
     "_machine_translated": true,
-    "_source_hash": "930e88dd695cf87e"
+    "_source_hash": "4fb2147ce025156d"
   },
   "setup.stocklake_key": {
     "message": "무료 Stocklake 키 받기",
@@ -371,15 +367,15 @@
   },
   "quote.stocklake": {
     "message": "약 15분 지연 · Stocklake",
-    "description": "Visible delayed provider attribution; paired with a link to stocklake.dev",
+    "description": "Visible delayed provider attribution in plain text",
     "_machine_translated": true,
-    "_source_hash": "081a46f162590a46"
+    "_source_hash": "bede5ed980930c08"
   },
   "quote.history": {
-    "message": "약 30거래일 동안의 Stocklake 일별 종가입니다. 기록은 하루 동안 캐시되며, 캐시에 없으면 1회 호출을 사용합니다. Finnhub 스파크라인은 로컬 샘플을 사용합니다.",
+    "message": "약 30거래일간의 Stocklake 일별 종가입니다. 하루 동안 캐시되며, 캐시되지 않은 기록을 가져오면 일일 조회 1회를 사용합니다. 게스트 스파크라인은 저장된 기록만 사용합니다.",
     "description": "History accessible label and settings explanation; real daily data for Stocklake",
     "_machine_translated": true,
-    "_source_hash": "2efd3bfb80984cd7"
+    "_source_hash": "8e6435e7874868ff"
   },
   "error.daily_limit": {
     "message": "오늘의 무료 시세 조회를 모두 사용했습니다. {time}에 초기화됩니다. 무료 Stocklake 키를 추가하면 하루 200회까지 사용할 수 있습니다.",
@@ -392,5 +388,47 @@
     "description": "Authenticated daily exhaustion; preserve {time}",
     "_machine_translated": true,
     "_source_hash": "7c2f3494ec238e7e"
+  },
+  "result.type_symbol": {
+    "message": "종목 기호를 입력하십시오. 예: stock aapl",
+    "description": "Bare guest stock command; no lookup is made",
+    "_machine_translated": true,
+    "_source_hash": "7d079e375ba5f9cb"
+  },
+  "quote.updated": {
+    "message": "업데이트: {time}",
+    "description": "Stocklake refresh time, not last trade time; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "3dec8682dcb844dc"
+  },
+  "setup.stocklake_steps": {
+    "message": "키 없이 Stocklake를 사용하거나 무료 키를 붙여 넣으십시오. 전환하려면 '테스트 후 사용'을 선택하십시오. 게스트를 선택할 때는 조회가 사용되지 않습니다.",
+    "description": "Stocklake setup steps",
+    "_machine_translated": true,
+    "_source_hash": "96be4a9668009051"
+  },
+  "setup.finnhub_steps": {
+    "message": "무료 Finnhub 키를 발급받아 붙여 넣은 후 '테스트 후 사용'을 선택하면 실시간 미국 시세를 이용할 수 있습니다.",
+    "description": "Finnhub setup steps",
+    "_machine_translated": true,
+    "_source_hash": "a7736e058dc5a82e"
+  },
+  "setup.switch": {
+    "message": "제공자를 전환하려면 '테스트 후 사용'을 선택하십시오. 저장은 현재 활성 제공자의 설정에만 적용됩니다.",
+    "description": "Provider selection requires explicit Test and use; generic Save must explain this",
+    "_machine_translated": true,
+    "_source_hash": "1a8c271c436d2d7b"
+  },
+  "setup.removed_fallback": {
+    "message": "Finnhub 키를 제거했습니다. 이제 Stocklake 게스트가 활성화되었습니다. 저장된 시세는 계속 사용할 수 있습니다.",
+    "description": "Explicit fallback after removing the active Finnhub key",
+    "_machine_translated": true,
+    "_source_hash": "49e5908c4fdee494"
+  },
+  "error.storage_until": {
+    "message": "시세 저장소에서 한도를 추적할 수 없습니다. {time}까지 요청이 일시 중지되며, 가능한 경우 저장된 데이터를 표시합니다.",
+    "description": "Storage lockout expiry; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "ebf9f622c5b939d6"
   }
 }

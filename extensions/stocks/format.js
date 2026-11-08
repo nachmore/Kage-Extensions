@@ -6,15 +6,16 @@ export function escapeHtml(value) {
   })[c]);
 }
 
-function precision(value) { return Math.abs(value) < 1 ? 4 : 2; }
+export function precision(value) { return Math.abs(value) < 1 ? 4 : 2; }
 
-export function priceText(value, { locale, invariant = false } = {}) {
+export function priceText(value, { locale, invariant = false, currency } = {}) {
   if (!Number.isFinite(value)) return '—';
   const digits = precision(value);
   const rounded = Number(value.toFixed(digits)) || 0;
-  return invariant ? rounded.toFixed(digits) : new Intl.NumberFormat(locale, {
+  const text = invariant ? rounded.toFixed(digits) : new Intl.NumberFormat(locale, {
     minimumFractionDigits: digits, maximumFractionDigits: digits,
   }).format(rounded);
+  return `${text}${['GBp', 'GBX'].includes(currency) ? 'p' : currency === 'ZAc' ? 'c' : ''}`;
 }
 
 export function signedText(value, { percent = false, price = value, locale, invariant = false } = {}) {
@@ -30,7 +31,7 @@ export function signedText(value, { percent = false, price = value, locale, inva
 }
 
 export function copyText(quote) {
-  return `${quote.symbol} ${priceText(quote.price, { invariant: true })}${Number.isFinite(quote.percent) ? ` ${signedText(quote.percent, { percent: true, invariant: true })}` : ''}`;
+  return `${quote.symbol} ${priceText(quote.price, { invariant: true, currency: quote.currency })}${Number.isFinite(quote.percent) ? ` ${signedText(quote.percent, { percent: true, invariant: true })}` : ''}`;
 }
 
 export function direction(quote) {
@@ -42,16 +43,18 @@ export function timestampText(value, { locale, invariant = false } = {}) {
   if (!Number.isFinite(value)) return '—';
   const date = new Date(Math.floor(value) * 1000);
   if (!Number.isFinite(date.getTime())) return '—';
+  const today = date.toDateString() === new Date().toDateString();
   return invariant ? date.toISOString().replace('T', ' ').replace('.000Z', ' UTC')
-    : new Intl.DateTimeFormat(locale, { dateStyle: 'medium', timeStyle: 'long' }).format(date);
+    : new Intl.DateTimeFormat(locale, { hour: 'numeric', minute: '2-digit',
+      ...(today ? {} : { weekday: 'short' }) }).format(date);
 }
 
 export function quoteDescription(quote, t, locale) {
   const parts = [
     quote.source === 'Stocklake' ? `${t('quote.stocklake')}${quote.currency ? ` · ${quote.currency}` : ''}` : 'Finnhub · USD',
-    t('quote.as_of', { time: timestampText(quote.timestamp, { locale }) }),
+    t(quote.source === 'Stocklake' ? 'quote.updated' : 'quote.as_of', { time: timestampText(quote.timestamp, { locale }) }),
   ];
-  if (quote.timestamp * 1000 < Date.now() - 15 * 60_000) parts.push(t('quote.delayed'));
+  if (quote.source !== 'Stocklake' && quote.timestamp * 1000 < Date.now() - 15 * 60_000) parts.push(t('quote.delayed'));
   if (quote.cached) parts.push(t('quote.cached', { time: timestampText(quote.fetchedAt / 1000, { locale }) }));
   if (quote.reason) parts.push(errorText(quote.reason, t, { retryAt: quote.retryAt, locale }));
   if (quote.retryAt && !['daily_limit', 'key_daily_limit'].includes(quote.reason)) parts.push(t('quote.retry', { time: timestampText(quote.retryAt / 1000, { locale }) }));
@@ -66,7 +69,7 @@ export function errorText(code, t, { retryAt, locale } = {}) {
     'rate_limit', 'offline', 'unavailable', 'busy', 'storage',
     'invalid_key', 'invalid_range', 'timeout', 'daily_limit', 'key_daily_limit',
   ]);
-  return t(`error.${known.has(code) ? code : 'unavailable'}`, {
+  return t(code === 'storage' && retryAt ? 'error.storage_until' : `error.${known.has(code) ? code : 'unavailable'}`, {
     max: MAX_SYMBOLS, time: timestampText(retryAt / 1000, { locale }),
   });
 }

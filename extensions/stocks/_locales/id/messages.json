@@ -12,10 +12,10 @@
     "_source_hash": "d6d4700604b64b88"
   },
   "manifest.description": {
-    "message": "Online · Tanpa kunci: kuotasi Stocklake tertunda ~15 menit, gratis 25 per hari; kunci gratis menaikkannya menjadi 200. Finnhub bersifat opsional untuk kuotasi AS langsung.",
+    "message": "Online · Kuotasi Stocklake tertunda ~15 menit: sekitar 25 pencarian simbol per hari tanpa kunci, atau 200 dengan kunci gratis. Finnhub opsional untuk kuotasi AS secara langsung.",
     "description": "Store listing; Online and Data delayed communicate network dependency and freshness",
     "_machine_translated": true,
-    "_source_hash": "44f1eb50266b55a3"
+    "_source_hash": "0a0e960d0b709ac1"
   },
   "result.loading": {
     "message": "Mencari saham…",
@@ -72,10 +72,10 @@
     "_source_hash": "693535460d4db418"
   },
   "error.setup": {
-    "message": "Buka pengaturan Saham, dapatkan kunci Finnhub gratis, lalu Uji dan simpan.",
+    "message": "Buka pengaturan Saham, dapatkan kunci Finnhub gratis, lalu pilih Uji dan gunakan.",
     "description": "No stored key",
     "_machine_translated": true,
-    "_source_hash": "8adbf75fdf5bc595"
+    "_source_hash": "2be9c6223cc5fff8"
   },
   "error.auth": {
     "message": "Penyedia menolak kunci. Buka pengaturan Stocks untuk menguji kunci pengganti.",
@@ -150,10 +150,10 @@
     "_source_hash": "f4f4d83dc6129a6c"
   },
   "settings.description": {
-    "message": "Kuotasi Stocklake berfungsi tanpa kunci: tertunda ~15 menit, 25 panggilan per hari, atau 200 dengan kunci gratis. Finnhub menyediakan kuotasi AS langsung dengan kunci gratis.",
+    "message": "Kuotasi Stocklake berfungsi tanpa kunci: tertunda ~15 menit, sekitar 25 pencarian simbol per hari, atau 200 dengan kunci gratis. Finnhub menyediakan kuotasi AS secara langsung dengan kunci gratis.",
     "description": "Settings summary",
     "_machine_translated": true,
-    "_source_hash": "deea29d63a6f57a4"
+    "_source_hash": "0f8ec107dbd56b33"
   },
   "settings.connection": {
     "message": "Penyedia kuotasi dan penyiapan",
@@ -172,12 +172,6 @@
     "description": "Material provider use restrictions",
     "_machine_translated": true,
     "_source_hash": "7fbb1c4e684b429f"
-  },
-  "setup.steps": {
-    "message": "Stocklake langsung berfungsi tanpa kunci. Pilih penyedia, tempel kuncinya jika perlu, lalu Uji dan gunakan untuk menyimpan pilihan Anda.",
-    "description": "Guided setup steps",
-    "_machine_translated": true,
-    "_source_hash": "d73223e639ab4ff7"
   },
   "setup.saved": {
     "message": "Sebuah kunci tersimpan di perangkat ini. Biarkan kolom kosong untuk mengujinya, atau tempelkan kunci pengganti. Kunci yang tersimpan tidak pernah ditampilkan di sini.",
@@ -198,10 +192,10 @@
     "_source_hash": "3fb2a7de1e62b384"
   },
   "setup.key_hint": {
-    "message": "Uji dan simpan menyimpan kunci di data ekstensi privat, seperti kredensial Spotify. Mengetiknya di sini tidak menyimpannya bersama pengaturan biasa. Kolom teks host ini terlihat saat Anda mengetik.",
+    "message": "Uji dan gunakan menyimpan kunci di data ekstensi pribadi. Mengetiknya di sini tidak menyimpannya bersama pengaturan biasa. Kunci yang tersimpan tidak pernah ditampilkan.",
     "description": "Storage and host input behavior",
     "_machine_translated": true,
-    "_source_hash": "4c3122d9b4d5daad"
+    "_source_hash": "84263c95dae6f748"
   },
   "setup.test": {
     "message": "Uji dan gunakan penyedia",
@@ -222,10 +216,10 @@
     "_source_hash": "59cb7317745316bb"
   },
   "setup.success": {
-    "message": "Uji kuotasi berhasil; penyedia dipilih dan kunci yang diberikan telah disimpan.",
+    "message": "Penyedia dipilih dan kunci yang diberikan telah disimpan. Koneksi dengan kunci lulus uji kuotasi.",
     "description": "Successful guided setup; key is saved independently of watchlist settings",
     "_machine_translated": true,
-    "_source_hash": "c4ae3a50e8f0c3e0"
+    "_source_hash": "118c046747156cd2"
   },
   "settings.watchlist_section": {
     "message": "Daftar pantauan dan penyegaran",
@@ -270,22 +264,22 @@
     "_source_hash": "45f891673cb1e039"
   },
   "tool.quote": {
-    "message": "Dapatkan kuotasi saham dari penyedia pilihan Anda untuk penggunaan pribadi. Stocklake tertunda ~15 menit dan tidak memerlukan kunci; Finnhub menyediakan kuotasi AS langsung dengan kunci. Mengembalikan sumber, stempel waktu, kesegaran data, dan galat per simbol. Jangan mendistribusikan ulang data.",
+    "message": "Dapatkan kuotasi saham untuk penggunaan pribadi. Stocklake tertunda ~15 menit; tamu berbagi sekitar 25 pencarian simbol per hari per IP. Setiap simbol yang belum di-cache dihitung, bahkan dalam satu batch. Gabungkan simbol yang diminta dalam satu batch dan hindari pencarian spekulatif atau berulang. Kunci gratis mengizinkan 200 per hari. Finnhub menyediakan kuotasi AS secara langsung dengan kunci. Mengembalikan source, asOf untuk pembaruan Stocklake, tradeTime untuk Finnhub, kesegaran data, dan error per simbol. Jangan mendistribusikan ulang data.",
     "description": "Agent tool description",
     "_machine_translated": true,
-    "_source_hash": "890f052fdf9e3bbd"
+    "_source_hash": "99f5d285678b43e5"
   },
   "tool.symbols": {
-    "message": "Hingga {max} simbol, misalnya [\"AAPL\", \"MSFT\", \"SAP.DE\"]. Finnhub hanya menerima ticker AS.",
+    "message": "Gabungkan hingga {max} simbol yang diminta dalam satu batch, mis. [\"AAPL\", \"MSFT\", \"SAP.DE\"]. Setiap simbol Stocklake yang belum di-cache dihitung terhadap batas tamu sekitar 25 per hari. Finnhub hanya menerima ticker AS.",
     "description": "Quote tool parameter description; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "acbe6e78c6fddb5a"
+    "_source_hash": "0b1952ac06ea6daf"
   },
   "tool.history": {
-    "message": "Dapatkan riwayat harian Stocklake yang sebenarnya untuk 1d, 1w, atau 1m dari jendela 30 hari perdagangan yang di-cache selama sehari. Memakai satu panggilan jika tidak ada di cache. Finnhub mengembalikan kuotasi teramati lokal yang tidak lengkap tanpa permintaan riwayat.",
+    "message": "Ambil riwayat harian Stocklake sesuai permintaan untuk 1d, 1w, atau 1m (default 1m), dari sekitar 30 hari perdagangan. Di-cache selama sehari. Permintaan riwayat yang belum di-cache menggunakan satu dari jatah tamu sekitar 25 pencarian simbol harian yang dibagi per IP. Hindari pencarian riwayat otomatis; minta hanya bila diperlukan.",
     "description": "Agent tool scope must not imply full historical coverage",
     "_machine_translated": true,
-    "_source_hash": "d5343316b6826efa"
+    "_source_hash": "ef221a7846ff22d5"
   },
   "tool.symbol": {
     "message": "Simbol saham, termasuk akhiran internasional untuk Stocklake.",
@@ -294,10 +288,10 @@
     "_source_hash": "bf96519c516306b2"
   },
   "tool.range": {
-    "message": "1d, 1w, atau 1m; default 1d.",
+    "message": "1d, 1w, atau 1m; default 1m.",
     "description": "History range parameter description",
     "_machine_translated": true,
-    "_source_hash": "992fdef4270c7170"
+    "_source_hash": "0a2d7005b36be66b"
   },
   "tool.disabled": {
     "message": "Stocks dinonaktifkan.",
@@ -336,8 +330,10 @@
     "_source_hash": "c3ae84bf8010f20d"
   },
   "settings.quotes_deleted": {
-    "message": "{deleted, plural, one {# catatan kuotasi tersimpan beserta sampel lokalnya telah dihapus. Jendela lain atau penyegaran yang sedang berjalan mungkin menyimpan catatan baru.} other {# catatan kuotasi tersimpan beserta sampel lokalnya telah dihapus. Jendela lain atau penyegaran yang sedang berjalan mungkin menyimpan catatan baru.}}{failed, plural, =0 {} one { # catatan tidak dapat dihapus. Coba lagi.} other { # catatan tidak dapat dihapus. Coba lagi.}}",
-    "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
+    "message": "{deleted, plural, other {# kuotasi tersimpan atau catatan riwayat dihapus. Jendela lain atau penyegaran yang sedang berjalan mungkin menyimpan lebih banyak.}}{failed, plural, =0 {} other { # catatan tersimpan tidak dapat dihapus. Coba lagi.}}",
+    "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records",
+    "_machine_translated": true,
+    "_source_hash": "45eb5a0d8cf6b318"
   },
   "widget.connection": {
     "message": "Kuotasi perlu diperhatikan. Ketik stock lalu tekan Enter untuk membuka pengaturan Stocks.",
@@ -358,10 +354,10 @@
     "_source_hash": "b9f483c14cb7b4dc"
   },
   "setup.stocklake": {
-    "message": "Stocklake berfungsi tanpa kunci: tertunda ~15 menit, 25 panggilan per hari; kunci gratis opsional menaikkannya menjadi 200.",
+    "message": "Stocklake berfungsi tanpa kunci: tertunda ~15 menit, sekitar 25 pencarian simbol per hari yang dibagi per IP; kunci gratis mengizinkan 200 per hari. Setiap simbol yang belum di-cache dihitung.",
     "description": "Keyless default provider description",
     "_machine_translated": true,
-    "_source_hash": "930e88dd695cf87e"
+    "_source_hash": "4fb2147ce025156d"
   },
   "setup.stocklake_key": {
     "message": "Dapatkan kunci Stocklake gratis",
@@ -371,15 +367,15 @@
   },
   "quote.stocklake": {
     "message": "Tertunda ~15 menit · Stocklake",
-    "description": "Visible delayed provider attribution; paired with a link to stocklake.dev",
+    "description": "Visible delayed provider attribution in plain text",
     "_machine_translated": true,
-    "_source_hash": "081a46f162590a46"
+    "_source_hash": "bede5ed980930c08"
   },
   "quote.history": {
-    "message": "Harga penutupan harian Stocklake untuk sekitar 30 hari perdagangan. Riwayat disimpan di cache selama sehari; jika tidak ada di cache, satu panggilan akan digunakan. Sparkline Finnhub menggunakan sampel lokal.",
+    "message": "Harga penutupan harian Stocklake selama sekitar 30 hari perdagangan. Di-cache selama sehari; mengambil riwayat yang belum di-cache menggunakan satu pencarian harian. Sparkline tamu hanya menggunakan riwayat tersimpan.",
     "description": "History accessible label and settings explanation; real daily data for Stocklake",
     "_machine_translated": true,
-    "_source_hash": "2efd3bfb80984cd7"
+    "_source_hash": "8e6435e7874868ff"
   },
   "error.daily_limit": {
     "message": "Kuota harian gratis sudah habis. Direset pada {time}. Tambahkan kunci Stocklake gratis untuk 200 per hari.",
@@ -392,5 +388,47 @@
     "description": "Authenticated daily exhaustion; preserve {time}",
     "_machine_translated": true,
     "_source_hash": "7c2f3494ec238e7e"
+  },
+  "result.type_symbol": {
+    "message": "Ketik simbol, mis. stock aapl",
+    "description": "Bare guest stock command; no lookup is made",
+    "_machine_translated": true,
+    "_source_hash": "7d079e375ba5f9cb"
+  },
+  "quote.updated": {
+    "message": "Diperbarui {time}",
+    "description": "Stocklake refresh time, not last trade time; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "3dec8682dcb844dc"
+  },
+  "setup.stocklake_steps": {
+    "message": "Gunakan Stocklake tanpa kunci, atau tempel kunci gratis. Pilih Uji dan gunakan untuk beralih; memilih mode tamu tidak menggunakan pencarian.",
+    "description": "Stocklake setup steps",
+    "_machine_translated": true,
+    "_source_hash": "96be4a9668009051"
+  },
+  "setup.finnhub_steps": {
+    "message": "Dapatkan kunci Finnhub gratis, tempelkan, lalu pilih Uji dan gunakan untuk kuotasi AS secara langsung.",
+    "description": "Finnhub setup steps",
+    "_machine_translated": true,
+    "_source_hash": "a7736e058dc5a82e"
+  },
+  "setup.switch": {
+    "message": "Gunakan Uji dan gunakan untuk beralih penyedia. Simpan menerapkan pengaturan untuk penyedia yang aktif.",
+    "description": "Provider selection requires explicit Test and use; generic Save must explain this",
+    "_machine_translated": true,
+    "_source_hash": "1a8c271c436d2d7b"
+  },
+  "setup.removed_fallback": {
+    "message": "Kunci Finnhub dihapus. Stocklake mode tamu kini aktif. Kuotasi tersimpan tetap tersedia.",
+    "description": "Explicit fallback after removing the active Finnhub key",
+    "_machine_translated": true,
+    "_source_hash": "49e5908c4fdee494"
+  },
+  "error.storage_until": {
+    "message": "Penyimpanan kuotasi tidak dapat melacak batas. Permintaan dijeda hingga {time}; menampilkan data tersimpan bila tersedia.",
+    "description": "Storage lockout expiry; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "ebf9f622c5b939d6"
   }
 }

@@ -1,6 +1,6 @@
 // permissions: storage — commands are routed through dataInvoke.
 import { MAX_PER_MINUTE, refreshSeconds } from './defaults.js';
-import { StockError, normalizeSymbol, symbolEntries, symbolName } from './symbols.js';
+import { StockError, normalizeSymbol, stocklakeSymbol, symbolEntries, symbolName } from './symbols.js';
 
 export const API_ORIGIN = 'https://finnhub.io';
 export const FREE_KEY_URL = 'https://finnhub.io/register';
@@ -11,11 +11,12 @@ const QUOTE_TTL_MS = 10 * 60_000;
 const nextMidnight = (now = Date.now()) => (Math.floor(now / DAY_MS) + 1) * DAY_MS;
 
 export function migrateProvider(config = {}, credentials = {}) {
-  if (['stocklake', 'finnhub'].includes(credentials.provider)) return credentials.provider;
+  if (credentials.provider === 'stocklake') return 'stocklake';
+  if (credentials.provider === 'finnhub') return validKey(credentials.api_key) ? 'finnhub' : 'stocklake';
   // Old provider/cache fields did not reliably describe an active connection.
   // A saved Finnhub key is the migration signal, including on hosts which
   // overlay new manifest defaults on old saved settings.
-  if (validKey(credentials.api_key) || validKey(config.api_key) || validKey(config.finnhub_key)) return 'finnhub';
+  if (validKey(credentials.api_key)) return 'finnhub';
   return 'stocklake';
 }
 
@@ -96,7 +97,7 @@ export function parseStocklakeQuote(body, symbol) {
   const price = finite(body?.price);
   const timestamp = Date.parse(body?.updated_at) / 1000;
   if (price === null || price <= 0 || !Number.isFinite(timestamp) || timestamp <= 0
-      || timestamp > Date.now() / 1000 + 86_400 || body?.symbol !== normalizeSymbol(symbol)) {
+      || timestamp > Date.now() / 1000 + 86_400 || body?.symbol !== stocklakeSymbol(symbol)) {
     throw new StockError('unknown');
   }
   const previousClose = finite(body.prev_close);
@@ -106,7 +107,8 @@ export function parseStocklakeQuote(body, symbol) {
     price, change, percent: finite(body.change_pct) ?? (change !== null ? change / previousClose * 100 : null),
     previousClose, open: finite(body.open), high: finite(body.high), low: finite(body.low),
     volume: finite(body.volume), exchange: typeof body.exchange === 'string' ? body.exchange.slice(0, 40) : null,
-    timestamp, currency: /^[A-Z]{3}$/.test(body.currency) ? body.currency : null, source: 'Stocklake',
+    timestamp, asOf: new Date(timestamp * 1000).toISOString(),
+    currency: /^(?:[A-Z]{3}|GBp|ZAc)$/.test(body.currency) ? body.currency : null, source: 'Stocklake',
   };
 }
 
@@ -139,16 +141,19 @@ export async function stocklakeCall(name, args, key, { signal, onHeaders = async
     });
   } catch { throw new StockError(signal?.aborted ? 'timeout' : 'offline'); }
   // Sync even error responses; don't read/log provider error text or retry.
-  await onHeaders(response.headers, response.status);
+  try { await onHeaders(response.headers, response.status); } catch { /* Never discard a paid response over budget sync. */ }
   if (response.status === 401) throw new StockError(key ? 'auth' : 'daily_limit', nextMidnight());
   if (response.status === 429) throw new StockError('rate_limit', nextMidnight());
   if (!response.ok) throw new StockError('unavailable');
   let envelope, body;
   try {
     envelope = await response.json();
+    if (envelope.result?.isError && /\bticker\b.{0,100}\bnot[ -]+found\b/i.test(envelope.result.content?.[0]?.text || '')) {
+      throw new StockError('unknown');
+    }
     if (envelope.error || envelope.result?.isError) throw new Error();
     body = JSON.parse(envelope.result.content[0].text);
-  } catch { throw new StockError('unavailable'); }
+  } catch (error) { throw new StockError(error.code === 'unknown' ? 'unknown' : 'unavailable'); }
   return body;
 }
 
@@ -260,13 +265,7 @@ export class StocksClient {
   async connection(config = this.config) {
     const credentials = await this.read(CREDENTIALS_KEY) || {};
     const provider = migrateProvider(config, credentials);
-    const value = provider === 'stocklake' ? credentials.stocklake_key
-      : credentials.api_key || config.api_key || config.finnhub_key;
-    if (provider === 'finnhub' && !credentials.api_key && validKey(value)) {
-      // Some retired versions placed the key in config. Move it into the
-      // existing sensitive record before normalize blanks those old fields.
-      await this.saveKey(value, 'finnhub');
-    }
+    const value = provider === 'stocklake' ? credentials.stocklake_key : credentials.api_key;
     return { provider, key: validKey(value) ? value.trim() : null };
   }
 
@@ -306,7 +305,9 @@ export class StocksClient {
       return;
     }
     delete previous[provider === 'stocklake' ? 'stocklake_key' : 'api_key'];
-    await this.write(CREDENTIALS_KEY, { ...previous, provider, revision: `${this.owner}:${Math.random()}` });
+    const active = migrateProvider(this.config, previous);
+    const nextProvider = active === 'finnhub' && !validKey(previous.api_key) ? 'stocklake' : active;
+    await this.write(CREDENTIALS_KEY, { ...previous, provider: nextProvider, revision: `${this.owner}:${Math.random()}` });
     try { await this.clearAuthBackoff(provider); } catch { /* Credentials are already removed. */ }
   }
 
@@ -401,6 +402,7 @@ export class StocksClient {
   }
 
   async reserve(n = 1, { bypassAuth = false } = {}) {
+    let reservedAt;
     await this.budgetTransaction((budget, now) => {
       const localActive = this.localBackoff > now;
       const pauses = [
@@ -419,8 +421,21 @@ export class StocksClient {
         throw new StockError('rate_limit', burst[burst.length + n - MAX_PER_SECOND - 1] + 1000);
       }
       this.recoveryNeeded = !!budget.streak;
+      reservedAt = now;
       return { ...budget, attempts: [...attempts, ...Array(n).fill(now)] };
     });
+    return reservedAt;
+  }
+
+  async refund(reservedAt) {
+    try {
+      await this.budgetTransaction((budget) => {
+        const attempts = [...(budget.attempts || [])];
+        const index = attempts.indexOf(reservedAt);
+        if (index >= 0) attempts.splice(index, 1);
+        return { ...budget, attempts };
+      });
+    } catch { /* Failed persistence remains conservative. */ }
   }
 
   dailyBudget(record, key, now = Date.now()) {
@@ -430,19 +445,31 @@ export class StocksClient {
         || record.remaining < 0 || record.remaining > record.limit || !Number.isFinite(record.resetAt)
         || record.resetAt <= 0) throw new StockError('storage');
     return now >= record.resetAt
-      ? { ...record, remaining: record.limit, resetAt: nextMidnight(now) } : record;
+      ? { ...record, remaining: record.limit, resetAt: nextMidnight(now), exhausted: false }
+      : { ...record, resetAt: Math.min(record.resetAt, now + DAY_MS) };
   }
 
   async reserveDaily(n, key, { bypassAuth = false } = {}) {
+    let reservation;
     await this.budgetTransaction((record, now) => {
       const budget = this.dailyBudget(bypassAuth && record.backoffReason === 'auth'
         ? { ...record, backoffUntil: 0 } : record, key, now);
       if (budget.remaining < n) throw new StockError(key ? 'key_daily_limit' : 'daily_limit', budget.resetAt);
+      reservation = { n, resetAt: budget.resetAt };
       return { ...budget, remaining: budget.remaining - n };
+    }, key ? '_stocklake_key' : '_stocklake_guest');
+    return reservation;
+  }
+
+  async refundDaily(reservation, key) {
+    await this.budgetTransaction((record, now) => {
+      const budget = this.dailyBudget(record, key, now);
+      return budget.resetAt === reservation.resetAt && !budget.exhausted
+        ? { ...budget, remaining: Math.min(budget.limit, budget.remaining + reservation.n) } : budget;
     }, key ? '_stocklake_key' : '_stocklake_guest');
   }
 
-  async syncDaily(headers, status, key) {
+  async syncDaily(headers, status, key, requestedAt = Date.now()) {
     await this.budgetTransaction((record, now) => {
       const budget = this.dailyBudget(record, key, now);
       const integerHeader = (name) => {
@@ -453,34 +480,60 @@ export class StocksClient {
       const remaining = integerHeader('x-ratelimit-remaining');
       const reset = integerHeader('x-ratelimit-reset');
       const valid = limit > 0 && limit <= 5000 && remaining !== null && remaining <= limit
-        && reset * 1000 > now && reset * 1000 <= now + 2 * DAY_MS;
+        && reset * 1000 > now;
       // Browsers cannot read these unless the service exposes them via CORS.
       // Absent/invalid headers retain the durable, conservative reservation.
       const next = valid ? { ...budget, limit, remaining: Math.min(budget.remaining, remaining),
-        resetAt: reset * 1000 } : budget;
-      if (status === 429 || (!key && status === 401)) next.remaining = 0;
+        resetAt: Math.min(reset * 1000, now + DAY_MS) } : budget;
+      // A late previous-day response or provider rollover lag must not close
+      // a whole new guest day. Briefly pause until the service catches up.
+      const rollover = !key && status === 401 && !valid
+        && (requestedAt < Math.floor(now / DAY_MS) * DAY_MS || now % DAY_MS < 60_000);
+      if (rollover) Object.assign(next, { backoffUntil: now + 30_000, backoffReason: 'daily_limit' });
+      else if (status === 429 || (!key && status === 401)) Object.assign(next, { remaining: 0, exhausted: true });
       return next;
     }, key ? '_stocklake_key' : '_stocklake_guest');
   }
 
-  async requestStocklake(name, args, key, { testing = false } = {}) {
+  checkNetwork(shouldContinue = () => true) {
+    if (!shouldContinue()) throw new StockError('superseded');
     if (typeof navigator !== 'undefined' && navigator.onLine === false) throw new StockError('offline');
+  }
+
+  async requestStocklake(name, args, key, { testing = false, cost = 1, shouldContinue } = {}) {
+    this.checkNetwork(shouldContinue);
+    if (key && !validKey(key)) throw new StockError('invalid_key');
+    const reservation = await this.reserveDaily(cost, key, { bypassAuth: testing });
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), 2200);
+    let responded = false;
+    const requestedAt = Date.now();
     try {
+      this.checkNetwork(shouldContinue);
       return await stocklakeCall(name, args, key, {
-        signal: controller.signal, onHeaders: (headers, status) => this.syncDaily(headers, status, key),
+        signal: controller.signal, onHeaders: (headers, status) => {
+          responded = true;
+          clearTimeout(timer);
+          return this.syncDaily(headers, status, key, requestedAt);
+        },
       });
     } catch (error) {
+      if (!responded && ['offline', 'superseded'].includes(error.code)) {
+        try { await this.refundDaily(reservation, key); } catch { /* A failed write stays conservative. */ }
+      }
       if (error.code === 'daily_limit' || error.code === 'rate_limit') {
         // Use the provider's reset rather than a transport fallback.
-        const budget = await this.read(`${BUDGET_KEY}_stocklake_${key ? 'key' : 'guest'}`);
+        let budget;
+        try { budget = await this.read(`${BUDGET_KEY}_stocklake_${key ? 'key' : 'guest'}`); } catch { /* Keep the provider error. */ }
         error.code = key ? 'key_daily_limit' : 'daily_limit';
-        error.retryAt = budget?.resetAt || nextMidnight();
+        error.retryAt = budget?.backoffReason === 'daily_limit' && budget.backoffUntil > Date.now()
+          ? budget.backoffUntil : budget?.resetAt || nextMidnight();
       } else if (BACKOFF_CODES.has(error.code) && !(testing && error.code === 'auth')) {
         const until = Date.now() + (error.code === 'timeout' ? 3000 : 30_000);
-        await this.budgetTransaction((budget) => ({ ...budget, backoffUntil: until, backoffReason: error.code }),
-          key ? '_stocklake_key' : '_stocklake_guest');
+        try {
+          await this.budgetTransaction((budget) => ({ ...budget, backoffUntil: until, backoffReason: error.code }),
+            key ? '_stocklake_key' : '_stocklake_guest');
+        } catch { /* Keep the transport error. */ }
         error.retryAt = until;
       }
       throw error;
@@ -519,12 +572,15 @@ export class StocksClient {
     try { await pending; } finally { this.backoffPending = null; }
   }
 
-  async request(symbol, key, { testing = false } = {}) {
-    if (typeof navigator !== 'undefined' && navigator.onLine === false) throw new StockError('offline');
+  async request(symbol, key, { testing = false, shouldContinue, reservedAt } = {}) {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), 2200);
-    try { return await fetchQuote(symbol, key, { signal: controller.signal }); }
+    try {
+      this.checkNetwork(shouldContinue);
+      return await fetchQuote(symbol, key, { signal: controller.signal });
+    }
     catch (error) {
+      if (['offline', 'superseded'].includes(error.code) && reservedAt !== undefined) await this.refund(reservedAt);
       if (!testing && error.code === 'auth') this.localAuthKey = key;
       // A rejected candidate key must never poison the saved key's backoff.
       if ((!testing || error.code !== 'auth') && BACKOFF_CODES.has(error.code)) await this.backoff(error);
@@ -534,13 +590,15 @@ export class StocksClient {
 
   async testKey(key, provider = 'finnhub') {
     if (provider === 'stocklake') {
+      if (!key) return null;
       if (key && !validKey(key)) throw new StockError('invalid_key');
-      await this.reserveDaily(1, key, { bypassAuth: true });
-      return parseStocklakeQuote(await this.requestStocklake('get_stock', { symbol: 'AAPL' }, key, { testing: true }), 'AAPL');
+      const body = await this.requestStocklake('get_stocks', { symbols: ['AAPL'] }, key, { testing: true });
+      return parseStocklakeQuote(body?.symbols?.AAPL, 'AAPL');
     }
     if (!validKey(key)) throw new StockError('invalid_key');
-    await this.reserve(1, { bypassAuth: true });
-    return this.request('AAPL', key, { testing: true });
+    this.checkNetwork();
+    const reservedAt = await this.reserve(1, { bypassAuth: true });
+    return this.request('AAPL', key, { testing: true, reservedAt });
   }
 
   async recovered() {
@@ -560,14 +618,14 @@ export class StocksClient {
   }
 
   fallback(cache, reason, retryAt = null) {
-    const retry = BACKOFF_CODES.has(reason) || ['busy', 'daily_limit', 'key_daily_limit'].includes(reason) ? retryAt : null;
+    const retry = BACKOFF_CODES.has(reason) || ['busy', 'storage', 'daily_limit', 'key_daily_limit'].includes(reason) ? retryAt : null;
     if (!cache || cache.error) throw new StockError(reason, retry);
     return { ...cache.quote, fetchedAt: cache.fetchedAt, cached: true, stale: true, reason, retryAt: retry, samples: cache.samples || [] };
   }
 
-  async refresh(symbol, key, cache, fetchedAt = Date.now(), preserveRecord = false) {
+  async refresh(symbol, key, cache, fetchedAt = Date.now(), preserveRecord = false, options = {}) {
     try {
-      const quote = await this.request(symbol, key);
+      const quote = await this.request(symbol, key, options);
       const samples = (Array.isArray(cache?.samples) ? cache.samples : [])
         .filter((p) => Number.isFinite(p.timestamp) && Number.isFinite(p.price)
           && p.timestamp > fetchedAt / 1000 - RETENTION_MS / 1000);
@@ -592,7 +650,8 @@ export class StocksClient {
     let connection, connectionError;
     try { connection = options.connection || await this.connection(config); }
     catch (error) { connectionError = error.code || 'storage'; }
-    if (connection?.provider === 'stocklake') return this.getStocklakeQuotes(input, config, connection.key, fetchedAt);
+    if (connectionError || connection?.provider === 'stocklake') return this.getStocklakeQuotes(input, config, connection?.key, fetchedAt,
+      { ...options, connectionError });
     // Start the reservation clock before IPC. Polls at 60/300 seconds must
     // not miss the boundary because key/cache/budget reads took time.
     const entries = symbolEntries(input, 'finnhub');
@@ -639,9 +698,11 @@ export class StocksClient {
     if (fresh.length) {
       // One key read and one budget reservation for the entire batch.
       try {
-        await this.reserve(fresh.length);
+        this.checkNetwork(options.shouldContinue);
+        const reservedAt = await this.reserve(fresh.length);
         await Promise.all(fresh.map(async (entry) => {
-          try { entry.resolve(await this.refresh(entry.symbol, key, entry.cache, fetchedAt, entry.preserveRecord)); }
+          try { entry.resolve(await this.refresh(entry.symbol, key, entry.cache, fetchedAt, entry.preserveRecord,
+            { shouldContinue: options.shouldContinue, reservedAt })); }
           catch (error) { entry.reject(error); }
           finally { this.pending.delete(entry.symbol); }
         }));
@@ -661,17 +722,23 @@ export class StocksClient {
     return results;
   }
 
-  async getStocklakeQuotes(input, config, key, fetchedAt = Date.now()) {
+  async getStocklakeQuotes(input, config, key, fetchedAt = Date.now(), options = {}) {
     const entries = symbolEntries(input);
     const ready = await Promise.all(entries.map(async (entry) => {
       if (entry.error) return entry;
-      try { return { ...entry, cache: await this.cached(entry.symbol, 'stocklake') }; }
+      try { return { ...entry, cache: await this.cached(entry.symbol, 'stocklake')
+        || (options.connectionError ? await this.cached(entry.symbol, 'finnhub') : null) }; }
       catch (error) { return { ...entry, preserveRecord: !error.unreadable }; }
     }));
     const fresh = [];
+    const fail = (entry, error) => {
+      try { return this.fallback(entry.cache, error.code || 'unavailable', error.retryAt); }
+      catch (failure) { return { symbol: entry.symbol, error: failure.code, retryAt: failure.retryAt }; }
+    };
     const output = ready.map((entry) => {
       if (entry.error) return Promise.resolve(entry);
       const { symbol, cache } = entry;
+      if (options.connectionError) return Promise.resolve(fail(entry, new StockError(options.connectionError)));
       if (cache?.error) return Promise.resolve({ symbol, error: cache.error });
       if (cache && isFresh(cache, config, fetchedAt)) {
         return Promise.resolve({ ...cache.quote, fetchedAt: cache.fetchedAt, cached: true, stale: false });
@@ -684,22 +751,16 @@ export class StocksClient {
       fresh.push({ ...entry, pendingId, resolve });
       return promise;
     });
-    const fail = (entry, error) => {
-      try { return this.fallback(entry.cache, error.code || 'unavailable', error.retryAt); }
-      catch (failure) { return { symbol: entry.symbol, error: failure.code, retryAt: failure.retryAt }; }
-    };
     if (fresh.length) {
       try {
         // The API accepts 25; the extension's watchlist/query cap is 10.
         // Each requested symbol is reserved, even if the API skips it.
-        await this.reserveDaily(fresh.length, key);
-        const symbols = fresh.map((entry) => entry.symbol);
-        const body = symbols.length === 1
-          ? await this.requestStocklake('get_stock', { symbol: symbols[0] }, key)
-          : await this.requestStocklake('get_stocks', { symbols }, key);
+        const symbols = [...new Set(fresh.map((entry) => stocklakeSymbol(entry.symbol)))];
+        const body = await this.requestStocklake('get_stocks', { symbols }, key,
+          { cost: symbols.length, shouldContinue: options.shouldContinue });
         for (const entry of fresh) {
           try {
-            const quote = parseStocklakeQuote(symbols.length === 1 ? body : body?.symbols?.[entry.symbol], entry.symbol);
+            const quote = parseStocklakeQuote(body?.symbols?.[stocklakeSymbol(entry.symbol)], entry.symbol);
             if (!entry.preserveRecord) {
               try { await this.write(`quote_${entry.symbol}`, { quote, fetchedAt }); } catch { /* Keep the valid fresh quote. */ }
             }
@@ -713,7 +774,13 @@ export class StocksClient {
           }
         }
       } catch (error) {
-        for (const entry of fresh) entry.resolve(fail(entry, error));
+        for (const entry of fresh) {
+          if (error.code === 'unknown' && !entry.preserveRecord) {
+            try { await this.write(`quote_${entry.symbol}`, { source: 'Stocklake', error: 'unknown', fetchedAt,
+              expiresAt: fetchedAt + NEGATIVE_MS }); } catch { /* Best effort negative cache. */ }
+          }
+          entry.resolve(fail(entry, error));
+        }
       } finally {
         for (const entry of fresh) this.pending.delete(entry.pendingId);
       }
@@ -732,14 +799,14 @@ export class StocksClient {
     return results;
   }
 
-  async exactCache(symbols, config = {}) {
+  async exactCache(symbols, config = {}, options = {}) {
     if (!symbols.length) return null;
     try {
       const { provider } = await this.connection(config);
       const caches = await Promise.all(symbols.map((symbol) => this.cached(symbol, provider)));
       if (caches.some((cache) => !cache || (!cache.error && !isFresh(cache, config)))) return null;
       // getQuotes also applies key removal and setup status to cache hits.
-      return await this.getQuotes(symbols, config);
+      return await this.getQuotes(symbols, config, options);
     } catch { return null; }
   }
 
@@ -900,7 +967,7 @@ export class StocksClient {
     return this.maintainQuotes(tracked, { clear: true });
   }
 
-  async getHistory(input, range = '1d', entry = undefined, config = this.config) {
+  async getHistory(input, range = '1m', entry = undefined, config = this.config, options = {}) {
     const symbol = normalizeSymbol(input);
     if (!Object.hasOwn(RANGES, range)) throw new StockError('invalid_range');
     let connection;
@@ -913,7 +980,7 @@ export class StocksClient {
       const old = entry || await this.cached(symbol);
       if (!old) throw error;
     }
-    if (connection?.provider === 'stocklake') return this.stocklakeHistory(symbol, range, connection.key);
+    if (connection?.provider === 'stocklake') return this.stocklakeHistory(symbol, range, connection.key, options);
     const cache = entry === undefined ? await this.cached(symbol) : entry;
     if (entry === undefined) {
       this.scheduleMaintenance([symbol]);
@@ -929,11 +996,11 @@ export class StocksClient {
     };
   }
 
-  async stocklakeHistory(symbol, range, key) {
-    const pendingId = `history:${symbol}`;
+  async stocklakeHistory(symbol, range, key, { cachedOnly = false, shouldContinue } = {}) {
+    const pendingId = `history:${key ? 'key' : 'guest'}:${symbol}`;
     const selectRange = (history) => ({ ...history, range,
       samples: history.samples.slice(-(range === '1d' ? 1 : range === '1w' ? 5 : 30)) });
-    if (this.pending.has(pendingId)) return this.pending.get(pendingId).then(selectRange);
+    if (!cachedOnly && this.pending.has(pendingId)) return this.pending.get(pendingId).then(selectRange);
     const work = async () => {
       let cache;
       try { cache = await this.read(`history_${symbol}`); }
@@ -941,14 +1008,16 @@ export class StocksClient {
       const valid = cache?.source === 'Stocklake' && Number.isFinite(cache.fetchedAt) && Array.isArray(cache.samples)
         && cache.samples.every((p) => Number.isFinite(p.timestamp) && Number.isFinite(p.price) && p.price > 0);
       if (valid && Date.now() - cache.fetchedAt < DAY_MS) return { ...cache, symbol, range, cached: true };
+      if (cachedOnly) return valid ? { ...cache, symbol, range, cached: true, stale: true }
+        : { symbol, source: 'Stocklake', samples: [], range, cached: true };
       try {
-        await this.reserveDaily(1, key);
         const fetchedAt = Date.now();
-        const body = await this.requestStocklake('get_stock_history', { symbol, days: 30 }, key);
+        const wireSymbol = stocklakeSymbol(symbol);
+        const body = await this.requestStocklake('get_stock_history', { symbol: wireSymbol, days: 30 }, key, { shouldContinue });
         const history = { symbol, source: 'Stocklake', kind: 'daily_history', complete: true,
-          days: 30, samples: parseStocklakeHistory(body, symbol), fetchedAt, note: this.t('quote.history') };
+          days: 30, samples: parseStocklakeHistory(body, wireSymbol), fetchedAt, note: this.t('quote.history') };
         // History shares the quote index so deletion also removes its cache.
-        await this.write(`history_${symbol}`, history);
+        try { await this.write(`history_${symbol}`, history); } catch { /* Keep the paid history response. */ }
         this.scheduleMaintenance([symbol]);
         return { ...history, range, cached: false };
       } catch (error) {
@@ -957,10 +1026,10 @@ export class StocksClient {
       }
     };
     const promise = work();
-    this.pending.set(pendingId, promise);
+    if (!cachedOnly) this.pending.set(pendingId, promise);
     try {
       const history = await promise;
       return selectRange(history);
-    } finally { this.pending.delete(pendingId); }
+    } finally { if (!cachedOnly) this.pending.delete(pendingId); }
   }
 }

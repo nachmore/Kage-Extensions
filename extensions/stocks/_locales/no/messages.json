@@ -12,10 +12,10 @@
     "_source_hash": "d6d4700604b64b88"
   },
   "manifest.description": {
-    "message": "Tilkoblet · Ingen nøkler nødvendig: Stocklake-kurser er forsinket ~15 min, 25 gratis per dag; en gratis nøkkel øker dette til 200. Finnhub er valgfritt for sanntidskurser fra USA.",
+    "message": "Tilkoblet · Stocklake-kurser forsinket ~15 min: omtrent 25 symboloppslag per dag uten nøkkel, eller 200 med en gratis nøkkel. Finnhub er valgfritt for sanntidskurser fra USA.",
     "description": "Store listing; Online and Data delayed communicate network dependency and freshness",
     "_machine_translated": true,
-    "_source_hash": "44f1eb50266b55a3"
+    "_source_hash": "0a0e960d0b709ac1"
   },
   "result.loading": {
     "message": "Slår opp aksjer …",
@@ -72,10 +72,10 @@
     "_source_hash": "693535460d4db418"
   },
   "error.setup": {
-    "message": "Åpne innstillingene for Aksjer, skaff deg en gratis Finnhub-nøkkel, og velg deretter Test og lagre.",
+    "message": "Åpne innstillingene for Aksjer, skaff en gratis Finnhub-nøkkel, og velg deretter Test og bruk.",
     "description": "No stored key",
     "_machine_translated": true,
-    "_source_hash": "8adbf75fdf5bc595"
+    "_source_hash": "2be9c6223cc5fff8"
   },
   "error.auth": {
     "message": "Leverandøren avviste nøkkelen. Åpne Stocks-innstillingene for å teste en ny nøkkel.",
@@ -150,10 +150,10 @@
     "_source_hash": "f4f4d83dc6129a6c"
   },
   "settings.description": {
-    "message": "Stocklake-kurser fungerer uten nøkkel: forsinket ~15 min, 25 kall per dag, eller 200 med en gratis nøkkel. Finnhub tilbyr sanntidskurser fra USA med en gratis nøkkel.",
+    "message": "Stocklake-kurser fungerer uten nøkkel: forsinket ~15 min, omtrent 25 symboloppslag per dag, eller 200 med en gratis nøkkel. Finnhub tilbyr sanntidskurser fra USA med en gratis nøkkel.",
     "description": "Settings summary",
     "_machine_translated": true,
-    "_source_hash": "deea29d63a6f57a4"
+    "_source_hash": "0f8ec107dbd56b33"
   },
   "settings.connection": {
     "message": "Kursleverandør og oppsett",
@@ -172,12 +172,6 @@
     "description": "Material provider use restrictions",
     "_machine_translated": true,
     "_source_hash": "7fbb1c4e684b429f"
-  },
-  "setup.steps": {
-    "message": "Stocklake fungerer umiddelbart uten nøkkel. Velg en leverandør, lim eventuelt inn nøkkelen, og velg deretter Test og bruk for å lagre valget.",
-    "description": "Guided setup steps",
-    "_machine_translated": true,
-    "_source_hash": "d73223e639ab4ff7"
   },
   "setup.saved": {
     "message": "En nøkkel er lagret på denne enheten. La feltet stå tomt for å teste den, eller lim inn en ny. Lagrede nøkler vises aldri her.",
@@ -198,10 +192,10 @@
     "_source_hash": "3fb2a7de1e62b384"
   },
   "setup.key_hint": {
-    "message": "Test og lagre lagrer nøkkelen i private utvidelsesdata, på samme måte som Spotify-legitimasjon. Å skrive den her lagrer den ikke sammen med vanlige innstillinger. Tekstfeltet i denne verten er synlig mens du skriver.",
+    "message": "Test og bruk lagrer nøkkelen i private utvidelsesdata. Det du skriver her, lagres ikke sammen med vanlige innstillinger. Lagrede nøkler vises aldri.",
     "description": "Storage and host input behavior",
     "_machine_translated": true,
-    "_source_hash": "4c3122d9b4d5daad"
+    "_source_hash": "84263c95dae6f748"
   },
   "setup.test": {
     "message": "Test og bruk leverandør",
@@ -222,10 +216,10 @@
     "_source_hash": "59cb7317745316bb"
   },
   "setup.success": {
-    "message": "Kurstesten bestått; leverandøren er valgt, og eventuell oppgitt nøkkel er lagret.",
+    "message": "Leverandøren er valgt, og eventuell oppgitt nøkkel er lagret. Tilkoblinger med nøkkel besto en kurstest.",
     "description": "Successful guided setup; key is saved independently of watchlist settings",
     "_machine_translated": true,
-    "_source_hash": "c4ae3a50e8f0c3e0"
+    "_source_hash": "118c046747156cd2"
   },
   "settings.watchlist_section": {
     "message": "Overvåkningsliste og oppdatering",
@@ -270,22 +264,22 @@
     "_source_hash": "45f891673cb1e039"
   },
   "tool.quote": {
-    "message": "Hent aksjekurser fra valgt leverandør til eget bruk. Stocklake er forsinket ~15 min og krever ingen nøkkel; Finnhub tilbyr sanntidskurser fra USA med nøkkel. Returnerer kilde, tidsstempler, aktualitet og feil per symbol. Ikke videredistribuer data.",
+    "message": "Hent aksjekurser til eget bruk. Stocklake er forsinket ~15 min; gjester deler omtrent 25 symboloppslag per dag per IP. Hvert symbol som ikke er hurtigbufret, telles, også i en samlet forespørsel. Samle forespurte symboler, og unngå spekulative eller gjentatte oppslag. En gratis nøkkel gir 200 per dag. Finnhub tilbyr sanntidskurser fra USA med nøkkel. Returnerer kilde, asOf for Stocklake-oppdateringer, tradeTime for Finnhub, ferskhet og feil per symbol. Ikke videredistribuer dataene.",
     "description": "Agent tool description",
     "_machine_translated": true,
-    "_source_hash": "890f052fdf9e3bbd"
+    "_source_hash": "99f5d285678b43e5"
   },
   "tool.symbols": {
-    "message": "Opptil {max} symboler, for eksempel [\"AAPL\", \"MSFT\", \"SAP.DE\"]. Finnhub godtar bare amerikanske tickere.",
+    "message": "Samle opptil {max} forespurte symboler, f.eks. [\"AAPL\", \"MSFT\", \"SAP.DE\"]. Hvert Stocklake-symbol som ikke er hurtigbufret, telles mot gjestegrensen på omtrent 25 per dag. Finnhub godtar bare amerikanske tickere.",
     "description": "Quote tool parameter description; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "acbe6e78c6fddb5a"
+    "_source_hash": "0b1952ac06ea6daf"
   },
   "tool.history": {
-    "message": "Hent faktisk daglig historikk fra Stocklake for 1d, 1w eller 1m fra et vindu på 30 handelsdager som bufres i ett døgn. Koster ett kall når data ikke finnes i bufferen. Finnhub returnerer ufullstendige, lokalt observerte kurser uten historikkforespørsel.",
+    "message": "Hent daglig historikk fra Stocklake ved behov for 1d, 1w eller 1m (standard 1m), fra omtrent 30 handelsdager. Hurtigbufres i ett døgn. En historikkforespørsel som ikke er hurtigbufret, bruker ett av gjestekvotens omtrent 25 daglige symboloppslag, som deles per IP. Unngå automatiske historikkoppslag; be bare om historikk når det trengs.",
     "description": "Agent tool scope must not imply full historical coverage",
     "_machine_translated": true,
-    "_source_hash": "d5343316b6826efa"
+    "_source_hash": "ef221a7846ff22d5"
   },
   "tool.symbol": {
     "message": "Et aksjesymbol, inkludert internasjonale suffikser for Stocklake.",
@@ -294,10 +288,10 @@
     "_source_hash": "bf96519c516306b2"
   },
   "tool.range": {
-    "message": "1d, 1w eller 1m; standard er 1d.",
+    "message": "1d, 1w eller 1m; standard 1m.",
     "description": "History range parameter description",
     "_machine_translated": true,
-    "_source_hash": "992fdef4270c7170"
+    "_source_hash": "0a2d7005b36be66b"
   },
   "tool.disabled": {
     "message": "Stocks er deaktivert.",
@@ -336,8 +330,10 @@
     "_source_hash": "c3ae84bf8010f20d"
   },
   "settings.quotes_deleted": {
-    "message": "{deleted, plural, one {Slettet # lagret kursoppføring og tilhørende lokale datapunkter. Andre vinduer eller pågående oppdateringer kan lagre flere.} other {Slettet # lagrede kursoppføringer og tilhørende lokale datapunkter. Andre vinduer eller pågående oppdateringer kan lagre flere.}}{failed, plural, =0 {} one { # oppføring kunne ikke slettes. Prøv igjen.} other { # oppføringer kunne ikke slettes. Prøv igjen.}}",
-    "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
+    "message": "{deleted, plural, one {Slettet # lagret kurs eller historikkpost. Andre vinduer eller pågående oppdateringer kan lagre flere.} other {Slettet # lagrede kurser eller historikkposter. Andre vinduer eller pågående oppdateringer kan lagre flere.}}{failed, plural, =0 {} one { # lagret post kunne ikke slettes. Prøv igjen.} other { # lagrede poster kunne ikke slettes. Prøv igjen.}}",
+    "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records",
+    "_machine_translated": true,
+    "_source_hash": "45eb5a0d8cf6b318"
   },
   "widget.connection": {
     "message": "Kursene trenger oppmerksomhet. Skriv stock og trykk Enter for å åpne Stocks-innstillingene.",
@@ -358,10 +354,10 @@
     "_source_hash": "b9f483c14cb7b4dc"
   },
   "setup.stocklake": {
-    "message": "Stocklake fungerer uten nøkkel: forsinket ~15 min, 25 kall per dag. En valgfri gratis nøkkel øker dette til 200.",
+    "message": "Stocklake fungerer uten nøkkel: forsinket ~15 min, omtrent 25 symboloppslag per dag delt per IP; en gratis nøkkel gir 200 per dag. Hvert symbol som ikke er hurtigbufret, telles.",
     "description": "Keyless default provider description",
     "_machine_translated": true,
-    "_source_hash": "930e88dd695cf87e"
+    "_source_hash": "4fb2147ce025156d"
   },
   "setup.stocklake_key": {
     "message": "Få en gratis Stocklake-nøkkel",
@@ -371,15 +367,15 @@
   },
   "quote.stocklake": {
     "message": "Forsinket ~15 min · Stocklake",
-    "description": "Visible delayed provider attribution; paired with a link to stocklake.dev",
+    "description": "Visible delayed provider attribution in plain text",
     "_machine_translated": true,
-    "_source_hash": "081a46f162590a46"
+    "_source_hash": "bede5ed980930c08"
   },
   "quote.history": {
-    "message": "Daglige sluttkurser fra Stocklake for omtrent 30 handelsdager. Historikken bufres i én dag, og hvis den ikke finnes i bufferen, brukes ett kall. Finnhub-minigrafer bruker lokale målinger.",
+    "message": "Daglige sluttkurser fra Stocklake for omtrent 30 handelsdager. Hurtigbufres i ett døgn; henting av historikk som ikke er hurtigbufret, bruker ett daglig oppslag. Minigrafer for gjester bruker bare lagret historikk.",
     "description": "History accessible label and settings explanation; real daily data for Stocklake",
     "_machine_translated": true,
-    "_source_hash": "2efd3bfb80984cd7"
+    "_source_hash": "8e6435e7874868ff"
   },
   "error.daily_limit": {
     "message": "Dagens gratis kurser er brukt opp. Tilbakestilles kl. {time}. Legg til en gratis Stocklake-nøkkel for å få 200 per dag.",
@@ -392,5 +388,47 @@
     "description": "Authenticated daily exhaustion; preserve {time}",
     "_machine_translated": true,
     "_source_hash": "7c2f3494ec238e7e"
+  },
+  "result.type_symbol": {
+    "message": "Skriv inn et symbol, f.eks. stock aapl",
+    "description": "Bare guest stock command; no lookup is made",
+    "_machine_translated": true,
+    "_source_hash": "7d079e375ba5f9cb"
+  },
+  "quote.updated": {
+    "message": "Oppdatert {time}",
+    "description": "Stocklake refresh time, not last trade time; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "3dec8682dcb844dc"
+  },
+  "setup.stocklake_steps": {
+    "message": "Bruk Stocklake uten nøkkel, eller lim inn en gratis nøkkel. Velg Test og bruk for å bytte; valg av gjestetilgang bruker ingen oppslag.",
+    "description": "Stocklake setup steps",
+    "_machine_translated": true,
+    "_source_hash": "96be4a9668009051"
+  },
+  "setup.finnhub_steps": {
+    "message": "Skaff en gratis Finnhub-nøkkel, lim den inn, og velg deretter Test og bruk for sanntidskurser fra USA.",
+    "description": "Finnhub setup steps",
+    "_machine_translated": true,
+    "_source_hash": "a7736e058dc5a82e"
+  },
+  "setup.switch": {
+    "message": "Bruk Test og bruk for å bytte leverandør. Lagre bruker innstillingene for den aktive leverandøren.",
+    "description": "Provider selection requires explicit Test and use; generic Save must explain this",
+    "_machine_translated": true,
+    "_source_hash": "1a8c271c436d2d7b"
+  },
+  "setup.removed_fallback": {
+    "message": "Finnhub-nøkkelen er fjernet. Stocklake som gjest er nå aktiv. Lagrede kurser er fortsatt tilgjengelige.",
+    "description": "Explicit fallback after removing the active Finnhub key",
+    "_machine_translated": true,
+    "_source_hash": "49e5908c4fdee494"
+  },
+  "error.storage_until": {
+    "message": "Kurslagringen kunne ikke holde oversikt over grensen. Forespørsler er satt på pause til {time}; viser lagrede data når de er tilgjengelige.",
+    "description": "Storage lockout expiry; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "ebf9f622c5b939d6"
   }
 }

@@ -12,10 +12,10 @@
     "_source_hash": "d6d4700604b64b88"
   },
   "manifest.description": {
-    "message": "Online · Keine Schlüssel nötig: Stocklake-Kurse mit ca. 15 Min. Verzögerung, 25 pro Tag kostenlos; mit einem kostenlosen Schlüssel sind es 200. Finnhub ist optional für Live-Kurse aus den USA.",
+    "message": "Online · Stocklake-Kurse ~15 Min. verzögert: etwa 25 Symbolabfragen pro Tag ohne Schlüssel oder 200 mit kostenlosem Schlüssel. Finnhub ist optional für US-Echtzeitkurse.",
     "description": "Store listing; Online and Data delayed communicate network dependency and freshness",
     "_machine_translated": true,
-    "_source_hash": "44f1eb50266b55a3"
+    "_source_hash": "0a0e960d0b709ac1"
   },
   "result.loading": {
     "message": "Aktien werden gesucht…",
@@ -72,10 +72,10 @@
     "_source_hash": "693535460d4db418"
   },
   "error.setup": {
-    "message": "Öffnen Sie die Einstellungen von Aktien, holen Sie sich einen kostenlosen Finnhub-Schlüssel und wählen Sie dann „Testen und speichern“.",
+    "message": "Öffnen Sie die Aktien-Einstellungen, holen Sie sich einen kostenlosen Finnhub-Schlüssel und wählen Sie dann „Testen und verwenden“.",
     "description": "No stored key",
     "_machine_translated": true,
-    "_source_hash": "8adbf75fdf5bc595"
+    "_source_hash": "2be9c6223cc5fff8"
   },
   "error.auth": {
     "message": "Der Anbieter hat den Schlüssel abgelehnt. Öffnen Sie die Stocks-Einstellungen, um einen neuen Schlüssel zu testen.",
@@ -150,10 +150,10 @@
     "_source_hash": "f4f4d83dc6129a6c"
   },
   "settings.description": {
-    "message": "Stocklake-Kurse funktionieren ohne Schlüssel: ca. 15 Min. verzögert, 25 Abrufe pro Tag oder 200 mit einem kostenlosen Schlüssel. Finnhub bietet mit einem kostenlosen Schlüssel Live-Kurse aus den USA.",
+    "message": "Stocklake-Kurse funktionieren ohne Schlüssel: ~15 Min. verzögert, etwa 25 Symbolabfragen pro Tag oder 200 mit kostenlosem Schlüssel. Finnhub bietet mit einem kostenlosen Schlüssel US-Echtzeitkurse.",
     "description": "Settings summary",
     "_machine_translated": true,
-    "_source_hash": "deea29d63a6f57a4"
+    "_source_hash": "0f8ec107dbd56b33"
   },
   "settings.connection": {
     "message": "Kursanbieter und Einrichtung",
@@ -172,12 +172,6 @@
     "description": "Material provider use restrictions",
     "_machine_translated": true,
     "_source_hash": "7fbb1c4e684b429f"
-  },
-  "setup.steps": {
-    "message": "Stocklake funktioniert sofort ohne Schlüssel. Wählen Sie einen Anbieter, fügen Sie optional dessen Schlüssel ein und wählen Sie dann „Testen und verwenden“, um Ihre Auswahl zu speichern.",
-    "description": "Guided setup steps",
-    "_machine_translated": true,
-    "_source_hash": "d73223e639ab4ff7"
   },
   "setup.saved": {
     "message": "Auf diesem Gerät ist ein Schlüssel gespeichert. Lassen Sie das Feld leer, um ihn zu testen, oder fügen Sie einen neuen ein. Gespeicherte Schlüssel werden hier nie angezeigt.",
@@ -198,10 +192,10 @@
     "_source_hash": "3fb2a7de1e62b384"
   },
   "setup.key_hint": {
-    "message": "„Schlüssel testen und speichern“ legt den Schlüssel in privaten Erweiterungsdaten ab, wie Spotify-Anmeldedaten. Die Eingabe hier speichert ihn nicht mit den regulären Einstellungen. Das Textfeld dieses Hosts ist während der Eingabe sichtbar.",
+    "message": "„Testen und verwenden“ speichert den Schlüssel in privaten Erweiterungsdaten. Durch die Eingabe hier wird er nicht mit den regulären Einstellungen gespeichert. Gespeicherte Schlüssel werden nie angezeigt.",
     "description": "Storage and host input behavior",
     "_machine_translated": true,
-    "_source_hash": "4c3122d9b4d5daad"
+    "_source_hash": "84263c95dae6f748"
   },
   "setup.test": {
     "message": "Anbieter testen und verwenden",
@@ -222,10 +216,10 @@
     "_source_hash": "59cb7317745316bb"
   },
   "setup.success": {
-    "message": "Kurstest erfolgreich; Anbieter ausgewählt und ggf. angegebener Schlüssel gespeichert.",
+    "message": "Anbieter ausgewählt und angegebener Schlüssel gespeichert. Verbindungen mit Schlüssel haben einen Kurstest bestanden.",
     "description": "Successful guided setup; key is saved independently of watchlist settings",
     "_machine_translated": true,
-    "_source_hash": "c4ae3a50e8f0c3e0"
+    "_source_hash": "118c046747156cd2"
   },
   "settings.watchlist_section": {
     "message": "Watchlist und Aktualisierung",
@@ -270,22 +264,22 @@
     "_source_hash": "45f891673cb1e039"
   },
   "tool.quote": {
-    "message": "Ruft Aktienkurse von Ihrem ausgewählten Anbieter für Ihren eigenen Gebrauch ab. Stocklake ist ca. 15 Min. verzögert und benötigt keinen Schlüssel; Finnhub bietet mit einem Schlüssel Live-Kurse aus den USA. Gibt Quelle, Zeitstempel, Aktualität und Fehler pro Symbol zurück. Verbreiten Sie die Daten nicht weiter.",
+    "message": "Ruft Aktienkurse für den eigenen Gebrauch ab. Stocklake ist ~15 Min. verzögert; Gäste teilen sich etwa 25 Symbolabfragen pro Tag und IP. Jedes nicht zwischengespeicherte Symbol zählt, auch in einem Batch. Fassen Sie angefragte Symbole in einem Batch zusammen und vermeiden Sie spekulative oder wiederholte Abfragen. Ein kostenloser Schlüssel erlaubt 200 pro Tag. Finnhub bietet mit Schlüssel US-Echtzeitkurse. Gibt source, asOf für Stocklake-Aktualisierungen, tradeTime für Finnhub, Aktualität und Fehler pro Symbol zurück. Daten nicht weitergeben.",
     "description": "Agent tool description",
     "_machine_translated": true,
-    "_source_hash": "890f052fdf9e3bbd"
+    "_source_hash": "99f5d285678b43e5"
   },
   "tool.symbols": {
-    "message": "Bis zu {max} Symbole, zum Beispiel [\"AAPL\", \"MSFT\", \"SAP.DE\"]. Finnhub akzeptiert nur US-Tickersymbole.",
+    "message": "Bis zu {max} angefragte Symbole in einem Batch bündeln, z. B. [\"AAPL\", \"MSFT\", \"SAP.DE\"]. Jedes nicht zwischengespeicherte Stocklake-Symbol zählt zum Gastlimit von etwa 25 pro Tag. Finnhub akzeptiert nur US-Ticker.",
     "description": "Quote tool parameter description; preserve {max}",
     "_machine_translated": true,
-    "_source_hash": "acbe6e78c6fddb5a"
+    "_source_hash": "0b1952ac06ea6daf"
   },
   "tool.history": {
-    "message": "Ruft echten täglichen Stocklake-Verlauf für 1d, 1w oder 1m aus einem Fenster von 30 Handelstagen ab, das einen Tag zwischengespeichert wird. Kostet bei fehlendem Cache-Eintrag einen Abruf. Finnhub liefert unvollständige, lokal beobachtete Kurse ohne Verlaufsanfrage.",
+    "message": "Ruft bei Bedarf den Stocklake-Tagesverlauf für 1d, 1w oder 1m (Standard 1m) ab, basierend auf etwa 30 Handelstagen. Wird einen Tag lang zwischengespeichert. Eine nicht zwischengespeicherte Verlaufsanfrage verbraucht eine der etwa 25 täglichen Symbolabfragen des Gastkontingents, das pro IP geteilt wird. Vermeiden Sie automatische Verlaufsabfragen; fragen Sie nur bei Bedarf an.",
     "description": "Agent tool scope must not imply full historical coverage",
     "_machine_translated": true,
-    "_source_hash": "d5343316b6826efa"
+    "_source_hash": "ef221a7846ff22d5"
   },
   "tool.symbol": {
     "message": "Ein Aktiensymbol, einschließlich internationaler Suffixe für Stocklake.",
@@ -294,10 +288,10 @@
     "_source_hash": "bf96519c516306b2"
   },
   "tool.range": {
-    "message": "1d, 1w oder 1m; Standard ist 1d.",
+    "message": "1d, 1w oder 1m; Standard 1m.",
     "description": "History range parameter description",
     "_machine_translated": true,
-    "_source_hash": "992fdef4270c7170"
+    "_source_hash": "0a2d7005b36be66b"
   },
   "tool.disabled": {
     "message": "Stocks ist deaktiviert.",
@@ -336,8 +330,10 @@
     "_source_hash": "c3ae84bf8010f20d"
   },
   "settings.quotes_deleted": {
-    "message": "{deleted, plural, one {# gespeicherter Kursdatensatz und seine lokalen Stichproben wurden gelöscht. Andere Fenster oder laufende Aktualisierungen können weitere speichern.} other {# gespeicherte Kursdatensätze und ihre lokalen Stichproben wurden gelöscht. Andere Fenster oder laufende Aktualisierungen können weitere speichern.}}{failed, plural, =0 {} one { # Datensatz konnte nicht gelöscht werden. Versuchen Sie es erneut.} other { # Datensätze konnten nicht gelöscht werden. Versuchen Sie es erneut.}}",
-    "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records"
+    "message": "{deleted, plural, one {# gespeicherter Kurs- oder Verlaufsdatensatz gelöscht. Andere Fenster oder laufende Aktualisierungen können weitere speichern.} other {# gespeicherte Kurs- oder Verlaufsdatensätze gelöscht. Andere Fenster oder laufende Aktualisierungen können weitere speichern.}}{failed, plural, =0 {} one { # gespeicherter Datensatz konnte nicht gelöscht werden. Versuchen Sie es erneut.} other { # gespeicherte Datensätze konnten nicht gelöscht werden. Versuchen Sie es erneut.}}",
+    "description": "Deleted and failed record counts with ICU plurals; preserve {deleted} and {failed}; failures invite retry; concurrent windows may save records",
+    "_machine_translated": true,
+    "_source_hash": "45eb5a0d8cf6b318"
   },
   "widget.connection": {
     "message": "Kurse erfordern Ihre Aufmerksamkeit. Geben Sie stock ein und drücken Sie die Eingabetaste, um die Stocks-Einstellungen zu öffnen.",
@@ -358,10 +354,10 @@
     "_source_hash": "b9f483c14cb7b4dc"
   },
   "setup.stocklake": {
-    "message": "Stocklake funktioniert ohne Schlüssel: ca. 15 Min. verzögert, 25 Abrufe pro Tag; mit einem optionalen kostenlosen Schlüssel sind es 200.",
+    "message": "Stocklake funktioniert ohne Schlüssel: ~15 Min. verzögert, etwa 25 Symbolabfragen pro Tag, geteilt pro IP; ein kostenloser Schlüssel erlaubt 200 pro Tag. Jedes nicht zwischengespeicherte Symbol zählt.",
     "description": "Keyless default provider description",
     "_machine_translated": true,
-    "_source_hash": "930e88dd695cf87e"
+    "_source_hash": "4fb2147ce025156d"
   },
   "setup.stocklake_key": {
     "message": "Kostenlosen Stocklake-Schlüssel erhalten",
@@ -370,16 +366,16 @@
     "_source_hash": "b21d6e57b9696558"
   },
   "quote.stocklake": {
-    "message": "Ca. 15 Min. verzögert · Stocklake",
-    "description": "Visible delayed provider attribution; paired with a link to stocklake.dev",
+    "message": "~15 Min. verzögert · Stocklake",
+    "description": "Visible delayed provider attribution in plain text",
     "_machine_translated": true,
-    "_source_hash": "081a46f162590a46"
+    "_source_hash": "bede5ed980930c08"
   },
   "quote.history": {
-    "message": "Tägliche Schlusskurse von Stocklake für etwa 30 Handelstage. Der Verlauf wird einen Tag lang zwischengespeichert; ist er nicht im Cache, wird ein Abruf verbraucht. Finnhub-Sparklines verwenden lokale Messwerte.",
+    "message": "Stocklake-Tagesschlusskurse für etwa 30 Handelstage. Wird einen Tag lang zwischengespeichert; das Abrufen nicht zwischengespeicherter Verläufe verbraucht eine tägliche Abfrage. Gast-Sparklines verwenden nur gespeicherte Verläufe.",
     "description": "History accessible label and settings explanation; real daily data for Stocklake",
     "_machine_translated": true,
-    "_source_hash": "2efd3bfb80984cd7"
+    "_source_hash": "8e6435e7874868ff"
   },
   "error.daily_limit": {
     "message": "Tägliche kostenlose Kursabrufe aufgebraucht. Zurückgesetzt um {time}. Fügen Sie einen kostenlosen Stocklake-Schlüssel für 200 pro Tag hinzu.",
@@ -392,5 +388,47 @@
     "description": "Authenticated daily exhaustion; preserve {time}",
     "_machine_translated": true,
     "_source_hash": "7c2f3494ec238e7e"
+  },
+  "result.type_symbol": {
+    "message": "Geben Sie ein Symbol ein, z. B. stock aapl",
+    "description": "Bare guest stock command; no lookup is made",
+    "_machine_translated": true,
+    "_source_hash": "7d079e375ba5f9cb"
+  },
+  "quote.updated": {
+    "message": "Aktualisiert {time}",
+    "description": "Stocklake refresh time, not last trade time; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "3dec8682dcb844dc"
+  },
+  "setup.stocklake_steps": {
+    "message": "Verwenden Sie Stocklake ohne Schlüssel oder fügen Sie einen kostenlosen Schlüssel ein. Wählen Sie „Testen und verwenden“, um zu wechseln; die Gastauswahl verbraucht keine Abfrage.",
+    "description": "Stocklake setup steps",
+    "_machine_translated": true,
+    "_source_hash": "96be4a9668009051"
+  },
+  "setup.finnhub_steps": {
+    "message": "Holen Sie sich einen kostenlosen Finnhub-Schlüssel, fügen Sie ihn ein und wählen Sie dann „Testen und verwenden“ für US-Echtzeitkurse.",
+    "description": "Finnhub setup steps",
+    "_machine_translated": true,
+    "_source_hash": "a7736e058dc5a82e"
+  },
+  "setup.switch": {
+    "message": "Verwenden Sie „Testen und verwenden“, um den Anbieter zu wechseln. „Speichern“ übernimmt die Einstellungen für den aktiven Anbieter.",
+    "description": "Provider selection requires explicit Test and use; generic Save must explain this",
+    "_machine_translated": true,
+    "_source_hash": "1a8c271c436d2d7b"
+  },
+  "setup.removed_fallback": {
+    "message": "Finnhub-Schlüssel entfernt. Der Stocklake-Gastzugang ist jetzt aktiv. Gespeicherte Kurse bleiben verfügbar.",
+    "description": "Explicit fallback after removing the active Finnhub key",
+    "_machine_translated": true,
+    "_source_hash": "49e5908c4fdee494"
+  },
+  "error.storage_until": {
+    "message": "Der Kursspeicher konnte das Limit nicht erfassen. Anfragen sind bis {time} pausiert; gespeicherte Daten werden angezeigt, sofern verfügbar.",
+    "description": "Storage lockout expiry; preserve {time}",
+    "_machine_translated": true,
+    "_source_hash": "ebf9f622c5b939d6"
   }
 }

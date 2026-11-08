@@ -1,7 +1,7 @@
 import { getClient } from './client.js';
 import { DEFAULTS } from './defaults.js';
 import { MAX_SYMBOLS } from './symbols.js';
-import { errorText } from './format.js';
+import { errorText, precision } from './format.js';
 
 export default class StocksToolProvider {
   initialize(context) {
@@ -37,7 +37,11 @@ export default class StocksToolProvider {
         const quotes = await this.client.getQuotes(params.symbols, this.config);
         const result = quotes.map(({ timestamp, fetchedAt, retryAt, samples, ...quote }) => ({
           ...quote,
-          ...(quote.error ? { message: errorText(quote.error, this.t, { retryAt }) } : { tradeTime: iso(timestamp * 1000), fetchedAt: iso(fetchedAt) }),
+          ...(quote.error ? { message: errorText(quote.error, this.t, { retryAt }) } : {
+            ...(quote.source === 'Stocklake' ? { asOf: iso(timestamp * 1000) } : { tradeTime: iso(timestamp * 1000) }),
+            change: Number.isFinite(quote.change) ? Number(quote.change.toFixed(precision(quote.price))) : null,
+            fetchedAt: iso(fetchedAt),
+          }),
           ...(!quote.error && quote.reason ? { message: errorText(quote.reason, this.t, { retryAt }) } : {}),
           ...(retryAt ? { retryAt: iso(retryAt) } : {}),
         }));
@@ -53,17 +57,13 @@ export default class StocksToolProvider {
       }
       if (name === 'get_history') {
         const history = await this.client.getHistory(params.symbol, params.range, undefined, this.config);
-        try {
-          if (history.source === 'Finnhub' && !(await this.client.key())) history.note += ` ${errorText('setup', this.t)}`;
-        } catch (error) {
-          // Local samples remain useful when credential storage is unavailable.
-          history.note += ` ${errorText(error.code, this.t)}`;
-        }
         return { result: { ...history, fetchedAt: iso(history.fetchedAt),
+          ...(history.retryAt ? { retryAt: iso(history.retryAt) } : {}),
           samples: history.samples.map((sample) => ({ ...sample, timestamp: iso(sample.timestamp * 1000) })) } };
       }
       return { error: this.t('tool.unknown') };
-    } catch (error) { return { error: errorText(error.code, this.t, { retryAt: error.retryAt }) }; }
+    } catch (error) { return { error: errorText(error.code, this.t, { retryAt: error.retryAt }),
+      ...(error.retryAt ? { retryAt: iso(error.retryAt) } : {}) }; }
   }
 }
 
