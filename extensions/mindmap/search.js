@@ -247,6 +247,7 @@ export default class MindMapSearchProvider {
     const q = oneLine(question);
     if (!q) return [this.row('mm:askhint', '💬', this.t('row.ask_hint'), this.t('row.ask_hint_desc'), 90, { a: 'noop' })];
     const { records, relaxed } = this.mind.askRecords(q);
+    // i18n-keys: row.ask_found, row.ask_found_relaxed
     const found = relaxed ? 'row.ask_found_relaxed' : 'row.ask_found';
     const desc = records.length ? this.t(found, { n: records.length }) : this.t('row.ask_none');
     return [this.row('mm:askgo', '💬', this.t('row.ask_go', { question: clip(q, 80) }), desc, 95, { a: 'ask', question: q })];
