@@ -40,6 +40,10 @@ const BACKFILL_MAX = 200;
 // Idle work after a load (P2): link titles that never arrived, and items an
 // older organizer saw. It waits so it never competes with the first keystrokes.
 const IDLE_DELAY_MS = 20_000;
+// Every Kage window loads at startup; spreading their idle work out lets the
+// later ones find the first one's results (after a sync) instead of
+// fetching the same links again.
+const IDLE_JITTER_MS = 10_000;
 const ENRICH_RETRY_MAX = 20;
 // A failed fetch (offline, a slow site) is retried on later loads, at most
 // once an hour, for a week after the capture.
@@ -139,7 +143,7 @@ export class Mind {
     this.log = context.log || NOOP_LOG;
     this.now = now || (() => Date.now());
     this.extractorVersion = Number.isInteger(extractorVersion) && extractorVersion > 0 ? extractorVersion : extractor.EXTRACTOR_VERSION;
-    this.idleDelayMs = Number.isFinite(idleDelayMs) && idleDelayMs >= 0 ? idleDelayMs : IDLE_DELAY_MS;
+    this.idleDelayMs = Number.isFinite(idleDelayMs) && idleDelayMs >= 0 ? idleDelayMs : IDLE_DELAY_MS + Math.random() * IDLE_JITTER_MS;
     this.store = new storage.Store({ invoke: context.invoke, atomic: storage.hasAtomicWrites(context.hostFeatures) });
     this.state = model.emptyState(this.now(), { extractorVersion: this.extractorVersion });
     this.keyRevs = new Map();

@@ -33,6 +33,9 @@ Dana and MTCS. The preview before you press Enter says so:
 | `mm recent` · `mm undo` · `mm help` | Latest captures · undo the last change · syntax reference. |
 | `mm map [name]` | A map centred on a person, team or note; click a node to move there. |
 | `mm? <question>` | Ask your agent; it answers from your notes and cites them. |
+| `mm organize` | Ask your agent to tidy up notes it hasn't seen yet (see below). |
+| `mm archive <words>` · `mm archived` | Put an item away · see archived items (Enter restores one). |
+| `mm merge @a into @b` · `mm rename @a to New name` · `mm forget @a` | Fix the names Mind Map found. |
 
 `mm` alone shows your open actions, suggestions to review and recent
 captures. The trigger word can be changed in settings (`mm` → `brain` also
@@ -141,6 +144,28 @@ or an agent:
 Every change can be undone (`mm undo`, or **Undo** on the card), and nothing
 is ever filed into folders.
 
+### Fixing names, putting things away
+
+- `mm merge @danak into @dana` makes two names one: every note, action and
+  owner follows, and the old name keeps working as an alias.
+- `mm rename @zebra to Zebra Crew` renames a person, team or topic; the old
+  name still finds it.
+- `mm forget @walrus` removes a name everywhere and stops Mind Map from
+  suggesting it again, even when you type it.
+- `mm archive <words>` lists what matches; Enter archives one. Archived items
+  leave your lists, searches, the map and your agent's answers, but stay in
+  exports. `mm archived` lists them, and Enter restores one. Archiving a note
+  leaves its open actions where they are.
+
+Each of these shows a card with **Undo**, and `mm undo` takes it back.
+
+When a new version of Mind Map organizes things better, notes you saved
+earlier are organized again in the background, a little while after Kage
+starts. Only what Mind Map worked out itself changes: names you or your agent
+added, and anything you removed, stay as they are. Link titles that couldn't
+be fetched (you were offline, or Kage closed mid-save) are fetched again then
+too.
+
 ## Documents
 
 Mind Map stores documents as **references** — a path, a link or a window
@@ -149,11 +174,14 @@ and ask your agent to "add this to my mind map": it saves a short summary, the
 key terms and the actions (each action must quote the document word for word,
 and the agent's actions arrive as suggestions).
 
-You can also ask your agent to organize notes you've already saved. It can
-add a short summary, names (reusing the ones you already have), key terms,
-actions that quote the note word for word, or fix a note's kind. It only adds:
-nothing you wrote or a page provided is overwritten, private items are
-refused, and one `mm undo` takes the whole change back.
+You can also ask your agent to organize notes you've already saved: type
+`mm organize`. It sends your agent a visible message with up to 15 notes it
+hasn't organized yet (never private ones) and the names you already use, and
+asks for one Mind Map change. The agent can add a short summary, names
+(reusing yours), key terms, actions that quote the note word for word, or fix
+a note's kind. It only adds: nothing you wrote or a page provided is
+overwritten, private items are refused, and one `mm undo` takes the whole
+change back. Run it again for the next batch.
 
 On macOS, window titles need the Screen Recording permission. Without it, only
 the app's name is remembered and "Save the window you came from" isn't offered.
@@ -187,6 +215,11 @@ export first if you want to keep it.
 Settings shows what's stored, and offers **Export JSON** (everything,
 private items included), **Export Markdown**, **Import JSON** and **Delete
 everything**. Exports include private items; keep them somewhere safe.
+
+**Import JSON** reads an Export JSON file, for example from another computer.
+Items already here are kept unless the file has a newer copy, people, teams
+and topics with the same name become one, and one `mm undo` takes the whole
+import back.
 
 Export Markdown is a readable copy: a section for each person, team, project
 and topic, then "Unsorted". Each item is a bullet with its date and kind,
