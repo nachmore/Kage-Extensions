@@ -217,6 +217,9 @@ describe('link enrichment', () => {
     expect(ctx.formatter.requestReformat).toHaveBeenCalled();
     // The enrich ops are silent: mm undo still targets the capture.
     expect(mind.undoTarget().op.opId).toBe(out.opId);
+    expect(mind.undoTarget().verdict.ok).toBe(true);
+    // The fetch and the re-organizing share one journal slot (P2).
+    expect(mind.state.ops.map((o) => [o.kind, !!o.silent])).toEqual([['capture', false], ['enrich', true]]);
     expect(mind.find(mind.parse('intro', { trailingSpace: true })).hits.map((h) => h.item.id)).toEqual([out.itemId]);
   });
 

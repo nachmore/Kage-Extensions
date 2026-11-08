@@ -1459,7 +1459,9 @@ export class Mind {
           changes.push(re);
         }
       }
-      return { changes };
+      // One journal slot per link, not two (the 200-op cap is the undo history).
+      const done = changes.filter((change) => change.op);
+      return { changes: done.length > 1 ? [this._silentBatch(done, state, { code: 'enrich', params: { itemId } })] : done };
     });
   }
 
