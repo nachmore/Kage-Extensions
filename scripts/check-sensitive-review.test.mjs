@@ -247,7 +247,9 @@ export function persist(accessToken) { return ctx.invoke('save_extension_data', 
         let count = 0;
         for (const extension of readdirSync('extensions', { withFileTypes: true }).filter((entry) => entry.isDirectory())) {
             const dir = path.join('extensions', extension.name);
-            const files = readdirSync(dir).filter((file) => file.endsWith('.js') && !file.endsWith('.test.js'));
+            // Recursive: mindmap keeps its leaf modules in lib/ (paths are posix-relative to the extension root).
+            const files = readdirSync(dir, { recursive: true }).map((file) => String(file).split(path.sep).join('/'))
+                .filter((file) => file.endsWith('.js') && !file.endsWith('.test.js') && !file.startsWith('_locales/'));
             for (const file of files) {
                 const ast = parse(readFileSync(path.join(dir, file), 'utf8'), { ecmaVersion: 'latest', sourceType: 'module' });
                 for (const node of ast.body) {
@@ -257,6 +259,6 @@ export function persist(accessToken) { return ctx.invoke('save_extension_data', 
                 }
             }
         }
-        expect(count).toBe(75);
+        expect(count).toBe(101);
     });
 });

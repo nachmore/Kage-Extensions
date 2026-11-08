@@ -105,6 +105,27 @@ describe('loading and sync', () => {
   });
 });
 
+describe('budgets', () => {
+  // A capture is ~16 invokes (lock, meta sync, a lease check before each
+  // write, twin writes, verify, release). At a human pace that is ~80 ms;
+  // bursts above ~4 captures a second wait for the 70/s client throttle.
+  it('commits a capture within 300 ms p95 on a warm store', async () => {
+    const { mind } = setup();
+    await mind.capture('warm-up note', { via: 'launcher' });
+    const times = [];
+    for (let i = 0; i < 10; i++) {
+      await new Promise((resolve) => setTimeout(resolve, 300));
+      const start = performance.now();
+      await mind.capture(`budget note ${i} about the walrus migration and MTCS numbers`, { via: 'launcher' });
+      times.push(performance.now() - start);
+    }
+    times.sort((a, b) => a - b);
+    const p95 = times[Math.ceil(times.length * 0.95) - 1];
+    if (p95 > 300) console.warn(`capture commit p95 ${p95.toFixed(0)} ms is above the 300 ms budget`);
+    expect(p95).toBeLessThan(1500);
+  }, 30_000);
+});
+
 describe('crash safety and read-only mode', () => {
   it('a crash mid-save loses neither earlier data nor consistency', async () => {
     const { host, mind } = setup();

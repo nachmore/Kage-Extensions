@@ -6,12 +6,13 @@
 // (match → execute) on the fixture clock, with link metadata mocked and
 // awaited before the next capture (test-helpers/mindmap/corpus.mjs).
 // Fixture clock: Fri 2026-11-06 10:00 local, week start Monday, language en.
+import { readFileSync, readdirSync } from 'node:fs';
 import { JSDOM } from 'jsdom';
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
-import {
-  F6_DUMP, FIXTURE_NOW, buildCorpus, captureVia, local, makeContext, makeHarness, rowById,
-} from '../../test-helpers/mindmap/corpus.mjs';
+import { F6_DUMP, FIXTURE_NOW, buildCorpus, captureVia, local, makeContext, makeHarness, makeI18n, rowById } from '../../test-helpers/mindmap/corpus.mjs';
+import MindMapFormatter from './formatter.js';
 import { Mind, getMind } from './mind.js';
+import MindMapSearchProvider from './search.js';
 
 // The formatter parses with the global DOMParser (sandbox and jsdom have one).
 globalThis.DOMParser ??= new JSDOM('').window.DOMParser;
@@ -19,7 +20,6 @@ globalThis.DOMParser ??= new JSDOM('').window.DOMParser;
 const DATA_KEY = /^(?:nx-)?mm-(?!lock$)/;
 const hitRows = (rows) => rows.filter((r) => r.id.startsWith('mm:i:'));
 const itemOf = (row) => row.id.slice('mm:i:'.length);
-const opOf = (out) => /\[mm-card:op:(o[0-9a-z]{14})\]/.exec(out?.value || '')?.[1];
 
 // The host renders display Markdown into paragraphs before formatters run.
 function toHtml(markdown) {
@@ -508,5 +508,48 @@ describe('F-CAP and home rows on the corpus', () => {
     expect(hitRows(rows)).toHaveLength(5);
     expect(ids).toContain('mm:ask');
     expect(ids).toContain('mm:help');
+  });
+});
+
+describe('every shipped locale', () => {
+  const dir = new URL('./_locales/', import.meta.url);
+  const langs = readdirSync(dir).sort();
+  // A leftover {placeholder} or an untranslated key name means a broken catalog entry.
+  const BROKEN = /[{}]|\b(?:row|card|chip|relax|due|range|kind|etype|map|cite|help|op|err|keyword|settings|tool|prompt)\.[a-z_]+\b/;
+
+  it('ships English plus 31 translations with the same keys', () => {
+    expect(langs).toHaveLength(32);
+    const en = Object.keys(JSON.parse(readFileSync(new URL('en/messages.json', dir), 'utf8'))).sort();
+    for (const lang of langs) {
+      const catalog = JSON.parse(readFileSync(new URL(`${lang}/messages.json`, dir), 'utf8'));
+      expect(Object.keys(catalog).sort(), lang).toEqual(en);
+      expect(catalog._meta.language, lang).toBe(lang);
+    }
+  });
+
+  it.each(langs)('%s renders the owner’s queries, home rows and an op card', async (lang) => {
+    const catalog = JSON.parse(readFileSync(new URL(`${lang}/messages.json`, dir), 'utf8'));
+    const i18n = makeI18n(catalog, { language: lang, rtl: !!catalog._meta.rtl });
+    const context = { ...h.context, i18n };
+    const search = new MindMapSearchProvider();
+    search.initialize(context);
+    const formatter = new MindMapFormatter();
+    formatter.initialize(context);
+    const queries = ['mm remind me which doc spoke about mtcs last week', 'mm what were my actions for the bingo team',
+      'mm which doc spoke about mtcs yesterday', 'mm what were my actions for the walrus team', 'mm', 'mm @bingo', 'mm undo', `mm+ ${F6_DUMP}`];
+    for (const q of queries) {
+      const rows = search.match(q);
+      expect(rows.length, `${lang} ${q}`).toBeGreaterThan(0);
+      for (const row of rows) {
+        expect(row.label, `${lang} ${q}`).toBeTruthy();
+        expect(`${row.label} ${row.description}`, `${lang} ${q} ${row.id}`).not.toMatch(BROKEN);
+      }
+    }
+    // The owner's queries find the same items in every language (only the words around them change).
+    expect(hitRows(search.match(queries[0])).map(itemOf).sort()).toEqual([F.F1, F.F2].sort());
+    const op = h.mind.state.ops.find((o) => o.created?.items?.includes(F.F6)).opId;
+    const html = await formatter.format(`<p>[mm-card:op:${op}]</p><p>See [mm:${F.F1}].</p>`, { streaming: false, role: 'assistant' });
+    expect(textOf(html), lang).not.toMatch(BROKEN);
+    expect(textOf(html)).toContain('[1] MTCS design review');
   });
 });
