@@ -131,8 +131,9 @@ describe('search', () => {
         expect(ids()).toEqual(['timer']);
         expect(doc.getElementById('summary').textContent).toBe('1 extension and 0 themes for “tim”.');
         expect(event).toEqual({ query: 'tim', count: 1 });
-        await sleep(450);
-        expect(win.location.search).toBe('?q=tim');
+        // The address follows the 350 ms debounce; wait for it rather than a
+        // fixed sleep, which a slow CI runner can outlast.
+        await until(() => win.location.search === '?q=tim', 'the debounced address', 3000);
     });
 
     it('clears on Escape', async () => {
@@ -445,8 +446,7 @@ describe('history', () => {
         await until(() => win.location.hash === '#build', 'the #build entry');
         doc.querySelector('[data-cat="productivity"]').click(); // back to All
         type(win, input, 'weather');
-        await sleep(400);
-        expect(win.location.search).toBe('?q=weather');
+        await until(() => win.location.search === '?q=weather', 'the debounced address', 3000);
 
         win.history.back();
         await until(() => win.location.hash === '', 'Back');
