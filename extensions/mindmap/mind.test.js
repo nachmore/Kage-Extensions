@@ -5,7 +5,7 @@
 import { JSDOM } from 'jsdom';
 import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import { createMemoryHost } from '../../test-helpers/mindmap/memory-host.mjs';
-import { FIXTURE_NOW, local, makeContext } from '../../test-helpers/mindmap/corpus.mjs';
+import { F2_WINDOW, F6_DUMP, FIXTURE_NOW, local, makeContext } from '../../test-helpers/mindmap/corpus.mjs';
 import { Mind, getMind } from './mind.js';
 import * as idlib from './lib/ids.js';
 import { createFormatterState, formatHtml } from './view.js';
@@ -612,5 +612,165 @@ describe('reads never interleave with this window’s own writes', () => {
     await fresh.ready();
     expect(fresh.state.items.size).toBe(3);
     expect(fresh.item(saved.itemId)).not.toBeNull();
+  });
+});
+
+describe('P2 enrich retry on load', () => {
+  it('a later load fetches titles that never arrived and retries failed fetches an hour on, for a week', async () => {
+    let mode = 'ok';
+    const fetched = [];
+    const host = createMemoryHost({
+      handlers: {
+        fetch_link_metadata: ({ url }) => {
+          fetched.push(url);
+          if (mode === 'hang') return new Promise(() => {});
+          if (mode === 'fail') return Promise.reject(new Error('offline'));
+          return Promise.resolve(META[url] ?? { title: 'A page title' });
+        },
+      },
+    });
+    const a = new Mind(makeContext(host));
+    const save = async (at, how, link) => {
+      vi.setSystemTime(at);
+      mode = how;
+      const out = await a.capture(link, { via: 'launcher' });
+      if (how !== 'hang') await a.whenIdle();
+      return out;
+    };
+    const old = await save(local(2026, 10, 20, 9, 0), 'fail', 'https://example.com/old-page');
+    const offline = await save(FIXTURE_NOW - 3 * 3_600_000, 'fail', 'https://example.com/blog/mtcs-intro');
+    const recent = await save(FIXTURE_NOW - 30 * 60_000, 'fail', 'https://example.com/recent-page');
+    // The window closes mid-fetch: the item stays pending.
+    const closed = await save(FIXTURE_NOW - 60_000, 'hang', 'https://example.org/closed-window');
+    expect([old, offline, recent].map((o) => a.item(o.itemId).enrich.state)).toEqual(['failed', 'failed', 'failed']);
+    expect(a.item(closed.itemId).enrich.state).toBe('pending');
+
+    vi.setSystemTime(FIXTURE_NOW);
+    mode = 'ok';
+    fetched.length = 0;
+    const ctx = makeContext(host, { invoke: host.connect().invoke });
+    const b = new Mind(ctx, { idleDelayMs: 0 });
+    await b.ready();
+    await vi.waitFor(() => expect(b.item(closed.itemId).enrich.state).toBe('done'), { timeout: 5000 });
+    await b.whenIdle();
+    // Newest first; a failure from 30 minutes ago waits, one from 17 days ago is given up.
+    expect(fetched).toEqual(['https://example.org/closed-window', 'https://example.com/blog/mtcs-intro']);
+    expect(b.item(closed.itemId)).toMatchObject({ title: 'A page title', titleSource: 'meta' });
+    expect(b.item(offline.itemId)).toMatchObject({ title: 'An intro to MTCS', titleSource: 'meta', enrich: { state: 'done' } });
+    // …and re-organized from the title, silently: Undo still means the last capture.
+    expect(b.state.candidates.get('mtcs')?.sample).toContain(offline.itemId);
+    expect(b.undoTarget().op.opId).toBe(closed.opId);
+    expect(b.item(old.itemId).enrich.state).toBe('failed');
+    expect(b.item(recent.itemId).enrich.state).toBe('failed');
+    expect(ctx.formatter.requestReformat).toHaveBeenCalled();
+    // Nothing left to do: another pass fetches nothing.
+    expect(await b.retryEnrichment()).toBe(0);
+    // The first window sees the titles after a sync.
+    await a.syncIfStale(0);
+    expect(a.item(offline.itemId).title).toBe('An intro to MTCS');
+  });
+
+  it('nothing is fetched with fetch_link_titles off, or when nothing is missing', async () => {
+    const host = createMemoryHost({ handlers: { fetch_link_metadata: () => Promise.reject(new Error('offline')) } });
+    const a = new Mind(makeContext(host));
+    vi.setSystemTime(FIXTURE_NOW - 3 * 3_600_000);
+    await a.capture('https://example.com/blog/mtcs-intro', { via: 'launcher' });
+    await a.whenIdle();
+    vi.setSystemTime(FIXTURE_NOW);
+    const calls = () => host.calls.filter((c) => c.command === 'fetch_link_metadata').length;
+    const before = calls();
+    const off = new Mind(makeContext(host, { invoke: host.connect().invoke, config: { fetch_link_titles: false } }), { idleDelayMs: 0 });
+    await off.ready();
+    expect(await off.runIdleWork()).toEqual({ enriched: 0, rederived: 0 });
+    expect(calls()).toBe(before);
+    const quiet = new Mind(makeContext(createMemoryHost()), { idleDelayMs: 0 });
+    await quiet.ready();
+    expect(quiet._idleTimer ?? null).toBeNull();
+  });
+});
+
+describe('P2 re-derivation after an organizer upgrade', () => {
+  it('re-organizes what an older organizer saw, keeps user and agent facts and inherited names, and keeps Undo', async () => {
+    const { host, mind: a } = setup();
+    vi.setSystemTime(local(2026, 10, 30, 16, 0));
+    const dump = await a.capture(F6_DUMP, { via: 'launcher' });
+    const link = await a.capture('https://example.com/blog/mtcs-intro', { via: 'launcher' });
+    await a.whenIdle();
+    const doc = await a.captureWindow(F2_WINDOW);
+    vi.setSystemTime(FIXTURE_NOW);
+    const note = await a.capture('Lunch with Dana, talked about MTCS hiring', { via: 'launcher' });
+    await a.annotate([{ id: note.itemId, entities: [{ name: 'Hiring', type: 'topic' }] }]);
+    const bingo = a.resolveEntity('bingo', null).entityId;
+    const hiring = a.resolveEntity('hiring', null).entityId;
+    // An older organizer wrongly linked the note to Bingo (a rule mention).
+    const key = shard(FIXTURE_NOW);
+    for (const name of [key, `nx-${key}`]) {
+      const payload = JSON.parse(host.files.get(name));
+      const stored = payload.items.find((i) => i.id === note.itemId);
+      stored.entityIds.push(bingo);
+      stored.mentionOrigin[bingo] = 'rule';
+      host.files.set(name, JSON.stringify(payload));
+    }
+    const lastUserOp = a.undoTarget().op.opId;
+    const ops = a.state.ops.length;
+
+    const b = new Mind(makeContext(host, { invoke: host.connect().invoke }), { extractorVersion: 2, idleDelayMs: 0 });
+    await b.ready();
+    expect(b.item(note.itemId).entityIds).toContain(bingo);
+    await vi.waitFor(() => expect([...b.state.items.values()].every((i) => i.v === 2)).toBe(true), { timeout: 5000 });
+    await b.whenIdle();
+    const names = (id) => b.item(id).entityIds.map((e) => b.nameOf(e)).sort();
+    // The stale rule mention is gone; what the text says, and the agent's name, stay.
+    expect(names(note.itemId)).toEqual(['Dana', 'Hiring', 'MTCS']);
+    expect(b.item(note.itemId).mentionOrigin[hiring]).toBe('agent');
+    // A child keeps what it inherits ("book the offsite" is Bingo's).
+    const offsite = b.childrenOf(dump.itemId).find((c) => c.title === 'book the offsite');
+    expect(offsite.entityIds).toContain(bingo);
+    expect(b.actions(b.parse('actions @bingo', { trailingSpace: true })).open.map((i) => i.id)).toContain(offsite.id);
+    // Names that came from a page title or a window title survive too.
+    expect(names(link.itemId)).toContain('MTCS');
+    expect(names(doc.itemId)).toContain('MTCS');
+    // One compact silent op for the batch; Undo still means the user's last change.
+    expect(b.state.ops.length).toBe(ops + 1);
+    expect(b.state.ops.at(-1)).toMatchObject({ kind: 'enrich', silent: true, lossy: true, label: { code: 'reextract' } });
+    expect(b.undoTarget().op.opId).toBe(lastUserOp);
+    expect(b.undoTarget().verdict.ok).toBe(true);
+    expect(await b.rederive()).toBe(0);
+    // Another window on the new organizer finds nothing left to do.
+    const c = new Mind(makeContext(host, { invoke: host.connect().invoke }), { extractorVersion: 2 });
+    await c.ready();
+    expect(await c.rederive()).toBe(0);
+    expect((await b.undo()).ok).toBe(true);
+    expect(b.item(note.itemId).entityIds).not.toContain(hiring);
+  });
+});
+
+describe('P2 context edges (same window within 10 minutes)', () => {
+  it('relates items saved from the same window close together, and only those', async () => {
+    const { mind } = setup();
+    const win = { window: 'Quarterly planning - Google Docs', app: 'Google Chrome' };
+    vi.setSystemTime(FIXTURE_NOW);
+    const a = await mind.capture('walrus offsite venue ideas', { via: 'launcher', source: win });
+    vi.setSystemTime(FIXTURE_NOW + 9 * 60_000);
+    const b = await mind.capture('finance thoughts on the budget split', { via: 'launcher', source: win });
+    const elsewhere = await mind.capture('pick up the dry cleaning', { via: 'launcher', source: { window: 'Inbox - Mail', app: 'Mail' } });
+    vi.setSystemTime(FIXTURE_NOW + 25 * 60_000);
+    const later = await mind.capture('check the projector booking', { via: 'launcher', source: win });
+    expect(mind.contextOf(a.itemId)).toEqual([b.itemId]);
+    expect(mind.related(a.itemId).map((r) => r.id)).toEqual([b.itemId]);
+    expect(mind.related(b.itemId).map((r) => r.id)).toEqual([a.itemId]);
+    expect(b.related).toEqual([a.itemId]);
+    expect(mind.related(later.itemId)).toEqual([]);
+    expect(mind.related(elsewhere.itemId)).toEqual([]);
+    // The map of one shows the other.
+    const neigh = mind.neighborhood({ type: 'item', id: a.itemId }, {});
+    expect(Object.values(neigh.lanes).flatMap((lane) => lane.nodes.map((n) => n.ref))).toContain(b.itemId);
+    // The agent may see the relation, never the window title.
+    expect(JSON.stringify(mind.agentRecord(mind.item(b.itemId)))).not.toContain('Quarterly planning');
+    // Without a recorded window there is no edge.
+    const off = setup({ config: { record_source_window: false } });
+    const x = await off.mind.capture('walrus offsite venue ideas', { via: 'launcher', source: win });
+    const y = await off.mind.capture('finance thoughts on the budget split', { via: 'launcher', source: win });
+    expect(off.mind.related(x.itemId).map((r) => r.id)).not.toContain(y.itemId);
   });
 });

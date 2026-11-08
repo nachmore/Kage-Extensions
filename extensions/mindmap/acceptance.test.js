@@ -1242,6 +1242,94 @@ describe('P2 archive (mm archive / mm archived)', () => {
   });
 });
 
+describe('P2 Import JSON (SPEC §7.7: one undoable op, newer copies win)', () => {
+  let a;
+  let A;
+  let b;
+  let settingsA;
+  const exportOf = async (g) => {
+    const { default: Settings } = await import('./settings.js');
+    const s = new Settings();
+    s.initialize(g.context);
+    return (await s.runAction('export_json')).host.content;
+  };
+  beforeAll(async () => {
+    a = await makeHarness();
+    A = await buildCorpus(a);
+    // "Another computer": the same people and teams, other notes, other ids.
+    b = await makeHarness();
+    b.at(local(2026, 11, 5, 9, 0));
+    await captureVia(b, 'mm+ Bingo team retro: the launch slipped a week');
+    await captureVia(b, 'mm+ Dana to send the hiring plan for MTCS');
+    await captureVia(b, 'mm+ Walrus team kickoff notes');
+    await captureVia(b, 'mm+ ! Bingo budget worries');
+    a.at(FIXTURE_NOW);
+    b.at(FIXTURE_NOW);
+    const { default: Settings } = await import('./settings.js');
+    settingsA = new Settings();
+    settingsA.initialize(a.context);
+  }, 60_000);
+
+  it('adds the other computer’s notes under the names already here, without splitting Bingo or Dana', async () => {
+    const before = a.mind.state.items.size;
+    const ents = (g) => [...g.mind.state.entities.values()].filter((e) => e.id !== 'me');
+    expect(ents(b).find((e) => e.key === 'bingo').id).not.toBe(ents(a).find((e) => e.key === 'bingo').id);
+    const out = await settingsA.onFileSelected({ action: 'import_json', content: await exportOf(b) });
+    expect(out.status).toBe(`Imported ${b.mind.state.items.size} new and 0 updated items. Undo with mm undo.`);
+    expect(a.mind.state.items.size).toBe(before + b.mind.state.items.size);
+    for (const key of ['bingo', 'dana', 'mtcs']) expect(ents(a).filter((e) => e.key === key), key).toHaveLength(1);
+    // A name only the other computer knew comes along.
+    expect(a.mind.resolveEntity('walrus', null)).toMatchObject({ type: 'team' });
+    const bingo = a.mind.resolveEntity('bingo', null).entityId;
+    const retro = [...a.mind.state.items.values()].find((i) => i.title.startsWith('Bingo team retro'));
+    expect(retro.entityIds).toContain(bingo);
+    expect(hitRows(a.search.match('mm @bingo')).map(itemOf)).toContain(retro.id);
+    const plan = [...a.mind.state.items.values()].find((i) => i.text.includes('hiring plan'));
+    const dana = a.mind.resolveEntity('dana', null).entityId;
+    expect([plan, ...a.mind.childrenOf(plan.id)].some((i) => i.entityIds.includes(dana) || i.owner === dana)).toBe(true);
+    // Private stays private: the agent never sees it.
+    const { result } = await a.tools.execute('search', { query: 'bingo budget' });
+    expect(result.hiddenPrivate).toBeGreaterThanOrEqual(1);
+    expect(JSON.stringify(result)).not.toMatch(/budget worries/);
+  });
+
+  it('a second import of the same file changes nothing; a newer copy wins and an older one doesn’t', async () => {
+    const file = await exportOf(b);
+    expect((await settingsA.onFileSelected({ action: 'import_json', content: file })).status).toBe('Everything in that file is already here');
+    const walrus = [...b.mind.state.items.values()].find((i) => i.title.startsWith('Walrus'));
+    b.at(FIXTURE_NOW + 60_000);
+    await b.mind.setPrivate(walrus.id, true);
+    b.at(FIXTURE_NOW);
+    const newer = await exportOf(b);
+    expect((await settingsA.onFileSelected({ action: 'import_json', content: newer })).status).toBe('Imported 0 new and 1 updated items. Undo with mm undo.');
+    expect(a.mind.item(walrus.id).private).toBe(true);
+    expect((await settingsA.onFileSelected({ action: 'import_json', content: file })).status).toBe('Everything in that file is already here');
+    expect(a.mind.item(walrus.id).private).toBe(true);
+    expect((await a.mind.undo()).ok).toBe(true);
+    expect(a.mind.item(walrus.id).private).toBeUndefined();
+  });
+
+  it('other windows see the import, and mm undo takes it all back', async () => {
+    const other = new Mind(makeContext(a.host, { invoke: a.host.connect().invoke }));
+    await other.ready();
+    expect(other.state.items.size).toBe(a.mind.state.items.size);
+    const undo = rowById(a.search.match('mm undo'), 'mm:undo');
+    expect(undo.label).toBe(`Undo: Imported ${b.mind.state.items.size} items`);
+    await a.search.execute(undo);
+    expect(a.mind.state.items.size).toBe(Object.keys(A).length + a.mind.childrenOf(A.F6).length);
+    expect(a.mind.resolveEntity('walrus', null)).toBeNull();
+    await other.syncIfStale(0);
+    expect(other.state.items.size).toBe(a.mind.state.items.size);
+  });
+
+  it('refuses files that aren’t Mind Map exports, or come from a newer Mind Map', async () => {
+    const say = async (content) => (await settingsA.onFileSelected({ action: 'import_json', content })).status;
+    expect(await say('{not json')).toBe('That file isn’t a Mind Map export');
+    expect(await say(JSON.stringify({ format: 'something-else', items: [] }))).toBe('That file isn’t a Mind Map export');
+    expect(await say(JSON.stringify({ format: 'kage-mindmap', schema: 99, items: [] }))).toBe('This data was saved by a newer Mind Map — update the extension');
+  });
+});
+
 describe('F-CAP and home rows on the corpus', () => {
   it('the op card for a brain dump shows the split, related items and Undo', async () => {
     const g = await makeHarness();

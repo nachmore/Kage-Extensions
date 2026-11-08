@@ -1672,5 +1672,9 @@
   "settings.imported": {
     "message": "Imported {added} new and {updated} updated items. Undo with {cmd}.",
     "description": "Status after import"
+  },
+  "settings.import_nothing": {
+    "message": "Everything in that file is already here",
+    "description": "Status after importing a file that adds or updates nothing"
   }
 }

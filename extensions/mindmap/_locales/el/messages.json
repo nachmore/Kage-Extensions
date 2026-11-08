@@ -2506,5 +2506,11 @@
     "description": "Merge/forget/rename of a name that no longer exists",
     "_machine_translated": true,
     "_source_hash": "7c9b5710e90890ff"
+  },
+  "settings.import_nothing": {
+    "message": "Όλα τα στοιχεία αυτού του αρχείου υπάρχουν ήδη εδώ",
+    "description": "Status after importing a file that adds or updates nothing",
+    "_machine_translated": true,
+    "_source_hash": "58e31a315326bea6"
   }
 }

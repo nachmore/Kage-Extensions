@@ -37,10 +37,18 @@ const FIXED_KEYS = Object.freeze(['mm-entities', 'mm-links', 'mm-journal']);
 const RETRYABLE = new Set(['busy', 'conflict']);
 const MAX_ATTEMPTS = 4;
 const BACKFILL_MAX = 200;
-const ENRICH_RETRY_DELAY_MS = 20_000;
+// Idle work after a load (P2): link titles that never arrived, and items an
+// older organizer saw. It waits so it never competes with the first keystrokes.
+const IDLE_DELAY_MS = 20_000;
 const ENRICH_RETRY_MAX = 20;
+// A failed fetch (offline, a slow site) is retried on later loads, at most
+// once an hour, for a week after the capture.
+const ENRICH_RETRY_GAP_MS = 60 * 60_000;
+const ENRICH_RETRY_WINDOW_MS = 7 * 86_400_000;
 const REDERIVE_BATCH = 200;
+const REDERIVE_PAUSE_MS = 250;
 const CONTEXT_EDGE_MS = 10 * 60_000;
+const CONTEXT_EDGE_WEIGHT = 0.5;
 const OVERVIEW_DAYS = 90;
 const EMPTY = Object.freeze(new Set());
 const URL_TEXT_RE = /\b(?:https?:\/\/|www\.)\S+/gi;
@@ -120,13 +128,20 @@ export function getMind(context) {
 }
 
 export class Mind {
-  constructor(context = {}, { now } = {}) {
+  /**
+   * `options` exist for tests: `now` (clock), `extractorVersion` (simulates
+   * an organizer upgrade, so stored items look older than it), and
+   * `idleDelayMs` (how long after loading the idle work starts).
+   */
+  constructor(context = {}, { now, extractorVersion, idleDelayMs } = {}) {
     this.context = context;
     this.invoke = context.invoke;
     this.log = context.log || NOOP_LOG;
     this.now = now || (() => Date.now());
+    this.extractorVersion = Number.isInteger(extractorVersion) && extractorVersion > 0 ? extractorVersion : extractor.EXTRACTOR_VERSION;
+    this.idleDelayMs = Number.isFinite(idleDelayMs) && idleDelayMs >= 0 ? idleDelayMs : IDLE_DELAY_MS;
     this.store = new storage.Store({ invoke: context.invoke, atomic: storage.hasAtomicWrites(context.hostFeatures) });
-    this.state = model.emptyState(this.now(), { extractorVersion: extractor.EXTRACTOR_VERSION });
+    this.state = model.emptyState(this.now(), { extractorVersion: this.extractorVersion });
     this.keyRevs = new Map();
     this.dataRev = Math.max(1, Math.floor(Date.now()));
     this.loadRev = this.dataRev;
@@ -283,21 +298,57 @@ export class Mind {
     }
   }
 
+  // Schedules the idle work (P2) once per load, when there is any.
   _afterLoad() {
-    if (this._readOnly) return;
-    // P2: link titles that never arrived (the window closed mid-fetch).
-    const pending = [...this.state.items.values()]
-      .filter((item) => item.enrich?.state === 'pending' && isHttp(item.url))
+    if (this._readOnly || this._idleTimer) return;
+    const now = this.now();
+    const items = [...this.state.items.values()];
+    const work = items.some((item) => item.v < this.extractorVersion)
+      || (this.settings.fetch_link_titles && items.some((item) => this._wantsEnrich(item, now)));
+    if (!work) return;
+    this._idleTimer = setTimeout(() => {
+      this._idleTimer = null;
+      this._track(this.runIdleWork());
+    }, this.idleDelayMs);
+    this._idleTimer?.unref?.();
+  }
+
+  /**
+   * The idle work (P2): retries link titles that never arrived, then
+   * re-derives items an older organizer saw. Safe in every window at once:
+   * each step re-checks under the lock. → { enriched, rederived }
+   */
+  async runIdleWork() {
+    const enriched = await this.retryEnrichment();
+    const rederived = await this.rederive();
+    return { enriched, rederived };
+  }
+
+  // A link whose title should be (re)fetched: still pending (the window
+  // closed mid-fetch), or failed recently enough to try again.
+  _wantsEnrich(item, now) {
+    if (!isHttp(item?.url) || item.archived) return false;
+    const state = item.enrich?.state;
+    if (state === 'pending') return true;
+    if (state !== 'failed') return false;
+    return now - item.createdAt <= ENRICH_RETRY_WINDOW_MS && now - (item.enrich.at ?? 0) >= ENRICH_RETRY_GAP_MS;
+  }
+
+  /** P2 enrich retry on load: fetches up to 20 missing link titles, newest first. → count tried */
+  async retryEnrichment() {
+    if (!this.settings.fetch_link_titles) return 0;
+    await this.ready();
+    // Another window may have fetched them already.
+    await this.syncIfStale(0).catch(() => false);
+    if (this._readOnly) return 0;
+    const now = this.now();
+    const ids = [...this.state.items.values()].filter((item) => this._wantsEnrich(item, now))
       .map((item) => item.id).sort(byIdDesc).slice(0, ENRICH_RETRY_MAX);
-    if (pending.length && this.settings.fetch_link_titles) {
-      const timer = setTimeout(() => this._track(this._enrichAll(pending)), ENRICH_RETRY_DELAY_MS);
-      timer?.unref?.();
+    if (ids.length) {
+      this.log.info?.(`mindmap: retrying ${ids.length} link title(s)`);
+      await this._enrichAll(ids, { retry: true });
     }
-    // P2: items written by an older extractor are re-derived when idle.
-    if ([...this.state.items.values()].some((item) => item.v < extractor.EXTRACTOR_VERSION)) {
-      const timer = setTimeout(() => this._track(this.rederive()), ENRICH_RETRY_DELAY_MS);
-      timer?.unref?.();
-    }
+    return ids.length;
   }
 
   // --- sync --------------------------------------------------------------------
@@ -532,7 +583,7 @@ export class Mind {
     meta.rev = this._nextRev('mm-meta');
     meta.txn = txn;
     meta.updatedAt = now;
-    meta.extractorVersion = extractor.EXTRACTOR_VERSION;
+    meta.extractorVersion = this.extractorVersion;
     const payload = { ...model.payloadFor(this.state, 'meta'), rev: meta.rev, txn };
     if (lease) await lease.check();
     await this.store.write('mm-meta', payload, { force });
@@ -576,6 +627,9 @@ export class Mind {
     this._newest = null;
     this._dict = null;
     this._alias = new Map();
+    // P2 context edges: items captured from each source window title.
+    this.byWindow = new Map();
+    this.itemWindow = new Map();
   }
 
   _fields(item) {
@@ -617,6 +671,10 @@ export class Mind {
       this.parentOf.set(item.id, item.parentId);
       addTo(this.children, item.parentId, item.id);
     }
+    if (item.source?.window) {
+      addTo(this.byWindow, item.source.window, item.id);
+      this.itemWindow.set(item.id, item.source.window);
+    }
     this._seen.set(item.id, { kind: item.kind, title: item.title, private: !!item.private });
   }
 
@@ -628,6 +686,13 @@ export class Mind {
     if (parent) {
       this.children.get(parent)?.delete(id);
       this.parentOf.delete(id);
+    }
+    const window = this.itemWindow.get(id);
+    if (window !== undefined) {
+      const set = this.byWindow.get(window);
+      set?.delete(id);
+      if (set && !set.size) this.byWindow.delete(window);
+      this.itemWindow.delete(id);
     }
   }
 
@@ -879,18 +944,33 @@ export class Mind {
         scores.set(target, (scores.get(target) || 0) + weight);
       }
     }
-    // P2 context edges: captured from the same window within 10 minutes.
-    if (item.source?.window) {
-      for (const other of this.state.items.values()) {
-        if (other.id === id || other.source?.window !== item.source.window) continue;
-        if (Math.abs(other.createdAt - item.createdAt) <= CONTEXT_EDGE_MS) scores.set(other.id, (scores.get(other.id) || 0) + 0.5);
-      }
+    // P2 context edges (SPEC §5 S8): captured from the same window within
+    // 10 minutes, so things saved together stay together. Window titles
+    // are local; only the relation reaches the agent, never the title.
+    for (const other of this.contextOf(id)) {
+      const otherItem = this.state.items.get(other);
+      const target = otherItem?.parentId && !exclude.has(otherItem.parentId) ? otherItem.parentId : other;
+      scores.set(target, (scores.get(target) || 0) + CONTEXT_EDGE_WEIGHT);
     }
     return [...scores]
       .filter(([other]) => ok(this.state.items.get(other)))
       .sort((a, b) => b[1] - a[1] || (a[0] < b[0] ? -1 : 1))
       .slice(0, limit)
       .map(([other, score]) => ({ id: other, score }));
+  }
+
+  /** Items captured from the same source window as `id` within 10 minutes of it (P2 context edges). */
+  contextOf(id) {
+    const item = this.state.items.get(id);
+    const window = item?.source?.window;
+    if (!window) return [];
+    const out = [];
+    for (const other of this.byWindow.get(window) || []) {
+      if (other === id) continue;
+      const otherItem = this.state.items.get(other);
+      if (otherItem && Math.abs(otherItem.createdAt - item.createdAt) <= CONTEXT_EDGE_MS) out.push(other);
+    }
+    return out.sort();
   }
 
   /** Entities that share items with `eid`, weighted by how many. */
@@ -1334,10 +1414,10 @@ export class Mind {
 
   // --- background enrichment -------------------------------------------------------
 
-  async _enrichAll(ids) {
+  async _enrichAll(ids, { retry = false } = {}) {
     for (const id of ids) {
       try {
-        await this._enrich(id);
+        await this._enrich(id, { retry });
       } catch (error) {
         this.log.warn?.(`mindmap: link enrichment failed (${error?.code || error?.name || 'error'})`);
       }
@@ -1346,10 +1426,12 @@ export class Mind {
   }
 
   // Fetches a link's title and description after the save, then re-runs the
-  // organizer on the new text (SPEC §5 S10). Both ops are silent.
-  async _enrich(itemId) {
+  // organizer on the new text (SPEC §5 S10). Both ops are silent. A retry
+  // (P2, after a later load) also takes links whose last fetch failed.
+  async _enrich(itemId, { retry = false } = {}) {
+    const due = (item) => item?.enrich?.state === 'pending' || (retry && item?.enrich?.state === 'failed');
     const item = this.state.items.get(itemId);
-    if (!isHttp(item?.url) || item.enrich?.state !== 'pending' || !this.settings.fetch_link_titles) return;
+    if (!isHttp(item?.url) || !due(item) || !this.settings.fetch_link_titles) return;
     let meta = null;
     try {
       meta = await this.invoke('fetch_link_metadata', { url: item.url });
@@ -1358,7 +1440,7 @@ export class Mind {
     }
     await this._mutate((state, env) => {
       const current = state.items.get(itemId);
-      if (!current || current.enrich?.state !== 'pending') return { code: 'noop' };
+      if (!current || !due(current)) return { code: 'noop' };
       const enriched = model.applyEnrichLink(state, itemId, meta && typeof meta === 'object' ? meta : null, env);
       const changes = [enriched];
       const after = state.items.get(itemId);
@@ -1377,34 +1459,92 @@ export class Mind {
     });
   }
 
-  /** P2: re-derives rule-origin fields of items from an older extractor, in batches. */
+  // The extraction re-derivation reads for one stored item: its text plus
+  // what it was saved with (title, summary, terms, source window), so a
+  // link's page title or a window doc's title still yields its names.
+  _rederiveExtraction(state, item, env) {
+    const x = this._extract({
+      text: item.text, via: item.source?.via || 'launcher', source: item.source,
+      hint: { title: item.title, summary: item.summary, terms: item.terms },
+    }, env.now);
+    if (x.empty) return { v: this.extractorVersion, mentions: [], keyphrases: item.keyphrases, candidates: [], aliases: [], empty: true };
+    x.v = this.extractorVersion;
+    // A child keeps the names it inherits from its parent (SPEC §5 S5).
+    const parent = item.parentId ? state.items.get(item.parentId) : null;
+    for (const eid of parent?.entityIds || []) {
+      const entity = state.entities.get(eid);
+      if (!entity || x.mentions.some((m) => m.entityId === eid)) continue;
+      // kage-sensitive-data: not-sensitive — reviewed: an extraction mention, not a settings control
+      x.mentions.push({ entityId: eid, key: entity.key, name: entity.name, type: entity.type, origin: 'rule', explicit: false, seg: -3 });
+    }
+    return x;
+  }
+
+  // Folds several silent changes into one compact silent op: the revs they
+  // left and the ids they created, without before-snapshots (nobody undoes
+  // a re-derivation). One op per batch keeps the user's undo history from
+  // being pushed out of the 200-op journal by an organizer upgrade.
+  _silentBatch(changes, state, label) {
+    const op = journal.newOp({ opId: changes[0].op.opId, kind: 'enrich', at: changes[0].op.at, label, silent: true });
+    const ids = new Set();
+    const touched = new Set();
+    const newEntityIds = [];
+    for (const change of changes) {
+      for (const id of Object.keys(change.op.after || {})) ids.add(id);
+      for (const type of journal.RECORD_TYPES) for (const id of change.op.created?.[type] || []) journal.noteCreated(op, type, id);
+      for (const part of change.touched || []) touched.add(part);
+      for (const id of change.newEntityIds || []) if (!newEntityIds.includes(id)) newEntityIds.push(id);
+    }
+    journal.sealOp(op, state);
+    for (const id of ids) op.after[id] = state.items.get(id)?.rev ?? state.entities.get(id)?.rev ?? null;
+    op.lossy = true;
+    return { op, touched, newEntityIds };
+  }
+
+  /**
+   * P2 re-derivation (SPEC §5): items an older organizer saw
+   * (item.v < extractor version) are organized again when idle, in
+   * batches of 200. Only rule-origin fields change: user and agent facts,
+   * rejections and owners stay. → the number of items re-derived.
+   */
   async rederive() {
     if (this._rederiving || this._readOnly) return 0;
     this._rederiving = true;
+    const target = this.extractorVersion;
+    const tried = new Set();
     let done = 0;
     try {
+      await this.ready();
       for (;;) {
-        const batch = [...this.state.items.values()].filter((i) => i.v < extractor.EXTRACTOR_VERSION).slice(0, REDERIVE_BATCH).map((i) => i.id);
-        if (!batch.length) break;
-        await this._mutate((state, env) => {
+        // Parents first, so a child re-derived later sees its parent's names.
+        const batch = [...this.state.items.values()]
+          .filter((item) => item.v < target && !tried.has(item.id))
+          .sort((a, b) => (a.parentId ? 1 : 0) - (b.parentId ? 1 : 0) || (a.id < b.id ? -1 : 1))
+          .slice(0, REDERIVE_BATCH).map((item) => item.id);
+        if (!batch.length || this._readOnly) break;
+        for (const id of batch) tried.add(id);
+        const out = await this._mutate((state, env) => {
           const changes = [];
           for (const id of batch) {
             const item = state.items.get(id);
-            if (!item || item.v >= extractor.EXTRACTOR_VERSION) continue;
-            const x = this._extract({ text: item.text, via: item.source?.via || 'launcher', hint: { summary: item.summary } }, env.now);
-            const change = model.applyReextract(state, id, x, { ...env, replaceRule: true });
-            if (change.op) {
-              this._organize(state, change, x, id, env);
-              changes.push(change);
-            }
+            // Another window may have re-derived it already.
+            if (!item || item.v >= target) continue;
+            const x = this._rederiveExtraction(state, item, env);
+            const change = model.applyReextract(state, id, x, { ...env, replaceRule: !x.empty });
+            if (!change.op) continue;
+            if (!x.empty) this._organize(state, change, x, id, env);
+            changes.push(change);
           }
-          return { changes };
+          if (!changes.length) return { changes: [], count: 0 };
+          return { changes: [this._silentBatch(changes, state, { code: 'reextract', params: { count: changes.length } })], count: changes.length };
         });
-        done += batch.length;
+        done += out.count || 0;
+        if (batch.length === REDERIVE_BATCH) await sleep(REDERIVE_PAUSE_MS);
       }
     } finally {
       this._rederiving = false;
     }
+    if (done) this.log.info?.(`mindmap: re-organized ${done} item(s) for organizer v${target}`);
     return done;
   }
 
@@ -1793,6 +1933,54 @@ export class Mind {
     return out;
   }
 
+  // An export from another computer names the same people and teams with
+  // different random ids. Ids still dedupe as SPEC §7.7 says (newer
+  // updatedAt wins), but an incoming entity whose name (key or alias) is
+  // already known here becomes that entity, as a capture would resolve it,
+  // so "Bingo" doesn't split in two. Returns a rewritten copy of `data`.
+  _unifyImport(state, data) {
+    if (!data || typeof data !== 'object' || !Array.isArray(data.entities)) return data;
+    const remap = new Map();
+    const fresh = new Map();
+    const entitiesIn = [];
+    for (const raw of data.entities) {
+      if (!raw || typeof raw !== 'object' || typeof raw.id !== 'string' || raw.id === 'me' || state.entities.has(raw.id)) {
+        entitiesIn.push(raw);
+        continue;
+      }
+      const key = typeof raw.key === 'string' && raw.key ? raw.key : text.normalizeKey(raw.name);
+      const known = key ? model.entityByKey(state, key, raw.type) : null;
+      const target = known && known.id !== 'me' ? known.id : key ? fresh.get(key) : undefined;
+      if (target) {
+        remap.set(raw.id, target);
+        continue;
+      }
+      if (key) fresh.set(key, raw.id);
+      entitiesIn.push(raw);
+    }
+    if (!remap.size) return data;
+    const to = (id) => remap.get(id) ?? id;
+    const items = (Array.isArray(data.items) ? data.items : []).map((raw) => {
+      if (!raw || typeof raw !== 'object') return raw;
+      const next = { ...raw };
+      if (Array.isArray(raw.entityIds)) next.entityIds = [...new Set(raw.entityIds.map(to))];
+      if (raw.mentionOrigin && typeof raw.mentionOrigin === 'object') {
+        next.mentionOrigin = {};
+        for (const [id, origin] of Object.entries(raw.mentionOrigin)) next.mentionOrigin[to(id)] ??= origin;
+      }
+      if (typeof raw.owner === 'string') next.owner = to(raw.owner);
+      return next;
+    });
+    const relink = (list) => (Array.isArray(list) ? list : []).map((r) => (r && typeof r === 'object' ? { ...r, s: to(r.s), t: to(r.t) } : r));
+    return {
+      ...data,
+      entities: entitiesIn.map((raw) => (raw?.mergedInto ? { ...raw, mergedInto: to(raw.mergedInto) } : raw)),
+      items,
+      links: relink(data.links),
+      rejections: relink(data.rejections),
+    };
+  }
+
   /** Import JSON (P2): one undoable op; newer updatedAt wins. → {ok, added, updated, skipped} | {ok:false, code}. */
   async importJson(raw) {
     let data;
@@ -1808,7 +1996,7 @@ export class Mind {
         for (const raw of Array.isArray(data?.items) ? data.items : []) {
           if (typeof raw?.id === 'string') prior.set(raw.id, state.items.get(raw.id)?.updatedAt);
         }
-        const change = model.applyImport(state, data, { ...env, via: 'import' });
+        const change = model.applyImport(state, this._unifyImport(state, data), { ...env, via: 'import' });
         if (!change.op) return { code: change.code || 'noop' };
         let added = 0;
         let updated = 0;
@@ -1818,6 +2006,8 @@ export class Mind {
           if (at === undefined) added++;
           else if (now.updatedAt !== at) updated++;
         }
+        // The Undo label counts items too ("Imported 5 items").
+        if (change.op.label?.params) change.op.label.params.count = Math.max(1, added + updated);
         return { changes: [change], counts: { added, updated, skipped: prior.size - added - updated } };
       });
       if (!out.committed) return { ok: false, code: out.code || 'noop' };
@@ -1849,7 +2039,7 @@ export class Mind {
       // The lock expires on its own.
     }
     const prior = this.state;
-    this.state = model.emptyState(this.now(), { extractorVersion: extractor.EXTRACTOR_VERSION });
+    this.state = model.emptyState(this.now(), { extractorVersion: this.extractorVersion });
     this.keyRevs = new Map();
     this._applyMe();
     this._resetIndexes();

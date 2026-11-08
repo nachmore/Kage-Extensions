@@ -238,6 +238,8 @@ export default class MindMapSettingsProvider {
     try {
       if (typeof content !== 'string' || content.length > 64 * 1024 * 1024) return { status: t('err.bad_format') };
       const out = await this.mind.importJson(content);
+      // A file whose every record is already here (or older) changes nothing.
+      if (!out.ok && out.code === 'noop') return { status: t('settings.import_nothing') };
       if (!out.ok) return { status: this.errText(out.code) };
       return { status: t('settings.imported', { added: out.added || 0, updated: out.updated || 0, cmd: `${triggerOf(this.config)} undo` }), host: { type: 'refresh' } };
     } catch (error) {
