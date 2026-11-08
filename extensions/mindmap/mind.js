@@ -1172,7 +1172,12 @@ export class Mind {
     return { entity, counts, related: this.cooccur(entity.id).slice(0, 8) };
   }
 
-  stats() {
+  /**
+   * Counts for the home rows and settings. `size` (the approximate store
+   * size) serializes every part, ~100 ms at 10k items, so the launcher's
+   * home rows (match(), ≤10 ms, SPEC §17) ask for the counts only.
+   */
+  stats({ size = true } = {}) {
     const byKind = Object.fromEntries(KIND_ORDER.map((k) => [k, 0]));
     let openActions = 0;
     let suggestions = 0;
@@ -1183,8 +1188,11 @@ export class Mind {
         else openActions++;
       }
     }
-    let bytes = 0;
-    for (const part of model.listParts(this.state)) bytes += JSON.stringify(model.payloadFor(this.state, part)).length;
+    let bytes = null;
+    if (size) {
+      bytes = 0;
+      for (const part of model.listParts(this.state)) bytes += JSON.stringify(model.payloadFor(this.state, part)).length;
+    }
     return {
       items: this.state.items.size,
       byKind,
@@ -2174,9 +2182,10 @@ export class Mind {
     const actions = [];
     if (item) {
       if (item.kind === 'action' && (created.has(item.id) || !['capture', 'capture_dedup', 'archive', 'unarchive'].includes(summary.code))) actions.push(this._actionVM(item));
-      for (const child of [...(this.children.get(item.id) || [])].sort()) {
-        const c = this.state.items.get(child);
-        if (c?.kind === 'action' && created.has(child)) actions.push(this._actionVM(c));
+      // Source order (seg), as the item card lists them: sibling ids share
+      // one millisecond, so id order would be random.
+      for (const c of this.childrenOf(item.id)) {
+        if (c.kind === 'action' && created.has(c.id)) actions.push(this._actionVM(c));
       }
     }
     const isCapture = summary.code === 'capture' || summary.code === 'capture_dedup';

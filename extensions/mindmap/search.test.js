@@ -129,6 +129,22 @@ describe('loading and matchAsync', () => {
     const rows = await p.matchAsync('mm walrus');
     expect(rows.map((r) => r.id)).toEqual(['mm:loaderror']);
   });
+
+  it('the home rows (bare mm) never serialize the store to size it', () => {
+    // Sizing the store stringifies every part: ~100 ms per keystroke at
+    // 10,000 items, against match()'s 10 ms budget (SPEC §17). Settings
+    // still shows the size.
+    const spy = vi.spyOn(JSON, 'stringify');
+    try {
+      const rows = h.search.match('mm');
+      expect(rowById(rows, 'mm:home:actions').label).toMatch(/^\d+ open actions/);
+      expect(spy).not.toHaveBeenCalled();
+    } finally {
+      spy.mockRestore();
+    }
+    expect(h.mind.stats().bytes).toBeGreaterThan(1000);
+    expect(h.mind.stats({ size: false })).toMatchObject({ items: h.mind.state.items.size, bytes: null });
+  });
 });
 
 describe('row ids', () => {

@@ -397,6 +397,27 @@ describe('stats, undo target and the data port', () => {
     await mind.setStatus(pub.itemId, 'done');
     expect(port.changedSince(port.rev - 1, [pub.itemId])).toBe(true);
   });
+
+  it('the op card lists a brain dump’s actions in the order they were written', async () => {
+    // Sibling ids share one millisecond, so their order is the random tail.
+    // Make every new id sort before the previous one: id order is then the
+    // reverse of the order the dump was written in.
+    let tail = 35;
+    const spy = vi.spyOn(globalThis.crypto, 'getRandomValues').mockImplementation((array) => {
+      array.fill(Math.max(0, tail--));
+      return array;
+    });
+    try {
+      const { mind } = setup();
+      const out = await mind.capture(F6_DUMP, { via: 'launcher' });
+      const written = ['Send MTCS numbers to Dana', 'Dana to share the roadmap deck', 'book the offsite', 'review the Bingo launch checklist'];
+      expect(mind.childrenOf(out.itemId).map((c) => c.title)).toEqual(written);
+      expect(mind.port.op(out.opId).actions.map((a) => a.title)).toEqual(written);
+      expect(mind.port.item(out.itemId).actions.map((a) => a.title)).toEqual(written);
+    } finally {
+      spy.mockRestore();
+    }
+  });
 });
 
 // --- P1 ------------------------------------------------------------------------------

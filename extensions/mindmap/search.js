@@ -310,7 +310,7 @@ export default class MindMapSearchProvider {
     const t = this.t;
     const m = this.trigger;
     const now = mind.now();
-    const stats = mind.stats();
+    const stats = mind.stats({ size: false });
     const rows = [this.row('mm:home:capture', '💾', t('row.home_capture'), t('row.home_capture_desc', { cmd: `${m}+` }), 92, this.fill(`${m}+ `))];
     const open = mind.actions(mind.parse('actions', { trailingSpace: true }), { limit: LIMITS.actionsMax * 4 }).open;
     const weekEnd = mind.weekEnd(now);
