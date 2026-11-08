@@ -29,14 +29,15 @@ export default class StocksWatchlistWidget {
     }
     if (!this.symbols.length) return null;
     const quotes = await this.client.getQuotes(this.symbols, this.config);
-    const connection = quotes.find((quote) => ['setup', 'auth', 'cache_only', 'storage'].includes(quote.error || quote.reason));
-    if (quotes.every((quote) => ['setup', 'auth', 'cache_only', 'storage'].includes(quote.error))) {
-      const hint = quotes.every((quote) => quote.error === 'setup') ? this.t('widget.setup') : this.t('widget.connection');
+    const connection = quotes.find((quote) => ['setup', 'auth', 'storage'].includes(quote.error || quote.reason));
+    const hint = (connection?.reason || connection?.error) === 'setup'
+      ? `${this.t('setup.free_key')}. ${this.t('widget.setup')}` : this.t('widget.connection');
+    if (quotes.every((quote) => ['setup', 'auth', 'storage'].includes(quote.error))) {
       return { className: 'stocks-widget', html: `<span>${escapeHtml(hint)}</span>` };
     }
     const html = await Promise.all(quotes.map(async (quote) => {
       if (quote.error) {
-        if (connection && ['setup', 'auth', 'cache_only', 'storage'].includes(quote.error)) return '';
+        if (connection && ['setup', 'auth', 'storage'].includes(quote.error)) return '';
         return `<span class="stocks-tile"><strong>${escapeHtml(quote.symbol)}</strong><small>${escapeHtml(errorText(quote.error, this.t))}</small></span>`;
       }
       const history = await this.client.getHistory(quote.symbol, '1d', quote);
@@ -45,7 +46,7 @@ export default class StocksWatchlistWidget {
     }));
     return {
       className: 'extension-bar stocks-widget',
-      html: `<span class="stocks-source">📈 <a href="https://finnhub.io/">${escapeHtml(this.t('quote.source'))}</a>${connection ? ` · ${escapeHtml(this.t(connection.reason === 'setup' || connection.error === 'setup' ? 'widget.setup' : 'widget.connection'))}` : ''}</span><span class="stocks-tiles">${html.join('')}</span>`,
+      html: `<span class="stocks-source">📈 <a href="https://finnhub.io/">${escapeHtml(this.t('quote.source'))}</a>${connection ? ` · ${escapeHtml(hint)}` : ''}</span><span class="stocks-tiles">${html.join('')}</span>`,
       actions: quotes.filter((quote) => !quote.error).map(({ symbol }) => ({ id: `chart:${symbol}`, rpc: `chart:${symbol}` })),
     };
   }

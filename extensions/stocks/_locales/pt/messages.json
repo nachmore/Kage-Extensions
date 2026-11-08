@@ -131,12 +131,6 @@
     "_machine_translated": true,
     "_source_hash": "b6ed5bc4b975b5a0"
   },
-  "error.cache_only": {
-    "message": "Apenas cotações guardadas; os pedidos em tempo real estão em pausa. Abra as definições de Ações para escolher o Finnhub e ligar uma chave.",
-    "description": "User selected offline provider mode",
-    "_machine_translated": true,
-    "_source_hash": "69f4b08853704dde"
-  },
   "error.storage": {
     "message": "O armazenamento de cotações está indisponível. Os pedidos estão em pausa até ser possível controlar o respetivo limite.",
     "description": "Fail closed when rate budget cannot persist",
@@ -167,24 +161,6 @@
     "_machine_translated": true,
     "_source_hash": "863fbc4ab994c2eb"
   },
-  "settings.provider": {
-    "message": "Fornecedor",
-    "description": "Provider selector label",
-    "_machine_translated": true,
-    "_source_hash": "713fef775807424a"
-  },
-  "settings.finnhub": {
-    "message": "Finnhub · cotações dos EUA · chave pessoal gratuita",
-    "description": "Supported online provider option",
-    "_machine_translated": true,
-    "_source_hash": "e989961cfe6d267c"
-  },
-  "settings.cache": {
-    "message": "Apenas cotações guardadas · offline",
-    "description": "Network paused provider option",
-    "_machine_translated": true,
-    "_source_hash": "f429d58cbb1c5f8b"
-  },
   "setup.intro": {
     "message": "Use sua própria chave gratuita do Finnhub para cotações de ações dos EUA. Obtenha uma chave abaixo e, em seguida, teste e salve-a para conectar.",
     "description": "User-facing provider setup introduction",
@@ -198,10 +174,10 @@
     "_source_hash": "9eb9716ed06ff746"
   },
   "setup.steps": {
-    "message": "1. Abra Obter uma chave gratuita e registe-se na Finnhub. 2. Copie a sua chave de API a partir do painel. 3. Cole-a abaixo e escolha Testar e guardar. 4. Guarde a lista de observação e as definições do fornecedor.",
+    "message": "1. Abra Obter uma chave Finnhub gratuita (cerca de um minuto) e registe-se na Finnhub. 2. Copie a sua chave de API a partir do painel. 3. Cole-a abaixo e escolha Testar e guardar.",
     "description": "Guided setup steps",
     "_machine_translated": true,
-    "_source_hash": "f0be788769ece36a"
+    "_source_hash": "d850b03495911632"
   },
   "setup.saved": {
     "message": "Há uma chave guardada neste dispositivo. Deixe o campo vazio para a testar ou cole uma substituta. As chaves armazenadas nunca são mostradas aqui.",
@@ -210,10 +186,10 @@
     "_source_hash": "4fba007359b56f1d"
   },
   "setup.free_key": {
-    "message": "Obter uma chave gratuita",
+    "message": "Obter uma chave Finnhub gratuita (cerca de um minuto)",
     "description": "Open provider registration in system browser",
     "_machine_translated": true,
-    "_source_hash": "42b307eaf0136997"
+    "_source_hash": "a0566f42e52da139"
   },
   "setup.key": {
     "message": "Chave de API da Finnhub",
@@ -246,10 +222,10 @@
     "_source_hash": "59cb7317745316bb"
   },
   "setup.success": {
-    "message": "Teste de cotação da Finnhub concluído; chave guardada. Guarde as definições do fornecedor e da lista de observação para terminar.",
-    "description": "Successful guided setup",
+    "message": "Teste de cotação da Finnhub concluído; chave guardada.",
+    "description": "Successful guided setup; key is saved independently of watchlist settings",
     "_machine_translated": true,
-    "_source_hash": "96383792f28339c2"
+    "_source_hash": "76df0b334c35e1f8"
   },
   "settings.watchlist_section": {
     "message": "Lista de observação e atualização",
@@ -371,7 +347,7 @@
   },
   "widget.connection": {
     "message": "As cotações precisam de atenção. Digite stock e pressione Enter para abrir as configurações de Ações.",
-    "description": "Compact widget hint for authentication, saved-only or storage problems; keep stock as the launcher command",
+    "description": "Compact widget hint for authentication or storage problems; keep stock as the launcher command",
     "_machine_translated": true,
     "_source_hash": "28d7c64fff255e29"
   },

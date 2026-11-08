@@ -131,12 +131,6 @@
     "_machine_translated": true,
     "_source_hash": "b6ed5bc4b975b5a0"
   },
-  "error.cache_only": {
-    "message": "แสดงเฉพาะราคาที่บันทึกไว้ และหยุดคำขอข้อมูลแบบเรียลไทม์ชั่วคราว เปิดการตั้งค่าหุ้นเพื่อเลือก Finnhub และเชื่อมต่อคีย์",
-    "description": "User selected offline provider mode",
-    "_machine_translated": true,
-    "_source_hash": "69f4b08853704dde"
-  },
   "error.storage": {
     "message": "พื้นที่จัดเก็บราคาไม่พร้อมใช้งาน คำขอจะถูกหยุดชั่วคราวจนกว่าจะติดตามขีดจำกัดได้",
     "description": "Fail closed when rate budget cannot persist",
@@ -167,24 +161,6 @@
     "_machine_translated": true,
     "_source_hash": "863fbc4ab994c2eb"
   },
-  "settings.provider": {
-    "message": "ผู้ให้บริการ",
-    "description": "Provider selector label",
-    "_machine_translated": true,
-    "_source_hash": "713fef775807424a"
-  },
-  "settings.finnhub": {
-    "message": "Finnhub · ราคาหุ้นสหรัฐฯ · คีย์ส่วนตัวฟรี",
-    "description": "Supported online provider option",
-    "_machine_translated": true,
-    "_source_hash": "e989961cfe6d267c"
-  },
-  "settings.cache": {
-    "message": "เฉพาะราคาที่บันทึกไว้ · ออฟไลน์",
-    "description": "Network paused provider option",
-    "_machine_translated": true,
-    "_source_hash": "f429d58cbb1c5f8b"
-  },
   "setup.intro": {
     "message": "ใช้คีย์ Finnhub ฟรีของคุณเองเพื่อดูราคาหุ้นสหรัฐฯ รับคีย์ได้ด้านล่าง จากนั้นทดสอบและบันทึกเพื่อเชื่อมต่อ",
     "description": "User-facing provider setup introduction",
@@ -198,10 +174,10 @@
     "_source_hash": "9eb9716ed06ff746"
   },
   "setup.steps": {
-    "message": "1. เปิด รับคีย์ฟรี และลงทะเบียนที่ Finnhub 2. คัดลอก API key จากแดชบอร์ด 3. วางด้านล่างแล้วเลือก ทดสอบและบันทึก 4. บันทึกรายการเฝ้าดูและการตั้งค่าผู้ให้บริการ",
+    "message": "1. เปิด รับคีย์ Finnhub ฟรี (ประมาณหนึ่งนาที) และลงทะเบียนที่ Finnhub 2. คัดลอก API key จากแดชบอร์ด 3. วางด้านล่างแล้วเลือก ทดสอบและบันทึก",
     "description": "Guided setup steps",
     "_machine_translated": true,
-    "_source_hash": "f0be788769ece36a"
+    "_source_hash": "d850b03495911632"
   },
   "setup.saved": {
     "message": "มีคีย์บันทึกไว้ในอุปกรณ์นี้แล้ว เว้นช่องว่างไว้เพื่อทดสอบ หรือวางคีย์ใหม่เพื่อแทนที่ คีย์ที่จัดเก็บไว้จะไม่แสดงที่นี่",
@@ -210,10 +186,10 @@
     "_source_hash": "4fba007359b56f1d"
   },
   "setup.free_key": {
-    "message": "รับคีย์ฟรี",
+    "message": "รับคีย์ Finnhub ฟรี (ประมาณหนึ่งนาที)",
     "description": "Open provider registration in system browser",
     "_machine_translated": true,
-    "_source_hash": "42b307eaf0136997"
+    "_source_hash": "a0566f42e52da139"
   },
   "setup.key": {
     "message": "Finnhub API key",
@@ -246,10 +222,10 @@
     "_source_hash": "59cb7317745316bb"
   },
   "setup.success": {
-    "message": "ทดสอบราคาจาก Finnhub ผ่านแล้ว และบันทึกคีย์แล้ว บันทึกการตั้งค่าผู้ให้บริการและรายการเฝ้าดูเพื่อเสร็จสิ้น",
-    "description": "Successful guided setup",
+    "message": "ทดสอบราคาจาก Finnhub ผ่านแล้ว และบันทึกคีย์แล้ว",
+    "description": "Successful guided setup; key is saved independently of watchlist settings",
     "_machine_translated": true,
-    "_source_hash": "96383792f28339c2"
+    "_source_hash": "76df0b334c35e1f8"
   },
   "settings.watchlist_section": {
     "message": "รายการเฝ้าดูและการรีเฟรช",
@@ -371,7 +347,7 @@
   },
   "widget.connection": {
     "message": "การแสดงราคามีปัญหาที่ต้องแก้ไข พิมพ์ stock แล้วกด Enter เพื่อเปิดการตั้งค่า Stocks",
-    "description": "Compact widget hint for authentication, saved-only or storage problems; keep stock as the launcher command",
+    "description": "Compact widget hint for authentication or storage problems; keep stock as the launcher command",
     "_machine_translated": true,
     "_source_hash": "28d7c64fff255e29"
   },

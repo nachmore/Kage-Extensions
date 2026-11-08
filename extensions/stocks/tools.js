@@ -38,9 +38,10 @@ export default class StocksToolProvider {
         const result = quotes.map(({ timestamp, fetchedAt, retryAt, samples, ...quote }) => ({
           ...quote,
           ...(quote.error ? { message: errorText(quote.error, this.t) } : { tradeTime: iso(timestamp * 1000), fetchedAt: iso(fetchedAt) }),
+          ...(!quote.error && quote.reason ? { message: errorText(quote.reason, this.t) } : {}),
           ...(retryAt ? { retryAt: iso(retryAt) } : {}),
         }));
-        const connection = quotes.findIndex((quote) => ['setup', 'auth', 'cache_only', 'storage'].includes(quote.error));
+        const connection = quotes.findIndex((quote) => ['setup', 'auth', 'storage'].includes(quote.error));
         const details = result.filter((quote) => quote.error)
           .map((quote) => `${quote.symbol ? `${quote.symbol}: ` : ''}${quote.message}`).join(' ');
         if (connection >= 0 && quotes.every((quote) => quote.error)) {
@@ -51,6 +52,12 @@ export default class StocksToolProvider {
       }
       if (name === 'get_history') {
         const history = await this.client.getHistory(params.symbol, params.range);
+        try {
+          if (!(await this.client.key())) history.note += ` ${errorText('setup', this.t)}`;
+        } catch (error) {
+          // Local samples remain useful when credential storage is unavailable.
+          history.note += ` ${errorText(error.code, this.t)}`;
+        }
         return { result: { ...history, fetchedAt: iso(history.fetchedAt),
           samples: history.samples.map((sample) => ({ ...sample, timestamp: iso(sample.timestamp * 1000) })) } };
       }

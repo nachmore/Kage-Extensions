@@ -4,7 +4,6 @@
  * this file, the control defaults, and the config fallbacks can go.
  */
 export const DEFAULTS = Object.freeze({
-  provider: 'finnhub',
   watchlist: 'AAPL MSFT NVDA',
   refresh_seconds: 300,
   show_watchlist: true,

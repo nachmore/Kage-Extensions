@@ -131,12 +131,6 @@
     "_machine_translated": true,
     "_source_hash": "b6ed5bc4b975b5a0"
   },
-  "error.cache_only": {
-    "message": "Μόνο αποθηκευμένες τιμές· τα αιτήματα σε πραγματικό χρόνο έχουν τεθεί σε παύση. Ανοίξτε τις ρυθμίσεις Μετοχών για να επιλέξετε το Finnhub και να συνδέσετε ένα κλειδί.",
-    "description": "User selected offline provider mode",
-    "_machine_translated": true,
-    "_source_hash": "69f4b08853704dde"
-  },
   "error.storage": {
     "message": "Ο χώρος αποθήκευσης τιμών δεν είναι διαθέσιμος. Τα αιτήματα έχουν τεθεί σε παύση μέχρι να είναι δυνατή η παρακολούθηση του ορίου τους.",
     "description": "Fail closed when rate budget cannot persist",
@@ -167,24 +161,6 @@
     "_machine_translated": true,
     "_source_hash": "863fbc4ab994c2eb"
   },
-  "settings.provider": {
-    "message": "Πάροχος",
-    "description": "Provider selector label",
-    "_machine_translated": true,
-    "_source_hash": "713fef775807424a"
-  },
-  "settings.finnhub": {
-    "message": "Finnhub · Τιμές ΗΠΑ · δωρεάν προσωπικό κλειδί",
-    "description": "Supported online provider option",
-    "_machine_translated": true,
-    "_source_hash": "e989961cfe6d267c"
-  },
-  "settings.cache": {
-    "message": "Μόνο αποθηκευμένες τιμές · εκτός σύνδεσης",
-    "description": "Network paused provider option",
-    "_machine_translated": true,
-    "_source_hash": "f429d58cbb1c5f8b"
-  },
   "setup.intro": {
     "message": "Χρησιμοποιήστε το δικό σας δωρεάν κλειδί Finnhub για τιμές μετοχών των ΗΠΑ. Αποκτήστε ένα κλειδί παρακάτω και, στη συνέχεια, δοκιμάστε το και αποθηκεύστε το για να συνδεθείτε.",
     "description": "User-facing provider setup introduction",
@@ -198,10 +174,10 @@
     "_source_hash": "9eb9716ed06ff746"
   },
   "setup.steps": {
-    "message": "1. Ανοίξτε το «Λήψη δωρεάν κλειδιού» και εγγραφείτε στη Finnhub. 2. Αντιγράψτε το API key σας από τον πίνακα ελέγχου. 3. Επικολλήστε το παρακάτω και επιλέξτε «Δοκιμή και αποθήκευση». 4. Αποθηκεύστε τη λίστα παρακολούθησης και τις ρυθμίσεις παρόχου.",
+    "message": "1. Ανοίξτε το «Λήψη δωρεάν κλειδιού Finnhub (περίπου ένα λεπτό)» και εγγραφείτε στη Finnhub. 2. Αντιγράψτε το API key σας από τον πίνακα ελέγχου. 3. Επικολλήστε το παρακάτω και επιλέξτε «Δοκιμή και αποθήκευση».",
     "description": "Guided setup steps",
     "_machine_translated": true,
-    "_source_hash": "f0be788769ece36a"
+    "_source_hash": "d850b03495911632"
   },
   "setup.saved": {
     "message": "Υπάρχει αποθηκευμένο κλειδί σε αυτήν τη συσκευή. Αφήστε το πεδίο κενό για να το δοκιμάσετε ή επικολλήστε ένα νέο. Τα αποθηκευμένα κλειδιά δεν εμφανίζονται ποτέ εδώ.",
@@ -210,10 +186,10 @@
     "_source_hash": "4fba007359b56f1d"
   },
   "setup.free_key": {
-    "message": "Λήψη δωρεάν κλειδιού",
+    "message": "Λήψη δωρεάν κλειδιού Finnhub (περίπου ένα λεπτό)",
     "description": "Open provider registration in system browser",
     "_machine_translated": true,
-    "_source_hash": "42b307eaf0136997"
+    "_source_hash": "a0566f42e52da139"
   },
   "setup.key": {
     "message": "Finnhub API key",
@@ -246,10 +222,10 @@
     "_source_hash": "59cb7317745316bb"
   },
   "setup.success": {
-    "message": "Η δοκιμή τιμών Finnhub ολοκληρώθηκε επιτυχώς· το κλειδί αποθηκεύτηκε. Αποθηκεύστε τις ρυθμίσεις παρόχου και λίστας παρακολούθησης για να ολοκληρώσετε.",
-    "description": "Successful guided setup",
+    "message": "Η δοκιμή τιμών Finnhub ολοκληρώθηκε επιτυχώς· το κλειδί αποθηκεύτηκε.",
+    "description": "Successful guided setup; key is saved independently of watchlist settings",
     "_machine_translated": true,
-    "_source_hash": "96383792f28339c2"
+    "_source_hash": "76df0b334c35e1f8"
   },
   "settings.watchlist_section": {
     "message": "Λίστα παρακολούθησης και ανανέωση",
@@ -371,7 +347,7 @@
   },
   "widget.connection": {
     "message": "Οι τιμές χρειάζονται την προσοχή σας. Πληκτρολογήστε stock και πατήστε Enter για να ανοίξετε τις ρυθμίσεις του Stocks.",
-    "description": "Compact widget hint for authentication, saved-only or storage problems; keep stock as the launcher command",
+    "description": "Compact widget hint for authentication or storage problems; keep stock as the launcher command",
     "_machine_translated": true,
     "_source_hash": "28d7c64fff255e29"
   },

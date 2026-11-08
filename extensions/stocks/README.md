@@ -11,8 +11,8 @@ or enter `stock copy AAPL`, to copy text such as `AAPL 189.12 +1.3%`.
 
 ## Setup
 
-1. Open Stocks settings and choose **Finnhub · US quotes · free personal key**.
-2. Choose **Get a free key** to open https://finnhub.io/register in your
+1. Open Stocks settings.
+2. Choose **Get a free Finnhub key (about a minute)** to open https://finnhub.io/register in your
    system browser. Register and copy the API key from your dashboard.
 3. Paste the key and choose **Test and save key**. The extension probes the
    AAPL quote endpoint and saves the key only after a valid quote response.
@@ -29,9 +29,10 @@ preflight is not allowed. Requests omit cookies/referrers and reject
 redirects. No request URLs, credentials, or raw provider errors are logged.
 Remove the key in settings to stop authenticated requests.
 
-Choose **Saved quotes only · offline** to pause automatic network refreshes
-and retain quotes and local history for up to 31 days. **Test and save key**
-still makes the connection test you request.
+Without a key, launcher searches, the watchlist widget and agent tools guide
+you to the same Finnhub setup. Quotes saved on this device remain available
+for up to 31 days, clearly marked as cached with their original **As of** time.
+Stocks also shows the last saved quote when offline, rate-limited or erroring.
 
 ## Data and limits
 
@@ -94,7 +95,7 @@ retaining the API key. Other windows and active refreshes may save more.
 - `get_quote(symbols)` returns quotes, source, currency, ISO trade/fetch/retry
   times, open/high/low, cache status, and per-symbol error messages. Invalid
   symbols do not prevent valid siblings from succeeding. An all-setup,
-  authentication or saved-only failure also returns an actionable tool error.
+  authentication or storage failure also returns an actionable tool error.
 - `get_history(symbol, range)` returns local samples for `1d`, `1w`, or
   `1m`, explicitly marked `kind: locally_sampled_quotes` and
   `complete: false`. It performs no network requests. It can be empty.
@@ -164,8 +165,8 @@ pause, including after a trailing space/comma; pauses longer than 600 ms
 can still request typed prefixes. A generation counter suppresses superseded results.
 Pending Enter opens a valid chart (or fetches before copying), using the
 watchlist for bare `stock`/`stock copy`. Missing keys open settings.
-Bare `stock` also opens settings when a quote reports an authentication,
-saved-only, or storage problem. Unknown symbols and failed copy commands
+Bare `stock` also opens settings when a quote reports an authentication
+or storage problem. Unknown symbols and failed copy commands
 preserve the input with the host's `replace_input` action.
 Widgets poll at the minimum interval, use request-start cache timestamps,
 and re-check configured freshness with 1.5 seconds of slack so small tick

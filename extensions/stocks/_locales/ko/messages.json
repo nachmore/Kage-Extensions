@@ -131,12 +131,6 @@
     "_machine_translated": true,
     "_source_hash": "b6ed5bc4b975b5a0"
   },
-  "error.cache_only": {
-    "message": "저장된 시세만 표시합니다. 실시간 요청은 일시 중지되었습니다. Stocks 설정을 열어 Finnhub을 선택하고 키를 연결하십시오.",
-    "description": "User selected offline provider mode",
-    "_machine_translated": true,
-    "_source_hash": "69f4b08853704dde"
-  },
   "error.storage": {
     "message": "시세 저장소를 사용할 수 없습니다. 요청 한도를 추적할 수 있을 때까지 요청이 일시 중지됩니다.",
     "description": "Fail closed when rate budget cannot persist",
@@ -167,24 +161,6 @@
     "_machine_translated": true,
     "_source_hash": "863fbc4ab994c2eb"
   },
-  "settings.provider": {
-    "message": "제공업체",
-    "description": "Provider selector label",
-    "_machine_translated": true,
-    "_source_hash": "713fef775807424a"
-  },
-  "settings.finnhub": {
-    "message": "Finnhub · 미국 시세 · 무료 개인 키",
-    "description": "Supported online provider option",
-    "_machine_translated": true,
-    "_source_hash": "e989961cfe6d267c"
-  },
-  "settings.cache": {
-    "message": "저장된 시세만 · 오프라인",
-    "description": "Network paused provider option",
-    "_machine_translated": true,
-    "_source_hash": "f429d58cbb1c5f8b"
-  },
   "setup.intro": {
     "message": "미국 주식 시세를 보려면 본인의 무료 Finnhub 키를 사용하십시오. 아래에서 키를 발급받은 후 테스트하고 저장하여 연결하십시오.",
     "description": "User-facing provider setup introduction",
@@ -198,10 +174,10 @@
     "_source_hash": "9eb9716ed06ff746"
   },
   "setup.steps": {
-    "message": "1. 무료 키 받기를 열고 Finnhub에 가입합니다. 2. 대시보드에서 API 키를 복사합니다. 3. 아래에 붙여넣고 테스트 후 저장을 선택합니다. 4. 관심 종목 및 제공업체 설정을 저장합니다.",
+    "message": "1. 무료 Finnhub 키 받기(약 1분)를 열고 Finnhub에 가입합니다. 2. 대시보드에서 API 키를 복사합니다. 3. 아래에 붙여넣고 테스트 후 저장을 선택합니다.",
     "description": "Guided setup steps",
     "_machine_translated": true,
-    "_source_hash": "f0be788769ece36a"
+    "_source_hash": "d850b03495911632"
   },
   "setup.saved": {
     "message": "이 기기에 키가 저장되어 있습니다. 저장된 키를 테스트하려면 필드를 비워 두고, 교체하려면 새 키를 붙여넣으십시오. 저장된 키는 여기에 표시되지 않습니다.",
@@ -210,10 +186,10 @@
     "_source_hash": "4fba007359b56f1d"
   },
   "setup.free_key": {
-    "message": "무료 키 받기",
+    "message": "무료 Finnhub 키 받기(약 1분)",
     "description": "Open provider registration in system browser",
     "_machine_translated": true,
-    "_source_hash": "42b307eaf0136997"
+    "_source_hash": "a0566f42e52da139"
   },
   "setup.key": {
     "message": "Finnhub API 키",
@@ -246,10 +222,10 @@
     "_source_hash": "59cb7317745316bb"
   },
   "setup.success": {
-    "message": "Finnhub 시세 테스트를 통과하여 키를 저장했습니다. 완료하려면 제공업체 및 관심 종목 설정을 저장하십시오.",
-    "description": "Successful guided setup",
+    "message": "Finnhub 시세 테스트를 통과하여 키를 저장했습니다.",
+    "description": "Successful guided setup; key is saved independently of watchlist settings",
     "_machine_translated": true,
-    "_source_hash": "96383792f28339c2"
+    "_source_hash": "76df0b334c35e1f8"
   },
   "settings.watchlist_section": {
     "message": "관심 종목 및 새로 고침",
@@ -371,7 +347,7 @@
   },
   "widget.connection": {
     "message": "시세에 확인이 필요합니다. stock을 입력하고 Enter 키를 눌러 주식 설정을 여십시오.",
-    "description": "Compact widget hint for authentication, saved-only or storage problems; keep stock as the launcher command",
+    "description": "Compact widget hint for authentication or storage problems; keep stock as the launcher command",
     "_machine_translated": true,
     "_source_hash": "28d7c64fff255e29"
   },

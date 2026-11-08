@@ -60,9 +60,10 @@ export function quoteDescription(quote, t, locale) {
 
 // i18n-keys: error.*
 export function errorText(code, t) {
+  if (code === 'setup') return `${t('setup.free_key')}. ${t('error.setup')}`;
   const known = new Set([
     'setup', 'auth', 'unknown', 'unsupported', 'invalid_symbols', 'too_many',
-    'rate_limit', 'offline', 'unavailable', 'busy', 'cache_only', 'storage',
+    'rate_limit', 'offline', 'unavailable', 'busy', 'storage',
     'invalid_key', 'invalid_range', 'timeout',
   ]);
   return t(`error.${known.has(code) ? code : 'unavailable'}`, { max: MAX_SYMBOLS });

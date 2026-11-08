@@ -131,12 +131,6 @@
     "_machine_translated": true,
     "_source_hash": "b6ed5bc4b975b5a0"
   },
-  "error.cache_only": {
-    "message": "Chỉ hiển thị báo giá đã lưu; các yêu cầu trực tiếp đang tạm dừng. Hãy mở cài đặt Cổ phiếu để chọn Finnhub và kết nối khóa.",
-    "description": "User selected offline provider mode",
-    "_machine_translated": true,
-    "_source_hash": "69f4b08853704dde"
-  },
   "error.storage": {
     "message": "Không thể truy cập bộ nhớ báo giá. Các yêu cầu sẽ tạm dừng cho đến khi có thể theo dõi giới hạn yêu cầu.",
     "description": "Fail closed when rate budget cannot persist",
@@ -167,24 +161,6 @@
     "_machine_translated": true,
     "_source_hash": "863fbc4ab994c2eb"
   },
-  "settings.provider": {
-    "message": "Nhà cung cấp",
-    "description": "Provider selector label",
-    "_machine_translated": true,
-    "_source_hash": "713fef775807424a"
-  },
-  "settings.finnhub": {
-    "message": "Finnhub · Báo giá Mỹ · khóa cá nhân miễn phí",
-    "description": "Supported online provider option",
-    "_machine_translated": true,
-    "_source_hash": "e989961cfe6d267c"
-  },
-  "settings.cache": {
-    "message": "Chỉ báo giá đã lưu · ngoại tuyến",
-    "description": "Network paused provider option",
-    "_machine_translated": true,
-    "_source_hash": "f429d58cbb1c5f8b"
-  },
   "setup.intro": {
     "message": "Hãy dùng khóa Finnhub miễn phí của riêng bạn để xem giá cổ phiếu Mỹ. Lấy khóa bên dưới, sau đó kiểm tra và lưu để kết nối.",
     "description": "User-facing provider setup introduction",
@@ -198,10 +174,10 @@
     "_source_hash": "9eb9716ed06ff746"
   },
   "setup.steps": {
-    "message": "1. Mở Lấy khóa miễn phí và đăng ký tại Finnhub. 2. Sao chép API key từ bảng điều khiển của Finnhub. 3. Dán vào bên dưới và chọn Kiểm tra và lưu. 4. Lưu danh sách theo dõi và cài đặt nhà cung cấp.",
+    "message": "1. Mở Lấy khóa Finnhub miễn phí (khoảng một phút) và đăng ký tại Finnhub. 2. Sao chép API key từ bảng điều khiển của Finnhub. 3. Dán vào bên dưới và chọn Kiểm tra và lưu.",
     "description": "Guided setup steps",
     "_machine_translated": true,
-    "_source_hash": "f0be788769ece36a"
+    "_source_hash": "d850b03495911632"
   },
   "setup.saved": {
     "message": "Đã lưu một khóa trên thiết bị này. Để trống trường để kiểm tra khóa đó, hoặc dán khóa thay thế. Khóa đã lưu không bao giờ được hiển thị ở đây.",
@@ -210,10 +186,10 @@
     "_source_hash": "4fba007359b56f1d"
   },
   "setup.free_key": {
-    "message": "Lấy khóa miễn phí",
+    "message": "Lấy khóa Finnhub miễn phí (khoảng một phút)",
     "description": "Open provider registration in system browser",
     "_machine_translated": true,
-    "_source_hash": "42b307eaf0136997"
+    "_source_hash": "a0566f42e52da139"
   },
   "setup.key": {
     "message": "API key Finnhub",
@@ -246,10 +222,10 @@
     "_source_hash": "59cb7317745316bb"
   },
   "setup.success": {
-    "message": "Kiểm tra báo giá Finnhub thành công; đã lưu khóa. Hãy lưu cài đặt nhà cung cấp và danh sách theo dõi để hoàn tất.",
-    "description": "Successful guided setup",
+    "message": "Kiểm tra báo giá Finnhub thành công; đã lưu khóa.",
+    "description": "Successful guided setup; key is saved independently of watchlist settings",
     "_machine_translated": true,
-    "_source_hash": "96383792f28339c2"
+    "_source_hash": "76df0b334c35e1f8"
   },
   "settings.watchlist_section": {
     "message": "Danh sách theo dõi và làm mới",
@@ -371,7 +347,7 @@
   },
   "widget.connection": {
     "message": "Báo giá cần được xử lý. Nhập stock rồi nhấn Enter để mở cài đặt Cổ phiếu.",
-    "description": "Compact widget hint for authentication, saved-only or storage problems; keep stock as the launcher command",
+    "description": "Compact widget hint for authentication or storage problems; keep stock as the launcher command",
     "_machine_translated": true,
     "_source_hash": "28d7c64fff255e29"
   },

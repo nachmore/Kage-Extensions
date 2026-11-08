@@ -131,12 +131,6 @@
     "_machine_translated": true,
     "_source_hash": "b6ed5bc4b975b5a0"
   },
-  "error.cache_only": {
-    "message": "Pouze uložené kotace; živé požadavky jsou pozastaveny. Otevřete nastavení Akcií, vyberte Finnhub a připojte klíč.",
-    "description": "User selected offline provider mode",
-    "_machine_translated": true,
-    "_source_hash": "69f4b08853704dde"
-  },
   "error.storage": {
     "message": "Úložiště kurzů není dostupné. Požadavky jsou pozastaveny, dokud nebude možné sledovat jejich limit.",
     "description": "Fail closed when rate budget cannot persist",
@@ -167,24 +161,6 @@
     "_machine_translated": true,
     "_source_hash": "863fbc4ab994c2eb"
   },
-  "settings.provider": {
-    "message": "Poskytovatel",
-    "description": "Provider selector label",
-    "_machine_translated": true,
-    "_source_hash": "713fef775807424a"
-  },
-  "settings.finnhub": {
-    "message": "Finnhub · kurzy z USA · bezplatný osobní klíč",
-    "description": "Supported online provider option",
-    "_machine_translated": true,
-    "_source_hash": "e989961cfe6d267c"
-  },
-  "settings.cache": {
-    "message": "Pouze uložené kurzy · offline",
-    "description": "Network paused provider option",
-    "_machine_translated": true,
-    "_source_hash": "f429d58cbb1c5f8b"
-  },
   "setup.intro": {
     "message": "Pro kurzy amerických akcií použijte vlastní bezplatný klíč Finnhub. Níže získejte klíč, poté jej otestujte a uložte pro připojení.",
     "description": "User-facing provider setup introduction",
@@ -198,10 +174,10 @@
     "_source_hash": "9eb9716ed06ff746"
   },
   "setup.steps": {
-    "message": "1. Otevřete Získat bezplatný klíč a zaregistrujte se u Finnhub. 2. Zkopírujte svůj API klíč z jeho nástěnky. 3. Vložte jej níže a zvolte Otestovat a uložit. 4. Uložte nastavení sledovaných titulů a poskytovatele.",
+    "message": "1. Otevřete Získat bezplatný klíč Finnhub (asi minuta) a zaregistrujte se u Finnhub. 2. Zkopírujte svůj API klíč z jeho nástěnky. 3. Vložte jej níže a zvolte Otestovat a uložit.",
     "description": "Guided setup steps",
     "_machine_translated": true,
-    "_source_hash": "f0be788769ece36a"
+    "_source_hash": "d850b03495911632"
   },
   "setup.saved": {
     "message": "V tomto zařízení je uložen klíč. Chcete-li jej otestovat, ponechte pole prázdné, nebo vložte náhradní. Uložené klíče se zde nikdy nezobrazují.",
@@ -210,10 +186,10 @@
     "_source_hash": "4fba007359b56f1d"
   },
   "setup.free_key": {
-    "message": "Získat bezplatný klíč",
+    "message": "Získat bezplatný klíč Finnhub (asi minuta)",
     "description": "Open provider registration in system browser",
     "_machine_translated": true,
-    "_source_hash": "42b307eaf0136997"
+    "_source_hash": "a0566f42e52da139"
   },
   "setup.key": {
     "message": "API klíč Finnhub",
@@ -246,10 +222,10 @@
     "_source_hash": "59cb7317745316bb"
   },
   "setup.success": {
-    "message": "Test kurzů Finnhub proběhl úspěšně; klíč byl uložen. Dokončete uložením nastavení poskytovatele a sledovaných titulů.",
-    "description": "Successful guided setup",
+    "message": "Test kurzů Finnhub proběhl úspěšně; klíč byl uložen.",
+    "description": "Successful guided setup; key is saved independently of watchlist settings",
     "_machine_translated": true,
-    "_source_hash": "96383792f28339c2"
+    "_source_hash": "76df0b334c35e1f8"
   },
   "settings.watchlist_section": {
     "message": "Sledované tituly a obnovování",
@@ -371,7 +347,7 @@
   },
   "widget.connection": {
     "message": "Kurzy vyžadují pozornost. Napište stock a stiskněte Enter pro otevření nastavení Akcie.",
-    "description": "Compact widget hint for authentication, saved-only or storage problems; keep stock as the launcher command",
+    "description": "Compact widget hint for authentication or storage problems; keep stock as the launcher command",
     "_machine_translated": true,
     "_source_hash": "28d7c64fff255e29"
   },

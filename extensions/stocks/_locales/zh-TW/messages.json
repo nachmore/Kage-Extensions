@@ -131,12 +131,6 @@
     "_machine_translated": true,
     "_source_hash": "b6ed5bc4b975b5a0"
   },
-  "error.cache_only": {
-    "message": "僅顯示已儲存的報價，即時請求已暫停。請開啟「股票」設定，選擇 Finnhub 並連結金鑰。",
-    "description": "User selected offline provider mode",
-    "_machine_translated": true,
-    "_source_hash": "69f4b08853704dde"
-  },
   "error.storage": {
     "message": "報價儲存空間無法使用。在能夠追蹤請求上限之前，請求將會暫停。",
     "description": "Fail closed when rate budget cannot persist",
@@ -167,24 +161,6 @@
     "_machine_translated": true,
     "_source_hash": "863fbc4ab994c2eb"
   },
-  "settings.provider": {
-    "message": "提供者",
-    "description": "Provider selector label",
-    "_machine_translated": true,
-    "_source_hash": "713fef775807424a"
-  },
-  "settings.finnhub": {
-    "message": "Finnhub · 美股報價 · 免費個人金鑰",
-    "description": "Supported online provider option",
-    "_machine_translated": true,
-    "_source_hash": "e989961cfe6d267c"
-  },
-  "settings.cache": {
-    "message": "僅限已儲存的報價 · 離線",
-    "description": "Network paused provider option",
-    "_machine_translated": true,
-    "_source_hash": "f429d58cbb1c5f8b"
-  },
   "setup.intro": {
     "message": "使用您自己的免費 Finnhub 金鑰取得美股報價。請在下方取得金鑰，然後測試並儲存以完成連線。",
     "description": "User-facing provider setup introduction",
@@ -198,10 +174,10 @@
     "_source_hash": "9eb9716ed06ff746"
   },
   "setup.steps": {
-    "message": "1. 開啟「取得免費金鑰」並在 Finnhub 註冊。2. 從其儀表板複製您的 API 金鑰。3. 將金鑰貼到下方，然後選擇「測試並儲存」。4. 儲存您的自選清單與提供者設定。",
+    "message": "1. 開啟「取得免費的 Finnhub 金鑰（約一分鐘）」並在 Finnhub 註冊。2. 從其儀表板複製您的 API 金鑰。3. 將金鑰貼到下方，然後選擇「測試並儲存」。",
     "description": "Guided setup steps",
     "_machine_translated": true,
-    "_source_hash": "f0be788769ece36a"
+    "_source_hash": "d850b03495911632"
   },
   "setup.saved": {
     "message": "此裝置上已儲存一組金鑰。將欄位留空即可測試該金鑰，或貼上新的金鑰加以取代。已儲存的金鑰絕不會顯示於此。",
@@ -210,10 +186,10 @@
     "_source_hash": "4fba007359b56f1d"
   },
   "setup.free_key": {
-    "message": "取得免費金鑰",
+    "message": "取得免費的 Finnhub 金鑰（約一分鐘）",
     "description": "Open provider registration in system browser",
     "_machine_translated": true,
-    "_source_hash": "42b307eaf0136997"
+    "_source_hash": "a0566f42e52da139"
   },
   "setup.key": {
     "message": "Finnhub API 金鑰",
@@ -246,10 +222,10 @@
     "_source_hash": "59cb7317745316bb"
   },
   "setup.success": {
-    "message": "Finnhub 報價測試成功；已儲存金鑰。請儲存提供者與自選清單設定以完成設定。",
-    "description": "Successful guided setup",
+    "message": "Finnhub 報價測試成功；已儲存金鑰。",
+    "description": "Successful guided setup; key is saved independently of watchlist settings",
     "_machine_translated": true,
-    "_source_hash": "96383792f28339c2"
+    "_source_hash": "76df0b334c35e1f8"
   },
   "settings.watchlist_section": {
     "message": "自選清單與重新整理",
@@ -371,7 +347,7 @@
   },
   "widget.connection": {
     "message": "報價需要處理。輸入 stock 並按下 Enter，即可開啟「股票」設定。",
-    "description": "Compact widget hint for authentication, saved-only or storage problems; keep stock as the launcher command",
+    "description": "Compact widget hint for authentication or storage problems; keep stock as the launcher command",
     "_machine_translated": true,
     "_source_hash": "28d7c64fff255e29"
   },

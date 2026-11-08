@@ -71,6 +71,7 @@ export default class StocksSearchProvider {
     const results = [];
     for (const quote of quotes) {
       if (quote.error) {
+        if (quote.error === 'setup') continue;
         results.push(this.errorRow(quote.symbol, quote.error, parsed.copy));
         continue;
       }
@@ -91,14 +92,18 @@ export default class StocksSearchProvider {
         data: { quote, copy: true, query },
       });
     }
+    // One setup action for the whole query, alongside any saved quotes.
+    if (quotes.some((quote) => (quote.error || quote.reason) === 'setup')) {
+      results.push(this.errorRow('', 'setup', parsed.copy));
+    }
     return results;
   }
 
   errorRow(symbol, code, copy = false, query = this.query) {
     return {
-      id: `stocks:error:${symbol || code}`, type: 'stocks', icon: '📈', score: 90,
-      label: symbol || this.t('manifest.name'),
-      description: errorText(code, this.t),
+      id: `stocks:error:${symbol || code}`, type: 'stocks', icon: '📈', score: code === 'setup' ? 100 : 90,
+      label: code === 'setup' ? this.t('setup.free_key') : symbol || this.t('manifest.name'),
+      description: code === 'setup' ? this.t('error.setup') : errorText(code, this.t),
       data: { setup: ['setup', 'auth'].includes(code), code, symbol, copy, query },
     };
   }
@@ -108,25 +113,24 @@ export default class StocksSearchProvider {
     if (this.config.enabled === false) return this.keepInput(result);
     if (result?.data?.setup) return { type: 'open_extension_settings' };
     const bare = /^stock\s*$/i.test(result?.data?.query ?? this.query ?? '');
-    if (bare && ['setup', 'auth', 'cache_only', 'storage'].includes(result?.data?.code || result?.data?.quote?.reason)) {
+    if (bare && ['setup', 'auth', 'storage'].includes(result?.data?.code || result?.data?.quote?.reason)) {
       return { type: 'open_extension_settings' };
     }
     if (result?.data?.pending) {
       let symbols = result.data.symbols || [];
-      if (!symbols.length) {
-        try {
-          if ((this.config.provider ?? DEFAULTS.provider) === 'cache') return { type: 'open_extension_settings' };
-          if (!(await this.client.key())) return { type: 'open_extension_settings' };
+      try {
+        if (!(await this.client.key())) return { type: 'open_extension_settings' };
+        if (!symbols.length) {
           symbols = parseSymbols(this.config.watchlist ?? DEFAULTS.watchlist, { allowEmpty: true });
           if (bare) {
             const quotes = await this.client.exactCache(symbols, this.config);
-            if (quotes?.some((quote) => ['setup', 'auth', 'cache_only', 'storage'].includes(quote.error || quote.reason))) {
+            if (quotes?.some((quote) => ['setup', 'auth', 'storage'].includes(quote.error || quote.reason))) {
               return { type: 'open_extension_settings' };
             }
           }
-        } catch (error) {
-          return bare && error.code === 'storage' ? { type: 'open_extension_settings' } : this.keepInput(result);
         }
+      } catch (error) {
+        return bare && error.code === 'storage' ? { type: 'open_extension_settings' } : this.keepInput(result);
       }
       symbols = symbols.filter((symbol) => {
         try { normalizeSymbol(symbol); return true; } catch { return false; }

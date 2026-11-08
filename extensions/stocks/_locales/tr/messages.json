@@ -131,12 +131,6 @@
     "_machine_translated": true,
     "_source_hash": "b6ed5bc4b975b5a0"
   },
-  "error.cache_only": {
-    "message": "Yalnızca kayıtlı fiyatlar gösteriliyor; canlı istekler duraklatıldı. Finnhub'ı seçmek ve bir anahtar bağlamak için Hisse senetleri ayarlarını açın.",
-    "description": "User selected offline provider mode",
-    "_machine_translated": true,
-    "_source_hash": "69f4b08853704dde"
-  },
   "error.storage": {
     "message": "Fiyat depolama alanı kullanılamıyor. Sınır takip edilebilene kadar istekler duraklatıldı.",
     "description": "Fail closed when rate budget cannot persist",
@@ -167,24 +161,6 @@
     "_machine_translated": true,
     "_source_hash": "863fbc4ab994c2eb"
   },
-  "settings.provider": {
-    "message": "Sağlayıcı",
-    "description": "Provider selector label",
-    "_machine_translated": true,
-    "_source_hash": "713fef775807424a"
-  },
-  "settings.finnhub": {
-    "message": "Finnhub · ABD fiyatları · ücretsiz kişisel anahtar",
-    "description": "Supported online provider option",
-    "_machine_translated": true,
-    "_source_hash": "e989961cfe6d267c"
-  },
-  "settings.cache": {
-    "message": "Yalnızca kaydedilen fiyatlar · çevrimdışı",
-    "description": "Network paused provider option",
-    "_machine_translated": true,
-    "_source_hash": "f429d58cbb1c5f8b"
-  },
   "setup.intro": {
     "message": "ABD hisse senedi fiyatları için kendi ücretsiz Finnhub anahtarınızı kullanın. Aşağıdan bir anahtar alın, ardından bağlanmak için test edip kaydedin.",
     "description": "User-facing provider setup introduction",
@@ -198,10 +174,10 @@
     "_source_hash": "9eb9716ed06ff746"
   },
   "setup.steps": {
-    "message": "1. Ücretsiz anahtar al'ı açın ve Finnhub'a kaydolun. 2. API anahtarınızı Finnhub panelinden kopyalayın. 3. Aşağıya yapıştırın ve Test et ve kaydet'i seçin. 4. İzleme listenizi ve sağlayıcı ayarlarınızı kaydedin.",
+    "message": "1. Ücretsiz Finnhub anahtarı al (yaklaşık bir dakika)'ı açın ve Finnhub'a kaydolun. 2. API anahtarınızı Finnhub panelinden kopyalayın. 3. Aşağıya yapıştırın ve Test et ve kaydet'i seçin.",
     "description": "Guided setup steps",
     "_machine_translated": true,
-    "_source_hash": "f0be788769ece36a"
+    "_source_hash": "d850b03495911632"
   },
   "setup.saved": {
     "message": "Bu cihazda kayıtlı bir anahtar var. Test etmek için alanı boş bırakın veya yerine yenisini yapıştırın. Kayıtlı anahtarlar burada asla gösterilmez.",
@@ -210,10 +186,10 @@
     "_source_hash": "4fba007359b56f1d"
   },
   "setup.free_key": {
-    "message": "Ücretsiz anahtar al",
+    "message": "Ücretsiz Finnhub anahtarı al (yaklaşık bir dakika)",
     "description": "Open provider registration in system browser",
     "_machine_translated": true,
-    "_source_hash": "42b307eaf0136997"
+    "_source_hash": "a0566f42e52da139"
   },
   "setup.key": {
     "message": "Finnhub API anahtarı",
@@ -246,10 +222,10 @@
     "_source_hash": "59cb7317745316bb"
   },
   "setup.success": {
-    "message": "Finnhub fiyat testi başarılı; anahtar kaydedildi. Tamamlamak için sağlayıcı ve izleme listesi ayarlarını kaydedin.",
-    "description": "Successful guided setup",
+    "message": "Finnhub fiyat testi başarılı; anahtar kaydedildi.",
+    "description": "Successful guided setup; key is saved independently of watchlist settings",
     "_machine_translated": true,
-    "_source_hash": "96383792f28339c2"
+    "_source_hash": "76df0b334c35e1f8"
   },
   "settings.watchlist_section": {
     "message": "İzleme listesi ve yenileme",
@@ -371,7 +347,7 @@
   },
   "widget.connection": {
     "message": "Fiyatlar ilgi gerektiriyor. Stocks ayarlarını açmak için stock yazın ve Enter'a basın.",
-    "description": "Compact widget hint for authentication, saved-only or storage problems; keep stock as the launcher command",
+    "description": "Compact widget hint for authentication or storage problems; keep stock as the launcher command",
     "_machine_translated": true,
     "_source_hash": "28d7c64fff255e29"
   },

@@ -131,12 +131,6 @@
     "_machine_translated": true,
     "_source_hash": "b6ed5bc4b975b5a0"
   },
-  "error.cache_only": {
-    "message": "صرف محفوظ کردہ قیمتیں دستیاب ہیں؛ لائیو درخواستیں روک دی گئی ہیں۔ Finnhub منتخب کرنے اور کلید منسلک کرنے کے لیے Stocks کی ترتیبات کھولیں۔",
-    "description": "User selected offline provider mode",
-    "_machine_translated": true,
-    "_source_hash": "69f4b08853704dde"
-  },
   "error.storage": {
     "message": "قیمتوں کا اسٹوریج دستیاب نہیں ہے۔ درخواستیں اس وقت تک موقوف ہیں جب تک ان کی حد کا حساب نہ رکھا جا سکے۔",
     "description": "Fail closed when rate budget cannot persist",
@@ -167,24 +161,6 @@
     "_machine_translated": true,
     "_source_hash": "863fbc4ab994c2eb"
   },
-  "settings.provider": {
-    "message": "فراہم کنندہ",
-    "description": "Provider selector label",
-    "_machine_translated": true,
-    "_source_hash": "713fef775807424a"
-  },
-  "settings.finnhub": {
-    "message": "Finnhub · امریکی قیمتیں · مفت ذاتی کلید",
-    "description": "Supported online provider option",
-    "_machine_translated": true,
-    "_source_hash": "e989961cfe6d267c"
-  },
-  "settings.cache": {
-    "message": "صرف محفوظ کردہ قیمتیں · آف لائن",
-    "description": "Network paused provider option",
-    "_machine_translated": true,
-    "_source_hash": "f429d58cbb1c5f8b"
-  },
   "setup.intro": {
     "message": "امریکی اسٹاک کوٹس کے لیے اپنی مفت Finnhub کلید استعمال کریں۔ نیچے سے کلید حاصل کریں، پھر منسلک ہونے کے لیے اسے آزما کر محفوظ کریں۔",
     "description": "User-facing provider setup introduction",
@@ -198,10 +174,10 @@
     "_source_hash": "9eb9716ed06ff746"
   },
   "setup.steps": {
-    "message": "1۔ \"مفت کلید حاصل کریں\" کھولیں اور Finnhub پر رجسٹر کریں۔ 2۔ اس کے ڈیش بورڈ سے اپنی API کلید کاپی کریں۔ 3۔ اسے نیچے پیسٹ کریں اور \"جانچیں اور محفوظ کریں\" منتخب کریں۔ 4۔ اپنی واچ لسٹ اور فراہم کنندہ کی ترتیبات محفوظ کریں۔",
+    "message": "1۔ \"مفت Finnhub کلید حاصل کریں (تقریباً ایک منٹ)\" کھولیں اور Finnhub پر رجسٹر کریں۔ 2۔ اس کے ڈیش بورڈ سے اپنی API کلید کاپی کریں۔ 3۔ اسے نیچے پیسٹ کریں اور \"جانچیں اور محفوظ کریں\" منتخب کریں۔",
     "description": "Guided setup steps",
     "_machine_translated": true,
-    "_source_hash": "f0be788769ece36a"
+    "_source_hash": "d850b03495911632"
   },
   "setup.saved": {
     "message": "اس آلے پر ایک کلید محفوظ ہے۔ اسے جانچنے کے لیے فیلڈ خالی چھوڑ دیں، یا متبادل کلید پیسٹ کریں۔ محفوظ کردہ کلیدیں یہاں کبھی نہیں دکھائی جاتیں۔",
@@ -210,10 +186,10 @@
     "_source_hash": "4fba007359b56f1d"
   },
   "setup.free_key": {
-    "message": "مفت کلید حاصل کریں",
+    "message": "مفت Finnhub کلید حاصل کریں (تقریباً ایک منٹ)",
     "description": "Open provider registration in system browser",
     "_machine_translated": true,
-    "_source_hash": "42b307eaf0136997"
+    "_source_hash": "a0566f42e52da139"
   },
   "setup.key": {
     "message": "Finnhub API کلید",
@@ -246,10 +222,10 @@
     "_source_hash": "59cb7317745316bb"
   },
   "setup.success": {
-    "message": "Finnhub قیمت کی جانچ کامیاب رہی؛ کلید محفوظ ہو گئی۔ مکمل کرنے کے لیے فراہم کنندہ اور واچ لسٹ کی ترتیبات محفوظ کریں۔",
-    "description": "Successful guided setup",
+    "message": "Finnhub قیمت کی جانچ کامیاب رہی؛ کلید محفوظ ہو گئی۔",
+    "description": "Successful guided setup; key is saved independently of watchlist settings",
     "_machine_translated": true,
-    "_source_hash": "96383792f28339c2"
+    "_source_hash": "76df0b334c35e1f8"
   },
   "settings.watchlist_section": {
     "message": "واچ لسٹ اور ریفریش",
@@ -371,7 +347,7 @@
   },
   "widget.connection": {
     "message": "کوٹس پر توجہ درکار ہے۔ Stocks کی ترتیبات کھولنے کے لیے stock ٹائپ کریں اور Enter دبائیں۔",
-    "description": "Compact widget hint for authentication, saved-only or storage problems; keep stock as the launcher command",
+    "description": "Compact widget hint for authentication or storage problems; keep stock as the launcher command",
     "_machine_translated": true,
     "_source_hash": "28d7c64fff255e29"
   },

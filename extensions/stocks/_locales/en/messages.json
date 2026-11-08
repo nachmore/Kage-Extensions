@@ -89,10 +89,6 @@
     "message": "Another Kage window is refreshing quotes. Try again shortly.",
     "description": "Cross-window request lock contention"
   },
-  "error.cache_only": {
-    "message": "Saved quotes only; live requests are paused. Open Stocks settings to choose Finnhub and connect a key.",
-    "description": "User selected offline provider mode"
-  },
   "error.storage": {
     "message": "Quote storage is unavailable. Requests are paused until their limit can be tracked.",
     "description": "Fail closed when rate budget cannot persist"
@@ -113,18 +109,6 @@
     "message": "Quote provider and setup",
     "description": "Connection section heading"
   },
-  "settings.provider": {
-    "message": "Provider",
-    "description": "Provider selector label"
-  },
-  "settings.finnhub": {
-    "message": "Finnhub · US quotes · free personal key",
-    "description": "Supported online provider option"
-  },
-  "settings.cache": {
-    "message": "Saved quotes only · offline",
-    "description": "Network paused provider option"
-  },
   "setup.intro": {
     "message": "Use your own free Finnhub key for US stock quotes. Get a key below, then test and save it to connect.",
     "description": "User-facing provider setup introduction"
@@ -134,7 +118,7 @@
     "description": "Material provider use restrictions"
   },
   "setup.steps": {
-    "message": "1. Open Get a free key and register at Finnhub. 2. Copy your API key from its dashboard. 3. Paste it below and choose Test and save. 4. Save your watchlist and provider settings.",
+    "message": "1. Open Get a free Finnhub key (about a minute) and register at Finnhub. 2. Copy your API key from its dashboard. 3. Paste it below and choose Test and save.",
     "description": "Guided setup steps"
   },
   "setup.saved": {
@@ -142,7 +126,7 @@
     "description": "Connected setup state without secret disclosure"
   },
   "setup.free_key": {
-    "message": "Get a free key",
+    "message": "Get a free Finnhub key (about a minute)",
     "description": "Open provider registration in system browser"
   },
   "setup.key": {
@@ -166,8 +150,8 @@
     "description": "Removal success"
   },
   "setup.success": {
-    "message": "Finnhub quote test passed; key saved. Save the provider and watchlist settings to finish.",
-    "description": "Successful guided setup"
+    "message": "Finnhub quote test passed; key saved.",
+    "description": "Successful guided setup; key is saved independently of watchlist settings"
   },
   "settings.watchlist_section": {
     "message": "Watchlist and refresh",
@@ -251,7 +235,7 @@
   },
   "widget.connection": {
     "message": "Quotes need attention. Type stock and press Enter to open Stocks settings.",
-    "description": "Compact widget hint for authentication, saved-only or storage problems; keep stock as the launcher command"
+    "description": "Compact widget hint for authentication or storage problems; keep stock as the launcher command"
   },
   "tool.opt_in": {
     "message": "Enable Allow Stocks tools for agents in Stocks settings before using this tool. Check that your Finnhub agreement permits sharing data with your agent provider.",

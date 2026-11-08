@@ -340,10 +340,10 @@ describe('round 3: index, pruning and deletion', () => {
     expect(await h.client.deleteQuotes([])).toEqual({ deleted: 2, failed: 0 });
   });
 
-  it('cached() excludes data beyond retention in saved-only mode', async () => {
-    const h = host({ seed: { quote_AAPL: quote('AAPL', 32 * DAY) } });
+  it('cached() excludes data beyond retention when no key is saved', async () => {
+    const h = host({ key: null, seed: { quote_AAPL: quote('AAPL', 32 * DAY) } });
     expect(await h.client.cached('AAPL')).toBeNull();
-    expect((await h.client.getQuotes(['AAPL'], { provider: 'cache' }))[0].error).toBe('cache_only');
+    expect((await h.client.getQuotes(['AAPL']))[0].error).toBe('setup');
     expect(fetch).not.toHaveBeenCalled();
   });
 });
@@ -375,7 +375,7 @@ describe('round 3: cadence, locale, tools, and mutation guards', () => {
     expect(result.html.match(/Type stock and press Enter/g)).toHaveLength(1);
     expect(result.html).toContain('AAPL');
     expect(result.html).toContain('MSFT');
-    expect(result.html).not.toContain('free Finnhub key');
+    expect(result.html.match(/Get a free Finnhub key \(about a minute\)/g)).toHaveLength(1);
   });
 
   it('passes the host locale to prices, percentages, and timezone display while keeping copy invariant', async () => {

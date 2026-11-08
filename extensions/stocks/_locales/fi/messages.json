@@ -131,12 +131,6 @@
     "_machine_translated": true,
     "_source_hash": "b6ed5bc4b975b5a0"
   },
-  "error.cache_only": {
-    "message": "Vain tallennetut kurssit; reaaliaikaiset pyynnöt on keskeytetty. Valitse Finnhub Osakkeet-asetuksista ja yhdistä avain.",
-    "description": "User selected offline provider mode",
-    "_machine_translated": true,
-    "_source_hash": "69f4b08853704dde"
-  },
   "error.storage": {
     "message": "Kurssien tallennustila ei ole käytettävissä. Pyynnöt on keskeytetty, kunnes niiden rajaa voidaan seurata.",
     "description": "Fail closed when rate budget cannot persist",
@@ -167,24 +161,6 @@
     "_machine_translated": true,
     "_source_hash": "863fbc4ab994c2eb"
   },
-  "settings.provider": {
-    "message": "Palveluntarjoaja",
-    "description": "Provider selector label",
-    "_machine_translated": true,
-    "_source_hash": "713fef775807424a"
-  },
-  "settings.finnhub": {
-    "message": "Finnhub · Yhdysvaltain kurssit · ilmainen henkilökohtainen avain",
-    "description": "Supported online provider option",
-    "_machine_translated": true,
-    "_source_hash": "e989961cfe6d267c"
-  },
-  "settings.cache": {
-    "message": "Vain tallennetut kurssit · offline-tila",
-    "description": "Network paused provider option",
-    "_machine_translated": true,
-    "_source_hash": "f429d58cbb1c5f8b"
-  },
   "setup.intro": {
     "message": "Käytä omaa maksutonta Finnhub-avaintasi Yhdysvaltain osakekursseihin. Hanki avain alta, testaa se ja tallenna se yhdistääksesi.",
     "description": "User-facing provider setup introduction",
@@ -198,10 +174,10 @@
     "_source_hash": "9eb9716ed06ff746"
   },
   "setup.steps": {
-    "message": "1. Valitse Hanki ilmainen avain ja rekisteröidy Finnhubiin. 2. Kopioi API-avaimesi Finnhubin hallintapaneelista. 3. Liitä se alle ja valitse Testaa ja tallenna avain. 4. Tallenna seurantalistan ja palveluntarjoajan asetukset.",
+    "message": "1. Valitse Hanki ilmainen Finnhub-avain (noin minuutti) ja rekisteröidy Finnhubiin. 2. Kopioi API-avaimesi Finnhubin hallintapaneelista. 3. Liitä se alle ja valitse Testaa ja tallenna avain.",
     "description": "Guided setup steps",
     "_machine_translated": true,
-    "_source_hash": "f0be788769ece36a"
+    "_source_hash": "d850b03495911632"
   },
   "setup.saved": {
     "message": "Tälle laitteelle on tallennettu avain. Jätä kenttä tyhjäksi testataksesi sitä tai liitä tilalle uusi avain. Tallennettuja avaimia ei koskaan näytetä täällä.",
@@ -210,10 +186,10 @@
     "_source_hash": "4fba007359b56f1d"
   },
   "setup.free_key": {
-    "message": "Hanki ilmainen avain",
+    "message": "Hanki ilmainen Finnhub-avain (noin minuutti)",
     "description": "Open provider registration in system browser",
     "_machine_translated": true,
-    "_source_hash": "42b307eaf0136997"
+    "_source_hash": "a0566f42e52da139"
   },
   "setup.key": {
     "message": "Finnhub API -avain",
@@ -246,10 +222,10 @@
     "_source_hash": "59cb7317745316bb"
   },
   "setup.success": {
-    "message": "Finnhub-kurssitesti onnistui; avain tallennettu. Viimeistele tallentamalla palveluntarjoajan ja seurantalistan asetukset.",
-    "description": "Successful guided setup",
+    "message": "Finnhub-kurssitesti onnistui; avain tallennettu.",
+    "description": "Successful guided setup; key is saved independently of watchlist settings",
     "_machine_translated": true,
-    "_source_hash": "96383792f28339c2"
+    "_source_hash": "76df0b334c35e1f8"
   },
   "settings.watchlist_section": {
     "message": "Seurantalista ja päivitys",
@@ -371,7 +347,7 @@
   },
   "widget.connection": {
     "message": "Kurssit vaativat huomiota. Kirjoita stock ja paina Enter avataksesi Osakkeet-asetukset.",
-    "description": "Compact widget hint for authentication, saved-only or storage problems; keep stock as the launcher command",
+    "description": "Compact widget hint for authentication or storage problems; keep stock as the launcher command",
     "_machine_translated": true,
     "_source_hash": "28d7c64fff255e29"
   },

@@ -29,14 +29,6 @@ export default class StocksSettingsProvider {
           label: t('settings.connection'),
           controls: [
             { type: 'info', html: `<p>${escapeHtml(t('setup.intro'))}</p><p>${escapeHtml(t('setup.terms'))}</p>` },
-            {
-              type: 'select', id: 'provider', label: t('settings.provider'),
-              default: DEFAULTS.provider,
-              options: [
-                { value: 'finnhub', label: t('settings.finnhub') },
-                { value: 'cache', label: t('settings.cache') },
-              ],
-            },
             { type: 'info', html: `<p>${escapeHtml(hasKey ? t('setup.saved') : t('setup.steps'))}</p>` },
             { type: 'action', id: 'free_key', action: 'free_key', label: t('setup.free_key') },
             // Scratch field never goes into config or back into the schema.
@@ -69,9 +61,6 @@ export default class StocksSettingsProvider {
   validate(values = {}) {
     try {
       if (values.watchlist !== undefined) parseSymbols(values.watchlist, { allowEmpty: true });
-      if (values.provider !== undefined && !['finnhub', 'cache'].includes(values.provider)) {
-        return { valid: false, error: this.t('error.unsupported') };
-      }
       if (values.refresh_seconds !== undefined) {
         const n = Number(values.refresh_seconds);
         if (!Number.isFinite(n) || n < MIN_REFRESH_SECONDS || n > MAX_REFRESH_SECONDS) {
@@ -87,6 +76,9 @@ export default class StocksSettingsProvider {
     for (const key of Object.keys(DEFAULTS)) {
       if (Object.hasOwn(values, key)) clean[key] = values[key];
     }
+    // Older hosts merge normalized values into saved config. Reset the
+    // retired provider field to Finnhub; runtime no longer consults it.
+    if (Object.hasOwn(values, 'provider')) clean.provider = 'finnhub';
     if (Object.hasOwn(clean, 'watchlist')) {
       clean.watchlist = parseSymbols(clean.watchlist, { allowEmpty: true }).join(' ');
     }

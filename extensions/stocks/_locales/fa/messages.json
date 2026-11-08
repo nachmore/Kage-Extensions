@@ -131,12 +131,6 @@
     "_machine_translated": true,
     "_source_hash": "b6ed5bc4b975b5a0"
   },
-  "error.cache_only": {
-    "message": "فقط قیمت‌های ذخیره‌شده نمایش داده می‌شوند؛ درخواست‌های زنده متوقف شده‌اند. برای انتخاب Finnhub و اتصال کلید، تنظیمات سهام را باز کنید.",
-    "description": "User selected offline provider mode",
-    "_machine_translated": true,
-    "_source_hash": "69f4b08853704dde"
-  },
   "error.storage": {
     "message": "فضای ذخیره‌سازی قیمت‌ها در دسترس نیست. درخواست‌ها تا زمانی که بتوان سقف آن‌ها را پیگیری کرد متوقف می‌شوند.",
     "description": "Fail closed when rate budget cannot persist",
@@ -167,24 +161,6 @@
     "_machine_translated": true,
     "_source_hash": "863fbc4ab994c2eb"
   },
-  "settings.provider": {
-    "message": "ارائه‌دهنده",
-    "description": "Provider selector label",
-    "_machine_translated": true,
-    "_source_hash": "713fef775807424a"
-  },
-  "settings.finnhub": {
-    "message": "Finnhub · قیمت‌های آمریکا · کلید شخصی رایگان",
-    "description": "Supported online provider option",
-    "_machine_translated": true,
-    "_source_hash": "e989961cfe6d267c"
-  },
-  "settings.cache": {
-    "message": "فقط قیمت‌های ذخیره‌شده · آفلاین",
-    "description": "Network paused provider option",
-    "_machine_translated": true,
-    "_source_hash": "f429d58cbb1c5f8b"
-  },
   "setup.intro": {
     "message": "برای دریافت قیمت سهام آمریکا از کلید رایگان Finnhub خودتان استفاده کنید. از پایین یک کلید بگیرید، سپس برای اتصال آن را آزمایش و ذخیره کنید.",
     "description": "User-facing provider setup introduction",
@@ -198,10 +174,10 @@
     "_source_hash": "9eb9716ed06ff746"
   },
   "setup.steps": {
-    "message": "۱. «دریافت کلید رایگان» را باز کنید و در Finnhub ثبت‌نام کنید. ۲. کلید API خود را از داشبورد آن کپی کنید. ۳. آن را در زیر جای‌گذاری کنید و «آزمایش و ذخیره» را انتخاب کنید. ۴. فهرست دیده‌بانی و تنظیمات ارائه‌دهنده را ذخیره کنید.",
+    "message": "۱. «دریافت کلید رایگان Finnhub (حدود یک دقیقه)» را باز کنید و در Finnhub ثبت‌نام کنید. ۲. کلید API خود را از داشبورد آن کپی کنید. ۳. آن را در زیر جای‌گذاری کنید و «آزمایش و ذخیره» را انتخاب کنید.",
     "description": "Guided setup steps",
     "_machine_translated": true,
-    "_source_hash": "f0be788769ece36a"
+    "_source_hash": "d850b03495911632"
   },
   "setup.saved": {
     "message": "یک کلید روی این دستگاه ذخیره شده است. برای آزمایش آن، فیلد را خالی بگذارید یا کلید جایگزین را جای‌گذاری کنید. کلیدهای ذخیره‌شده هرگز اینجا نمایش داده نمی‌شوند.",
@@ -210,10 +186,10 @@
     "_source_hash": "4fba007359b56f1d"
   },
   "setup.free_key": {
-    "message": "دریافت کلید رایگان",
+    "message": "دریافت کلید رایگان Finnhub (حدود یک دقیقه)",
     "description": "Open provider registration in system browser",
     "_machine_translated": true,
-    "_source_hash": "42b307eaf0136997"
+    "_source_hash": "a0566f42e52da139"
   },
   "setup.key": {
     "message": "کلید API ‏Finnhub",
@@ -246,10 +222,10 @@
     "_source_hash": "59cb7317745316bb"
   },
   "setup.success": {
-    "message": "آزمایش قیمت Finnhub موفق بود؛ کلید ذخیره شد. برای پایان، تنظیمات ارائه‌دهنده و فهرست دیده‌بانی را ذخیره کنید.",
-    "description": "Successful guided setup",
+    "message": "آزمایش قیمت Finnhub موفق بود؛ کلید ذخیره شد.",
+    "description": "Successful guided setup; key is saved independently of watchlist settings",
     "_machine_translated": true,
-    "_source_hash": "96383792f28339c2"
+    "_source_hash": "76df0b334c35e1f8"
   },
   "settings.watchlist_section": {
     "message": "فهرست دیده‌بانی و به‌روزرسانی",
@@ -371,7 +347,7 @@
   },
   "widget.connection": {
     "message": "قیمت‌ها نیاز به بررسی دارند. برای باز کردن تنظیمات سهام، stock را تایپ کنید و Enter را بزنید.",
-    "description": "Compact widget hint for authentication, saved-only or storage problems; keep stock as the launcher command",
+    "description": "Compact widget hint for authentication or storage problems; keep stock as the launcher command",
     "_machine_translated": true,
     "_source_hash": "28d7c64fff255e29"
   },

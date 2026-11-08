@@ -131,12 +131,6 @@
     "_machine_translated": true,
     "_source_hash": "b6ed5bc4b975b5a0"
   },
-  "error.cache_only": {
-    "message": "Solo quotazioni salvate; le richieste in tempo reale sono in pausa. Apri le impostazioni di Stocks per scegliere Finnhub e collegare una chiave.",
-    "description": "User selected offline provider mode",
-    "_machine_translated": true,
-    "_source_hash": "69f4b08853704dde"
-  },
   "error.storage": {
     "message": "L'archivio delle quotazioni non è disponibile. Le richieste sono in pausa finché non sarà possibile tracciarne il limite.",
     "description": "Fail closed when rate budget cannot persist",
@@ -167,24 +161,6 @@
     "_machine_translated": true,
     "_source_hash": "863fbc4ab994c2eb"
   },
-  "settings.provider": {
-    "message": "Provider",
-    "description": "Provider selector label",
-    "_machine_translated": true,
-    "_source_hash": "713fef775807424a"
-  },
-  "settings.finnhub": {
-    "message": "Finnhub · quotazioni USA · chiave personale gratuita",
-    "description": "Supported online provider option",
-    "_machine_translated": true,
-    "_source_hash": "e989961cfe6d267c"
-  },
-  "settings.cache": {
-    "message": "Solo quotazioni salvate · offline",
-    "description": "Network paused provider option",
-    "_machine_translated": true,
-    "_source_hash": "f429d58cbb1c5f8b"
-  },
   "setup.intro": {
     "message": "Usa la tua chiave Finnhub gratuita per le quotazioni delle azioni USA. Ottieni una chiave qui sotto, poi verificala e salvala per connetterti.",
     "description": "User-facing provider setup introduction",
@@ -198,10 +174,10 @@
     "_source_hash": "9eb9716ed06ff746"
   },
   "setup.steps": {
-    "message": "1. Apri Ottieni una chiave gratuita e registrati su Finnhub. 2. Copia la tua chiave API dalla dashboard. 3. Incollala qui sotto e scegli Verifica e salva. 4. Salva la watchlist e le impostazioni del provider.",
+    "message": "1. Apri Ottieni una chiave Finnhub gratuita (circa un minuto) e registrati su Finnhub. 2. Copia la tua chiave API dalla dashboard. 3. Incollala qui sotto e scegli Verifica e salva.",
     "description": "Guided setup steps",
     "_machine_translated": true,
-    "_source_hash": "f0be788769ece36a"
+    "_source_hash": "d850b03495911632"
   },
   "setup.saved": {
     "message": "Su questo dispositivo è salvata una chiave. Lascia il campo vuoto per verificarla o incollane una nuova. Le chiavi memorizzate non vengono mai mostrate qui.",
@@ -210,10 +186,10 @@
     "_source_hash": "4fba007359b56f1d"
   },
   "setup.free_key": {
-    "message": "Ottieni una chiave gratuita",
+    "message": "Ottieni una chiave Finnhub gratuita (circa un minuto)",
     "description": "Open provider registration in system browser",
     "_machine_translated": true,
-    "_source_hash": "42b307eaf0136997"
+    "_source_hash": "a0566f42e52da139"
   },
   "setup.key": {
     "message": "Chiave API Finnhub",
@@ -246,10 +222,10 @@
     "_source_hash": "59cb7317745316bb"
   },
   "setup.success": {
-    "message": "Test delle quotazioni Finnhub superato; chiave salvata. Salva le impostazioni del provider e della watchlist per completare.",
-    "description": "Successful guided setup",
+    "message": "Test delle quotazioni Finnhub superato; chiave salvata.",
+    "description": "Successful guided setup; key is saved independently of watchlist settings",
     "_machine_translated": true,
-    "_source_hash": "96383792f28339c2"
+    "_source_hash": "76df0b334c35e1f8"
   },
   "settings.watchlist_section": {
     "message": "Watchlist e aggiornamento",
@@ -371,7 +347,7 @@
   },
   "widget.connection": {
     "message": "Le quotazioni richiedono attenzione. Digita stock e premi Invio per aprire le impostazioni di Stocks.",
-    "description": "Compact widget hint for authentication, saved-only or storage problems; keep stock as the launcher command",
+    "description": "Compact widget hint for authentication or storage problems; keep stock as the launcher command",
     "_machine_translated": true,
     "_source_hash": "28d7c64fff255e29"
   },

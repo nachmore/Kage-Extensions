@@ -131,12 +131,6 @@
     "_machine_translated": true,
     "_source_hash": "b6ed5bc4b975b5a0"
   },
-  "error.cache_only": {
-    "message": "Nur gespeicherte Kurse; Live-Abfragen sind pausiert. Öffnen Sie die Aktien-Einstellungen, um Finnhub auszuwählen und einen Schlüssel zu verbinden.",
-    "description": "User selected offline provider mode",
-    "_machine_translated": true,
-    "_source_hash": "69f4b08853704dde"
-  },
   "error.storage": {
     "message": "Der Kursspeicher ist nicht verfügbar. Anfragen sind pausiert, bis ihr Limit erfasst werden kann.",
     "description": "Fail closed when rate budget cannot persist",
@@ -167,24 +161,6 @@
     "_machine_translated": true,
     "_source_hash": "863fbc4ab994c2eb"
   },
-  "settings.provider": {
-    "message": "Anbieter",
-    "description": "Provider selector label",
-    "_machine_translated": true,
-    "_source_hash": "713fef775807424a"
-  },
-  "settings.finnhub": {
-    "message": "Finnhub · US-Kurse · kostenloser persönlicher Schlüssel",
-    "description": "Supported online provider option",
-    "_machine_translated": true,
-    "_source_hash": "e989961cfe6d267c"
-  },
-  "settings.cache": {
-    "message": "Nur gespeicherte Kurse · offline",
-    "description": "Network paused provider option",
-    "_machine_translated": true,
-    "_source_hash": "f429d58cbb1c5f8b"
-  },
   "setup.intro": {
     "message": "Verwenden Sie Ihren eigenen kostenlosen Finnhub-Schlüssel für US-Aktienkurse. Fordern Sie unten einen Schlüssel an, testen und speichern Sie ihn dann, um die Verbindung herzustellen.",
     "description": "User-facing provider setup introduction",
@@ -198,10 +174,10 @@
     "_source_hash": "9eb9716ed06ff746"
   },
   "setup.steps": {
-    "message": "1. Öffnen Sie „Kostenlosen Schlüssel holen“ und registrieren Sie sich bei Finnhub. 2. Kopieren Sie Ihren API-Schlüssel aus dem Dashboard. 3. Fügen Sie ihn unten ein und wählen Sie „Schlüssel testen und speichern“. 4. Speichern Sie Ihre Watchlist- und Anbietereinstellungen.",
+    "message": "1. Öffnen Sie „Kostenlosen Finnhub-Schlüssel holen (etwa eine Minute)“ und registrieren Sie sich bei Finnhub. 2. Kopieren Sie Ihren API-Schlüssel aus dem Dashboard. 3. Fügen Sie ihn unten ein und wählen Sie „Schlüssel testen und speichern“.",
     "description": "Guided setup steps",
     "_machine_translated": true,
-    "_source_hash": "f0be788769ece36a"
+    "_source_hash": "d850b03495911632"
   },
   "setup.saved": {
     "message": "Auf diesem Gerät ist ein Schlüssel gespeichert. Lassen Sie das Feld leer, um ihn zu testen, oder fügen Sie einen neuen ein. Gespeicherte Schlüssel werden hier nie angezeigt.",
@@ -210,10 +186,10 @@
     "_source_hash": "4fba007359b56f1d"
   },
   "setup.free_key": {
-    "message": "Kostenlosen Schlüssel holen",
+    "message": "Kostenlosen Finnhub-Schlüssel holen (etwa eine Minute)",
     "description": "Open provider registration in system browser",
     "_machine_translated": true,
-    "_source_hash": "42b307eaf0136997"
+    "_source_hash": "a0566f42e52da139"
   },
   "setup.key": {
     "message": "Finnhub-API-Schlüssel",
@@ -246,10 +222,10 @@
     "_source_hash": "59cb7317745316bb"
   },
   "setup.success": {
-    "message": "Finnhub-Kurstest erfolgreich; Schlüssel gespeichert. Speichern Sie zum Abschluss die Anbieter- und Watchlist-Einstellungen.",
-    "description": "Successful guided setup",
+    "message": "Finnhub-Kurstest erfolgreich; Schlüssel gespeichert.",
+    "description": "Successful guided setup; key is saved independently of watchlist settings",
     "_machine_translated": true,
-    "_source_hash": "96383792f28339c2"
+    "_source_hash": "76df0b334c35e1f8"
   },
   "settings.watchlist_section": {
     "message": "Watchlist und Aktualisierung",
@@ -371,7 +347,7 @@
   },
   "widget.connection": {
     "message": "Kurse erfordern Ihre Aufmerksamkeit. Geben Sie stock ein und drücken Sie die Eingabetaste, um die Stocks-Einstellungen zu öffnen.",
-    "description": "Compact widget hint for authentication, saved-only or storage problems; keep stock as the launcher command",
+    "description": "Compact widget hint for authentication or storage problems; keep stock as the launcher command",
     "_machine_translated": true,
     "_source_hash": "28d7c64fff255e29"
   },

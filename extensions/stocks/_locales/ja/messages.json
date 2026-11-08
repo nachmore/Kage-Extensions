@@ -131,12 +131,6 @@
     "_machine_translated": true,
     "_source_hash": "b6ed5bc4b975b5a0"
   },
-  "error.cache_only": {
-    "message": "保存済みの株価のみ表示しています。ライブリクエストは一時停止中です。Stocks の設定を開いて Finnhub を選択し、キーを接続してください。",
-    "description": "User selected offline provider mode",
-    "_machine_translated": true,
-    "_source_hash": "69f4b08853704dde"
-  },
   "error.storage": {
     "message": "株価のストレージを利用できません。上限を追跡できるようになるまで、リクエストは一時停止されます。",
     "description": "Fail closed when rate budget cannot persist",
@@ -167,24 +161,6 @@
     "_machine_translated": true,
     "_source_hash": "863fbc4ab994c2eb"
   },
-  "settings.provider": {
-    "message": "プロバイダー",
-    "description": "Provider selector label",
-    "_machine_translated": true,
-    "_source_hash": "713fef775807424a"
-  },
-  "settings.finnhub": {
-    "message": "Finnhub · 米国株価 · 無料の個人用キー",
-    "description": "Supported online provider option",
-    "_machine_translated": true,
-    "_source_hash": "e989961cfe6d267c"
-  },
-  "settings.cache": {
-    "message": "保存済みの株価のみ · オフライン",
-    "description": "Network paused provider option",
-    "_machine_translated": true,
-    "_source_hash": "f429d58cbb1c5f8b"
-  },
   "setup.intro": {
     "message": "米国株の株価を取得するには、ご自身の無料の Finnhub キーを使用します。下のリンクからキーを取得し、テストして保存すると接続されます。",
     "description": "User-facing provider setup introduction",
@@ -198,10 +174,10 @@
     "_source_hash": "9eb9716ed06ff746"
   },
   "setup.steps": {
-    "message": "1.「無料キーを取得」を開き、Finnhub に登録します。2. ダッシュボードから API キーをコピーします。3. 下に貼り付けて「テストして保存」を選択します。4. ウォッチリストとプロバイダーの設定を保存します。",
+    "message": "1.「無料の Finnhub キーを取得（約1分）」を開き、Finnhub に登録します。2. ダッシュボードから API キーをコピーします。3. 下に貼り付けて「テストして保存」を選択します。",
     "description": "Guided setup steps",
     "_machine_translated": true,
-    "_source_hash": "f0be788769ece36a"
+    "_source_hash": "d850b03495911632"
   },
   "setup.saved": {
     "message": "このデバイスにキーが保存されています。テストするにはフィールドを空のままにし、置き換えるには新しいキーを貼り付けてください。保存されたキーはここには表示されません。",
@@ -210,10 +186,10 @@
     "_source_hash": "4fba007359b56f1d"
   },
   "setup.free_key": {
-    "message": "無料キーを取得",
+    "message": "無料の Finnhub キーを取得（約1分）",
     "description": "Open provider registration in system browser",
     "_machine_translated": true,
-    "_source_hash": "42b307eaf0136997"
+    "_source_hash": "a0566f42e52da139"
   },
   "setup.key": {
     "message": "Finnhub API キー",
@@ -246,10 +222,10 @@
     "_source_hash": "59cb7317745316bb"
   },
   "setup.success": {
-    "message": "Finnhub の株価テストに成功し、キーを保存しました。完了するには、プロバイダーとウォッチリストの設定を保存してください。",
-    "description": "Successful guided setup",
+    "message": "Finnhub の株価テストに成功し、キーを保存しました。",
+    "description": "Successful guided setup; key is saved independently of watchlist settings",
     "_machine_translated": true,
-    "_source_hash": "96383792f28339c2"
+    "_source_hash": "76df0b334c35e1f8"
   },
   "settings.watchlist_section": {
     "message": "ウォッチリストと更新",
@@ -371,7 +347,7 @@
   },
   "widget.connection": {
     "message": "株価の確認が必要です。stock と入力して Enter キーを押すと、Stocks の設定が開きます。",
-    "description": "Compact widget hint for authentication, saved-only or storage problems; keep stock as the launcher command",
+    "description": "Compact widget hint for authentication or storage problems; keep stock as the launcher command",
     "_machine_translated": true,
     "_source_hash": "28d7c64fff255e29"
   },

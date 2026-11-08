@@ -149,11 +149,11 @@ describe('SF4: honest deletion and ICU counts', () => {
 });
 
 describe('SF5: widget connection hints open settings', () => {
-  it.each(['setup', 'auth', 'cache_only', 'storage'])('routes a cached bare stock row with %s to settings', async (reason) => {
+  it.each(['setup', 'auth', 'storage'])('routes a cached bare stock row with %s to settings', async (reason) => {
     const h = host({ key: reason === 'setup' ? null : KEY, seed: {
       quote_AAPL: quote(),
       ...(reason === 'auth' || reason === 'storage' ? { request_budget: { attempts: [], backoffUntil: NOW + 60_000, backoffReason: reason } } : {}),
-    }, config: { watchlist: 'AAPL', ...(reason === 'cache_only' ? { provider: 'cache' } : {}) } });
+    }, config: { watchlist: 'AAPL' } });
     if (reason === 'auth' || reason === 'storage') {
       // A stale cache forces the shared auth/storage pause to surface.
       h.store.set('quote_AAPL', JSON.stringify(quote('AAPL', NOW - 600_000)));
@@ -167,8 +167,8 @@ describe('SF5: widget connection hints open settings', () => {
     const explicit = await drive(search.matchAsync('$AAPL'));
     expect(await search.execute(explicit[0])).toEqual({ type: 'custom', data: {} });
   });
-  it('opens settings on pending bare stock in saved-only mode', async () => {
-    const search = init(Search, host({ config: { provider: 'cache' } }));
+  it('opens settings on pending bare stock without a saved key', async () => {
+    const search = init(Search, host({ key: null }));
     expect(await search.execute(search.match('stock')[0])).toEqual({ type: 'open_extension_settings' });
     expect(fetch).not.toHaveBeenCalled();
   });

@@ -185,7 +185,7 @@ describe('cache, budgets, backoff and concurrent windows', () => {
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(getClient(f.context)).toBe(getClient(f.context));
   });
-  it('returns timestamped old data offline and honors offline provider mode', async () => {
+  it('returns timestamped old data offline', async () => {
     const f = fixture();
     fetch.mockResolvedValueOnce(jsonResponse());
     await f.client.getQuote('AAPL');
@@ -194,10 +194,20 @@ describe('cache, budgets, backoff and concurrent windows', () => {
     const old = await f.client.getQuote('AAPL');
     expect(old).toMatchObject({ cached: true, stale: true, reason: 'offline', fetchedAt: NOW });
     expect(fetch).toHaveBeenCalledTimes(1);
-    navigator.onLine = true;
-    const cached = await f.client.getQuote('AAPL', { provider: 'cache' });
-    expect(cached.reason).toBe('cache_only');
-    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(quoteDescription(old, f.context.i18n.t)).toContain(`As of ${timestampText(old.timestamp)}`);
+    expect(quoteDescription(old, f.context.i18n.t)).toContain(`Cached ${timestampText(NOW / 1000)}`);
+  });
+  it.each([[500, 'unavailable'], [401, 'auth'], [403, 'unsupported']])('retains timestamped cached quotes after HTTP %i errors', async (status, reason) => {
+    const f = fixture();
+    fetch.mockResolvedValueOnce(jsonResponse());
+    await f.client.getQuote('AAPL');
+    Date.now.mockReturnValue(NOW + 600_000);
+    fetch.mockResolvedValueOnce(jsonResponse({}, status));
+    const saved = await f.client.getQuote('AAPL');
+    expect(saved).toMatchObject({ cached: true, stale: true, reason, timestamp: NOW / 1000, fetchedAt: NOW });
+    const description = quoteDescription(saved, f.context.i18n.t);
+    expect(description).toContain(`As of ${timestampText(saved.timestamp)}`);
+    expect(description).toContain(`Cached ${timestampText(NOW / 1000)}`);
   });
   it('backs off 429 responses across windows and shows cached values', async () => {
     const f = fixture();
@@ -207,6 +217,7 @@ describe('cache, budgets, backoff and concurrent windows', () => {
     fetch.mockResolvedValueOnce(jsonResponse({}, 429, {}));
     const old = await f.client.getQuote('AAPL');
     expect(old).toMatchObject({ stale: true, reason: 'rate_limit', fetchedAt: NOW, retryAt: NOW + 660_000 });
+    expect(quoteDescription(old, f.context.i18n.t)).toContain(`As of ${timestampText(old.timestamp)}`);
     const sibling = new StocksClient(f.context);
     Date.now.mockReturnValue(NOW + 600_251);
     await expect(sibling.getQuote('MSFT')).rejects.toMatchObject({ code: 'rate_limit', retryAt: NOW + 660_000 });

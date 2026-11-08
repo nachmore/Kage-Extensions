@@ -1,5 +1,5 @@
 // permissions: storage — commands are routed through dataInvoke.
-import { DEFAULTS, MAX_PER_MINUTE, refreshSeconds } from './defaults.js';
+import { MAX_PER_MINUTE, refreshSeconds } from './defaults.js';
 import { StockError, normalizeSymbol, symbolEntries, symbolName } from './symbols.js';
 
 export const API_ORIGIN = 'https://finnhub.io';
@@ -408,15 +408,12 @@ export class StocksClient {
         for (const entry of entries) if (entry.symbol === 'INDEX') entry.error = error.code || 'storage';
       }
     }
-    const provider = config.provider ?? DEFAULTS.provider;
     let key, keyError;
-    if (provider === 'finnhub') {
-      try { key = await this.key(); } catch (error) { keyError = error.code; }
-      if (this.localBackoffReason === 'auth' && key !== this.localAuthKey) {
-        this.localBackoff = 0;
-        this.localBackoffReason = null;
-        this.localAuthKey = null;
-      }
+    try { key = await this.key(); } catch (error) { keyError = error.code; }
+    if (this.localBackoffReason === 'auth' && key !== this.localAuthKey) {
+      this.localBackoff = 0;
+      this.localBackoffReason = null;
+      this.localAuthKey = null;
     }
     const ready = await Promise.all(entries.map(async (entry) => {
       if (entry.error) return entry;
@@ -429,7 +426,7 @@ export class StocksClient {
       if (entry.error) return Promise.resolve(entry);
       const { symbol, cache, preserveRecord } = entry;
       const failure = (error) => ({ symbol, error: error.code || 'unavailable', retryAt: error.retryAt || null });
-      const reason = provider === 'cache' ? 'cache_only' : provider !== 'finnhub' ? 'unsupported' : keyError || (!key ? 'setup' : null);
+      const reason = keyError || (!key ? 'setup' : null);
       if (reason) {
         try { return Promise.resolve(this.fallback(cache, reason)); } catch (error) { return Promise.resolve(failure(error)); }
       }
@@ -474,7 +471,7 @@ export class StocksClient {
     try {
       const caches = await Promise.all(symbols.map((symbol) => this.cached(symbol)));
       if (caches.some((cache) => !cache || (!cache.error && !isFresh(cache, config)))) return null;
-      // getQuotes also applies key removal and saved-only status to cache hits.
+      // getQuotes also applies key removal and setup status to cache hits.
       return await this.getQuotes(symbols, config);
     } catch { return null; }
   }
