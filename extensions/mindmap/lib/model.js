@@ -296,6 +296,7 @@ function normalizeCandidate(raw) {
 function normalizeRelation(raw, types) {
   if (!raw || typeof raw !== 'object' || typeof raw.s !== 'string' || typeof raw.t !== 'string') return null;
   if (!types.includes(raw.type)) return null;
+  // kage-sensitive-data: not-sensitive — reviewed: a stored record, not a settings control
   const relation = { s: raw.s, t: raw.t, type: raw.type };
   if (ORIGINS.includes(raw.origin)) relation.origin = raw.origin;
   relation.at = finite(raw.at) ?? 0;
@@ -704,6 +705,7 @@ function resolveEntity(tx, { key, name, type, origin = 'rule', entityId, alias }
   if (!slot) return null;
   const existing = state.entities.get(slot);
   if (existing) return existing.key === key ? existing.id : null;
+  // kage-sensitive-data: not-sensitive — reviewed: a stored record, not a settings control
   const entity = putEntity(tx, {
     id: slot, type: ENTITY_TYPES.includes(type) ? type : 'term', name: clean(name || key, LIMITS.entityName) || key,
     // An email mention keeps the address as an alias.
@@ -1179,6 +1181,7 @@ export function applyAnnotate(state, entries, env) {
     }
     entities.forEach((e, i) => {
       const key = text.normalizeKey(e?.name);
+      // kage-sensitive-data: not-sensitive — reviewed: a stored record, not a settings control
       const eid = resolveEntity(tx, { key, name: e?.name, type: ENTITY_TYPES.includes(e?.type) ? e.type : 'topic', origin: 'agent' }, entitySlots[i]);
       if (eid && !rejectedMention(state, id, eid)) addMention(draft, eid, 'agent');
     });

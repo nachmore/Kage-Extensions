@@ -1,0 +1,29 @@
+{
+  "id": "mindmap",
+  "name": "__MSG_manifest.name__",
+  "version": "0.1.0",
+  "type": "extension",
+  "description": "__MSG_manifest.description__",
+  "icon": "🧠",
+  "author": "kage",
+  "tags": ["productivity", "notes", "knowledge", "mindmap", "todo", "bookmarks", "organizer", "ai"],
+  "permissions": ["storage", "urls", "network", "windows"],
+  "config": {
+    "my_names": { "type": "string", "default": "" },
+    "week_start": { "type": "string", "default": "auto" },
+    "fetch_link_titles": { "type": "boolean", "default": true },
+    "record_source_window": { "type": "boolean", "default": true },
+    "new_items_private": { "type": "boolean", "default": false },
+    "auto_accept_inferred": { "type": "boolean", "default": false },
+    "agent_tools": { "type": "boolean", "default": true },
+    "agent_snippet_chars": { "type": "number", "default": 280 },
+    "trigger": { "type": "string", "default": "mm" }
+  },
+  "contributes": {
+    "searchProvider": "./search.js",
+    "toolProvider": "./tools.js",
+    "messageFormatters": "./formatter.js",
+    "settingsProvider": "./settings.js",
+    "css": ["./styles.css"]
+  }
+}

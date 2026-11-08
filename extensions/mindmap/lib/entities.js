@@ -101,6 +101,7 @@ function dictRecords(entries, lib) {
       const seq = words.map((w) => lib.text.wordTerm(w)).filter(Boolean);
       if (!seq.length) continue;
       if (seq.length === 1 && lib.text.STOPWORDS.has(words[0].norm)) continue;
+      // kage-sensitive-data: not-sensitive — reviewed: an entity/candidate record, not a settings control
       out.push({ seq, entityId: entry.entityId, type: entry.type || 'term', name: canonical, key, alias: lib.text.normalizeKey(name) });
     }
   }
@@ -124,6 +125,7 @@ function addRecords(byFirst, byKey, records) {
     touched.add(first);
     for (const k of new Set([rec.key, rec.alias])) {
       const list = byKey.get(k) || [];
+      // kage-sensitive-data: not-sensitive — reviewed: an entity/candidate record, not a settings control
       if (!list.some((r) => r.entityId === rec.entityId)) list.push({ entityId: rec.entityId, type: rec.type, name: rec.name, key: rec.key });
       byKey.set(k, list);
     }
@@ -175,6 +177,7 @@ export function scanDictionary(dict, words) {
     }
     if (match) {
       const len = match.seq.length;
+      // kage-sensitive-data: not-sensitive — reviewed: an entity/candidate record, not a settings control
       out.push({ entityId: match.entityId, type: match.type, start: words[i].start, end: words[i + len - 1].end, key: match.key, name: match.name });
       i += len;
     } else {
@@ -209,6 +212,7 @@ function groupMentions(text, words, lib, opts) {
         parts.unshift(w2);
       }
       const name = parts.map((p) => titleWord(p.raw)).join(' ');
+      // kage-sensitive-data: not-sensitive — reviewed: an entity/candidate record, not a settings control
       out.push({ type, name, key: lib.text.normalizeKey(name), start: parts[0].start, end: w.end, marker: type });
       continue;
     }
@@ -219,6 +223,7 @@ function groupMentions(text, words, lib, opts) {
       const n2 = words[i + 2];
       if (n2 && !starts.has(i + 2) && gapIsSpace(text, n1, n2) && capsLike(n2) && !isStop(n2, lib) && !GROUP_NOUNS.has(n2.norm)) parts.push(n2);
       const name = parts.map((p) => p.raw.replace(/['’]s$/i, '')).join(' ');
+      // kage-sensitive-data: not-sensitive — reviewed: an entity/candidate record, not a settings control
       out.push({ type, name, key: lib.text.normalizeKey(name), start: w.start, end: parts[parts.length - 1].end, marker: type });
     }
   }
@@ -307,6 +312,7 @@ export function implicitCandidates(text, lib, { stoplist } = {}) {
   const add = (display, start, end, type) => {
     const key = lib.text.normalizeKey(display);
     if (!key || key === 'me' || lib.text.STOPWORDS.has(key)) return;
+    // kage-sensitive-data: not-sensitive — reviewed: an entity/candidate record, not a settings control
     found.push({ key, display, type, start, end });
   };
 
@@ -470,6 +476,7 @@ export function bumpCandidates(candidates, found, itemId, now, { threshold = 2, 
     if (rejected.has(c.key)) continue;
     let entry = candidates.get(c.key);
     if (!entry) {
+      // kage-sensitive-data: not-sensitive — reviewed: an entity/candidate record, not a settings control
       entry = { key: c.key, display: c.display, type: c.type, n: 0, firstSeen: now, sample: [] };
       candidates.set(c.key, entry);
     }
@@ -478,6 +485,7 @@ export function bumpCandidates(candidates, found, itemId, now, { threshold = 2, 
       entry.n += 1;
       if (entry.sample.length < 5) entry.sample.push(itemId);
     }
+    // kage-sensitive-data: not-sensitive — reviewed: an entity/candidate record, not a settings control
     if (entry.n >= threshold) promote.push({ key: entry.key, display: entry.display, type: entry.type, itemIds: [...entry.sample] });
   }
   promote.sort((a, b) => (a.key < b.key ? -1 : a.key > b.key ? 1 : 0));

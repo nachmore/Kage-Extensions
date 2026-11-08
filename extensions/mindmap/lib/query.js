@@ -167,6 +167,7 @@ export function parseQuery(input, env) {
       if (hard && !prev.hard) Object.assign(prev, { hard: true, via });
       return;
     }
+    // kage-sensitive-data: not-sensitive — reviewed: a query entity/chip, not a settings control
     spec.entities.push({ entityId: hit.entityId, hard, via, name: hit.name, type: hit.type });
   };
 
@@ -248,6 +249,7 @@ export function parseQuery(input, env) {
     const hit = resolve(value.replace(/[-_]/g, ' '), null) || (value.includes('-') ? resolve(value, null) : null);
     if (hit) addEntity(hit, true, 'marker');
     else {
+      // kage-sensitive-data: not-sensitive — reviewed: a query entity/chip, not a settings control
       spec.unresolved.push({ phrase: value.replace(/[-_]/g, ' '), type: m[1] === '#' ? 'topic' : null });
       for (const w of lib.text.scanWords(value)) spec.terms.push({ t: lib.text.wordTerm(w), w: 1, raw: w.raw });
     }
@@ -319,6 +321,7 @@ export function parseQuery(input, env) {
       addEntity(hit, true, 'phrase');
       work.blank(m.index, end);
     } else {
+      // kage-sensitive-data: not-sensitive — reviewed: a query entity/chip, not a settings control
       spec.unresolved.push({ phrase: raw.slice(nameSpan[0], nameSpan[1]).replace(/^@/, ''), type });
       work.blank(m.index, nameSpan[0]);
       work.blank(nameSpan[1], end);
@@ -404,6 +407,7 @@ export function parseQuery(input, env) {
   if (env.dict) {
     for (const hit of lib.entities.scanDictionary(env.dict, lib.text.scanWords(work.rest))) {
       if (spec.entities.some((e) => e.entityId === hit.entityId)) continue;
+      // kage-sensitive-data: not-sensitive — reviewed: a query entity/chip, not a settings control
       addEntity({ entityId: hit.entityId, name: hit.name, type: hit.type }, false, 'dict');
       softSpans.push({ start: hit.start, end: hit.end, entityId: hit.entityId });
     }
@@ -471,6 +475,7 @@ export function parseQuery(input, env) {
   spec.kindBoost = docLink || (boostDoc && spec.kinds?.includes('doc')) ? 'doc' : null;
 
   if (spec.kinds) spec.chips.push({ type: 'kinds', value: spec.kinds });
+  // kage-sensitive-data: not-sensitive — reviewed: a query entity/chip, not a settings control
   if (spec.range) spec.chips.push({ type: 'range', value: spec.range });
   if (spec.owner && (spec.intent === 'actions' || explicitOwner)) spec.chips.push({ type: 'owner', value: spec.owner });
   for (const e of spec.entities) if (e.hard) spec.chips.push({ type: 'entity', value: e.entityId });

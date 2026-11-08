@@ -450,7 +450,9 @@ export function extract(input, env) {
     if (m.entityId) return m;
     const hits = known(m.key);
     const hit = hits.find((h) => h.type === m.type) || hits[0];
+    // kage-sensitive-data: not-sensitive — reviewed: an extraction mention, not a settings control
     if (hit) return { ...m, entityId: hit.entityId, name: hit.name, type: hit.type, key: hit.key };
+    // kage-sensitive-data: not-sensitive — reviewed: an extraction mention, not a settings control
     localEntries.push({ entityId: placeholder(m), type: m.type, names: [m.name], key: m.key });
     return m;
   });
@@ -466,6 +468,7 @@ export function extract(input, env) {
         hits.push({ ...fresher, start: hit.start, end: hit.end, block: bi, seg, explicit: false });
       } else if (!String(hit.entityId).startsWith('new:')) {
         const me = hit.entityId === 'me';
+        // kage-sensitive-data: not-sensitive — reviewed: an extraction mention, not a settings control
         hits.push({ entityId: hit.entityId, type: hit.type, name: me ? 'Me' : hit.name, key: me ? 'me' : hit.key, start: hit.start, end: hit.end, block: bi, seg, explicit: false });
       }
     }
@@ -479,6 +482,7 @@ export function extract(input, env) {
       if (m.alias && !prev.alias) prev.alias = m.alias;
       continue;
     }
+    // kage-sensitive-data: not-sensitive — reviewed: an extraction mention, not a settings control
     merged.set(id, {
       ...(m.entityId ? { entityId: m.entityId } : {}),
       key: m.key,
@@ -508,6 +512,7 @@ export function extract(input, env) {
         if (c.type === 'person') prev.type = 'person';
         continue;
       }
+      // kage-sensitive-data: not-sensitive — reviewed: an extraction mention, not a settings control
       const entry = { key: c.key, display: c.display, type: c.type };
       byKey.set(c.key, entry);
       candidates.push(entry);
