@@ -153,10 +153,10 @@ describe('persistence round trip and validation', () => {
 
   it('never persists the me entity\'s aliases (they come from settings)', () => {
     const state = emptyState(NOW);
-    state.entities.get('me').aliases = ['Oren', 'ON'];
+    state.entities.get('me').aliases = ['Alex', 'AL'];
     const me = payloadFor(state, 'entities').entities.find((e) => e.id === 'me');
     expect(me.aliases).toEqual([]);
-    expect(state.entities.get('me').aliases).toEqual(['Oren', 'ON']);
+    expect(state.entities.get('me').aliases).toEqual(['Alex', 'AL']);
   });
 
   it('drops malformed records and lists every problem', () => {
@@ -528,8 +528,8 @@ describe('entityByKey', () => {
     expect(atlas.type).toBe('topic');
     state.entities.set('e00000000000009', { id: 'e00000000000009', type: 'project', name: 'Atlas', key: 'atlas', aliases: [], origin: 'user', createdAt: NOW, updatedAt: NOW, rev: 1 });
     expect(entityByKey(state, 'atlas', 'project').id).toBe('e00000000000009');
-    state.entities.get('me').aliases = ['Oren'];
-    expect(entityByKey(state, 'oren', 'person').id).toBe('me');
+    state.entities.get('me').aliases = ['Alex'];
+    expect(entityByKey(state, 'alex', 'person').id).toBe('me');
     state.entities.set(atlas.id, { ...atlas, mergedInto: 'e00000000000009' });
     expect(entityByKey(state, 'atlas', 'topic').id).toBe('e00000000000009');
     expect(entityByKey(state, '')).toBeNull();

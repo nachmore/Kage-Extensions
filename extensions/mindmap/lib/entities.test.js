@@ -110,14 +110,14 @@ describe('dictionary', () => {
     { entityId: 'e1', type: 'team', names: ['Bingo'] },
     { entityId: 'e2', type: 'project', names: ['Bingo launch'] },
     { entityId: 'e3', type: 'term', names: ['MTCS', 'Multi Tenant Capacity Service'] },
-    { entityId: 'me', type: 'person', names: ['Oren', 'ON'] },
+    { entityId: 'me', type: 'person', names: ['Alex', 'AL'] },
   ], lib);
 
   it('takes the longest match at word boundaries, with no overlaps', () => {
-    const s = 'review the Bingo launch checklist; bingo MTCSs mtcs’s bingoes on oren';
+    const s = 'review the Bingo launch checklist; bingo MTCSs mtcs’s bingoes on alex';
     const hits = entities.scanDictionary(dict, text.scanWords(s));
     expect(hits.map((h) => [s.slice(h.start, h.end), h.entityId])).toEqual([
-      ['Bingo launch', 'e2'], ['bingo', 'e1'], ['MTCSs', 'e3'], ['mtcs’s', 'e3'], ['oren', 'me'],
+      ['Bingo launch', 'e2'], ['bingo', 'e1'], ['MTCSs', 'e3'], ['mtcs’s', 'e3'], ['alex', 'me'],
     ]);
   });
 
@@ -167,7 +167,7 @@ describe('bumpCandidates', () => {
 
 describe('parseNameList', () => {
   it('splits, trims and dedupes', () => {
-    expect(entities.parseNameList('Oren, ON, oren@example.com, ,on;@Oren\nO. N.')).toEqual(['Oren', 'ON', 'oren@example.com', 'O. N.']);
+    expect(entities.parseNameList('Alex, AL, alex@example.com, ,al;@Alex\nA. L.')).toEqual(['Alex', 'AL', 'alex@example.com', 'A. L.']);
     expect(entities.parseNameList('')).toEqual([]);
     expect(entities.parseNameList(undefined)).toEqual([]);
   });

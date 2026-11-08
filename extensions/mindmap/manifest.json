@@ -10,14 +10,14 @@
   "permissions": ["storage", "urls", "network", "windows"],
   "config": {
     "my_names": { "type": "string", "default": "" },
-    "week_start": { "type": "string", "default": "auto" },
+    "week_start": { "type": "string", "default": "auto", "enum": ["auto", "mon", "sun", "sat"] },
     "fetch_link_titles": { "type": "boolean", "default": true },
     "record_source_window": { "type": "boolean", "default": true },
     "new_items_private": { "type": "boolean", "default": false },
     "auto_accept_inferred": { "type": "boolean", "default": false },
     "agent_tools": { "type": "boolean", "default": true },
     "agent_snippet_chars": { "type": "number", "default": 280 },
-    "trigger": { "type": "string", "default": "mm" }
+    "trigger": { "type": "string", "default": "mm", "backup": "plain" }
   },
   "contributes": {
     "searchProvider": "./search.js",

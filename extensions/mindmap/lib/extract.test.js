@@ -260,7 +260,7 @@ describe('SPEC §5 S4 entities', () => {
   });
 
   it('my_names and @me map to the me entity', () => {
-    const ex = run('Oren and @me to sync with ON', now, [], { myNames: ['Oren', 'ON'] });
+    const ex = run('Alex and @me to sync with AL', now, [], { myNames: ['Alex', 'AL'] });
     expect(ex.mentions.map((m) => [m.entityId, m.name])).toEqual([['me', 'Me']]);
     expect(ex.candidates).toEqual([]);
   });

@@ -494,7 +494,7 @@ export function bumpCandidates(candidates, found, itemId, now, { threshold = 2, 
   return { promote };
 }
 
-// 'Oren, ON, oren@example.com' → ['Oren', 'ON', 'oren@example.com']
+// 'Alex, AL, alex@example.com' → ['Alex', 'AL', 'alex@example.com']
 export function parseNameList(setting) {
   const out = [];
   const seen = new Set();
