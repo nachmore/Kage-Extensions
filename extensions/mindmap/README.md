@@ -62,7 +62,22 @@ offers everyone's actions too.
 
 You can also just ask your agent in chat — "which doc spoke about mtcs last
 week?" — and it uses Mind Map's tools. Answers cite items as numbered chips;
-click one to see the date and snippet, or open it.
+click one to see the date and snippet, open it, or show it on the map.
+
+### Asking your agent: `mm?`
+
+```
+mm? what were my actions for the bingo team
+```
+
+finds the matching notes on your computer first, then sends your agent a
+visible message: your question, how Mind Map read it ("actions; about
+Bingo"), and up to 8 of those notes, each with its `[mm:…]` tag. The agent is
+asked to cite every claim with those tags and to say so when your notes don't
+answer it. If nothing matched exactly, the message says so and sends the
+closest notes instead (a day with nothing widens to the 30 days around it).
+Private items are never included. The launcher row tells you how many notes
+will be sent before you press Enter.
 
 ### Filters
 
@@ -79,6 +94,29 @@ Filters work in any language and always win over the plain-words reading:
 
 Plain-words questions are understood in English today. Your agent understands
 any language.
+
+## The map
+
+```
+mm map bingo
+```
+
+shows a map centred on Bingo: related people, teams and topics above, its
+open actions on the left (suggestions marked ❔), docs and links on the
+right, notes and meetings below. Click any node to move there; the trail at
+the top ("Bingo › Dana") takes you back, **Home** shows the overview (your
+teams, people and topics, what's waiting for review, and your latest
+captures), and **List** shows the same neighbourhood as a plain list. A lane
+with more than fits shows "+N more".
+
+`mm map` alone opens the overview, `mm map <words>` centres on the best match
+(and highlights the words), and `mm map @bingo kind:doc` keeps only docs in
+the lanes. The **Map** button on a saved card, Enter on `mm @bingo`, and
+**Map** on a citation chip (which adds a map to the end of that answer) open
+it too. The map works the same in the floating bar and in chat, follows your
+theme, and mirrors for right-to-left languages. On older Kage versions the map
+is shown but can't be clicked; `mm @name` walks the same connections from
+the keyboard.
 
 ## How things get organized
 
@@ -110,6 +148,12 @@ title — and never reads files. To save what a document says, attach it in chat
 and ask your agent to "add this to my mind map": it saves a short summary, the
 key terms and the actions (each action must quote the document word for word,
 and the agent's actions arrive as suggestions).
+
+You can also ask your agent to organize notes you've already saved. It can
+add a short summary, names (reusing the ones you already have), key terms,
+actions that quote the note word for word, or fix a note's kind. It only adds:
+nothing you wrote or a page provided is overwritten, private items are
+refused, and one `mm undo` takes the whole change back.
 
 On macOS, window titles need the Screen Recording permission. Without it, only
 the app's name is remembered and "Save the window you came from" isn't offered.
@@ -143,6 +187,12 @@ export first if you want to keep it.
 Settings shows what's stored, and offers **Export JSON** (everything,
 private items included), **Export Markdown**, **Import JSON** and **Delete
 everything**. Exports include private items; keep them somewhere safe.
+
+Export Markdown is a readable copy: a section for each person, team, project
+and topic, then "Unsorted". Each item is a bullet with its date and kind,
+links are links, actions are `- [ ]` / `- [x]` under the note or meeting they
+came from, and a note's own words (its summary, the rest of its text, dated
+notes you added later) follow it as a quote.
 
 Data is split into monthly files, written with a twin copy so a crash
 mid-save can't lose it, and every Kage window coordinates through a short
