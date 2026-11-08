@@ -537,3 +537,80 @@ describe('Export Markdown (P1)', () => {
     expect(md.split('\n').filter((l) => /^#/.test(l)).every((l) => /^(# title|## )/.test(l))).toBe(true);
   });
 });
+
+describe('reads never interleave with this window’s own writes', () => {
+  // Found by the host-load harness: a launcher keystroke's syncIfStale()
+  // landed while a background link enrichment was persisting. It took the
+  // in-flight write for a failed one and reloaded; its reads (slowed by the
+  // invoke throttle) came back after the write had committed, so memory
+  // went back to the pre-write record — and the next write of that month
+  // put the old record back on disk.
+  function setupLate() {
+    const host = createMemoryHost({
+      handlers: { fetch_link_metadata: async () => ({ title: 'MTCS design review', description: 'Failover and capacity plan for MTCS.' }) },
+    });
+    // late.on: shard reads run at once but answer late. late.onShardWrite:
+    // called once, just before the next shard write runs (mid-persist).
+    const late = { on: false, slow: 0, ms: 80, onShardWrite: null };
+    const invoke = async (command, args) => {
+      const shard = /^(?:nx-)?mm-items-/.test(args?.key || '');
+      if (command === 'save_extension_data' && shard && late.onShardWrite) {
+        const hook = late.onShardWrite;
+        late.onShardWrite = null;
+        // The hook may hold this write back (as a busy invoke queue does).
+        const hold = hook();
+        if (hold) await new Promise((r) => setTimeout(r, hold));
+      }
+      const value = await host.invoke(command, args);
+      if (command === 'load_extension_data' && shard && (late.on || late.slow > 0)) {
+        late.slow -= 1;
+        await new Promise((r) => setTimeout(r, late.ms));
+      }
+      return value;
+    };
+    const ctx = makeContext(host, { invoke });
+    return { host, late, mind: new Mind(ctx) };
+  }
+
+  it('a sync during a write leaves the write’s result in memory and on disk', async () => {
+    const { host, late, mind } = setupLate();
+    let poke = null;
+    await mind.capture('https://wiki.example.com/mtcs/design-review', { via: 'launcher' });
+    // The capture is saved; the enrichment write comes next. Poke the
+    // snapshot from inside it, the way a launcher keystroke can.
+    late.onShardWrite = () => {
+      poke = mind.syncIfStale(0);
+      return 60;
+    };
+    await mind.whenIdle();
+    await poke;
+    late.on = false;
+    expect(poke).not.toBeNull();
+    const [item] = mind.state.items.values();
+    expect(item).toMatchObject({ title: 'MTCS design review', titleSource: 'meta' });
+    // A later write to the same month keeps it.
+    await mind.capture('another note this month', { via: 'launcher' });
+    const fresh = window(host);
+    await fresh.ready();
+    expect(fresh.item(item.id)).toMatchObject({ title: 'MTCS design review', titleSource: 'meta' });
+  });
+
+  it('a capture that starts while a sync is still reading isn’t undone by it', async () => {
+    const { host, late, mind } = setupLate();
+    await mind.capture('first note', { via: 'launcher' });
+    const other = window(host);
+    await other.capture('a note from another window', { via: 'launcher' });
+    // Only this sync's two shard reads (primary and twin) answer late.
+    late.slow = 2;
+    late.ms = 200;
+    const sync = mind.syncIfStale(0);
+    const saved = await mind.capture('second note', { via: 'launcher' });
+    await sync;
+    expect(mind.item(saved.itemId)).not.toBeNull();
+    expect(mind.state.items.size).toBe(3);
+    const fresh = window(host);
+    await fresh.ready();
+    expect(fresh.state.items.size).toBe(3);
+    expect(fresh.item(saved.itemId)).not.toBeNull();
+  });
+});

@@ -135,6 +135,9 @@ export class Mind {
     this._stale = false;
     this._lastSync = -Infinity;
     this._background = new Set();
+    // Writes in flight in this window, and the shared in-flight sync (syncIfStale).
+    this._writes = 0;
+    this._syncing = null;
     this._seen = new Map();
     this._mapFilters = new Map();
     this._rederiving = false;
@@ -297,17 +300,42 @@ export class Mind {
 
   // --- sync --------------------------------------------------------------------
 
-  /** Re-reads mm-meta when the snapshot is older than maxAgeMs; true when data changed. */
+  /**
+   * Re-reads mm-meta when the snapshot is older than maxAgeMs; true when
+   * data changed. Never runs alongside this window's own write: a write
+   * syncs under the lock itself, and a read that swapped or merged state
+   * underneath it would put stale records back (in memory, then on disk).
+   * Concurrent calls share one sync.
+   */
   async syncIfStale(maxAgeMs = LIMITS.syncMaxAgeMs) {
     if (!this._loaded) {
       await this.ready();
       return false;
     }
-    // A failed write leaves uncommitted changes in memory: reload at once.
-    if (!this._stale && mono() - this._lastSync < maxAgeMs) return false;
-    const changed = await this._sync();
+    if (this._writes > 0) return false;
+    // A failed write that couldn't reload leaves `_stale`: reload at once.
+    if (!this._stale && mono() - this._lastSync < maxAgeMs && !this._syncing) return false;
+    if (!this._syncing) {
+      const run = this._sync().finally(() => {
+        if (this._syncing === run) this._syncing = null;
+      });
+      this._syncing = run;
+    }
+    const changed = await this._syncing;
     if (changed) this.requestReformat();
     return changed;
+  }
+
+  // Runs fn while counted as this window's write (see syncIfStale), after
+  // any sync that was already reading has finished.
+  async _exclusive(fn) {
+    this._writes += 1;
+    try {
+      if (this._syncing) await this._syncing.catch(() => {});
+      return await fn();
+    } finally {
+      this._writes -= 1;
+    }
   }
 
   async _readMeta() {
@@ -426,8 +454,13 @@ export class Mind {
   // Runs `apply(state, env)` under the cross-window lock (SPEC §7.4).
   // apply is synchronous and returns { changes: Change[], ...extra } or a
   // refusal { code }. Retries 'busy' (lost lease) and 'conflict' (another
-  // writer interleaved) with the same clock and id pool.
-  async _mutate(apply, { allowReadOnly = false } = {}) {
+  // writer interleaved) with the same clock and id pool. Counts as this
+  // window's write for its whole run (see syncIfStale).
+  _mutate(apply, { allowReadOnly = false } = {}) {
+    return this._exclusive(() => this._mutateLocked(apply, { allowReadOnly }));
+  }
+
+  async _mutateLocked(apply, { allowReadOnly }) {
     await this.ready();
     if (this._readOnly && !allowReadOnly) throw new MindError('readonly');
     const now = this.now();
@@ -436,21 +469,35 @@ export class Mind {
     for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
       try {
         return await this.store.withLock(async (lease) => {
-          if (this._stale) await this._loadAll();
-          else await this._sync();
-          if (this._readOnly && !allowReadOnly) throw new MindError('readonly');
-          pool.reset();
-          const result = apply(this.state, this._env(now, pool)) || {};
-          const changes = (result.changes || []).filter((change) => change?.op);
-          if (!changes.length) return { ...result, committed: false };
-          this._stale = true;
-          for (const change of changes) this.state.ops = journal.appendOp(this.state.ops, change.op);
-          await this._persist(changes, lease, now);
-          const check = await this.store.readJson('mm-meta');
-          if (check?.txn !== changes[changes.length - 1].op.opId) throw new MindError('conflict');
-          this._stale = false;
-          this._afterCommit(changes);
-          return { ...result, committed: true, opId: changes[0].op.opId };
+          try {
+            if (this._stale) await this._loadAll();
+            else await this._sync();
+            if (this._readOnly && !allowReadOnly) throw new MindError('readonly');
+            pool.reset();
+            // apply mutates the snapshot in place: from here until the
+            // commit is confirmed, memory may hold an unsaved change.
+            this._stale = true;
+            const result = apply(this.state, this._env(now, pool)) || {};
+            const changes = (result.changes || []).filter((change) => change?.op);
+            if (!changes.length) {
+              // A refusal changes nothing (lib/model.js contract).
+              this._stale = false;
+              return { ...result, committed: false };
+            }
+            for (const change of changes) this.state.ops = journal.appendOp(this.state.ops, change.op);
+            await this._persist(changes, lease, now);
+            const check = await this.store.readJson('mm-meta');
+            if (check?.txn !== changes[changes.length - 1].op.opId) throw new MindError('conflict');
+            this._stale = false;
+            this._afterCommit(changes);
+            return { ...result, committed: true, opId: changes[0].op.opId };
+          } catch (error) {
+            // Drop the unsaved change while still holding the lock, so no
+            // other write in this window builds on it. If the reload fails,
+            // `_stale` stays set and the next sync or write reloads.
+            if (this._stale) await this._loadAll().catch(() => {});
+            throw error;
+          }
         });
       } catch (error) {
         lastError = error;
@@ -458,10 +505,6 @@ export class Mind {
         this.log.debug?.(`mindmap: retrying a write (${error.code}, attempt ${attempt + 1})`);
         await sleep(20 + Math.random() * 80);
       }
-    }
-    if (this._stale) {
-      // The in-memory state holds an uncommitted change: reload it from disk.
-      await this._loadAll().catch(() => {});
     }
     throw lastError;
   }
@@ -1711,7 +1754,11 @@ export class Mind {
   }
 
   /** Delete everything (SPEC §7.7): every known key and its twin, then the lock. */
-  async deleteAll() {
+  deleteAll() {
+    return this._exclusive(() => this._deleteAll());
+  }
+
+  async _deleteAll() {
     await this.ready().catch(() => {});
     const keys = this._allKeys();
     await this.store.withLock(async () => {
@@ -1739,7 +1786,11 @@ export class Mind {
   }
 
   /** Repair (read-only mode): writes the readable state over every key, after confirmation. */
-  async repair() {
+  repair() {
+    return this._exclusive(() => this._repair());
+  }
+
+  async _repair() {
     if (!this._readOnly) return { ok: false, code: 'not_readonly' };
     if (this._readOnly.code === 'future_schema') return { ok: false, code: 'future_schema' };
     const now = this.now();
