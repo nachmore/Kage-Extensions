@@ -126,7 +126,7 @@ extensions/mindmap/
   lib/extract.js               WP-A   leaf (lib-injected)
   lib/query.js                 WP-A   leaf (lib-injected)
   lib/store.js                 WP-B   leaf
-  lib/model.js                 WP-B   leaf
+  lib/model.js                 WP-B   leaf      (FT-MM2: picked documents, bodies)
   lib/journal.js               WP-B   leaf
   lib/bm25.js                  WP-B   leaf
   lib/rank.js                  WP-B   leaf
@@ -386,6 +386,36 @@ export function applyImport(state, data, env);                // P2
 `Change = { op, touched: Set<part>, itemId?, childIds?, newEntityIds?, dedupedInto?, result? }`.
 The caller (mind) persists each part in `touched`, plus `'journal'` and
 `'meta'`.
+
+Documents the user picks (WP-FT-MM2, Kage's EXTENSION_FILE_TEXT §11.4–11.8).
+`ingest = { file, extraction?, title?, titleSource?, keyphrases?, private? }`,
+where `file` is `lib/files.js` `validateFileText`'s `file`, `extraction` is
+`extract()` of the first 8,000 characters without a kind hint, and `title`
+and `keyphrases` come from `docTitle` and `bodyKeyphrases`. The caller picks
+the function with `dedupeDecision` on the state it holds under the lock.
+
+```js
+export const BODY_SCHEMA;                                  // 1
+export function applyIngest(state, ingest, env);           // case N → Change & { itemId, childIds, pendingAliases, bodies, result }
+export function applyReread(state, itemId, ingest, env);   // case U → Change & { itemId, childIds, removedIds, pendingAliases, bodies, result }
+export function applyAddRef(state, itemId, fileRef, env);  // case C → silent op ('enrich', label 'file_ref')
+//   bodies = [{ key, value }]: write them before the shard (once; hosts with files.pick_text are atomic).
+//   result = { rejectedActions, droppedDone, truncated, private, secret }.
+//   Refusals: 'bad_file', 'not_file', 'storage_full' (env.bodyBudget, default LIMITS.bodyBytes = 64 MiB).
+export function bodyKey(id, n);                  // 'mm-body-<id>-<n>'
+export function parseBodyKey(key);               // { id, n } | null
+export function normalizeBody(raw, key);         // { schema, id, rev, format, chars, text, pageStarts? } | null
+export function bodyKeys(state);                 // Set: keys items, kept-aside records and undo snapshots reference
+export function bodyBytes(state, { except });    // UTF-8 bytes of those bodies' text (meta.counts.bodyBytes)
+export function releasedBodies(held, state);     // keys in held that state no longer references, sorted
+```
+
+Bodies are written and deleted by the caller: under the lock, take
+`held = bodyKeys(state)` after the sync and before apply, write
+`change.bodies`, then the parts, journal and meta, and once the meta check
+passes delete `releasedBodies(held, state)`. That one rule covers undo of an
+ingest or re-read, a delete whose op left the journal (200 ops / 256 KB),
+and an op `appendOp` made lossy.
 
 ### 5.10 `lib/journal.js` (WP-B)
 
@@ -847,6 +877,7 @@ Every test is vitest. `npm test` runs all of them, and
 | `lib/query.js` | AT-1 parse (kinds, range, terms, no hard entity). AT-1b. AT-2 parse (intent actions, owner me, hard Bingo). AT-2b unresolved "walrus". Filter syntax round-trip `toSyntax(parseQuery(x))` is stable. `mm mtc` (no trailing space) → prefix term. `"exact phrase"`, `-term`. Commands. Kind and status words. `@`/`#`. "due this week" → field due. |
 | `lib/store.js` | With `test-helpers/mindmap/memory-host.mjs`: <br>• twin write order (twin then primary); `readBest` picks the higher rev; corrupt primary → twin; both corrupt → `unreadable` <br>• atomic mode: single write <br>• the throttle never exceeds 70 per rolling second; rate-limit error → retried <br>• `withLock`: mutual exclusion under interleaved latency (two stores and 50 increments → 50); a stale lock past expiry is taken over; `lease.check()` fails after a takeover; release only when the nonce is ours <br>• `remove` deletes both keys. |
 | `lib/model.js` | `fromPersisted` ↔ `payloadFor` round-trip. Validation drops malformed records and counts the problems. Future schema → `future_schema`. `applyCapture` for every Extraction shape: parent and children ids from the pool, inherited entities, owner entity creation, dedup merge (annotation line format `— YYYY-MM-DD: …`). Idempotency: apply on a clone, reload the clone, apply again with `pool.reset()` → deep-equal. Status, accept, dismiss, edit, delete (children cascade), enrich (title only while `auto`), annotate (quote check, additive only, private rejected), promotions and back-fill recorded in the same op. |
+| `lib/model.js` documents (FT-MM2) | `applyIngest`: a doc with `file`, `fileRefs` and (past 8,000 characters) `body`; actions are open suggestions even with auto-accept, done lines left out; `possible_secret` and "new items private" make it private with its actions; title fallback; refusals (bad result, path in the name, budget). `applyReread`: new text, file, body and keyphrases; user title, agent mentions and acted-on actions stay; untouched rule suggestions the new text dropped go; new lines are suggestions; secret → private. `applyAddRef`: silent, newest last, 8 kept. Apply and undo deep-equal for ingest and re-read; re-apply after reload changes nothing. Bodies: `releasedBodies` after undo, after a delete leaves the journal, after a lossy op; a re-read never reuses a key a snapshot holds; `normalizeBody` and the stored-field checks. |
 | `lib/journal.js` | Snapshot first-wins. `sealOp` revs. `canUndo` superseded after a later edit. `applyUndo` restores the exact before-state (deep-equal to the state before the op) and removes created entities. `appendOp` caps both count and bytes. `lastUndoable` skips silent, undo and undone ops. |
 | `lib/bm25.js` | Hand-computed scores for a 3-document corpus. Field weights rank a title hit above a body hit. Incremental add/remove equals a rebuild. `similar` ratio threshold. `vocabPrefix` ordering. `neg` exclusion. 10k synthetic docs build in <250 ms (soft). |
 | `lib/rank.js` | Over a hand-built ctx: AND-first then OR fallback (AT-5 shape: the only full match is hidden, so OR), hard filters (kinds, range on createdAt **or** occurredAt, status, owner, hard entity, archived), the score formula and deterministic ties, the full relaxation ladder with codes, AT-1b closeness ordering, agent path `hidden()` counted in `hiddenPrivate`, the actions ordering and grouping of SPEC §8.2 (AT-2 order), the 14-day done window. |

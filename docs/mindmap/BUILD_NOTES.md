@@ -1176,6 +1176,71 @@ and measure requests against a copy of the host's framing (§5.2).
   `npm test` 77 files / 2366 tests. `check:i18n` still fails only on keys
   waiting for translation (now 61); every other gate passes.
 
+## WP-FT-MM2: picked documents in the model (`lib/model.js`)
+
+Kage's EXTENSION_FILE_TEXT §11.4, §11.5 and §11.8 in the model. Nothing calls
+it yet: FT-MM3 wires it into `mind.js` with `lib/files.js`. The tests build
+`validateFileText` results by hand, as FT-MM1's do.
+
+- **Fields.** `file` keeps name, extension, format, size, modified time,
+  sha256, pages, chars, truncated and warnings; never the text, the title
+  Kage read or a path. A name with a path or a control character, or a bad
+  hash, drops `file`; unknown fields inside it are dropped. `fileRefs` is
+  top level, newest last, 8 at most. **Additions:** `body` carries `bytes`
+  (UTF-8 bytes of the text) besides `key` and `chars`, so the 64 MB budget
+  is a sum over State and needs no body reads; `meta.counts.bodyBytes` is
+  written only once there are bodies, so existing meta payloads don't
+  change. Page starts go in the body value; a doc without a body keeps up to
+  256 of them in `file.pageStarts` (offsets into `text`). `source.via` gains
+  `file`. A doc with `file` keeps 64 keyphrases (5 for everything else).
+- **Ops.** `applyIngest` (case N, op `ingest`), `applyReread` (case U, op
+  `reread`) and `applyAddRef` (case C, a silent `enrich` op labelled
+  `file_ref`). The caller decides the case with `dedupeDecision`; the model
+  doesn't dedupe files. `applyIngest` reuses the capture path (the old
+  `applyCapture` body, now `captureInto`, unchanged for captures): it never
+  merges into a saved link or path and gets **no link children**, since a
+  document's reference list would flood the map.
+- **Actions.** Every action from a picked document is an open suggestion,
+  auto-accept or not, and so are the agent's (`applyAnnotate`). **Differs
+  from the design:** `[x]` lines are left out (`result.droppedDone`): as a
+  suggestion they would ask the user to accept finished work, and as done
+  actions they would count as the user's.
+- **Re-read.** Text, file, body, keyphrases and rule mentions come from the
+  new read. A user or agent title, the kind, summary, terms, user and agent
+  mentions stay. A child the user hasn't acted on (open, suggested, found by
+  the rules) goes when the new text doesn't have it; accepted, done,
+  dismissed and agent actions stay, and a new line is a new suggestion.
+  Only `possible_secret` or `#private` makes the doc private; nothing makes
+  it public again. Re-read refuses an item without `file` (`not_file`), so a
+  path the user typed (C5) keeps its own words.
+- **Body keys.** `mm-body-<id>-<n>`, where `n` is past the item's rev and
+  every body key of that item an undo snapshot still holds. Usually `n` is
+  the new rev. After "re-read, a silent change, undo", the first re-read's
+  body is still held, and the next re-read takes the next number instead of
+  overwriting it. A retry of the same op gets the same key.
+- **Bodies are deleted by the caller**, not the journal: take
+  `bodyKeys(state)` under the lock before apply, and after the commit delete
+  `releasedBodies(held, state)`. One diff covers undo of an ingest or
+  re-read, a delete or re-read that left the journal, and an op `appendOp`
+  made lossy. `journal.js` needed no change. Records kept aside unread
+  still hold their bodies.
+- **Budget.** `storage_full` when the referenced bodies plus the new one
+  pass `env.bodyBudget` (64 MiB, the host's own MB). Bodies the journal
+  still holds count, since they are on disk. A text up to 8,000 characters
+  has no body and doesn't count. A retried ingest whose earlier attempt's
+  item landed counts that body twice, so near the limit it can be refused.
+- **For FT-MM3:** add EN strings `op.ingest` and `op.reread` (search.js
+  renders `op.<code>`); pass `bodyKeyphrases` to `applyReextract` for a doc
+  with `file` (otherwise its keyphrases are kept); run `dedupeDecision`
+  inside `_mutate` on the fresh state, leaving out the item this attempt's
+  pool already drew, so a retried ingest isn't read as "same"; write bodies
+  with a literal-prefix key for `check:security`; `Delete everything` needs
+  `bodyKeys(state)`. SPEC §6.2, §6.4 and §7.1 are FT-MM3's to update.
+- **Checks:** `npx vitest run extensions/mindmap` 34 files / 1036 tests;
+  `npm test` 77 files / 2390 tests. `check:i18n` still fails only on the
+  61 keys waiting for translation (none added here); every other gate
+  passes.
+
 ## Status
 
 **Works (P0/P1/P2, all phases of SPEC §2):**

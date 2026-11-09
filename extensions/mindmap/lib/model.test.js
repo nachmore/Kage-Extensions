@@ -6,6 +6,10 @@ import {
   emptyState, entityByKey, findDuplicate, fromPersisted, keyPart, listParts, migrate, partKey,
   payloadFor, shardOf,
 } from './model.js';
+import {
+  applyAddRef, applyIngest, applyReread, bodyBytes, bodyKey, bodyKeys, normalizeBody, normalizeItem, parseBodyKey,
+  releasedBodies,
+} from './model.js';
 
 const at = (y, m, d, h = 0, min = 0) => new Date(y, m - 1, d, h, min).getTime();
 const NOW = at(2026, 11, 6, 10);
@@ -851,5 +855,456 @@ describe('undo through the journal (AT-8)', () => {
     const deleted = commit(state, applyDelete(state, f6.itemId, envAt(pool, NOW)));
     commit(state, journal.applyUndo(state, deleted.op, envAt(pool, NOW)));
     expect(facts(state)).toEqual(before);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Documents the user picks through Kage's file_text (EXTENSION_FILE_TEXT §11)
+
+const SHA_A = 'a'.repeat(64);
+const SHA_B = 'b'.repeat(64);
+const REF = (c) => `fr1_${c.repeat(22)}`;
+const FILLER = '\n' + 'Roadmap détails for the Bingo launch. '.repeat(250);
+const DOC_TEXT = '# Q3 plan\nBingo team goals for the quarter.\n- [ ] Send MTCS numbers to Dana by Friday\n'
+  + '- Dana to share the roadmap deck\n- [x] Book the offsite\nTODO: review the launch checklist';
+const LONG = DOC_TEXT + FILLER;
+const V2 = '# Q3 plan v2\nBingo team goals for the quarter.\nRavi to send the budget\nTODO: review the launch checklist' + FILLER;
+const KEYS = Array.from({ length: 70 }, (_, i) => `term${i}`);
+const utf8 = (s) => new TextEncoder().encode(s).length;
+
+// What lib/files.js validateFileText returns for a picked file.
+function picked(text, overrides = {}) {
+  return {
+    name: 'Q3 plan.pdf', ext: 'pdf', format: 'pdf', size: 48211, modifiedAt: at(2026, 10, 20), title: 'Q3 plan',
+    text, chars: [...text].length, truncated: false, pages: { count: 3, read: 3 }, warnings: [],
+    sha256: SHA_A, fileRef: REF('A'), ...overrides,
+  };
+}
+
+const act = (seg, text, overrides = {}) => ({
+  seg, text, title: text, quote: text, status: 'open', confidence: 1, suggested: false, owner: 'me', origin: 'rule', ...overrides,
+});
+
+// extract() of DOC_TEXT (no kind hint): a dump with four action lines.
+const docX = () => ext({
+  text: DOC_TEXT, kind: 'note', title: 'Q3 plan', isDump: true, segments: 6,
+  mentions: [
+    { key: 'bingo', name: 'Bingo', type: 'team', origin: 'rule', explicit: true, seg: 1 },
+    { key: 'dana', name: 'Dana', type: 'person', origin: 'rule', explicit: false, seg: 2 },
+  ],
+  candidates: [{ key: 'mtcs', display: 'MTCS', type: 'term' }],
+  keyphrases: ['mtcs numbers'],
+  actions: [
+    act(2, 'Send MTCS numbers to Dana by Friday', { dueAt: NOV6 }),
+    act(3, 'Dana to share the roadmap deck', { confidence: 0.6, suggested: true, owner: { key: 'dana', name: 'Dana' } }),
+    act(4, 'Book the offsite', { status: 'done' }),
+    act(5, 'review the launch checklist', { quote: 'TODO: review the launch checklist' }),
+  ],
+});
+// extract() of V2: Dana and two of her lines are gone, Ravi is new.
+const v2X = () => ext({
+  text: V2.slice(0, 8000), kind: 'note', title: 'Q3 plan v2', isDump: true, segments: 4,
+  mentions: [
+    { key: 'bingo', name: 'Bingo', type: 'team', origin: 'rule', explicit: true, seg: 1 },
+    { key: 'ravi', name: 'Ravi', type: 'person', origin: 'rule', explicit: false, seg: 2 },
+  ],
+  actions: [
+    act(2, 'Ravi to send the budget', { confidence: 0.6, suggested: true, owner: { key: 'ravi', name: 'Ravi' } }),
+    act(3, 'review the launch checklist', { quote: 'TODO: review the launch checklist' }),
+  ],
+});
+const ingestOf = (file, overrides = {}) => ({ file, extraction: docX(), title: 'Q3 plan', titleSource: 'meta', keyphrases: KEYS, ...overrides });
+const v2Of = (overrides = {}) => ({
+  file: picked(V2, { sha256: SHA_B, fileRef: REF('B'), title: 'Q3 plan v2' }), extraction: v2X(),
+  title: 'Q3 plan v2', titleSource: 'meta', keyphrases: ['budget', 'launch'], ...overrides,
+});
+const names = (state, item) => item.entityIds.map((id) => state.entities.get(id)?.name).sort();
+
+describe('applyIngest (EXTENSION_FILE_TEXT §11.4)', () => {
+  it('saves a picked file as a doc whose actions are all suggestions', () => {
+    const state = emptyState(NOW);
+    const pool = testPool();
+    const file = picked(DOC_TEXT, { pageStarts: [0, 40, 120] });
+    const change = commit(state, applyIngest(state, ingestOf(file), envAt(pool, NOW, { autoAccept: true, source: { app: 'Preview', window: 'Q3 plan.pdf' } })));
+    expect(change.op).toMatchObject({ kind: 'ingest', label: { code: 'ingest', params: { itemId: change.itemId, count: 4 } } });
+    const doc = state.items.get(change.itemId);
+    expect(doc).toMatchObject({
+      kind: 'doc', title: 'Q3 plan', titleSource: 'meta', text: DOC_TEXT, fileRefs: [REF('A')],
+      source: { via: 'file', app: 'Preview', window: 'Q3 plan.pdf' },
+    });
+    expect(doc.file).toEqual({
+      name: 'Q3 plan.pdf', ext: 'pdf', format: 'pdf', size: 48211, modifiedAt: at(2026, 10, 20), sha256: SHA_A,
+      pages: { count: 3, read: 3 }, chars: file.chars, truncated: false, warnings: [], pageStarts: [0, 40, 120],
+    });
+    for (const field of ['body', 'truncated', 'url', 'path', 'docKey', 'private']) expect(doc[field]).toBeUndefined();
+    expect(doc.keyphrases).toEqual(KEYS.slice(0, 64));
+    expect(names(state, doc)).toEqual(['Bingo', 'Dana']);
+    expect(change.bodies).toEqual([]);
+    const kids = change.childIds.map((id) => state.items.get(id));
+    expect(kids.map((k) => k.title)).toEqual(['Send MTCS numbers to Dana by Friday', 'Dana to share the roadmap deck', 'review the launch checklist']);
+    expect(kids.every((k) => k.kind === 'action' && k.status === 'open' && k.suggested === true && k.parentId === doc.id)).toBe(true);
+    expect(kids.map((k) => k.owner)).toEqual(['me', entityByKey(state, 'dana').id, 'me']);
+    expect(kids[0].dueAt).toBe(NOV6);
+    expect(kids[2].quote).toBe('TODO: review the launch checklist');
+    expect(change.result).toEqual({ rejectedActions: [], droppedDone: 1, truncated: false, private: false, secret: false });
+  });
+
+  it('keeps the full text in a body past 8,000 characters', () => {
+    const state = emptyState(NOW);
+    const pool = testPool();
+    const file = picked(LONG, { pageStarts: [0, 4000, 9000], truncated: true });
+    const change = commit(state, applyIngest(state, ingestOf(file), envAt(pool, NOW)));
+    const doc = state.items.get(change.itemId);
+    const key = `mm-body-${change.itemId}-1`;
+    expect(bodyKey(change.itemId, 1)).toBe(key);
+    expect(parseBodyKey(key)).toEqual({ id: change.itemId, n: 1 });
+    expect(doc.text).toBe(LONG.slice(0, 8000));
+    expect(doc.truncated).toBe(true);
+    expect(doc.body).toEqual({ key, chars: file.chars, bytes: utf8(LONG) });
+    expect(doc.file.pageStarts).toBeUndefined();
+    expect(doc.file.truncated).toBe(true);
+    const value = { schema: 1, id: change.itemId, rev: 1, format: 'pdf', chars: file.chars, text: LONG, pageStarts: [0, 4000, 9000] };
+    expect(change.bodies).toEqual([{ key, value }]);
+    expect(normalizeBody(JSON.parse(JSON.stringify(value)), key)).toEqual(value);
+    expect(change.result.truncated).toBe(true);
+    expect(bodyKeys(state)).toEqual(new Set([key]));
+    expect(bodyBytes(state)).toBe(utf8(LONG));
+    expect(payloadFor(state, 'meta').counts).toEqual({ items: 4, entities: 3, bodyBytes: utf8(LONG) });
+    const loaded = reload(state);
+    expect(facts(loaded)).toEqual(facts(state));
+    expect(loaded.meta.counts.bodyBytes).toBe(utf8(LONG));
+  });
+
+  it('makes a file that looks like it holds a password private, and its actions too', () => {
+    const state = emptyState(NOW);
+    const pool = testPool();
+    const secret = commit(state, applyIngest(state, ingestOf(picked(DOC_TEXT, { warnings: ['possible_secret'] })), envAt(pool, NOW)));
+    expect(secret.result).toMatchObject({ private: true, secret: true });
+    for (const id of [secret.itemId, ...secret.childIds]) expect(state.items.get(id).private).toBe(true);
+    expect(state.items.get(secret.itemId).file.warnings).toEqual(['possible_secret']);
+    const mine = commit(state, applyIngest(state, ingestOf(picked('Plain notes', { sha256: SHA_B, fileRef: REF('B') }), { private: true }), envAt(pool, NOW)));
+    expect(mine.result).toMatchObject({ private: true, secret: false });
+    expect(state.items.get(mine.itemId).private).toBe(true);
+  });
+
+  it('falls back to the file name for the title, and saves a file with no text', () => {
+    const state = emptyState(NOW);
+    const pool = testPool();
+    const change = commit(state, applyIngest(state, { file: picked('', { name: 'Scan 12.pdf', warnings: ['no_text'] }) }, envAt(pool, NOW)));
+    expect(state.items.get(change.itemId)).toMatchObject({ kind: 'doc', title: 'Scan 12', titleSource: 'auto', text: '', keyphrases: [] });
+    expect(change.childIds).toEqual([]);
+  });
+
+  it('refuses a result it can\'t trust, and a full document store', () => {
+    const state = emptyState(NOW);
+    const pool = testPool();
+    const env = envAt(pool, NOW);
+    for (const file of [
+      { ...picked(DOC_TEXT), fileRef: 'fr1_short' }, { ...picked(DOC_TEXT), sha256: 'xyz' }, { ...picked(DOC_TEXT), text: undefined },
+      { ...picked(DOC_TEXT), name: 'docs/Q3 plan.pdf' }, { ...picked(DOC_TEXT), name: 'C:\\docs\\Q3.pdf' }, { ...picked(DOC_TEXT), ext: '.PDF' },
+    ]) {
+      expect(applyIngest(state, ingestOf(file), env)).toMatchObject({ op: null, code: 'bad_file' });
+    }
+    expect(applyIngest(state, null, env)).toMatchObject({ op: null, code: 'bad_file' });
+    expect(applyIngest(state, ingestOf(picked(LONG)), envAt(pool, NOW, { bodyBudget: utf8(LONG) - 1 }))).toMatchObject({ op: null, code: 'storage_full' });
+    expect(state.items.size).toBe(0);
+    // A short text has no body, so it doesn't count against the budget.
+    expect(applyIngest(state, ingestOf(picked(DOC_TEXT)), envAt(pool, NOW, { bodyBudget: 0 })).op).not.toBeNull();
+  });
+
+  it('undo takes the doc, its actions and names back, and releases its body', () => {
+    const state = emptyState(NOW);
+    const pool = testPool();
+    capture(state, pool, F1(), at(2026, 10, 26, 9, 12));
+    const before = JSON.parse(JSON.stringify(facts(state)));
+    const change = commit(state, applyIngest(state, ingestOf(picked(LONG)), envAt(pool, NOW)));
+    const held = bodyKeys(state);
+    expect(held.size).toBe(1);
+    expect(journal.lastUndoable(state.ops).opId).toBe(change.op.opId);
+    commit(state, journal.applyUndo(state, change.op, envAt(pool, NOW)));
+    expect(facts(state)).toEqual(before);
+    expect(releasedBodies(held, state)).toEqual([...held]);
+  });
+
+  it.each([[true], [false]])('re-applying an ingest after reload changes nothing (journal landed: %s)', (journalToo) => {
+    const state = emptyState(NOW);
+    capture(state, testPool(), F1(), at(2026, 10, 26, 9, 12));
+    const base = reload(state);
+    const attempt = testPool();
+    const change = commit(base, applyIngest(base, ingestOf(picked(LONG)), envAt(attempt, NOW)));
+    const replayed = reload(base, { journalToo });
+    attempt.reset();
+    const again = commit(replayed, applyIngest(replayed, ingestOf(picked(LONG)), envAt(attempt, NOW)));
+    expect(facts(replayed)).toEqual(facts(base));
+    expect(again.itemId).toBe(change.itemId);
+    expect(again.childIds).toEqual(change.childIds);
+    expect(again.bodies).toEqual(change.bodies);
+  });
+});
+
+describe('applyReread (EXTENSION_FILE_TEXT §11.4 case U)', () => {
+  // A long doc whose first suggestion the user accepted and that an agent
+  // linked to a project.
+  function seeded() {
+    const state = emptyState(NOW);
+    const pool = testPool();
+    const doc = commit(state, applyIngest(state, ingestOf(picked(LONG)), envAt(pool, NOW)));
+    const [send, share, review] = doc.childIds;
+    commit(state, applyAccept(state, send, envAt(pool, NOW)));
+    commit(state, applyAnnotate(state, [{ id: doc.itemId, entities: [{ name: 'Atlas', type: 'project' }] }], envAt(pool, NOW)));
+    return { state, pool, id: doc.itemId, send, share, review, oldKey: bodyKey(doc.itemId, 1) };
+  }
+
+  it('re-derives the doc from the new read and keeps what the user and the agent did', () => {
+    const { state, pool, id, send, share, review, oldKey } = seeded();
+    const before = JSON.parse(JSON.stringify(facts(state)));
+    const held = bodyKeys(state);
+    const rev = state.items.get(id).rev;
+    const change = commit(state, applyReread(state, id, v2Of(), envAt(pool, NOW)));
+    const newKey = bodyKey(id, rev + 1);
+    expect(change.op).toMatchObject({ kind: 'reread', label: { code: 'reread', params: { itemId: id, count: 1 } } });
+    const doc = state.items.get(id);
+    expect(doc).toMatchObject({
+      rev: rev + 1, title: 'Q3 plan v2', titleSource: 'meta', text: V2.slice(0, 8000), truncated: true,
+      keyphrases: ['budget', 'launch'], fileRefs: [REF('A'), REF('B')],
+      body: { key: newKey, chars: [...V2].length, bytes: utf8(V2) },
+    });
+    expect(doc.file.sha256).toBe(SHA_B);
+    expect(names(state, doc)).toEqual(['Atlas', 'Bingo', 'Ravi']);
+    expect(change.bodies).toEqual([{ key: newKey, value: { schema: 1, id, rev: rev + 1, format: 'pdf', chars: [...V2].length, text: V2 } }]);
+    // The accepted action and the line the new text still has stay; the
+    // untouched suggestion it dropped goes; the new line is a suggestion.
+    expect(change.removedIds).toEqual([share]);
+    expect(state.items.has(share)).toBe(false);
+    expect(state.items.get(send)).toMatchObject({ suggested: false });
+    expect(state.items.has(review)).toBe(true);
+    const [budget] = change.childIds.map((cid) => state.items.get(cid));
+    expect(budget).toMatchObject({ title: 'Ravi to send the budget', suggested: true, status: 'open', owner: entityByKey(state, 'ravi').id, source: { via: 'file' } });
+    // The old body stays while the re-read can be undone.
+    expect(change.op.before.items.find((r) => r.id === id).body.key).toBe(oldKey);
+    expect(releasedBodies(held, state)).toEqual([]);
+    expect(bodyKeys(state)).toEqual(new Set([oldKey, newKey]));
+    expect(bodyBytes(state)).toBe(utf8(LONG) + utf8(V2));
+
+    const heldAfter = bodyKeys(state);
+    commit(state, journal.applyUndo(state, change.op, envAt(pool, NOW)));
+    expect(facts(state)).toEqual(before);
+    expect(state.items.get(id).body.key).toBe(oldKey);
+    expect(releasedBodies(heldAfter, state)).toEqual([newKey]);
+  });
+
+  it('keeps a title the user gave, drops the body for a short text, and lets the journal trim release the old one', () => {
+    const { state, pool, id, oldKey } = seeded();
+    commit(state, applyEdit(state, id, { title: 'My plan' }, envAt(pool, NOW)));
+    const held = bodyKeys(state);
+    const short = 'Bingo goals, short version.';
+    const change = commit(state, applyReread(state, id, v2Of({ file: picked(short, { sha256: SHA_B, fileRef: REF('B'), pageStarts: [0, 12] }), extraction: ext({ text: short }) }), envAt(pool, NOW)));
+    const doc = state.items.get(id);
+    expect(doc).toMatchObject({ title: 'My plan', titleSource: 'user', text: short });
+    expect(doc.body).toBeUndefined();
+    expect(doc.truncated).toBeUndefined();
+    expect(doc.file.pageStarts).toEqual([0, 12]);
+    expect(change.bodies).toEqual([]);
+    expect(releasedBodies(held, state)).toEqual([]);
+    // Once the op leaves the journal, nothing can bring the old body back.
+    state.ops = journal.appendOp(state.ops, applyCapture(state, ext({ text: 'later note' }), envAt(pool, NOW)).op, { maxOps: 1 });
+    expect(releasedBodies(held, state)).toEqual([oldKey]);
+  });
+
+  it('refuses what it can\'t re-read', () => {
+    const { state, pool, id, send } = seeded();
+    const env = envAt(pool, NOW);
+    expect(applyReread(state, 'i0000000000zzzz', v2Of(), env)).toMatchObject({ op: null, code: 'not_found' });
+    expect(applyReread(state, send, v2Of(), env)).toMatchObject({ op: null, code: 'not_file' });
+    expect(applyReread(state, id, v2Of({ file: { ...picked(V2), sha256: '' } }), env)).toMatchObject({ op: null, code: 'bad_file' });
+    expect(applyReread(state, id, v2Of(), envAt(pool, NOW, { bodyBudget: utf8(LONG) + utf8(V2) - 1 }))).toMatchObject({ op: null, code: 'storage_full' });
+    expect(state.items.get(id).file.sha256).toBe(SHA_A);
+  });
+
+  it('makes the doc private when the new text looks like it holds a password', () => {
+    const { state, pool, id, send, review } = seeded();
+    commit(state, applyReread(state, id, v2Of({ file: picked(V2, { sha256: SHA_B, fileRef: REF('B'), warnings: ['possible_secret'] }) }), envAt(pool, NOW)));
+    for (const cid of [id, send, review]) expect(state.items.get(cid).private).toBe(true);
+  });
+
+  it('re-applying a re-read after reload changes nothing', () => {
+    const { state } = seeded();
+    const base = reload(state);
+    const id = [...base.items.values()].find((i) => i.file).id;
+    // (Ids from a fresh pool at another time, so they don't collide with the seeding's.)
+    const later = at(2026, 11, 7, 9);
+    const attempt = testPool();
+    const change = commit(base, applyReread(base, id, v2Of(), envAt(attempt, later)));
+    expect(change.bodies).toHaveLength(1);
+    const replayed = reload(base);
+    attempt.reset();
+    const again = commit(replayed, applyReread(replayed, id, v2Of(), envAt(attempt, later)));
+    expect(facts(replayed)).toEqual(facts(base));
+    expect(again.bodies).toEqual(change.bodies);
+    expect(again.childIds).toEqual(change.childIds);
+  });
+
+  it('never reuses a body key an undo snapshot still holds', () => {
+    const { state, pool, id } = seeded();
+    const first = commit(state, applyReread(state, id, v2Of(), envAt(pool, NOW)));
+    const firstKey = first.bodies[0].key;
+    // A silent change after the re-read leaves it undoable and holds its body.
+    commit(state, applyAddRef(state, id, REF('C'), envAt(pool, NOW)));
+    commit(state, journal.applyUndo(state, first.op, envAt(pool, NOW)));
+    expect(bodyKeys(state).has(firstKey)).toBe(true);
+    const second = commit(state, applyReread(state, id, v2Of(), envAt(pool, NOW)));
+    expect(second.bodies[0].key).not.toBe(firstKey);
+    expect(state.items.get(id).body.key).toBe(second.bodies[0].key);
+  });
+});
+
+describe('applyAddRef (EXTENSION_FILE_TEXT §11.4 case C)', () => {
+  it('adds this computer\'s ref to a saved copy, silently, keeping the newest 8', () => {
+    const state = emptyState(NOW);
+    const pool = testPool();
+    const doc = commit(state, applyIngest(state, ingestOf(picked(DOC_TEXT)), envAt(pool, NOW)));
+    const change = commit(state, applyAddRef(state, doc.itemId, REF('B'), envAt(pool, NOW)));
+    expect(change.op).toMatchObject({ kind: 'enrich', silent: true, label: { code: 'file_ref', params: { itemId: doc.itemId } } });
+    expect(state.items.get(doc.itemId).fileRefs).toEqual([REF('A'), REF('B')]);
+    expect(journal.lastUndoable(state.ops).opId).toBe(doc.op.opId);
+    expect(journal.canUndo(state, doc.op)).toEqual({ ok: true });
+    expect(applyAddRef(state, doc.itemId, REF('B'), envAt(pool, NOW))).toMatchObject({ op: null, code: 'same' });
+    commit(state, applyAddRef(state, doc.itemId, REF('A'), envAt(pool, NOW)));
+    expect(state.items.get(doc.itemId).fileRefs).toEqual([REF('B'), REF('A')]);
+    for (const c of 'CDEFGHIJ') commit(state, applyAddRef(state, doc.itemId, REF(c), envAt(pool, NOW)));
+    expect(state.items.get(doc.itemId).fileRefs).toEqual([...'CDEFGHIJ'].map(REF));
+    const note = capture(state, pool, ext({ text: 'a note' }), NOW);
+    expect(applyAddRef(state, note.itemId, REF('K'), envAt(pool, NOW))).toMatchObject({ op: null, code: 'not_file' });
+    expect(applyAddRef(state, doc.itemId, 'fr1_bad', envAt(pool, NOW))).toMatchObject({ op: null, code: 'bad_file' });
+    expect(applyAddRef(state, 'i0000000000zzzz', REF('K'), envAt(pool, NOW))).toMatchObject({ op: null, code: 'not_found' });
+  });
+});
+
+describe('document bodies and the journal (EXTENSION_FILE_TEXT §11.8)', () => {
+  it('keeps a deleted doc\'s body until the delete leaves the journal', () => {
+    const state = emptyState(NOW);
+    const pool = testPool();
+    const doc = commit(state, applyIngest(state, ingestOf(picked(LONG)), envAt(pool, NOW)));
+    const key = bodyKey(doc.itemId, 1);
+    const held = bodyKeys(state);
+    const deleted = commit(state, applyDelete(state, doc.itemId, envAt(pool, NOW)));
+    expect(state.items.has(doc.itemId)).toBe(false);
+    expect(releasedBodies(held, state)).toEqual([]);
+    expect(bodyBytes(state)).toBe(utf8(LONG));
+    commit(state, journal.applyUndo(state, deleted.op, envAt(pool, NOW)));
+    expect(state.items.get(doc.itemId).body.key).toBe(key);
+    commit(state, applyDelete(state, doc.itemId, envAt(pool, NOW)));
+    state.ops = journal.appendOp(state.ops, applyCapture(state, ext({ text: 'later note' }), envAt(pool, NOW)).op, { maxOps: 1 });
+    expect(releasedBodies(held, state)).toEqual([key]);
+    expect(bodyBytes(state)).toBe(0);
+    expect(payloadFor(state, 'meta').counts.bodyBytes).toBeUndefined();
+  });
+
+  it('lets go of a body when its op becomes too large to undo', () => {
+    const state = emptyState(NOW);
+    const pool = testPool();
+    const doc = commit(state, applyIngest(state, ingestOf(picked(LONG)), envAt(pool, NOW)));
+    const held = bodyKeys(state);
+    const deleted = applyDelete(state, doc.itemId, envAt(pool, NOW));
+    state.ops = journal.appendOp(state.ops, deleted.op, { maxBytes: 4096 });
+    expect(state.ops.at(-1).lossy).toBe(true);
+    expect(releasedBodies(held, state)).toEqual([bodyKey(doc.itemId, 1)]);
+  });
+
+  it('counts a record kept aside unread as still holding its body', () => {
+    const id = 'i00000000000001';
+    const key = bodyKey(id, 2);
+    const { state } = fromPersisted({
+      shards: { '2026-11': { schema: 1, rev: 1, items: [{ id, kind: 'scroll', createdAt: Date.UTC(2026, 10, 2), body: { key, chars: 9, bytes: 9 } }] } },
+    }, { now: NOW });
+    expect(state.items.size).toBe(0);
+    expect(bodyKeys(state)).toEqual(new Set([key]));
+  });
+
+  it('reads a stored body only when it is the one the key names', () => {
+    const id = 'i00000000000001';
+    const key = bodyKey(id, 3);
+    const value = { schema: 1, id, rev: 3, format: 'docx', chars: 5, text: 'hello' };
+    expect(normalizeBody(value, key)).toEqual(value);
+    expect(normalizeBody({ ...value, rev: 2 }, key)).toBeNull();
+    expect(normalizeBody({ ...value, id: 'i00000000000002' }, key)).toBeNull();
+    expect(normalizeBody({ ...value, schema: 2 }, key)).toBeNull();
+    expect(normalizeBody({ ...value, text: 5 }, key)).toBeNull();
+    expect(normalizeBody(value, 'mm-items-2026-11')).toBeNull();
+    expect(normalizeBody({ ...value, pageStarts: [0, 9] }, key).pageStarts).toBeUndefined();
+    expect(normalizeBody({ ...value, chars: undefined, text: 'a😀b' }, key).chars).toBe(3);
+    expect(parseBodyKey('mm-body-i00000000000001-0')).toBeNull();
+    expect(parseBodyKey('mm-body-x-1')).toBeNull();
+  });
+});
+
+describe('stored document fields', () => {
+  const base = (overrides = {}) => ({
+    id: 'i00000000000001', kind: 'doc', createdAt: Date.UTC(2026, 10, 2), text: 'Short doc text', source: { via: 'file' },
+    file: { name: 'Plan.docx', ext: 'docx', format: 'docx', size: 10, sha256: SHA_A.toUpperCase(), chars: 14, truncated: false, warnings: [] },
+    ...overrides,
+  });
+
+  it('keeps valid file fields and repairs or drops the rest', () => {
+    const item = normalizeItem(base({
+      file: {
+        name: 'Plan.docx', ext: 'docx', format: 'docx', size: -1, sha256: SHA_A.toUpperCase(), chars: 14, truncated: 'yes',
+        pages: { count: 2, read: 3 }, modifiedAt: 1.5, warnings: ['no_text', 'no_text', 'Bad Warning', 7, 'some_new_one'],
+        pageStarts: [0, 5], path: '/home/someone/Plan.docx', text: 'Short doc text', title: 'Plan',
+      },
+      fileRefs: ['bad', REF('A'), REF('A'), ...'BCDEFGHIJ'].map((r) => (r.length === 1 ? REF(r) : r)),
+      keyphrases: KEYS,
+    }));
+    expect(item.source).toEqual({ via: 'file' });
+    expect(item.file).toEqual({
+      name: 'Plan.docx', ext: 'docx', format: 'docx', size: 0, sha256: SHA_A, chars: 14, truncated: false,
+      warnings: ['no_text', 'some_new_one'], pageStarts: [0, 5],
+    });
+    expect(item.fileRefs).toEqual([...'CDEFGHIJ'].map(REF));
+    expect(item.keyphrases).toHaveLength(64);
+    expect(normalizeItem(base({ file: undefined, keyphrases: KEYS })).keyphrases).toHaveLength(5);
+  });
+
+  it('drops a file that names a path or lacks its hash, and a body of another item', () => {
+    for (const file of [
+      { ...base().file, name: '/home/someone/Plan.docx' }, { ...base().file, name: 'C:\\Users\\x\\Plan.docx' },
+      { ...base().file, name: 'Plan\n.docx' }, { ...base().file, sha256: 'abc' }, { ...base().file, format: 'PDF!' }, 'Plan.docx',
+    ]) {
+      expect(normalizeItem(base({ file })).file).toBeUndefined();
+    }
+    const body = (key) => normalizeItem(base({ body: { key, chars: 9000, bytes: 9001 } })).body;
+    expect(body(bodyKey('i00000000000001', 4))).toEqual({ key: bodyKey('i00000000000001', 4), chars: 9000, bytes: 9001 });
+    expect(body(bodyKey('i00000000000002', 4))).toBeUndefined();
+    expect(body('mm-items-2026-11')).toBeUndefined();
+    expect(normalizeItem(base({ fileRefs: ['nope'] })).fileRefs).toBeUndefined();
+  });
+
+  it('keeps page starts only for a doc without a body, in order and inside the text', () => {
+    const starts = (pageStarts, extra = {}) => normalizeItem(base({ file: { ...base().file, pageStarts }, ...extra })).file.pageStarts;
+    expect(starts([0, 6])).toEqual([0, 6]);
+    expect(starts([6, 0])).toBeUndefined();
+    expect(starts([0, 99])).toBeUndefined();
+    expect(starts(Array.from({ length: 257 }, () => 0))).toBeUndefined();
+    expect(starts([0, 6], { body: { key: bodyKey('i00000000000001', 1), chars: 1, bytes: 1 } })).toBeUndefined();
+  });
+});
+
+describe('picked documents elsewhere in the model', () => {
+  it('re-derivation keeps a doc\'s body keyphrases unless it is given new ones', () => {
+    const state = emptyState(NOW);
+    const pool = testPool();
+    const doc = commit(state, applyIngest(state, ingestOf(picked(DOC_TEXT)), envAt(pool, NOW)));
+    commit(state, applyReextract(state, doc.itemId, ext({ keyphrases: ['rake phrase'] }), envAt(pool, NOW)));
+    expect(state.items.get(doc.itemId).keyphrases).toEqual(KEYS.slice(0, 64));
+    commit(state, applyReextract(state, doc.itemId, ext({ keyphrases: ['rake phrase'], bodyKeyphrases: ['body', 'terms'] }), envAt(pool, NOW)));
+    expect(state.items.get(doc.itemId).keyphrases).toEqual(['body', 'terms']);
+  });
+
+  it('the agent\'s actions on a picked doc stay suggestions with auto-accept on', () => {
+    const state = emptyState(NOW);
+    const pool = testPool();
+    const doc = commit(state, applyIngest(state, ingestOf(picked(DOC_TEXT)), envAt(pool, NOW)));
+    const change = commit(state, applyAnnotate(state, [{ id: doc.itemId, actions: [{ text: 'Set the goals', quote: 'Bingo team goals for the quarter' }] }], envAt(pool, NOW, { autoAccept: true })));
+    expect(state.items.get(change.childIds[0])).toMatchObject({ suggested: true, origin: 'agent' });
   });
 });

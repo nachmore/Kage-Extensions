@@ -13,7 +13,13 @@
 //     `touched` plus 'journal' and 'meta'. A refusal or a no-op returns
 //     { op: null, touched: ∅, code } with code 'not_found' | 'not_action' |
 //     'bad_status' | 'noop' | 'same' | 'me' | 'conflict' | 'bad_format' |
-//     'future_schema'; nothing changed and nothing needs saving.
+//     'future_schema' | 'bad_file' | 'not_file' | 'storage_full'; nothing
+//     changed and nothing needs saving.
+//   - Documents (applyIngest, applyReread) also return `bodies`: [{ key,
+//     value }] to write before the shard. Bodies are never deleted here: the
+//     caller takes bodyKeys(state) before a change and deletes
+//     releasedBodies(held, state) once it is committed (undo, a delete that
+//     left the journal, a lossy op).
 //   - Idempotent re-apply (SPEC §7.4): every id the op could need is drawn
 //     from env.newId up front, in an order that depends only on the inputs,
 //     so a retry with a reset id pool gets the same ids. A re-applied op
@@ -33,7 +39,11 @@ export const LIMITS = Object.freeze({
   text: 8000, title: 120, entityName: 80, aliases: 20, entitiesPerItem: 24, children: 50,
   keyphrases: 5, terms: 20, term: 60, summary: 600, agentSummaryWords: 25, quote: 1000,
   sample: 5, backfill: 200, annotate: 15, url: 4096, app: 120, window: 300, annotation: 1000,
+  // Documents from Kage's file_text (EXTENSION_FILE_TEXT §11.4–11.8).
+  docKeyphrases: 64, fileName: 255, fileRefs: 8, warnings: 32, pageStarts: 256, bodyPageStarts: 2000,
+  bodyBytes: 64 * 1024 * 1024,
 });
+export const BODY_SCHEMA = 1;
 
 const ITEM_ID = /^i[0-9a-z]{14}$/;
 const ENTITY_ID = /^(?:e[0-9a-z]{14}|me)$/;
@@ -42,12 +52,21 @@ const TITLE_SOURCES = ['auto', 'meta', 'user', 'agent'];
 const SUMMARY_SOURCES = ['meta', 'agent', 'user'];
 const ORIGINS = ['user', 'agent', 'rule'];
 const ORIGIN_RANK = { rule: 0, agent: 1, user: 2 };
-const VIAS = ['launcher', 'chat', 'agent', 'import', 'explorer'];
+const VIAS = ['launcher', 'chat', 'agent', 'import', 'explorer', 'file'];
 const ENRICH_STATES = ['none', 'pending', 'done', 'failed'];
 const LINK_TYPES = ['related', 'about', 'duplicate_of'];
 const REJECTION_TYPES = ['mention', 'link', 'entity'];
 const CANDIDATE_TYPES = ['term', 'person'];
 const URL_RE = /(?:\bhttps?:\/\/|\bwww\.|\bfile:\/\/)[^\s<>]+/gi;
+// The same shapes lib/files.js validateFileText checks (leaves can't import).
+const FILE_REF_RE = /^fr1_[A-Za-z0-9_-]{22}$/;
+const SHA256_RE = /^[0-9a-f]{64}$/i;
+const FILE_EXT_RE = /^[a-z0-9]{1,16}$/;
+const FILE_FORMAT_RE = /^[a-z][a-z0-9_]{0,15}$/;
+const FILE_WARNING_RE = /^[a-z][a-z0-9_]{0,47}$/;
+// Never in a stored file name: controls and line breaks, or a path.
+const FILE_NAME_BAD_RE = /[\u0000-\u001f\u007f-\u009f\u2028\u2029]|\/|^[A-Za-z]:\\|^\\\\/;
+const BODY_KEY_RE = /^mm-body-(i[0-9a-z]{14})-([1-9][0-9]{0,14})$/;
 
 // ---------------------------------------------------------------------------
 // Small pure helpers
@@ -141,6 +160,56 @@ function firstLine(text, max) {
   return clean(line, max);
 }
 
+const isRecord = (value) => !!value && typeof value === 'object' && !Array.isArray(value);
+const isCount = (value) => Number.isSafeInteger(value) && value >= 0;
+const isHighSurrogate = (c) => c >= 0xd800 && c <= 0xdbff;
+const isLowSurrogate = (c) => c >= 0xdc00 && c <= 0xdfff;
+
+// Unicode scalar values in s (a lone surrogate counts as one).
+function scalarCount(s) {
+  let n = 0;
+  for (let i = 0; i < s.length; i++, n++) {
+    if (isHighSurrogate(s.charCodeAt(i)) && isLowSurrogate(s.charCodeAt(i + 1))) i++;
+  }
+  return n;
+}
+
+// s cut to at most `max` scalar values.
+function capScalars(s, max) {
+  for (let i = 0, n = 0; i < s.length; i++, n++) {
+    if (n === max) return s.slice(0, i);
+    if (isHighSurrogate(s.charCodeAt(i)) && isLowSurrogate(s.charCodeAt(i + 1))) i++;
+  }
+  return s;
+}
+
+// UTF-8 length of s, as TextEncoder would write it (a lone surrogate is 3).
+function utf8Bytes(s) {
+  let n = 0;
+  for (let i = 0; i < s.length; i++) {
+    const c = s.charCodeAt(i);
+    if (c < 0x80) n += 1;
+    else if (c < 0x800) n += 2;
+    else if (isHighSurrogate(c) && isLowSurrogate(s.charCodeAt(i + 1))) { n += 4; i++; } else n += 3;
+  }
+  return n;
+}
+
+// Ascending offsets, each at most `end`, at most `limit` of them; else undefined.
+function offsets(list, end, limit) {
+  if (!Array.isArray(list) || !list.length || list.length > limit) return undefined;
+  for (let i = 0; i < list.length; i++) {
+    if (!isCount(list[i]) || list[i] > end || (i && list[i] < list[i - 1])) return undefined;
+  }
+  return list.slice();
+}
+
+// The file name without its extension (lib/files.js docTitle's fallback).
+function nameStem(name) {
+  const dot = name.lastIndexOf('.');
+  return dot > 0 && /^[A-Za-z0-9]{1,16}$/.test(name.slice(dot + 1)) ? name.slice(0, dot).trim() : name;
+}
+
 // ---------------------------------------------------------------------------
 // Parts, shards and keys
 
@@ -230,6 +299,86 @@ function validSource(raw) {
   return source;
 }
 
+// ---------------------------------------------------------------------------
+// Documents (EXTENSION_FILE_TEXT §11.4)
+
+/** Storage key of a document body: `mm-body-<item id>-<n>`. */
+export function bodyKey(id, n) {
+  return `mm-body-${id}-${n}`;
+}
+
+/** { id, n } for a body key, else null. */
+export function parseBodyKey(key) {
+  const m = typeof key === 'string' && BODY_KEY_RE.exec(key);
+  return m ? { id: m[1], n: Number(m[2]) } : null;
+}
+
+// Item.file: what Kage said about the file, never its text or path. The
+// name, extension, format and sha256 are required; the rest is repaired.
+// Unknown fields are dropped, so nothing the host adds later is stored.
+function normalizeFile(raw) {
+  if (!isRecord(raw)) return null;
+  const { name, ext, format, sha256 } = raw;
+  if (typeof name !== 'string' || !name.trim() || name === '.' || name === '..' || FILE_NAME_BAD_RE.test(name)) return null;
+  if (typeof ext !== 'string' || !FILE_EXT_RE.test(ext) || typeof format !== 'string' || !FILE_FORMAT_RE.test(format)) return null;
+  if (typeof sha256 !== 'string' || !SHA256_RE.test(sha256)) return null;
+  const file = { name: capScalars(name, LIMITS.fileName), ext, format, size: isCount(raw.size) ? raw.size : 0 };
+  if (Number.isSafeInteger(raw.modifiedAt)) file.modifiedAt = raw.modifiedAt;
+  file.sha256 = sha256.toLowerCase();
+  const pages = raw.pages;
+  if (isRecord(pages) && isCount(pages.count) && isCount(pages.read) && pages.read <= pages.count) {
+    file.pages = { count: pages.count, read: pages.read };
+  }
+  file.chars = isCount(raw.chars) ? raw.chars : 0;
+  file.truncated = raw.truncated === true;
+  file.warnings = [];
+  for (const warning of Array.isArray(raw.warnings) ? raw.warnings : []) {
+    if (file.warnings.length >= LIMITS.warnings) break;
+    if (typeof warning === 'string' && FILE_WARNING_RE.test(warning) && !file.warnings.includes(warning)) file.warnings.push(warning);
+  }
+  return file;
+}
+
+// Item.body: { key, chars, bytes } of the full text, for this item only.
+function normalizeBodyRef(raw, id) {
+  const parsed = isRecord(raw) ? parseBodyKey(raw.key) : null;
+  if (!parsed || parsed.id !== id) return null;
+  return { key: raw.key, chars: isCount(raw.chars) ? raw.chars : 0, bytes: isCount(raw.bytes) ? raw.bytes : 0 };
+}
+
+// Item.fileRefs: this computer's file_refs, newest last, at most 8 (`add`
+// joins as the newest).
+function refsOf(list, add) {
+  const out = [];
+  for (const ref of Array.isArray(list) ? list : []) {
+    if (typeof ref === 'string' && FILE_REF_RE.test(ref) && ref !== add && !out.includes(ref)) out.push(ref);
+  }
+  if (typeof add === 'string' && FILE_REF_RE.test(add)) out.push(add);
+  return out.length > LIMITS.fileRefs ? out.slice(out.length - LIMITS.fileRefs) : out;
+}
+
+function bodyRecord(id, n, format, chars, text, pageStarts) {
+  const value = { schema: BODY_SCHEMA, id, rev: n, format, chars, text };
+  const starts = offsets(pageStarts, text.length, LIMITS.bodyPageStarts);
+  if (starts) value.pageStarts = starts;
+  return value;
+}
+
+/**
+ * A loaded body (the value stored under `key`) in canonical form, or null
+ * when it isn't one: not an object, no text, a newer schema, or another
+ * item's or revision's body. → { schema, id, rev, format, chars, text,
+ * pageStarts? } (pageStarts: offsets into text).
+ */
+export function normalizeBody(raw, key) {
+  const parsed = parseBodyKey(key);
+  if (!parsed || !isRecord(raw) || typeof raw.text !== 'string') return null;
+  if (!Number.isInteger(raw.schema) || raw.schema < 1 || raw.schema > BODY_SCHEMA) return null;
+  if (raw.id !== parsed.id || raw.rev !== parsed.n) return null;
+  const format = typeof raw.format === 'string' && FILE_FORMAT_RE.test(raw.format) ? raw.format : 'text';
+  return bodyRecord(parsed.id, parsed.n, format, isCount(raw.chars) ? raw.chars : scalarCount(raw.text), raw.text, raw.pageStarts);
+}
+
 /** A valid Item in canonical form (unknown fields kept), or null when malformed. */
 export function normalizeItem(raw) {
   if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
@@ -263,7 +412,20 @@ export function normalizeItem(raw) {
   const origins = {};
   for (const id of ids) origins[id] = ORIGINS.includes(raw.mentionOrigin?.[id]) ? raw.mentionOrigin[id] : 'rule';
   item.mentionOrigin = origins;
-  item.keyphrases = strings(raw.keyphrases, LIMITS.keyphrases);
+  // A document the user picked: its file, this computer's refs, and the
+  // full text's body key when the text is longer than `text` holds.
+  const body = normalizeBodyRef(raw.body, raw.id);
+  if (body) item.body = body; else delete item.body;
+  const file = normalizeFile(raw.file);
+  if (file) {
+    // Page starts are offsets into `text`, so only a doc without a body keeps them here.
+    const starts = body ? undefined : offsets(raw.file.pageStarts, item.text.length, LIMITS.pageStarts);
+    if (starts) file.pageStarts = starts;
+    item.file = file;
+  } else delete item.file;
+  const refs = refsOf(raw.fileRefs);
+  if (refs.length) item.fileRefs = refs; else delete item.fileRefs;
+  item.keyphrases = strings(raw.keyphrases, file ? LIMITS.docKeyphrases : LIMITS.keyphrases);
   if (Array.isArray(raw.terms)) item.terms = strings(raw.terms, LIMITS.terms); else delete item.terms;
   if (typeof raw.summary === 'string' && raw.summary.trim()) {
     item.summary = trunc(raw.summary.trim(), LIMITS.summary);
@@ -351,8 +513,17 @@ function normalizeMeta(raw, now) {
   }
   if (raw.counts && typeof raw.counts === 'object') {
     meta.counts = { items: finite(raw.counts.items) ?? 0, entities: finite(raw.counts.entities) ?? 0 };
+    if (isCount(raw.counts.bodyBytes) && raw.counts.bodyBytes > 0) meta.counts.bodyBytes = raw.counts.bodyBytes;
   }
   return meta;
+}
+
+// meta.counts: items and entities, plus bodyBytes once there are bodies.
+function countsOf(state) {
+  const counts = { items: state.items.size, entities: state.entities.size };
+  const bytes = bodyBytes(state);
+  if (bytes) counts.bodyBytes = bytes;
+  return counts;
 }
 
 const revOf = (payload) => (Number.isFinite(payload?.rev) ? payload.rev : 0);
@@ -469,7 +640,7 @@ export function fromPersisted(parts = {}, { now = 0 } = {}) {
       else problems.push({ part: 'journal', code: 'bad_record' });
     }
   }
-  state.meta.counts = { items: state.items.size, entities: state.entities.size };
+  state.meta.counts = countsOf(state);
   return { state, problems };
 }
 
@@ -498,7 +669,7 @@ export function payloadFor(state, part) {
   if (part === 'meta') {
     const { keys, extractorVersion, createdAt, updatedAt, gen } = state.meta;
     return {
-      schema: SCHEMA, ...(gen ? { gen } : {}), keys: { ...keys }, counts: { items: state.items.size, entities: state.entities.size },
+      schema: SCHEMA, ...(gen ? { gen } : {}), keys: { ...keys }, counts: countsOf(state),
       extractorVersion, createdAt, updatedAt,
     };
   }
@@ -564,6 +735,45 @@ export function findDuplicate(state, extraction, { exclude, skip } = {}) {
     if (match && better(item)) best = item;
   }
   return best ? best.id : null;
+}
+
+// Every body key State still needs, with its bytes: live items, records
+// kept aside unread, and the journal's undo snapshots (a deleted or re-read
+// doc's body stays while its op can still be undone).
+function bodyRefs(state) {
+  const refs = new Map();
+  const note = (record) => {
+    const body = record?.body;
+    const parsed = parseBodyKey(body?.key);
+    if (!parsed || parsed.id !== record.id || refs.has(body.key)) return;
+    refs.set(body.key, isCount(body.bytes) ? body.bytes : 0);
+  };
+  for (const item of state.items?.values() || []) note(item);
+  for (const bag of state.raw?.values() || []) for (const record of bag.items || []) note(record);
+  for (const op of state.ops || []) for (const record of op.before?.items || []) note(record);
+  return refs;
+}
+
+/** The body keys State still references (items, kept-aside records, undo snapshots). */
+export function bodyKeys(state) {
+  return new Set(bodyRefs(state).keys());
+}
+
+/** UTF-8 bytes of the referenced bodies' text, each counted once (the 64 MB budget). */
+export function bodyBytes(state, { except } = {}) {
+  let total = 0;
+  for (const [key, bytes] of bodyRefs(state)) if (key !== except) total += bytes;
+  return total;
+}
+
+/**
+ * Body keys in `held` (bodyKeys(state) taken before a change) that State no
+ * longer references: delete them once the change is committed. Covers undo,
+ * a journal trim that dropped a delete or re-read, and lossy ops. Sorted.
+ */
+export function releasedBodies(held, state) {
+  const live = bodyKeys(state);
+  return [...(held || [])].filter((key) => !live.has(key)).sort();
 }
 
 const rejectedKey = (state, key) => state.rejections.some((r) => r.type === 'entity' && r.t === key);
@@ -850,6 +1060,81 @@ function appendLine(text, line) {
 
 const childrenOf = (state, parentId) => [...state.items.values()].filter((item) => item.parentId === parentId);
 
+// What a child inherits from its parent (F-CAP-3): the parent's teams,
+// projects, topics and orgs, and the names on the heading line; people and
+// terms only from its own line, so "book the offsite" doesn't become an
+// MTCS action because a sibling line names MTCS. `resolved` are the
+// change's mentions ({ id, origin, segs }).
+function inheritor(state, resolved, specs) {
+  const childSegs = new Set(specs.map((spec) => (spec.action ? spec.action.seg : spec.link?.seg)).filter(Number.isInteger));
+  const headSeg = (seg) => Number.isInteger(seg) && (seg < 0 || (seg === 0 && !childSegs.has(0)));
+  return (draft, parent, ownSeg, { fresh = true } = {}) => {
+    for (const eid of parent.entityIds) {
+      const type = state.entities.get(eid)?.type;
+      const r = resolved.find((x) => x.id === eid);
+      const own = Number.isInteger(ownSeg) && r?.segs.includes(ownSeg);
+      if (INHERITED_TYPES.has(type) || own || (fresh && r?.segs.some(headSeg))) addMention(draft, eid, parent.mentionOrigin[eid]);
+    }
+    // A name on the child's own line that the parent doesn't carry (a dedup
+    // merge adds lines to an existing item).
+    if (Number.isInteger(ownSeg)) for (const r of resolved) if (r.segs.includes(ownSeg)) addMention(draft, r.id, r.origin);
+  };
+}
+
+function actionChild(id, action, parentId, owner, source, now, v) {
+  const draft = {
+    id, kind: 'action', title: clean(action.title || action.text || action.quote, LIMITS.title), titleSource: 'auto',
+    text: trunc(String(action.text ?? action.quote ?? ''), LIMITS.text), createdAt: now, updatedAt: now,
+    parentId, entityIds: [], mentionOrigin: {}, keyphrases: [], source,
+    enrich: { state: 'none' }, rev: 1, v: v ?? 1,
+  };
+  actionFields(draft, action, owner, now);
+  return draft;
+}
+
+// Actions found in a document the user picked are always open suggestions,
+// because someone else may have written it: unassigned ones are owned by
+// "me", "<Name> to …" by Name. Done lines (`[x]`) are left out.
+function docActions(x) {
+  const actions = [];
+  let droppedDone = 0;
+  for (const action of [x.self, ...(Array.isArray(x.actions) ? x.actions : [])]) {
+    if (!isRecord(action)) continue;
+    if (action.status === 'done') { droppedDone++; continue; }
+    actions.push({ ...action, status: 'open', suggested: true, owner: action.owner || 'me' });
+  }
+  return { actions, droppedDone };
+}
+
+const pickedFile = (ingest) => {
+  const file = isRecord(ingest) ? ingest.file : null;
+  const stored = normalizeFile(file);
+  if (!stored || typeof file.text !== 'string' || !FILE_REF_RE.test(file.fileRef ?? '')) return null;
+  return { file, stored, text: file.text, long: file.text.length > LIMITS.text, secret: stored.warnings.includes('possible_secret') };
+};
+
+function overBudget(state, bytes, env, except) {
+  const budget = finite(env?.bodyBudget) >= 0 ? env.bodyBudget : LIMITS.bodyBytes;
+  return bodyBytes(state, { except }) + bytes > budget;
+}
+
+// The number in a new body key for `base` (the item as it was before this
+// op): past its rev and every body key of this item that a snapshot still
+// holds, so a body undo might bring back is never overwritten. Ignores
+// this op's own earlier attempt, so a retry gets the same key.
+function bodyNumber(state, base, opId) {
+  let n = Number.isInteger(base.rev) ? base.rev : 0;
+  const bump = (record) => {
+    const parsed = parseBodyKey(record?.body?.key);
+    if (parsed && parsed.id === base.id && parsed.n > n) n = parsed.n;
+  };
+  bump(base);
+  for (const op of state.ops) {
+    if (op.opId !== opId) for (const record of op.before?.items || []) if (record?.id === base.id) bump(record);
+  }
+  return n + 1;
+}
+
 // ---------------------------------------------------------------------------
 // Mutations
 
@@ -857,8 +1142,14 @@ const childrenOf = (state, parentId) => [...state.items.values()].filter((item) 
 // entities; or, for a URL/path/window doc that's already saved, merges into
 // that item (annotation line `— YYYY-MM-DD: <text>`, mentions, new actions).
 export function applyCapture(state, extraction, env) {
-  const x = extraction || {};
-  const tx = begin(state, env, 'capture', { code: 'capture', params: {} });
+  return captureInto(state, extraction || {}, env, null);
+}
+
+// doc (applyIngest): { fields(parentId) } adds the document's own fields to
+// the new parent, the op is an 'ingest', and keyphrases keep up to 64.
+function captureInto(state, x, env, doc) {
+  const kind = doc ? 'ingest' : 'capture';
+  const tx = begin(state, env, kind, { code: kind, params: {} });
   const now = env.now;
   // Draw every id up front, in an order fixed by the extraction alone.
   const parentId = env.newId('i');
@@ -881,23 +1172,7 @@ export function applyCapture(state, extraction, env) {
     const id = m && resolveEntity(tx, m, mentionSlots[i]);
     if (id) resolved.push({ id, origin: ORIGINS.includes(m.origin) ? m.origin : 'rule', segs: Array.isArray(m.segs) ? m.segs : [m.seg] });
   });
-  // What a child inherits from its parent (F-CAP-3): the parent's teams,
-  // projects, topics and orgs, and the names on the heading line; people
-  // and terms only from its own line, so "book the offsite" doesn't become
-  // an MTCS action because a sibling line names MTCS.
-  const childSegs = new Set(specs.map((spec) => (spec.action ? spec.action.seg : spec.link?.seg)).filter(Number.isInteger));
-  const headSeg = (seg) => Number.isInteger(seg) && (seg < 0 || (seg === 0 && !childSegs.has(0)));
-  const inherit = (draft, parent, ownSeg, { fresh = true } = {}) => {
-    for (const eid of parent.entityIds) {
-      const type = state.entities.get(eid)?.type;
-      const r = resolved.find((x) => x.id === eid);
-      const own = Number.isInteger(ownSeg) && r?.segs.includes(ownSeg);
-      if (INHERITED_TYPES.has(type) || own || (fresh && r?.segs.some(headSeg))) addMention(draft, eid, parent.mentionOrigin[eid]);
-    }
-    // A name on the child's own line that the parent doesn't carry (a dedup
-    // merge adds lines to an existing item).
-    if (Number.isInteger(ownSeg)) for (const r of resolved) if (r.segs.includes(ownSeg)) addMention(draft, r.id, r.origin);
-  };
+  const inherit = inheritor(state, resolved, specs);
   const owners = ownerActions.map((a, i) => (a ? resolveOwner(tx, a.owner, ownerSlots[i], a.origin) : undefined));
   snapshotCandidates(tx, x.candidates);
   const pendingAliases = attachAliases(tx, x.aliases);
@@ -909,13 +1184,7 @@ export function applyCapture(state, extraction, env) {
     const id = childIds[i];
     if (spec.action) {
       const a = spec.action;
-      const draft = {
-        id, kind: 'action', title: clean(a.title || a.text || a.quote, LIMITS.title), titleSource: 'auto',
-        text: trunc(String(a.text ?? a.quote ?? ''), LIMITS.text), createdAt: now, updatedAt: now,
-        parentId: parent.id, entityIds: [], mentionOrigin: {}, keyphrases: [], source,
-        enrich: { state: 'none' }, rev: 1, v: x.v ?? 1,
-      };
-      actionFields(draft, a, owners[i + 1], now);
+      const draft = actionChild(id, a, parent.id, owners[i + 1], source, now, x.v);
       inherit(draft, parent, a.seg, { fresh: parent.id === parentId });
       if (draft.owner && draft.owner !== 'me') addMention(draft, draft.owner, 'rule');
       if (parent.private) draft.private = true;
@@ -986,9 +1255,10 @@ export function applyCapture(state, extraction, env) {
     title: clean(x.title, LIMITS.title) || firstLine(text, LIMITS.title) || clean(x.url || x.path || '', LIMITS.title),
     titleSource: TITLE_SOURCES.includes(x.titleSource) ? x.titleSource : 'auto',
     text, createdAt: now, updatedAt: now,
-    entityIds: [], mentionOrigin: {}, keyphrases: strings(x.keyphrases, LIMITS.keyphrases),
+    entityIds: [], mentionOrigin: {}, keyphrases: strings(x.keyphrases, doc ? LIMITS.docKeyphrases : LIMITS.keyphrases),
     source, enrich: enrichFor(x.url, env), rev: 1, v: x.v ?? 1,
   };
+  if (doc) Object.assign(draft, doc.fields(parentId));
   if (x.truncated) draft.truncated = true;
   for (const field of ['url', 'canonicalUrl', 'path', 'docKey']) if (x[field]) draft[field] = x[field];
   if (finite(x.occurredAt) !== undefined) draft.occurredAt = x.occurredAt;
@@ -1007,11 +1277,171 @@ export function applyCapture(state, extraction, env) {
     const child = makeChild(spec, i, parent);
     if (child && putItem(tx, child, { created: true })) childIdsMade.push(child.id);
   });
-  tx.op.label = env.label || { code: 'capture', params: { itemId: parentId, count: 1 + childIdsMade.length } };
+  tx.op.label = env.label || { code: kind, params: { itemId: parentId, count: 1 + childIdsMade.length } };
   return {
     ...finish(tx, {}, { always: true }), itemId: parentId, childIds: childIdsMade, pendingAliases,
     result: { annotated: false, rejectedActions: x.rejectedActions || [], truncated: !!x.truncated, linkDupes },
   };
+}
+
+// A document the user picked through Kage's file_text (EXTENSION_FILE_TEXT
+// §11.4, case N: the caller decided with lib/files.js dedupeDecision).
+// ingest = { file, extraction?, title?, titleSource?, keyphrases?, private? }:
+//   file        lib/files.js validateFileText's `file` (camelCase, with text and fileRef);
+//   extraction  extract() of the first 8,000 characters, without a kind hint;
+//   title       lib/files.js docTitle(file); keyphrases: bodyKeyphrases(file.text);
+//   private     "Make new items private".
+// The new item is a doc with `file`, `fileRefs` and, when the text is
+// longer than `text` holds, `body`. It never merges into a saved link or
+// path and gets no link children; its actions are open suggestions (done
+// lines are left out). `possible_secret` or a `#private` tag makes it
+// private. env.via is always 'file'. → Change & { itemId, childIds,
+// pendingAliases, bodies: [{ key, value }], result }. Refusals: 'bad_file',
+// 'storage_full' (more than env.bodyBudget, default LIMITS.bodyBytes).
+export function applyIngest(state, ingest, env) {
+  const pick = pickedFile(ingest);
+  if (!pick) return refusal('bad_file');
+  const { file, stored, text, long, secret } = pick;
+  const bytes = long ? utf8Bytes(text) : 0;
+  if (long && overBudget(state, bytes, env)) return refusal('storage_full');
+  const x = isRecord(ingest.extraction) ? ingest.extraction : {};
+  const { actions, droppedDone } = docActions(x);
+  const title = clean(ingest.title, LIMITS.title);
+  const isPrivate = !!(ingest.private || x.private || secret);
+  const docX = {
+    ...x, kind: 'doc', text, truncated: long,
+    title: title || clean(nameStem(stored.name), LIMITS.title), titleSource: title && ingest.titleSource === 'meta' ? 'meta' : 'auto',
+    url: undefined, canonicalUrl: undefined, path: undefined, docKey: undefined, self: null, actions, links: [],
+    keyphrases: Array.isArray(ingest.keyphrases) ? ingest.keyphrases : x.keyphrases, private: isPrivate,
+  };
+  const fields = (id) => ({
+    file: long ? stored : { ...stored, pageStarts: file.pageStarts },
+    fileRefs: [file.fileRef],
+    ...(long ? { body: { key: bodyKey(id, 1), chars: stored.chars, bytes } } : {}),
+  });
+  const change = captureInto(state, docX, { ...env, via: 'file' }, { fields });
+  const bodies = long ? [{ key: bodyKey(change.itemId, 1), value: bodyRecord(change.itemId, 1, stored.format, stored.chars, text, file.pageStarts) }] : [];
+  return {
+    ...change, bodies,
+    result: { rejectedActions: change.result.rejectedActions, droppedDone, truncated: stored.truncated, private: isPrivate, secret },
+  };
+}
+
+// "Update from file…" or a changed file (§11.4, case U). The doc's text,
+// file, body, keyphrases and rule mentions come from the new read; what the
+// user or an agent set (a user or agent title, the kind, summary, terms,
+// their names and actions) stays. Pending rule suggestions the new text no
+// longer has go; its new actions arrive as suggestions. The old body key
+// stays in the op's before-snapshot, so undo brings it back. ingest as for
+// applyIngest; only possible_secret or a `#private` tag makes it private.
+// → Change & { itemId, childIds (new), removedIds, pendingAliases, bodies,
+// result }. Refusals: 'not_found', 'not_file' (an item without `file`),
+// 'bad_file', 'storage_full'.
+export function applyReread(state, itemId, ingest, env) {
+  const item = state.items.get(itemId);
+  if (!item) return refusal('not_found');
+  if (!item.file) return refusal('not_file');
+  const pick = pickedFile(ingest);
+  if (!pick) return refusal('bad_file');
+  const { file, stored, text, long, secret } = pick;
+  const tx = begin(state, env, 'reread', { code: 'reread', params: { itemId } });
+  const base = (tx.prior && tx.op.before.items.find((record) => record.id === itemId)) || item;
+  const n = long ? bodyNumber(state, base, tx.op.opId) : 0;
+  const key = long ? bodyKey(itemId, n) : null;
+  const bytes = long ? utf8Bytes(text) : 0;
+  if (long && overBudget(state, bytes, env, key)) return refusal('storage_full');
+  const x = isRecord(ingest.extraction) ? ingest.extraction : {};
+  const { actions, droppedDone } = docActions(x);
+  const specs = actions.slice(0, LIMITS.children).map((action) => ({ action }));
+  const childIds = specs.map(() => env.newId('i'));
+  const mentions = Array.isArray(x.mentions) ? x.mentions : [];
+  const mentionSlots = mentions.map(() => env.newId('e'));
+  const ownerSlots = specs.map(({ action: a }) => (typeof a.owner === 'object' ? env.newId('e') : null));
+
+  const resolved = [];
+  mentions.forEach((m, i) => {
+    const id = m && resolveEntity(tx, m, mentionSlots[i]);
+    if (id && !rejectedMention(state, itemId, id)) {
+      resolved.push({ id, origin: ORIGINS.includes(m.origin) ? m.origin : 'rule', segs: Array.isArray(m.segs) ? m.segs : [m.seg] });
+    }
+  });
+  const owners = specs.map(({ action: a }, i) => resolveOwner(tx, a.owner, ownerSlots[i], a.origin));
+  snapshotCandidates(tx, x.candidates);
+  const pendingAliases = attachAliases(tx, x.aliases);
+
+  const draft = clone(item);
+  if (draft.titleSource === 'auto' || draft.titleSource === 'meta') {
+    const title = clean(ingest.title, LIMITS.title);
+    draft.title = title || clean(nameStem(stored.name), LIMITS.title);
+    draft.titleSource = title && ingest.titleSource === 'meta' ? 'meta' : 'auto';
+  }
+  draft.text = trunc(text, LIMITS.text);
+  if (long) draft.truncated = true; else delete draft.truncated;
+  draft.file = long ? stored : { ...stored, pageStarts: file.pageStarts };
+  draft.fileRefs = refsOf(item.fileRefs, file.fileRef);
+  if (long) draft.body = { key, chars: stored.chars, bytes }; else delete draft.body;
+  draft.keyphrases = strings(Array.isArray(ingest.keyphrases) ? ingest.keyphrases : x.keyphrases, LIMITS.docKeyphrases);
+  if (Array.isArray(x.terms) && x.terms.length) draft.terms = strings([...(draft.terms || []), ...x.terms], LIMITS.terms);
+  if (finite(draft.occurredAt) === undefined && finite(x.occurredAt) !== undefined) draft.occurredAt = x.occurredAt;
+  if (Number.isInteger(x.v) && x.v > 0) draft.v = x.v;
+  if (secret || x.private) draft.private = true;
+  // Rule mentions the new text no longer has go; user and agent ones stay.
+  const found = new Set(resolved.map((r) => r.id));
+  if (draft.owner) found.add(draft.owner);
+  draft.entityIds = draft.entityIds.filter((id) => draft.mentionOrigin[id] !== 'rule' || found.has(id));
+  for (const id of Object.keys(draft.mentionOrigin)) if (!draft.entityIds.includes(id)) delete draft.mentionOrigin[id];
+  for (const r of resolved) addMention(draft, r.id, r.origin);
+  const parent = putItem(tx, draft) || item;
+
+  // Children: a suggestion the user hasn't acted on, found by the rules,
+  // goes when the new text doesn't have it; everything else stays.
+  const wanted = new Set(specs.map(({ action: a }) => quoteForm(a.quote || a.text)));
+  const removedIds = [];
+  for (const child of childrenOf(state, itemId).sort(byId)) {
+    const pending = child.kind === 'action' && child.status === 'open' && child.suggested === true && (child.origin ?? 'rule') === 'rule';
+    if (pending && !wanted.has(quoteForm(child.quote || child.text))) {
+      if (removeItem(tx, child.id)) removedIds.push(child.id);
+    } else if (parent.private && !child.private) putItem(tx, { ...clone(child), private: true });
+  }
+  const inherit = inheritor(state, resolved, specs);
+  const known = new Set(childrenOf(state, itemId).map((c) => quoteForm(c.quote || c.text)));
+  const source = validSource({ via: 'file', app: env.source?.app, window: env.source?.window });
+  const made = [];
+  specs.forEach(({ action: a }, i) => {
+    const form = quoteForm(a.quote || a.text);
+    if (known.has(form) && !state.items.has(childIds[i])) return;
+    const child = actionChild(childIds[i], a, itemId, owners[i], source, env.now, x.v);
+    inherit(child, parent, a.seg);
+    if (child.owner && child.owner !== 'me') addMention(child, child.owner, 'rule');
+    if (parent.private) child.private = true;
+    if (putItem(tx, child, { created: true })) { made.push(child.id); known.add(form); }
+  });
+  tx.op.label = env.label || { code: 'reread', params: { itemId, count: made.length } };
+  const change = finish(tx);
+  if (!change.op) return change;
+  const after = state.items.get(itemId);
+  const bodies = long && after?.body?.key === key
+    ? [{ key, value: bodyRecord(itemId, n, stored.format, stored.chars, text, file.pageStarts) }] : [];
+  return {
+    ...change, itemId, childIds: made, removedIds, pendingAliases, bodies,
+    result: { rejectedActions: x.rejectedActions || [], droppedDone, truncated: stored.truncated, private: !!after?.private, secret },
+  };
+}
+
+// The same content saved on another computer, or a copy (§11.4, case C):
+// adds this computer's file_ref to the doc, newest last, at most 8. A
+// silent op. Refusals: 'not_found', 'not_file', 'bad_file', 'same' (it is
+// already the newest ref).
+export function applyAddRef(state, itemId, fileRef, env) {
+  const item = state.items.get(itemId);
+  if (!item) return refusal('not_found');
+  if (!item.file) return refusal('not_file');
+  if (typeof fileRef !== 'string' || !FILE_REF_RE.test(fileRef)) return refusal('bad_file');
+  const refs = refsOf(item.fileRefs, fileRef);
+  if (deepEqual(refs, item.fileRefs || [])) return refusal('same');
+  const tx = begin(state, env, 'enrich', { code: 'file_ref', params: { itemId } }, { silent: true });
+  putItem(tx, { ...clone(item), fileRefs: refs });
+  return { ...finish(tx), itemId };
 }
 
 // promote = [{key, display, type, itemIds}] from entities.bumpCandidates.
@@ -1189,7 +1619,8 @@ export function applyEnrichLink(state, itemId, meta, env) {
 // Re-derives rule-origin fields from a fresh extraction (after enrichment,
 // or P2 re-derivation): keyphrases, rule mentions (added; with
 // env.replaceRule, rule mentions that are no longer found are removed),
-// occurredAt when unset, and the extractor version. Silent by default.
+// occurredAt when unset, and the extractor version. Silent by default. A
+// picked document keeps its body keyphrases unless x.bodyKeyphrases is set.
 export function applyReextract(state, itemId, extraction, env) {
   const item = state.items.get(itemId);
   if (!item) return refusal('not_found');
@@ -1210,7 +1641,10 @@ export function applyReextract(state, itemId, extraction, env) {
   }
   const added = [];
   for (const f of found) if (addMention(draft, f.id, f.origin)) added.push(f);
-  draft.keyphrases = strings(x.keyphrases, LIMITS.keyphrases);
+  // A picked document's keyphrases come from its whole body: they change
+  // only when the caller passes bodyKeyphrases (it loaded the body).
+  if (!item.file) draft.keyphrases = strings(x.keyphrases, LIMITS.keyphrases);
+  else if (Array.isArray(x.bodyKeyphrases)) draft.keyphrases = strings(x.bodyKeyphrases, LIMITS.docKeyphrases);
   if (finite(draft.occurredAt) === undefined && finite(x.occurredAt) !== undefined) draft.occurredAt = x.occurredAt;
   if (Number.isInteger(x.v) && x.v > 0) draft.v = x.v;
   putItem(tx, draft);
@@ -1241,7 +1675,8 @@ function capWords(text, max) {
 // [{id, summary?, terms?, entities?:[{name,type}], actions?:[{text, quote, owner?, due?}], kind?}].
 // Additive only: it never overwrites user-origin fields, never touches
 // private items, and rejects actions whose quote isn't in the item's text.
-// Agent actions are suggestions unless env.autoAccept. One undoable op.
+// Agent actions are suggestions unless env.autoAccept (and always on a
+// picked document). One undoable op.
 export function applyAnnotate(state, entries, env) {
   const list = (Array.isArray(entries) ? entries : []).slice(0, LIMITS.annotate);
   const text = textLib(env);
@@ -1298,7 +1733,9 @@ export function applyAnnotate(state, entries, env) {
         entityIds: [], mentionOrigin: {}, keyphrases: [], source: { via: 'agent' },
         enrich: { state: 'none' }, rev: 1, v: item.v,
       };
-      actionFields(child, { status: 'open', suggested: !env.autoAccept, confidence: 0.6, quote, origin: 'agent', dueAt: isoDayStart(a.due) }, owner, env.now);
+      // A picked document's actions stay suggestions, auto-accept or not.
+      const suggested = !env.autoAccept || !!item.file;
+      actionFields(child, { status: 'open', suggested, confidence: 0.6, quote, origin: 'agent', dueAt: isoDayStart(a.due) }, owner, env.now);
       for (const eid of parent.entityIds) addMention(child, eid, parent.mentionOrigin[eid]);
       if (owner !== 'me') addMention(child, owner, 'agent');
       if (putItem(tx, child, { created: true })) { childIds.push(child.id); known.add(form); }
