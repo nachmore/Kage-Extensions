@@ -55,10 +55,10 @@ digests, any telemetry. Background AI calls came later, off by default
 | name | `__MSG_manifest.name__` → "Mind Map" |
 | description | `__MSG_manifest.description__` → "Throw in thoughts, links, docs and todos. Mind Map organizes them, answers with sources, and maps how they connect." |
 | icon | 🧠 |
-| version | `0.4.0` |
+| version | `0.5.0` |
 | author | `kage` |
 | tags | `productivity`, `notes`, `knowledge`, `mindmap`, `todo`, `bookmarks`, `organizer`, `ai` |
-| permissions | `storage`, `urls`, `network`, `windows`, `views`, `file_text`, `agent_background` |
+| permissions | `storage`, `urls`, `network`, `windows`, `views`, `file_text`, `agent_background`, `sync` |
 | sensitiveData | none (personal notes are personal data, not secrets; see §15) |
 
 Why each capability is needed:
@@ -75,6 +75,10 @@ Why each capability is needed:
   consent dialog, the one purpose `organize`, `maxPromptChars: 16000` and
   `dailyCalls: 40`
   ([EXTENSION_AGENT_CALLS.md](https://github.com/nachmore/Kage/blob/main/docs/design/EXTENSION_AGENT_CALLS.md) §11).
+- `sync`: the mind map on all the user's computers through Kage folder sync
+  (§7.8), only while Kage sync is on. The manifest's `sync` block declares
+  the collections
+  ([SYNC.md](https://github.com/nachmore/Kage/blob/main/docs/design/SYNC.md) §12).
 
 No `launch` (we never open local files), no `clipboard`, no `agent` (agent
 interactions use the `prompt` result action and tools, neither of which needs
@@ -798,8 +802,10 @@ other item keeps 5.
 `doneAt`), not as day nodes. A range filter matches `createdAt` **or**
 `occurredAt`. A due filter matches `dueAt`.
 
-**Sync readiness.** Records have stable random ids, `updatedAt` and `rev`, and
-`mergedInto` redirects. Tombstones get added only if sync ships.
+**Sync.** Records have stable random ids, `updatedAt` and `rev`, and
+`mergedInto` redirects, which is what Kage folder sync needs (§7.8).
+Tombstones live in Kage's replica: Mind Map keeps deleting records as it
+does without sync, and pushes the deleted ids.
 
 ---
 
@@ -816,7 +822,7 @@ at the end, so `check:security` can resolve them.
 
 | Key | Content |
 |---|---|
-| `mm-meta` | `{schema:1, rev, txn, keys:{[key]: rev}, counts:{items, entities}, extractorVersion, createdAt, updatedAt, orgSince?}` (`orgSince`: background organizing considers notes created since then, §5 S12) |
+| `mm-meta` | `{schema:1, rev, txn, keys:{[key]: rev}, counts:{items, entities}, extractorVersion, createdAt, updatedAt, orgSince?, syncPending?, syncFull?, syncTag?}` (`orgSince`: background organizing considers notes created since then, §5 S12; the `sync*` fields are this computer's sync bookkeeping, §7.8) |
 | `mm-items-${YYYY}-${MM}` | `{schema, rev, txn, items: Item[]}`. Sharded by the **UTC** month of `createdAt`. Items never move shards. |
 | `mm-entities` | `{schema, rev, txn, entities: Entity[], candidates: Candidate[]}` |
 | `mm-links` | `{schema, rev, txn, links: Link[], rejections: Rejection[]}` |
@@ -962,7 +968,98 @@ Other rules:
   lock, meta.
 - **Uninstall.** The host deletes the whole data folder
   (`purge_extension_data`). The settings disclosure and the README say so and
-  point to Export.
+  point to Export. With Kage sync on, the copy in the sync folder and on the
+  other computers stays (Kage's Settings → Sync can remove it), and a
+  reinstall from the same place gets it back.
+
+### 7.8 Sync between computers (Kage folder sync)
+
+On a Kage that offers `sync.records` (Kage's
+[SYNC.md](https://github.com/nachmore/Kage/blob/main/docs/design/SYNC.md)
+§12), with the `sync` permission, Mind Map's data is kept, encrypted, in
+the user's sync folder and merged on every computer. Mind Map's own storage
+stays the primary copy: Kage keeps a replica and hands back a change feed.
+Without the host feature nothing changes.
+
+**What syncs** (manifest `sync.collections`):
+
+| Collection | Records | How Kage merges them |
+|---|---|---|
+| `items` | Items, without `rev`, `enrich`, `v` and `fileRefs` (this computer's) | Field by field. One cell each for `status`+`doneAt`+`suggested`+`confidence`, `title`+`titleSource`, `summary`+`summarySource`, `url`+`canonicalUrl`; `entityIds` and `terms` as sets, `mentionOrigin` as a map; every other field whole. |
+| `entities` | Entities, without `rev`; never `me` (the same id everywhere) | Field by field; `aliases` as a set. `mergedInto` is its own field. |
+| `links`, `rejections` | Whole. Id `${s}:${t}:${type}`, or `h.` and a 128-bit hash when that doesn't fit Kage's id rule (an entity rejection names a key). | Newest wins. |
+| `bodies` | A document's full text, id = the item id: `{ key, format, chars, text, pageStarts? }`, up to 4 MiB | Whole. |
+| `pins` | The explorer's pins, id = the node ref: `{ x, y, at }` | Whole. |
+
+Not synced: candidates (rebuilt on each computer), `mm-view`, `mm-meta`,
+`mm-journal`, `mm-lock`, `mm-org` and the `nx-` twins. Settings sync through
+Kage's Extensions category: `my_names` everywhere (`"sync": "shared"`),
+`background_organize` on each computer on its own (`"sync": "machine"`:
+each computer asks its own agent, and consent is per computer), and the
+rest by Kage's rule for plain settings.
+
+**Never leaves this computer:** a document Kage flagged `possible_secret`
+(item and body) and the actions it holds (they quote it); and, with **Sync
+private items** off, private items and private names.
+
+**Pushing** (SYNC §12.9 item 1). Every commit marks the records it changed
+in `meta.syncPending` (`'p:<txn>'` push, `'d:<txn>'` delete) in the same
+meta write, then sends the pushes while it still holds the lock (at most 4
+calls of 200 records and 3 MiB; the rest go in the next round) and settles
+the replies after it lets go. Marks Kage accepted leave mm-meta with the
+next meta write, at most 2 s later. A refusal that won't change (too large,
+a newer schema) drops the mark; a rate limit, a full quota or an error is
+tried again a minute later; `off` (sync went off here) drops it too, since
+the first push after sync comes back covers it. On load, marks still there
+are pushed again. A record that stops syncing (made private with the setting
+off, flagged `possible_secret`) gets one delete; one that never synced gets
+nothing.
+
+**Pulling** (item 2). On `onChanges` (and at most once a minute from
+`syncIfStale`, one call when nothing is new): inside the lock, `pull`, apply,
+persist, write remote pins into `mm-layout`, then `ack`, then repaint.
+Applying is a silent op of kind `sync` that `mm undo` skips: a changed
+record gets `rev = local.rev + 1` and keeps this computer's local fields; an
+item new here gets `enrich: { state: 'done' }` (its link title was fetched
+where it was saved) and this organizer's version. The op keeps no snapshots
+and records only the revs it left on records an earlier op could still
+undo, so that undo is refused as `superseded`; it replaces the previous
+sync op when that one is the newest, and isn't journaled at all when it
+touched nothing undoable, so pulls never push the user's undo history out.
+What a pull applied is never pushed back.
+
+**Names** (item 3). After applying, entities with the same `(type, key)`
+and no `mergedInto` merge: the larger id gets `mergedInto` the smaller one,
+`updatedAt` unchanged, so every computer pushes the same value. Items that
+name the merged copy resolve through the redirect (the indexes and ranking
+follow it).
+
+**The first push.** When Kage says `needsInitialPush` (the first time on a
+computer, after sync was turned on or reset), Mind Map pushes every record
+with `initial: true`, so each one is stamped by its `updatedAt` and the
+newer copy wins, not the computer that joined later. The cursor
+(`meta.syncFull`) lets any window carry on where another stopped; a window
+working on it is left alone for 30 s. Pulls wait until it's done. When it
+is, `meta.syncTag` holds Kage's device tag, so a reload doesn't redo it.
+Turning **Sync private items** back on pushes every record the same way,
+without `initial`.
+
+**Private items** sync, encrypted, by default: "private" means never sent to
+the agent, on every computer. With **Sync private items** off, Mind Map
+keeps them where they are; making a synced item private removes it from the
+other computers (its card says so, and Undo brings it back), and their
+copies of a private item here are left alone.
+
+**Delete everything** with sync on deletes the mind map on the other
+computers too: the new, empty store's mm-meta marks every record that could
+have synced for a delete, so the deletes go out (and survive a restart).
+**Reset map layout** resets the pins everywhere.
+
+**Documents.** A body that isn't on this computer (still on its way, or kept
+on another) reads as missing: the explorer says "The full text is on
+another of your computers", and search uses the title, summary and
+keyphrases. Bodies an import writes after its commit are marked and pushed
+then.
 
 ---
 
@@ -1455,6 +1552,7 @@ Controls (ids equal the manifest `config` keys; `DEFAULTS` mirrors them;
 | Launcher | Trigger word | `trigger` | text (validated) | `mm` |
 | Documents | Keep up to … characters of each file | `doc_max_chars` | select `50000`/`200000`/`1000000` (a string: a select stores strings) | `200000` |
 | Background organizing | Organize new notes in the background | `background_organize` | checkbox | `false` |
+| Sync between your computers | Sync private items | `sync_private_items` | checkbox | `true` |
 
 **Background organizing** (after Agent; §5 S12): the switch, what it does
 (private notes are never sent), then, where Kage offers `agent.background`:
@@ -1471,6 +1569,15 @@ Controls (ids equal the manifest `config` keys; `DEFAULTS` mirrors them;
 These rows show only while the switch is ticked on the page (`showWhen`).
 Elsewhere the status says "Update Kage, or approve Mind Map's Background AI
 permission in the Store", and nothing else changes.
+
+**Sync between your computers** (right after Privacy, only where Kage
+offers `sync.records`; §7.8): a status line ("On through Kage sync, with
+{n} other computers. Last synced {when}.", or that Kage sync is off for
+Mind Map here, paused, sending the first push, changes waiting, or the
+space is full) and **Sync private items**. Elsewhere it isn't shown; an
+older host (no `config.manifest_defaults`) gets a hidden copy of the
+checkbox so Save keeps the stored value. With sync on, **Delete everything**
+says it deletes the mind map on the other computers too.
 
 **Documents** (only where `files.pick_text` is offered): the action **Add a
 file…** (C10), the `doc_max_chars` select, and "Document storage: {used} of
@@ -1580,14 +1687,21 @@ Where Kage offers background agent calls (`agent.background`), it adds:
 > If you turn on background organizing, new notes you haven't marked private
 > are sent to your agent in small batches while you aren't using Kage.
 
+Where Kage offers folder sync (`sync.records`), it adds:
+
+> With Kage sync on, your mind map is also kept, encrypted, in your sync
+> folder, so it's on all your computers. That includes window titles and the
+> text of documents you added, which are still never sent to your agent. A
+> document Kage thinks holds a password or key stays on its computer.
+
 **What goes where:**
 
 | Data | Where it goes |
 |---|---|
-| The store | disk only (extension-data) |
+| The store | disk (extension-data); with Kage sync on, also the encrypted sync folder (§7.8) |
 | Link URLs | to that site, through the host's `fetch_link_metadata` (toggle) |
-| Window titles and app names | disk only, never to the agent (except a doc's own title) |
-| A picked file's text | disk only (the item and its body); the agent gets a doc's name, format, pages, size, summary and up to 3 matching passages, never the whole text. A doc Kage flagged `possible_secret` is private until the user chooses **Let my agent see it** |
+| Window titles and app names | disk and, with sync on, the encrypted sync folder; never to the agent (except a doc's own title) |
+| A picked file's text | disk (the item and its body) and, with sync on, the encrypted sync folder; the agent gets a doc's name, format, pages, size, summary and up to 3 matching passages, never the whole text. A doc Kage flagged `possible_secret` is private until the user chooses **Let my agent see it**, and never syncs |
 | Snippets and records | to the agent only through tool results or a `mm?` / `mm organize` prompt the user triggers and can see |
 | Background batches | to the agent through Kage's background calls, only with **Organize new notes in the background** on and Kage's access confirmed for that agent on this computer (§5 S12); never private notes, private names, windows, apps, folders or ids. Kage lists every request in the extension's Background AI panel |
 | Telemetry | nothing (§16) |
@@ -1658,6 +1772,7 @@ only the extension id.
 | Storage change events | `storage.change_events` and `context.storage.onChanged` | Every window syncs as soon as another one saves | The 1.5 s `syncIfStale` only |
 | Reading a file the user picks | `context.hostFeatures.includes('files.pick_text')` and `context.files` | Add a file… (C9–C11), Update from file… (C12), the Documents settings section | No file rows or buttons; docs stay references (C5, C6). Docs from another computer still show and search |
 | Background agent calls | `context.hostFeatures.includes('agent.background')` and `context.agent` | Background organizing (§5 S12) when the user turns it on and Kage's access is on | The switch stays; its status says to update Kage or approve the permission; nothing is sent |
+| Folder sync | `context.hostFeatures.includes('sync.records')` and `context.sync` (with `status`, `push`, `pull`, `ack`) | Kage folder sync (§7.8), the Sync settings section and its disclosure | The mind map stays on this computer; no sync calls, no `sync*` fields in mm-meta |
 
 No minimum host version is required. Every optional feature is detected.
 

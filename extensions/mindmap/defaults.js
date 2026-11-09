@@ -17,6 +17,7 @@ export const DEFAULTS = Object.freeze({
   trigger: 'mm',
   doc_max_chars: '200000',
   background_organize: false,
+  sync_private_items: true,
 });
 
 // Operational bounds (SPEC §7.2, §11, §12), not settings.
@@ -59,6 +60,23 @@ export const LIMITS = Object.freeze({
   organizeWaitMs: 15 * 60_000,
   organizeUndoBytes: 64 * 1024,
   organizeToolWarnMs: 24 * 60 * 60_000,
+  // Kage folder sync (SYNC §12.6, §12.7): a push call holds at most 200
+  // records and 3 MiB (Kage's caps are 500 and 4 MiB), and a commit sends
+  // at most 4 of them while it holds the lock; the rest go in the next
+  // round. A pull page is 200 changes, a round at most 50 pages. Refused
+  // pushes (rate limit, quota, an error) are tried again after a minute,
+  // and a window that hasn't heard of a change pulls at most once a minute.
+  // A full push another window stopped making progress on for 30 s is
+  // carried on here; accepted pushes are cleared from mm-meta 2 s later.
+  syncPushRecords: 200,
+  syncPushBytes: 3 * 1024 * 1024,
+  syncPushCalls: 4,
+  syncPullMax: 200,
+  syncPullPages: 50,
+  syncRetryMs: 60_000,
+  syncPullEveryMs: 60_000,
+  syncFullStaleMs: 30_000,
+  syncSettleMs: 2_000,
 });
 
 export const WEEK_STARTS = Object.freeze(['auto', 'mon', 'sun', 'sat']);

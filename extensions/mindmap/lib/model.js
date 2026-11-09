@@ -73,6 +73,15 @@ const BODY_KEY_RE = /^mm-body-(i[0-9a-z]{14})-([1-9][0-9]{0,14})$/;
 export const ORG_STATES = Object.freeze(['done', 'skipped', 'failed']);
 const ORG_HASH_RE = /^[0-9a-z]{1,16}$/;
 const MACHINE_TAG_RE = /^[0-9a-f]{16}$/;
+// Kage folder sync (SYNC §12.6, §12.9), the same shapes lib/syncmap.js
+// uses: the collections, the host's id rule, a pending mark ('p' push or
+// 'd' delete, and the op that made it), a full push's modes and cursor, and
+// the 24-hex device tag of the computer whose initial push is done.
+const SYNC_COLLECTIONS = ['items', 'entities', 'links', 'rejections', 'bodies', 'pins'];
+const SYNC_ID_RE = /^[A-Za-z0-9_.:-]{1,128}$/;
+const SYNC_MARK_RE = /^[pd]:o[0-9a-z]{14}$/;
+const SYNC_FULL_MODES = ['initial', 'all'];
+const SYNC_TAG = /^[0-9a-f]{24}$/;
 
 // ---------------------------------------------------------------------------
 // Small pure helpers
@@ -548,7 +557,41 @@ function normalizeMeta(raw, now) {
   // Background organizing considers notes created from then on (§11.3);
   // missing until the user first turns it on, 0 for "older notes too".
   if (time(raw.orgSince) !== undefined) meta.orgSince = raw.orgSince;
+  // Kage folder sync (SYNC §12.9): this computer's bookkeeping, never synced.
+  const pending = normalizeSyncPending(raw.syncPending);
+  if (pending) meta.syncPending = pending;
+  const full = normalizeSyncFull(raw.syncFull);
+  if (full) meta.syncFull = full;
+  if (typeof raw.syncTag === 'string' && SYNC_TAG.test(raw.syncTag)) meta.syncTag = raw.syncTag;
   return meta;
+}
+
+// meta.syncPending: collection → sync id → mark, the records this
+// computer changed that Kage hasn't accepted yet. undefined when empty.
+function normalizeSyncPending(raw) {
+  if (!isRecord(raw)) return undefined;
+  const out = {};
+  let n = 0;
+  for (const c of SYNC_COLLECTIONS) {
+    if (!isRecord(raw[c])) continue;
+    for (const [id, value] of Object.entries(raw[c])) {
+      if (!SYNC_ID_RE.test(id) || typeof value !== 'string' || !SYNC_MARK_RE.test(value)) continue;
+      (out[c] ||= {})[id] = value;
+      n++;
+    }
+  }
+  return n ? out : undefined;
+}
+
+// meta.syncFull: a push of every record still to finish, { mode, next, by?,
+// at }: `next` is the last lib/syncmap.js fullKeys key pushed, `by` the
+// window (store owner) working on it and `at` when it last made progress.
+function normalizeSyncFull(raw) {
+  if (!isRecord(raw) || !SYNC_FULL_MODES.includes(raw.mode)) return undefined;
+  const full = { mode: raw.mode, next: typeof raw.next === 'string' && raw.next.length <= 160 ? raw.next : '' };
+  if (typeof raw.by === 'string' && raw.by && raw.by.length <= 128) full.by = raw.by;
+  full.at = time(raw.at) ?? 0;
+  return full;
 }
 
 // meta.counts: items and entities, plus bodyBytes once there are bodies.
@@ -701,9 +744,14 @@ export function payloadFor(state, part) {
   if (part === 'journal') return { schema: SCHEMA, ops: state.ops };
   if (part === 'meta') {
     const { keys, extractorVersion, createdAt, updatedAt, gen, orgSince } = state.meta;
+    const pending = normalizeSyncPending(state.meta.syncPending);
+    const full = normalizeSyncFull(state.meta.syncFull);
+    const tag = SYNC_TAG.test(state.meta.syncTag ?? '') ? state.meta.syncTag : null;
     return {
       schema: SCHEMA, ...(gen ? { gen } : {}), keys: { ...keys }, counts: countsOf(state),
-      ...(time(orgSince) !== undefined ? { orgSince } : {}), extractorVersion, createdAt, updatedAt,
+      ...(time(orgSince) !== undefined ? { orgSince } : {}),
+      ...(pending ? { syncPending: pending } : {}), ...(full ? { syncFull: full } : {}), ...(tag ? { syncTag: tag } : {}),
+      extractorVersion, createdAt, updatedAt,
     };
   }
   throw new TypeError('mindmap model: unknown part');
@@ -2005,4 +2053,175 @@ export function applyImport(state, data, env) {
   }
   tx.op.label = env.label || { code: 'import', params: { count: counts.added + counts.updated } };
   return { ...finish(tx), result: counts };
+}
+
+// ---------------------------------------------------------------------------
+// Kage folder sync (SYNC §12.9)
+
+const pairsOf = (value) => (value instanceof Map ? [...value] : Array.isArray(value) ? value : []);
+const REV_ONLY = new Set(['rev']);
+
+/**
+ * Changes another computer made, from Kage folder sync (SYNC §12.9 item 2):
+ * remote = { items, entities, links, rejections, bodies }, each a Map (or
+ * [id, value] pairs) of the newest merged record per sync id, null for a
+ * delete. Item and entity values already carry this computer's local fields
+ * (lib/syncmap.js withLocal); a changed record gets rev = local.rev + 1 (1
+ * when new). Body values are lib/syncmap.js bodyFromRecord's { key, value }.
+ *
+ * A silent op of kind 'sync' that `mm undo` skips. It keeps no snapshots:
+ * it records only the revs it left on records an earlier op could still
+ * undo, so that undo is refused as superseded (lib/journal.js), and it takes
+ * the place of the sync op before it when that one is the newest op. With
+ * no such record it isn't journaled (change.unjournaled).
+ *
+ * Then the deterministic entity dedupe (item 3): entities with the same
+ * (type, key) and no mergedInto merge, the larger id getting mergedInto the
+ * smaller. Every computer reaches the same result; change.dedupe lists the
+ * merged ids, which the caller pushes (nothing else here is pushed).
+ *
+ * env.syncPrivate === false leaves this computer's private items and names
+ * as they are. env.relationId(relation) is lib/syncmap.js relationId.
+ * → Change & { remote: true, unjournaled, ids: { items, entities } (Sets),
+ *   bodies: [{ key, value }], dedupe: entityId[], counts: { applied, skipped } }
+ * Refusal: 'noop' (nothing differs).
+ */
+export function applyRemote(state, remote, env) {
+  const journal = requireJournal(env);
+  const syncId = typeof env.relationId === 'function' ? env.relationId : relationId;
+  const keepPrivate = env.syncPrivate === false;
+  const touched = new Set();
+  const ids = { items: new Set(), entities: new Set() };
+  const counts = { applied: 0, skipped: 0 };
+  const bodies = [];
+  // Records an earlier op could still undo: the ones whose rev this op must record.
+  const watched = new Set();
+  for (const o of state.ops) {
+    if (o.kind === 'sync' || o.kind === 'undo' || o.undoneBy || o.lossy) continue;
+    for (const id of Object.keys(o.after || {})) watched.add(id);
+  }
+  const after = {};
+  const left = (id, rev) => { if (watched.has(id)) after[id] = rev; };
+
+  for (const [id, value] of pairsOf(remote?.items)) {
+    const current = state.items.get(id);
+    if (keepPrivate && current?.private) { counts.skipped++; continue; }
+    if (value === null) {
+      if (!current) continue;
+      state.items.delete(id);
+      touched.add(itemPart(current));
+      ids.items.add(id);
+      left(id, null);
+      counts.applied++;
+      continue;
+    }
+    const item = normalizeItem({ ...value, id });
+    if (!item) { counts.skipped++; continue; }
+    if (current && deepEqual(current, item, REV_ONLY)) continue;
+    item.rev = current ? current.rev + 1 : 1;
+    if (current && shardOf(current) !== shardOf(item)) touched.add(itemPart(current));
+    state.items.set(id, item);
+    touched.add(itemPart(item));
+    ids.items.add(id);
+    left(id, item.rev);
+    counts.applied++;
+  }
+
+  for (const [id, value] of pairsOf(remote?.entities)) {
+    if (id === 'me') continue;
+    const current = state.entities.get(id);
+    if (keepPrivate && current?.private) { counts.skipped++; continue; }
+    if (value === null) {
+      if (!current) continue;
+      state.entities.delete(id);
+      touched.add('entities');
+      ids.entities.add(id);
+      left(id, null);
+      counts.applied++;
+      continue;
+    }
+    const entity = normalizeEntity({ ...value, id });
+    if (!entity) { counts.skipped++; continue; }
+    if (current && deepEqual(current, entity, REV_ONLY)) continue;
+    entity.rev = current ? current.rev + 1 : 1;
+    state.entities.set(id, entity);
+    touched.add('entities');
+    ids.entities.add(id);
+    left(id, entity.rev);
+    counts.applied++;
+  }
+
+  for (const [field, types] of [['links', LINK_TYPES], ['rejections', REJECTION_TYPES]]) {
+    const list = pairsOf(remote?.[field]);
+    if (!list.length) continue;
+    const known = new Map(state[field].map((r) => [syncId(r), r]));
+    let changed = false;
+    for (const [id, value] of list) {
+      if (value === null) {
+        if (known.delete(id)) { changed = true; counts.applied++; }
+        continue;
+      }
+      const relation = normalizeRelation(value, types);
+      if (!relation || syncId(relation) !== id) { counts.skipped++; continue; }
+      if (known.has(id) && deepEqual(known.get(id), relation)) continue;
+      known.set(id, relation);
+      changed = true;
+      counts.applied++;
+    }
+    if (changed) {
+      state[field] = [...known.values()].sort(byRelation);
+      touched.add('links');
+    }
+  }
+
+  // A body is written unless this computer's item already names a newer one.
+  for (const [id, value] of pairsOf(remote?.bodies)) {
+    if (value === null) continue;
+    const body = value && normalizeBody(value.value, value.key);
+    const parsed = parseBodyKey(value?.key);
+    if (!body || !parsed || parsed.id !== id) { counts.skipped++; continue; }
+    const item = state.items.get(id);
+    if (keepPrivate && item?.private) { counts.skipped++; continue; }
+    const have = parseBodyKey(item?.body?.key);
+    if (have && have.n > parsed.n) { counts.skipped++; continue; }
+    bodies.push({ key: value.key, value: body });
+    counts.applied++;
+  }
+
+  // Two computers can promote the same name before they sync: one entity
+  // per (type, key), the smallest id, the others redirecting to it.
+  const groups = new Map();
+  for (const entity of state.entities.values()) {
+    if (entity.id === 'me' || entity.mergedInto) continue;
+    const key = `${entity.type}|${entity.key}`;
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(entity);
+  }
+  const dedupe = [];
+  for (const list of groups.values()) {
+    if (list.length < 2) continue;
+    list.sort(byId);
+    for (const entity of list.slice(1)) {
+      // updatedAt stays: every computer pushes the same value.
+      const merged = { ...clone(entity), mergedInto: list[0].id, rev: entity.rev + 1 };
+      state.entities.set(entity.id, merged);
+      touched.add('entities');
+      ids.entities.add(entity.id);
+      left(entity.id, merged.rev);
+      dedupe.push(entity.id);
+    }
+  }
+
+  if (!touched.size && !bodies.length) return { ...refusal('noop'), counts };
+  const op = journal.newOp({ opId: env.newId('o'), kind: 'sync', at: env.now, label: { code: 'sync', params: { count: counts.applied } }, silent: true });
+  // The newest op is the previous pull's: this one replaces it, so pulls
+  // never push the user's own undo history out of the journal.
+  const last = state.ops[state.ops.length - 1];
+  if (last?.kind === 'sync') {
+    for (const [id, rev] of Object.entries(last.after || {})) if (!Object.hasOwn(after, id)) after[id] = rev;
+  }
+  op.after = after;
+  const unjournaled = !Object.keys(after).length;
+  if (!unjournaled && last?.kind === 'sync') state.ops = state.ops.slice(0, -1);
+  return { op, touched, remote: true, unjournaled, ids, bodies, dedupe: dedupe.sort(), counts };
 }

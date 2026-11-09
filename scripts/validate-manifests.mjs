@@ -26,6 +26,9 @@
 //     and `views` in `permissions` (both ways).
 //   - `agentBackground` (if present): Kage's EXTENSION_AGENT_CALLS §3.2
 //     rules, and `agent_background` in `permissions` (both ways).
+//   - `sync` (if present): Kage's SYNC §12.2 rules (keys, lists,
+//     collections and their limits), and `sync` in `permissions` (both
+//     ways); `config.<field>.sync` is one of shared, os, machine, never.
 //   - No unknown top-level fields (catches typos like `permission`).
 //   - Required fields for the catalog: `author`.
 //   - Config types, primitive enums (host limits), and string-only plain
@@ -39,7 +42,7 @@ import { readdir, readFile, stat } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { KNOWN_CAPABILITIES, MASCOT_ACTIVITIES } from './host-capabilities.mjs';
-import { BACKUP_SENSITIVE_NAME, declaresSensitiveKey, sensitiveMetadataIssues } from './lib/sensitive-data.mjs';
+import { BACKUP_SENSITIVE_NAME, SENSITIVE_NAME, declaresSensitiveKey, sensitiveMetadataIssues, validSensitivePattern } from './lib/sensitive-data.mjs';
 import { invokedDirectly } from './lib/invoked-directly.mjs';
 import { jsonLine } from './lib/json-lines.mjs';
 
@@ -88,6 +91,22 @@ const AGENT_REASON_MAX = 300;
 const AGENT_PURPOSES_MAX = 8;
 const AGENT_PURPOSE_PATTERN = /^[a-z][a-z0-9_]{0,23}$/;
 
+// Folder sync: Kage docs/design/SYNC.md §12.1, §12.2, §12.7. The host
+// ignores a malformed part with a warning, so a mistake here means data
+// that never syncs.
+const SYNC_FIELDS = new Set(['description', 'schema', 'keys', 'lists', 'collections']);
+const SYNC_DESCRIPTION_MAX = 140;
+const SYNC_KEYS_MAX = 32;
+const SYNC_LISTS_MAX = 16;
+const SYNC_COLLECTIONS_MAX = 16;
+const SYNC_LIST_FIELDS = new Set(['array', 'id', 'label']);
+const SYNC_COLLECTION_FIELDS = new Set(['label', 'private', 'maxBytes', 'whole', 'large', 'together', 'sets', 'maps', 'local']);
+const SYNC_COLLECTION_PATTERN = /^[a-z][a-z0-9_]{0,31}$/;
+const SYNC_FIELD_PATTERN = /^[A-Za-z_$][A-Za-z0-9_$]{0,63}$/;
+const SYNC_MAX_BYTES = 1048576;
+const SYNC_MAX_BYTES_LARGE = 4194304;
+const SYNC_SCOPES = new Set(['shared', 'os', 'machine', 'never']);
+
 // Manifest fields we know about. Anything outside this set is a typo
 // (e.g. `permission` instead of `permissions`) — fail closed.
 const KNOWN_TOP_LEVEL_FIELDS = new Set([
@@ -104,6 +123,7 @@ const KNOWN_TOP_LEVEL_FIELDS = new Set([
     'config',
     'sensitiveData',
     'agentBackground',
+    'sync',
     'sandboxVendor',
     'homepage',
     'repository',
@@ -206,6 +226,14 @@ export async function validateManifest(manifestPath, expectedKind, dirName) {
                             note(loc, `config.${field}.enum entry ${i} exceeds ${MAX_CONFIG_ENUM_BYTES} UTF-8 bytes`, [...at, 'enum', i]);
                         }
                     }
+                }
+            }
+            if (definition.sync !== undefined) {
+                if (!SYNC_SCOPES.has(definition.sync)) {
+                    note(loc, `config.${field}.sync must be one of: ${[...SYNC_SCOPES].join(', ')}`, [...at, 'sync']);
+                } else if ((definition.sync === 'shared' || definition.sync === 'os') &&
+                    (BACKUP_SENSITIVE_NAME.test(field) || definition.sensitive === true || declaresSensitiveKey(m, field, { ignoreCase: true }))) {
+                    note(loc, `config.${field}.sync: credentials never sync; use "machine" or leave it out`, [...at, 'sync']);
                 }
             }
             if (definition.backup !== undefined) {
@@ -403,9 +431,18 @@ export async function validateManifest(manifestPath, expectedKind, dirName) {
         if (perms.includes('agent_background') && m.agentBackground === undefined) {
             note(loc, `'agent_background' in 'permissions' needs an 'agentBackground' block (reason and purposes)`, ['permissions', perms.indexOf('agent_background')]);
         }
+        if (m.sync !== undefined && !perms.includes('sync')) {
+            note(loc, `'sync' needs 'sync' in 'permissions'; without it Kage syncs only the settings`, ['sync']);
+        }
+        if (perms.includes('sync') && m.sync === undefined) {
+            note(loc, `'sync' in 'permissions' needs a 'sync' block (keys, lists or collections); settings sync without it`, ['permissions', perms.indexOf('sync')]);
+        }
     }
     if (m.agentBackground !== undefined) {
         await checkAgentBackground(loc, manifestPath, m.agentBackground, note);
+    }
+    if (m.sync !== undefined) {
+        await checkSync(loc, manifestPath, m, note);
     }
 
     // --- Folder ↔ id parity --------------------------------------------
@@ -600,6 +637,147 @@ async function checkAgentBackground(loc, manifestPath, block, note) {
         if (n !== undefined && !(Number.isSafeInteger(n) && n > 0)) {
             note(loc, `'agentBackground.${k}' must be a positive integer`, [...at, k]);
         }
+    }
+}
+
+// A storage key or key pattern as `sync.keys` and `sync.lists` take it:
+// the extension-data key rules, with an optional trailing '*'.
+const syncKeyOk = (value) => typeof value === 'string' && value !== '*' && validSensitivePattern(value);
+
+function syncNames(value) {
+    return Array.isArray(value) && value.every((v) => typeof v === 'string' && SYNC_FIELD_PATTERN.test(v));
+}
+
+async function checkSync(loc, manifestPath, m, note) {
+    const block = m.sync;
+    const at = ['sync'];
+    if (!block || typeof block !== 'object' || Array.isArray(block)) {
+        note(loc, `'sync' must be an object`, at);
+        return;
+    }
+    for (const k of Object.keys(block)) {
+        if (!SYNC_FIELDS.has(k)) {
+            note(loc, `'sync': unknown field '${k}' (known fields: ${[...SYNC_FIELDS].join(', ')})`, [...at, k]);
+        }
+    }
+    if (block.description !== undefined) {
+        if (typeof block.description !== 'string' || block.description.trim() === '') {
+            note(loc, `'sync.description' must be a string or a __MSG_key__ token`, [...at, 'description']);
+        } else {
+            const text = resolveText(block.description, await readEnCatalog(manifestPath));
+            if (text !== null && charCount(text.trim()) > SYNC_DESCRIPTION_MAX) {
+                note(loc, `'sync.description' must be at most ${SYNC_DESCRIPTION_MAX} characters`, [...at, 'description']);
+            }
+        }
+    }
+    if (block.schema !== undefined && !(Number.isSafeInteger(block.schema) && block.schema >= 1)) {
+        note(loc, `'sync.schema' must be an integer of at least 1`, [...at, 'schema']);
+    }
+    if (block.keys !== undefined) {
+        if (!Array.isArray(block.keys) || block.keys.length > SYNC_KEYS_MAX) {
+            note(loc, `'sync.keys' must be an array of at most ${SYNC_KEYS_MAX} storage keys`, [...at, 'keys']);
+        } else {
+            for (const [i, key] of block.keys.entries()) {
+                if (!syncKeyOk(key)) {
+                    note(loc, `'sync.keys' entry ${i} must be a storage key, optionally ending in '*'`, [...at, 'keys', i]);
+                } else if (declaresSensitiveKey(m, key.endsWith('*') ? key.slice(0, -1) : key) || SENSITIVE_NAME.test(key)) {
+                    note(loc, `'sync.keys' entry ${i} names sensitive data, which never syncs`, [...at, 'keys', i]);
+                }
+            }
+        }
+    }
+    if (block.lists !== undefined) {
+        if (!block.lists || typeof block.lists !== 'object' || Array.isArray(block.lists) || Object.keys(block.lists).length > SYNC_LISTS_MAX) {
+            note(loc, `'sync.lists' must be an object of at most ${SYNC_LISTS_MAX} storage keys`, [...at, 'lists']);
+        } else {
+            for (const [key, spec] of Object.entries(block.lists)) {
+                const where = [...at, 'lists', key];
+                if (!syncKeyOk(key) || key.endsWith('*')) note(loc, `'sync.lists' key '${key}' must be a storage key`, where);
+                else if (declaresSensitiveKey(m, key) || SENSITIVE_NAME.test(key)) note(loc, `'sync.lists' key '${key}' names sensitive data, which never syncs`, where);
+                if (!spec || typeof spec !== 'object' || Array.isArray(spec)) {
+                    note(loc, `'sync.lists.${key}' must be { "array", "id", "label"? }`, where);
+                    continue;
+                }
+                for (const k of Object.keys(spec)) {
+                    if (!SYNC_LIST_FIELDS.has(k)) note(loc, `'sync.lists.${key}': unknown field '${k}'`, [...where, k]);
+                }
+                if (typeof spec.array !== 'string' || (spec.array !== '' && !SYNC_FIELD_PATTERN.test(spec.array))) {
+                    note(loc, `'sync.lists.${key}.array' must name a top-level field, or be "" for a file that is an array`, [...where, 'array']);
+                }
+                if (typeof spec.id !== 'string' || !SYNC_FIELD_PATTERN.test(spec.id)) {
+                    note(loc, `'sync.lists.${key}.id' must name the element field that holds its id`, [...where, 'id']);
+                }
+                if (spec.label !== undefined && (typeof spec.label !== 'string' || !SYNC_FIELD_PATTERN.test(spec.label))) {
+                    note(loc, `'sync.lists.${key}.label' must name an element field`, [...where, 'label']);
+                }
+            }
+        }
+    }
+    if (block.collections !== undefined) {
+        const list = block.collections;
+        if (!list || typeof list !== 'object' || Array.isArray(list) || Object.keys(list).length > SYNC_COLLECTIONS_MAX) {
+            note(loc, `'sync.collections' must be an object of at most ${SYNC_COLLECTIONS_MAX} collections`, [...at, 'collections']);
+            return;
+        }
+        for (const [name, spec] of Object.entries(list)) {
+            checkSyncCollection(loc, name, spec, note);
+        }
+    }
+    if (block.keys === undefined && block.lists === undefined && block.collections === undefined) {
+        note(loc, `'sync' declares nothing to sync (keys, lists or collections)`, at);
+    }
+}
+
+function checkSyncCollection(loc, name, spec, note) {
+    const where = ['sync', 'collections', name];
+    const label = `'sync.collections.${name}'`;
+    if (!SYNC_COLLECTION_PATTERN.test(name)) note(loc, `${label}: the name must match ${SYNC_COLLECTION_PATTERN}`, where);
+    if (!spec || typeof spec !== 'object' || Array.isArray(spec)) {
+        note(loc, `${label} must be an object`, where);
+        return;
+    }
+    for (const k of Object.keys(spec)) {
+        if (!SYNC_COLLECTION_FIELDS.has(k)) note(loc, `${label}: unknown field '${k}' (known fields: ${[...SYNC_COLLECTION_FIELDS].join(', ')})`, [...where, k]);
+    }
+    for (const k of ['whole', 'large']) {
+        if (spec[k] !== undefined && typeof spec[k] !== 'boolean') note(loc, `${label}.${k} must be true or false`, [...where, k]);
+    }
+    for (const k of ['label', 'private']) {
+        if (spec[k] !== undefined && (typeof spec[k] !== 'string' || !SYNC_FIELD_PATTERN.test(spec[k]))) {
+            note(loc, `${label}.${k} must name a top-level field`, [...where, k]);
+        }
+    }
+    if (spec.maxBytes !== undefined) {
+        const cap = spec.large === true ? SYNC_MAX_BYTES_LARGE : SYNC_MAX_BYTES;
+        if (!Number.isSafeInteger(spec.maxBytes) || spec.maxBytes < 1 || spec.maxBytes > cap) {
+            note(loc, `${label}.maxBytes must be 1–${cap}${spec.large === true ? '' : ` (up to ${SYNC_MAX_BYTES_LARGE} with "large": true)`}`, [...where, 'maxBytes']);
+        }
+    }
+    const used = new Map();
+    const claim = (field, part, i) => {
+        if (SENSITIVE_NAME.test(field) && part !== 'local') {
+            note(loc, `${label}.${part}: '${field}' looks like a credential field; Kage refuses records with one (sensitive_field)`, [...where, part, i]);
+        }
+        if (used.has(field)) note(loc, `${label}: '${field}' is in both '${used.get(field)}' and '${part}'`, [...where, part, i]);
+        else used.set(field, part);
+    };
+    if (spec.together !== undefined) {
+        if (!Array.isArray(spec.together) || !spec.together.every((group) => syncNames(group) && group.length >= 2)) {
+            note(loc, `${label}.together must be an array of groups of two or more top-level field names`, [...where, 'together']);
+        } else {
+            spec.together.forEach((group, i) => group.forEach((field) => claim(field, 'together', i)));
+        }
+    }
+    for (const part of ['sets', 'maps', 'local']) {
+        if (spec[part] === undefined) continue;
+        if (!syncNames(spec[part])) {
+            note(loc, `${label}.${part} must be an array of top-level field names`, [...where, part]);
+            continue;
+        }
+        spec[part].forEach((field, i) => claim(field, part, i));
+    }
+    if (spec.whole === true && ['together', 'sets', 'maps'].some((k) => spec[k] !== undefined)) {
+        note(loc, `${label}: a 'whole' collection is one cell, so it can't have 'together', 'sets' or 'maps'`, where);
     }
 }
 

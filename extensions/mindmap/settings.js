@@ -14,6 +14,8 @@ const MB = 1024 * 1024;
 // config with the page's value controls: where the Documents controls
 // aren't shown, a hidden copy keeps the saved character limit.
 const NEVER_SHOWN = Object.freeze({ id: 'doc_max_chars', oneOf: [] });
+// The same for "Sync private items" where Kage doesn't offer folder sync.
+const NEVER_SHOWN_SYNC = Object.freeze({ id: 'sync_private_items', oneOf: [] });
 
 function today(ms) {
   const d = new Date(ms);
@@ -149,6 +151,45 @@ export default class MindMapSettingsProvider {
     }
   }
 
+  // Kage folder sync (SYNC §12.9): where it is, whether it's on, and
+  // "Sync private items". Where Kage doesn't offer it, nothing.
+  async syncSection() {
+    if (!this.mind.canSync) return null;
+    const t = this.t;
+    let info;
+    try {
+      info = await this.mind.syncInfo();
+    } catch (error) {
+      this.log?.warn?.(`mindmap: settings could not read sync (${error?.code || error?.name || 'error'})`);
+      info = { supported: true, available: false };
+    }
+    const locale = this.locale();
+    const num = (n) => Number(n || 0).toLocaleString(locale);
+    const lines = [];
+    if (!info.available) lines.push(t('settings.sync.status_off'));
+    else if (info.paused) lines.push(t('settings.sync.status_paused'));
+    else {
+      const when = Number.isFinite(info.lastSyncAt) ? this.when(info.lastSyncAt) : t('settings.never');
+      lines.push(t('settings.sync.status_on', { n: info.others || 0, when }));
+      if (info.full === 'initial') lines.push(t('settings.sync.status_first'));
+      else if (info.waiting) lines.push(t('settings.sync.status_waiting', { n: info.waiting, count: num(info.waiting) }));
+      if (info.maxBytes && info.usedBytes >= info.maxBytes) lines.push(`⚠️ ${t('settings.sync.status_full')}`);
+    }
+    return {
+      label: t('settings.section_sync'),
+      controls: [
+        { type: 'info', html: lines.map((line) => `<p>${esc(line)}</p>`).join('') },
+        { type: 'checkbox', id: 'sync_private_items', label: t('settings.sync.private_items'), default: DEFAULTS.sync_private_items, description: t('settings.sync.private_items_hint') },
+      ],
+    };
+  }
+
+  // What Kage folder sync keeps in the sync folder, where Kage offers it.
+  syncDisclosure() {
+    if (!this.mind.canSync) return '';
+    return `<p>${esc(this.t('settings.disclosure.sync'))}</p>`;
+  }
+
   // What background organizing shares (§11.1), where Kage offers it.
   backgroundDisclosure() {
     if (!this.mind.canOrganize) return '';
@@ -243,14 +284,22 @@ export default class MindMapSettingsProvider {
     data.push({ type: 'action', id: 'export_json', action: 'export_json', label: t('settings.export_json'), description: t('settings.export_json_hint') });
     data.push({ type: 'action', id: 'export_md', action: 'export_md', label: t('settings.export_md'), description: t('settings.export_md_hint') });
     data.push({ type: 'action', id: 'import_json', action: 'import_json', label: t('settings.import_json'), description: t('settings.import_json_hint'), disabled: !!readOnly });
-    data.push({ type: 'action', id: 'delete_all', action: 'delete_all', label: t('settings.delete_all'), description: t('settings.delete_all_hint'), variant: 'danger', confirm: t('settings.delete_all_confirm') });
+    // With Kage sync on, Delete everything deletes it on the other computers too.
+    // i18n-keys: settings.delete_all_hint, settings.delete_all_hint_sync, settings.delete_all_confirm, settings.delete_all_confirm_sync
+    const everywhere = mind.syncOn;
+    data.push({
+      type: 'action', id: 'delete_all', action: 'delete_all', label: t('settings.delete_all'), variant: 'danger',
+      description: t(everywhere ? 'settings.delete_all_hint_sync' : 'settings.delete_all_hint'),
+      confirm: t(everywhere ? 'settings.delete_all_confirm_sync' : 'settings.delete_all_confirm'),
+    });
     const explorer = explorerControls(t, this.hostFeatures());
     const background = await this.backgroundSection(readOnly);
+    const sync = await this.syncSection();
     const sections = [
       {
         label: t('settings.section_privacy'),
         controls: [
-          { type: 'info', html: `<p>${esc(t('settings.disclosure'))}</p>${this.filesDisclosure()}${this.backgroundDisclosure()}<p>${esc(t('settings.no_credentials'))}</p>` },
+          { type: 'info', html: `<p>${esc(t('settings.disclosure'))}</p>${this.syncDisclosure()}${this.filesDisclosure()}${this.backgroundDisclosure()}<p>${esc(t('settings.no_credentials'))}</p>` },
         ],
       },
       {
@@ -297,12 +346,19 @@ export default class MindMapSettingsProvider {
       },
       { label: t('settings.section_data'), controls: data },
     ];
+    // Kage folder sync sits right after Privacy, where Kage offers it.
+    if (sync) sections.splice(1, 0, sync);
     // The map explorer's section, then Documents, sit just before "Your data".
     if (explorer.length) sections.splice(sections.length - 1, 0, { label: t('settings.section_explorer'), controls: explorer });
     const documents = this.documentsSection(stats, readOnly);
     if (documents) sections.splice(sections.length - 1, 0, documents);
     if (!this.mind.canPickFiles && !this.hostFeatures().includes('config.manifest_defaults')) {
       sections[sections.length - 1].controls.push({ ...this.maxCharsControl(), showWhen: NEVER_SHOWN });
+    }
+    if (!sync && !this.hostFeatures().includes('config.manifest_defaults')) {
+      sections[sections.length - 1].controls.push({
+        type: 'checkbox', id: 'sync_private_items', label: t('settings.sync.private_items'), default: DEFAULTS.sync_private_items, showWhen: NEVER_SHOWN_SYNC,
+      });
     }
     return { description: t('settings.description', { trigger }), sections };
   }

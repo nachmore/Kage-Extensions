@@ -13,6 +13,10 @@
 //     the pure model mutation with a replayable id pool, write the touched
 //     parts (twin first), the journal and then mm-meta, and verify the
 //     transaction id; a conflict reloads and re-applies (SPEC §7.4).
+//   - with Kage folder sync (SYNC §12.9), every commit marks the records it
+//     changed in mm-meta (syncPending) and pushes them before it lets go of
+//     the lock; other computers' changes are pulled and applied under the
+//     lock as a silent 'sync' op, then acknowledged.
 //
 // Logs are English and carry ids and counts only, never user text.
 
@@ -31,6 +35,7 @@ import * as rank from './lib/rank.js';
 import * as graph from './lib/graph.js';
 import * as files from './lib/files.js';
 import * as organize from './lib/organize.js';
+import * as syncmap from './lib/syncmap.js';
 import { DEFAULTS, LIMITS, docMaxChars, snippetChars, triggerOf } from './defaults.js';
 
 const LIB = Object.freeze({ text, dates, url, entities, ids: idlib });
@@ -113,6 +118,11 @@ const ORG_STOP = new Set(['consent_required', 'consent_stale', 'access_off', 'no
 // This computer's notes about background organizing (the last tool attempt).
 // Last write wins, no lock: it is informational.
 const ORG_NOTES_KEY = 'mm-org';
+// Kage folder sync (SYNC §12.6): push refusals that won't change by trying
+// again (the record is dropped from syncPending), and the ones that will.
+const SYNC_PERMANENT = new Set(['too_large', 'bad_id', 'bad_collection', 'sensitive_field', 'newer_schema']);
+const SYNC_DEVICE_TAG = /^[0-9a-f]{24}$/;
+const SYNC_REASONS = new Set(['remote', 'enabled', 'reset', 'purged']);
 const EMPTY_GROUPS = () => ({ items: [], entities: [], links: [], rejections: [], candidates: [] });
 const utf8 = new TextEncoder();
 
@@ -255,6 +265,42 @@ export class Mind {
     this.organizeEveryMs = ms(organizeEveryMs, LIMITS.organizeEveryMs);
     this._org = { status: null, statusRun: null, pass: null, flight: null, waitUntil: 0, stopped: null, preempt: false, every: null, debounce: null, soon: null };
     this._machineTag = null;
+    // Kage folder sync (SYNC §12.6, §12.9): context.sync where Kage offers
+    // sync.records, its last status, what this window still has to do
+    // (`want`), its one run at a time, the marks Kage accepted that the
+    // next meta write clears, and the retry and clear timers.
+    this._fsync = {
+      api: this._syncApi(context), status: null, want: new Set(), run: null, accepted: new Map(),
+      lastPull: -Infinity, retry: null, clear: null, fullDone: null, syncPrivate: this.settings.sync_private_items !== false,
+    };
+    this._offSync = this._subscribeSync();
+  }
+
+  // context.sync (SYNC §12.6), where Kage offers 'sync.records' and Mind Map
+  // holds `sync`; else null and Mind Map stays local as before.
+  _syncApi(context) {
+    const features = Array.isArray(context?.hostFeatures) ? context.hostFeatures : [];
+    const api = context?.sync;
+    if (!features.includes(syncmap.FEATURE) || !api) return null;
+    return ['status', 'push', 'pull', 'ack'].every((name) => typeof api[name] === 'function') ? api : null;
+  }
+
+  // Another computer's change, or sync turned on, reset or purged here.
+  // permissions: sync
+  _subscribeSync() {
+    const api = this._fsync.api;
+    if (typeof api?.onChanges !== 'function') return null;
+    try {
+      const off = api.onChanges((event) => {
+        const reason = SYNC_REASONS.has(event?.reason) ? event.reason : 'remote';
+        if (reason === 'remote') this._syncKick('pull');
+        else if (reason === 'purged') this._syncKick('status');
+        else this._syncKick('enabled');
+      });
+      return typeof off === 'function' ? off : null;
+    } catch {
+      return null;
+    }
   }
 
   /** True where Kage offers Mind Map background agent calls (agent.background and context.agent). */
@@ -272,12 +318,19 @@ export class Mind {
 
   /** True when Kage sync is on for Mind Map here (SYNC §12.6), so cards can say what stays local. */
   get syncOn() {
-    const features = Array.isArray(this.context?.hostFeatures) ? this.context.hostFeatures : [];
+    const api = this._fsync?.api;
+    if (!api) return false;
+    if (this._fsync.status) return this._fsync.status.available;
     try {
-      return features.includes('sync.records') && this.context?.sync?.available === true;
+      return api.available === true;
     } catch {
       return false;
     }
+  }
+
+  /** True where Kage offers Mind Map folder sync (sync.records), on or off. */
+  get canSync() {
+    return !!this._fsync?.api;
   }
 
   // Hosts with `storage.change_events` tell every instance when another
@@ -374,6 +427,13 @@ export class Mind {
     // Background organizing follows the switch, and Kage's access is checked
     // again on every config update (§11.2). The constructor runs this first.
     if (this._org && this._loaded) this._orgSync();
+    // "Sync private items" turned back on: the private records this computer
+    // kept back go to the sync folder now (a push of every record).
+    const syncPrivate = next.sync_private_items !== false;
+    if (this._fsync && syncPrivate !== this._fsync.syncPrivate) {
+      this._fsync.syncPrivate = syncPrivate;
+      if (syncPrivate) this._syncKick('repush');
+    }
   }
 
   // The me entity's aliases come from settings and its shown name from the
@@ -421,7 +481,15 @@ export class Mind {
   /** Resolves once background work (link enrichment, retries) settles. */
   async whenIdle() {
     if (this._ready) await this._ready.catch(() => {});
-    while (this._background.size) await Promise.allSettled([...this._background]);
+    for (;;) {
+      while (this._background.size) await Promise.allSettled([...this._background]);
+      // The meta write that clears accepted sync marks waits a moment to
+      // gather a burst; settling means doing it now.
+      if (!this._fsync?.clear) break;
+      clearTimeout(this._fsync.clear);
+      this._fsync.clear = null;
+      this._syncKick('clear');
+    }
   }
 
   _track(promise) {
@@ -546,6 +614,7 @@ export class Mind {
   // starts background organizing where it is on.
   _afterLoad() {
     this._orgSync();
+    this._syncKick('start');
     if (this._readOnly || this._idleTimer) return;
     const now = this.now();
     const items = [...this.state.items.values()];
@@ -630,6 +699,12 @@ export class Mind {
       if (!this._remoteChange || this._writes > 0) break;
     }
     if (changed) this.requestReformat();
+    // Other computers' changes arrive through onChanges; a window that
+    // hasn't heard of one looks once a minute (one call when nothing's new).
+    if (this._fsync.api && mono() - this._fsync.lastPull >= LIMITS.syncPullEveryMs) {
+      this._fsync.lastPull = mono();
+      this._syncKick('pull');
+    }
     return changed;
   }
 
@@ -797,11 +872,15 @@ export class Mind {
   // refusal { code }. Retries 'busy' (lost lease) and 'conflict' (another
   // writer interleaved) with the same clock and id pool. Counts as this
   // window's write for its whole run (see syncIfStale).
-  _mutate(apply, { allowReadOnly = false } = {}) {
-    return this._exclusive(() => this._mutateLocked(apply, { allowReadOnly }));
+  // Sync's pull uses two hooks, both inside the lock: `before(lease)` runs
+  // after the re-sync and its result is apply's third argument, and
+  // `after(result, lease, pre)` runs once the change is committed (or was
+  // refused).
+  _mutate(apply, { allowReadOnly = false, before, after } = {}) {
+    return this._exclusive(() => this._mutateLocked(apply, { allowReadOnly, before, after }));
   }
 
-  async _mutateLocked(apply, { allowReadOnly }) {
+  async _mutateLocked(apply, { allowReadOnly, before, after }) {
     await this.ready();
     if (this._readOnly && !allowReadOnly) throw new MindError('readonly');
     const now = this.now();
@@ -809,34 +888,50 @@ export class Mind {
     let lastError = null;
     for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
       try {
-        return await this.store.withLock(async (lease) => {
+        const out = await this.store.withLock(async (lease) => {
           try {
             if (this._stale) await this._loadAll();
             else await this._sync();
             if (this._readOnly && !allowReadOnly) throw new MindError('readonly');
+            const pre = before ? await before(lease) : undefined;
             pool.reset();
             // The document bodies State references before the change: the
             // ones it no longer references after the commit are deleted
             // (an undone ingest, a delete or re-read the journal dropped).
             const held = model.bodyKeys(this.state);
+            // What sync must push: the records as they were before the change.
+            const snap = this._syncSnapshot();
             // apply mutates the snapshot in place: from here until the
             // commit is confirmed, memory may hold an unsaved change.
             this._stale = true;
-            const result = apply(this.state, this._env(now, pool)) || {};
+            const result = apply(this.state, this._env(now, pool), pre) || {};
             const changes = (result.changes || []).filter((change) => change?.op);
             if (!changes.length) {
               // A refusal changes nothing (lib/model.js contract).
               this._stale = false;
-              return { ...result, committed: false };
+              const done = { ...result, committed: false };
+              if (after) await after(done, lease, pre);
+              return { done };
             }
-            for (const change of changes) this.state.ops = journal.appendOp(this.state.ops, change.op);
+            // A pull that only touched records no op can undo isn't journaled.
+            for (const change of changes) if (!change.unjournaled) this.state.ops = journal.appendOp(this.state.ops, change.op);
+            const txn = changes[changes.length - 1].op.opId;
+            // The records to push go into mm-meta in the same write (SYNC
+            // §12.9 item 1), and pushes Kage accepted come out of it.
+            this._syncMark(snap, changes, txn);
+            this._syncClearAccepted();
             await this._persist(changes, lease, now);
             const check = await this.store.readJson('mm-meta');
-            if (check?.txn !== changes[changes.length - 1].op.opId) throw new MindError('conflict');
+            if (check?.txn !== txn) throw new MindError('conflict');
             this._stale = false;
             this._afterCommit(changes);
             await this._releaseBodies(model.releasedBodies(held, this.state), lease);
-            return { ...result, committed: true, opId: changes[0].op.opId };
+            const done = { ...result, committed: true, opId: changes[0].op.opId };
+            if (after) await after(done, lease, pre);
+            // Sent while the lock is held, so pushes leave in the order the
+            // writes happened; the reply is awaited after it's released.
+            const sent = await this._syncFlushLocked();
+            return sent ? { done, sent } : { done };
           } catch (error) {
             // Drop the unsaved change while still holding the lock, so no
             // other write in this window builds on it. If the reload fails,
@@ -845,6 +940,8 @@ export class Mind {
             throw error;
           }
         });
+        if (out.sent) this._track(this._syncSettle(out.sent));
+        return out.done;
       } catch (error) {
         lastError = error;
         if (!RETRYABLE.has(error?.code)) break;
@@ -889,7 +986,8 @@ export class Mind {
     // A document's body goes first: a crash after it leaves a body nothing
     // references (bounded by one file), never a doc whose text is missing.
     for (const change of changes) for (const body of change.bodies || []) await this._writeBody(body, lease);
-    const parts = new Set(['journal', ...(this._misplaced || [])]);
+    const journaled = changes.some((change) => !change.unjournaled);
+    const parts = new Set([...(journaled ? ['journal'] : []), ...(this._misplaced || [])]);
     for (const change of changes) for (const part of change.touched || []) if (part !== 'meta') parts.add(part);
     for (const part of [...parts].sort(partOrder)) await this._writePart(part, txn, lease);
     await this._writeMeta(txn, lease, now);
@@ -937,8 +1035,671 @@ export class Mind {
       for (const id of op.created?.entities || []) note(id);
       for (const record of op.before?.items || []) note(record.id);
       for (const record of op.before?.entities || []) note(record.id);
+      // A pull names what it changed (its op records only what undo needs).
+      for (const id of change.ids?.items || []) items.add(id);
+      for (const id of change.ids?.entities || []) ents.add(id);
     }
     this._reindex(items, ents);
+  }
+
+  // --- Kage folder sync (SYNC §12.6, §12.9) --------------------------------------
+
+  /** True while "Sync private items" is on (the default). */
+  _syncPrivate() {
+    return this.settings.sync_private_items !== false;
+  }
+
+  // Sync can push and pull here: Kage offers it, it's on for Mind Map on
+  // this computer, and the store can be written.
+  _syncLive() {
+    return !!this._fsync.api && this.syncOn && !this._readOnly;
+  }
+
+  // Waits for a slot in this window's invoke budget (context.sync calls
+  // count against the same 100 per second as the store's), then makes the
+  // call. → { reply } once it is sent; the caller settles the reply.
+  async _syncSend(fn) {
+    for (let wait = this.store.reserveSlot(); wait > 0; wait = this.store.reserveSlot()) await sleep(wait);
+    let reply;
+    try {
+      reply = Promise.resolve(fn());
+    } catch (error) {
+      reply = Promise.reject(error);
+    }
+    reply.catch(() => {});
+    return { reply };
+  }
+
+  async _syncCall(fn) {
+    const { reply } = await this._syncSend(fn);
+    return reply;
+  }
+
+  // The records as they were before a change, to tell what it changed.
+  // null when sync isn't on here (nothing is marked).
+  _syncSnapshot() {
+    if (!this._syncLive()) return null;
+    const state = this.state;
+    const relations = (list) => new Map((list || []).map((r) => [syncmap.relationId(r), r]));
+    return { items: new Map(state.items), entities: new Map(state.entities), links: relations(state.links), rejections: relations(state.rejections) };
+  }
+
+  // Marks in meta.syncPending what a commit changed (SYNC §12.9 item 1):
+  // 'p' to push a record, 'd' to push a delete, with the commit's txn. A
+  // pull marks only the entities its dedupe merged: it never pushes what it
+  // applied.
+  _syncMark(snap, changes, txn) {
+    if (!snap) return 0;
+    const marks = [];
+    const remote = changes.filter((change) => change.remote);
+    if (remote.length) {
+      for (const change of remote) for (const id of change.dedupe || []) marks.push(['entities', id, 'p']);
+    } else {
+      this._syncDiff(snap, marks);
+    }
+    if (!marks.length) return 0;
+    const meta = this.state.meta;
+    const pending = meta.syncPending || (meta.syncPending = {});
+    for (const [c, id, action] of marks) (pending[c] ||= {})[id] = syncmap.mark(action, txn);
+    return marks.length;
+  }
+
+  // Every record that differs between `snap` and now. Records are replaced,
+  // never edited in place, so a changed record is another object.
+  _syncDiff(snap, marks) {
+    const state = this.state;
+    const syncPrivate = this._syncPrivate();
+    const syncsIn = (items) => (item) => syncmap.itemSyncs(item, { syncPrivate, parent: item?.parentId ? items.get(item.parentId) : null });
+    const was = syncsIn(snap.items);
+    const now = syncsIn(state.items);
+    const seen = new Set();
+    const item = (id) => {
+      if (seen.has(id)) return;
+      seen.add(id);
+      const before = snap.items.get(id);
+      const after = state.items.get(id);
+      const action = syncmap.plan(before, after, was, now);
+      if (action) marks.push(['items', id, action]);
+      // The body follows its item; a new key is a new text.
+      const had = !!before?.body?.key && was(before);
+      const has = !!after?.body?.key && action === 'p';
+      if (has && (after.body.key !== before?.body?.key || !had)) marks.push(['bodies', id, 'p']);
+      else if (!has && had) marks.push(['bodies', id, 'd']);
+      // A document that stops (or starts) syncing takes the actions that quote it along.
+      if (syncmap.isSecretDoc(before) !== syncmap.isSecretDoc(after)) {
+        for (const child of state.items.values()) if (child.parentId === id) item(child.id);
+      }
+    };
+    for (const [id, record] of state.items) if (snap.items.get(id) !== record) item(id);
+    for (const id of snap.items.keys()) if (!state.items.has(id)) item(id);
+    const entitySyncs = (entity) => syncmap.entitySyncs(entity, { syncPrivate });
+    const entity = (id) => {
+      const action = syncmap.plan(snap.entities.get(id), state.entities.get(id), entitySyncs);
+      if (action && id !== 'me') marks.push(['entities', id, action]);
+    };
+    for (const [id, record] of state.entities) if (snap.entities.get(id) !== record) entity(id);
+    for (const id of snap.entities.keys()) if (!state.entities.has(id)) entity(id);
+    for (const field of ['links', 'rejections']) {
+      const after = new Map((state[field] || []).map((r) => [syncmap.relationId(r), r]));
+      for (const id of after.keys()) if (!snap[field].has(id)) marks.push([field, id, 'p']);
+      for (const id of snap[field].keys()) if (!after.has(id)) marks.push([field, id, 'd']);
+    }
+  }
+
+  // Takes the marks Kage accepted out of meta.syncPending, unless a later
+  // change marked the record again. Called before each meta write.
+  _syncClearAccepted() {
+    const accepted = this._fsync.accepted;
+    if (!accepted.size) return 0;
+    const meta = this.state.meta;
+    const pending = meta.syncPending;
+    let n = 0;
+    for (const [key, value] of accepted) {
+      const at = key.indexOf('/');
+      const c = key.slice(0, at);
+      const id = key.slice(at + 1);
+      if (pending?.[c]?.[id] !== value) continue;
+      delete pending[c][id];
+      if (!Object.keys(pending[c]).length) delete pending[c];
+      n++;
+    }
+    accepted.clear();
+    if (pending && !Object.keys(pending).length) delete meta.syncPending;
+    return n;
+  }
+
+  // Marks still waiting for Kage: in syncPending and not accepted yet.
+  _syncWaiting() {
+    const accepted = this._fsync.accepted;
+    const out = [];
+    const pending = this.state.meta.syncPending || {};
+    for (const c of syncmap.COLLECTIONS) {
+      for (const [id, mark] of Object.entries(pending[c] || {})) {
+        if (accepted.get(`${c}/${id}`) !== mark) out.push({ collection: c, id, mark });
+      }
+    }
+    return out;
+  }
+
+  // Builds push entries for [{ collection, id, mark?, key? }] from the
+  // current state: a record, null for a delete, or `skip` (nothing to say:
+  // it doesn't leave this computer, or its body isn't here). Stops once
+  // `limit` records' worth is built (a body counts as a whole call).
+  // → { entries: [{ collection, id, record, mark, key, skip }], rest }
+  async _syncEntries(list, { limit = Infinity } = {}) {
+    const state = this.state;
+    const syncPrivate = this._syncPrivate();
+    const parentOf = (item) => (item?.parentId ? state.items.get(item.parentId) : null);
+    const relations = {};
+    const relation = (c, id) => (relations[c] ||= new Map((state[c] || []).map((r) => [syncmap.relationId(r), r]))).get(id);
+    let layout = null;
+    const entries = [];
+    let cost = 0;
+    for (const entry of list) {
+      if (cost >= limit) return { entries, rest: true };
+      const { collection: c, id } = entry;
+      const push = syncmap.parseMark(entry.mark)?.action !== 'd';
+      let record = null;
+      let skip = false;
+      cost++;
+      if (c === 'items') {
+        const item = state.items.get(id);
+        if (item && syncmap.itemSyncs(item, { syncPrivate, parent: parentOf(item) })) record = syncmap.itemRecord(item);
+        else if (item && push) skip = true;
+      } else if (c === 'entities') {
+        const entity = state.entities.get(id);
+        if (entity && syncmap.entitySyncs(entity, { syncPrivate })) record = syncmap.entityRecord(entity);
+        else if (entity && push) skip = true;
+      } else if (c === 'links' || c === 'rejections') {
+        const found = relation(c, id);
+        if (found) record = syncmap.relationRecord(found);
+      } else if (c === 'bodies') {
+        const item = state.items.get(id);
+        const key = item?.body?.key;
+        if (key && syncmap.itemSyncs(item, { syncPrivate, parent: parentOf(item) })) {
+          const body = await this.loadBody(item);
+          if (body) record = syncmap.bodyRecord(key, body);
+          else skip = true;
+          cost += LIMITS.syncPushRecords - 1;
+        } else if (key && push) skip = true;
+      } else if (c === 'pins') {
+        layout ||= await this.loadLayout().catch(() => ({ pins: {} }));
+        const pin = layout.pins?.[id];
+        if (pin) record = syncmap.pinRecord(pin);
+      } else {
+        skip = true;
+      }
+      entries.push({ collection: c, id, record, mark: entry.mark, key: entry.key, skip });
+    }
+    return { entries, rest: false };
+  }
+
+  // Sends push calls for built entries (at most `calls` of them).
+  // → { sent: [{ batch, reply }], skipped, rest }
+  // permissions: sync
+  async _syncPush(built, { calls = LIMITS.syncPushCalls, initial = false } = {}) {
+    const api = this._fsync.api;
+    const { entries, rest = false } = built;
+    const groups = syncmap.batches(entries.filter((e) => !e.skip), { maxRecords: LIMITS.syncPushRecords, maxBytes: LIMITS.syncPushBytes });
+    const sent = [];
+    for (const batch of groups.slice(0, calls)) {
+      const { reply } = await this._syncSend(() => api.push(batch.collection, batch.records, { deleted: batch.deleted, initial }));
+      sent.push({ batch, reply });
+    }
+    return { sent, skipped: entries.filter((e) => e.skip), rest: rest || groups.length > calls };
+  }
+
+  // Pushes what syncPending holds, with the lock held (right after a commit,
+  // or a round of the sync loop). Never fails the caller's write.
+  async _syncFlushLocked() {
+    if (!this._syncLive() || !this.state.meta.syncPending) return null;
+    try {
+      const list = this._syncWaiting();
+      if (!list.length) return null;
+      const built = await this._syncEntries(list, { limit: LIMITS.syncPushRecords * LIMITS.syncPushCalls });
+      return await this._syncPush(built);
+    } catch (error) {
+      this.log.warn?.(`mindmap: sync push not sent (${error?.code || error?.name || 'error'})`);
+      this._syncRetry();
+      return null;
+    }
+  }
+
+  // The replies to pushes this window sent (SYNC §12.6). Accepted and
+  // unchanged records, and the ones Kage won't ever take, leave syncPending
+  // with the next meta write; a rate limit, a full quota or an error is
+  // tried again in a minute; `off` means sync went off for Mind Map here
+  // (its first push will cover these). → { ok, retry, off, rejected }
+  async _syncSettle(out) {
+    const fs = this._fsync;
+    const result = { ok: true, retry: false, off: false, rejected: 0 };
+    const done = (entry) => {
+      if (entry.mark) fs.accepted.set(`${entry.collection}/${entry.id}`, entry.mark);
+    };
+    for (const { batch, reply } of out?.sent || []) {
+      let res;
+      try {
+        res = await reply;
+      } catch (error) {
+        result.ok = false;
+        result.retry = true;
+        this.log.warn?.(`mindmap: sync push failed (${error?.kind || error?.code || error?.name || 'error'})`);
+        continue;
+      }
+      if (res?.off) {
+        result.ok = false;
+        result.off = true;
+        batch.entries.forEach(done);
+        continue;
+      }
+      const refused = new Map();
+      for (const r of Array.isArray(res?.rejected) ? res.rejected : []) if (typeof r?.id === 'string') refused.set(r.id, String(r.code || ''));
+      for (const entry of batch.entries) {
+        const code = refused.get(entry.id);
+        if (code && !SYNC_PERMANENT.has(code)) {
+          result.ok = false;
+          result.retry = true;
+          continue;
+        }
+        if (code) result.rejected++;
+        done(entry);
+      }
+    }
+    for (const entry of out?.skipped || []) done(entry);
+    if (result.rejected) this.log.info?.(`mindmap: sync refused ${result.rejected} record(s)`);
+    if (result.off) this._syncKick('status');
+    if (result.retry) this._syncRetry();
+    else if (out?.rest) this._syncKick('pending');
+    if (fs.accepted.size) this._syncClearSoon();
+    return result;
+  }
+
+  _syncRetry(ms = LIMITS.syncRetryMs) {
+    const fs = this._fsync;
+    if (fs.retry) return;
+    fs.retry = setTimeout(() => {
+      fs.retry = null;
+      this._syncKick('pending', 'pull');
+    }, ms);
+    fs.retry?.unref?.();
+  }
+
+  _syncClearSoon() {
+    const fs = this._fsync;
+    if (fs.clear) return;
+    fs.clear = setTimeout(() => {
+      fs.clear = null;
+      this._syncKick('clear');
+    }, LIMITS.syncSettleMs);
+    fs.clear?.unref?.();
+  }
+
+  // Asks for sync work in this window: 'start' (after loading), 'pull',
+  // 'pending', 'status', 'enabled' (turned on or reset in Kage), 'repush'
+  // (every record again), 'clear', 'full'. One run at a time, started a
+  // microtask later (so a commit that asks for one is done first).
+  _syncKick(...wants) {
+    const fs = this._fsync;
+    if (!fs?.api) return;
+    for (const want of wants) if (want) fs.want.add(want);
+    if (fs.run || !this._loaded || !fs.want.size) return;
+    const run = Promise.resolve().then(() => this._syncLoop()).catch((error) => {
+      this.log.warn?.(`mindmap: sync stopped (${error?.code || error?.name || 'error'})`);
+      this._syncRetry();
+    }).finally(() => {
+      if (fs.run === run) fs.run = null;
+      if (fs.want.size && this._loaded) this._syncKick();
+    });
+    fs.run = run;
+    this._track(run);
+  }
+
+  async _syncLoop() {
+    const fs = this._fsync;
+    for (let round = 0; round < 8 && fs.want.size; round++) {
+      const wants = new Set(fs.want);
+      fs.want.clear();
+      if (this._readOnly) return;
+      const has = (...names) => names.some((name) => wants.has(name));
+      if (has('start', 'enabled', 'status') || !fs.status) await this._syncRefresh();
+      if (!this.syncOn) continue;
+      try {
+        // This computer's first push (SYNC §12.6): when Kage asks for it, and
+        // once per computer otherwise (a reload doesn't redo it).
+        const status = fs.status;
+        if (has('enabled') && status?.needsInitialPush) await this._syncBeginFull('initial', { force: true });
+        else if (has('start') && status?.needsInitialPush && this.state.meta.syncTag !== status.deviceTag) await this._syncBeginFull('initial');
+        if (has('repush')) await this._syncBeginFull('all');
+        if (this.state.meta.syncFull) await this._syncFullRun();
+        if (this._syncWaiting().length) await this._syncPushPending();
+        // Pulls wait for the first push: the newer copy must win, not the
+        // computer that joined later.
+        if (this.state.meta.syncFull?.mode !== 'initial' && has('start', 'enabled', 'pull')) await this._syncPullAll();
+        if (fs.accepted.size && (has('clear') || !fs.clear)) await this._syncClear();
+      } catch (error) {
+        this.log.warn?.(`mindmap: sync round failed (${error?.code || error?.name || 'error'})`);
+        this._syncRetry();
+      }
+    }
+  }
+
+  // Kage's status for Mind Map here (SYNC §12.6), without computer names.
+  // permissions: sync
+  async _syncRefresh() {
+    const fs = this._fsync;
+    try {
+      const raw = await this._syncCall(() => fs.api.status());
+      const count = (v) => (Number.isFinite(Number(v)) && Number(v) >= 0 ? Number(v) : null);
+      const at = typeof raw?.lastSyncAt === 'string' ? Date.parse(raw.lastSyncAt) : Number(raw?.lastSyncAt);
+      fs.status = {
+        available: raw?.available === true,
+        paused: raw?.paused === true,
+        needsInitialPush: raw?.needsInitialPush === true,
+        deviceTag: typeof raw?.deviceTag === 'string' && SYNC_DEVICE_TAG.test(raw.deviceTag) ? raw.deviceTag : null,
+        others: Array.isArray(raw?.devices) ? raw.devices.filter((d) => d && typeof d === 'object' && !d.thisDevice).length : 0,
+        usedBytes: count(raw?.usedBytes),
+        maxBytes: count(raw?.maxBytes),
+        lastSyncAt: Number.isFinite(at) && at > 0 ? at : null,
+      };
+    } catch (error) {
+      this.log.warn?.(`mindmap: sync status unavailable (${error?.kind || error?.code || error?.name || 'error'})`);
+    }
+    return fs.status;
+  }
+
+  // A commit that changes only mm-meta's sync bookkeeping: edit(meta, env,
+  // pre) → true when it changed something. `opts.before` as for _mutate.
+  // The sync loop's writes start from a promise step (here, in the pull and
+  // in _syncPushPending): they pass no storage keys, and check:security then
+  // reads the write path once instead of again from every sync caller.
+  _syncMetaCommit(edit, opts = {}) {
+    return Promise.resolve().then(() => this._mutate((state, env, pre) => (edit(state.meta, env, pre) ? { changes: [this._syncMetaChange(env)] } : { code: 'same' }), opts));
+  }
+
+  _syncMetaChange(env) {
+    return { op: journal.newOp({ opId: env.newId('o'), kind: 'sync', at: env.now, label: { code: 'sync_meta', params: {} }, silent: true }), touched: new Set(), unjournaled: true };
+  }
+
+  // Marks records for a push after the fact (bodies an import wrote after
+  // its commit); the meta commit's flush sends them.
+  async _syncMarkLater(collection, ids) {
+    if (!this._syncLive() || !ids.length) return;
+    await this._syncMetaCommit((meta, env) => {
+      const mark = syncmap.mark('p', env.newId('o'));
+      const pending = meta.syncPending || (meta.syncPending = {});
+      for (const id of ids) (pending[collection] ||= {})[id] = mark;
+      return true;
+    });
+  }
+
+  // Starts a push of every record: 'initial' (stamped from each record's
+  // updatedAt, SYNC §8.2) or 'all' (private records after "Sync private
+  // items" came back on). An initial push in progress isn't replaced.
+  _syncBeginFull(mode, { force = false } = {}) {
+    return this._syncMetaCommit((meta) => {
+      const have = meta.syncFull;
+      if (have && !force && (have.mode === 'initial' || have.mode === mode)) return false;
+      meta.syncFull = { mode: have?.mode === 'initial' && !force ? 'initial' : mode, next: '', at: 0 };
+      if (mode === 'initial') delete meta.syncTag;
+      return true;
+    });
+  }
+
+  // Runs the full push to its end, or until Kage's rate limit, an error or
+  // another window working on it. → 'done' | 'wait' | 'retry' | 'off' | 'more'
+  async _syncFullRun() {
+    for (let i = 0; i < 100; i++) {
+      const state = await this._syncFullStep();
+      if (state === 'more') continue;
+      if (state === 'wait') this._syncRetry(LIMITS.syncFullStaleMs);
+      else if (state === 'retry') this._syncRetry();
+      return state;
+    }
+    this._syncKick('full');
+    return 'more';
+  }
+
+  // One call of the full push, under the lock. The cursor (meta.syncFull)
+  // moves past a call once Kage accepted it, so any window can carry on
+  // where another stopped; a window that is working on it (`by`, `at`) is
+  // left alone for 30 s.
+  async _syncFullStep() {
+    const fs = this._fsync;
+    const owner = this.store.owner;
+    let step = null;
+    await this._syncMetaCommit((meta, env, pre) => {
+      if (!pre || pre.state === 'wait' || pre.state === 'gone') return false;
+      if (pre.state === 'done') {
+        delete meta.syncFull;
+        if (pre.initial && pre.tag) meta.syncTag = pre.tag;
+      } else {
+        meta.syncFull = { mode: pre.mode, next: pre.next, by: owner, at: env.now };
+      }
+      return true;
+    }, {
+      before: async () => {
+        step = await this._syncFullPlan(owner);
+        return step;
+      },
+    });
+    if (!step || step.state === 'gone' || step.state === 'done') return 'done';
+    if (step.state === 'wait') return 'wait';
+    if (!step.sent) return 'more';
+    const res = await this._syncSettle(step.sent);
+    if (res.off) return 'off';
+    if (!res.ok) return 'retry';
+    fs.fullDone = { mode: step.mode, next: step.reached };
+    return 'more';
+  }
+
+  // The next call of the full push, sent with the lock held. → { state:
+  // 'gone' | 'wait' | 'done' | 'sent', mode, next (the cursor to store now),
+  // sent, reached (the cursor once Kage accepts `sent`) }
+  async _syncFullPlan(owner) {
+    const fs = this._fsync;
+    const full = this.state.meta.syncFull;
+    if (!full) return { state: 'gone' };
+    if (full.by && full.by !== owner && this.now() - full.at < LIMITS.syncFullStaleMs) return { state: 'wait' };
+    // What this window's last call carried, once Kage took it.
+    let next = full.next;
+    const mine = fs.fullDone;
+    fs.fullDone = null;
+    if (mine && mine.mode === full.mode && (!full.by || full.by === owner) && mine.next > next) next = mine.next;
+    const layout = await this.loadLayout({ force: true }).catch(() => ({ pins: {} }));
+    const keys = syncmap.fullKeys(this.state, { pins: layout.pins, syncPrivate: this._syncPrivate() }).filter((key) => key > next);
+    if (!keys.length) return { state: 'done', initial: full.mode === 'initial', tag: fs.status?.deviceTag };
+    // One push call: the first collection's records after the cursor (a body alone).
+    const first = syncmap.splitKey(keys[0]).collection;
+    const take = [];
+    for (const key of keys) {
+      const { collection, id } = syncmap.splitKey(key);
+      if (collection !== first || take.length >= LIMITS.syncPushRecords || (collection === 'bodies' && take.length)) break;
+      take.push({ collection, id, key });
+    }
+    const built = await this._syncEntries(take);
+    const sent = await this._syncPush(built, { calls: 1, initial: full.mode === 'initial' });
+    const carried = sent.sent[0]?.batch.entries || [];
+    // Nothing here to send (bodies that are on another computer): past them.
+    if (!carried.length) return { state: 'sent', mode: full.mode, next: take[take.length - 1].key, sent: null };
+    return { state: 'sent', mode: full.mode, next, sent, reached: carried[carried.length - 1].key };
+  }
+
+  // Pushes the marks still waiting (after a crash, a refusal, or more than
+  // one commit could carry), under the lock so they leave in order.
+  async _syncPushPending() {
+    let sent = null;
+    await Promise.resolve().then(() => this._exclusive(() => this.store.withLock(async () => {
+      if (this._stale) await this._loadAll();
+      else await this._sync();
+      sent = await this._syncFlushLocked();
+    })));
+    if (sent) await this._syncSettle(sent);
+  }
+
+  // Writes mm-meta without the marks Kage accepted.
+  async _syncClear() {
+    if (!this._fsync.accepted.size) return;
+    if (this._fsync.clear) {
+      clearTimeout(this._fsync.clear);
+      this._fsync.clear = null;
+    }
+    await this._syncMetaCommit(() => this._syncClearAccepted() > 0);
+  }
+
+  // Pulls and applies what other computers changed, page by page (SYNC
+  // §12.9 item 2). A first look outside the lock costs one call when
+  // nothing is new. → true when anything changed here
+  // permissions: sync
+  async _syncPullAll() {
+    const fs = this._fsync;
+    fs.lastPull = mono();
+    const peek = await this._syncCall(() => fs.api.pull({ max: 1 }));
+    if (!Array.isArray(peek?.changes) || !peek.changes.length) return false;
+    let data = false;
+    let layout = false;
+    for (let page = 0; page < LIMITS.syncPullPages; page++) {
+      const res = await this._syncPullPage();
+      data ||= res.data;
+      layout ||= res.layout;
+      if (!res.more) break;
+      if (page === LIMITS.syncPullPages - 1) this._syncKick('pull');
+    }
+    if (data || layout) {
+      if (layout && this._layout) this._layout.stale = true;
+      this.requestReformat();
+      for (const fn of this._changeListeners) {
+        try {
+          fn({ data, layout });
+        } catch {
+          // A listener's failure is its own.
+        }
+      }
+    }
+    return data || layout;
+  }
+
+  // One page, inside the lock: pull, apply as a silent 'sync' op, persist,
+  // write pins, then ack (delivery is at least once: apply is an upsert).
+  async _syncPullPage() {
+    const fs = this._fsync;
+    let page = null;
+    let layout = false;
+    const out = await Promise.resolve().then(() => this._mutate((state, env, pre) => {
+      if (!pre) return { code: 'empty' };
+      const change = model.applyRemote(state, this._syncRemote(state, pre), {
+        ...env, syncPrivate: this._syncPrivate(), relationId: syncmap.relationId,
+      });
+      return change.op ? { changes: [change], change } : { code: change.code || 'noop' };
+    }, {
+      before: async () => {
+        page = await this._syncCall(() => fs.api.pull({ max: LIMITS.syncPullMax }));
+        const changes = Array.isArray(page?.changes) ? page.changes : [];
+        return changes.length ? syncmap.groupChanges(changes) : null;
+      },
+      after: async (done, lease, pre) => {
+        if (pre?.pins?.size) layout = await this._syncApplyPins(pre.pins, lease);
+        if (page && page.cursor !== undefined && page.cursor !== null) await this._syncCall(() => fs.api.ack(page.cursor));
+      },
+    }));
+    if (out.committed) this.log.debug?.(`mindmap: applied ${out.change?.counts?.applied || 0} change(s) from your other computers`);
+    return { more: !!page?.more && !!page?.changes?.length, data: !!out.committed, layout };
+  }
+
+  // Pulled records with this computer's local fields back (lib/syncmap.js withLocal).
+  _syncRemote(state, grouped) {
+    const extractorVersion = this.extractorVersion;
+    const local = (c, map, records) => {
+      const out = new Map();
+      for (const [id, record] of records) out.set(id, record === null ? null : syncmap.withLocal(c, record, map.get(id), { extractorVersion }));
+      return out;
+    };
+    const bodies = new Map();
+    for (const [id, record] of grouped.bodies) {
+      if (record === null) continue;
+      const body = syncmap.bodyFromRecord(id, record);
+      if (body) bodies.set(id, body);
+    }
+    return {
+      items: local('items', state.items, grouped.items),
+      entities: local('entities', state.entities, grouped.entities),
+      links: grouped.links,
+      rejections: grouped.rejections,
+      bodies,
+    };
+  }
+
+  // Other computers' pins, written into mm-layout under the pull's lock. → changed
+  async _syncApplyPins(remote, lease) {
+    const res = await this.store.readBest('mm-layout');
+    if (res.unreadable) return false;
+    const pins = this._cleanPins(res.value?.pins);
+    let changed = false;
+    for (const [ref, record] of remote) {
+      if (record === null) {
+        if (pins[ref]) {
+          delete pins[ref];
+          changed = true;
+        }
+        continue;
+      }
+      const x = Number(record?.x);
+      const y = Number(record?.y);
+      if (!Number.isFinite(x) || !Number.isFinite(y)) continue;
+      const at = Number.isFinite(Number(record.at)) ? Number(record.at) : 0;
+      const have = pins[ref];
+      if (have && have.x === Math.round(x) && have.y === Math.round(y) && have.at === at) continue;
+      pins[ref] = { x, y, at };
+      changed = true;
+    }
+    if (!changed) return false;
+    const clean = this._cleanPins(pins);
+    const rev = Math.max(Number(res.value?.rev) || 0, this._layout?.rev || 0) + 1;
+    await lease.check();
+    await this.store.write('mm-layout', { schema: 1, rev, txn: idlib.newId('o', this.now()), pins: clean }, { force: true });
+    this._layout = { pins: clean, rev, unreadable: false };
+    return true;
+  }
+
+  // Pushes pins the explorer changed, while setPins or resetLayout holds the
+  // lock (pins aren't in syncPending: a lost one waits for the next full push).
+  async _syncPushPins(before, after) {
+    if (!this._syncLive()) return null;
+    const refs = new Set([...Object.keys(before || {}), ...Object.keys(after || {})]);
+    const entries = [];
+    for (const ref of [...refs].sort()) {
+      const a = before?.[ref];
+      const b = after?.[ref];
+      if (a && b && a.x === b.x && a.y === b.y && a.at === b.at) continue;
+      entries.push({ collection: 'pins', id: ref, record: b ? syncmap.pinRecord(b) : null, skip: false });
+    }
+    if (!entries.length) return null;
+    try {
+      return await this._syncPush({ entries }, { calls: LIMITS.syncPushCalls });
+    } catch {
+      return null;
+    }
+  }
+
+  /**
+   * Kage folder sync for the settings page (SYNC §12.6): → { supported,
+   * available, paused, others, lastSyncAt, usedBytes, maxBytes, waiting,
+   * full } (others: how many other computers; waiting: changes Kage hasn't
+   * taken yet; full: a first push under way).
+   */
+  async syncInfo() {
+    if (!this._fsync.api) return { supported: false, available: false };
+    const status = await this._syncRefresh();
+    return {
+      supported: true,
+      available: !!status?.available,
+      paused: !!status?.paused,
+      others: status?.others || 0,
+      lastSyncAt: status?.lastSyncAt ?? null,
+      usedBytes: status?.usedBytes ?? null,
+      maxBytes: status?.maxBytes ?? null,
+      waiting: this._loaded ? this._syncWaiting().length : 0,
+      full: this.state.meta.syncFull?.mode || null,
+    };
   }
 
   // --- indexes -------------------------------------------------------------------
@@ -947,6 +1708,12 @@ export class Mind {
     this.index = bm25.createIndex({ fields: INDEX_FIELDS });
     this.byEntity = new Map();
     this.itemEnts = new Map();
+    // Mentions of an entity merged into another (mm merge leaves none; sync's
+    // dedupe does): items are indexed under the entity they redirect to, and
+    // this finds them again when the redirect changes.
+    this.byRaw = new Map();
+    this.itemRaw = new Map();
+    this._merged = null;
     this.children = new Map();
     this.parentOf = new Map();
     this._newest = null;
@@ -991,9 +1758,19 @@ export class Mind {
 
   _indexItem(item) {
     this.index.add(item.id, this._fields(item));
-    const ents = [...(item.entityIds || [])];
+    const ents = [];
+    const raws = [];
+    for (const raw of item.entityIds || []) {
+      const eid = this._canonId(raw);
+      if (!ents.includes(eid)) ents.push(eid);
+      if (eid !== raw) raws.push(raw);
+    }
     this.itemEnts.set(item.id, ents);
     for (const eid of ents) addTo(this.byEntity, eid, item.id);
+    if (raws.length) {
+      this.itemRaw.set(item.id, raws);
+      for (const raw of raws) addTo(this.byRaw, raw, item.id);
+    }
     if (item.parentId) {
       this.parentOf.set(item.id, item.parentId);
       addTo(this.children, item.parentId, item.id);
@@ -1009,6 +1786,8 @@ export class Mind {
     this.index.remove(id);
     for (const eid of this.itemEnts.get(id) || []) this.byEntity.get(eid)?.delete(id);
     this.itemEnts.delete(id);
+    for (const raw of this.itemRaw.get(id) || []) this.byRaw.get(raw)?.delete(id);
+    this.itemRaw.delete(id);
     const parent = this.parentOf.get(id);
     if (parent) {
       this.children.get(parent)?.delete(id);
@@ -1026,7 +1805,11 @@ export class Mind {
   _reindex(itemIds, entityIds = EMPTY) {
     const items = new Set(itemIds);
     // An entity's name is indexed on every item that mentions it.
-    for (const eid of entityIds) for (const iid of this.byEntity.get(eid) || []) items.add(iid);
+    if (entityIds.size) this._merged = null;
+    for (const eid of entityIds) {
+      for (const iid of this.byEntity.get(eid) || []) items.add(iid);
+      for (const iid of this.byRaw.get(eid) || []) items.add(iid);
+    }
     // A card or map centred on an entity (or on a parent) shows its items:
     // when one of them changes, appears or goes, so does that card.
     const around = new Set();
@@ -1051,6 +1834,37 @@ export class Mind {
     }
     this._bump([...items, ...entityIds, ...around]);
     this._orgCheckFlight();
+  }
+
+  // The entity an id stands for, following mergedInto (itself when none).
+  _canonId(eid) {
+    if (eid === 'me') return eid;
+    const entity = this.state.entities.get(eid);
+    if (!entity?.mergedInto) return eid;
+    return this.entity(eid)?.id || eid;
+  }
+
+  // The ids of entities that redirect to another (cached until entities change).
+  _mergedIds() {
+    if (!this._merged) {
+      this._merged = new Set();
+      for (const entity of this.state.entities.values()) if (entity.mergedInto) this._merged.add(entity.id);
+    }
+    return this._merged;
+  }
+
+  // An item as ranking sees it: an owner or a name that redirects is
+  // replaced by the entity it redirects to (sync's dedupe leaves those).
+  _canonItem(item) {
+    if (!item) return item;
+    const merged = this._mergedIds();
+    if (!merged.size || !((item.owner && merged.has(item.owner)) || (item.entityIds || []).some((id) => merged.has(id)))) return item;
+    const entityIds = [];
+    for (const id of item.entityIds || []) {
+      const eid = this._canonId(id);
+      if (!entityIds.includes(eid)) entityIds.push(eid);
+    }
+    return { ...item, entityIds, ...(item.owner ? { owner: this._canonId(item.owner) } : {}) };
   }
 
   _bump(ids) {
@@ -1287,7 +2101,7 @@ export class Mind {
       now: this.now(),
       index,
       limit,
-      getItem: (id) => state.items.get(id),
+      getItem: (id) => this._canonItem(state.items.get(id)),
       idsNewestFirst: () => this._newestIds(),
       idsInRange: (start, end, field) => this._idsInRange(start, end, field),
       entityItems: (eid) => this.byEntity.get(eid) || EMPTY,
@@ -1430,7 +2244,7 @@ export class Mind {
       const item = this.state.items.get(iid);
       if (!item || item.archived) continue;
       if (forAgent && this.isHidden(item)) continue;
-      for (const other of item.entityIds || []) {
+      for (const other of this.itemEnts.get(iid) || item.entityIds || []) {
         if (other === eid || other === 'me') continue;
         counts.set(other, (counts.get(other) || 0) + 1);
       }
@@ -2083,7 +2897,20 @@ export class Mind {
   setStatus(id, status) { return this._simple((state, env) => model.applyStatus(state, id, status, env)); }
   accept(id) { return this._simple((state, env) => model.applyAccept(state, id, env)); }
   dismiss(id) { return this.setStatus(id, 'dismissed'); }
-  setPrivate(id, on) { return this._simple((state, env) => model.applyEdit(state, id, { private: !!on }, env)); }
+  // With "Sync private items" off, an item made private leaves the other
+  // computers and stays only here (SYNC §12.9 item 5): its card says so.
+  async setPrivate(id, on) {
+    let here = false;
+    const out = await this._simple((state, env) => {
+      const item = state.items.get(id);
+      here = !!on && this._syncLive() && !this._syncPrivate() && !!item && !item.private
+        && syncmap.itemSyncs(item, { parent: item.parentId ? state.items.get(item.parentId) : null });
+      const change = model.applyEdit(state, id, { private: !!on }, env);
+      if (here && change.op) change.op.label = { ...change.op.label, params: { ...change.op.label.params, here: 1 } };
+      return change;
+    });
+    return out.ok && here ? { ...out, keptHere: true } : out;
+  }
   /** P2 archive: hides an item from lists, the map and the agent (not from exports); undoable. */
   setArchived(id, on) {
     return this._simple((state, env) => {
@@ -3148,6 +3975,7 @@ export class Mind {
   async _restoreBodies(raw) {
     if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return 0;
     let written = 0;
+    const ids = [];
     for (const [id, value] of Object.entries(raw)) {
       const item = this.state.items.get(id);
       const parsed = model.parseBodyKey(item?.body?.key);
@@ -3158,10 +3986,13 @@ export class Mind {
         if (res.value || res.unreadable) continue;
         await this.store.write(key, { schema: model.BODY_SCHEMA, id, rev: parsed.n, format: item.file.format, chars: item.body.chars, text: value });
         written++;
+        ids.push(id);
       } catch (error) {
         this.log.warn?.(`mindmap: an imported document body was not written (${error?.code || 'error'})`);
       }
     }
+    // Written after the import's commit, so its push found no text: mark them again.
+    await this._syncMarkLater('bodies', ids).catch(() => {});
     return written;
   }
 
@@ -3388,6 +4219,14 @@ export class Mind {
     this._org.flight?.abort.abort();
     const keys = this._allKeys();
     const bodies = [...model.bodyKeys(this.state)].map((key) => model.parseBodyKey(key)).filter(Boolean);
+    // With Kage folder sync on, the mind map goes from the other computers
+    // too: every record that could have synced is marked for a delete in
+    // the new store's mm-meta, so the deletes go out (and survive a restart)
+    // even though nothing is left here to push.
+    const live = this._syncLive();
+    const layout = live ? await this.loadLayout({ force: true }).catch(() => ({ pins: {} })) : null;
+    const syncKeys = live ? syncmap.fullKeys(this.state, { pins: layout?.pins, syncPrivate: true }) : [];
+    const fresh = model.emptyState(this.now(), { extractorVersion: this.extractorVersion, gen: this._newGen() });
     await this.store.withLock(async () => {
       // Documents' bodies first: an interrupted delete leaves docs that still
       // name them, so the next Delete everything finds them again.
@@ -3399,6 +4238,24 @@ export class Mind {
       await this.store.remove('mm-layout', { force: true });
       await this.store.remove('mm-view', { force: true });
       await this.store.remove(ORG_NOTES_KEY, { force: true });
+      if (syncKeys.length) {
+        const now = this.now();
+        const txn = idlib.newId('o', now);
+        const pending = {};
+        for (const key of syncKeys) {
+          const { collection, id } = syncmap.splitKey(key);
+          (pending[collection] ||= {})[id] = syncmap.mark('d', txn);
+        }
+        fresh.meta.syncPending = pending;
+        const prior = this.state;
+        this.state = fresh;
+        this.keyRevs = new Map();
+        try {
+          await this._writeMeta(txn, null, now, { force: true });
+        } finally {
+          this.state = prior;
+        }
+      }
     });
     try {
       await this.store.remove('mm-lock', { force: true });
@@ -3406,8 +4263,10 @@ export class Mind {
       // The lock expires on its own.
     }
     const prior = this.state;
-    this.state = model.emptyState(this.now(), { extractorVersion: this.extractorVersion, gen: this._newGen() });
-    this.keyRevs = new Map();
+    this.state = fresh;
+    this.keyRevs = syncKeys.length ? new Map([['mm-meta', fresh.meta.rev]]) : new Map();
+    this._fsync.accepted.clear();
+    this._fsync.fullDone = null;
     this._applyMe();
     this._resetIndexes();
     this._bump([...prior.items.keys(), ...prior.entities.keys()]);
@@ -3420,7 +4279,8 @@ export class Mind {
     this._bodies.clear();
     this._notices.clear();
     this.log.info?.('mindmap: deleted all data');
-    return { ok: true, keys: keys.length + bodies.length + 4 };
+    if (syncKeys.length) this._syncKick('pending');
+    return { ok: true, keys: keys.length + bodies.length + 4, synced: syncKeys.length > 0 };
   }
 
   /** Repair (read-only mode): writes the readable state over every key, after confirmation. */
@@ -3602,13 +4462,15 @@ export class Mind {
     const entries = Object.entries(changes && typeof changes === 'object' ? changes : {}).filter(([ref]) => MAP_REF_RE.test(ref));
     if (!entries.length) return { ok: false, code: 'noop', pins: this.pins };
     try {
-      return await this.store.withLock(async (lease) => {
+      let sent = null;
+      const out = await this.store.withLock(async (lease) => {
         const res = await this.store.readBest('mm-layout');
         if (res.unreadable) {
           this._layout = { pins: {}, rev: 0, unreadable: true };
           return { ok: false, code: 'unreadable', pins: {} };
         }
         const pins = this._cleanPins(res.value?.pins);
+        const prior = { ...pins };
         const now = this.now();
         for (const [ref, pin] of entries) {
           if (pin === null) delete pins[ref];
@@ -3621,20 +4483,28 @@ export class Mind {
         // notes) still keeps pins, unless mm-layout itself is unreadable.
         await this.store.write('mm-layout', { schema: 1, rev, txn: idlib.newId('o', now), pins: clean }, { force: true });
         this._layout = { pins: clean, rev, unreadable: false };
+        // Pins sync as their own collection (SYNC §12.9): sent while the lock is held.
+        sent = await this._syncPushPins(prior, clean);
         return { ok: true, pins: clean };
       });
+      if (sent) this._track(this._syncSettle(sent));
+      return out;
     } catch (error) {
       if (error?.code) return { ok: false, code: error.code, pins: this.pins };
       throw error;
     }
   }
 
-  /** "Reset map layout" (settings): forgets every pin. */
+  /** "Reset map layout" (settings): forgets every pin, on every computer with sync on. */
   async resetLayout() {
+    let sent = null;
     await this.store.withLock(async () => {
+      const res = this._syncLive() ? await this.store.readBest('mm-layout').catch(() => null) : null;
       await this.store.remove('mm-layout', { force: true });
+      if (res?.value) sent = await this._syncPushPins(this._cleanPins(res.value.pins), {});
     });
     this._layout = { pins: {}, rev: 0, unreadable: false };
+    if (sent) this._track(this._syncSettle(sent));
     return { ok: true };
   }
 
@@ -3811,6 +4681,8 @@ export class Mind {
       related: isCapture && item ? this.related(item.id, 3).map((r) => this._localCite(r.id)).filter(Boolean) : [],
       truncated: !!item?.truncated && isCapture,
       dropped: isCapture ? Number(params.dropped) || 0 : 0,
+      // Made private with "Sync private items" off: removed from the other computers.
+      keptHere: params.here === 1,
     };
   }
 

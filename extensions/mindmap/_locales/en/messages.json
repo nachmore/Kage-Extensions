@@ -2308,5 +2308,61 @@
   "tool.get_query": {
     "message": "Optional, for documents: words to find in the whole document. Up to {n} matching passages of at most {max} characters come back.",
     "description": "Agent tool parameter description"
+  },
+  "manifest.sync_description": {
+    "message": "Your notes, actions, names, documents and map pins, so your mind map is the same on every computer.",
+    "description": "Manifest sync.description: what Mind Map keeps in the Kage sync folder (at most 140 characters)"
+  },
+  "settings.section_sync": {
+    "message": "Sync between your computers",
+    "description": "Settings section heading for Kage folder sync"
+  },
+  "settings.sync.status_off": {
+    "message": "Kage sync is off for Mind Map on this computer, so your mind map stays here. You can turn it on in Kage’s Settings → Sync.",
+    "description": "Sync status line when Kage sync is off for Mind Map"
+  },
+  "settings.sync.status_paused": {
+    "message": "Kage sync is paused. Your changes wait on this computer until it carries on.",
+    "description": "Sync status line when Kage has paused sync"
+  },
+  "settings.sync.status_on": {
+    "message": "{n, plural, =0 {On through Kage sync. No other computer has joined yet.} one {On through Kage sync, with # other computer.} other {On through Kage sync, with # other computers.}} Last synced {when}.",
+    "description": "Sync status line when sync is on; n = other computers, when = date and time"
+  },
+  "settings.sync.status_first": {
+    "message": "Sending your mind map to your sync folder for the first time…",
+    "description": "Sync status line during the first push from this computer"
+  },
+  "settings.sync.status_waiting": {
+    "message": "{n, plural, one {# change is} other {# changes are}} waiting to sync.",
+    "description": "Sync status line: changes Kage hasn't taken yet"
+  },
+  "settings.sync.status_full": {
+    "message": "Mind Map’s space in your sync folder is full. New changes stay on this computer.",
+    "description": "Sync status warning when the extension's sync quota is used up"
+  },
+  "settings.sync.private_items": {
+    "message": "Sync private items",
+    "description": "Checkbox: whether private items go to the sync folder"
+  },
+  "settings.sync.private_items_hint": {
+    "message": "Private items are never sent to your agent, on any computer. Turn this off to keep them only on the computer where they are.",
+    "description": "Help text for Sync private items"
+  },
+  "settings.disclosure.sync": {
+    "message": "With Kage sync on, your mind map is also kept, encrypted, in your sync folder, so it’s on all your computers. That includes window titles and the text of documents you added, which are still never sent to your agent. A document Kage thinks holds a password or key stays on its computer.",
+    "description": "Privacy disclosure added where Kage offers folder sync"
+  },
+  "settings.delete_all_hint_sync": {
+    "message": "Removes every item, every name and the undo history from this computer and, through Kage sync, from your other computers.",
+    "description": "Delete everything help text when Kage sync is on"
+  },
+  "settings.delete_all_confirm_sync": {
+    "message": "Delete your whole mind map from this computer and from your other computers? This can’t be undone in Mind Map. Export first if you want to keep it.",
+    "description": "Delete everything confirmation when Kage sync is on"
+  },
+  "card.kept_here": {
+    "message": "Removed from your other computers: it stays only on this one.",
+    "description": "Op card note: an item made private with Sync private items off"
   }
 }

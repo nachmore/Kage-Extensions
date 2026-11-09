@@ -516,7 +516,128 @@ describe('agentBackground', () => {
 });
 
 describe('the new capabilities', () => {
-    it('knows file_text and sync, which need no manifest block here', async () => {
-        expect(await validateWithFiles({ permissions: ['storage', 'file_text', 'sync'] })).toEqual([]);
+    it('knows file_text, which needs no manifest block', async () => {
+        expect(await validateWithFiles({ permissions: ['storage', 'file_text'] })).toEqual([]);
+    });
+});
+
+describe('sync', () => {
+    const SYNC_FILES = {
+        '_locales/en/messages.json': JSON.stringify({
+            'sync.description': { message: 'Your notes, so they are on every computer.' },
+            'sync.long': { message: 'x'.repeat(141) },
+        }),
+    };
+    // Kage's SYNC §12.2 example.
+    const example = {
+        description: '__MSG_sync.description__',
+        schema: 1,
+        keys: ['prefs', 'view-*'],
+        lists: { todos: { array: 'items', id: 'id', label: 'title' } },
+        collections: {
+            items: {
+                label: 'title', private: 'private', maxBytes: 65536,
+                together: [['status', 'doneAt', 'suggested', 'confidence'], ['title', 'titleSource'], ['summary', 'summarySource'], ['url', 'canonicalUrl']],
+                sets: ['entityIds', 'terms'], maps: ['mentionOrigin'], local: ['rev', 'enrich', 'v', 'fileRefs'],
+            },
+            bodies: { whole: true, large: true, maxBytes: 4194304 },
+        },
+    };
+    const sync = (block, extra = {}) =>
+        validateWithFiles({ permissions: ['storage', 'sync'], sync: block, ...extra }, SYNC_FILES);
+    const only = (collections) => sync({ collections });
+
+    it('accepts the documented example', async () => {
+        expect(await sync(example, {
+            config: {
+                my_names: { type: 'string', default: '', sync: 'shared' },
+                background_organize: { type: 'boolean', default: false, sync: 'machine' },
+                theme_size: { type: 'number', default: 1, sync: 'os' },
+                cache_url: { type: 'string', default: '', sync: 'never' },
+            },
+        })).toEqual([]);
+    });
+
+    it('needs the sync capability, and the capability needs the block', async () => {
+        expect(await validateWithFiles({ permissions: ['storage'], sync: { keys: ['prefs'] } })).toEqual([
+            expect.stringContaining("'sync' needs 'sync' in 'permissions'"),
+        ]);
+        expect(await validateWithFiles({ permissions: ['storage', 'sync'] })).toEqual([
+            expect.stringContaining("needs a 'sync' block"),
+        ]);
+    });
+
+    it.each([null, [], 'items'])('rejects a non-object block %j', async (block) => {
+        expect(await sync(block)).toEqual([expect.stringContaining("'sync' must be an object")]);
+    });
+
+    it('rejects unknown fields and a block that syncs nothing', async () => {
+        expect(await sync({ keys: ['prefs'], extra: 1 })).toEqual([expect.stringContaining("unknown field 'extra'")]);
+        expect(await sync({ schema: 1 })).toEqual([expect.stringContaining('declares nothing to sync')]);
+    });
+
+    it('limits the description to 140 characters after token resolution', async () => {
+        expect(await sync({ keys: ['prefs'], description: 'x'.repeat(140) })).toEqual([]);
+        expect(await sync({ keys: ['prefs'], description: '__MSG_sync.long__' })).toEqual([
+            expect.stringContaining("'sync.description' must be at most 140 characters"),
+        ]);
+    });
+
+    it.each([0, 1.5, '1', -2])('rejects schema %j', async (schema) => {
+        expect(await sync({ keys: ['prefs'], schema })).toEqual([expect.stringContaining("'sync.schema' must be an integer")]);
+    });
+
+    it('checks keys: storage-key rules, a trailing wildcard, the limit and sensitive data', async () => {
+        expect(await sync({ keys: ['a', 'b-*', 'c.d_e'] })).toEqual([]);
+        expect(await sync({ keys: ['bad key'] })).toEqual([expect.stringContaining("'sync.keys' entry 0 must be a storage key")]);
+        expect(await sync({ keys: ['*'] })).toEqual([expect.stringContaining("'sync.keys' entry 0 must be a storage key")]);
+        expect(await sync({ keys: Array.from({ length: 33 }, (_, i) => `k${i}`) })).toEqual([
+            expect.stringContaining("at most 32 storage keys"),
+        ]);
+        expect(await sync({ keys: ['oauth_token'] })).toEqual([expect.stringContaining('names sensitive data')]);
+        expect(await sync({ keys: ['conn*'] }, { sensitiveData: ['conn*'] })).toEqual([expect.stringContaining('names sensitive data')]);
+    });
+
+    it('checks lists', async () => {
+        expect(await sync({ lists: { todos: { array: '', id: 'id' } } })).toEqual([]);
+        expect(await sync({ lists: { todos: { array: 'items' } } })).toEqual([expect.stringContaining("'sync.lists.todos.id'")]);
+        expect(await sync({ lists: { todos: { array: 'a.b', id: 'id' } } })).toEqual([expect.stringContaining("'sync.lists.todos.array'")]);
+        expect(await sync({ lists: { todos: { array: 'items', id: 'id', sort: 'x' } } })).toEqual([expect.stringContaining("unknown field 'sort'")]);
+        const many = Object.fromEntries(Array.from({ length: 17 }, (_, i) => [`l${i}`, { array: 'items', id: 'id' }]));
+        expect(await sync({ lists: many })).toEqual([expect.stringContaining('at most 16 storage keys')]);
+    });
+
+    it('checks collection names, fields and sizes', async () => {
+        expect(await only({ Items: { whole: true } })).toEqual([expect.stringContaining('the name must match')]);
+        expect(await only({ items: { whole: true, sort: 'x' } })).toEqual([expect.stringContaining("unknown field 'sort'")]);
+        expect(await only({ items: { maxBytes: 1048577 } })).toEqual([expect.stringContaining('maxBytes must be 1–1048576')]);
+        expect(await only({ items: { whole: true, large: true, maxBytes: 4194305 } })).toEqual([expect.stringContaining('maxBytes must be 1–4194304')]);
+        expect(await only({ items: { label: 'a.b' } })).toEqual([expect.stringContaining('.label must name a top-level field')]);
+        const many = Object.fromEntries(Array.from({ length: 17 }, (_, i) => [`c${i}`, { whole: true }]));
+        expect(await only(many)).toEqual([expect.stringContaining('at most 16 collections')]);
+    });
+
+    it('rejects overlapping groups, sets, maps and local fields', async () => {
+        expect(await only({ items: { together: [['a', 'b']], sets: ['b'] } })).toEqual([
+            expect.stringContaining("'b' is in both 'together' and 'sets'"),
+        ]);
+        expect(await only({ items: { maps: ['m'], local: ['m'] } })).toEqual([expect.stringContaining("'m' is in both 'maps' and 'local'")]);
+        expect(await only({ items: { together: [['a']] } })).toEqual([expect.stringContaining('groups of two or more')]);
+    });
+
+    it('rejects a whole collection that splits fields, and credential-named fields', async () => {
+        expect(await only({ items: { whole: true, sets: ['tags'] } })).toEqual([expect.stringContaining("a 'whole' collection is one cell")]);
+        expect(await only({ items: { sets: ['apiKey'] } })).toEqual([expect.stringContaining('looks like a credential field')]);
+        expect(await only({ items: { local: ['session'] } })).toEqual([]);
+    });
+
+    it('checks config.<field>.sync', async () => {
+        expect(await sync({ keys: ['prefs'] }, { config: { x: { type: 'boolean', default: true, sync: 'everywhere' } } })).toEqual([
+            expect.stringContaining('config.x.sync must be one of: shared, os, machine, never'),
+        ]);
+        expect(await sync({ keys: ['prefs'] }, { config: { api_key: { type: 'string', default: '', sync: 'shared' } } })).toEqual([
+            expect.stringContaining('config.api_key.sync: credentials never sync'),
+        ]);
+        expect(await sync({ keys: ['prefs'] }, { config: { url: { type: 'string', default: '', sensitive: true, sync: 'machine' } } })).toEqual([]);
     });
 });

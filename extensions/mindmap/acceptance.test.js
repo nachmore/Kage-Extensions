@@ -1376,9 +1376,12 @@ describe('every shipped locale', () => {
     // Background organizing (WP-AC-MM3).
     'manifest.agent_background_reason', 'settings.section_background', 'settings.background_organize',
     'settings.background_organize_hint', 'settings.disclosure.background', 'card.organized', 'card.undo_organize',
-    'card.undo_organize_tip']);
+    'card.undo_organize_tip',
+    // Kage folder sync (WP-S7).
+    'manifest.sync_description', 'settings.section_sync', 'settings.disclosure.sync', 'settings.delete_all_hint_sync',
+    'settings.delete_all_confirm_sync', 'card.kept_here']);
   const pending = (key) => PENDING_TRANSLATION.has(key) || key.startsWith('explorer.') || key.startsWith('files.') || key.startsWith('settings.documents.')
-    || key.startsWith('settings.organize.');
+    || key.startsWith('settings.organize.') || key.startsWith('settings.sync.');
 
   it('ships English plus 31 translations with the same keys', () => {
     expect(langs).toHaveLength(32);

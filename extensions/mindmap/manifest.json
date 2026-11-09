@@ -1,13 +1,13 @@
 {
   "id": "mindmap",
   "name": "__MSG_manifest.name__",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "type": "extension",
   "description": "__MSG_manifest.description__",
   "icon": "🧠",
   "author": "kage",
   "tags": ["productivity", "notes", "knowledge", "mindmap", "todo", "bookmarks", "organizer", "ai"],
-  "permissions": ["storage", "urls", "network", "windows", "views", "file_text", "agent_background"],
+  "permissions": ["storage", "urls", "network", "windows", "views", "file_text", "agent_background", "sync"],
   "agentBackground": {
     "reason": "__MSG_manifest.agent_background_reason__",
     "purposes": ["organize"],
@@ -15,7 +15,7 @@
     "dailyCalls": 40
   },
   "config": {
-    "my_names": { "type": "string", "default": "" },
+    "my_names": { "type": "string", "default": "", "sync": "shared" },
     "week_start": { "type": "string", "default": "auto", "enum": ["auto", "mon", "sun", "sat"] },
     "fetch_link_titles": { "type": "boolean", "default": true },
     "record_source_window": { "type": "boolean", "default": true },
@@ -25,7 +25,28 @@
     "agent_snippet_chars": { "type": "number", "default": 280 },
     "trigger": { "type": "string", "default": "mm", "backup": "plain" },
     "doc_max_chars": { "type": "string", "default": "200000", "enum": ["50000", "200000", "1000000"] },
-    "background_organize": { "type": "boolean", "default": false }
+    "background_organize": { "type": "boolean", "default": false, "sync": "machine" },
+    "sync_private_items": { "type": "boolean", "default": true }
+  },
+  "sync": {
+    "description": "__MSG_manifest.sync_description__",
+    "schema": 1,
+    "collections": {
+      "items": {
+        "label": "title",
+        "private": "private",
+        "maxBytes": 65536,
+        "together": [["status", "doneAt", "suggested", "confidence"], ["title", "titleSource"], ["summary", "summarySource"], ["url", "canonicalUrl"]],
+        "sets": ["entityIds", "terms"],
+        "maps": ["mentionOrigin"],
+        "local": ["rev", "enrich", "v", "fileRefs"]
+      },
+      "entities": { "label": "name", "private": "private", "sets": ["aliases"], "local": ["rev"] },
+      "links": { "whole": true },
+      "rejections": { "whole": true },
+      "bodies": { "whole": true, "large": true, "maxBytes": 4194304 },
+      "pins": { "whole": true }
+    }
   },
   "contributes": {
     "searchProvider": "./search.js",

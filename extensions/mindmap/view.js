@@ -683,6 +683,7 @@ export function renderOpCard(vm, ctx = {}) {
   }
   for (const line of docLines.slice(1)) parts.push(`<small class="mm-note">${esc(line)}</small>`);
   if (vm.truncated && !vm.undone) parts.push(`<small class="mm-note">${esc(t('card.truncated', { n: safe(() => (8000).toLocaleString(ctx.locale || 'en'), '8,000') }))}</small>`);
+  if (vm.keptHere && !vm.undone) parts.push(`<small class="mm-note">${esc(t('card.kept_here'))}</small>`);
   if (!vm.undone && vm.actions?.length) {
     // A long brain dump lists its first actions; the rest wait in review/actions.
     const shown = vm.actions.slice(0, OP_ACTIONS_SHOWN);

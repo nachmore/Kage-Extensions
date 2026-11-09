@@ -160,11 +160,11 @@ languages).
 - **Keyboard and screen readers**: every node is also in a list (the
   **List** button shows it), and the selection is announced.
 
-Private items show 🔒 in the explorer and stay on this computer: **Ask** is
+Private items show 🔒 in the explorer and are never sent to your agent: **Ask** is
 off for them, and the window title doesn't name them. Pinned positions are
-part of your mind map's data (Export JSON includes them, **Reset map layout**
-in settings forgets them); the explorer's zoom, centre and filters are kept
-for this computer only.
+part of your mind map's data (Export JSON includes them, Kage sync takes
+them to your other computers, **Reset map layout** in settings forgets them);
+the explorer's zoom, centre and filters are kept for this computer only.
 
 ## How things get organized
 
@@ -281,13 +281,46 @@ that, and you confirm again if you switch agents.
   and how many requests are left today in Mind Map's Background AI panel,
   and can stop or pause them.
 - On several computers, each organizes its own new notes first, and the
-  others' after a day.
+  others' after a day. The switch is set on each computer on its own.
+
+## On all your computers
+
+On a Kage with folder sync, turn on Kage sync (Kage's Settings → Sync) and
+Mind Map is on every computer you sync: your notes, actions, names, links,
+the text of documents you added and the explorer's pins. Kage keeps them
+encrypted in your sync folder (Dropbox, iCloud Drive, OneDrive, or any
+folder you sync) and merges them on each computer. Kage asks you once to
+approve Mind Map's "Sync between your computers" permission.
+
+- A change on one computer shows on the others when they next sync. Edits
+  to different parts of a note on two computers both stay.
+- A name made on two computers before they synced (`#mtcs` on each)
+  becomes one.
+- `mm undo` undoes your own changes on this computer. If another computer
+  changed the same thing since, it says the change can't be undone.
+- Private items sync too, and are never sent to your agent on any
+  computer. Turn off **Sync private items** in settings to keep them on
+  the computer where they are; making a synced item private then removes it
+  from your other computers (its card says so, and Undo brings it back).
+- A document Kage thinks holds a password or key stays on its computer. A
+  document whose text is on another computer shows "The full text is on
+  another of your computers", and search uses its title, summary and key
+  terms.
+- Your settings sync too (the names that mean you, **Week starts on**, the
+  trigger word, …), except **Organize new notes in the background**, which
+  you turn on on each computer.
+- **Delete everything** deletes your mind map on your other computers too,
+  and **Reset map layout** resets the pins everywhere.
+
+Settings shows whether sync is on, when it last synced and how many
+changes are waiting.
 
 ## Privacy
 
 Your mind map is stored only on this computer, in Kage's extension data
-folder. Saving a link fetches that page's title and description (you can turn
-this off). When you ask your agent — or it calls a Mind Map tool — the
+folder; with Kage sync on, it's also kept, encrypted, in your sync folder, so
+it's on all your computers. Saving a link fetches that page's title and
+description (you can turn this off). When you ask your agent — or it calls a Mind Map tool — the
 matching snippets are sent to the agent you configured, which may be a cloud
 service (for example Claude Code, Codex or Kiro) or local (for example
 Ollama). Private items are never sent. Uninstalling Mind Map deletes its data:
@@ -297,8 +330,9 @@ export first if you want to keep it.
   it private, or turn on "Make new items private". Private items work in the
   launcher but are never sent to an agent, and an agent's citation of one
   shows only "private item".
-- Window titles and app names stay on this computer (a saved window's own
-  title is the document's title).
+- Window titles and app names are never sent to your agent (a saved
+  window's own title is the document's title). With Kage sync on they are in
+  the encrypted sync folder, like the rest of your mind map.
 - When you add a file, Kage reads it on this computer and gives Mind Map its
   text. Mind Map keeps up to the number of characters you chose with your
   notes. Kage never tells Mind Map where the file is. Your agent gets a
@@ -321,6 +355,11 @@ Settings shows what's stored, and offers **Export JSON** (everything,
 private items and the full text of your documents included), **Export
 Markdown**, **Import JSON** and **Delete everything**. Exports include
 private items; keep them somewhere safe.
+
+With Kage sync on, **Delete everything** deletes your mind map on your other
+computers too, and uninstalling Mind Map on one computer leaves the copy in
+your sync folder and on your other computers (Kage's Settings → Sync can
+remove it).
 
 **Import JSON** reads an Export JSON file, for example from another computer.
 Items already here are kept unless the file has a newer copy, people, teams
@@ -355,3 +394,4 @@ items.
 | `views` | The explorer's own window. |
 | `file_text` | Reading a file you pick with **Add a file…**: only that file, each time, never its folder or any other file. |
 | `agent_background` | Background organizing, off until you turn it on and confirm which agent gets your notes. |
+| `sync` | Your mind map on all your computers through Kage sync, only while Kage sync is on. |

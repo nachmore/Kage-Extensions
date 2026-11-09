@@ -275,7 +275,8 @@ const ON = { id: 'background_organize', equals: true };
 describe('background organizing', () => {
   it('is off by default: the switch, after Agent, with what it does', async () => {
     expect(DEFAULTS.background_organize).toBe(false);
-    expect(manifest.config.background_organize).toEqual({ type: 'boolean', default: false });
+    // On each computer on its own (Kage sync §12.9 item 6): consent is per computer.
+    expect(manifest.config.background_organize).toEqual({ type: 'boolean', default: false, sync: 'machine' });
     const { p } = bgSettings({ config: { background_organize: undefined } });
     const schema = await p.getSettings();
     const labels = schema.sections.map((x) => x.label);

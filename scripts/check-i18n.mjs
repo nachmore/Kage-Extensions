@@ -120,6 +120,7 @@ async function checkExtension(itemKey) {
         manifest.name,
         manifest.description,
         manifest.agentBackground?.reason,
+        manifest.sync?.description,
         ...(Array.isArray(manifest.contributes?.views) ? manifest.contributes.views.map((v) => v?.title) : []),
     ];
     for (const v of localizable) {

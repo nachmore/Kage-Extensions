@@ -138,6 +138,7 @@ extensions/mindmap/
   lib/files.js                 FT-MM1 leaf (lib-injected) documents from Kage's file_text: checks, dedupe, title, keyphrases, passages
   lib/filetext.js              FT-MM3 leaf      the words for a picked document (size, outcome, errors) through an injected t
   lib/organize.js              AC-MM1 leaf (lib-injected) background organizing: eligibility, batch, payload, request, reply schema, org marks
+  lib/syncmap.js               S7     leaf      Kage folder sync: state ↔ collection records, sync ids, local fields, what may leave, batches
   lib/*.test.js                owner of the module under test
   view.test.js, styles.test.js WP-C
   host-loader.test.js, mind.test.js, search.test.js, tools.test.js,
@@ -147,6 +148,7 @@ test-helpers/mindmap/memory-host.mjs   WP-B   in-memory invoke (data commands + 
 test-helpers/mindmap/view-host.mjs     WP-V8  fake view host: change events, context.view, canvas stub, frames
 test-helpers/mindmap/file-host.mjs     FT-MM3 fake context.files (support, pickText) and §3.6-shaped results
 test-helpers/mindmap/agent-host.mjs    AC-MM3 fake context.agent (complete, status) shared by windows: gates, dedupe, turns, framing, schema
+test-helpers/mindmap/sync-host.mjs     S7     fake context.sync: a sync folder, computers with their own replica, base and cursor, the §12.2 cell rules
 test-helpers/mindmap/corpus.mjs        WP-D   SPEC §3.1 fixture corpus builder
 docs/mindmap/i18n/view.en.json         WP-C   i18n fragment, same format as messages.json; WP-D merges it, then deletes it
 ```
@@ -441,6 +443,27 @@ export function applyOrgSince(state, since, env); // meta.orgSince → Change & 
 In one `_mutate`, write the marks before the batch's `applyAnnotate`, so
 undoing the annotate op brings the note back with its mark.
 
+Kage folder sync (WP-S7, SYNC §12.9, SPEC §7.8):
+
+```js
+export function applyRemote(state, remote, env);  // a pull's changes → Change & { remote: true, unjournaled, ids, bodies, dedupe, counts }
+//   remote = { items, entities, links, rejections, bodies }: Map<id, value | null> (null: deleted there).
+//   Item and entity values carry this computer's local fields (lib/syncmap.js withLocal); a changed record
+//   gets rev = local.rev + 1. Bodies are lib/syncmap.js bodyFromRecord's { key, value }, written by the
+//   caller first; one older than the item's own key is skipped.
+//   A silent op of kind 'sync', no snapshots: op.after holds only records an earlier op could still undo,
+//   it replaces the previous sync op when that is the newest, and it isn't journaled when that's empty.
+//   Then the dedupe: entities with the same (type, key) and no mergedInto → the larger id gets
+//   mergedInto the smaller (updatedAt kept); change.dedupe lists them (the only part to push).
+//   env.syncPrivate === false leaves local private items and names alone; env.relationId = syncmap.relationId.
+//   Refusal: 'noop'.
+```
+
+`meta` also carries this computer's sync bookkeeping (normalized here, never
+synced): `syncPending` (collection → id → `'p:<opId>'` or `'d:<opId>'`),
+`syncFull` (`{ mode: 'initial'|'all', next, by?, at }`) and `syncTag` (the
+device tag whose first push is done).
+
 ### 5.10 `lib/journal.js` (WP-B)
 
 ```js
@@ -457,6 +480,11 @@ export function lastUndoable(ops);                 // newest op with !silent && 
 Children that later silent ops gave an item the op created (background
 organizing's suggestions on a new note) go with it on undo; one the user
 changed since makes the undo `superseded` (AC-MM3).
+
+A `sync` op (another computer's change, S7) is silent for `mm undo` but a
+real change for `canUndo`: an earlier op whose record it touched is
+`superseded`, even when later silent ops touched the record too. A sync op
+itself is never undone (`missing`).
 
 ### 5.11 `lib/bm25.js` (WP-B)
 
@@ -565,7 +593,8 @@ class Mind {
   exportJson(); exportMarkdown(t); exportRaw(); importJson(text); deleteAll(); repair();
   requestReformat();                            // context.formatter?.requestReformat?.()
   // documents the user picks (FT-MM3, EXTENSION_FILE_TEXT §11)
-  get canPickFiles(); get syncOn();             // files.pick_text and context.files; Kage sync on (SYNC §12.6)
+  get canPickFiles(); get syncOn(); get canSync(); // files.pick_text and context.files; Kage sync on here (SYNC §12.6); sync.records offered
+  syncInfo();                                   // settings: { supported, available, paused, others, lastSyncAt, usedBytes, maxBytes, waiting, full }
   fileSupport();                                // context.files.support(), once per session → {formats, maxInputBytes, maxChars}
   addFile({ targetId?, source?, signal? });     // from a click: pickText → validateFileText → ingestFile. → FileResult | {ok:false, code, message?, key?}
   ingestFile(file, { targetId?, source? });     // under the lock: dedupeDecision on the fresh state, then applyIngest / applyReread / applyAddRef
@@ -592,6 +621,29 @@ class Mind {
   onRemoteChange(fn);                           // fn({data, layout}) on another window's change (storage.change_events)
 }
 ```
+
+Kage folder sync (S7, SPEC §7.8). Where `sync.records` and `context.sync`
+are offered, `_mutateLocked` takes `_syncSnapshot()` (the item and entity
+maps and the relation ids) before `apply`, marks what changed in
+`meta.syncPending` with the commit's txn (`_syncMark`: a diff by object
+identity, or only `change.dedupe` for a pull), drops the marks Kage already
+accepted (`_syncClearAccepted`), and after the commit check sends the pushes
+for the marks (`_syncFlushLocked`, at most `LIMITS.syncPushCalls` calls)
+while it still holds the lock; `_syncSettle` reads the replies afterwards
+and remembers what was accepted. `_mutate` takes two hooks for the pull:
+`before(lease)` (pull a page) and `after(result, lease, pre)` (write pins,
+then ack). One sync run per window (`_syncKick(want)` → `_syncLoop`):
+status, the first push (`_syncBeginFull`, `_syncFullStep`, a cursor in
+`meta.syncFull`), pending marks, pulls (`_syncPullAll`, a one-call look
+first), and the meta write that clears accepted marks (2 s later, or at
+`whenIdle()`). Wants come from load ('start'), `onChanges` ('pull',
+'enabled', 'status'), a config change of **Sync private items** ('repush'),
+`syncIfStale` (a pull at most once a minute) and the retry timer. The
+indexes follow `mergedInto`: `byEntity` lists an item under the entity its
+names redirect to (`byRaw` finds it again when the redirect changes), and
+ranking's `getItem` sees canonical owners and names. `setPins` and
+`resetLayout` push pins while they hold the lock; `deleteAll` marks every
+record that could have synced for a delete in the new store's mm-meta.
 
 Background organizing (AC-MM3): the loop runs in each window where Mind Map
 has loaded, while `background_organize` is on, `enabled` isn't false, the
@@ -796,6 +848,32 @@ export function markFailed(prevOrg, hash, now);     // → { state: 'failed', v,
 export function stripUrl(url);                      // no userinfo, query or fragment
 ```
 
+### 5.26 `lib/syncmap.js` (WP-S7, imports nothing)
+
+Mind Map's records as Kage folder sync sees them (SYNC §12.6, §12.9;
+SPEC §7.8). Pure.
+
+```js
+export const FEATURE;                               // 'sync.records'
+export const COLLECTIONS;                           // ['items', 'entities', 'links', 'rejections', 'bodies', 'pins'] (the manifest's)
+export const ID_RE;                                 // the host's id rule, /^[A-Za-z0-9_.:-]{1,128}$/
+export const LOCAL_FIELDS;                          // { items: ['rev','enrich','v','fileRefs'], entities: ['rev'] }
+export function relationId(relation);               // `${s}:${t}:${type}`, or 'h.' + 32 hex when that breaks ID_RE
+export function isSecretDoc(item);                  // file.warnings includes possible_secret
+export function itemSyncs(item, { syncPrivate, parent }); // not a secret doc or its action; private only with syncPrivate
+export function entitySyncs(entity, { syncPrivate });     // never `me`
+export function plan(before, after, syncedBefore, syncsAfter); // 'p' | 'd' | null for one changed record
+export function itemRecord(item); export function entityRecord(entity);   // without local fields (null for me)
+export function relationRecord(relation); export function bodyRecord(key, body); export function pinRecord(pin);
+export function bodyFromRecord(itemId, record);     // → { key, value } to store, or null (not this item's)
+export function withLocal(collection, record, local, { extractorVersion }); // this computer's local fields back
+export function groupChanges(changes);              // pull's changes → { [collection]: Map<id, record|null>, skipped }
+export function mark(action, opId); export function parseMark(value); // 'p:<opId>' | 'd:<opId>' ↔ { action, opId }
+export function batches(entries, { maxRecords, maxBytes }); // push calls: one collection each, by count and bytes
+export function fullKeys(state, { pins, syncPrivate });     // every record of a full push, '${index}|${id}', sorted
+export function splitKey(key);                      // → { collection, id }
+```
+
 ---
 
 ## 6. Data shapes (cross-module contracts)
@@ -996,6 +1074,7 @@ Every test is vitest. `npm test` runs all of them, and
 | `lib/organize.js` (AC-MM1) | `lib/organize.test.js`. Eligibility: private, private entity, archived, child, kinds, short, pending link, settle time, `orgSince` (and its 7-day default), hash change, done and skipped marks, failed with backoff and the 3-try cap, malformed `org`, notes `mm organize` already did, machine tag and the 24-hour rule. Batch cap and order, insertion-order independence, two tags start apart, 20,000 items (soft). Payload omits window, app, folders, `my_names` and ids; URLs lose userinfo, query and fragment, in the text too; paths keep the file name; caps and no `<>`. Vocabulary excludes private, merged, hidden-only and own names. `SCHEMA` uses only the host's subset within its caps; fixture replies pass, bad ones fail at the first bad path. `buildRequest`: refs, label, budget trimming checked against the host's framing. `toAnnotateEntries`: ref mapping, skip, cleaning; end to end through `model.applyAnnotate`. Marks. |
 | Background organizing (AC-MM3) | `mind.test.js` with `test-helpers/mindmap/agent-host.mjs`: off by default (no status call, no tag, no `orgSince`); no host feature; a batch end to end (request shape, nothing identifying sent, marks, suggestions, silent op, `mm organize` and the next pass skip it); `duplicate` across two windows; the builder gives the turn back; a stale rev; a private flip or delete in flight cancels; the switch off cancels; each failure, wait, stop and retry code; Undo organizing (and `superseded`); `mm undo` of the capture takes the background's children; Organize now (its own key; a waiting reservation gives way); `orgSince` and Organize older notes too; another computer's notes wait a day; the debounce and the settling retry; the 64 KB undo budget; `organizeInfo`. `settings.test.js`: the section after Agent, the switch off by default, the status per access state, Allow (`agent_access`), Organize now and older notes, pause and tool warnings, escaping. `view.test.js`: the ✦ line and Undo organizing. `search.test.js`: Undo organizing from a card. `lib/journal.test.js`: children a later silent op made go with their parent. |
 | Documents (FT-MM3) | `lib/filetext.test.js`: sizes, every headline and note, error texts. `mind.test.js`: off without `files.pick_text`; body first, then the shard, journal and meta, and written once; a short file has no body; cancel, host refusals and bad results save nothing (and no file name in the log); S, C and U, with Undo of a re-read and of an ingest; Update from file… (unchanged, update, not a doc); `possible_secret` and Let my agent see it; the budget refused before the dialog; read-only before the dialog; a crash after the body write; a retry after a conflict is still "new"; the body cache (lazy, 8 per window) and another window after `syncIfStale`; a deleted doc's body kept until the delete leaves the journal; Export raw / JSON, Delete everything and Import with bodies. `search.test.js`: rows only with the feature, Enter, cancel, refusal and "already" lines, doc rows and passages, Update from file… on a card. `settings.test.js`, `tools.test.js`, `view.test.js` and `explorer.test.js`: the Documents section, passages within 8 KB and private docs hidden, the doc cards, Add a file… and Show text in the explorer. |
+| Folder sync (S7) | `lib/syncmap.test.js`: the manifest's collections and local fields match the leaf; records without local fields (no `me`); local fields put back, `enrich: done` for a record new here; relation ids and the hash; secret documents and their actions stay, private ones only with the setting; plans for a push, a one-time delete and nothing; grouped changes, marks, batches by count and size, full-push keys. `sync.test.js`, two computers on `test-helpers/mindmap/sync-host.mjs`: a capture with its actions and names; a status change, never pushed back; edits to different fields merge; deletes; undo `superseded` after a remote change (and still fine otherwise); the same name made on both sides becomes one, pushed equally; private items with the setting on and off (removed from the other computer, the card says so, Undo brings it back; turning it on again sends them); a crash between the write and the push; marks cleared; the first push (the newer copy wins; pulls wait for it); bodies and secret docs; pins and Reset map layout; Delete everything; no `sync.records`, a `context.sync` without the feature, sync off; the settings section. |
 | `host-loader.test.js` | Copied from stocks and adapted. <br>• Windows: floating/chat = search + tools + formatter; settings = settings. <br>• Checks BFS discovery, no re-exports, composers import only leaves, leaves import nothing, every import is single-line, no `import … from './` text in comments. <br>• Loads every provider through the host's two-pass rewrite in Node and asserts the default export class names. |
 | `mind.test.js` | Load and sync (`syncIfStale` reloads only changed keys). Crash safety (AT-10). Read-only refuses writes and makes zero data writes. Two windows (AT-9). Undo (AT-8). Link enrichment (mock `fetch_link_metadata`; title only while `auto`; a reformat is requested). The window doc with an empty macOS title is not offered. `agentRecord` omits window and app, applies snippet caps and private exclusion. `askPrompt` with 0 and 8 records strips `<>`. `exportJson` and `deleteAll` (every key and twin deleted). |
 | `search.test.js` | `getKeywords` for the default and a custom trigger. The `mm+` preview row and execute → display with an op token. `mm+` empty → window row (and the hint). The home rows. Loading placeholder → `matchAsync` real rows; a second `matchAsync` with no change returns `[]`. Row ids contain no user text (fuzz with random input). Enter behaviours per kind (`open_url` invoked; doc focus → copy → card). Action toggle returns `replace_input`. `onResultAction` routing. |

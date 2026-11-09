@@ -2,12 +2,14 @@
 // safety, read-only mode, link enrichment, window docs, agent records,
 // prompts, export and delete. End-to-end behaviour lives in
 // acceptance.test.js; these tests pin the facade's own contracts.
+import { readFileSync } from 'node:fs';
 import { JSDOM } from 'jsdom';
 import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import { createMemoryHost } from '../../test-helpers/mindmap/memory-host.mjs';
 import { F2_WINDOW, F6_DUMP, FIXTURE_NOW, local, makeContext } from '../../test-helpers/mindmap/corpus.mjs';
 import { FILE_FEATURES, fakeRef, fileText, hostError, installFiles } from '../../test-helpers/mindmap/file-host.mjs';
 import { AGENT_FEATURES, MACHINE_TAG, OTHER_MACHINE_TAG, createAgentHost } from '../../test-helpers/mindmap/agent-host.mjs';
+import { createSyncHost } from '../../test-helpers/mindmap/sync-host.mjs';
 import { SCHEMA } from './lib/organize.js';
 import { Mind, getMind } from './mind.js';
 import { LIMITS } from './defaults.js';
@@ -15,6 +17,7 @@ import * as idlib from './lib/ids.js';
 import * as journal from './lib/journal.js';
 import { createFormatterState, formatHtml } from './view.js';
 
+const MANIFEST = JSON.parse(readFileSync(new URL('./manifest.json', import.meta.url), 'utf8'));
 const META = { 'https://example.com/blog/mtcs-intro': { title: 'An intro to MTCS', description: 'What MTCS is <b>for</b>.' } };
 
 function setup({ config, atomic = false, hostFeatures, meta = META } = {}) {
@@ -986,11 +989,14 @@ describe('documents from a file (EXTENSION_FILE_TEXT §11)', () => {
     expect((await mind.setPrivate(out.itemId, false)).ok).toBe(true);
     expect(mind.agentRecord(mind.item(out.itemId))).toMatchObject({ file: { name: 'Q3 plan.pdf', format: 'pdf' } });
     // With Kage sync on, the card also says it stays on this computer.
-    ctx.hostFeatures = Object.freeze([...FILE_FEATURES, 'sync.records']);
-    ctx.sync = { available: true };
-    expect(mind.syncOn).toBe(true);
-    queue(fileText('vpn secret: example-only-456', { warnings: ['possible_secret'], ref: 'S2' }));
-    expect(await mind.addFile()).toMatchObject({ secret: true, keptLocal: true });
+    const synced = makeContext(createMemoryHost({ atomic: true }), { hostFeatures: FILE_FEATURES });
+    createSyncHost({ manifest: MANIFEST }).computer('This one').install(synced);
+    const { queue: queueSynced } = installFiles(synced);
+    const other = new Mind(synced, { idleDelayMs: 1e9 });
+    expect(other.syncOn).toBe(true);
+    queueSynced(fileText('vpn secret: example-only-456', { warnings: ['possible_secret'], ref: 'S2' }));
+    expect(await other.addFile()).toMatchObject({ secret: true, keptLocal: true });
+    await other.whenIdle();
   });
 
   it('refuses a new document when document storage is full, before the dialog opens', async () => {

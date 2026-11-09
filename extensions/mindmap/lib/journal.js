@@ -117,9 +117,11 @@ export function sealOp(op, state) {
 
 // A record whose rev moved after `op` may still be undone when every later
 // op that touched it was silent (link enrichment) and left it as it is now.
+// A 'sync' op (another computer's change, Kage folder sync) is silent for
+// `mm undo` but a real change here: undo over it is superseded.
 function onlySilentlyTouched(ops, index, id, rev) {
   const later = ops.slice(index + 1).filter((o) => o.after && Object.hasOwn(o.after, id));
-  if (!later.length || later.some((o) => !o.silent)) return false;
+  if (!later.length || later.some((o) => !o.silent || o.kind === 'sync')) return false;
   return later[later.length - 1].after[id] === rev;
 }
 
@@ -137,7 +139,7 @@ function orphansOf(state, op) {
 }
 
 export function canUndo(state, op) {
-  if (!op || typeof op.opId !== 'string' || op.kind === 'undo') return { ok: false, code: 'missing' };
+  if (!op || typeof op.opId !== 'string' || op.kind === 'undo' || op.kind === 'sync') return { ok: false, code: 'missing' };
   if (op.lossy) return { ok: false, code: 'too_large' };
   if (op.undoneBy) return { ok: false, code: 'already_undone' };
   const ops = state.ops || [];

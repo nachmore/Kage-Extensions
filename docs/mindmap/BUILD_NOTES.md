@@ -1507,6 +1507,117 @@ sent, and Mind Map behaves as before.
   `npm test` 78 files / 2,497 tests. `check:i18n` still fails only on keys
   waiting for translation (now 142); every other gate passes.
 
+## WP-S7: Mind Map on Kage folder sync (`lib/syncmap.js`, `lib/model.js`, `mind.js`, `settings.js`, `manifest.json`, `defaults.js`)
+
+Kage's SYNC §12.2, §12.6 and §12.9. Kage's host side (S1–S6) is built in
+parallel, so this is coded against the design and tested with a fake
+`context.sync` in `test-helpers/mindmap/sync-host.mjs`: one sync folder,
+computers with their own replica, base and cursor, the §12.2 cell rules from
+the manifest (whole, groups, sets, maps, local), a small hybrid clock,
+`initial` stamps, at-least-once pulls, `off`, and the refusals. Without
+`sync.records` and a `context.sync` with `status`, `push`, `pull` and `ack`,
+nothing is asked or sent and Mind Map behaves as before.
+
+- **Manifest.** `sync` permission; the `sync` block (description, schema 1,
+  collections `items`, `entities`, `links`, `rejections`, `bodies`,
+  `pins`, as SYNC §12.9); `config.my_names.sync: "shared"`,
+  `config.background_organize.sync: "machine"`; `sync_private_items`
+  (boolean, `true`); version 0.5.0.
+- **Leaf.** `lib/syncmap.js`: records without local fields, sync ids,
+  what may leave the computer, local fields put back, pulled changes
+  grouped, pending marks, push batches and the full push's keys.
+- **Push.** Every commit diffs the records by object identity against a
+  snapshot taken before `apply`, marks them in `meta.syncPending` in the
+  same meta write, and sends the pushes while it holds the lock; replies are
+  settled after it. **Addition:** the meta write that clears accepted marks
+  also happens on its own, 2 s after the replies (or at `whenIdle()`), so
+  marks don't linger until the next change and every window's load doesn't
+  push them again. A commit sends at most 4 calls of 200 records; the rest
+  go in the next round, under the lock with fresh values.
+- **Pull.** As §12.9 item 2, with two `_mutate` hooks (`before` pulls the
+  page, `after` writes pins and acks). The sync op records only revs an
+  earlier op could still undo, replaces the previous sync op when that's the
+  newest, and isn't journaled when that's empty: pulls never push the user's
+  undo history out (**addition**; the design doesn't say how big the op is).
+  A one-call look outside the lock comes first; `syncIfStale` looks at most
+  once a minute.
+- **Undo.** `lib/journal.js` (**outside the package's files**, two lines):
+  a `sync` op is silent for `mm undo` but counts as a real change in
+  `canUndo`, so undo over a remote change is `superseded` even when later
+  silent ops (link titles, org marks) touched the record; a sync op itself
+  is never undone.
+- **Dedupe.** As item 3, keeping `updatedAt` so every computer pushes the
+  same value. **Addition:** the indexes follow `mergedInto` (`byEntity`
+  under the canonical id, `byRaw` to find items again when a redirect
+  changes) and ranking's `getItem` sees canonical owners and names, so
+  "items pointing at the larger id resolve through the redirect" holds for
+  `mm @name`, actions and the map.
+- **First push.** When status says `needsInitialPush`, every record with
+  `initial: true`, through a cursor in `meta.syncFull` that any window can
+  carry on (a window working on it is left alone for 30 s); pulls wait for
+  it. **Addition:** `meta.syncTag` remembers the device tag whose first push
+  is done, so a reload doesn't redo it while the host still says it's
+  needed; reason `enabled` or `reset` always redoes it. Turning **Sync
+  private items** back on pushes every record again (mode `all`).
+- **Private items.** Sync by default. With the setting off, private items
+  and names aren't pushed, and remote changes to this computer's private
+  items are left alone. **Differs from the design:** making a synced item
+  private with the setting off doesn't ask "Remove it from your other
+  computers and keep it only here?"; it removes it (the setting already says
+  so), and the op card says "Removed from your other computers: it stays
+  only on this one." Undo brings it back. Mind Map's launcher and cards have
+  no confirm step to ask with.
+- **Documents.** Bodies sync as `{ key, format, chars, text, pageStarts? }`
+  (**addition:** `pageStarts`, so a PDF keeps its page numbers). A
+  `possible_secret` document never leaves, and **neither do its actions**
+  (**addition**: they quote it). Bodies an import writes after its commit are
+  marked and pushed then.
+- **Relation ids.** `${s}:${t}:${type}`, or **`h.` + 32 hex** (four FNV-1a
+  lanes) when that breaks the host's id rule: an entity rejection is
+  `{ s: '*', t: <key> }`, and the key has spaces and `*` isn't allowed
+  (**differs from the design**).
+- **Pins.** `setPins` and **Reset map layout** push while they hold the
+  lock (no pending marks: a lost pin waits for the next full push); remote
+  pins are written into `mm-layout` under the pull's lock.
+- **Delete everything** with sync on deletes everywhere: the new store's
+  mm-meta marks every record that could have synced for a delete
+  (**addition**: the design doesn't cover it; without it the computer would
+  be empty while the others keep everything, and nothing would bring it
+  back). The settings confirm and hint say so.
+- **Settings.** A "Sync between your computers" section right after Privacy
+  where Kage offers `sync.records`: the status line (on with how many other
+  computers and when it last synced, off here, paused, the first push,
+  changes waiting, space full) and **Sync private items**; the disclosure
+  sentence in Privacy. Elsewhere nothing, plus a hidden copy of the checkbox
+  on hosts without `config.manifest_defaults`.
+- **Repo scripts.** `validate-manifests.mjs` checks the `sync` block
+  (§12.2's limits and overlaps, credential-named fields, both-ways
+  permission) and `config.<field>.sync`; `check-i18n.mjs` reads
+  `sync.description` (**outside the package's files**, one line).
+  `host-capabilities.mjs` already had `sync` and the `ext_sync_*`
+  commands. The relative-import count in `check-sensitive-review.test.mjs`
+  (117 → 118). `check:security` inlines every call path, so the sync
+  loop's own writes (`_syncKick`'s run, `_syncMetaCommit`, the pull page,
+  `_syncPushPending`) start from a promise step: they pass no storage keys,
+  and the scan reads the write path once instead of again from every sync
+  caller. First cut, the mindmap scan doubled (2.5 s → 5 s); now it expands
+  4% more paths than before S7.
+- **Strings.** 14 new EN keys (`manifest.sync_description`,
+  `settings.section_sync`, `settings.sync.*`, `settings.disclosure.sync`,
+  `settings.delete_all_*_sync`, `card.kept_here`), waiting for
+  translation.
+- **Not tested live:** Kage's S5 hasn't merged, so the end-to-end check
+  waits for a build with it. Things the fake can't check: the real host's
+  page and byte limits, how it reports `accepted`/`unchanged` (Mind Map
+  treats every id not in `rejected` as taken), when it clears
+  `needsInitialPush`, and the mass-change guard on Delete everything.
+- **Checks:** `npx vitest run extensions/mindmap` 37 files / 1,189 tests;
+  `npm test` 80 files / 2,560 tests. `check:i18n` still fails only on keys
+  waiting for translation (now 156); every other gate passes. The
+  all-extensions run in `check-security.test.mjs` (5 s timeout) times out
+  under a full parallel `npm test` on a busy machine, before S7 too (2 of 3
+  runs at the base commit); alone it takes about 3–4 s.
+
 ## Status
 
 **Works (P0/P1/P2, all phases of SPEC §2):**
@@ -1527,6 +1638,8 @@ sent, and Mind Map behaves as before.
   passages, the Documents settings), on Kage builds with `files.pick_text`.
 - AC-MM1–3: background organizing, off by default, on Kage builds with
   `agent.background`.
+- S7: the mind map on all your computers through Kage folder sync, on Kage
+  builds with `sync.records`.
 
 **Known gaps:**
 - Bodies left by an abandoned capture or a failed delete can't be swept

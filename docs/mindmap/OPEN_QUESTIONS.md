@@ -33,7 +33,7 @@ answers. Each new host API is optional: Mind Map checks
 have it. The Mind Map side of each one is its own work package (V8 for Q7,
 FT-MM3 for Q4, AC-MM3 for Q6, S7 for Q2). Until a package lands, that
 question's "Assumed" text describes what Mind Map does. V8 (Q7), FT-MM3
-(Q4) and AC-MM3 (Q6) have landed.
+(Q4), AC-MM3 (Q6) and S7 (Q2) have landed.
 
 ---
 
@@ -65,8 +65,12 @@ Q7 give it the parts that needed Kage.
 
 **Decided:** yes, through Kage's own folder sync, for all of Kage and not
 just Mind Map ([SYNC.md](https://github.com/nachmore/Kage/blob/main/docs/design/SYNC.md), Mind Map in §12.9). Mind Map opts its
-data in with the `sync` capability and the manifest `sync` block. Without
-that host feature it stays local, as below.
+data in with the `sync` capability and the manifest `sync` block; no
+extension-side folder access is needed. Built in S7 (SPEC §7.8): notes,
+names, links, document text and map pins sync, encrypted; private items
+too unless **Sync private items** is off; documents Kage thinks hold a
+password or key stay on their computer. Without that host feature it
+stays local, as below.
 
 - **Assumed:** local only, one store per machine. Export and import use JSON.
   The data model is ready for sync: stable random ids, `rev`/`updatedAt` on
@@ -294,12 +298,13 @@ stays. Without that host feature, the map card below is the only map.
 **Decided:** on, as assumed.
 
 - **Assumed:** yes (`record_source_window` on). The window title and app name
-  are stored locally, as provenance, and are never sent to the agent. The only
-  exception is a doc whose title *is* that window title.
+  are stored as provenance, and are never sent to the agent. The only
+  exception is a doc whose title *is* that window title. With Kage sync on
+  they are also in the encrypted sync folder, like the rest of the mind map.
 - **Why:**
   - Provenance ("captured from Word — MTCS rollout plan") makes recall and
     "jump back to that doc" work.
-  - It stays on this computer.
+  - It's never sent to your agent.
   - On macOS, window titles need Screen Recording permission. Without it, only
     the app name is recorded and the "save the window you came from" row is
     hidden.
