@@ -1053,6 +1053,10 @@
     "message": "Your agent’s changes ({n, plural, one {# item} other {# items}})",
     "description": "Describes a change (used after Undo:)"
   },
+  "op.organized_bg_label": {
+    "message": "Organize {n, plural, one {# note} other {# notes}}",
+    "description": "Label of one background organizing request, shown in Kage’s Background AI log. At most 80 characters"
+  },
   "op.merge": {
     "message": "Merged {from} into {name}",
     "description": "Describes a change (used after Undo:); from and name are entity names"
@@ -1208,6 +1212,10 @@
   "prompt.organize_no_vocabulary": {
     "message": "(none yet)",
     "description": "Shown in the organize prompt when there are no names yet"
+  },
+  "prompt.organize_bg": {
+    "message": "You organize a person’s saved notes. For each note in DATA, return what clearly applies:\n- \"summary\": one plain sentence of at most 25 words. Only when the note is longer than one sentence.\n- \"entities\": people, teams, projects, organizations, topics or terms the note names. Use a name from \"vocabulary\" when it means the same thing. Don’t guess.\n- \"terms\": up to 5 short key terms.\n- \"actions\": things the note says someone has to do. Copy the exact words from the note into \"quote\". Set \"owner\" only when the note names that person. Leave it out when it’s the writer’s own task. Set \"due\" (YYYY-MM-DD) only when the note gives a date; work out relative dates from the note’s \"date\".\nSet \"skip\": true for a note with nothing to add. Invent nothing.",
+    "description": "Instructions for background organizing, sent to the user’s agent with the notes (not shown in a chat). Keep DATA, the quoted field names (summary, entities, vocabulary, terms, actions, quote, owner, due, date, skip), true and YYYY-MM-DD as they are. At most 4,000 characters"
   },
   "export.title": {
     "message": "Mind Map",

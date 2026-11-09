@@ -1121,6 +1121,61 @@ results in the §3.6 shape.
   which already failed before this package on WP-V8's 59 EN-only keys
   (translations pending); every other gate passes.
 
+## WP-AC-MM1: the organizer leaf (`lib/organize.js`)
+
+Kage's EXTENSION_AGENT_CALLS §11.3–11.5 as a pure leaf that uses `lib.text`,
+`lib.dates` and `lib.url`. Nothing imports it yet: AC-MM2 (model) and AC-MM3
+(the loop in `mind.js`, settings) build on it. Kage's host side is built in
+parallel, so the tests check the reply schema with the host's subset rules
+and measure requests against a copy of the host's framing (§5.2).
+
+- **Files.** The test is `lib/organize.test.js`, next to the module like
+  every other leaf, not `organize.test.js` at the extension root as §13
+  lists. Two EN keys land here because `buildRequest` calls `t()`:
+  `prompt.organize_bg` (the design's copy, with ’ like the rest of the
+  catalog) and `op.organized_bg_label`. They are in `acceptance.test.js`'s
+  pending-translation list until the next translation run.
+- **Eligibility** follows §11.3, plus: a note with no `org` mark that the
+  visible `mm organize` already did is left out (the design's "reuses
+  `organizeItems()`"). The caller passes `organized` (`_agentOrganized`); the
+  default is the same check without the children. A malformed `org` reads
+  as missing; a missing `orgSince` as a week back; without a machine tag no
+  note counts as this machine's, so all wait 24 hours. `ineligibleReason`
+  names the rule that failed, and `organizeCounts` gives the settings
+  status its organized, waiting and older counts.
+- **Hash.** FNV-1a over UTF-16 units of the collapsed title and text,
+  joined by a newline. The collapse is written out here, not taken from
+  `lib.text`, so a change there can't re-queue every organized note.
+- **Payload.** `text` is the organize body without the title, which goes on
+  its own; a summary the text already contains is left out. URLs lose
+  userinfo, query and fragment in the text and title too, not only in `url`,
+  and paths in the text keep only the file name: a doc's text is often its
+  path, and a link's its URL as pasted. A quote that spans a rewritten URL or
+  path no longer matches the note and is rejected. `lib.url` reads
+  "/etc/hosts and /var/log/system.log" as one path, so the words between
+  are dropped. Empty `text` and `entities` are left out. Entity names that
+  match "Names that mean you" are dropped, from notes and the vocabulary.
+- **Size.** The manifest's 16,000-character cap doesn't fit 15 worst-case
+  notes (each up to ~1,800 characters as the host pretty-prints them).
+  `buildRequest` drops notes from the end, then vocabulary, until the
+  framed prompt fits (framing reserve 1,000; the schema counted
+  pretty-printed). A worst-case batch keeps 5 notes; 15 ordinary notes and
+  50 names fit. The design's ~9,000 characters is the average.
+- **Reply.** `validateReply` re-checks the host's subset (characters
+  counted as code points). `toAnnotateEntries` returns entries in batch
+  order and `skipped` ids; `skip: true` wins over fields, and an entry that
+  adds nothing counts as skipped. Strings lose controls and bidi overrides;
+  "me", "I" and "myself" are dropped as owners and entity names; a due date
+  must be a real `YYYY-MM-DD`.
+- **Marks.** `markFailed` counts tries only while the hash stays the same
+  and waits tries × 1 hour (1 h, 2 h, 3 h; the design's formula reads either
+  way). Failed marks carry `v` and `at` too.
+- **Budget** (Node, soft): `selectBatch` over 20,000 notes ~50 ms with the
+  whole backlog in scope.
+- **Checks:** `npx vitest run extensions/mindmap` 34 files / 1012 tests;
+  `npm test` 77 files / 2366 tests. `check:i18n` still fails only on keys
+  waiting for translation (now 61); every other gate passes.
+
 ## Status
 
 **Works (P0/P1/P2, all phases of SPEC §2):**

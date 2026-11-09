@@ -1369,7 +1369,8 @@ describe('every shipped locale', () => {
   // English for them. Remove this list once every catalog has them.
   const PENDING_TRANSLATION = new Set(['view.explorer.title', 'map.explorer', 'map.explorer_tip', 'card.explore', 'row.explore',
     'row.explore_named', 'row.explore_desc', 'settings.section_explorer', 'settings.open_explorer', 'settings.open_explorer_hint',
-    'settings.reset_layout', 'settings.reset_layout_hint', 'settings.reset_layout_confirm', 'settings.layout_reset', 'settings.approve_views']);
+    'settings.reset_layout', 'settings.reset_layout_hint', 'settings.reset_layout_confirm', 'settings.layout_reset', 'settings.approve_views',
+    'prompt.organize_bg', 'op.organized_bg_label']);
   const pending = (key) => PENDING_TRANSLATION.has(key) || key.startsWith('explorer.');
 
   it('ships English plus 31 translations with the same keys', () => {
