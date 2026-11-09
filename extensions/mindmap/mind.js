@@ -68,6 +68,19 @@ const NOOP_LOG = Object.freeze({ debug() {}, info() {}, warn() {}, error() {} })
 const KIND_ORDER = Object.freeze(['note', 'link', 'doc', 'action', 'meeting']);
 // Ops about an entity rather than an item (P2 mm merge / forget / rename).
 const ENTITY_OPS = new Set(['merge', 'forget', 'rename']);
+// The map explorer's keys (Kage docs/design/EXTENSION_VIEWS.md §24.5):
+// mm-layout (pinned positions, shared, under the lock) and mm-view (this
+// computer's camera, focus and lenses; only the explorer writes it).
+const MAX_PINS = 5000;
+const PIN_COORD_MAX = 1e6;
+const MAP_REF_RE = /^(?:o|me|[ie][0-9a-z]{14})$/;
+const VIEW_HISTORY_MAX = 20;
+const VIEW_KINDS = Object.freeze(['note', 'link', 'doc', 'action', 'meeting']);
+const DOC_KINDS = new Set(['doc', 'link']);
+const NOTE_KINDS = new Set(['note', 'meeting']);
+// Keys whose change in another window means the data moved on.
+const DATA_CHANGE_KEYS = new Set(['mm-meta', '*']);
+const LAYOUT_CHANGE_KEYS = new Set(['mm-layout', '*']);
 
 const mono = () => globalThis.performance?.now?.() ?? Date.now();
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -175,6 +188,60 @@ export class Mind {
     this.myNames = [];
     this.weekStart = 1;
     this.setConfig(context.config);
+    // Explorer layout (mm-layout), loaded on demand; listeners for changes
+    // other windows make (storage.change_events hosts only).
+    this._layout = null;
+    this._remoteChange = false;
+    this._changeListeners = new Set();
+    this._offChanges = this._subscribeChanges(context);
+  }
+
+  // Hosts with `storage.change_events` tell every instance when another
+  // window saved one of our keys (EXTENSION_VIEWS §10). A change to mm-meta
+  // makes this window sync at once, so a capture in the explorer shows in
+  // the launcher without waiting for the 1.5 s check. Older hosts: nothing
+  // to subscribe to; syncIfStale stays the only path.
+  _subscribeChanges(context) {
+    const storage = context?.storage;
+    const features = Array.isArray(context?.hostFeatures) ? context.hostFeatures : [];
+    if (typeof storage?.onChanged !== 'function' || !features.includes('storage.change_events')) return null;
+    try {
+      const off = storage.onChanged((changes) => this._onStorageChanged(changes));
+      return typeof off === 'function' ? off : null;
+    } catch {
+      return null;
+    }
+  }
+
+  _onStorageChanged(changes) {
+    const list = Array.isArray(changes) ? changes : [];
+    let data = false;
+    let layout = false;
+    for (const change of list) {
+      if (!change || change.self) continue;
+      if (DATA_CHANGE_KEYS.has(change.key)) data = true;
+      if (LAYOUT_CHANGE_KEYS.has(change.key)) layout = true;
+    }
+    if (!data && !layout) return;
+    if (layout && this._layout) this._layout.stale = true;
+    if (data) {
+      this._remoteChange = true;
+      if (this._loaded) this._track(this.syncIfStale(0).catch(() => false));
+    }
+    for (const fn of this._changeListeners) {
+      try {
+        fn({ data, layout });
+      } catch {
+        // A listener's failure is its own.
+      }
+    }
+  }
+
+  /** Calls fn({data, layout}) when another window changes Mind Map's data or layout. → off() */
+  onRemoteChange(fn) {
+    if (typeof fn !== 'function') return () => {};
+    this._changeListeners.add(fn);
+    return () => this._changeListeners.delete(fn);
   }
 
   // A new store generation id (see model.emptyState): random, never user text.
@@ -456,14 +523,22 @@ export class Mind {
     }
     if (this._writes > 0) return false;
     // A failed write that couldn't reload leaves `_stale`: reload at once.
-    if (!this._stale && mono() - this._lastSync < maxAgeMs && !this._syncing) return false;
-    if (!this._syncing) {
-      const run = this._sync().finally(() => {
-        if (this._syncing === run) this._syncing = null;
-      });
-      this._syncing = run;
+    // So does a change another window reported (`_remoteChange`).
+    if (!this._stale && !this._remoteChange && mono() - this._lastSync < maxAgeMs && !this._syncing) return false;
+    let changed = false;
+    // A change reported while a sync was already reading may not be in it:
+    // then one more sync.
+    for (let round = 0; round < 2; round++) {
+      if (!this._syncing) {
+        this._remoteChange = false;
+        const run = this._sync().finally(() => {
+          if (this._syncing === run) this._syncing = null;
+        });
+        this._syncing = run;
+      }
+      changed = (await this._syncing) || changed;
+      if (!this._remoteChange || this._writes > 0) break;
     }
-    const changed = await this._syncing;
     if (changed) this.requestReformat();
     return changed;
   }
@@ -2126,6 +2201,8 @@ export class Mind {
       entities: model.payloadFor(s, 'entities').entities,
       links: [...s.links],
       rejections: [...s.rejections],
+      // The explorer's pins, when they've been loaded (settings loads them).
+      ...(this._layout && !this._layout.unreadable ? { layout: { pins: { ...this._layout.pins } } } : {}),
     };
   }
 
@@ -2215,7 +2292,7 @@ export class Mind {
   /** Every stored string, primary and twin, for "Export raw copies". */
   async exportRaw() {
     const out = {};
-    for (const key of [...this._allKeys(), 'mm-meta']) {
+    for (const key of [...this._allKeys(), 'mm-meta', 'mm-layout', 'mm-view']) {
       for (const name of [key, `${storage.TWIN_PREFIX}${key}`]) {
         try {
           const raw = await this.store.readRaw(name);
@@ -2309,14 +2386,17 @@ export class Mind {
         if (change.op.label?.params) change.op.label.params.count = Math.max(1, added + updated);
         return { changes: [change], counts: { added, updated, skipped: prior.size - added - updated } };
       });
-      if (!out.committed) return { ok: false, code: out.code || 'noop', invalid };
+      // The explorer's pins (layout.pins) come along. They aren't journaled,
+      // so Undo leaves them; a pin for an item that's gone again does nothing.
+      const pins = data?.layout?.pins ? await this._importPins(data.layout.pins).catch(() => 0) : 0;
+      if (!out.committed) return { ok: false, code: out.code || 'noop', invalid, pins };
       this._resetIndexes();
       for (const item of this.state.items.values()) this._indexItem(item);
       this._bump([...this.state.items.keys(), ...this.state.entities.keys()]);
       // An import that overwrote more than the journal can hold isn't
       // undoable (its before-snapshots were dropped): say so, never promise Undo.
       const op = this.state.ops.find((o) => o.opId === out.opId);
-      return { ok: true, ...out.counts, invalid, undoable: !!op && !op.lossy };
+      return { ok: true, ...out.counts, invalid, pins, undoable: !!op && !op.lossy };
     } catch (error) {
       if (error?.code) return { ok: false, code: error.code };
       throw error;
@@ -2334,6 +2414,9 @@ export class Mind {
     await this.store.withLock(async () => {
       for (const key of keys) await this.store.remove(key, { force: true });
       await this.store.remove('mm-meta', { force: true });
+      // The explorer's pins and this computer's view state go too.
+      await this.store.remove('mm-layout', { force: true });
+      await this.store.remove('mm-view', { force: true });
     });
     try {
       await this.store.remove('mm-lock', { force: true });
@@ -2351,8 +2434,9 @@ export class Mind {
     this._stale = false;
     this._loaded = true;
     this._ready = Promise.resolve();
+    this._layout = { pins: {}, rev: 0, unreadable: false };
     this.log.info?.('mindmap: deleted all data');
-    return { ok: true, keys: keys.length + 1 };
+    return { ok: true, keys: keys.length + 3 };
   }
 
   /** Repair (read-only mode): writes the readable state over every key, after confirmation. */
@@ -2384,6 +2468,250 @@ export class Mind {
     return { ok: !this._readOnly };
   }
 
+  // --- map explorer (EXTENSION_VIEWS §24) ---------------------------------------------------
+
+  // An item or entity as the explorer draws it, or null when it isn't shown
+  // (archived, dismissed, gone). Private items are flagged, never dropped:
+  // the explorer is local, and keeps them out of compose and prompts.
+  exNode(ref) {
+    if (ref === 'o') {
+      return { ref: 'o', group: 'overview', kind: 'overview', label: '', counts: { items: this.state.items.size, entities: Math.max(0, this.state.entities.size - 1) } };
+    }
+    const item = this.state.items.get(ref);
+    if (item) {
+      if (item.archived || (item.kind === 'action' && item.status === 'dismissed')) return null;
+      const node = { ref: item.id, group: 'item', kind: item.kind, label: String(item.title || ''), at: item.occurredAt ?? item.createdAt };
+      if (item.source?.app) node.app = String(item.source.app);
+      if (item.kind === 'action') {
+        node.status = item.status || 'open';
+        if (item.suggested && node.status === 'open') node.suggested = true;
+        // Unassigned actions are mine (OPEN_QUESTIONS Q8).
+        node.mine = (item.owner || 'me') === 'me';
+        if (Number.isFinite(item.dueAt)) node.dueAt = item.dueAt;
+        if (Number.isFinite(item.doneAt)) node.doneAt = item.doneAt;
+      }
+      if (item.private) node.private = true;
+      return node;
+    }
+    const entity = this.entity(ref);
+    if (!entity) return null;
+    const node = { ref: entity.id, group: 'entity', kind: entity.type || 'term', label: entity.id === 'me' ? this._meName() : String(entity.name || '') };
+    if (entity.private) node.private = true;
+    return node;
+  }
+
+  /**
+   * Everything `ref` links to, for the explorer's scene (lib/scene.js):
+   * the same sources as the map card's neighbourhood (mentions,
+   * co-occurrence, children, related) without lane paging, taken in turn
+   * from each kind of link so every side of the map gets some.
+   * → null | { node, links: [{ ref, role, style, w, node }] }
+   */
+  links(ref, { limit = 60 } = {}) {
+    if (!this._loaded || typeof ref !== 'string' || !MAP_REF_RE.test(ref)) return null;
+    const max = Math.max(1, Math.min(200, Math.floor(Number(limit) || 60)));
+    const node = this.exNode(ref);
+    if (!node) return null;
+    const link = (other, role, style, w = 1) => {
+      const vm = this.exNode(other);
+      return vm ? { ref: vm.ref, role, style, w: Math.round(Math.min(1, Math.max(0, w)) * 100) / 100, node: vm } : null;
+    };
+    const roleOf = (item) => (item.kind === 'action' ? 'actions' : DOC_KINDS.has(item.kind) ? 'docs' : 'notes');
+    const dash = (item) => (item.kind === 'action' && item.suggested && item.status === 'open' ? 'dashed' : 'solid');
+    const lists = [];
+    if (ref === 'o') {
+      const ov = this.overview();
+      const top = (list) => [...list].filter((e) => e.n > 0).sort((a, b) => b.n - a.n || (a.id < b.id ? -1 : 1));
+      const most = Math.max(1, ...[...ov.teams, ...ov.projects, ...ov.people, ...ov.topics].map((e) => e.n));
+      lists.push(top([...ov.teams, ...ov.projects]).map((e) => link(e.id, 'teams', 'thin', e.n / most)));
+      lists.push(top(ov.people).map((e) => link(e.id, 'people', 'thin', e.n / most)));
+      lists.push(top(ov.topics).map((e) => link(e.id, 'topics', 'thin', e.n / most)));
+      lists.push(this.recent(8).map((item) => link(item.id, 'stats', 'thin', 0.5)));
+    } else if (node.group === 'entity') {
+      const co = this.cooccur(node.ref);
+      const most = co[0]?.w || 1;
+      lists.push(co.map((r) => link(r.id, 'entities', 'thin', r.w / most)));
+      const items = [...(this.byEntity.get(node.ref) || [])].map((id) => this.state.items.get(id)).filter((item) => this.exNode(item?.id));
+      const newest = (a, b) => (b.occurredAt ?? b.createdAt) - (a.occurredAt ?? a.createdAt) || byIdDesc(a.id, b.id);
+      // SPEC §8.2: open, then suggested, then done; due soonest first; newest.
+      const rank = (i) => (i.status === 'done' ? 2 : i.suggested ? 1 : 0);
+      const actions = items.filter((i) => i.kind === 'action').sort((a, b) => rank(a) - rank(b)
+        || (Number.isFinite(a.dueAt) ? 0 : 1) - (Number.isFinite(b.dueAt) ? 0 : 1) || (a.dueAt ?? 0) - (b.dueAt ?? 0) || newest(a, b));
+      lists.push(actions.map((i) => link(i.id, 'actions', dash(i))));
+      lists.push(items.filter((i) => DOC_KINDS.has(i.kind)).sort(newest).map((i) => link(i.id, 'docs', 'solid')));
+      lists.push(items.filter((i) => NOTE_KINDS.has(i.kind)).sort(newest).map((i) => link(i.id, 'notes', 'solid')));
+    } else {
+      const item = this.state.items.get(node.ref);
+      lists.push((item.entityIds || []).filter((id) => id !== 'me').map((id) => link(this.entity(id)?.id || id, 'entities', 'solid')));
+      const family = [];
+      if (item.parentId) family.push(link(item.parentId, 'parent', 'solid'));
+      for (const child of this.childrenOf(item.id)) family.push(link(child.id, roleOf(child), dash(child)));
+      lists.push(family);
+      // BM25-related (top 3), dashed (SPEC §5 S8, EXTENSION_VIEWS §24.4).
+      lists.push(this.related(item.id, 3).map((r) => {
+        const other = this.state.items.get(r.id);
+        return other ? link(other.id, roleOf(other), 'dashed', r.score) : null;
+      }));
+    }
+    const queues = lists.map((list) => list.filter(Boolean));
+    const out = [];
+    const seen = new Set([node.ref]);
+    for (let more = true; more && out.length < max;) {
+      more = false;
+      for (const queue of queues) {
+        while (queue.length) {
+          const next = queue.shift();
+          if (seen.has(next.ref)) continue;
+          seen.add(next.ref);
+          out.push(next);
+          more = true;
+          break;
+        }
+        if (out.length >= max) break;
+      }
+    }
+    return { node, links: out };
+  }
+
+  // A pin as stored: finite, bounded coordinates and a time.
+  _cleanPins(raw) {
+    const out = {};
+    if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return out;
+    const list = [];
+    for (const [ref, pin] of Object.entries(raw)) {
+      if (!MAP_REF_RE.test(ref) || !pin || typeof pin !== 'object') continue;
+      const x = Number(pin.x);
+      const y = Number(pin.y);
+      if (!Number.isFinite(x) || !Number.isFinite(y) || Math.abs(x) > PIN_COORD_MAX || Math.abs(y) > PIN_COORD_MAX) continue;
+      list.push([ref, { x: Math.round(x), y: Math.round(y), at: Number.isFinite(Number(pin.at)) ? Number(pin.at) : 0 }]);
+    }
+    // At most 5,000 pins: the newest win.
+    list.sort((a, b) => b[1].at - a[1].at || (a[0] < b[0] ? -1 : 1));
+    for (const [ref, pin] of list.slice(0, MAX_PINS)) out[ref] = pin;
+    return out;
+  }
+
+  /**
+   * The explorer's pinned positions (mm-layout: { schema: 1, rev, txn,
+   * pins: { [ref]: { x, y, at } } }), read once and again after another
+   * window changes them. → { pins, rev, unreadable }
+   */
+  async loadLayout({ force = false } = {}) {
+    if (this._layout && !force && !this._layout.stale) return this._layout;
+    const res = await this.store.readBest('mm-layout');
+    this._layout = { pins: this._cleanPins(res.value?.pins), rev: Number(res.value?.rev) || 0, unreadable: !!res.unreadable };
+    return this._layout;
+  }
+
+  get pins() {
+    return this._layout?.pins || {};
+  }
+
+  /**
+   * Pins, moves or unpins nodes: `changes` is { [ref]: {x, y} | null }.
+   * Runs under the cross-window lock and re-reads mm-layout first, so two
+   * windows moving different nodes both keep their moves. Not journaled:
+   * the explorer has its own undo for layout moves. → { ok, code?, pins }
+   */
+  async setPins(changes) {
+    const entries = Object.entries(changes && typeof changes === 'object' ? changes : {}).filter(([ref]) => MAP_REF_RE.test(ref));
+    if (!entries.length) return { ok: false, code: 'noop', pins: this.pins };
+    try {
+      return await this.store.withLock(async (lease) => {
+        const res = await this.store.readBest('mm-layout');
+        if (res.unreadable) {
+          this._layout = { pins: {}, rev: 0, unreadable: true };
+          return { ok: false, code: 'unreadable', pins: {} };
+        }
+        const pins = this._cleanPins(res.value?.pins);
+        const now = this.now();
+        for (const [ref, pin] of entries) {
+          if (pin === null) delete pins[ref];
+          else if (Number.isFinite(pin?.x) && Number.isFinite(pin?.y)) pins[ref] = { x: pin.x, y: pin.y, at: now };
+        }
+        const clean = this._cleanPins(pins);
+        const rev = Math.max(Number(res.value?.rev) || 0, this._layout?.rev || 0) + 1;
+        await lease.check();
+        // Layout is separate from the notes: a read-only store (unreadable
+        // notes) still keeps pins, unless mm-layout itself is unreadable.
+        await this.store.write('mm-layout', { schema: 1, rev, txn: idlib.newId('o', now), pins: clean }, { force: true });
+        this._layout = { pins: clean, rev, unreadable: false };
+        return { ok: true, pins: clean };
+      });
+    } catch (error) {
+      if (error?.code) return { ok: false, code: error.code, pins: this.pins };
+      throw error;
+    }
+  }
+
+  /** "Reset map layout" (settings): forgets every pin. */
+  async resetLayout() {
+    await this.store.withLock(async () => {
+      await this.store.remove('mm-layout', { force: true });
+    });
+    this._layout = { pins: {}, rev: 0, unreadable: false };
+    return { ok: true };
+  }
+
+  /**
+   * This computer's explorer state (mm-view: { schema: 1, camera: { x, y,
+   * zoom }, focus, history, lens, scroll, panelOpen, updatedAt }). The
+   * camera is the world point in the middle of the window. Unknown or bad
+   * fields are dropped. → the state, or null
+   */
+  async loadView() {
+    let raw = null;
+    try {
+      raw = await this.store.readJson('mm-view');
+    } catch {
+      return null;
+    }
+    return raw ? this.cleanView(raw) : null;
+  }
+
+  cleanView(raw) {
+    const out = { schema: 1 };
+    const cam = raw?.camera;
+    if (cam && [cam.x, cam.y, cam.zoom].every((v) => Number.isFinite(Number(v))) && Number(cam.zoom) > 0) {
+      out.camera = { x: Math.round(Number(cam.x) * 10) / 10, y: Math.round(Number(cam.y) * 10) / 10, zoom: Math.min(4, Math.max(0.1, Number(cam.zoom))) };
+    }
+    if (typeof raw?.focus === 'string' && MAP_REF_RE.test(raw.focus)) out.focus = raw.focus;
+    if (Array.isArray(raw?.history)) out.history = raw.history.filter((r) => typeof r === 'string' && MAP_REF_RE.test(r)).slice(-VIEW_HISTORY_MAX);
+    if (raw?.lens && typeof raw.lens === 'object') {
+      const kinds = Array.isArray(raw.lens.kinds) ? VIEW_KINDS.filter((k) => raw.lens.kinds.includes(k)) : null;
+      out.lens = { kinds: kinds && kinds.length ? kinds : null, mine: !!raw.lens.mine, done: !!raw.lens.done };
+    }
+    if (raw?.scroll === 'pan' || raw?.scroll === 'zoom') out.scroll = raw.scroll;
+    if (typeof raw?.panelOpen === 'boolean') out.panelOpen = raw.panelOpen;
+    if (Number.isFinite(Number(raw?.updatedAt))) out.updatedAt = Number(raw.updatedAt);
+    return out;
+  }
+
+  /** Saves mm-view (last write wins, no lock: only the explorer writes it). */
+  async saveView(view) {
+    const now = this.now();
+    const clean = { ...this.cleanView(view), updatedAt: now };
+    await this.store.write('mm-view', { ...clean, rev: now }, { force: true });
+    return clean;
+  }
+
+  // Pins from an Export JSON file (layout.pins): kept for refs this store
+  // knows, newer `at` wins. → number of pins written
+  async _importPins(raw) {
+    const incoming = this._cleanPins(raw);
+    const refs = Object.keys(incoming).filter((ref) => ref === 'o' || this.state.items.has(ref) || (ref !== 'me' && this.entity(ref)));
+    if (!refs.length) return 0;
+    const layout = await this.loadLayout({ force: true });
+    const changes = {};
+    for (const ref of refs) {
+      const have = layout.pins[ref];
+      if (!have || incoming[ref].at > have.at) changes[ref] = incoming[ref];
+    }
+    if (!Object.keys(changes).length) return 0;
+    const out = await this.setPins(changes);
+    return out.ok ? Object.keys(changes).length : 0;
+  }
+
   // --- formatter data port (ARCHITECTURE §6.7) -----------------------------------------------
 
   get port() {
@@ -2397,6 +2725,7 @@ export class Mind {
         op: (opId) => mind.opVM(opId),
         item: (id) => mind.itemVM(id),
         map: (focus, page) => mind.neighborhood(focus, page),
+        links: (ref, opts) => mind.links(ref, opts),
         nameOf: (id) => mind.nameOf(id),
         changedSince: (since, ids) => mind.changedSince(since, ids),
       };

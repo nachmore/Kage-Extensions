@@ -26,7 +26,7 @@
  *              (fetch_link_metadata, get_source_window, …). Unlisted
  *              commands reject.
  *
- * Returns { invoke, files, calls, corrupt(key), crashAfterWrites(n), revive(), connect() }:
+ * Returns { invoke, files, calls, corrupt(key), crashAfterWrites(n), revive(), connect(), onData(fn) }:
  *   invoke              - the first window's invoke(command, args)
  *   files               - Map<key, string>, the "disk"; tests may read or seed it
  *   calls               - [{ command, args, window }] in call order (rate-limited
@@ -39,8 +39,13 @@
  *                         invoke rejects until revive()
  *   revive()            - the host "restarts": invokes work again
  *   connect()           - another Kage window on the same disk: returns
- *                         { invoke } with its own 100/s rate window, the way
- *                         every window runs its own sandbox
+ *                         { invoke, index } with its own 100/s rate window,
+ *                         the way every window runs its own sandbox
+ *   onData(fn)          - calls fn({ key, op: 'save'|'delete', window }) after
+ *                         every successful save or delete, the raw feed of
+ *                         Kage's extension_data_changed events (see
+ *                         view-host.mjs for the batched, per-window form).
+ *                         Returns off().
  */
 
 const KEY_RE = /^[A-Za-z0-9._-]{1,128}$/;
@@ -68,6 +73,10 @@ export function createMemoryHost({ atomic = false, latency = () => 0, handlers =
   let writesLeft = Infinity;
   let crashed = false;
   let windows = 0;
+  const listeners = new Set();
+  const changed = (key, op, window) => {
+    for (const fn of listeners) fn({ key, op, window });
+  };
 
   function rateLimiter() {
     const times = [];
@@ -87,11 +96,11 @@ export function createMemoryHost({ atomic = false, latency = () => 0, handlers =
       if (overRateLimit()) {
         throw new Error(`Extension '${EXTENSION_ID}': invoke rate limit exceeded (max ${RATE_MAX}/s)`);
       }
-      return run(command, args);
+      return run(command, args, index);
     };
   }
 
-  async function run(command, args) {
+  async function run(command, args, index) {
     const delay = Number(latency(command, args)) || 0;
     if (delay > 0) await sleep(delay);
     if (crashed) throw new Error('simulated host crash');
@@ -110,11 +119,13 @@ export function createMemoryHost({ atomic = false, latency = () => 0, handlers =
         }
         writesLeft -= 1;
         files.set(args.key, args.data);
+        changed(args.key, 'save', index);
         return null;
       }
       case 'delete_extension_data': {
         validateKey(args?.key);
         files.delete(args.key);
+        changed(args.key, 'delete', index);
         return null;
       }
       default: {
@@ -142,7 +153,12 @@ export function createMemoryHost({ atomic = false, latency = () => 0, handlers =
       writesLeft = Infinity;
     },
     connect() {
-      return { invoke: makeInvoke(windows++) };
+      const index = windows++;
+      return { invoke: makeInvoke(index), index };
+    },
+    onData(fn) {
+      listeners.add(fn);
+      return () => listeners.delete(fn);
     },
   };
 }

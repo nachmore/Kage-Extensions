@@ -1,0 +1,330 @@
+/* Mind Map's map explorer (EXTENSION_VIEWS §24.3). Injected only into the
+   explorer's own window, never into Kage's windows. Every class is ex-
+   prefixed and every colour is a Kage token (var(--kage-*)), which the view
+   runtime writes into this document from Kage's theme (§11). Logical
+   properties keep the layout mirrored in right-to-left languages. */
+
+.ex-app {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--kage-bg);
+  color: var(--kage-text);
+  font-family: var(--kage-font);
+  font-size: 0.93rem;
+  line-height: 1.35;
+  overflow: hidden;
+}
+
+.ex-toolbar,
+.ex-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  padding: 6px 10px;
+  border-block-end: 1px solid var(--kage-border-subtle);
+  background: var(--kage-bg-elevated);
+}
+
+.ex-strip {
+  justify-content: space-between;
+  padding-block: 4px;
+}
+
+.ex-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ex-btn,
+.ex-chip,
+.ex-hit {
+  font: inherit;
+  color: var(--kage-text);
+  background: var(--kage-bg-input);
+  border: 1px solid var(--kage-border);
+  border-radius: 6px;
+  padding: 3px 9px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.ex-btn:hover,
+.ex-chip:hover,
+.ex-hit:hover {
+  border-color: var(--kage-accent);
+}
+
+.ex-btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+  border-color: var(--kage-border);
+}
+
+.ex-icon {
+  min-width: 2em;
+  padding-inline: 4px;
+}
+
+.ex-primary {
+  background: var(--kage-accent);
+  border-color: var(--kage-accent);
+  color: var(--kage-text-bright);
+}
+
+.ex-primary:hover {
+  background: var(--kage-accent-hover);
+}
+
+.ex-chip {
+  border-radius: 999px;
+  padding: 2px 10px;
+  font-size: 0.9em;
+}
+
+.ex-chip[aria-pressed="true"] {
+  background: var(--kage-accent-light);
+  border-color: var(--kage-accent);
+  color: var(--kage-text-bright);
+}
+
+.ex-btn:focus-visible,
+.ex-chip:focus-visible,
+.ex-hit:focus-visible,
+.ex-search:focus-visible,
+.ex-add-input:focus-visible,
+.ex-list:focus-visible {
+  outline: 2px solid var(--kage-accent);
+  outline-offset: 1px;
+}
+
+.ex-searchbox {
+  position: relative;
+  flex: 1 1 220px;
+  max-width: 420px;
+}
+
+.ex-search,
+.ex-add-input {
+  font: inherit;
+  width: 100%;
+  box-sizing: border-box;
+  color: var(--kage-text);
+  background: var(--kage-bg-input);
+  border: 1px solid var(--kage-border);
+  border-radius: 6px;
+  padding: 4px 8px;
+}
+
+.ex-hits {
+  position: absolute;
+  inset-inline-start: 0;
+  inset-inline-end: 0;
+  top: calc(100% + 4px);
+  z-index: 5;
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+  background: var(--kage-bg-elevated);
+  border: 1px solid var(--kage-border);
+  border-radius: 8px;
+  max-height: 50vh;
+  overflow: auto;
+}
+
+.ex-hits[hidden] {
+  display: none;
+}
+
+.ex-hit {
+  display: block;
+  width: 100%;
+  text-align: start;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border-color: transparent;
+  background: transparent;
+}
+
+.ex-lenses {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.ex-add {
+  display: flex;
+  gap: 6px;
+  flex: 0 1 380px;
+}
+
+.ex-body {
+  position: relative;
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+.ex-stage {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.ex-body:has(.ex-list:focus-visible) .ex-stage {
+  outline: 2px solid var(--kage-accent);
+  outline-offset: -2px;
+}
+
+.ex-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  cursor: grab;
+}
+
+.ex-panel {
+  flex: 0 0 300px;
+  box-sizing: border-box;
+  overflow: auto;
+  padding: 12px 14px;
+  border-inline-end: 1px solid var(--kage-border-subtle);
+  background: var(--kage-bg-elevated);
+}
+
+.ex-panel-closed .ex-panel {
+  display: none;
+}
+
+.ex-head {
+  display: flex;
+  gap: 6px;
+  align-items: baseline;
+}
+
+.ex-title {
+  font-size: 1.08em;
+  color: var(--kage-text-bright);
+  overflow-wrap: anywhere;
+}
+
+.ex-meta,
+.ex-muted {
+  color: var(--kage-text-muted);
+  font-size: 0.9em;
+  margin-block: 4px;
+}
+
+.ex-badges,
+.ex-chips,
+.ex-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-block: 8px;
+}
+
+.ex-badge {
+  font-size: 0.85em;
+  padding: 1px 7px;
+  border-radius: 999px;
+  border: 1px solid var(--kage-border);
+  color: var(--kage-text-muted);
+}
+
+.ex-text {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  margin-block: 8px;
+}
+
+.ex-where {
+  font-family: var(--kage-font-mono);
+  font-size: 0.85em;
+  color: var(--kage-link);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The node list: read by screen readers next to the canvas, and the main
+   view in List mode (§24.7). */
+.ex-list {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  list-style: none;
+}
+
+.ex-mode-list .ex-stage {
+  display: none;
+}
+
+.ex-mode-list .ex-list {
+  position: static;
+  flex: 1;
+  width: auto;
+  height: auto;
+  overflow: auto;
+  clip-path: none;
+  white-space: normal;
+  padding: 8px 12px;
+}
+
+.ex-list li {
+  padding: 4px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.ex-list li.ex-on {
+  background: var(--kage-accent-light);
+  color: var(--kage-text-bright);
+}
+
+.ex-toast {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 6;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  max-width: 80%;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--kage-border);
+  background: var(--kage-bg-elevated);
+  color: var(--kage-text-bright);
+}
+
+.ex-toast[hidden] {
+  display: none;
+}
+
+.ex-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ex-btn,
+  .ex-chip {
+    transition: border-color 120ms ease, background-color 120ms ease;
+  }
+}

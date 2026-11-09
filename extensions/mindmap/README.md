@@ -125,6 +125,45 @@ theme, and mirrors for right-to-left languages. On older Kage versions the map
 is shown but can't be clicked; `mm @name` walks the same connections from
 the keyboard.
 
+## The explorer
+
+On a Kage that supports extension windows, the map also opens full size:
+**Open in explorer** at the top of `mm map …`, `mm explore [name]`, the
+**⤢ Explorer** button on a map card, **Explore** on a saved card, or **Open the
+map explorer** in settings. Kage asks you once to approve Mind Map's new
+permission ("Its own windows"); until then none of these show.
+
+The explorer starts on what you opened it from (or where you left it), with
+its neighbours two links out: names above, actions on the left, docs and links
+on the right, notes and meetings below (mirrored for right-to-left
+languages).
+
+- **Move around**: drag the background (or hold Space and drag), scroll, or
+  use the arrow keys. Scrolling pans on macOS and zooms elsewhere; the
+  toolbar switches it, and ⌘/Ctrl with scroll, a pinch, `+`, `−` and `0` (fit)
+  always zoom.
+- **Arrange**: drag a node to put it where you want it. It stays there
+  (📌) when you come back, and on your other Kage windows. `P` pins or unpins
+  the selected node, and ⌘/Ctrl+Z undoes the last move.
+- **Explore**: click a node to see it in the panel, double-click it (or press
+  Enter) to centre the map there, and press Space or its ＋ handle to show what
+  else it connects to. **Back** and **Home** are in the toolbar.
+- **Act**: the panel marks actions done, accepts or dismisses suggestions,
+  makes items private, opens links, copies a file's path, and **Ask** puts a
+  question about the node into the launcher for you to send. Every change
+  can be undone.
+- **Find and filter**: `/` or ⌘/Ctrl+F searches (Enter centres on the first
+  match); the chips show only some kinds, only your actions, or done ones too.
+  **＋ Add** saves a new thought without leaving the window.
+- **Keyboard and screen readers**: every node is also in a list (the
+  **List** button shows it), and the selection is announced.
+
+Private items show 🔒 in the explorer and stay on this computer: **Ask** is
+off for them, and the window title doesn't name them. Pinned positions are
+part of your mind map's data (Export JSON includes them, **Reset map layout**
+in settings forgets them); the explorer's zoom, centre and filters are kept
+for this computer only.
+
 ## How things get organized
 
 Everything happens on your computer, the moment you save, without the network
@@ -248,3 +287,4 @@ items.
 | `urls` | Opening saved links. |
 | `network` | Fetching a saved link's title and description (can be turned off). |
 | `windows` | Saving the window you came from, and jumping back to an open document. |
+| `views` | The explorer's own window. |

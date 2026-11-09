@@ -10,7 +10,7 @@
 // or [] when they would be identical (the host then keeps match()'s rows).
 
 import { getMind } from './mind.js';
-import { KIND_ICONS, ETYPE_ICONS, applyUiAction, boundAction, doneText, dueText, etypeLabel, fmtDay, interpLabel, itemIcon, kindLabel, parseAction, ui } from './view.js';
+import { KIND_ICONS, ETYPE_ICONS, applyUiAction, boundAction, doneText, dueText, etypeLabel, exploreRef, fmtDay, interpLabel, itemIcon, kindLabel, parseAction, ui } from './view.js';
 import { DEFAULTS, LIMITS, triggerOf } from './defaults.js';
 
 // view.js resolves these through an alias of t() (dueText, doneText, rangeLabel):
@@ -29,6 +29,11 @@ const SOURCE_WAIT_MS = 400;
 // `mm unarchive [words]` (archived items; Enter restores). P2.
 const ARCHIVE_RE = /^\s*(archive|archived|unarchive)(?:\s+([\s\S]*))?$/i;
 const ARCHIVE_ROWS = 8;
+// `mm explore [focus]` opens the map explorer (EXTENSION_VIEWS §24.2), on
+// hosts that offer views. Elsewhere "explore" is just a word to search for.
+const EXPLORE_RE = /^\s*explore(?:\s+([\s\S]*))?$/i;
+const MAP_REF_RE = /^(?:o|me|[ie][0-9a-z]{14})$/;
+const EXPLORE_QUERY_MAX = 200;
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -90,6 +95,13 @@ export default class MindMapSearchProvider {
 
   get trigger() {
     return triggerOf(this.config);
+  }
+
+  // True where this window can open Mind Map's explorer: the host offers
+  // views and the user approved them (EXTENSION_VIEWS §9.4).
+  get canExplore() {
+    const features = this.context?.hostFeatures;
+    return Array.isArray(features) && features.includes('views');
   }
 
   get locale() {
@@ -262,9 +274,14 @@ export default class MindMapSearchProvider {
   findRows(parsed, query) {
     const mind = this.mind;
     const banner = this.readOnlyRow();
-    // P2 archive commands. The query grammar (lib/query.js) doesn't know
-    // them, so they are recognised here, before parsing, like its own
-    // commands: by the first word.
+    // `mm explore` and the P2 archive commands. The query grammar
+    // (lib/query.js) doesn't know them, so they are recognised here, before
+    // parsing, like its own commands: by the first word.
+    const explore = this.canExplore ? EXPLORE_RE.exec(parsed.rest) : null;
+    if (explore) {
+      const rows = this.exploreRows(explore[1] || '');
+      return banner ? [banner, ...rows] : rows;
+    }
     const archive = ARCHIVE_RE.exec(parsed.rest);
     if (archive) {
       const verb = archive[1].toLowerCase();
@@ -586,7 +603,37 @@ export default class MindMapSearchProvider {
     if (target.highlight?.length) data.highlight = target.highlight;
     // Nothing matched the words: say so rather than silently showing the overview.
     const desc = target.missed ? t('row.map_nomatch', { query: clip(spec.args, 60) }) : t('row.map_desc');
-    return [this.row('mm:map', '🗺️', label, desc, 95, data)];
+    const rows = [this.row('mm:map', '🗺️', label, desc, 95, data)];
+    // With views, "Open in explorer" leads (EXTENSION_VIEWS §24.2).
+    if (this.canExplore) rows.unshift(this.exploreRow(target, 96));
+    return rows;
+  }
+
+  // The explorer row for a map target ({ ref, name, kinds? }).
+  exploreRow(target, score) {
+    const t = this.t;
+    const label = target.ref === 'o' ? t('row.explore') : t('row.explore_named', { name: clip(target.name, 60) });
+    const data = { a: 'explore', ref: target.ref };
+    // `mm map @bingo kind:doc`: the explorer applies the kinds as a lens.
+    if (target.kinds?.length) data.query = `kind:${target.kinds.join(',')}`;
+    return this.row('mm:explore', '🗺️', label, t('row.explore_desc'), score, data);
+  }
+
+  // `mm explore [focus]`: one row that opens the explorer there.
+  exploreRows(args) {
+    const target = this.mind.mapTarget(args);
+    const row = this.exploreRow(target, 95);
+    if (target.missed) row.description = this.t('row.map_nomatch', { query: clip(args, 60) });
+    return [row];
+  }
+
+  // The open_view effect for the explorer (needs the `views` capability).
+  // permissions: views
+  openExplorer(ref, query) {
+    const params = { focus: MAP_REF_RE.test(String(ref || '')) ? ref : 'o' };
+    const q = oneLine(query);
+    if (q) params.query = q.slice(0, EXPLORE_QUERY_MAX);
+    return { type: 'open_view', view: 'explorer', params };
   }
 
   organizeRows() {
@@ -684,6 +731,14 @@ export default class MindMapSearchProvider {
           return { type: 'replace_input', value: `${this.trigger} ${data.syntax ?? ''}`.trimEnd() };
         case 'fill':
           return { type: 'replace_input', value: String(data.value ?? '') };
+        case 'explore': {
+          if (this.canExplore) return this.openExplorer(data.ref, data.query);
+          // Not approved (or an older host) after all: the map card instead.
+          const ref = MAP_REF_RE.test(String(data.ref || '')) ? data.ref : 'o';
+          await mind.ready();
+          const name = ref === 'o' ? t('map.overview') : mind.nameOf(ref);
+          return display(`🗺️ ${md(name || t('map.your_map'))}`, `[mm-card:map:${ref}]`);
+        }
         case 'entity':
         case 'map': {
           const ref = data.a === 'entity' ? data.id : data.ref || 'o';
@@ -831,6 +886,16 @@ export default class MindMapSearchProvider {
         await this.dataAction(parsed);
         mind.requestReformat();
         return {};
+      }
+      if (parsed.scope === 'block' && parsed.verb === 'explore') {
+        // ⤢ Explorer on a map card, Explore on an item card: the explorer,
+        // on what that card shows (EXTENSION_VIEWS §24.2).
+        const ref = exploreRef(ui, parsed);
+        if (!ref || !this.canExplore) {
+          mind.requestReformat();
+          return {};
+        }
+        return { host: this.openExplorer(ref) };
       }
       if (applyUiAction(ui, parsed).changed) mind.requestReformat();
     } catch (error) {

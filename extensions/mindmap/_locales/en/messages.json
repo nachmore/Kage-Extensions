@@ -1740,5 +1740,241 @@
   "row.shown_of": {
     "message": "{n} of {total}",
     "description": "Interpretation row: how many matches are listed out of how many, e.g. “8 of 23”"
+  },
+  "view.explorer.title": {
+    "message": "Explorer",
+    "description": "Title of Mind Map's full-window map explorer (window title and Kage's host bar)"
+  },
+  "map.explorer": {
+    "message": "Explorer",
+    "description": "Map card header button that opens the full-window map explorer"
+  },
+  "map.explorer_tip": {
+    "message": "Open this map in its own window, where you can pan, zoom and arrange it",
+    "description": "Tooltip of the map card's Explorer button"
+  },
+  "card.explore": {
+    "message": "Explore",
+    "description": "Item card button that opens the map explorer on this item"
+  },
+  "row.explore": {
+    "message": "Open in explorer",
+    "description": "Launcher row that opens the map explorer on the overview"
+  },
+  "row.explore_named": {
+    "message": "Open in explorer: {name}",
+    "description": "Launcher row that opens the map explorer centred on {name}"
+  },
+  "row.explore_desc": {
+    "message": "Pan, zoom and arrange the map in its own window",
+    "description": "Description of the Open in explorer launcher row"
+  },
+  "explorer.aria": {
+    "message": "Mind Map explorer",
+    "description": "Accessible name of the explorer window's content"
+  },
+  "explorer.toolbar": {
+    "message": "Explorer tools",
+    "description": "Accessible name of the explorer's toolbar"
+  },
+  "explorer.back_tip": {
+    "message": "Back to the previous centre",
+    "description": "Tooltip of the explorer's Back button"
+  },
+  "explorer.fit": {
+    "message": "Fit",
+    "description": "Explorer button: zoom so the whole map fits the window"
+  },
+  "explorer.fit_tip": {
+    "message": "Show the whole map (0)",
+    "description": "Tooltip of the Fit button; 0 is its key"
+  },
+  "explorer.zoom_in": {
+    "message": "Zoom in (+)",
+    "description": "Explorer zoom-in button label and tooltip; + is its key"
+  },
+  "explorer.zoom_out": {
+    "message": "Zoom out (−)",
+    "description": "Explorer zoom-out button label and tooltip; − is its key"
+  },
+  "explorer.scroll_zooms": {
+    "message": "Scroll zooms",
+    "description": "Explorer toggle state: the mouse wheel or trackpad scroll zooms the map"
+  },
+  "explorer.scroll_pans": {
+    "message": "Scroll pans",
+    "description": "Explorer toggle state: the mouse wheel or trackpad scroll moves the map"
+  },
+  "explorer.scroll_tip": {
+    "message": "Choose what scrolling does. ⌘ or Ctrl with scroll always zooms.",
+    "description": "Tooltip of the scroll toggle"
+  },
+  "explorer.details": {
+    "message": "Details",
+    "description": "Explorer toggle that shows or hides the details panel; also the panel's accessible name"
+  },
+  "explorer.search_placeholder": {
+    "message": "Search (/)",
+    "description": "Placeholder of the explorer's search box; / is its key"
+  },
+  "explorer.search_label": {
+    "message": "Search your mind map",
+    "description": "Accessible name of the explorer's search box"
+  },
+  "explorer.no_hits": {
+    "message": "Nothing matches",
+    "description": "Shown under the explorer's search box when nothing matches"
+  },
+  "explorer.hits": {
+    "message": "{n, plural, one {# match} other {# matches}}",
+    "description": "Announced after an explorer search"
+  },
+  "explorer.lens_label": {
+    "message": "Show",
+    "description": "Accessible name of the explorer's filter chips (kinds, My actions, Show done)"
+  },
+  "explorer.lens_mine": {
+    "message": "My actions",
+    "description": "Explorer filter chip: show only actions that are yours"
+  },
+  "explorer.lens_done": {
+    "message": "Show done",
+    "description": "Explorer filter chip: also show actions that are done"
+  },
+  "explorer.add_placeholder": {
+    "message": "Add a thought, link or todo",
+    "description": "Placeholder of the explorer's capture box"
+  },
+  "explorer.add_label": {
+    "message": "Add to your mind map",
+    "description": "Accessible name of the explorer's capture box"
+  },
+  "explorer.add": {
+    "message": "Add",
+    "description": "Button that saves what's in the explorer's capture box"
+  },
+  "explorer.saved": {
+    "message": "Saved “{title}”",
+    "description": "Explorer toast after saving from its capture box"
+  },
+  "explorer.list_label": {
+    "message": "Nodes on the map",
+    "description": "Accessible name of the explorer's list of nodes"
+  },
+  "explorer.panel_empty": {
+    "message": "Select something on the map to see it here.",
+    "description": "Details panel with nothing selected"
+  },
+  "explorer.showing": {
+    "message": "Showing {name}",
+    "description": "Announced when the explorer centres on {name}"
+  },
+  "explorer.focus_here": {
+    "message": "Centre here",
+    "description": "Details panel button: make this node the centre of the map"
+  },
+  "explorer.expand": {
+    "message": "Show connections",
+    "description": "Details panel button: add this node's neighbours to the map"
+  },
+  "explorer.collapse": {
+    "message": "Hide connections",
+    "description": "Details panel button: remove the neighbours this node added"
+  },
+  "explorer.pin": {
+    "message": "Pin",
+    "description": "Details panel button: keep this node where it is"
+  },
+  "explorer.unpin": {
+    "message": "Unpin",
+    "description": "Details panel button: let this node move again"
+  },
+  "explorer.pinned": {
+    "message": "Pinned",
+    "description": "Badge and announcement for a node that stays where you put it"
+  },
+  "explorer.unpinned": {
+    "message": "Unpinned",
+    "description": "Announced when a node is unpinned"
+  },
+  "explorer.state_pinned": {
+    "message": "pinned",
+    "description": "Node state in the explorer's list, after open/done/private"
+  },
+  "explorer.layout_undone": {
+    "message": "Moved back",
+    "description": "Announced after undoing a move on the map (⌘/Ctrl+Z)"
+  },
+  "explorer.layout_unreadable": {
+    "message": "Saved positions couldn’t be read. Reset the map layout in Mind Map’s settings.",
+    "description": "Explorer toast when the stored pinned positions are unreadable"
+  },
+  "explorer.full": {
+    "message": "The map is full. Collapse something or refocus.",
+    "description": "Explorer toast when the map already holds the most nodes it can"
+  },
+  "explorer.nothing_more": {
+    "message": "Nothing else is connected to this.",
+    "description": "Explorer toast when showing connections adds nothing new"
+  },
+  "explorer.ask": {
+    "message": "Ask",
+    "description": "Details panel button: start a question to your agent about this node"
+  },
+  "explorer.ask_about": {
+    "message": "what do my notes say about “{title}”?",
+    "description": "Question put in the launcher by the explorer's Ask button; it follows the mm? trigger"
+  },
+  "explorer.ask_private": {
+    "message": "Private items aren’t sent to your agent.",
+    "description": "Why Ask is unavailable for a private item"
+  },
+  "explorer.copy_path": {
+    "message": "Copy path",
+    "description": "Details panel button for a file: copy its path"
+  },
+  "explorer.path_copied": {
+    "message": "Path copied",
+    "description": "Explorer toast after copying a file's path"
+  },
+  "explorer.copy_failed": {
+    "message": "Couldn’t copy the path",
+    "description": "Explorer toast when copying a path fails"
+  },
+  "explorer.private_title": {
+    "message": "Private item",
+    "description": "Window title when the explorer is centred on a private item"
+  },
+  "settings.section_explorer": {
+    "message": "Map explorer",
+    "description": "Settings section for the full-window map explorer"
+  },
+  "settings.open_explorer": {
+    "message": "Open the map explorer",
+    "description": "Settings action that opens the map explorer"
+  },
+  "settings.open_explorer_hint": {
+    "message": "A window where you can pan, zoom and arrange your map.",
+    "description": "Description of the Open the map explorer action"
+  },
+  "settings.reset_layout": {
+    "message": "Reset map layout",
+    "description": "Settings action that forgets every pinned position"
+  },
+  "settings.reset_layout_hint": {
+    "message": "Forgets the positions you pinned in the explorer.",
+    "description": "Description of the Reset map layout action"
+  },
+  "settings.reset_layout_confirm": {
+    "message": "Forget every position you pinned in the map explorer?",
+    "description": "Confirmation before resetting the map layout"
+  },
+  "settings.layout_reset": {
+    "message": "Map layout reset",
+    "description": "Status after resetting the map layout"
+  },
+  "settings.approve_views": {
+    "message": "Approve Mind Map’s new permission in the Store to use the map explorer.",
+    "description": "Shown on a Kage that supports the explorer before the user approves its permission"
   }
 }

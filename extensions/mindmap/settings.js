@@ -15,6 +15,22 @@ function today(ms) {
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 }
 
+// The map explorer's controls (EXTENSION_VIEWS §24.2, §24.8): Open and
+// Reset with views; on a newer Kage that has views but no approval yet, a
+// hint; on an older Kage, nothing.
+function explorerControls(t, features) {
+  if (features.includes('views')) {
+    return [
+      { type: 'action', id: 'open_explorer', action: 'open_explorer', label: t('settings.open_explorer'), description: t('settings.open_explorer_hint'), variant: 'primary' },
+      { type: 'action', id: 'reset_layout', action: 'reset_layout', label: t('settings.reset_layout'), description: t('settings.reset_layout_hint'), confirm: t('settings.reset_layout_confirm') },
+    ];
+  }
+  if (features.includes('storage.change_events')) {
+    return [{ type: 'info', html: `<p>${esc(t('settings.approve_views'))}</p>` }];
+  }
+  return [];
+}
+
 export default class MindMapSettingsProvider {
   initialize(context) {
     this.context = context;
@@ -35,6 +51,11 @@ export default class MindMapSettingsProvider {
     } catch {
       return 'en';
     }
+  }
+
+  hostFeatures() {
+    const features = this.context.hostFeatures;
+    return Array.isArray(features) ? features : [];
   }
 
   async loadForPage() {
@@ -94,59 +115,59 @@ export default class MindMapSettingsProvider {
     data.push({ type: 'action', id: 'export_md', action: 'export_md', label: t('settings.export_md'), description: t('settings.export_md_hint') });
     data.push({ type: 'action', id: 'import_json', action: 'import_json', label: t('settings.import_json'), description: t('settings.import_json_hint'), disabled: !!readOnly });
     data.push({ type: 'action', id: 'delete_all', action: 'delete_all', label: t('settings.delete_all'), description: t('settings.delete_all_hint'), variant: 'danger', confirm: t('settings.delete_all_confirm') });
-
-    return {
-      description: t('settings.description', { trigger }),
-      sections: [
-        {
-          label: t('settings.section_privacy'),
-          controls: [
-            { type: 'info', html: `<p>${esc(t('settings.disclosure'))}</p><p>${esc(t('settings.no_credentials'))}</p>` },
-          ],
-        },
-        {
-          label: t('settings.section_you'),
-          controls: [
-            { type: 'text', id: 'my_names', label: t('settings.my_names'), default: DEFAULTS.my_names, placeholder: t('settings.my_names_placeholder'), description: t('settings.my_names_hint') },
-            {
-              type: 'select', id: 'week_start', label: t('settings.week_start'), default: DEFAULTS.week_start,
-              // i18n-keys: settings.week_*
-              options: WEEK_STARTS.map((value) => ({ value, label: t(`settings.week_${value}`) })),
-            },
-          ],
-        },
-        {
-          label: t('settings.section_capture'),
-          controls: [
-            { type: 'checkbox', id: 'fetch_link_titles', label: t('settings.fetch_link_titles'), default: DEFAULTS.fetch_link_titles, description: t('settings.fetch_link_titles_hint') },
-            { type: 'checkbox', id: 'record_source_window', label: t('settings.record_source_window'), default: DEFAULTS.record_source_window, description: t('settings.record_source_window_hint') },
-            { type: 'info', html: `<p>${esc(t('settings.macos_titles'))}</p>` },
-            { type: 'checkbox', id: 'new_items_private', label: t('settings.new_items_private'), default: DEFAULTS.new_items_private, description: t('settings.new_items_private_hint') },
-            { type: 'checkbox', id: 'auto_accept_inferred', label: t('settings.auto_accept_inferred'), default: DEFAULTS.auto_accept_inferred, description: t('settings.auto_accept_inferred_hint') },
-            { type: 'info', html: `<p>${esc(t('settings.documents_note'))}</p>` },
-          ],
-        },
-        {
-          label: t('settings.section_agent'),
-          controls: [
-            { type: 'checkbox', id: 'agent_tools', label: t('settings.agent_tools'), default: DEFAULTS.agent_tools, description: t('settings.agent_tools_hint') },
-            {
-              type: 'number', id: 'agent_snippet_chars', label: t('settings.agent_snippet_chars'), default: DEFAULTS.agent_snippet_chars,
-              min: LIMITS.snippetMin, max: LIMITS.snippetMax, step: 20, maxWidth: 120,
-              description: t('settings.agent_snippet_chars_hint', { min: LIMITS.snippetMin, max: LIMITS.snippetMax }),
-            },
-          ],
-        },
-        {
-          label: t('settings.section_launcher'),
-          controls: [
-            { type: 'text', id: 'trigger', label: t('settings.trigger'), default: DEFAULTS.trigger, placeholder: DEFAULTS.trigger, maxWidth: 120, description: t('settings.trigger_hint', { trigger }) },
-            { type: 'info', html: `<p>${esc(t('settings.language_note'))}</p>` },
-          ],
-        },
-        { label: t('settings.section_data'), controls: data },
-      ],
-    };
+    const explorer = explorerControls(t, this.hostFeatures());
+    const sections = [
+      {
+        label: t('settings.section_privacy'),
+        controls: [
+          { type: 'info', html: `<p>${esc(t('settings.disclosure'))}</p><p>${esc(t('settings.no_credentials'))}</p>` },
+        ],
+      },
+      {
+        label: t('settings.section_you'),
+        controls: [
+          { type: 'text', id: 'my_names', label: t('settings.my_names'), default: DEFAULTS.my_names, placeholder: t('settings.my_names_placeholder'), description: t('settings.my_names_hint') },
+          {
+            type: 'select', id: 'week_start', label: t('settings.week_start'), default: DEFAULTS.week_start,
+            // i18n-keys: settings.week_*
+            options: WEEK_STARTS.map((value) => ({ value, label: t(`settings.week_${value}`) })),
+          },
+        ],
+      },
+      {
+        label: t('settings.section_capture'),
+        controls: [
+          { type: 'checkbox', id: 'fetch_link_titles', label: t('settings.fetch_link_titles'), default: DEFAULTS.fetch_link_titles, description: t('settings.fetch_link_titles_hint') },
+          { type: 'checkbox', id: 'record_source_window', label: t('settings.record_source_window'), default: DEFAULTS.record_source_window, description: t('settings.record_source_window_hint') },
+          { type: 'info', html: `<p>${esc(t('settings.macos_titles'))}</p>` },
+          { type: 'checkbox', id: 'new_items_private', label: t('settings.new_items_private'), default: DEFAULTS.new_items_private, description: t('settings.new_items_private_hint') },
+          { type: 'checkbox', id: 'auto_accept_inferred', label: t('settings.auto_accept_inferred'), default: DEFAULTS.auto_accept_inferred, description: t('settings.auto_accept_inferred_hint') },
+          { type: 'info', html: `<p>${esc(t('settings.documents_note'))}</p>` },
+        ],
+      },
+      {
+        label: t('settings.section_agent'),
+        controls: [
+          { type: 'checkbox', id: 'agent_tools', label: t('settings.agent_tools'), default: DEFAULTS.agent_tools, description: t('settings.agent_tools_hint') },
+          {
+            type: 'number', id: 'agent_snippet_chars', label: t('settings.agent_snippet_chars'), default: DEFAULTS.agent_snippet_chars,
+            min: LIMITS.snippetMin, max: LIMITS.snippetMax, step: 20, maxWidth: 120,
+            description: t('settings.agent_snippet_chars_hint', { min: LIMITS.snippetMin, max: LIMITS.snippetMax }),
+          },
+        ],
+      },
+      {
+        label: t('settings.section_launcher'),
+        controls: [
+          { type: 'text', id: 'trigger', label: t('settings.trigger'), default: DEFAULTS.trigger, placeholder: DEFAULTS.trigger, maxWidth: 120, description: t('settings.trigger_hint', { trigger }) },
+          { type: 'info', html: `<p>${esc(t('settings.language_note'))}</p>` },
+        ],
+      },
+      { label: t('settings.section_data'), controls: data },
+    ];
+    // The map explorer's section sits just before "Your data".
+    if (explorer.length) sections.splice(sections.length - 1, 0, { label: t('settings.section_explorer'), controls: explorer });
+    return { description: t('settings.description', { trigger }), sections };
   }
 
   validate(values = {}) {
@@ -185,6 +206,8 @@ export default class MindMapSettingsProvider {
     try {
       if (action === 'export_json') {
         await mind.ready();
+        // The explorer's pins go in the export too (layout.pins).
+        await mind.loadLayout().catch(() => null);
         const data = mind.exportJson({ note: t('settings.export_note') });
         return {
           status: t('settings.exported', { n: data.items.length }),
@@ -209,6 +232,14 @@ export default class MindMapSettingsProvider {
       }
       if (action === 'import_json') {
         return { host: { type: 'pick_file', accept: '.json', action: 'import_json' } };
+      }
+      if (action === 'open_explorer') {
+        // permissions: views
+        return this.hostFeatures().includes('views') ? { host: { type: 'open_view', view: 'explorer' } } : {};
+      }
+      if (action === 'reset_layout') {
+        await mind.resetLayout();
+        return { status: t('settings.layout_reset') };
       }
       if (action === 'delete_all') {
         const out = await mind.deleteAll();

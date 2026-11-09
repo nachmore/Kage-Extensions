@@ -1,13 +1,13 @@
 {
   "id": "mindmap",
   "name": "__MSG_manifest.name__",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "extension",
   "description": "__MSG_manifest.description__",
   "icon": "🧠",
   "author": "kage",
   "tags": ["productivity", "notes", "knowledge", "mindmap", "todo", "bookmarks", "organizer", "ai"],
-  "permissions": ["storage", "urls", "network", "windows"],
+  "permissions": ["storage", "urls", "network", "windows", "views"],
   "config": {
     "my_names": { "type": "string", "default": "" },
     "week_start": { "type": "string", "default": "auto", "enum": ["auto", "mon", "sun", "sat"] },
@@ -24,6 +24,17 @@
     "toolProvider": "./tools.js",
     "messageFormatters": "./formatter.js",
     "settingsProvider": "./settings.js",
-    "css": ["./styles.css"]
+    "css": ["./styles.css"],
+    "views": [
+      {
+        "id": "explorer",
+        "title": "__MSG_view.explorer.title__",
+        "icon": "🗺️",
+        "module": "./explorer.js",
+        "css": ["./explorer.css"],
+        "defaultSize": { "width": 1200, "height": 800 },
+        "minSize": { "width": 640, "height": 420 }
+      }
+    ]
   }
 }

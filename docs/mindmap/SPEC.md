@@ -743,10 +743,13 @@ at the end, so `check:security` can resolve them.
 | `mm-links` | `{schema, rev, txn, links: Link[], rejections: Rejection[]}` |
 | `mm-journal` | `{schema, rev, txn, ops: JournalOp[]}`, capped at 200 ops **and** 256 KB serialized (oldest dropped) |
 | `mm-lock` | `{owner, nonce, expiresAt}`, no twin |
+| `mm-layout` | The explorer's pins (§9.5): `{schema:1, rev, txn, pins:{[ref]:{x, y, at}}}`, at most 5,000 (newest kept). Written under the lock, not journaled. |
+| `mm-view` | The explorer's state on this computer (§9.5): `{schema:1, camera:{x, y, zoom}, focus, history, lens, scroll, panelOpen, updatedAt}`. Only the explorer writes it, at most once every 2 s, last write wins. |
 | `nx-<key>` | twin copy of every data key above except the lock (see 7.3) |
 
-Reserved for later: `mm-body-<id>` (long bodies) and `mm-view` (cross-window
-view state). v1 never writes them.
+Reserved for later: `mm-body-<id>` (long bodies). Delete everything removes
+`mm-layout` and `mm-view` too; Export JSON carries the pins as `layout.pins`
+and Import JSON restores the ones whose item or name is here.
 
 ### 7.2 Limits
 
@@ -1118,8 +1121,9 @@ Filters on the map are deliberately few in v1. The focus itself is the filter.
 focus resolves to an item, the matched terms are highlighted in the centre
 card.
 
-Pan, zoom, drag and pinned positions are not in v1. They need a host canvas
-surface (§19).
+Pan, zoom, drag and pinned positions are the explorer's (§9.5). The card
+links to it where the host has views: a **⤢ Explorer** header button
+(`mm:b<blk>:explore`), and **Explore** next to **Map** on the item card.
 
 ### 9.4 Budgets, accessibility, motion
 
@@ -1143,6 +1147,47 @@ surface (§19).
 - **Older hosts** (no `context.formatter`): the card renders but can't
   re-centre. Its footer says "Update Kage to navigate the map — or use
   `mm @name`".
+
+### 9.5 The explorer (full window)
+
+A pan/zoom map in its own window, drawn on Canvas 2D through Kage's
+extension views (`contributes.views` "explorer", the `views` capability).
+Kage's [EXTENSION_VIEWS.md](https://github.com/nachmore/Kage/blob/main/docs/design/EXTENSION_VIEWS.md)
+§24 is the full design; this is what Mind Map does.
+
+- **Ways in** (only where `context.hostFeatures` has `views`): "🗺️ Open in
+  explorer" leads `mm map [focus]`; `mm explore [focus]`; the map card's
+  ⤢ Explorer and the item card's Explore; settings → Map explorer → Open.
+  Each returns `{type:'open_view', view:'explorer', params:{focus, query?}}`.
+- **What it draws**: the focus and its neighbours two links out (at most
+  300 nodes; expanding a node adds up to 60, at most 2,000 in all), seeded in
+  the map card's lanes and mirrored in RTL, then one force pass off the main
+  thread (`context.runSandboxed`, ≤ 300 iterations, 250 ms; on a timeout the
+  seeds stay). Pinned nodes keep their positions. Edges: solid for mentions
+  and parent/child, dashed for suggestions and the top 3 related items, thin
+  for co-occurrence. Below zoom 0.35 nodes are dots; then 12- and 24-character
+  labels; above 1.2 a sub line (kind · date · source app).
+- **Input**: drag or Space + drag to pan, scroll (pans on macOS, zooms
+  elsewhere; a toolbar toggle), ⌘/Ctrl + scroll, pinch, `+`/`−`/`0`; click
+  selects, a drag moves and pins, `P` pins, double-click or Enter centres
+  (history ≤ 20, Back, Home), Space or the ＋ handle shows connections, arrows
+  move the selection, `/` or ⌘/Ctrl+F searches, Esc clears, ⌘/Ctrl+Z undoes
+  the last move.
+- **Panel**: Done, Reopen, Accept, Not an action, Make private / shareable
+  (each with Undo), Open (links in the browser, paths copied, notes in full),
+  Ask (fills the launcher with `mm? …`, never sends; off for private items),
+  Pin, Centre here, Show / hide connections. Lens chips: kinds, My actions,
+  Show done. **＋ Add** captures with `via: 'explorer'`.
+- **Other windows**: the explorer listens for storage change events; a
+  change to `mm-meta` or `mm-layout` from another window syncs, rebuilds the
+  same scene with positions kept, and redraws once. The launcher, chat and
+  settings instances also sync at once on a `mm-meta` change.
+- **Accessibility**: a focusable list (`role="listbox"`) mirrors the nodes in
+  reading order (focus, then up, start, end, down) and is the main view in
+  List mode; the selection is announced. Colours come from Kage's theme
+  tokens; no animation with reduced motion.
+- **Privacy**: private items are drawn (it's local) but never reach compose
+  text; the window title says "Private item" instead of their name.
 
 ---
 
@@ -1462,6 +1507,8 @@ only the extension id.
 | `config.manifest_defaults` | hostFeatures | Normal | `DEFAULTS` fallbacks (`??`) everywhere |
 | `invoke.error_kind` | hostFeatures | Branch on `err.kind` | Match on the known message text for rate limits only |
 | macOS window titles | non-empty `title` | Window docs | Window doc row hidden; app recorded only |
+| Extension views | `context.hostFeatures.includes('views')` | The explorer (§9.5) and its rows and buttons | No explorer; with `storage.change_events` but no `views` (not approved yet), settings says to approve it in the Store |
+| Storage change events | `storage.change_events` and `context.storage.onChanged` | Every window syncs as soon as another one saves | The 1.5 s `syncIfStale` only |
 
 No minimum host version is required. Every optional feature is detected.
 
@@ -1480,8 +1527,8 @@ No minimum host version is required. Every optional feature is detected.
 - **Floating-bottom widget**: a due-actions bar or mini map. Needs host feature
   `widgets.floating_bottom`, so it can tell it isn't in chat, plus
   identical-render skipping.
-- **Pan/zoom canvas**: drag-to-pin positions and saved views. Needs a host
-  "view" surface with pointer events and Canvas 2D.
+- ~~**Pan/zoom canvas**~~: built as the explorer (§9.5, WP-V8), on Kage's
+  extension views.
 - **Document text ingestion** without the agent: needs a host
   pick-file-and-extract-text command. Also opening local files in place (the
   `launch` capability).

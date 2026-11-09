@@ -1030,6 +1030,46 @@ a staging copy (558 strings, 0 failures).
   to S7. Until it lands, `validate` rejects a top-level `sync` block as an
   unknown field.
 
+## WP-V8: the map explorer (`explorer*.js`, `explorer.css`, `lib/{camera,spatial,layout,scene}.js`)
+
+Kage's EXTENSION_VIEWS §24 and §24.9. Kage's host side (V1–V6) is built in
+parallel, so the explorer is coded against that document and tested with
+fakes in `test-helpers/mindmap/view-host.mjs` (change events over the memory
+host, `context.view`, a recording 2D context, hand-run animation frames).
+Every new host feature is detected: without `views` nothing explorer-related
+shows; with `storage.change_events` but no `views`, settings says to approve
+the permission.
+
+- **Manifest.** `views` capability and one view, `explorer` (1200 × 800,
+  at least 640 × 420). Version 0.2.0.
+- **Data.** `mind.links(ref)` feeds `lib/scene.js`; `mm-layout` (pins, under
+  the lock, merged per pin) and `mm-view` (this computer, at most one write
+  every 2 s). Delete everything removes both; Export JSON carries
+  `layout.pins` and Import JSON restores them. Every window's Mind syncs at
+  once on another window's `mm-meta` change.
+- **Choices the design left open, or where it differs:**
+  - The details panel is on the start side in both directions (left, or
+    right in RTL), so it mirrors with the rest of the window.
+  - Ask fills the launcher with the configured trigger (`brain? …`), not a
+    literal `mm? `.
+  - Each `links()` entry carries its ExNode, so the scene needs no second
+    lookup.
+  - `explorer` joins the model's capture sources, so `via: 'explorer'` is
+    stored (older versions read it as `launcher`).
+  - Space or ＋ on a node that's already expanded hides its connections:
+    the "collapse something" the full-map toast asks for.
+  - Search lists `@name` first, then matching notes, then names met in
+    plain words.
+  - A private focus titles the window "Private item".
+- **Not here:** the organiser's status chip and Accept/Dismiss for inferred
+  names (AC-MM3's background organiser); **Add a file…** (FT-MM3).
+- **Strings.** 59 new EN keys only. The acceptance test's locale-parity
+  check lists them as pending, and `check:i18n` reports them missing from
+  the 31 other catalogs until Kage's `translate.py` runs.
+- **Budgets** (Node, soft checks): `buildScene` of 2,000 nodes, a 300-node
+  `relax` and a 2,000-node frame stay inside their budgets. Matrix item 10
+  (50 fps on a real WebView) waits for a Kage build with V1–V6.
+
 ## Status
 
 **Works (P0/P1/P2, all phases of SPEC §2):**
@@ -1044,6 +1084,8 @@ a staging copy (558 strings, 0 failures).
   Markdown.
 - P2: `mm organize`, merge/forget/rename, archive, Import JSON,
   re-derivation, enrich retry, context edges.
+- WP-V8: the full-window explorer (pan, zoom, pins, search, lenses, the
+  node list), on Kage builds with extension views.
 
 **Known gaps:**
 - Imports that overwrite more than the journal holds aren't undoable (they

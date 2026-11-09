@@ -174,9 +174,9 @@ with it off, organising works as below.
 
 ## Q7. Where should the visual map live?
 
-**Decided:** build the full-window pan/zoom explorer, through the new
-extension views (the `views` capability,
-[EXTENSION_VIEWS.md](https://github.com/nachmore/Kage/blob/main/docs/design/EXTENSION_VIEWS.md), Mind Map in §24). The map card
+**Decided: build it.** Built in WP-V8: the full-window pan/zoom explorer,
+through the new extension views (the `views` capability,
+[EXTENSION_VIEWS.md](https://github.com/nachmore/Kage/blob/main/docs/design/EXTENSION_VIEWS.md), Mind Map in §24; SPEC §9.5). The map card
 stays. Without that host feature, the map card below is the only map.
 
 - **Assumed:** a *map card* drawn by the message formatter inside the floating

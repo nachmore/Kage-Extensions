@@ -23,10 +23,13 @@ failures that unit tests don't catch.
      *non-leaf* module points at a blob URL that has been revoked or never
      rewritten, so it fails to load.
    - The rule:
-     - **Entries** (`search.js`, `tools.js`, `formatter.js`, `settings.js`)
-       may import anything.
-     - **Composers** (`mind.js`, `view.js`) may import **only leaves**.
+     - **Entries** (`search.js`, `tools.js`, `formatter.js`, `settings.js`,
+       and the explorer's view module `explorer.js`) may import anything.
+     - **Composers** (`mind.js`, `view.js`, `explorer-canvas.js`,
+       `explorer-panel.js`) may import **only leaves**.
      - **Leaves** (`defaults.js`, `lib/*.js`) import **nothing**.
+   - The explorer's window (Kage's extension views) loads its module and
+     that module's imports with the same loader.
    - `host-loader.test.js` enforces this (§8). It is copied from
      `extensions/stocks/host-loader.test.js`.
 2. **Specifiers resolve from the extension root.**
@@ -110,6 +113,10 @@ extensions/mindmap/
   formatter.js                 WP-D   entry     thin messageFormatter wrapper around view.formatHtml
   settings.js                  WP-D   entry     settingsProvider
   styles.css                   WP-C
+  explorer.js                  WP-V8  entry     the explorer's view module (contributes.views "explorer")
+  explorer-canvas.js           WP-V8  composer  Canvas 2D renderer, hit tests, pointer/wheel input → intents
+  explorer-panel.js            WP-V8  composer  DOM: toolbar, search, lenses, details panel, node list, toast
+  explorer.css                 WP-V8            ex- classes, injected into the explorer's window only
   _locales/en/messages.json    WP-D   (merges WP-C's fragment)
   lib/ids.js                   WP-A   leaf
   lib/text.js                  WP-A   leaf
@@ -124,11 +131,17 @@ extensions/mindmap/
   lib/bm25.js                  WP-B   leaf
   lib/rank.js                  WP-B   leaf
   lib/graph.js                 WP-C   leaf
+  lib/camera.js                WP-V8  leaf      pan/zoom maths (pure)
+  lib/spatial.js               WP-V8  leaf      uniform grid: culling and hit tests
+  lib/layout.js                WP-V8  leaf      relax(): force pass for runSandboxed (self-contained)
+  lib/scene.js                 WP-V8  leaf      what the explorer draws: nodes, edges, seeds, expand
   lib/*.test.js                owner of the module under test
   view.test.js, styles.test.js WP-C
   host-loader.test.js, mind.test.js, search.test.js, tools.test.js,
   formatter.test.js, settings.test.js, acceptance.test.js       WP-D
+  explorer*.test.js            WP-V8
 test-helpers/mindmap/memory-host.mjs   WP-B   in-memory invoke (data commands + pluggable handlers)
+test-helpers/mindmap/view-host.mjs     WP-V8  fake view host: change events, context.view, canvas stub, frames
 test-helpers/mindmap/corpus.mjs        WP-D   SPEC §3.1 fixture corpus builder
 docs/mindmap/i18n/view.en.json         WP-C   i18n fragment, same format as messages.json; WP-D merges it, then deletes it
 ```
@@ -157,6 +170,12 @@ extension, so they are neither packaged nor security-scanned.
 - `tools.js` and `settings.js` import `mind.js`, `defaults.js`.
 - `mind.js` imports every `lib/*.js` and `defaults.js`, but never `view.js`.
 - `view.js` imports only `./lib/graph.js`.
+- `explorer.js` imports `mind.js`, `view.js`, `explorer-canvas.js`,
+  `explorer-panel.js`, `lib/scene.js`, `lib/layout.js`, `lib/camera.js` and
+  `defaults.js`. It hands `view.js`'s labels to the panel and the canvas,
+  which can't import a composer.
+- `explorer-canvas.js` imports only `./lib/camera.js` and `./lib/spatial.js`;
+  `explorer-panel.js` imports nothing.
 
 Logical dependencies between leaves (through `lib` injection, not imports):
 - `entities` uses `text`.
@@ -184,6 +203,9 @@ Logical dependencies between leaves (through `lib` injection, not imports):
   counts only).
 - **Style.** Two spaces, single quotes, semicolons, ES modules, no bundler
   (CONTRIBUTING.md).
+- **Explorer DOM.** Built with `createElement` and `textContent`, never from
+  HTML strings. Its CSS (`explorer.css`) uses `ex-` classes and Kage tokens
+  only; `styles.css` keeps `mm-` for the host windows.
 
 ---
 
@@ -480,6 +502,14 @@ class Mind {
   // data management
   exportJson(); exportMarkdown(t); exportRaw(); importJson(text); deleteAll(); repair();
   requestReformat();                            // context.formatter?.requestReformat?.()
+  // map explorer (WP-V8, EXTENSION_VIEWS §24)
+  exNode(ref);                                  // ExNode (§6.6b) | null (archived, dismissed, gone)
+  links(ref, { limit = 60 });                   // { node, links: [{ ref, role, style, w, node }] } | null; round robin over kinds
+  loadLayout({ force });  get pins();           // mm-layout → { pins, rev, unreadable }
+  setPins({ [ref]: {x, y} | null });            // under the lock, re-reads first: windows' moves merge; not journaled
+  resetLayout();                                // deletes mm-layout (settings → Reset map layout)
+  loadView(); saveView(view); cleanView(raw);   // mm-view (this computer only, no lock)
+  onRemoteChange(fn);                           // fn({data, layout}) on another window's change (storage.change_events)
 }
 ```
 
@@ -493,6 +523,8 @@ the touched parts, and then:
 - calls `requestReformat()` when that finishes.
 
 ### 5.16 Entries (WP-D)
+
+(The explorer's entry, `explorer.js`, is in §5.23.)
 
 - `search.js`: `initialize`, `onConfigUpdate`, `getKeywords` (trigger, trigger+'+',
   trigger+'?' with `// i18n-keys:`), `match`, `matchAsync`, `execute`,
@@ -508,6 +540,81 @@ the touched parts, and then:
 - `settings.js`: SPEC §13. Uses `mind.stats()`, `exportJson()` etc. through
   `runAction`, returns `{host:{type:'download'|'pick_file'|'refresh'}}`
   effects, and implements `onFileSelected`.
+
+### 5.17 `lib/camera.js` (WP-V8)
+
+```js
+export const ZOOM_MIN, ZOOM_MAX;               // 0.1, 4
+export function createCamera({x, y, zoom});    // screen = world × zoom + (x, y)
+export function worldToScreen(cam, wx, wy); export function screenToWorld(cam, sx, sy);
+export function panBy(cam, dx, dy); export function zoomAt(cam, factor, sx, sy, {min, max});   // the point under (sx, sy) stays put
+export function centerOn(cam, wx, wy, viewport, zoom); export function centerOf(cam, viewport);  // mm-view stores the centre
+export function fit(cam, bounds, viewport, pad, {min, max = 1.25}); export function visibleRect(cam, viewport, margin);
+export function lerpCamera(a, b, t, viewport); export function clampZoom(z, {min, max}); export function sameCamera(a, b);
+```
+
+### 5.18 `lib/spatial.js` (WP-V8)
+
+```js
+export function createGrid(cell = 256); export function insert(grid, id, {x, y, w, h}); export function remove(grid, id);
+export function query(grid, rect);              // ids meeting rect, bottom to top
+export function hit(grid, x, y);                // topmost id containing the point | null
+```
+
+### 5.19 `lib/layout.js` (WP-V8)
+
+```js
+export const RELAX_ITERATIONS, RELAX_TIMEOUT_MS; // 300, 250
+export function relax({ nodes: [{id, x, y, w, h, fixed}], edges: [{a, b, len}], iterations, budgetMs });
+//   → { xy: [x0, y0, …], iterations, done }. Self-contained (Function.toString() for runSandboxed),
+//     deterministic (no randomness), fixed nodes never move, a weak pull keeps nodes near their seeds.
+```
+
+### 5.20 `lib/scene.js` (WP-V8)
+
+```js
+export const SCENE_CAP, EXPAND_CAP, SCENE_MAX, HOPS;  // 300, 60, 2000, 2
+export function buildScene(port, { focus, hops, cap, pins, rtl, lens, origin, linkLimit, hopLimit }); // → Scene (§6.6b)
+export function expand(scene, ref, port, { cap, max, pins });  // → { scene, added, full }
+export function collapse(scene, ref);                          // → { scene, removed }
+export function rebuildScene(prev, port, opts);                // same focus and expansions, positions kept
+export function diffScene(prev, next);                          // → { added, removed, moved, changed }
+export function applyPins(scene, pins); export function carryPositions(prev, next); export function moveNode(scene, ref, x, y, {pinned});
+export function readingOrder(scene);                            // focus, then up, start, end, down
+export function relaxInput(scene, { free }); export function applyRelax(scene, result);
+export function normalizeLens(lens); export function passesLens(node, lens);
+```
+
+### 5.21 `explorer-canvas.js` (WP-V8, composer; imports `lib/camera.js`, `lib/spatial.js`)
+
+```js
+export class ExplorerCanvas {   // { canvas, onIntent, theme, rtl, scroll, labels: {iconOf, subOf, titleOf}, raf?, caf?, now? }
+  attach(); destroy(); setScene(scene, {tweenFrom}); setSelection(ref); setMatches(refs); setTheme(theme);
+  setScrollMode('pan'|'zoom'); setVisible(on); resize(w, h, dpr); setCamera(cam, {animate, report});
+  cameraAt(x, y, zoom); fitCamera(); zoomBy(f); panBy(dx, dy); draw(); invalidate(); hitTest(sx, sy); spaceDown(); spaceUp();
+}
+// intents: select | move {ref, x, y, from} | focus | expand | camera
+export function keyIntent(e, { selected, editing }); export function nearestInDirection(nodes, from, dir);
+export function backingSize(w, h, dpr); export function lodOf(zoom); export function clipLabel(text, n); export function paletteOf(theme);
+```
+
+### 5.22 `explorer-panel.js` (WP-V8, composer; imports nothing)
+
+```js
+export class ExplorerPanel {    // { root, t, rtl, onCommand }
+  build() → stage; setNav; setScroll; setListMode; setPanelOpen; setLens; focusSearch; setSearchValue; setHits;
+  showDetails(detail); setList(options, selected); setListSelection(ref); listNeighbour(ref, step); announce(text); toast(text, {onUndo});
+}
+```
+
+### 5.23 `explorer.js` (WP-V8, entry: the view module)
+
+The class of EXTENSION_VIEWS §9.1 (`initialize`, `mount`, `onOpen`,
+`onShow`, `onHide`, `onThemeChange`, `onConfigUpdate`, `destroy`). It owns
+the focus, history, lens, selection and the layout undo stack, turns
+canvas intents and panel commands into scene changes and Mind calls, saves
+mm-view (at most once every 2 s) and pins (mm-layout), and applies other
+windows' changes from `context.storage.onChanged`.
 
 ---
 
@@ -596,11 +703,21 @@ Placed  { center, nodes: [NodeVM & { lane, slot: 'u1'..'u5'|'d1'..'d5'|'l1'..'l4
           edges: [{ lane, x2, y2, style: 'solid'|'dashed' }] }
 ```
 
+### 6.6b ExNode and Scene (`mind.links` → `scene.js` → the explorer)
+
+```
+ExNode { ref, group: 'entity'|'item'|'overview', kind, label, status?, suggested?, private?, mine?, at?, app?, dueAt?, doneAt? }
+Link   { ref, role: 'entities'|'actions'|'parent'|'docs'|'notes'|'teams'|'people'|'topics'|'stats',
+         style: 'solid'|'dashed'|'thin', w: 0..1, node: ExNode }
+Scene  { focus, rtl, lens: {kinds, mine, done}, nodes: [ExNode & { depth, lane: 'center'|'up'|'start'|'end'|'down',
+         via, focus, x, y, w, h, pinned }], edges: [{ a, b, style, w, role }], byRef, expanded: ref[], bounds, missing, full }
+```
+
 ### 6.7 DataPort and view models (`mind.js` → `view.js`)
 
 ```
 DataPort { loaded, rev, ensureLoaded(), cite(id) → CiteVM|null, op(opId) → OpVM|null, item(id) → ItemVM|null,
-           map(focus, page) → Neighborhood|null, nameOf(id) → string }
+           map(focus, page) → Neighborhood|null, links(ref, {limit}) → {node, links}|null, nameOf(id) → string }
 CiteVM { id, kind, title, day, snippet, url?, private, missing }
 OpVM   { opId, code, undone, canUndo, at, item?: {id, kind, title, private}, dedupedInto?: {id, day},
          entities: [{id, name, type}], actions: [{id, title, status, suggested, dueAt?}], related: CiteVM[], truncated }
@@ -636,6 +753,7 @@ AgentRecord { cite, kind, title, date: 'YYYY-MM-DD', captured: 'YYYY-MM-DD', sni
 { a: 'map', ref }                       // display [mm-card:map:<ref>]
 { a: 'undo', opId }
 { a: 'ask', question }                  // mm? → {type:'prompt'}
+{ a: 'explore', ref, query? }           // mm:explore → {type:'open_view', view:'explorer', params:{focus, query?}} (views hosts)
 { a: 'help' }  { a: 'settings' }  { a: 'noop' }
 ```
 
@@ -645,6 +763,7 @@ AgentRecord { cite, kind, title, date: 'YYYY-MM-DD', captured: 'YYYY-MM-DD', sni
 mm:a:done:<itemId> | mm:a:reopen:<itemId> | mm:a:accept:<itemId> | mm:a:dismiss:<itemId>
 mm:a:undo:<opId> | mm:a:open:<itemId> | mm:a:private:<itemId> | mm:a:share:<itemId> | mm:a:delete:<itemId>
 mm:b<blk>:f:<ref> | mm:b<blk>:back | mm:b<blk>:home | mm:b<blk>:more:<lane> | mm:b<blk>:mode:<map|list> | mm:b<blk>:map
+mm:b<blk>:explore           open the explorer on what the card shows (→ { host: open_view }; views hosts only)
 mm:c<msg>:x:<n>:<id>        toggle a chip expansion
 mm:c<msg>:map:<id>          dock a map card for <id> at the end of message <msg>
 ```
@@ -686,6 +805,7 @@ Every test is vitest. `npm test` runs all of them, and
 | `lib/graph.js` | Lane assignment for entity, item and overview focus. Caps and "+N more" paging. Stable ordering across calls. `layout` slot classes and coordinates. RTL swaps left and right. Empty lanes. Private nodes flagged. |
 | `view.js` (jsdom) | <br>• **Sanitizer-allowlist assertion**: a helper encodes SPEC §10.2's tag and attribute allowlist and walks every rendered card and chip; any other tag or attribute fails. <br>• Chips are inline (no block element inside `<p>` after `formatHtml`). <br>• Numbering and reuse; deleted and private chips. <br>• `formatHtml` idempotency (`formatHtml(formatHtml(x))` → `null`); `null` for HTML without markers; tokens inside `code`/`pre`/`a` untouched. <br>• Card replacement only for paragraphs that hold just the token. <br>• Staleness by uiRev/dataRev. <br>• State rebuilt from classes after `createFormatterState()`. <br>• `parseAction` for every grammar entry and rejection of junk; `applyUiAction` focus/back/home/more/mode/expand/dock. <br>• Map card a11y: role and aria-labels present, DOM order centre → up → left → right → down; `canNavigate:false` footer. <br>• Labels: `fmtRange` and `dueText` for the fixture dates; `interpLabel` strings for AT-1 and AT-2 (with a stub `t` that echoes keys and params). <br>• Escaping: user text `<img src=x onerror=…>` renders as text. |
 | `styles.css` | `styles.test.js` parses the CSS with a regex. Fails if a selector doesn't start with `.mm-` (`@media` allowed), on `position: fixed`/`sticky`, on `z-index` > 10, on `url(`, and if a `prefers-reduced-motion` guard is missing around transitions. |
+| Explorer (WP-V8) | `lib/camera.test.js`: round trips, zoom at a point, clamps, fit. `lib/spatial.test.js`: query, topmost hit, moves. `lib/layout.test.js`: overlaps resolved, fixed nodes still, deterministic, survives `Function.toString()` and runs in a plain worker. `lib/scene.test.js`: lanes, determinism, RTL mirroring, pins, lens, caps, expand/collapse, rebuild with positions kept. `explorer-canvas.test.js` (jsdom, recording 2D context): LOD, culling, RTL text, theme colours, drag/pan/wheel/pinch, handle. `explorer.test.js`: open with focus, a drag pins to mm-layout and shows after reopening, a non-self mm-meta change redraws once, a private node never reaches compose, `onOpen` re-centres, mm-view round trip, keyboard, panel actions with Undo. `explorer-entry.test.js`: rows, card buttons and settings with and without views; `mind.links`, pins, mm-view, export/import, Delete everything. `explorer-styles.test.js`: the CSS gate for `explorer.css`. |
 | `host-loader.test.js` | Copied from stocks and adapted. <br>• Windows: floating/chat = search + tools + formatter; settings = settings. <br>• Checks BFS discovery, no re-exports, composers import only leaves, leaves import nothing, every import is single-line, no `import … from './` text in comments. <br>• Loads every provider through the host's two-pass rewrite in Node and asserts the default export class names. |
 | `mind.test.js` | Load and sync (`syncIfStale` reloads only changed keys). Crash safety (AT-10). Read-only refuses writes and makes zero data writes. Two windows (AT-9). Undo (AT-8). Link enrichment (mock `fetch_link_metadata`; title only while `auto`; a reformat is requested). The window doc with an empty macOS title is not offered. `agentRecord` omits window and app, applies snippet caps and private exclusion. `askPrompt` with 0 and 8 records strips `<>`. `exportJson` and `deleteAll` (every key and twin deleted). |
 | `search.test.js` | `getKeywords` for the default and a custom trigger. The `mm+` preview row and execute → display with an op token. `mm+` empty → window row (and the hint). The home rows. Loading placeholder → `matchAsync` real rows; a second `matchAsync` with no change returns `[]`. Row ids contain no user text (fuzz with random input). Enter behaviours per kind (`open_url` invoked; doc focus → copy → card). Action toggle returns `replace_input`. `onResultAction` routing. |

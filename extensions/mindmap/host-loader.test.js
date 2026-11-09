@@ -7,9 +7,12 @@
 // rewritten, so it fails to load (ARCHITECTURE §1). Current hosts resolve
 // imports properly, but users on older hosts still run this extension, so
 // the layering here is the strict one:
-//   entries   (search, tools, formatter, settings) may import anything;
-//   composers (mind.js, view.js)                   import only leaves;
-//   leaves    (defaults.js, lib/*.js)              import nothing.
+//   entries   (search, tools, formatter, settings, explorer) may import anything;
+//   composers (mind.js, view.js, explorer-canvas.js,
+//              explorer-panel.js)                            import only leaves;
+//   leaves    (defaults.js, lib/*.js)                        import nothing.
+// The explorer's window (contributes.views, Kage docs/design/EXTENSION_VIEWS.md
+// §8.5) loads its module and that module's imports with the same loader.
 import { describe, expect, it } from 'vitest';
 import { mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -27,16 +30,20 @@ const windows = {
   floating: { search: c.searchProvider, tools: c.toolProvider, formatter: c.messageFormatters },
   chat: { search: c.searchProvider, tools: c.toolProvider, formatter: c.messageFormatters },
   settings: { settings: c.settingsProvider },
+  // A view window loads only its view module (and what that imports).
+  explorer: { view: c.views.find((v) => v.id === 'explorer').module },
 };
 const CLASS_NAMES = {
   search: 'MindMapSearchProvider',
   tools: 'MindMapToolProvider',
   formatter: 'MindMapFormatter',
   settings: 'MindMapSettingsProvider',
+  view: 'MindMapExplorer',
 };
-const COMPOSERS = new Set(['./mind.js', './view.js']);
+const COMPOSERS = new Set(['./mind.js', './view.js', './explorer-canvas.js', './explorer-panel.js']);
 const LIB = readdirSync(new URL('./lib/', import.meta.url)).filter((f) => f.endsWith('.js') && !f.endsWith('.test.js')).map((f) => `./lib/${f}`);
-const RUNTIME = ['./search.js', './tools.js', './formatter.js', './settings.js', './mind.js', './view.js', './defaults.js', ...LIB];
+const RUNTIME = ['./search.js', './tools.js', './formatter.js', './settings.js', './explorer.js', './mind.js', './view.js',
+  './explorer-canvas.js', './explorer-panel.js', './defaults.js', ...LIB];
 
 function discover(entries, readSource) {
   // Same BFS order as sources.js / fetchSharedSourcesViaInvoke in the host.
@@ -118,7 +125,9 @@ describe('host module depth and loading', () => {
   });
 
   it('keeps the entry → composer → leaf layering', () => {
-    const shared = discover(Object.fromEntries(Object.entries(windows.floating).map(([k, p]) => [k, read(p)])), read);
+    const entries = Object.fromEntries([...Object.entries(windows.floating), ...Object.entries(windows.explorer)].map(([k, p]) => [k, read(p)]));
+    const shared = discover(entries, read);
+    expect(shared.has('./explorer-canvas.js') && shared.has('./explorer-panel.js')).toBe(true);
     for (const [path, source] of shared) {
       const deps = imports(source);
       if (COMPOSERS.has(path)) {
@@ -128,6 +137,10 @@ describe('host module depth and loading', () => {
       }
     }
     expect(imports(read('./view.js'))).toEqual(['./lib/graph.js']);
+    expect(imports(read('./explorer-canvas.js')).sort()).toEqual(['./lib/camera.js', './lib/spatial.js']);
+    expect(imports(read('./explorer-panel.js'))).toEqual([]);
+    // The explorer's layout pass is a leaf too: runSandboxed serialises it.
+    expect(imports(read('./lib/layout.js'))).toEqual([]);
     expect(imports(read('./mind.js'))).not.toContain('./view.js');
     for (const leaf of ['./defaults.js', ...LIB]) expect(imports(read(leaf)), leaf).toEqual([]);
   });

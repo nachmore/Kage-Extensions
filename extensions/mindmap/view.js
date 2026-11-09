@@ -765,6 +765,8 @@ export function renderItemCard(vm, ctx = {}) {
   const buttons = [];
   if (canOpen(vm)) buttons.push(btn('mm-btn mm-btn-primary', dataAct(b.blk, 'open', vm.id), esc(t('card.open'))));
   if (nav) buttons.push(btn('mm-btn', `mm:b${b.blk}:map`, esc(t('card.map'))));
+  // The full-window explorer, on hosts that can open it (EXTENSION_VIEWS §24.2).
+  if (nav && ctx.canExplore) buttons.push(btn('mm-btn', `mm:b${b.blk}:explore`, esc(t('card.explore'))));
   if (nav && vm.kind === 'action') buttons.push(actionButtons(vm, t, { full: true, blk: b.blk }));
   if (nav) {
     buttons.push(vm.private
@@ -1004,6 +1006,7 @@ function barHtml(ui, current, blk, nav, rtl, t, ctx) {
     tools.push(ui.mode === 'list'
       ? btn('mm-tool', `mm:b${blk}:mode:map`, `◎ ${esc(t('map.map'))}`)
       : btn('mm-tool', `mm:b${blk}:mode:list`, `☰ ${esc(t('map.list'))}`));
+    if (ctx.canExplore) tools.push(btn('mm-tool', `mm:b${blk}:explore`, `⤢ ${esc(t('map.explorer'))}`, { title: t('map.explorer_tip') }));
   }
   return `<div class="mm-bar"><span class="mm-trail" role="navigation"${attr('aria-label', t('map.trail'))}><span class="mm-brand">🧠</span>${lead}${crumbs.join(sep)}</span>${tools.length ? `<span class="mm-tools">${tools.join('')}</span>` : ''}</div>`;
 }
@@ -1081,7 +1084,7 @@ export function renderHelpCard(ctx = {}) {
 
 const DATA_VERBS = new Set(['done', 'reopen', 'accept', 'dismiss', 'undo', 'open', 'private', 'share', 'delete']);
 const A_RE = /^mm:b([0-9a-z]{1,12}):a:([a-z]+):([a-z0-9]{15})$/;
-const B_RE = /^mm:b([0-9a-z]{1,12}):(f|back|home|more|mode|map)(?::([a-z0-9]{1,15}))?$/;
+const B_RE = /^mm:b([0-9a-z]{1,12}):(f|back|home|more|mode|map|explore)(?::([a-z0-9]{1,15}))?$/;
 const C_RE = /^mm:c([0-9a-z]{1,12}):(x|map):([a-z0-9:]{2,24})$/;
 
 /** Parse a data-ext-action id. Returns null for anything outside the grammar. */
@@ -1260,6 +1263,20 @@ function actsOf(html, blk) {
     if (m[1].startsWith(prefix)) out.add(m[1]);
   }
   return out;
+}
+
+/**
+ * What `mm:b<blk>:explore` opens the explorer on: the ref the card shows
+ * (a map card's current centre, an item card's item), or null when this
+ * window doesn't know the card (then nothing opens).
+ */
+export function exploreRef(state, parsed) {
+  if (!state || parsed?.scope !== 'block' || parsed.verb !== 'explore') return null;
+  const st = state.blocks.get(parsed.blk);
+  if (!st || st.stub) return null;
+  if (st.type === 'map') return currentRef(st);
+  const ref = st.type === 'item' ? st.ref : st.itemId;
+  return ref && MAP_REF.test(ref) ? ref : null;
 }
 
 /**
@@ -1676,7 +1693,7 @@ function kickLoad(port, ctx, state) {
  * Turn `[mm:ID]` citations into chips and `[mm-card:…]` paragraphs into
  * cards; refresh cards and chips whose UI or data changed (SPEC §10).
  *
- * ctx = { t, locale, rtl, now?, trigger?, canReformat, requestReformat?, log?, state = ui }
+ * ctx = { t, locale, rtl, now?, trigger?, canReformat, canExplore?, requestReformat?, log?, state = ui }
  * @returns {string|null} new body HTML, or null when nothing changed.
  */
 export function formatHtml(html, port, ctx = {}) {
@@ -1700,6 +1717,7 @@ export function formatHtml(html, port, ctx = {}) {
         trigger: ctx.trigger || 'mm',
         canReformat: !!ctx.canReformat,
         canNavigate: !!ctx.canReformat,
+        canExplore: !!ctx.canExplore && !!ctx.canReformat,
         nameOf: (id) => safe(() => port?.nameOf?.(id)) || '',
       },
     };

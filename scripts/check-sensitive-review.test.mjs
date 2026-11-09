@@ -259,6 +259,6 @@ export function persist(accessToken) { return ctx.invoke('save_extension_data', 
                 }
             }
         }
-        expect(count).toBe(101);
+        expect(count).toBe(111);
     });
 });

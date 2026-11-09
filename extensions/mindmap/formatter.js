@@ -32,6 +32,13 @@ export default class MindMapFormatter {
     return typeof this.context.formatter?.requestReformat === 'function';
   }
 
+  // The map explorer opens from card buttons only where the host offers
+  // views and the user approved them (EXTENSION_VIEWS §9.4, §24.8).
+  get canExplore() {
+    const features = this.context.hostFeatures;
+    return Array.isArray(features) && features.includes('views');
+  }
+
   async format(html, ctx = {}) {
     if (ctx?.streaming) return null;
     if (typeof html !== 'string' || !QUICK.test(html)) return null;
@@ -64,6 +71,7 @@ export default class MindMapFormatter {
       now: mind.now(),
       trigger: triggerOf(this.config),
       canReformat,
+      canExplore: this.canExplore,
       requestReformat: () => mind.requestReformat(),
       log: this.log,
     });
