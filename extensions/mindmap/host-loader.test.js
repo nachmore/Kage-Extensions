@@ -136,7 +136,7 @@ describe('host module depth and loading', () => {
         expect(deps, `leaf ${path} must import nothing`).toEqual([]);
       }
     }
-    expect(imports(read('./view.js'))).toEqual(['./lib/graph.js']);
+    expect(imports(read('./view.js'))).toEqual(['./lib/graph.js', './lib/filetext.js']);
     expect(imports(read('./explorer-canvas.js')).sort()).toEqual(['./lib/camera.js', './lib/spatial.js']);
     expect(imports(read('./explorer-panel.js'))).toEqual([]);
     // The explorer's layout pass is a leaf too: runSandboxed serialises it.

@@ -20,12 +20,13 @@
 
 import { getMind } from './mind.js';
 import { ETYPE_ICONS, doneText, dueText, etypeLabel, fmtDay, itemIcon, kindLabel } from './view.js';
+import { fileErrorText, fileLines, fileSize } from './lib/filetext.js';
 import { ExplorerCanvas, clipLabel, keyIntent, nearestInDirection } from './explorer-canvas.js';
 import { ExplorerPanel, LENS_KINDS } from './explorer-panel.js';
 import { EXPAND_CAP, REF_RE, SCENE_CAP, SCENE_MAX, applyRelax, buildScene, collapse, diffScene, expand, moveNode, normalizeLens, readingOrder, rebuildScene, relaxInput } from './lib/scene.js';
 import { RELAX_ITERATIONS, RELAX_TIMEOUT_MS, relax } from './lib/layout.js';
 import { centerOf, worldToScreen } from './lib/camera.js';
-import { triggerOf } from './defaults.js';
+import { LIMITS, triggerOf } from './defaults.js';
 
 const VIEW_SAVE_MS = 2000;
 const HISTORY_MAX = 20;
@@ -36,6 +37,8 @@ const HITS_SHOWN = 8;
 const QUERY_MAX = 200;
 const LOCK = '🔒';
 const PRIVATE_TITLE_MAX = 60;
+// Where a part of a document's text may end early to cut at a line or a space.
+const CUT_SLACK = 400;
 
 const oneLine = (value) => String(value ?? '').replace(/\s+/g, ' ').trim();
 const isHttp = (value) => typeof value === 'string' && /^https?:\/\/\S+$/i.test(value);
@@ -49,6 +52,24 @@ function cleanParams(params) {
     if (q) out.query = q;
   }
   return out;
+}
+
+// Where each part of `text` starts: about `size` characters each, cut at a
+// line break or a space near the end, never inside a surrogate pair.
+export function textParts(text, size = LIMITS.docTextPage) {
+  const str = String(text ?? '');
+  const starts = [0];
+  for (let at = 0; at + size < str.length;) {
+    let end = at + size;
+    const nl = str.lastIndexOf('\n', end);
+    const sp = str.lastIndexOf(' ', end);
+    if (nl > end - CUT_SLACK) end = nl + 1;
+    else if (sp > end - CUT_SLACK) end = sp + 1;
+    else if (/[\udc00-\udfff]/.test(str[end] || '')) end -= 1;
+    starts.push(end);
+    at = end;
+  }
+  return starts;
 }
 
 function isEditable(target) {
@@ -78,6 +99,9 @@ export default class MindMapExplorer {
     this.searchHits = [];
     this._sceneSeq = 0;
     this._fullText = null;
+    // A picked document's text in the panel: { ref, body, starts, index } or
+    // { ref, loading } / { ref, missing }.
+    this._docText = null;
     this._pending = null;
     this._changeRun = null;
     this._destroyed = false;
@@ -137,6 +161,9 @@ export default class MindMapExplorer {
     this.focus = focus;
     this.selected = focus;
 
+    // What Kage reads, asked now so a click on "Add a file…" opens the
+    // dialog straight away (the click must still count as recent, §5.2).
+    if (mind.canPickFiles) mind.fileSupport().catch(() => null);
     this._buildDom();
     this._setScene(this._build(focus));
     if (params.query) {
@@ -219,7 +246,7 @@ export default class MindMapExplorer {
   // --- DOM -----------------------------------------------------------------------
 
   _buildDom() {
-    this.panel = new ExplorerPanel({ root: this.root, t: this.t, rtl: this.rtl, onCommand: (c) => this._command(c) });
+    this.panel = new ExplorerPanel({ root: this.root, t: this.t, rtl: this.rtl, onCommand: (c) => this._command(c), canAddFile: this.mind.canPickFiles });
     const stage = this.panel.build();
     const canvas = this.doc.createElement('canvas');
     canvas.className = 'ex-canvas';
@@ -316,6 +343,8 @@ export default class MindMapExplorer {
     const t = this.t;
     if (node.group === 'entity') return etypeLabel(node.kind, t);
     if (node.group !== 'item') return '';
+    // A document from a file: its name and page count (§11.6).
+    if (node.file?.name) return [node.file.name, node.file.pages ? t('files.row.pages', { n: node.file.pages }) : ''].filter(Boolean).join(t('chip.sep'));
     const now = this.mind.now();
     const parts = [kindLabel(node.kind, t)];
     if (Number.isFinite(node.at)) parts.push(fmtDay(node.at, this.locale, { now }));
@@ -446,6 +475,7 @@ export default class MindMapExplorer {
     this.focus = ref;
     this.selected = ref;
     this._fullText = null;
+    this._docText = null;
     this._setScene(this._build(ref, { origin: { x: here.x, y: here.y } }));
     const f = this.scene.nodes[0];
     this.canvas.setCamera(this.canvas.cameraAt(f.x, f.y), { animate: true });
@@ -473,7 +503,10 @@ export default class MindMapExplorer {
 
   _select(ref, { announce = true } = {}) {
     const next = ref && this.scene?.byRef.has(ref) ? ref : null;
-    if (next !== this.selected) this._fullText = null;
+    if (next !== this.selected) {
+      this._fullText = null;
+      this._docText = null;
+    }
     this.selected = next;
     this.canvas.setSelection(next);
     this.panel.setListSelection(next);
@@ -697,6 +730,11 @@ export default class MindMapExplorer {
       case 'open': return this._open(ref);
       case 'ask': return this._ask(ref);
       case 'capture': return this._capture(c.text);
+      case 'addFile': return this._addFile();
+      case 'updateFile': return this._addFile(ref);
+      case 'docText': return this._toggleDocText(ref);
+      case 'docPrev': this._turnDocText(ref, -1); break;
+      case 'docNext': this._turnDocText(ref, 1); break;
       case 'done':
       case 'reopen':
       case 'accept':
@@ -855,6 +893,89 @@ export default class MindMapExplorer {
     this.panel.toast(this.t('explorer.saved', { title }), { onUndo: () => this._undoData(out.opId) });
   }
 
+  /**
+   * "Add a file…" in the toolbar (§11.2 C11), or "Update from file…" on a
+   * doc (C12, `targetId`). The click inside this window counts as one Kage
+   * saw, so its file dialog opens at once. The doc is then selected and
+   * centred, with what it held in a toast (and Undo).
+   * permissions: file_text
+   */
+  async _addFile(targetId) {
+    const mind = this.mind;
+    const out = await mind.addFile(targetId ? { targetId } : {}).catch((error) => ({ ok: false, code: error?.code || 'generic' }));
+    if (this._destroyed) return;
+    if (!out?.ok) {
+      const why = fileErrorText(out, { t: this.t });
+      if (why) this.panel.toast(why);
+      return;
+    }
+    this._docText = null;
+    this._refresh();
+    if (mind.exNode(out.itemId)) this._setFocus(out.itemId);
+    const line = fileLines(out, { t: this.t, locale: this.locale, now: mind.now(), fmtDay }).join(' ');
+    this.panel.toast(line, out.opId ? { onUndo: () => this._undoData(out.opId) } : {});
+  }
+
+  // Show text / Hide text: the whole document, a part at a time (§11.6).
+  async _toggleDocText(ref) {
+    const item = this.mind.item(ref);
+    if (!item?.file) return;
+    if (this._docText?.ref === ref) {
+      this._docText = null;
+      this._renderDetails();
+      return;
+    }
+    const key = item.body?.key || null;
+    this._docText = { ref, key, loading: true };
+    this._renderDetails();
+    const body = await this.mind.loadBody(item).catch(() => null);
+    if (this._destroyed || this._docText?.ref !== ref) return;
+    this._docText = body ? { ref, key, body, starts: textParts(body.text), index: 0 } : { ref, key, missing: true };
+    this._renderDetails();
+  }
+
+  _turnDocText(ref, step) {
+    const d = this._docText;
+    if (!d?.body || d.ref !== ref) return;
+    const index = Math.min(d.starts.length - 1, Math.max(0, d.index + step));
+    if (index === d.index) return;
+    d.index = index;
+    this._renderDetails();
+    this.panel.announce(this._docStatus(d));
+  }
+
+  _docStatus(d) {
+    return d.starts.length > 1 ? this.t('files.text.part', { n: d.index + 1, total: d.starts.length }) : '';
+  }
+
+  // The panel's view of the open document text: this part, split where
+  // pages start ("p. 4", from Kage's page_starts for PDF and slides).
+  _docDetail() {
+    const d = this._docText;
+    const t = this.t;
+    if (d.loading) return { note: t('files.text.loading') };
+    if (d.missing) return { note: t('files.card.text_elsewhere') };
+    const from = d.starts[d.index];
+    const to = d.index + 1 < d.starts.length ? d.starts[d.index + 1] : d.body.text.length;
+    const pages = Array.isArray(d.body.pageStarts) ? d.body.pageStarts : [];
+    const cuts = [];
+    let first = 0;
+    pages.forEach((start, i) => {
+      if (start <= from) first = i + 1;
+      else if (start < to) cuts.push({ at: start, page: i + 1 });
+    });
+    const parts = [];
+    let at = from;
+    let page = first;
+    for (const cut of cuts) {
+      if (cut.at > at) parts.push({ label: page ? t('files.text.page', { n: page }) : '', text: d.body.text.slice(at, cut.at) });
+      at = cut.at;
+      page = cut.page;
+    }
+    parts.push({ label: page ? t('files.text.page', { n: page }) : '', text: d.body.text.slice(at, to) });
+    return { status: this._docStatus(d), parts, canPrev: d.index > 0, canNext: d.index + 1 < d.starts.length };
+  }
+
   _err(code) {
     const known = new Set(['readonly', 'busy', 'conflict', 'io', 'empty', 'not_found', 'not_action', 'noop', 'unreadable', 'future_schema',
       'superseded', 'already_undone', 'missing', 'nothing', 'too_large']);
@@ -927,13 +1048,27 @@ export default class MindMapExplorer {
       }
     }
     const text = [vm.summary && oneLine(vm.summary) !== oneLine(vm.text) ? vm.summary : '', vm.text].filter(Boolean).join('\n\n');
-    if (isHttp(vm.url)) buttons.push({ type: 'open', label: t('card.open'), primary: vm.kind !== 'action' });
+    // A document from a file: its name and size, Show text (the whole
+    // document, a part at a time) and Update from file… (§11.2, §11.6).
+    if (vm.file) meta.push(vm.file.name, fileSize(vm.file, { t, locale: this.locale }));
+    // Re-read elsewhere meanwhile: the open text is an older version.
+    const shownKey = mind.item(node.ref)?.body?.key || null;
+    if (this._docText?.ref === node.ref && !this._docText.loading && this._docText.key !== shownKey) this._docText = null;
+    const docOpen = !!vm.file && this._docText?.ref === node.ref;
+    if (vm.file) {
+      // i18n-keys: files.action.show_text, files.action.hide_text
+      buttons.push({ type: 'docText', label: t(docOpen ? 'files.action.hide_text' : 'files.action.show_text'), primary: !docOpen });
+      if (vm.file.canUpdate) buttons.push({ type: 'updateFile', label: t('files.action.update') });
+    } else if (isHttp(vm.url)) buttons.push({ type: 'open', label: t('card.open'), primary: vm.kind !== 'action' });
     else if (vm.path) buttons.push({ type: 'open', label: t('explorer.copy_path') });
     else if (text.length > 600 && this._fullText !== node.ref) buttons.push({ type: 'open', label: t('card.open') });
     const hidden = mind.isHidden(mind.item(node.ref));
     buttons.push({ type: 'ask', label: t('explorer.ask'), disabled: hidden, title: hidden ? t('explorer.ask_private') : undefined });
     common();
-    buttons.push(vm.private ? { type: 'share', label: t('card.make_shareable') } : { type: 'private', label: t('card.make_private') });
+    // A doc kept private because it may hold a password or key (§11.7).
+    const secret = !!vm.file?.warnings?.includes('possible_secret');
+    // i18n-keys: files.action.reveal_to_agent, card.make_shareable
+    buttons.push(vm.private ? { type: 'share', label: t(secret ? 'files.action.reveal_to_agent' : 'card.make_shareable') } : { type: 'private', label: t('card.make_private') });
     const entities = (vm.entities || []).map((e) => ({ ref: e.id, label: `${e.private ? LOCK : ETYPE_ICONS[e.type] || '•'} ${clipLabel(e.name, 32)}` }));
     this.panel.showDetails({
       ref: node.ref,
@@ -946,6 +1081,7 @@ export default class MindMapExplorer {
       badges,
       entities,
       buttons,
+      doc: docOpen ? this._docDetail() : undefined,
     });
   }
 

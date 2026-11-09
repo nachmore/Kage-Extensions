@@ -5,8 +5,10 @@
 // context and hand-run animation frames (test-helpers/mindmap/view-host.mjs).
 import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import { FIXTURE_NOW, buildCorpus, makeHarness, makeI18n } from '../../test-helpers/mindmap/corpus.mjs';
-import { DARK_THEME, LIGHT_THEME, createChangeBus, installCanvasStub, makeViewContext, manualFrames } from '../../test-helpers/mindmap/view-host.mjs';
-import MindMapExplorer from './explorer.js';
+import { DARK_THEME, LIGHT_THEME, VIEW_FEATURES, createChangeBus, installCanvasStub, makeViewContext, manualFrames } from '../../test-helpers/mindmap/view-host.mjs';
+import { fileText, installFiles } from '../../test-helpers/mindmap/file-host.mjs';
+import MindMapExplorer, { textParts } from './explorer.js';
+import { validateFileText } from './lib/files.js';
 import { centerOf, worldToScreen } from './lib/camera.js';
 import { getMind } from './mind.js';
 
@@ -44,10 +46,12 @@ const idOf = (name, type) => h.mind.resolveEntity(name, type)?.entityId;
 const nodeOf = (explorer, ref) => explorer.scene.nodes[explorer.scene.byRef.get(ref)];
 const tick = () => new Promise((resolve) => setTimeout(resolve, 0));
 
-async function openExplorer({ params, theme = DARK_THEME, i18n, storage = true, runSandboxed } = {}) {
+async function openExplorer({ params, theme = DARK_THEME, i18n, storage = true, runSandboxed, files = false } = {}) {
   const frames = manualFrames();
-  const made = makeViewContext(h.host, { bus: storage ? bus : null, theme, i18n, runSandboxed });
+  const hostFeatures = files ? [...VIEW_FEATURES, 'files.pick_text'] : VIEW_FEATURES;
+  const made = makeViewContext(h.host, { bus: storage ? bus : null, theme, i18n, runSandboxed, hostFeatures });
   if (runSandboxed === null) delete made.context.runSandboxed;
+  if (files) made.fake = installFiles(made.context);
   const explorer = new MindMapExplorer({ raf: frames.raf, caf: frames.caf, now: frames.now });
   explorer.initialize(made.context);
   const root = document.createElement('div');
@@ -427,5 +431,90 @@ describe('theme and RTL', () => {
     expect(frames.flush()).toBeGreaterThan(0);
     explorer.destroy();
     expect(bus.listeners).toBe(listeners - 1);
+  });
+});
+
+// --- documents from a file (Kage EXTENSION_FILE_TEXT §11.2 C11, C12, §11.6) ------------
+
+describe('documents', () => {
+  const PAGED = Array.from({ length: 600 }, (_, i) => `Line ${i} of the vendor review, on price and support.`).join('\n');
+  const fileButton = (root) => [...root.querySelectorAll('.ex-add button')].find((b) => b.textContent.includes('Add a file…'));
+
+  it('Add a file… is in the toolbar only where Kage reads files, and the new doc is selected and centred', async () => {
+    const plain = await openExplorer();
+    expect(fileButton(plain.root)).toBeUndefined();
+    const { explorer, root, fake, mind } = await openExplorer({ files: true });
+    const button = fileButton(root);
+    expect(button).toBeTruthy();
+    fake.queue(fileText(PAGED, { pageCount: 3, name: 'Vendor review.pdf', ref: 'X1' }));
+    button.click();
+    await vi.waitFor(() => expect(explorer.focus).toMatch(/^i[0-9a-z]{14}$/));
+    const doc = mind.item(explorer.focus);
+    expect(doc.file.name).toBe('Vendor review.pdf');
+    expect(explorer.selected).toBe(doc.id);
+    expect(fake.calls).toHaveLength(1);
+    expect(root.querySelector('.ex-toast').textContent).toMatch(/^Added Vendor review\.pdf: 3 pages, [\d,]+ characters\./);
+    expect(root.querySelector('.ex-toast button').textContent).toContain('Undo');
+    expect(explorer._sub(mind.exNode(doc.id))).toBe('Vendor review.pdf · 3 pages');
+    expect(root.querySelector('.ex-panel .ex-meta').textContent).toContain('Vendor review.pdf · 3 pages, ');
+    // A cancelled dialog changes nothing.
+    fake.queue(null);
+    await explorer._command({ type: 'addFile' });
+    expect(explorer.focus).toBe(doc.id);
+    await mind.undo();
+  });
+
+  it('Show text pages through the whole document with page labels; Update from file… re-reads it', async () => {
+    const { explorer, root, fake, mind } = await openExplorer({ files: true });
+    fake.queue(fileText(PAGED, { pageCount: 3, name: 'Vendor review.pdf', ref: 'X2' }));
+    await explorer._command({ type: 'addFile' });
+    const id = explorer.focus;
+    expect(buttonIn(root, 'docText').textContent).toBe('Show text');
+    expect(buttonIn(root, 'open')).toBeNull();
+    await explorer._command({ type: 'docText', ref: id });
+    const part = () => root.querySelector('.ex-panel .ex-text');
+    expect(buttonIn(root, 'docText').textContent).toBe('Hide text');
+    const parts = textParts(PAGED);
+    expect(parts.length).toBeGreaterThan(2);
+    expect(root.querySelector('.ex-panel .ex-text').previousElementSibling.textContent).toBe(`Part 1 of ${parts.length}`);
+    // Pages start every ~10,400 characters; a part is ~10,000.
+    expect([...part().querySelectorAll('.ex-badge')].map((b) => b.textContent)).toEqual(['p. 1']);
+    expect(part().textContent).toContain('Line 0 of the vendor review');
+    const next = [...root.querySelectorAll('.ex-panel .ex-actions button')].find((b) => b.textContent === 'Next');
+    next.click();
+    expect(part().textContent).not.toContain('Line 0 of the vendor review');
+    expect([...part().querySelectorAll('.ex-badge')].map((b) => b.textContent)).toEqual(['p. 1', 'p. 2']);
+    expect(root.querySelector('.ex-panel .ex-text').previousElementSibling.textContent).toBe(`Part 2 of ${parts.length}`);
+    // Update from file…: the doc's text is replaced, and the pane shows the new one.
+    fake.queue(fileText('A one-page replacement on price.', { name: 'Vendor review v2.pdf', ref: 'X3' }));
+    await explorer._command({ type: 'updateFile', ref: id });
+    expect(mind.item(id).text).toBe('A one-page replacement on price.');
+    expect(root.querySelector('.ex-toast').textContent).toMatch(/^Updated Vendor review v2\.pdf: /);
+    expect(buttonIn(root, 'docText').textContent).toBe('Show text');
+    await mind.undo();
+    await mind.undo();
+  });
+
+  it('a doc whose full text isn’t on this computer says so', async () => {
+    const { file } = validateFileText(fileText(`${PAGED}\nOnly here.`, { ref: 'X4', name: 'Elsewhere.pdf' }));
+    const out = await h.mind.ingestFile(file);
+    const key = h.mind.item(out.itemId).body.key;
+    h.host.files.delete(key);
+    h.host.files.delete(`nx-${key}`);
+    const { explorer, root, mind } = await openExplorer({ params: { focus: out.itemId } });
+    expect(mind.item(out.itemId)).toBeTruthy();
+    await explorer._command({ type: 'docText', ref: out.itemId });
+    expect(root.querySelector('.ex-panel p.ex-muted').textContent).toBe('The full text is on another of your computers.');
+    // No dialog here: this explorer can't read files.
+    expect(buttonIn(root, 'updateFile')).toBeNull();
+    await h.mind.undo(out.opId);
+  });
+
+  it('cuts parts at a line or a space, never inside a surrogate pair', () => {
+    expect(textParts('short')).toEqual([0]);
+    const lines = textParts(Array.from({ length: 400 }, () => 'x'.repeat(49)).join('\n'), 1000);
+    expect(lines.every((at, i) => i === 0 || at % 50 === 0)).toBe(true);
+    const emoji = '😀'.repeat(800);
+    for (const at of textParts(emoji, 1001)) expect(emoji.charCodeAt(at) >= 0xdc00 && emoji.charCodeAt(at) <= 0xdfff).toBe(false);
   });
 });

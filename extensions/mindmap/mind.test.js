@@ -6,8 +6,11 @@ import { JSDOM } from 'jsdom';
 import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import { createMemoryHost } from '../../test-helpers/mindmap/memory-host.mjs';
 import { F2_WINDOW, F6_DUMP, FIXTURE_NOW, local, makeContext } from '../../test-helpers/mindmap/corpus.mjs';
+import { FILE_FEATURES, fakeRef, fileText, hostError, installFiles } from '../../test-helpers/mindmap/file-host.mjs';
 import { Mind, getMind } from './mind.js';
+import { LIMITS } from './defaults.js';
 import * as idlib from './lib/ids.js';
+import * as journal from './lib/journal.js';
 import { createFormatterState, formatHtml } from './view.js';
 
 const META = { 'https://example.com/blog/mtcs-intro': { title: 'An intro to MTCS', description: 'What MTCS is <b>for</b>.' } };
@@ -796,5 +799,352 @@ describe('P2 context edges (same window within 10 minutes)', () => {
     const x = await off.mind.capture('walrus offsite venue ideas', { via: 'launcher', source: win });
     const y = await off.mind.capture('finance thoughts on the budget split', { via: 'launcher', source: win });
     expect(off.mind.related(x.itemId).map((r) => r.id)).not.toContain(y.itemId);
+  });
+});
+
+// --- documents the user picks (Kage EXTENSION_FILE_TEXT §11) ------------------------
+
+// Longer than an item's 8,000 characters, so it gets a body. "Zanzibar" is
+// only in the part past the item's text.
+const LONG = [
+  '# Q3 plan',
+  '',
+  'Dana to send the MTCS numbers by Friday.',
+  'TODO: book the offsite for the walrus team',
+  '- [x] draft the agenda',
+  ...Array.from({ length: 220 }, (_, i) => `Paragraph ${i} covers the walrus roadmap, the budget and the hiring plan.`),
+  'The Zanzibar pilot starts in spring.',
+].join('\n');
+
+function docSetup({ config, hostFeatures = FILE_FEATURES } = {}) {
+  const host = createMemoryHost({ atomic: true });
+  const ctx = makeContext(host, { config, hostFeatures });
+  const fake = installFiles(ctx);
+  return { host, ctx, mind: new Mind(ctx), ...fake };
+}
+
+function docWindow(host) {
+  const ctx = makeContext(host, { invoke: host.connect().invoke, hostFeatures: FILE_FEATURES });
+  installFiles(ctx);
+  return new Mind(ctx);
+}
+
+const saves = (host) => host.calls.filter((c) => c.command === 'save_extension_data').map((c) => c.args.key);
+const bodyFiles = (host) => [...host.files.keys()].filter((k) => k.startsWith('mm-body-')).sort();
+
+describe('documents from a file (EXTENSION_FILE_TEXT §11)', () => {
+  it('is off without the host feature, and on an older host Mind Map is unchanged', async () => {
+    const { mind } = setup();
+    expect(mind.canPickFiles).toBe(false);
+    expect(await mind.addFile()).toEqual({ ok: false, code: 'unavailable' });
+    // The feature without context.files (or the reverse) is still off.
+    const half = setup({ hostFeatures: ['files.pick_text'] });
+    expect(half.mind.canPickFiles).toBe(false);
+    const out = await mind.capture('walrus offsite planning');
+    const vm = mind.itemVM(out.itemId);
+    expect(vm.file).toBeUndefined();
+    expect(vm.notice).toBeUndefined();
+    expect(mind.exNode(out.itemId).file).toBeUndefined();
+    expect(mind.agentRecord(mind.item(out.itemId)).file).toBeUndefined();
+    expect(mind.stats()).toMatchObject({ files: 0, bodyBytes: 0 });
+  });
+
+  it('adds a long file: body first, then the shard, journal and meta; never a path', async () => {
+    const { host, mind, queue, calls } = docSetup();
+    queue(fileText(LONG, { pageCount: 4, title: 'Q3 Planning' }));
+    const out = await mind.addFile({ source: { app: 'Preview', window: 'Q3 plan.pdf' } });
+    expect(out).toMatchObject({ ok: true, case: 'new', title: 'Q3 Planning', private: false, secret: false });
+    expect(out.file).toMatchObject({ name: 'Q3 plan.pdf', format: 'pdf', pages: { count: 4, read: 4 }, truncated: false });
+    expect(out.opId).toMatch(/^o[0-9a-z]{14}$/);
+    // Every format this Kage reads, and the "Keep up to" limit.
+    expect(calls).toEqual([{ formats: ['text', 'markdown', 'pdf', 'docx'], maxChars: 200000, signal: false }]);
+    const item = mind.item(out.itemId);
+    expect(item).toMatchObject({ kind: 'doc', titleSource: 'meta', truncated: true, fileRefs: [fakeRef('A')], source: { via: 'file', app: 'Preview', window: 'Q3 plan.pdf' } });
+    expect(item.text.length).toBeLessThanOrEqual(8000);
+    expect(item.text).not.toContain('Zanzibar');
+    expect(item.keyphrases.length).toBeGreaterThan(5);
+    expect(item.body.key).toBe(`mm-body-${item.id}-1`);
+    const order = saves(host);
+    const at = order.indexOf(item.body.key);
+    expect(at).toBeGreaterThanOrEqual(0);
+    expect(at).toBeLessThan(order.findIndex((k) => k.startsWith('mm-items-')));
+    expect(at).toBeLessThan(order.lastIndexOf('mm-journal'));
+    expect(at).toBeLessThan(order.lastIndexOf('mm-meta'));
+    // Written once: no twin on a host with atomic writes.
+    expect(order.filter((k) => k.includes('mm-body-'))).toEqual([item.body.key]);
+    const stored = JSON.parse(host.files.get(item.body.key));
+    expect(stored).toMatchObject({ schema: 1, id: item.id, rev: 1, format: 'pdf', text: LONG });
+    expect(stored.pageStarts).toHaveLength(4);
+    // Its actions are suggestions; done lines are left out; Dana's is Dana's.
+    const actions = mind.childrenOf(item.id).filter((c) => c.kind === 'action');
+    expect(actions.length).toBeGreaterThanOrEqual(2);
+    expect(actions.every((a) => a.suggested && a.status === 'open')).toBe(true);
+    expect(actions.some((a) => /agenda/.test(a.title))).toBe(false);
+    expect(out.found.actions).toBe(actions.length);
+    expect(out.found.people).toBeGreaterThanOrEqual(1);
+    expect(mind.stats()).toMatchObject({ files: 1, bodyBytes: item.body.bytes });
+  });
+
+  it('a file that fits in the item needs no body', async () => {
+    const { host, mind, queue } = docSetup();
+    queue(fileText('Budget notes\n\nRemind me to send the budget to Dana.', { name: 'budget.md', extension: 'md', format: 'markdown', pageCount: undefined }));
+    const out = await mind.addFile();
+    const item = mind.item(out.itemId);
+    expect(item.body).toBeUndefined();
+    expect(item.text).toContain('Remind me to send the budget');
+    expect(item.title).toBe('budget');
+    expect(bodyFiles(host)).toEqual([]);
+    expect((await mind.loadBody(item)).text).toBe(item.text);
+  });
+
+  it('cancel, a refusal from Kage and a result that fails the checks save nothing', async () => {
+    const { host, mind, queue } = docSetup();
+    queue(null);
+    expect(await mind.addFile()).toEqual({ ok: false, code: 'cancelled' });
+    queue(hostError('errors.file_text.too_large', 'Q3 plan.pdf is 48.2 MB. Kage reads files up to 32 MB.'));
+    const big = await mind.addFile();
+    expect(big).toMatchObject({ ok: false, code: 'host', key: 'errors.file_text.too_large' });
+    expect(big.message).toContain('32 MB');
+    for (const bad of [{ sha256: 'not hex' }, { name: 'reports/notes.txt' }, { file_ref: 'fr1_short' }, { chars: 3 }]) {
+      queue({ ...fileText('hello there'), ...bad });
+      expect(await mind.addFile()).toEqual({ ok: false, code: 'bad_file' });
+    }
+    expect(saves(host)).toEqual([]);
+    expect(mind.stats().items).toBe(0);
+    // The log never carries the file's name.
+    const logged = JSON.stringify([...mind.log.info.mock.calls, ...mind.log.warn.mock.calls]);
+    expect(logged).not.toContain('Q3 plan');
+  });
+
+  it('the same file again, a copy, and a changed file (S, C, U); Undo of a re-read brings the old text back', async () => {
+    const { host, mind, queue } = docSetup();
+    queue(fileText(LONG));
+    const first = await mind.addFile();
+    const oldKey = mind.item(first.itemId).body.key;
+    queue(fileText(LONG));
+    const same = await mind.addFile();
+    expect(same).toMatchObject({ ok: true, case: 'same', itemId: first.itemId });
+    expect(same.opId).toBeUndefined();
+    // The same content from another computer: this computer's ref joins.
+    queue(fileText(LONG, { ref: 'B' }));
+    const copy = await mind.addFile();
+    expect(copy).toMatchObject({ case: 'copy', itemId: first.itemId });
+    expect(copy.opId).toBeUndefined();
+    expect(mind.item(first.itemId).fileRefs).toEqual([fakeRef('A'), fakeRef('B')]);
+    // A changed file with a known ref is re-read.
+    const v2 = `${LONG.replace('Dana to send', 'Dana to share')}\nA narwhal appendix.`;
+    queue(fileText(v2, { ref: 'A' }));
+    const upd = await mind.addFile();
+    expect(upd).toMatchObject({ case: 'update', itemId: first.itemId });
+    const newKey = mind.item(first.itemId).body.key;
+    expect(newKey).not.toBe(oldKey);
+    expect(bodyFiles(host)).toEqual([oldKey, newKey].sort());
+    expect(mind.opVM(upd.opId).doc).toMatchObject({ case: 'update', file: { name: 'Q3 plan.pdf' } });
+    expect((await mind.undo()).ok).toBe(true);
+    expect(mind.item(first.itemId).body.key).toBe(oldKey);
+    expect(bodyFiles(host)).toEqual([oldKey]);
+    expect((await mind.loadBody(mind.item(first.itemId))).text).toBe(LONG);
+  });
+
+  it('Undo of a new doc removes it and its body', async () => {
+    const { host, mind, queue } = docSetup();
+    queue(fileText(LONG));
+    const out = await mind.addFile();
+    expect(bodyFiles(host)).toHaveLength(1);
+    expect(mind.undoTarget().op.opId).toBe(out.opId);
+    expect((await mind.undo(out.opId)).ok).toBe(true);
+    expect(mind.item(out.itemId)).toBeNull();
+    expect(bodyFiles(host)).toEqual([]);
+  });
+
+  it('Update from file… re-reads the doc the user chose, says when nothing changed, and is for docs only', async () => {
+    const { mind, queue, calls } = docSetup();
+    queue(fileText(LONG));
+    const doc = await mind.addFile();
+    queue(fileText(LONG));
+    expect(await mind.addFile({ targetId: doc.itemId })).toMatchObject({ ok: true, case: 'unchanged', itemId: doc.itemId });
+    queue(fileText('A short replacement about the budget.', { ref: 'C', name: 'Q3 plan v2.pdf' }));
+    const out = await mind.addFile({ targetId: doc.itemId });
+    expect(out).toMatchObject({ case: 'update', itemId: doc.itemId, file: { name: 'Q3 plan v2.pdf' } });
+    const item = mind.item(doc.itemId);
+    expect(item.body).toBeUndefined();
+    expect(item.text).toBe('A short replacement about the budget.');
+    expect(item.fileRefs).toEqual([fakeRef('A'), fakeRef('C')]);
+    const note = await mind.capture('a plain note about lunch');
+    expect(await mind.addFile({ targetId: note.itemId })).toEqual({ ok: false, code: 'not_file' });
+    expect(calls).toHaveLength(3);
+  });
+
+  it('a file that looks like it holds a secret is private until the user lets the agent see it', async () => {
+    const { ctx, mind, queue } = docSetup();
+    queue(fileText('Staging notes. admin password: example-only-123', { warnings: ['possible_secret'] }));
+    const out = await mind.addFile();
+    expect(out).toMatchObject({ private: true, secret: true, keptLocal: false });
+    expect(mind.agentRecord(mind.item(out.itemId))).toBeNull();
+    expect((await mind.setPrivate(out.itemId, false)).ok).toBe(true);
+    expect(mind.agentRecord(mind.item(out.itemId))).toMatchObject({ file: { name: 'Q3 plan.pdf', format: 'pdf' } });
+    // With Kage sync on, the card also says it stays on this computer.
+    ctx.hostFeatures = Object.freeze([...FILE_FEATURES, 'sync.records']);
+    ctx.sync = { available: true };
+    expect(mind.syncOn).toBe(true);
+    queue(fileText('vpn secret: example-only-456', { warnings: ['possible_secret'], ref: 'S2' }));
+    expect(await mind.addFile()).toMatchObject({ secret: true, keptLocal: true });
+  });
+
+  it('refuses a new document when document storage is full, before the dialog opens', async () => {
+    const { mind, queue, calls } = docSetup();
+    queue(fileText(LONG));
+    const out = await mind.addFile();
+    mind.item(out.itemId).body.bytes = LIMITS.bodyBudget;
+    queue(fileText('another short file'));
+    expect(await mind.addFile()).toEqual({ ok: false, code: 'storage_full' });
+    expect(calls).toHaveLength(1);
+  });
+
+  it('read-only data: no dialog', async () => {
+    const { mind, queue, calls } = docSetup();
+    await mind.ready();
+    mind._readOnly = { code: 'unreadable', keys: ['mm-meta'] };
+    queue(fileText('hello'));
+    expect(await mind.addFile()).toEqual({ ok: false, code: 'readonly' });
+    expect(calls).toHaveLength(0);
+  });
+
+  it('a crash after the body write leaves no doc and a readable store', async () => {
+    const { host, mind, queue } = docSetup();
+    await mind.ready();
+    // The lock, then the body; the shard write crashes.
+    host.crashAfterWrites(2);
+    queue(fileText(LONG));
+    const out = await mind.addFile();
+    expect(out.ok).toBe(false);
+    host.revive();
+    const fresh = docWindow(host);
+    await fresh.ready();
+    expect(fresh.stats().items).toBe(0);
+    expect(fresh.readOnly).toBeNull();
+    // The unreferenced body is all that's left (bounded by one file).
+    expect(bodyFiles(host)).toHaveLength(1);
+  });
+
+  it('a retried write after a conflict still adds the doc, not "the same file again"', async () => {
+    const { mind, queue } = docSetup();
+    await mind.capture('a note so there is a store');
+    const real = mind.store.readJson.bind(mind.store);
+    const before = (await real('mm-meta')).txn;
+    let tampered = 0;
+    // The check after the first attempt's writes sees another writer's txn,
+    // so the same op is applied again over what that attempt wrote.
+    mind.store.readJson = async (key) => {
+      const value = await real(key);
+      if (key === 'mm-meta' && value && value.txn !== before && !tampered++) return { ...value, txn: 'o000000000other' };
+      return value;
+    };
+    queue(fileText(LONG));
+    const out = await mind.addFile();
+    expect(tampered).toBeGreaterThan(1);
+    expect(out).toMatchObject({ ok: true, case: 'new' });
+    expect(out.opId).toBeTruthy();
+    expect([...mind.state.items.values()].filter((i) => i.file)).toHaveLength(1);
+  });
+
+  it('bodies load on demand, the last eight per window; another window sees a new doc after a sync', async () => {
+    const { host, mind, queue } = docSetup();
+    const b = docWindow(host);
+    await b.ready();
+    const ids = [];
+    for (let i = 0; i < 9; i++) {
+      queue(fileText(`${LONG}\nCopy ${i}.`, { ref: `R${i}`, name: `Plan ${i}.pdf` }));
+      ids.push((await mind.addFile()).itemId);
+    }
+    expect(await b.syncIfStale(0)).toBe(true);
+    const reads = () => host.calls.filter((c) => c.window === 1 && c.command === 'load_extension_data' && c.args.key.startsWith('mm-body-')).length;
+    expect(reads()).toBe(0);
+    for (const id of ids) expect((await b.loadBody(b.item(id))).text).toContain(`Copy ${ids.indexOf(id)}.`);
+    expect(reads()).toBe(9);
+    await b.loadBody(b.item(ids[8]));
+    expect(reads()).toBe(9);
+    await b.loadBody(b.item(ids[0]));
+    expect(reads()).toBe(10);
+    // ready() never reads bodies.
+    const c = docWindow(host);
+    await c.ready();
+    expect(host.calls.filter((call) => call.window === 2 && call.args?.key?.startsWith('mm-body-'))).toEqual([]);
+  });
+
+  it('a deleted doc keeps its body until the delete leaves the journal', async () => {
+    const { host, mind, queue } = docSetup();
+    queue(fileText(LONG));
+    const out = await mind.addFile();
+    const key = mind.item(out.itemId).body.key;
+    expect((await mind.remove(out.itemId)).ok).toBe(true);
+    expect(host.files.has(key)).toBe(true);
+    expect((await mind.undo()).ok).toBe(true);
+    expect(mind.item(out.itemId).body.key).toBe(key);
+    expect((await mind.remove(out.itemId)).ok).toBe(true);
+    expect(host.files.has(key)).toBe(true);
+    // 199 newer ops: the next one pushes the delete out of the 200-op journal.
+    const stored = JSON.parse(host.files.get('mm-journal'));
+    const del = stored.ops[stored.ops.length - 1];
+    expect(del.kind).toBe('delete');
+    const fillers = Array.from({ length: 199 }, (_, i) => journal.newOp({ opId: idlib.newId('o', FIXTURE_NOW + i), kind: 'enrich', at: FIXTURE_NOW + i, label: { code: 'generic', params: {} }, silent: true }));
+    host.files.set('mm-journal', JSON.stringify({ ...stored, ops: [del, ...fillers] }));
+    const b = docWindow(host);
+    await b.ready();
+    expect(b.state.ops).toHaveLength(200);
+    await b.capture('one more note about lunch');
+    expect(b.state.ops.some((o) => o.opId === del.opId)).toBe(false);
+    expect(host.files.has(key)).toBe(false);
+  });
+
+  it('Export raw, Export JSON and Delete everything cover bodies; Import JSON writes them back', async () => {
+    const { host, mind, queue } = docSetup();
+    queue(fileText(LONG, { pageCount: 3 }));
+    const out = await mind.addFile();
+    const key = mind.item(out.itemId).body.key;
+    expect((await mind.exportRaw())[key]).toContain('Zanzibar');
+    const bodies = await mind.exportBodies();
+    expect(bodies).toEqual({ [out.itemId]: LONG });
+    const data = mind.exportJson({ bodies });
+    expect(data.bodies).toEqual(bodies);
+    expect(mind.exportJson({}).bodies).toBeUndefined();
+    const md = mind.exportMarkdown((k, v) => (k === 'export.pages' ? `${v.n} pages` : k));
+    expect(md).toContain('## export.documents');
+    expect(md).toMatch(/Q3 plan — Q3 plan\.pdf · 3 pages/);
+    await mind.deleteAll();
+    expect(bodyFiles(host)).toEqual([]);
+    const back = await mind.importJson(JSON.stringify(data));
+    expect(back.ok).toBe(true);
+    expect(JSON.parse(host.files.get(key)).text).toBe(LONG);
+    expect((await mind.loadBody(mind.item(out.itemId))).text).toBe(LONG);
+    // A body whose length doesn't match the doc isn't written.
+    await mind.deleteAll();
+    await mind.importJson(JSON.stringify({ ...data, bodies: { [out.itemId]: 'something else' } }));
+    expect(bodyFiles(host)).toEqual([]);
+  });
+
+  it('view models, explorer nodes, agent records and passages for a doc', async () => {
+    const { mind, queue } = docSetup();
+    queue(fileText(LONG, { pageCount: 4 }));
+    const out = await mind.addFile();
+    const item = mind.item(out.itemId);
+    expect(mind.opVM(out.opId)).toMatchObject({ code: 'ingest', doc: { case: 'new', file: { name: 'Q3 plan.pdf', pages: { count: 4 } } } });
+    expect(mind.itemVM(item.id).file).toMatchObject({ name: 'Q3 plan.pdf', chars: [...LONG].length, canUpdate: true });
+    mind.setNotice(item.id, 'Updated just now.');
+    expect(mind.itemVM(item.id).notice).toBe('Updated just now.');
+    vi.setSystemTime(FIXTURE_NOW + 3 * 60_000);
+    expect(mind.itemVM(item.id).notice).toBeUndefined();
+    expect(mind.exNode(item.id).file).toEqual({ name: 'Q3 plan.pdf', pages: 4 });
+    expect(mind.agentRecord(item).file).toEqual({ name: 'Q3 plan.pdf', format: 'pdf', chars: [...LONG].length, pages: 4 });
+    // "zanzibar" is only in the body: the row shows a passage of it.
+    const spec = mind.parse('zanzibar', { trailingSpace: true });
+    expect(mind.find(spec).hits.map((h) => h.item.id)).toContain(item.id);
+    expect(mind.bodyOnlyHit(item, spec.terms)).toBe(true);
+    expect(mind.bodyOnlyHit(item, mind.parse('walrus', { trailingSpace: true }).terms)).toBe(false);
+    const body = await mind.loadBody(item);
+    const [passage] = mind.passagesFor(body, spec.terms, { max: 1, chars: 160 });
+    expect(passage.text).toContain('Zanzibar');
+    expect(passage.text.length).toBeLessThanOrEqual(160);
+    expect(passage.page).toBe(4);
   });
 });

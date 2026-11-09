@@ -29,7 +29,8 @@ import * as journal from './lib/journal.js';
 import * as bm25 from './lib/bm25.js';
 import * as rank from './lib/rank.js';
 import * as graph from './lib/graph.js';
-import { DEFAULTS, LIMITS, snippetChars, triggerOf } from './defaults.js';
+import * as files from './lib/files.js';
+import { DEFAULTS, LIMITS, docMaxChars, snippetChars, triggerOf } from './defaults.js';
 
 const LIB = Object.freeze({ text, dates, url, entities, ids: idlib });
 const DAY_MS = 86_400_000;
@@ -81,6 +82,12 @@ const NOTE_KINDS = new Set(['note', 'meeting']);
 // Keys whose change in another window means the data moved on.
 const DATA_CHANGE_KEYS = new Set(['mm-meta', '*']);
 const LAYOUT_CHANGE_KEYS = new Set(['mm-layout', '*']);
+// Kage's file_text host feature (EXTENSION_FILE_TEXT §3.3): the user picks a
+// file and Kage gives Mind Map its text, never its path.
+const FILES_FEATURE = 'files.pick_text';
+const FILE_FORMAT_RE = /^[a-z][a-z0-9_]{0,15}$/;
+// How long a card shows the outcome of "Update from file…".
+const NOTICE_MS = 120_000;
 
 const mono = () => globalThis.performance?.now?.() ?? Date.now();
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -194,6 +201,28 @@ export class Mind {
     this._remoteChange = false;
     this._changeListeners = new Set();
     this._offChanges = this._subscribeChanges(context);
+    // Documents: the last few bodies read (an LRU, body key → body), what
+    // this Kage reads (file_text_support, once per session), and the outcome
+    // of a card's "Update from file…" per item.
+    this._bodies = new Map();
+    this._fileSupport = null;
+    this._notices = new Map();
+  }
+
+  /** True where this window can ask Kage for a file the user picks (files.pick_text). */
+  get canPickFiles() {
+    const features = Array.isArray(this.context?.hostFeatures) ? this.context.hostFeatures : [];
+    return features.includes(FILES_FEATURE) && typeof this.context?.files?.pickText === 'function';
+  }
+
+  /** True when Kage sync is on for Mind Map here (SYNC §12.6), so cards can say what stays local. */
+  get syncOn() {
+    const features = Array.isArray(this.context?.hostFeatures) ? this.context.hostFeatures : [];
+    try {
+      return features.includes('sync.records') && this.context?.sync?.available === true;
+    } catch {
+      return false;
+    }
   }
 
   // Hosts with `storage.change_events` tell every instance when another
@@ -722,6 +751,10 @@ export class Mind {
             else await this._sync();
             if (this._readOnly && !allowReadOnly) throw new MindError('readonly');
             pool.reset();
+            // The document bodies State references before the change: the
+            // ones it no longer references after the commit are deleted
+            // (an undone ingest, a delete or re-read the journal dropped).
+            const held = model.bodyKeys(this.state);
             // apply mutates the snapshot in place: from here until the
             // commit is confirmed, memory may hold an unsaved change.
             this._stale = true;
@@ -738,6 +771,7 @@ export class Mind {
             if (check?.txn !== changes[changes.length - 1].op.opId) throw new MindError('conflict');
             this._stale = false;
             this._afterCommit(changes);
+            await this._releaseBodies(model.releasedBodies(held, this.state), lease);
             return { ...result, committed: true, opId: changes[0].op.opId };
           } catch (error) {
             // Drop the unsaved change while still holding the lock, so no
@@ -788,11 +822,41 @@ export class Mind {
 
   async _persist(changes, lease, now) {
     const txn = changes[changes.length - 1].op.opId;
+    // A document's body goes first: a crash after it leaves a body nothing
+    // references (bounded by one file), never a doc whose text is missing.
+    for (const change of changes) for (const body of change.bodies || []) await this._writeBody(body, lease);
     const parts = new Set(['journal', ...(this._misplaced || [])]);
     for (const change of changes) for (const part of change.touched || []) if (part !== 'meta') parts.add(part);
     for (const part of [...parts].sort(partOrder)) await this._writePart(part, txn, lease);
     await this._writeMeta(txn, lease, now);
     this._misplaced = null;
+  }
+
+  // One document body (EXTENSION_FILE_TEXT §11.4): `mm-body-<id>-<n>`,
+  // written once. Hosts with files.pick_text have atomic writes.
+  async _writeBody({ key, value } = {}, lease) {
+    const parsed = model.parseBodyKey(key);
+    const body = parsed ? model.normalizeBody(value, key) : null;
+    if (!body) return;
+    if (lease) await lease.check();
+    await this.store.write(`mm-body-${parsed.id}-${parsed.n}`, body);
+    this._cacheBody(key, body);
+  }
+
+  // Deletes bodies a committed change released. A failure leaves an
+  // unreferenced body behind (extensions can't list their keys), never an error.
+  async _releaseBodies(keys, lease) {
+    for (const key of keys || []) {
+      const parsed = model.parseBodyKey(key);
+      if (!parsed) continue;
+      this._bodies.delete(key);
+      try {
+        if (lease) await lease.check();
+        await this.store.remove(`mm-body-${parsed.id}-${parsed.n}`);
+      } catch (error) {
+        this.log.warn?.(`mindmap: a released document body was not deleted (${error?.code || error?.name || 'error'})`);
+      }
+    }
   }
 
   _afterCommit(changes) {
@@ -1501,8 +1565,10 @@ export class Mind {
     const byKind = Object.fromEntries(KIND_ORDER.map((k) => [k, 0]));
     let openActions = 0;
     let suggestions = 0;
+    let picked = 0;
     for (const item of this.state.items.values()) {
       byKind[item.kind] = (byKind[item.kind] || 0) + 1;
+      if (item.file) picked++;
       if (item.kind === 'action' && item.status === 'open') {
         if (item.suggested) suggestions++;
         else openActions++;
@@ -1520,6 +1586,9 @@ export class Mind {
       openActions,
       suggestions,
       bytes,
+      // Picked documents, and the UTF-8 bytes of their bodies (the 64 MB budget).
+      files: picked,
+      bodyBytes: model.bodyBytes(this.state),
       lastSaved: this.keyRevs.has('mm-meta') ? this.state.meta.updatedAt : null,
       readOnly: this._readOnly,
     };
@@ -1656,6 +1725,279 @@ export class Mind {
     const window = String(win?.title ?? win?.window ?? '');
     const app = String(win?.processName ?? win?.app ?? '');
     return this.capture('', { via: 'launcher', source: { window, app }, keepSource: true });
+  }
+
+  // --- documents the user picks (Kage EXTENSION_FILE_TEXT §11) -------------------
+
+  /**
+   * What this Kage reads (file_text_support), asked once per session.
+   * → { formats: string[], maxInputBytes, maxChars }
+   */
+  fileSupport() {
+    if (!this._fileSupport) {
+      // permissions: file_text
+      const run = Promise.resolve().then(() => this.context.files.support()).then((raw) => {
+        const ids = (Array.isArray(raw?.formats) ? raw.formats : []).map((f) => (typeof f === 'string' ? f : f?.id));
+        const max = (value, cap) => (Number.isSafeInteger(value) && value > 0 ? Math.min(value, cap) : cap);
+        return {
+          formats: [...new Set(ids.filter((id) => typeof id === 'string' && FILE_FORMAT_RE.test(id)))],
+          maxInputBytes: max(raw?.max_input_bytes, files.FILE_LIMITS.maxInputBytes),
+          maxChars: max(raw?.max_chars, files.FILE_LIMITS.maxChars),
+        };
+      });
+      this._fileSupport = run;
+      run.catch(() => {
+        if (this._fileSupport === run) this._fileSupport = null;
+      });
+    }
+    return this._fileSupport;
+  }
+
+  /**
+   * Adds a file the user picks (§11.3): Kage shows its file dialog, reads
+   * the file on this computer and gives Mind Map its text, never its path.
+   * Call it from a click (launcher Enter, a settings or card button, the
+   * explorer's toolbar), so the dialog opens at once. opts.targetId: the
+   * doc whose "Update from file…" the user chose; opts.source: the window
+   * the launcher came from. → FileResult (ingestFile), or { ok: false, code,
+   * message?, key? }: 'cancelled' (the dialog was closed), 'host' (Kage
+   * refused or couldn't read it; `message` is in the user's language),
+   * 'bad_file', 'storage_full', 'readonly', 'unavailable', 'not_file'.
+   */
+  async addFile({ targetId, source, signal } = {}) {
+    if (!this.canPickFiles) return { ok: false, code: 'unavailable' };
+    try {
+      await this.ready();
+    } catch (error) {
+      return { ok: false, code: error?.code || 'io' };
+    }
+    if (this._readOnly) return { ok: false, code: 'readonly' };
+    if (targetId && !this.state.items.get(targetId)?.file) return { ok: false, code: 'not_file' };
+    // Full already: say so before the user picks anything.
+    if (model.bodyBytes(this.state) >= LIMITS.bodyBudget) return { ok: false, code: 'storage_full' };
+    let support;
+    let maxChars;
+    let raw;
+    try {
+      support = await this.fileSupport();
+      maxChars = Math.min(docMaxChars(this.settings), support.maxChars);
+      const args = { maxChars };
+      // Every format this Kage reads, so newer formats need no change here.
+      if (support.formats.length) args.formats = support.formats;
+      if (signal) args.signal = signal;
+      // permissions: file_text
+      raw = await this.context.files.pickText(args);
+    } catch (error) {
+      const key = typeof error?.key === 'string' ? error.key : '';
+      this.log.info?.(`mindmap: Kage didn't read a file (${key.replace(/^errors\.file_text\./, '') || error?.kind || 'error'})`);
+      return { ok: false, code: 'host', message: typeof error?.message === 'string' ? error.message : '', key };
+    }
+    if (!raw) return { ok: false, code: 'cancelled' };
+    const checked = files.validateFileText(raw, { maxChars, maxBytes: support.maxInputBytes, formats: support.formats });
+    if (!checked.ok) {
+      this.log.warn?.(`mindmap: Kage returned a file Mind Map can't use (${checked.code})`);
+      return { ok: false, code: 'bad_file' };
+    }
+    return this.ingestFile(checked.file, { targetId, source });
+  }
+
+  /**
+   * Saves a checked file (lib/files.js validateFileText's `file`) under the
+   * lock (§11.4). The same file again changes nothing ('same'; 'unchanged'
+   * when it's the doc the user chose to update); the same content from
+   * another computer, or a copy, gets this computer's ref ('copy'); a
+   * changed file or "Update from file…" re-reads the doc ('update');
+   * anything else is a new doc ('new').
+   * → FileResult { ok: true, case, itemId, opId?, title, addedAt, file:
+   *   { name, format, pages, chars, truncated, warnings }, found?, private,
+   *   secret, keptLocal } | { ok: false, code }
+   */
+  async ingestFile(file, { targetId, source } = {}) {
+    const keep = this.settings.record_source_window;
+    const src = keep && source && typeof source === 'object' ? { app: source.app || undefined, window: source.window || undefined } : undefined;
+    let out;
+    try {
+      out = await this._mutate((state, env) => {
+        // The first op and item ids this attempt draws, taken up front: a
+        // retry whose earlier attempt already wrote its doc must not read
+        // that doc as "the same file again".
+        const queue = { o: [env.newId('o')], i: [env.newId('i')] };
+        const drawn = queue.i[0];
+        const fileEnv = {
+          ...env, source: src, bodyBudget: LIMITS.bodyBudget,
+          newId: (prefix) => (queue[prefix]?.length ? queue[prefix].shift() : env.newId(prefix)),
+        };
+        const items = [...state.items.values()].filter((item) => item.id !== drawn);
+        const decision = files.dedupeDecision(items, file, { targetId });
+        if (decision.case === 'same') return { code: 'same', decision };
+        if (decision.case === 'copy') {
+          const change = model.applyAddRef(state, decision.itemId, file.fileRef, fileEnv);
+          return change.op ? { changes: [change], decision } : { code: 'copy', decision };
+        }
+        const ingest = this._ingestOf(file, env.now);
+        const change = decision.case === 'update'
+          ? model.applyReread(state, decision.itemId, ingest, fileEnv)
+          : model.applyIngest(state, ingest, fileEnv);
+        if (!change.op) return { code: change.code || 'noop', decision };
+        this._organize(state, change, ingest.extraction, change.itemId, fileEnv);
+        return { changes: [change], itemId: change.itemId, decision };
+      });
+    } catch (error) {
+      if (error?.code) return { ok: false, code: error.code };
+      throw error;
+    }
+    const decision = out.decision || {};
+    // Committed: a new doc, a re-read or a new ref. Not committed: nothing
+    // to write ('same', or 'copy' with the ref already there), or a refusal.
+    const kind = out.committed ? decision.case : out.code;
+    const itemId = out.itemId || decision.itemId;
+    if (!['new', 'update', 'copy', 'same'].includes(kind) || !this.state.items.has(itemId)) return { ok: false, code: out.code || 'noop' };
+    const shown = kind === 'same' && targetId && targetId === itemId ? 'unchanged' : kind;
+    const result = this._fileResult(shown, itemId, out.committed ? out.opId : undefined);
+    if (out.committed && kind !== 'copy') result.opId = out.opId;
+    this.log.info?.(`mindmap: added a file (${shown}, ${result.file.chars} characters)`);
+    return result;
+  }
+
+  // What applyIngest/applyReread take for a checked file: the extraction of
+  // its first 8,000 characters (no kind hint), its title and its body's
+  // keyphrases (§11.4, §11.5).
+  _ingestOf(file, now) {
+    let head = file.text.length > LIMITS.captureText ? file.text.slice(0, LIMITS.captureText) : file.text;
+    if (/[\ud800-\udbff]$/.test(head)) head = head.slice(0, -1);
+    const extraction = this._extract({ text: head, via: 'file' }, now);
+    const { title, titleSource } = files.docTitle(file, LIB);
+    return { file, extraction, title, titleSource, keyphrases: files.bodyKeyphrases(file.text, LIB), private: !!this.settings.new_items_private };
+  }
+
+  // A doc's file as cards, the explorer and settings show it.
+  _fileInfo(item) {
+    const f = item?.file;
+    if (!f) return null;
+    return {
+      name: f.name, ext: f.ext, format: f.format, size: f.size, pages: f.pages ? { ...f.pages } : null,
+      chars: f.chars || 0, truncated: !!f.truncated, warnings: [...(f.warnings || [])],
+    };
+  }
+
+  /**
+   * What a document capture did, for its card, the settings status and the
+   * explorer's toast (lib/filetext.js fileLines). kind: 'new' | 'update' | 'copy' |
+   * 'same' | 'unchanged'. With an op, `found` counts the names on the doc
+   * and the actions that op made.
+   */
+  _fileResult(kind, itemId, opId) {
+    const item = this.state.items.get(itemId);
+    const file = this._fileInfo(item) || { name: '', format: '', pages: null, chars: 0, truncated: false, warnings: [] };
+    const secret = file.warnings.includes('possible_secret');
+    const out = {
+      ok: true, case: kind, itemId, title: item?.title || '', addedAt: item?.createdAt ?? null, file,
+      private: !!item?.private, secret, keptLocal: secret && this.syncOn,
+    };
+    const op = opId ? this.state.ops.find((o) => o.opId === opId) : null;
+    if (op && (kind === 'new' || kind === 'update')) out.found = this._found(item, op);
+    return out;
+  }
+
+  // The names on a doc by kind, and the actions `op` made from it.
+  _found(item, op) {
+    const found = { people: 0, teams: 0, projects: 0, topics: 0, actions: 0 };
+    const seen = new Set();
+    for (const id of item?.entityIds || []) {
+      const entity = this.entity(id);
+      if (!entity || entity.id === 'me' || seen.has(entity.id)) continue;
+      seen.add(entity.id);
+      if (entity.type === 'person') found.people++;
+      else if (entity.type === 'team') found.teams++;
+      else if (entity.type === 'project') found.projects++;
+      else found.topics++;
+    }
+    const created = new Set(op?.created?.items || []);
+    for (const child of this.childrenOf(item?.id)) {
+      if (child.kind === 'action' && created.has(child.id) && child.status !== 'dismissed') found.actions++;
+    }
+    return found;
+  }
+
+  /** A short line an item card shows for two minutes (the outcome of "Update from file…" there). */
+  setNotice(id, line) {
+    if (!idlib.isItemId(id)) return;
+    if (line) this._notices.set(id, { text: String(line).slice(0, 400), at: this.now() });
+    else this._notices.delete(id);
+    this._bump([id]);
+    this.requestReformat();
+  }
+
+  _notice(id) {
+    const notice = this._notices.get(id);
+    if (!notice) return undefined;
+    if (this.now() - notice.at > NOTICE_MS) {
+      this._notices.delete(id);
+      return undefined;
+    }
+    return notice.text;
+  }
+
+  _cacheBody(key, body) {
+    this._bodies.delete(key);
+    this._bodies.set(key, body);
+    while (this._bodies.size > LIMITS.bodyCache) this._bodies.delete(this._bodies.keys().next().value);
+  }
+
+  /**
+   * A doc's full text if this window has it: the body it last read, or the
+   * doc's `text` when the whole document fits there (no body). → { text,
+   * chars, pageStarts? } | null
+   */
+  cachedBody(item) {
+    if (!item?.file) return null;
+    const key = item.body?.key;
+    if (!key) return { text: item.text, chars: item.file.chars || 0, pageStarts: item.file.pageStarts };
+    const hit = this._bodies.get(key);
+    if (hit) this._cacheBody(key, hit);
+    return hit || null;
+  }
+
+  /**
+   * A doc's full text (§11.6), loaded on demand through a cache of the last
+   * 8 bodies in this window. Bodies aren't part of ready(). → { text,
+   * chars, pageStarts? } | null (not a picked document, or its body isn't on
+   * this computer: another computer's, still syncing or kept there)
+   */
+  async loadBody(item) {
+    const cached = this.cachedBody(item);
+    if (cached || !item?.body?.key) return cached;
+    const parsed = model.parseBodyKey(item.body.key);
+    if (!parsed || parsed.id !== item.id) return null;
+    let res;
+    try {
+      res = await this.store.readBest(`mm-body-${parsed.id}-${parsed.n}`);
+    } catch (error) {
+      this.log.warn?.(`mindmap: a document body could not be read (${error?.code || error?.name || 'error'})`);
+      return null;
+    }
+    const body = res.value ? model.normalizeBody(res.value, item.body.key) : null;
+    if (body) this._cacheBody(item.body.key, body);
+    return body;
+  }
+
+  /**
+   * True when none of `terms` shows in what a row shows of a doc (its title,
+   * summary and text): the match came from the body's keyphrases, so the
+   * row should show a passage of the body instead (§11.6).
+   */
+  bodyOnlyHit(item, terms) {
+    if (!item?.body?.key) return false;
+    const want = (terms || []).map((q) => (typeof q === 'string' ? { t: q } : q)).filter((q) => q && !q.neg && typeof q.t === 'string' && q.t);
+    if (!want.length) return false;
+    const seen = text.tokenize([item.title, item.summary || '', item.text].join(' \n '));
+    return !want.some((q) => seen.some((tok) => tok === q.t || (q.prefix && tok.startsWith(q.t))));
+  }
+
+  /** Up to `max` passages of a doc's full text that match `terms` (lib/files.js findPassages). body: loadBody's result. */
+  passagesFor(body, terms, { max = 1, chars = LIMITS.rowPassageChars } = {}) {
+    if (!body?.text) return [];
+    return files.findPassages(body.text, terms, LIB, { max, chars, pageStarts: body.pageStarts || undefined });
   }
 
   async _simple(apply) {
@@ -1846,6 +2188,10 @@ export class Mind {
       // kage-sensitive-data: not-sensitive — reviewed: an extraction mention, not a settings control
       x.mentions.push({ entityId: eid, key: entity.key, name: entity.name, type: entity.type, origin: 'rule', explicit: false, seg: -3 });
     }
+    // A picked document's keyphrases come from its whole text. A doc that
+    // fits in `text` has it here; a longer one keeps its keyphrases (its
+    // body isn't read under the lock).
+    if (item.file && !item.body) x.bodyKeyphrases = files.bodyKeyphrases(item.text, LIB);
     return x;
   }
 
@@ -1995,6 +2341,8 @@ export class Mind {
       entities: this._entityNames(item, { forAgent: true }),
     };
     if (isHttp(item.url)) record.url = item.url;
+    // A document the user picked: its own file name and size, never a path.
+    if (item.file) record.file = this.agentFile(item);
     if (item.kind === 'action') {
       record.status = this.actionStatus(item);
       if (Number.isFinite(item.dueAt)) record.due = isoDay(item.dueAt);
@@ -2002,6 +2350,15 @@ export class Mind {
     }
     if (why?.length) record.why = why;
     return record;
+  }
+
+  /** A picked document's metadata for an agent (§11.7): name, format, pages and characters. */
+  agentFile(item) {
+    const f = item?.file;
+    if (!f) return null;
+    const out = { name: stripAngles(f.name), format: f.format, chars: f.chars || 0 };
+    if (f.pages?.count) out.pages = f.pages.count;
+    return out;
   }
 
   // "Scope I inferred" for mm? (SPEC §12). When the notes come from a
@@ -2188,8 +2545,12 @@ export class Mind {
     return [...keys].filter((key) => model.keyPart(key)).sort();
   }
 
-  /** Export JSON (SPEC §7.7): private items included, as the note says. */
-  exportJson({ note } = {}) {
+  /**
+   * Export JSON (SPEC §7.7): private items included, as the note says.
+   * `bodies` (exportBodies) adds the documents' full text as
+   * `bodies: { [itemId]: text }`; schema 1 still, older versions ignore it.
+   */
+  exportJson({ note, bodies } = {}) {
     const s = this.state;
     return {
       format: 'kage-mindmap',
@@ -2203,7 +2564,48 @@ export class Mind {
       rejections: [...s.rejections],
       // The explorer's pins, when they've been loaded (settings loads them).
       ...(this._layout && !this._layout.unreadable ? { layout: { pins: { ...this._layout.pins } } } : {}),
+      ...(bodies && typeof bodies === 'object' && Object.keys(bodies).length ? { bodies } : {}),
     };
+  }
+
+  /** The full text of every doc whose body is on this computer, for Export JSON. → { [itemId]: text } */
+  async exportBodies() {
+    const out = {};
+    for (const item of [...this.state.items.values()].sort((a, b) => (a.id < b.id ? -1 : 1))) {
+      const parsed = model.parseBodyKey(item.body?.key);
+      if (!parsed || parsed.id !== item.id) continue;
+      try {
+        const res = await this.store.readBest(`mm-body-${parsed.id}-${parsed.n}`);
+        const body = res.value ? model.normalizeBody(res.value, item.body.key) : null;
+        if (body) out[item.id] = body.text;
+      } catch (error) {
+        this.log.warn?.(`mindmap: a document body was left out of the export (${error?.code || 'error'})`);
+      }
+    }
+    return out;
+  }
+
+  // An Export JSON's `bodies`, written for the imported docs that reference
+  // a body this computer doesn't have (the same text: its character count
+  // matches). → the number written
+  async _restoreBodies(raw) {
+    if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return 0;
+    let written = 0;
+    for (const [id, value] of Object.entries(raw)) {
+      const item = this.state.items.get(id);
+      const parsed = model.parseBodyKey(item?.body?.key);
+      if (!parsed || parsed.id !== id || !item.file || typeof value !== 'string' || Array.from(value).length !== item.body.chars) continue;
+      try {
+        const key = `mm-body-${parsed.id}-${parsed.n}`;
+        const res = await this.store.readBest(key);
+        if (res.value || res.unreadable) continue;
+        await this.store.write(key, { schema: model.BODY_SCHEMA, id, rev: parsed.n, format: item.file.format, chars: item.body.chars, text: value });
+        written++;
+      } catch (error) {
+        this.log.warn?.(`mindmap: an imported document body was not written (${error?.code || 'error'})`);
+      }
+    }
+    return written;
   }
 
   /**
@@ -2285,6 +2687,19 @@ export class Mind {
     // Unsorted: whatever no section listed, children with their parents.
     const rest = [...this.state.items.values()].filter((i) => visible(i) && !listed.has(i.id));
     lines.push(...section(t('export.unsorted'), rest.filter((i) => !(i.parentId && listed.has(i.parentId)))));
+    // Documents you added from a file: title, file name, pages and summary.
+    const docs = [...this.state.items.values()].filter((i) => i.file && visible(i)).sort(byTime);
+    if (docs.length) {
+      lines.push(`## ${t('export.documents')}`, '');
+      for (const item of docs) {
+        const pages = item.file.pages?.count ? ` · ${t('export.pages', { n: item.file.pages.count })}` : '';
+        const flag = item.private ? ` · ${t('export.private')}` : '';
+        lines.push(`- ${isoDay(item.occurredAt ?? item.createdAt)} · ${esc(item.title)} — ${esc(item.file.name)}${pages}${flag}`);
+        if (item.summary && normTitle(item.summary) !== normTitle(item.title)) lines.push(`  > ${prose(item.summary)}`);
+        counted.add(item.id);
+      }
+      lines.push('');
+    }
     out.items = counted.size;
     return lines.join('\n');
   }
@@ -2292,7 +2707,7 @@ export class Mind {
   /** Every stored string, primary and twin, for "Export raw copies". */
   async exportRaw() {
     const out = {};
-    for (const key of [...this._allKeys(), 'mm-meta', 'mm-layout', 'mm-view']) {
+    for (const key of [...this._allKeys(), 'mm-meta', 'mm-layout', 'mm-view', ...[...model.bodyKeys(this.state)].sort()]) {
       for (const name of [key, `${storage.TWIN_PREFIX}${key}`]) {
         try {
           const raw = await this.store.readRaw(name);
@@ -2389,6 +2804,8 @@ export class Mind {
       // The explorer's pins (layout.pins) come along. They aren't journaled,
       // so Undo leaves them; a pin for an item that's gone again does nothing.
       const pins = data?.layout?.pins ? await this._importPins(data.layout.pins).catch(() => 0) : 0;
+      // Documents' full text (an export's `bodies`), for the docs that came in.
+      if (out.committed && data?.bodies) await this._restoreBodies(data.bodies);
       if (!out.committed) return { ok: false, code: out.code || 'noop', invalid, pins };
       this._resetIndexes();
       for (const item of this.state.items.values()) this._indexItem(item);
@@ -2411,7 +2828,11 @@ export class Mind {
   async _deleteAll() {
     await this.ready().catch(() => {});
     const keys = this._allKeys();
+    const bodies = [...model.bodyKeys(this.state)].map((key) => model.parseBodyKey(key)).filter(Boolean);
     await this.store.withLock(async () => {
+      // Documents' bodies first: an interrupted delete leaves docs that still
+      // name them, so the next Delete everything finds them again.
+      for (const { id, n } of bodies) await this.store.remove(`mm-body-${id}-${n}`, { force: true });
       for (const key of keys) await this.store.remove(key, { force: true });
       await this.store.remove('mm-meta', { force: true });
       // The explorer's pins and this computer's view state go too.
@@ -2435,8 +2856,10 @@ export class Mind {
     this._loaded = true;
     this._ready = Promise.resolve();
     this._layout = { pins: {}, rev: 0, unreadable: false };
+    this._bodies.clear();
+    this._notices.clear();
     this.log.info?.('mindmap: deleted all data');
-    return { ok: true, keys: keys.length + 3 };
+    return { ok: true, keys: keys.length + bodies.length + 3 };
   }
 
   /** Repair (read-only mode): writes the readable state over every key, after confirmation. */
@@ -2482,6 +2905,7 @@ export class Mind {
       if (item.archived || (item.kind === 'action' && item.status === 'dismissed')) return null;
       const node = { ref: item.id, group: 'item', kind: item.kind, label: String(item.title || ''), at: item.occurredAt ?? item.createdAt };
       if (item.source?.app) node.app = String(item.source.app);
+      if (item.file) node.file = { name: String(item.file.name || ''), pages: item.file.pages?.count || 0 };
       if (item.kind === 'action') {
         node.status = item.status || 'open';
         if (item.suggested && node.status === 'open') node.suggested = true;
@@ -2806,8 +3230,12 @@ export class Mind {
       }
     }
     const isCapture = summary.code === 'capture' || summary.code === 'capture_dedup';
+    // A document capture or re-read: what the file held and what it found (lib/filetext.js fileLines).
+    const doc = item?.file && (summary.code === 'ingest' || summary.code === 'reread')
+      ? this._fileResult(summary.code === 'ingest' ? 'new' : 'update', item.id, op.opId) : undefined;
     return {
       opId: op.opId,
+      doc,
       // view.js has no archive headline; an archive is an edit ("✓ Updated").
       code: summary.code === 'archive' || summary.code === 'unarchive' ? 'edit' : summary.code,
       undone: !!op.undoneBy,
@@ -2838,6 +3266,9 @@ export class Mind {
       url: item.url, path: item.path, status: item.status, suggested: !!item.suggested,
       dueAt: item.dueAt, doneAt: item.doneAt, owner: owner ? { id: owner.id, name: owner.name } : undefined,
       private: !!item.private, summary: item.summary,
+      // A picked document: its file, whether "Update from file…" can run here, and that outcome.
+      file: item.file ? { ...this._fileInfo(item), canUpdate: this.canPickFiles } : undefined,
+      notice: this._notice(item.id),
       entities: (item.entityIds || []).filter((e) => e !== 'me').map((e) => this.entity(e)).filter(Boolean)
         // kage-sensitive-data: not-sensitive — reviewed: an entity view model, not a settings control
         .map((e) => ({ id: e.id, name: e.name, type: e.type, private: !!e.private })),

@@ -11,6 +11,7 @@
 
 import { getMind } from './mind.js';
 import { KIND_ICONS, ETYPE_ICONS, applyUiAction, boundAction, doneText, dueText, etypeLabel, exploreRef, fmtDay, interpLabel, itemIcon, kindLabel, parseAction, ui } from './view.js';
+import { fileErrorText, fileLines } from './lib/filetext.js';
 import { DEFAULTS, LIMITS, triggerOf } from './defaults.js';
 
 // view.js resolves these through an alias of t() (dueText, doneText, rangeLabel):
@@ -21,7 +22,7 @@ const ICON = '🧠';
 const HIT_TOP = 90;
 const HIT_FLOOR = 71;
 const ITEM_ID_RE = /^i[0-9a-z]{14}$/;
-const DATA_VERBS = new Set(['done', 'reopen', 'accept', 'dismiss', 'undo', 'open', 'private', 'share', 'delete']);
+const DATA_VERBS = new Set(['done', 'reopen', 'accept', 'dismiss', 'undo', 'open', 'private', 'share', 'delete', 'update']);
 // ARCHITECTURE §7.2 values only ever contain [a-z0-9:]; keep anything else out.
 const ACTION_ID_RE = /^mm:[a-z0-9:]{1,60}$/;
 const SOURCE_WAIT_MS = 400;
@@ -34,6 +35,10 @@ const ARCHIVE_ROWS = 8;
 const EXPLORE_RE = /^\s*explore(?:\s+([\s\S]*))?$/i;
 const MAP_REF_RE = /^(?:o|me|[ie][0-9a-z]{14})$/;
 const EXPLORE_QUERY_MAX = 200;
+// "Add a file…" (Kage EXTENSION_FILE_TEXT §11.2 C9): `mm+` alone, `mm+ file`
+// and `mm add file`, on hosts where Kage reads files for Mind Map.
+const CAPTURE_FILE_RE = /^\s*(?:a\s+)?file\s*$/i;
+const ADD_FILE_RE = /^\s*add\s+(?:a\s+)?file\s*$/i;
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -104,6 +109,12 @@ export default class MindMapSearchProvider {
     return Array.isArray(features) && features.includes('views');
   }
 
+  // True where Kage can read a file the user picks for Mind Map
+  // (files.pick_text, granted with the file_text permission).
+  get canPickFiles() {
+    return this.mind.canPickFiles;
+  }
+
   get locale() {
     try {
       return this.context.i18n?.language?.() || 'en';
@@ -165,9 +176,31 @@ export default class MindMapSearchProvider {
       const rows = this.emptyCaptureRows(win);
       return rows.length > 1 ? rows : this.unchanged(query) ? [] : rows;
     }
-    if (this.unchanged(query)) return [];
+    // A doc found only through its body's keyphrases shows a passage of the
+    // body: read the ones this window hasn't yet (§11.6).
+    const read = parsed.mode === 'find' ? await this.loadPassageBodies(parsed) : 0;
+    if (generation !== this.generation) return [];
+    if (!read && this.unchanged(query)) return [];
     this.last = { query, rev: mind.rev, loaded: true };
     return this.rows(parsed, query);
+  }
+
+  // Reads the bodies the find rows for `parsed` want for their passages.
+  // → how many were read
+  async loadPassageBodies(parsed) {
+    const mind = this.mind;
+    let read = 0;
+    try {
+      const spec = mind.parse(parsed.rest, { trailingSpace: parsed.trailingSpace });
+      if (spec.intent !== 'find' || spec.command || !spec.terms?.length) return 0;
+      for (const hit of mind.find(spec, { limit: LIMITS.findRows }).hits) {
+        if (!mind.bodyOnlyHit(hit.item, spec.terms) || mind.cachedBody(hit.item)) continue;
+        if (await mind.loadBody(hit.item)) read++;
+      }
+    } catch (error) {
+      this.log?.debug?.(`mindmap: passages skipped (${error?.code || error?.name || 'error'})`);
+    }
+    return read;
   }
 
   unchanged(query) {
@@ -233,7 +266,14 @@ export default class MindMapSearchProvider {
     }
     const preview = this.mind.preview(parsed.rest);
     if (preview.empty) return [this.hintRow()];
-    return [this.row('mm:capture', '💾', this.t('row.capture'), this.previewText(preview), 95, { a: 'capture', text: parsed.rest })];
+    const row = this.row('mm:capture', '💾', this.t('row.capture'), this.previewText(preview), 95, { a: 'capture', text: parsed.rest });
+    // `mm+ file`: adding a file comes first; saving the word stays one row down.
+    return this.canPickFiles && CAPTURE_FILE_RE.test(parsed.rest) ? [this.fileRow(96), row] : [row];
+  }
+
+  // "📄 Add a file…" (§11.2 C9): Enter opens Kage's file dialog.
+  fileRow(score) {
+    return this.row('mm:file', KIND_ICONS.doc, this.t('files.row.add'), this.t('files.row.add_sub'), score, { a: 'file' });
   }
 
   hintRow() {
@@ -253,6 +293,7 @@ export default class MindMapSearchProvider {
         rows.push(this.row('mm:window', '📄', label, this.t('row.window_desc'), 94, { a: 'window', title: source.window, app }));
       }
     }
+    if (!banner && this.canPickFiles) rows.push(this.fileRow(93));
     rows.push(this.hintRow());
     return rows;
   }
@@ -282,6 +323,7 @@ export default class MindMapSearchProvider {
       const rows = this.exploreRows(explore[1] || '');
       return banner ? [banner, ...rows] : rows;
     }
+    if (!banner && this.canPickFiles && ADD_FILE_RE.test(parsed.rest)) return [this.fileRow(95)];
     const archive = ARCHIVE_RE.exec(parsed.rest);
     if (archive) {
       const verb = archive[1].toLowerCase();
@@ -358,13 +400,15 @@ export default class MindMapSearchProvider {
     const now = mind.now();
     const vm = { kind: item.kind, status: item.status, suggested: item.suggested };
     const icon = item.private ? `${itemIcon(vm)}🔒` : itemIcon(vm);
-    const parts = [fmtDay(item.occurredAt ?? item.createdAt, this.locale, { now })];
-    if (item.source?.app) parts.push(item.source.app);
+    // A document from a file: "Q3 plan.pdf · 12 pages · added Oct 26" (§11.6).
+    const parts = item.file ? this.fileParts(item, now) : [fmtDay(item.occurredAt ?? item.createdAt, this.locale, { now })];
+    if (item.source?.app && !item.file) parts.push(item.source.app);
     if (item.kind === 'action') {
       if (item.status === 'done') parts.push(doneText(item.doneAt, { t, locale: this.locale, now }));
       else if (Number.isFinite(item.dueAt)) parts.push(dueText(item.dueAt, { now, t, locale: this.locale }));
     }
-    const snippet = mind.snippetFor(item, spec?.terms || [], LIMITS.launcherSnippet);
+    const passage = hit && item.file ? this.passageText(item, spec?.terms) : '';
+    const snippet = passage || mind.snippetFor(item, spec?.terms || [], LIMITS.launcherSnippet);
     // A snippet that only repeats the title is noise, except as the
     // evidence of a match (a window doc has no other text).
     if (snippet && (hit || oneLine(snippet).toLowerCase() !== oneLine(item.title).toLowerCase())) parts.push(snippet);
@@ -374,6 +418,25 @@ export default class MindMapSearchProvider {
       ? { a: item.suggested && item.status === 'open' ? 'accept' : 'toggle', id: item.id, query }
       : { a: 'open', id: item.id };
     return this.row(`mm:i:${item.id}`, icon, clip(item.title, 120), parts.filter(Boolean).join(t('chip.sep')), score, data);
+  }
+
+  fileParts(item, now) {
+    const t = this.t;
+    const parts = [item.file.name];
+    if (item.file.pages?.count) parts.push(t('files.row.pages', { n: item.file.pages.count }));
+    parts.push(t('files.row.added_on', { day: fmtDay(item.createdAt, this.locale, { now }) }));
+    return parts;
+  }
+
+  // The best passage of a doc's body, when only its body matched and this
+  // window has read it (matchAsync reads it), else ''.
+  passageText(item, terms) {
+    const mind = this.mind;
+    if (!mind.bodyOnlyHit(item, terms)) return '';
+    const body = mind.cachedBody(item);
+    const [best] = body ? mind.passagesFor(body, terms, { max: 1, chars: LIMITS.rowPassageChars }) : [];
+    if (!best) return '';
+    return best.page ? this.t('files.row.passage_page', { page: best.page, text: best.text }) : best.text;
   }
 
   matchedText(hit, spec) {
@@ -549,7 +612,7 @@ export default class MindMapSearchProvider {
     const t = this.t;
     const title = clip(summary.title || this.t('row.untitled'), 60);
     const known = new Set(['capture', 'capture_dedup', 'status_done', 'status_open', 'dismiss', 'accept', 'edit', 'privacy_on',
-      'privacy_off', 'delete', 'annotate', 'merge', 'forget', 'rename', 'import', 'archive', 'unarchive']);
+      'privacy_off', 'delete', 'annotate', 'merge', 'forget', 'rename', 'import', 'archive', 'unarchive', 'ingest', 'reread']);
     const code = known.has(summary.code) ? summary.code : 'generic';
     // i18n-keys: op.*
     const text = t(`op.${code}`, { title, name: summary.name || title, from: summary.from || summary.name || title, n: summary.count });
@@ -715,6 +778,8 @@ export default class MindMapSearchProvider {
           return await this.doCapture(String(data.text ?? ''));
         case 'window':
           return await this.doCaptureWindow(data);
+        case 'file':
+          return await this.doAddFile();
         case 'open':
           return await this.open(data.id);
         case 'toggle': {
@@ -832,6 +897,30 @@ export default class MindMapSearchProvider {
     return this.captureDisplay(out);
   }
 
+  // "Add a file…" (§11.2 C9, §11.3): Enter is a click Kage saw, so its file
+  // dialog opens at once. Cancelling it shows nothing and saves nothing.
+  // permissions: file_text
+  async doAddFile() {
+    const source = await this.sourceFor();
+    const out = await this.mind.addFile({ source });
+    return this.fileDisplay(out);
+  }
+
+  fileDisplay(out) {
+    const t = this.t;
+    if (!out?.ok) {
+      const why = fileErrorText(out, { t });
+      return why ? display(`⚠️ ${md(why)}`, '') : null;
+    }
+    const item = this.mind.item(out.itemId);
+    const title = md(clip(item?.title || out.title || '', 80));
+    // i18n-keys: files.row.added_line, files.row.updated_line
+    if (out.opId) return display(`🧠 ${t(out.case === 'update' ? 'files.row.updated_line' : 'files.row.added_line', { title })}`, `[mm-card:op:${out.opId}]`);
+    // Nothing was written: say why, and show the doc it already is.
+    const [line] = fileLines(out, { t, locale: this.locale, now: this.mind.now(), fmtDay });
+    return display(`🧠 ${md(line || title)}`, item ? `[mm-card:item:${item.id}]` : '');
+  }
+
   async doCaptureWindow(data) {
     const out = await this.mind.captureWindow({ title: data.title, processName: data.app });
     return this.captureDisplay(out);
@@ -915,6 +1004,7 @@ export default class MindMapSearchProvider {
       case 'private': return mind.setPrivate(id, true);
       case 'share': return mind.setPrivate(id, false);
       case 'delete': return mind.remove(id);
+      case 'update': return this.updateFromFile(id);
       case 'open': {
         const target = await mind.openTarget(id);
         // A card can't copy or open another card; the item card is already on screen.
@@ -922,6 +1012,22 @@ export default class MindMapSearchProvider {
       }
       default: return null;
     }
+  }
+
+  // "Update from file…" on a doc's card (§11.2 C12): the click is one Kage
+  // saw, so its file dialog opens at once. The card shows how it went.
+  // permissions: file_text
+  async updateFromFile(id) {
+    const mind = this.mind;
+    const out = await mind.addFile({ targetId: id });
+    if (!out?.ok) {
+      const why = fileErrorText(out, { t: this.t });
+      if (why) mind.setNotice(id, why);
+      return out;
+    }
+    const lines = fileLines(out, { t: this.t, locale: this.locale, now: mind.now(), fmtDay });
+    mind.setNotice(out.itemId, lines.join(' '));
+    return out;
   }
 
   destroy() {

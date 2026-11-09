@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { neighborhood } from './lib/graph.js';
+import { makeI18n } from '../../test-helpers/mindmap/corpus.mjs';
 import {
   ETYPE_ICONS,
   KIND_ICONS,
@@ -1080,11 +1081,12 @@ describe('i18n', () => {
     }
   });
 
-  it('view.js imports only lib/graph.js, which imports nothing; local id patterns match lib/ids.js', () => {
+  it('view.js imports only lib/graph.js and lib/filetext.js, which import nothing; local id patterns match lib/ids.js', () => {
     const src = readFileSync(join(HERE, 'view.js'), 'utf8');
     const imports = [...src.matchAll(/\bimport\s+(?:[^'"]+?\s+from\s+)?['"]([^'"]+)['"]/g)].map((m) => m[1]);
-    expect(imports).toEqual(['./lib/graph.js']);
-    expect(src.split('\n').filter((l) => /^\s*import\s/.test(l))).toHaveLength(1);
+    expect(imports).toEqual(['./lib/graph.js', './lib/filetext.js']);
+    expect(src.split('\n').filter((l) => /^\s*import\s/.test(l))).toHaveLength(2);
+    expect(readFileSync(join(HERE, 'lib/filetext.js'), 'utf8')).not.toMatch(/\bimport\b/);
     expect(src).not.toMatch(/\bimport\s*\(/);
     expect(src).not.toMatch(/\bexport\s+[^;]*\bfrom\s*['"]/);
     const graph = readFileSync(join(HERE, 'lib/graph.js'), 'utf8');
@@ -1099,5 +1101,74 @@ describe('i18n', () => {
   it('escapeHtml neutralizes markup characters', () => {
     expect(escapeHtml('<a href="x">\'&</a>')).toBe('&lt;a href=&quot;x&quot;&gt;&#39;&amp;&lt;/a&gt;');
     expect(escapeHtml(null)).toBe('');
+  });
+});
+
+// --- documents from a file (Kage EXTENSION_FILE_TEXT §11.9) -------------------------
+
+describe('document cards', () => {
+  // The EN catalog through the full ICU subset (these strings nest {chars} in a plural).
+  const ft = makeI18n().t;
+  const ctx = { t: ft, locale: 'en', now: NOW, canReformat: true, block: { blk: 'k7', rev: '1', dataRev: '5' } };
+  const DOC = id('i', 70);
+  const file = { name: 'Q3 plan.pdf', ext: 'pdf', format: 'pdf', size: 48211, pages: { count: 12, read: 12 }, chars: 48211, truncated: false, warnings: [] };
+  const docResult = (extra = {}) => ({ ok: true, case: 'new', itemId: DOC, title: 'Q3 plan', addedAt: local(2026, 10, 26), file, private: false, secret: false, keptLocal: false,
+    found: { people: 3, teams: 0, projects: 2, topics: 0, actions: 4 }, ...extra });
+  const opVm = (doc, extra = {}) => ({
+    opId: OP, code: 'ingest', undone: false, canUpdate: true, canUndo: true, at: NOW, doc,
+    item: { id: DOC, kind: 'doc', title: 'Q3 plan', private: !!doc?.private }, entities: [], actions: [], related: [], truncated: false, dropped: 0, ...extra,
+  });
+
+  it('op card: what the file held and what it found, then Undo', () => {
+    const html = renderOpCard(opVm(docResult()), ctx);
+    assertAllowed(html);
+    const root = frag(html);
+    expect(root.querySelector('.mm-op-title').textContent).toBe('✓ Added Q3 plan.pdf: 12 pages, 48,211 characters.');
+    expect([...root.querySelectorAll('.mm-note')].map((n) => n.textContent)).toEqual(['Found 3 people, 2 projects, and 4 suggested actions.']);
+    const actions = [...root.querySelectorAll('[data-ext-action]')].map((b) => b.getAttribute('data-ext-action'));
+    expect(actions).toEqual([`mm:bk7:a:undo:${OP}`, 'mm:bk7:map']);
+  });
+
+  it('op card: kept part, no text, pages skipped, and a file that may hold a secret', () => {
+    const long = renderOpCard(opVm(docResult({ file: { ...file, chars: 200000, truncated: true, warnings: ['pages_skipped'], pages: { count: 2400, read: 2000 } }, found: null })), ctx);
+    expect([...frag(long).querySelectorAll('.mm-note')].map((n) => n.textContent)).toEqual(['Kept the first 200,000 characters.', 'Read the first 2,000 pages.']);
+    const scan = renderOpCard(opVm(docResult({ file: { ...file, chars: 0, warnings: ['no_text'], pages: { count: 3, read: 3 } }, found: null })), ctx);
+    expect(frag(scan).querySelector('.mm-op-title').textContent).toBe('✓ Added Q3 plan.pdf: 3 pages, 0 characters.');
+    expect(frag(scan).querySelector('.mm-note').textContent).toBe('No text found. It may be a scanned PDF. Saved the file name only.');
+    const secret = renderOpCard(opVm(docResult({ private: true, secret: true, found: null })), ctx);
+    assertAllowed(secret);
+    const root = frag(secret);
+    expect(root.querySelector('.mm-note').textContent).toMatch(/password or key, so it’s private/);
+    const share = root.querySelector(`[data-ext-action="mm:bk7:a:share:${DOC}"]`);
+    expect(share.textContent).toBe('Let my agent see it');
+    const synced = renderOpCard(opVm(docResult({ private: true, secret: true, keptLocal: true, found: null })), ctx);
+    expect(frag(synced).querySelector('.mm-note').textContent).toMatch(/It stays on this computer\.$/);
+    // A re-read, and an undone ingest.
+    const reread = renderOpCard(opVm(docResult({ case: 'update' }), { code: 'reread' }), ctx);
+    expect(frag(reread).querySelector('.mm-op-title').textContent).toBe('✓ Updated Q3 plan.pdf: 12 pages, 48,211 characters.');
+    const undone = renderOpCard(opVm(docResult(), { undone: true }), ctx);
+    expect(frag(undone).querySelector('.mm-op-title').textContent).toBe('↶ Undone');
+    expect(frag(renderOpCard(opVm(undefined), ctx)).querySelector('.mm-op-title').textContent).toBe('✓ Added');
+  });
+
+  it('item card: the file line, Update from file… where Kage can, Let my agent see it, and the notice', () => {
+    const vm = {
+      id: DOC, kind: 'doc', title: 'Q3 plan', text: 'Q3 plan\n\nDana to send the numbers.', day: local(2026, 10, 26), createdAt: local(2026, 10, 26),
+      entities: [], actions: [], related: [], file: { ...file, canUpdate: true },
+    };
+    const html = renderItemCard(vm, ctx);
+    assertAllowed(html);
+    const root = frag(html);
+    expect(root.querySelector('.mm-file').textContent).toBe('Q3 plan.pdf · 12 pages, 48,211 characters');
+    const update = root.querySelector(`[data-ext-action="mm:bk7:a:update:${DOC}"]`);
+    expect(update.textContent).toBe('Update from file…');
+    expect(root.querySelector(`[data-ext-action="mm:bk7:a:open:${DOC}"]`)).toBeNull();
+    expect(parseAction(`mm:bk7:a:update:${DOC}`)).toEqual({ scope: 'data', blk: 'k7', verb: 'update', id: DOC });
+    expect(frag(renderItemCard({ ...vm, file: { ...file, canUpdate: false } }, ctx)).querySelector('[data-ext-action*=":update:"]')).toBeNull();
+    const secret = frag(renderItemCard({ ...vm, private: true, file: { ...file, warnings: ['possible_secret'], canUpdate: false }, notice: 'Updated Q3 plan.pdf: 12 pages, 48,211 characters.' }, ctx));
+    expect(secret.querySelector(`[data-ext-action="mm:bk7:a:share:${DOC}"]`).textContent).toBe('Let my agent see it');
+    expect([...secret.querySelectorAll('.mm-note')].map((n) => n.textContent)).toContain('Updated Q3 plan.pdf: 12 pages, 48,211 characters.');
+    // A note has no file line.
+    expect(frag(renderItemCard({ ...vm, kind: 'note', file: undefined }, ctx)).querySelector('.mm-file')).toBeNull();
   });
 });

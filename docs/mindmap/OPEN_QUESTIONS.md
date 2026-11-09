@@ -32,7 +32,8 @@ answers. Each new host API is optional: Mind Map checks
 `context.hostFeatures` and works as described below on a Kage that doesn't
 have it. The Mind Map side of each one is its own work package (V8 for Q7,
 FT-MM3 for Q4, AC-MM3 for Q6, S7 for Q2). Until a package lands, that
-question's "Assumed" text describes what Mind Map does.
+question's "Assumed" text describes what Mind Map does. V8 (Q7) and FT-MM3
+(Q4) have landed.
 
 ---
 
@@ -99,31 +100,30 @@ that host feature it stays local, as below.
 ## Q4. How should documents get in, given that extensions can't read files?
 
 **Decided:** Mind Map reads the file's text. The user picks a file each
-time, and Kage returns its text through the new `file_text` capability
+time, and Kage returns its text through the `file_text` capability
 ([EXTENSION_FILE_TEXT.md](https://github.com/nachmore/Kage/blob/main/docs/design/EXTENSION_FILE_TEXT.md), Mind Map in §11).
-Without that host feature, documents are stored as references, as below.
+Built in FT-MM1 to FT-MM3:
 
-- **Assumed:** documents are stored as references:
-  - the title of the window you came from;
-  - a path or URL;
-  - your one-line note;
-  - a link's title and description.
-
-  To capture full content, attach the file in chat and say "add this to my
-  mind map". The agent reads it and calls `capture` with a summary, key terms
-  and the actions. The limitation is disclosed in settings and the README.
-- **Why:**
-  - The `filesystem` capability can only discover files, not read them.
-  - Reading arbitrary files from an untrusted extension would be a big
-    expansion of the security model.
-  - The agent route already works today.
-- **If you want automatic ingestion:** add a host command `pick_and_read_text`.
-  - The user picks a file each time.
-  - It extracts text from txt/md/pdf/docx with a size cap.
-  - It is gated by a new capability.
-
-  Mind Map would then store the extracted text (in the reserved `mm-body-*`
-  keys) and index it. The host part is **M**. The extension part is **S–M**.
+- **Add a file…** in the launcher (`mm+`, `mm+ file`, `mm add file`), in
+  settings → Documents and in the explorer's toolbar; **Update from file…**
+  on a doc's card and in the explorer. Kage's dialog opens at once from these
+  clicks. Kage reads text, Markdown, PDF and Word files (more formats later,
+  with no change in Mind Map) and never tells Mind Map the path.
+- Mind Map keeps up to `doc_max_chars` characters of each file (50,000,
+  200,000 by default, or 1,000,000), at most 64 MB of document text in all.
+  The first 8,000 characters are the doc's text; the rest is a body, read on
+  demand. Names, dates and actions are found in the first 8,000 characters;
+  keyphrases come from the whole text. A document's actions are always
+  suggestions.
+- The same file again changes nothing; the same content from another
+  computer is recognised by its hash.
+- Your agent gets a doc's name, size, summary and up to 3 matching passages,
+  never the whole text. A file Kage flags as possibly holding a password or
+  key is private until you choose **Let my agent see it**.
+- On a Kage without this feature, nothing changes: documents are stored as
+  references (a window title, a path or URL, your note, a link's title and
+  description), and attaching the file in chat and asking the agent to "add
+  this to my mind map" still works (C6).
 
 ## Q5. Should Mind Map's actions be the same thing as the Todos extension's todos?
 

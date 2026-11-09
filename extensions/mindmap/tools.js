@@ -139,7 +139,10 @@ export default class MindMapToolProvider {
       {
         name: 'get',
         description: t('tool.get'),
-        parameters: { id: { type: 'string', required: true, description: t('tool.get_id') } },
+        parameters: {
+          id: { type: 'string', required: true, description: t('tool.get_id') },
+          query: { type: 'string', description: t('tool.get_query', { n: LIMITS.toolPassages, max: LIMITS.toolPassageChars }) },
+        },
       },
       {
         name: 'entity',
@@ -180,9 +183,9 @@ export default class MindMapToolProvider {
       await mind.ready();
       await mind.syncIfStale();
       switch (name) {
-        case 'search': return { result: this.search(p) };
+        case 'search': return { result: await this.search(p) };
         case 'actions': return { result: this.actions(p) };
-        case 'get': return { result: this.get(p) };
+        case 'get': return { result: await this.get(p) };
         case 'entity': return { result: this.entity(p) };
         case 'capture': return { result: await this.capture(p) };
         case 'annotate': return { result: await this.annotate(p) };
@@ -210,7 +213,7 @@ export default class MindMapToolProvider {
 
   // --- search ------------------------------------------------------------------
 
-  search(p) {
+  async search(p) {
     const mind = this.mind;
     const query = str(p.query, 500);
     const spec = mind.parse(query, { trailingSpace: true, forAgent: true });
@@ -249,13 +252,40 @@ export default class MindMapToolProvider {
     const limit = int(p.limit, LIMITS.searchDefault, 1, LIMITS.searchMax);
     const out = mind.find(find, { forAgent: true, limit });
     const results = [];
+    let loads = 0;
     for (const hit of out.hits) {
       const why = this.whyOf(hit, find);
       const record = mind.agentRecord(hit.item, { terms: find.terms, why });
-      if (record) results.push(record);
+      if (!record) continue;
+      // A document's passages that match the query (§11.7), never its whole
+      // text. Bodies are read on demand, for the first few docs only.
+      if (hit.item.file && (mind.cachedBody(hit.item) || loads < LIMITS.toolBodyLoads)) {
+        if (!mind.cachedBody(hit.item)) loads++;
+        const passages = await this.passages(hit.item, find.terms);
+        if (passages.length) record.passages = passages;
+      }
+      results.push(record);
     }
     const scope = this.scopeOf(find, out.relaxed, unresolved);
-    return capSize({ scope, results, total: results.length, hiddenPrivate: out.hiddenPrivate || 0, note: this.note }, 'results');
+    const result = { scope, results, total: results.length, hiddenPrivate: out.hiddenPrivate || 0, note: this.note };
+    // Over the size cap: drop passages from the last results first, then results.
+    for (let i = results.length - 1; i >= 0 && JSON.stringify(result).length > LIMITS.toolBytes; i--) {
+      if (results[i].passages) delete results[i].passages;
+    }
+    return capSize(result, 'results');
+  }
+
+  // Up to 3 passages (≤400 characters) of a doc's full text that match
+  // `terms`, framed like snippets. [] for a doc whose body isn't here.
+  async passages(item, terms) {
+    const mind = this.mind;
+    const body = await mind.loadBody(item);
+    if (!body) return [];
+    return mind.passagesFor(body, terms, { max: LIMITS.toolPassages, chars: LIMITS.toolPassageChars }).map((passage) => {
+      const out = { text: mind.agentText(passage.text, LIMITS.toolPassageChars) };
+      if (passage.page) out.page = passage.page;
+      return out;
+    });
   }
 
   whyOf(hit, spec) {
@@ -378,7 +408,7 @@ export default class MindMapToolProvider {
 
   // --- get / entity ----------------------------------------------------------------------
 
-  get(p) {
+  async get(p) {
     const mind = this.mind;
     const id = mind.stripCite(str(p.id, 80));
     const item = id ? mind.item(id) : null;
@@ -398,6 +428,7 @@ export default class MindMapToolProvider {
     };
     if (record.url) out.url = record.url;
     if (item.path) out.path = item.path;
+    if (record.file) out.file = record.file;
     out.created = mind.isoDay(item.createdAt);
     if (Number.isFinite(item.occurredAt)) out.occurred = mind.isoDay(item.occurredAt);
     out.entities = record.entities;
@@ -413,6 +444,13 @@ export default class MindMapToolProvider {
       .map((r) => ({ cite: mind.cite(r.id), title: mind.agentText(r.title) }));
     const parent = item.parentId ? mind.item(item.parentId) : null;
     if (parent && !mind.isHidden(parent)) out.parent = { cite: mind.cite(parent.id), title: mind.agentText(parent.title) };
+    // A document: the passages that match `query` (§11.7).
+    const query = str(p.query, 500);
+    if (item.file && query) {
+      const terms = mind.parse(query, { trailingSpace: true, forAgent: true }).terms || [];
+      const passages = await this.passages(item, terms);
+      if (passages.length) out.passages = passages;
+    }
     out.note = this.note;
     // Escaping inflates JSON, so shrink the text until the result fits.
     let max = LIMITS.getText;
@@ -422,6 +460,7 @@ export default class MindMapToolProvider {
       out.truncated = true;
     }
     while (JSON.stringify(out).length > LIMITS.toolBytes && out.related.length) out.related.pop();
+    while (JSON.stringify(out).length > LIMITS.toolBytes && out.passages?.length) out.passages.pop();
     return out;
   }
 

@@ -2,6 +2,8 @@
 // The launcher provider (search.js): keywords, rows and Enter behaviours.
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import { F2_WINDOW, FIXTURE_NOW, buildCorpus, captureVia, makeHarness, rowById } from '../../test-helpers/mindmap/corpus.mjs';
+import { FILE_FEATURES, fileText, hostError, installFiles } from '../../test-helpers/mindmap/file-host.mjs';
+import { makeContext } from '../../test-helpers/mindmap/corpus.mjs';
 import MindMapSearchProvider, { splitTrigger } from './search.js';
 
 const hits = (rows) => rows.filter((r) => r.id.startsWith('mm:i:'));
@@ -380,5 +382,114 @@ describe('map and ask rows (P1)', () => {
     custom.initialize({ ...h.context, config: { ...h.context.config, trigger: 'brain' } });
     expect(custom.match('brain? mtcs')[0].id).toBe('mm:askgo');
     expect(rowById(custom.match('brain mtcs design'), 'mm:ask').data).toEqual({ a: 'fill', value: 'brain? mtcs design' });
+  });
+});
+
+// --- documents from a file (Kage EXTENSION_FILE_TEXT §11.2 C9, C12) ------------------
+
+const DOC_TEXT = [
+  '# Q3 plan',
+  'Dana to send the MTCS numbers by Friday.',
+  ...Array.from({ length: 200 }, (_, i) => `Paragraph ${i} covers the walrus roadmap and the budget.`),
+  'The Zanzibar pilot starts in spring.',
+].join('\n');
+
+async function fileHarness() {
+  const g = await makeHarness({ atomic: true, hostFeatures: FILE_FEATURES });
+  const fake = installFiles(g.context);
+  g.at(FIXTURE_NOW);
+  await g.mind.ready();
+  return { g, ...fake };
+}
+
+describe('documents from a file', () => {
+  it('offers Add a file… only where Kage reads files', async () => {
+    const plain = await makeHarness();
+    await plain.mind.ready();
+    expect((await plain.search.matchAsync('mm+')).map((r) => r.id)).not.toContain('mm:file');
+    expect(plain.search.match('mm+ file').map((r) => r.id)).toEqual(['mm:capture']);
+    expect(plain.search.match('mm add file').map((r) => r.id)).not.toContain('mm:file');
+    const { g } = await fileHarness();
+    const empty = await g.search.matchAsync('mm+');
+    expect(rowById(empty, 'mm:file')).toMatchObject({ icon: '📄', label: 'Add a file…', description: 'Text, Markdown, PDF or Word. Kage reads it on this computer.', data: { a: 'file' } });
+    expect(g.search.match('mm+ file').map((r) => r.id)).toEqual(['mm:file', 'mm:capture']);
+    expect(g.search.match('mm+ a file').map((r) => r.id)).toEqual(['mm:file', 'mm:capture']);
+    expect(g.search.match('mm add file').map((r) => r.id)).toEqual(['mm:file']);
+    expect(g.search.match('mm+ file the expense report').map((r) => r.id)).toEqual(['mm:capture']);
+  });
+
+  it('Enter adds the file and shows its card; cancelling shows and saves nothing; refusals say why', async () => {
+    const { g, queue } = await fileHarness();
+    const row = rowById(await g.search.matchAsync('mm+'), 'mm:file');
+    queue(fileText(DOC_TEXT, { pageCount: 3 }));
+    const out = await g.search.execute(row);
+    expect(out.type).toBe('display');
+    expect(out.value).toMatch(/^🧠 Added “Q3 plan”\n\n\[mm-card:op:o[0-9a-z]{14}\]$/);
+    const html = await g.formatter.format(`<p>${out.value.split('\n\n')[1]}</p>`, { streaming: false });
+    expect(html).toContain('✓ Added Q3 plan.pdf: 3 pages, ');
+    expect(html).toContain('Found ');
+    const before = g.mind.stats().items;
+    queue(null);
+    expect(await g.search.execute(row)).toBeNull();
+    expect(g.mind.stats().items).toBe(before);
+    queue(hostError('errors.file_text.too_large', 'Big.pdf is 48.2 MB. Kage reads files up to 32 MB.'));
+    expect((await g.search.execute(row)).value).toBe('⚠️ Big.pdf is 48.2 MB. Kage reads files up to 32 MB. Try a smaller copy, or save part of it as a PDF.');
+    // The same file again: the card it already is.
+    queue(fileText(DOC_TEXT, { pageCount: 3 }));
+    const again = await g.search.execute(row);
+    expect(again.value).toMatch(/^🧠 Already in your mind map \\\(added .+\\\)\n\n\[mm-card:item:i[0-9a-z]{14}\]$/);
+    // mm undo names it.
+    expect(rowById(g.search.match('mm undo'), 'mm:undo').label).toBe('Undo: Added “Q3 plan”');
+  });
+
+  it('a doc row shows its file, pages and day, and a passage when only the body matched', async () => {
+    const { g, queue } = await fileHarness();
+    queue(fileText(DOC_TEXT, { pageCount: 4 }));
+    const { value } = await g.search.execute(rowById(await g.search.matchAsync('mm+'), 'mm:file'));
+    expect(value).toContain('[mm-card:op:');
+    const id = g.mind.recent(1)[0].id;
+    const walrus = rowById(await g.search.matchAsync('mm walrus'), `mm:i:${id}`);
+    expect(walrus.description).toMatch(/^Q3 plan\.pdf · 4 pages · added Fri, Nov 6/);
+    // "zanzibar" is only past the item's first 8,000 characters. Another
+    // window hasn't read the body yet: match() can't show the passage, and
+    // matchAsync reads it and does.
+    const other = new MindMapSearchProvider();
+    other.initialize(makeContext(g.host, { invoke: g.host.connect().invoke, hostFeatures: FILE_FEATURES }));
+    await other.mind.ready();
+    expect(rowById(other.match('mm zanzibar'), `mm:i:${id}`).description).not.toContain('Zanzibar pilot');
+    const rows = await other.matchAsync('mm zanzibar');
+    expect(rowById(rows, `mm:i:${id}`).description).toMatch(/p\. 4: …[^·]*Zanzibar pilot/);
+    expect(rowById(other.match('mm zanzibar'), `mm:i:${id}`).description).toContain('Zanzibar pilot');
+    // The window that added it already has it.
+    expect(rowById(g.search.match('mm zanzibar'), `mm:i:${id}`).description).toContain('Zanzibar pilot');
+  });
+
+  it('Update from file… on a doc card re-reads it, and the card says how it went', async () => {
+    const { g, queue, calls } = await fileHarness();
+    queue(fileText(DOC_TEXT));
+    await g.search.execute(rowById(await g.search.matchAsync('mm+'), 'mm:file'));
+    const id = g.mind.recent(1)[0].id;
+    const fmt = { streaming: false };
+    let html = await g.formatter.format(`<p>[mm-card:item:${id}]</p>`, fmt);
+    const blk = / mm-b([0-9a-z]+) mm-r/.exec(html)[1];
+    expect(html).toContain(`mm:b${blk}:a:update:${id}`);
+    queue(fileText('A short replacement about the budget.', { ref: 'B', name: 'Q3 plan v2.pdf' }));
+    expect(await g.search.onResultAction(`mm:b${blk}:a:update:${id}`)).toEqual({});
+    expect(g.mind.item(id).text).toBe('A short replacement about the budget.');
+    html = (await g.formatter.format(html, fmt)) ?? html;
+    expect(html).toContain('Updated Q3 plan v2.pdf: ');
+    // A refusal shows on the card; a cancel changes nothing.
+    queue(hostError('errors.file_text.encrypted', 'Q3 plan v2.pdf is password-protected. Remove the password and try again.'));
+    await g.search.onResultAction(`mm:b${blk}:a:update:${id}`);
+    html = (await g.formatter.format(html, fmt)) ?? html;
+    expect(html).toContain('is password-protected');
+    queue(null);
+    await g.search.onResultAction(`mm:b${blk}:a:update:${id}`);
+    expect(g.mind.item(id).text).toBe('A short replacement about the budget.');
+    // A forged update for an item the card doesn't show opens no dialog.
+    const other = await g.mind.capture('a plain note about lunch');
+    const n = calls.length;
+    await g.search.onResultAction(`mm:b${blk}:a:update:${other.itemId}`);
+    expect(calls).toHaveLength(n);
   });
 });

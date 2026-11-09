@@ -30,13 +30,17 @@ function el(doc, tag, attrs = {}, children = []) {
 }
 
 export class ExplorerPanel {
-  /** opts = { root, t, helpers: { iconOf(node), kindName(node) }, rtl, onCommand } */
-  constructor({ root, t, helpers = {}, rtl = false, onCommand } = {}) {
+  /**
+   * opts = { root, t, helpers: { iconOf(node), kindName(node) }, rtl, onCommand,
+   *   canAddFile (Kage reads files for Mind Map here: the toolbar's "Add a file…") }
+   */
+  constructor({ root, t, helpers = {}, rtl = false, onCommand, canAddFile = false } = {}) {
     this.root = root;
     this.doc = root.ownerDocument;
     this.t = typeof t === 'function' ? t : (key) => key;
     this.helpers = helpers;
     this.rtl = !!rtl;
+    this.canAddFile = !!canAddFile;
     this.onCommand = typeof onCommand === 'function' ? onCommand : () => {};
     this._toastTimer = null;
     this._options = [];
@@ -109,7 +113,10 @@ export class ExplorerPanel {
         this._cmd('capture', { text: this.addInput.value });
       }
     });
-    const add = el(doc, 'div', { className: 'ex-add' }, [this.addInput, addBtn]);
+    // "📄 Add a file…" (Kage EXTENSION_FILE_TEXT §11.2 C11): the click opens
+    // Kage's file dialog, so it is a plain button, never a key shortcut.
+    this.fileBtn = this.canAddFile ? this._button(`📄 ${t('files.row.add')}`, 'addFile', { title: t('files.row.add_sub') }) : null;
+    const add = el(doc, 'div', { className: 'ex-add' }, [this.addInput, addBtn, this.fileBtn]);
 
     const toolbar = el(doc, 'div', { className: 'ex-toolbar', role: 'toolbar', 'aria-label': t('explorer.toolbar') }, [nav, zoom, searchBox, modes]);
     const strip = el(doc, 'div', { className: 'ex-strip' }, [lenses, add]);
@@ -211,7 +218,10 @@ export class ExplorerPanel {
 
   /**
    * detail = null | { ref, icon, title, meta, text, full, where, badges: string[],
-   *   entities: [{ ref, label }], buttons: [{ type, label, primary?, disabled?, title?, extra? }] }
+   *   entities: [{ ref, label }], buttons: [{ type, label, primary?, disabled?, title?, extra? }],
+   *   doc? }
+   * doc: a picked document's text, a part at a time: { status, parts: [{ label?, text }],
+   *   canPrev, canNext } or { note } (loading, or the text isn't on this computer).
    */
   showDetails(detail) {
     const { doc, t } = this;
@@ -230,7 +240,8 @@ export class ExplorerPanel {
       this.panel.appendChild(el(doc, 'div', { className: 'ex-badges' }, detail.badges.map((b) => el(doc, 'span', { className: 'ex-badge', text: b }))));
     }
     const text = String(detail.text || '');
-    if (text) {
+    if (detail.doc) this._docText(detail);
+    else if (text) {
       const shown = detail.full || text.length <= TEXT_SHOWN ? text : `${text.slice(0, TEXT_SHOWN).trimEnd()}…`;
       this.panel.appendChild(el(doc, 'div', { className: 'ex-text', text: shown }));
     }
@@ -255,6 +266,30 @@ export class ExplorerPanel {
         row.appendChild(b);
       }
       this.panel.appendChild(row);
+    }
+  }
+
+  // A document's text, one part at a time, with "p. 4" where pages start.
+  _docText(detail) {
+    const { doc, t } = this;
+    const d = detail.doc;
+    if (d.note) {
+      this.panel.appendChild(el(doc, 'p', { className: 'ex-muted', role: 'status', text: d.note }));
+      return;
+    }
+    if (d.status) this.panel.appendChild(el(doc, 'div', { className: 'ex-meta', text: d.status }));
+    const box = el(doc, 'div', { className: 'ex-text', dir: 'auto' });
+    for (const part of d.parts || []) {
+      if (part.label) box.appendChild(el(doc, 'span', { className: 'ex-badge', text: part.label }));
+      box.appendChild(doc.createTextNode(String(part.text ?? '')));
+    }
+    this.panel.appendChild(box);
+    if (d.canPrev || d.canNext) {
+      const prev = el(doc, 'button', { type: 'button', className: 'ex-btn', text: t('files.text.prev'), disabled: !d.canPrev });
+      const next = el(doc, 'button', { type: 'button', className: 'ex-btn', text: t('files.text.next'), disabled: !d.canNext });
+      prev.addEventListener('click', () => this._cmd('docPrev', { ref: detail.ref }));
+      next.addEventListener('click', () => this._cmd('docNext', { ref: detail.ref }));
+      this.panel.appendChild(el(doc, 'div', { className: 'ex-actions' }, [prev, next]));
     }
   }
 

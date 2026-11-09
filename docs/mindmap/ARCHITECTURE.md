@@ -107,7 +107,7 @@ extensions/mindmap/
   README.md                    WP-D
   defaults.js                  WP-D   leaf      DEFAULTS, LIMITS
   mind.js                      WP-D   composer  per-window facade: data, mutations, agent records, prompts
-  view.js                      WP-C   composer  HTML, labels, formatter core, UI state (imports ./lib/graph.js only)
+  view.js                      WP-C   composer  HTML, labels, formatter core, UI state (imports ./lib/graph.js and ./lib/filetext.js)
   search.js                    WP-D   entry     searchProvider
   tools.js                     WP-D   entry     toolProvider
   formatter.js                 WP-D   entry     thin messageFormatter wrapper around view.formatHtml
@@ -136,6 +136,7 @@ extensions/mindmap/
   lib/layout.js                WP-V8  leaf      relax(): force pass for runSandboxed (self-contained)
   lib/scene.js                 WP-V8  leaf      what the explorer draws: nodes, edges, seeds, expand
   lib/files.js                 FT-MM1 leaf (lib-injected) documents from Kage's file_text: checks, dedupe, title, keyphrases, passages
+  lib/filetext.js              FT-MM3 leaf      the words for a picked document (size, outcome, errors) through an injected t
   lib/organize.js              AC-MM1 leaf (lib-injected) background organizing: eligibility, batch, payload, request, reply schema, org marks
   lib/*.test.js                owner of the module under test
   view.test.js, styles.test.js WP-C
@@ -144,6 +145,7 @@ extensions/mindmap/
   explorer*.test.js            WP-V8
 test-helpers/mindmap/memory-host.mjs   WP-B   in-memory invoke (data commands + pluggable handlers)
 test-helpers/mindmap/view-host.mjs     WP-V8  fake view host: change events, context.view, canvas stub, frames
+test-helpers/mindmap/file-host.mjs     FT-MM3 fake context.files (support, pickText) and §3.6-shaped results
 test-helpers/mindmap/corpus.mjs        WP-D   SPEC §3.1 fixture corpus builder
 docs/mindmap/i18n/view.en.json         WP-C   i18n fragment, same format as messages.json; WP-D merges it, then deletes it
 ```
@@ -494,7 +496,7 @@ export function neighborhood(focus, ctx); // → Neighborhood (§6.6); determini
 export function layout(neigh, { rtl = false } = {}); // → Placed (§6.6) — slot classes, % coordinates, edges
 ```
 
-### 5.14 `view.js` (WP-C, composer; imports `./lib/graph.js` only)
+### 5.14 `view.js` (WP-C, composer; imports `./lib/graph.js` and `./lib/filetext.js`)
 
 ```js
 // labels (used by search.js too)
@@ -557,6 +559,16 @@ class Mind {
   // data management
   exportJson(); exportMarkdown(t); exportRaw(); importJson(text); deleteAll(); repair();
   requestReformat();                            // context.formatter?.requestReformat?.()
+  // documents the user picks (FT-MM3, EXTENSION_FILE_TEXT §11)
+  get canPickFiles(); get syncOn();             // files.pick_text and context.files; Kage sync on (SYNC §12.6)
+  fileSupport();                                // context.files.support(), once per session → {formats, maxInputBytes, maxChars}
+  addFile({ targetId?, source?, signal? });     // from a click: pickText → validateFileText → ingestFile. → FileResult | {ok:false, code, message?, key?}
+  ingestFile(file, { targetId?, source? });     // under the lock: dedupeDecision on the fresh state, then applyIngest / applyReread / applyAddRef
+  loadBody(item); cachedBody(item);             // the full text, read on demand, the last 8 bodies per window; null when it isn't here
+  bodyOnlyHit(item, terms); passagesFor(body, terms, { max, chars });
+  agentFile(item);                              // {name, format, chars, pages?} for agent records
+  setNotice(id, line);                          // a card's "Update from file…" outcome, shown for two minutes
+  exportBodies();                               // { [itemId]: text } for Export JSON
   // map explorer (WP-V8, EXTENSION_VIEWS §24)
   exNode(ref);                                  // ExNode (§6.6b) | null (archived, dismissed, gone)
   links(ref, { limit = 60 });                   // { node, links: [{ ref, role, style, w, node }] } | null; round robin over kinds
@@ -567,6 +579,21 @@ class Mind {
   onRemoteChange(fn);                           // fn({data, layout}) on another window's change (storage.change_events)
 }
 ```
+
+Document bodies (FT-MM3): `_mutateLocked` takes `model.bodyKeys(state)`
+after the sync and before `apply`, `_persist` writes every `change.bodies`
+first, and after the commit check the keys `model.releasedBodies(held,
+state)` returns are deleted (an undone ingest or re-read, a delete or re-read
+the journal dropped, a lossy op). `ingestFile` draws the op's and the item's
+first ids up front and leaves that item out of `dedupeDecision`, so a retry
+over its own earlier attempt is still "new".
+
+FileResult: `{ ok: true, case: 'new'|'update'|'copy'|'same'|'unchanged',
+itemId, opId? (new, update), title, addedAt, file: {name, format, pages,
+chars, truncated, warnings}, found?: {people, teams, projects, topics,
+actions}, private, secret, keptLocal }`. `lib/filetext.js fileLines` turns it
+into the card, status and toast lines; `fileErrorText` does the same for a
+refusal.
 
 The mutation skeleton is in SPEC §7.4. Inside the lock, `capture` re-runs
 `extract()` against the freshly synced dictionary. It then calls
@@ -673,7 +700,8 @@ windows' changes from `context.storage.onChanged`.
 
 ### 5.24 `lib/files.js` (WP-FT-MM1, uses `lib.text`)
 
-Kage's EXTENSION_FILE_TEXT §11.3–11.7. Pure; FT-MM3 wires it into `mind.js`.
+Kage's EXTENSION_FILE_TEXT §11.3–11.7. Pure; FT-MM3 wired it into `mind.js`
+(`addFile`, `ingestFile`, `loadBody`, `passagesFor`).
 
 ```js
 export const FILE_REF_RE, SHA256_RE, FILE_WARNINGS, FILE_LIMITS, GENERIC_TITLE_RE;
@@ -685,6 +713,19 @@ export function addRef(refs, ref, max = 8);                  // newest last, old
 export function docTitle(file, lib);                         // → { title, titleSource: 'meta'|'auto' }
 export function bodyKeyphrases(text, lib, { max = 64 });     // forms that tokenize back to their term
 export function findPassages(text, terms, lib, { max = 3, chars = 400, pageStarts }); // → [{ text, start, end, page? }], best first
+```
+
+### 5.24b `lib/filetext.js` (WP-FT-MM3, imports nothing)
+
+The words for a picked document, shared by the cards, the launcher's line,
+the settings status and the explorer's toast. A leaf, not part of `view.js`:
+`settings.js` can import it without pulling view.js's objects into the
+settings security scan.
+
+```js
+export function fileSize(file, { t, locale });               // "12 pages, 48,211 characters"
+export function fileLines(info, { t, locale, now, fmtDay }); // FileResult or OpVM.doc → string[]: headline, found, notes
+export function fileErrorText(out, { t });                   // an addFile refusal → its text, '' for a cancel
 ```
 
 ### 5.25 `lib/organize.js` (WP-AC-MM1, uses `lib.text`, `lib.dates`, `lib.url`)
@@ -819,9 +860,11 @@ DataPort { loaded, rev, ensureLoaded(), cite(id) → CiteVM|null, op(opId) → O
            map(focus, page) → Neighborhood|null, links(ref, {limit}) → {node, links}|null, nameOf(id) → string }
 CiteVM { id, kind, title, day, snippet, url?, private, missing }
 OpVM   { opId, code, undone, canUndo, at, item?: {id, kind, title, private}, dedupedInto?: {id, day},
-         entities: [{id, name, type}], actions: [{id, title, status, suggested, dueAt?}], related: CiteVM[], truncated }
+         entities: [{id, name, type}], actions: [{id, title, status, suggested, dueAt?}], related: CiteVM[], truncated,
+         doc?: FileResult }                                   // ingest and reread ops (§5.15)
 ItemVM { id, kind, title, text, day, createdAt, app?, url?, path?, status?, suggested?, dueAt?, owner?: {id, name},
-         private, summary?, entities: [{id, name, type, private}], actions: [...], parent?: CiteVM, related: CiteVM[] }
+         private, summary?, entities: [{id, name, type, private}], actions: [...], parent?: CiteVM, related: CiteVM[],
+         file?: {name, ext, format, size, pages, chars, truncated, warnings, canUpdate}, notice? }
 ```
 
 When the port returns `null` for a known id that is private, it returns
@@ -831,7 +874,7 @@ When the port returns `null` for a known id that is private, it returns
 
 ```
 AgentRecord { cite, kind, title, date: 'YYYY-MM-DD', captured: 'YYYY-MM-DD', snippet, url?,
-              entities: string[], status?, due?, owner?, why?: string[] }
+              file?: {name, format, chars, pages?}, entities: string[], status?, due?, owner?, why?: string[] }
 ```
 
 ---
@@ -843,6 +886,7 @@ AgentRecord { cite, kind, title, date: 'YYYY-MM-DD', captured: 'YYYY-MM-DD', sni
 ```
 { a: 'capture', text }                  // mm:capture
 { a: 'window', title, app }             // mm:window
+{ a: 'file' }                           // mm:file → Kage's file dialog → display with the op card (files.pick_text hosts)
 { a: 'open', id }                       // mm:i:<id>
 { a: 'toggle', id, query }              // action rows → replace_input(query) after the toggle
 { a: 'accept', id, query }
@@ -861,6 +905,7 @@ AgentRecord { cite, kind, title, date: 'YYYY-MM-DD', captured: 'YYYY-MM-DD', sni
 ```
 mm:a:done:<itemId> | mm:a:reopen:<itemId> | mm:a:accept:<itemId> | mm:a:dismiss:<itemId>
 mm:a:undo:<opId> | mm:a:open:<itemId> | mm:a:private:<itemId> | mm:a:share:<itemId> | mm:a:delete:<itemId>
+mm:a:update:<itemId>        a doc's "Update from file…" (Kage's file dialog; the card shows the outcome)
 mm:b<blk>:f:<ref> | mm:b<blk>:back | mm:b<blk>:home | mm:b<blk>:more:<lane> | mm:b<blk>:mode:<map|list> | mm:b<blk>:map
 mm:b<blk>:explore           open the explorer on what the card shows (→ { host: open_view }; views hosts only)
 mm:c<msg>:x:<n>:<id>        toggle a chip expansion
@@ -908,6 +953,7 @@ Every test is vitest. `npm test` runs all of them, and
 | Explorer (WP-V8) | `lib/camera.test.js`: round trips, zoom at a point, clamps, fit. `lib/spatial.test.js`: query, topmost hit, moves. `lib/layout.test.js`: overlaps resolved, fixed nodes still, deterministic, survives `Function.toString()` and runs in a plain worker. `lib/scene.test.js`: lanes, determinism, RTL mirroring, pins, lens, caps, expand/collapse, rebuild with positions kept. `explorer-canvas.test.js` (jsdom, recording 2D context): LOD, culling, RTL text, theme colours, drag/pan/wheel/pinch, handle. `explorer.test.js`: open with focus, a drag pins to mm-layout and shows after reopening, a non-self mm-meta change redraws once, a private node never reaches compose, `onOpen` re-centres, mm-view round trip, keyboard, panel actions with Undo. `explorer-entry.test.js`: rows, card buttons and settings with and without views; `mind.links`, pins, mm-view, export/import, Delete everything. `explorer-styles.test.js`: the CSS gate for `explorer.css`. |
 | `lib/files.js` (FT-MM1) | `validateFileText`: bad types, oversized fields, scalar counting, bad hex, bad ref, paths in names, page starts converted to string offsets. `dedupeDecision`: S, U, C, N, first match wins, oldest of equals, Update from file…. `addRef` cap. `docTitle`: usable titles, app defaults, paths. `bodyKeyphrases`: frequency, headings double, forms that re-tokenize, deterministic, 200,000 chars in <60 ms (soft). `findPassages`: length, best first, no overlap, folded spellings, the block test against a full scan, pages, surrogate pairs. |
 | `lib/organize.js` (AC-MM1) | `lib/organize.test.js`. Eligibility: private, private entity, archived, child, kinds, short, pending link, settle time, `orgSince` (and its 7-day default), hash change, done and skipped marks, failed with backoff and the 3-try cap, malformed `org`, notes `mm organize` already did, machine tag and the 24-hour rule. Batch cap and order, insertion-order independence, two tags start apart, 20,000 items (soft). Payload omits window, app, folders, `my_names` and ids; URLs lose userinfo, query and fragment, in the text too; paths keep the file name; caps and no `<>`. Vocabulary excludes private, merged, hidden-only and own names. `SCHEMA` uses only the host's subset within its caps; fixture replies pass, bad ones fail at the first bad path. `buildRequest`: refs, label, budget trimming checked against the host's framing. `toAnnotateEntries`: ref mapping, skip, cleaning; end to end through `model.applyAnnotate`. Marks. |
+| Documents (FT-MM3) | `lib/filetext.test.js`: sizes, every headline and note, error texts. `mind.test.js`: off without `files.pick_text`; body first, then the shard, journal and meta, and written once; a short file has no body; cancel, host refusals and bad results save nothing (and no file name in the log); S, C and U, with Undo of a re-read and of an ingest; Update from file… (unchanged, update, not a doc); `possible_secret` and Let my agent see it; the budget refused before the dialog; read-only before the dialog; a crash after the body write; a retry after a conflict is still "new"; the body cache (lazy, 8 per window) and another window after `syncIfStale`; a deleted doc's body kept until the delete leaves the journal; Export raw / JSON, Delete everything and Import with bodies. `search.test.js`: rows only with the feature, Enter, cancel, refusal and "already" lines, doc rows and passages, Update from file… on a card. `settings.test.js`, `tools.test.js`, `view.test.js` and `explorer.test.js`: the Documents section, passages within 8 KB and private docs hidden, the doc cards, Add a file… and Show text in the explorer. |
 | `host-loader.test.js` | Copied from stocks and adapted. <br>• Windows: floating/chat = search + tools + formatter; settings = settings. <br>• Checks BFS discovery, no re-exports, composers import only leaves, leaves import nothing, every import is single-line, no `import … from './` text in comments. <br>• Loads every provider through the host's two-pass rewrite in Node and asserts the default export class names. |
 | `mind.test.js` | Load and sync (`syncIfStale` reloads only changed keys). Crash safety (AT-10). Read-only refuses writes and makes zero data writes. Two windows (AT-9). Undo (AT-8). Link enrichment (mock `fetch_link_metadata`; title only while `auto`; a reformat is requested). The window doc with an empty macOS title is not offered. `agentRecord` omits window and app, applies snippet caps and private exclusion. `askPrompt` with 0 and 8 records strips `<>`. `exportJson` and `deleteAll` (every key and twin deleted). |
 | `search.test.js` | `getKeywords` for the default and a custom trigger. The `mm+` preview row and execute → display with an op token. `mm+` empty → window row (and the hint). The home rows. Loading placeholder → `matchAsync` real rows; a second `matchAsync` with no change returns `[]`. Row ids contain no user text (fuzz with random input). Enter behaviours per kind (`open_url` invoked; doc focus → copy → card). Action toggle returns `replace_input`. `onResultAction` routing. |

@@ -1308,6 +1308,102 @@ wires it into `mind.js` with `lib/organize.js`.
   61 keys waiting for translation (none added here); every other gate
   passes.
 
+## WP-FT-MM3: documents from a file, wired in (`mind.js`, `search.js`, `settings.js`, `tools.js`, `view.js`, `explorer*.js`, `lib/filetext.js`)
+
+Kage's EXTENSION_FILE_TEXT §11.1–11.9 (F0) and the explorer parts C11, C12
+and the doc pane (F1). Kage's host side (FT1–FT8) is built in parallel, so
+this is coded against the design and tested with a fake `context.files` in
+`test-helpers/mindmap/file-host.mjs`. Every new host feature is detected:
+without `files.pick_text` and `context.files`, nothing file-related shows and
+Mind Map behaves as before.
+
+- **Manifest.** `file_text` capability, `doc_max_chars` config, version
+  0.3.0. **Differs from the design:** `doc_max_chars` is a string enum
+  (`"50000"`, `"200000"`, `"1000000"`), not a number. A settings select
+  stores its value as a string, and `check:defaults` fails a select on a
+  number field. `docMaxChars(config)` reads it as a number.
+- **Flow.** `mind.addFile()` checks read-only, the target and the 64 MB
+  budget *before* the dialog; asks `support()` once per session; calls
+  `pickText({ formats: every format this Kage reads, maxChars })`; checks the
+  result with `validateFileText`; then `ingestFile` runs `dedupeDecision` on
+  the fresh state under the lock and applies `applyIngest`, `applyReread` or
+  `applyAddRef`, then candidates and back-fill as for a capture. It draws the
+  op's and the item's first ids up front and leaves that item out of the
+  dedupe, so a retry over its own earlier attempt is still "new" (tested).
+- **Bodies.** `_persist` writes `change.bodies` first (literal-prefix key
+  `mm-body-${id}-${n}`). `_mutateLocked` takes `bodyKeys` after the sync and
+  deletes `releasedBodies` after the commit check, for every mutation: undo,
+  journal trims and lossy ops all go through it. Bodies aren't read by
+  `ready()`; `loadBody` keeps the last 8 per window. Delete everything removes
+  bodies first; Export raw includes them.
+- **Outcomes.** `FileResult` (`case`: new, update, copy, same, and
+  **unchanged** for Update from file… on the same file) feeds the op card,
+  the launcher line, the settings status and the explorer toast through the
+  new leaf **`lib/filetext.js`** (`fileSize`, `fileLines`, `fileErrorText`).
+  It's a leaf, not part of `view.js`, because `settings.js` importing
+  `view.js` pulls its many `{ type, … }` objects into `check:security`'s
+  settings scan (11 false "unresolved control type" errors). `view.js` and
+  `host-loader.test.js` now allow `./lib/filetext.js` next to `./lib/graph.js`.
+- **Launcher.** `mm:file` under `mm+` alone, first for `mm+ file`, alone for
+  `mm add file` (not behind the read-only banner). A doc row reads "Q3
+  plan.pdf · 12 pages · added Fri, Nov 6"; when only the body matched,
+  `matchAsync` reads the body and the row shows a ≤160-character passage
+  ("p. 4: …"). **Update from file…** is a card verb (`mm:b…:a:update:<id>`);
+  `onResultAction` can't return a status, so the card shows the outcome as a
+  notice for two minutes (`mind.setNotice`). A file doc's card has no
+  **Open** (there's no path to open). Display lines are Markdown-escaped, so
+  "(added …)" reads `\(added …\)` in the raw value.
+- **Settings.** A Documents section (Add a file…, the select, "Document
+  storage: {used} of 64 MB", a warning past 90%) where Kage reads files;
+  elsewhere only the usage, once there are docs. The files disclosure goes in
+  the Privacy section with the others. On an older host without
+  `config.manifest_defaults`, a hidden copy of the select keeps the stored
+  value on Save. Export JSON carries `bodies`. **Addition:** Import JSON
+  writes back the bodies its docs reference that this computer lacks (the
+  text's character count must match), so Export → Delete everything → Import
+  keeps documents whole.
+- **Agent tools.** `search` and `get` records carry `file` (name, format,
+  chars, pages). `search` adds up to 3 passages (≤400 characters) per doc,
+  reading bodies for the first 5 docs only; over 8 KB, passages go before
+  results. **Addition:** `get` takes an optional `query` for passages (it had
+  no query to match). Private and secret-looking docs are never returned.
+- **Explorer.** **📄 Add a file…** in the toolbar (the explorer asks
+  `support()` at mount, so the click goes straight to the dialog). The new
+  doc is focused and selected, with the outcome and Undo in a toast. Doc
+  nodes' sub line is the file name and page count. The panel shows the file
+  and its size, **Show text** (parts of about 10,000 characters cut at a line
+  or space, "Part n of N", "p. 4" badges from the page starts) and **Update
+  from file…**; a body that isn't here says "The full text is on another of
+  your computers". Strings reuse existing `ex-` classes; `explorer.css` is
+  unchanged.
+- **Re-derivation.** A doc without a body gets its keyphrases from `text`
+  again; a doc with one keeps them (its body isn't read under the lock).
+- **Hints.** `// permissions: file_text` is in `mind.js` (where
+  `context.files` is called) and at the three entry points (`search.js`,
+  `settings.js`, `explorer.js`). `tools.js` has none: agent tools never open
+  the dialog.
+- **Other files.** `test-helpers/mindmap/file-host.mjs` (new), and the
+  repo-wide relative-import count in `scripts/check-sensitive-review.test.mjs`
+  (111 → 116: the five new imports).
+- **Strings.** 55 new EN keys (`files.*`, `settings.documents.*`,
+  `settings.disclosure.files`, `op.ingest`, `op.reread`, `export.documents`,
+  `export.pages`, `tool.get_query`), more than §11.9 lists: the extra ones are
+  the launcher lines, sizes, found counts, text paging and errors. The found
+  list uses `Intl.ListFormat` ("3 people, 2 projects, and 4 suggested
+  actions" in English). The acceptance test's pending-translation list has
+  them.
+- **Not here:** the sync side (S7: `fileRefs` local, `possible_secret` docs
+  and bodies never pushed); background organizing of docs (AC-MM3: title,
+  headings and the first 600 characters as the payload). `syncOn` is
+  feature-detected (`sync.records` and `context.sync.available`) only for the
+  card's "It stays on this computer."
+- **Not tested live:** Kage's FT host packages haven't merged, so the
+  §11 manual steps 1–5 (launcher, chat, settings, cloud files, cancel during
+  extraction) wait for a build with them.
+- **Checks:** `npx vitest run extensions/mindmap` 35 files / 1089 tests;
+  `npm test` 78 files / 2443 tests. `check:i18n` still fails only on keys
+  waiting for translation (now 116); every other gate passes.
+
 ## Status
 
 **Works (P0/P1/P2, all phases of SPEC §2):**
@@ -1324,8 +1420,12 @@ wires it into `mind.js` with `lib/organize.js`.
   re-derivation, enrich retry, context edges.
 - WP-V8: the full-window explorer (pan, zoom, pins, search, lenses, the
   node list), on Kage builds with extension views.
+- FT-MM1–3: documents from a file (Add a file…, Update from file…, bodies,
+  passages, the Documents settings), on Kage builds with `files.pick_text`.
 
 **Known gaps:**
+- Bodies left by an abandoned capture or a failed delete can't be swept
+  (extensions can't list their keys).
 - Imports that overwrite more than the journal holds aren't undoable (they
   say so). Cold `ready()` (550–900 ms) and heap (~40 MB) at 10k items are
   over budget (unchanged since Verify).

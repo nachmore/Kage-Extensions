@@ -1984,5 +1984,225 @@
   "settings.approve_views": {
     "message": "Approve Mind Map’s new permission in the Store to use the map explorer.",
     "description": "Shown on a Kage that supports the explorer before the user approves its permission"
+  },
+  "files.row.add": {
+    "message": "Add a file…",
+    "description": "Launcher row and button that open Kage’s file dialog to add a document"
+  },
+  "files.row.add_sub": {
+    "message": "Text, Markdown, PDF or Word. Kage reads it on this computer.",
+    "description": "Subtitle of Add a file…"
+  },
+  "files.row.added_line": {
+    "message": "Added “{title}”",
+    "description": "First line of the response after adding a file; {title} is the document’s title"
+  },
+  "files.row.updated_line": {
+    "message": "Updated “{title}” from its file",
+    "description": "First line of the response after Update from file…"
+  },
+  "files.row.pages": {
+    "message": "{n, plural, one {# page} other {# pages}}",
+    "description": "Page count of a document in a search row or the explorer"
+  },
+  "files.row.added_on": {
+    "message": "added {day}",
+    "description": "When a document was added, e.g. “added Mon, Oct 26”"
+  },
+  "files.row.passage_page": {
+    "message": "p. {page}: {text}",
+    "description": "A matching passage of a document and the page it is on"
+  },
+  "files.chars": {
+    "message": "{count, plural, one {{chars} character} other {{chars} characters}}",
+    "description": "A document’s size in characters; {chars} is the formatted number"
+  },
+  "files.pages_chars": {
+    "message": "{count, plural, one {# page} other {# pages}}, {chars}",
+    "description": "A document’s pages and size; {chars} is e.g. “48,211 characters”"
+  },
+  "files.card.op_added": {
+    "message": "✓ Added",
+    "description": "Card header after adding a file (when no details are shown)"
+  },
+  "files.card.op_updated": {
+    "message": "✓ Updated from file",
+    "description": "Card header after Update from file… (when no details are shown)"
+  },
+  "files.card.added": {
+    "message": "Added {name}: {size}.",
+    "description": "After adding a file; {name} is the file name, {size} e.g. “12 pages, 48,211 characters”"
+  },
+  "files.card.updated": {
+    "message": "Updated {name}: {size}.",
+    "description": "After Update from file…; {name} is the file name, {size} e.g. “12 pages, 48,211 characters”"
+  },
+  "files.card.found": {
+    "message": "Found {list}.",
+    "description": "What Mind Map found in a document; {list} is e.g. “3 people, 2 projects and 4 suggested actions”"
+  },
+  "files.found.people": {
+    "message": "{n, plural, one {# person} other {# people}}",
+    "description": "Part of the Found list"
+  },
+  "files.found.teams": {
+    "message": "{n, plural, one {# team} other {# teams}}",
+    "description": "Part of the Found list"
+  },
+  "files.found.projects": {
+    "message": "{n, plural, one {# project} other {# projects}}",
+    "description": "Part of the Found list"
+  },
+  "files.found.topics": {
+    "message": "{n, plural, one {# topic} other {# topics}}",
+    "description": "Part of the Found list"
+  },
+  "files.found.actions": {
+    "message": "{n, plural, one {# suggested action} other {# suggested actions}}",
+    "description": "Part of the Found list"
+  },
+  "files.card.truncated": {
+    "message": "Kept the first {n} characters.",
+    "description": "The document was longer than the limit in settings"
+  },
+  "files.card.no_text": {
+    "message": "No text found. It may be a scanned PDF. Saved the file name only.",
+    "description": "The file had no text Kage could read"
+  },
+  "files.card.pages_skipped": {
+    "message": "Read the first {n} pages.",
+    "description": "Kage read only part of a very long document"
+  },
+  "files.card.same": {
+    "message": "Already in your mind map (added {date})",
+    "description": "The same file was added before; nothing changed"
+  },
+  "files.card.copy_of": {
+    "message": "Already saved as “{title}”",
+    "description": "A file with the same content is already saved"
+  },
+  "files.card.unchanged": {
+    "message": "“{title}” hasn’t changed since you added it.",
+    "description": "Update from file… picked the same file again"
+  },
+  "files.card.secret": {
+    "message": "This file looks like it contains a password or key, so it’s private: your agent never sees it.",
+    "description": "Shown when Kage flagged the text as secret-looking"
+  },
+  "files.card.text_kept_local": {
+    "message": "It stays on this computer.",
+    "description": "Added to the secret note when sync is on"
+  },
+  "files.card.text_elsewhere": {
+    "message": "The full text is on another of your computers.",
+    "description": "A document whose full text isn’t on this computer"
+  },
+  "files.action.reveal_to_agent": {
+    "message": "Let my agent see it",
+    "description": "Button: lets the agent see a document kept private because it may hold a password"
+  },
+  "files.action.update": {
+    "message": "Update from file…",
+    "description": "Button: pick the file again and replace the document’s text"
+  },
+  "files.action.show_text": {
+    "message": "Show text",
+    "description": "Button in the explorer that shows a document’s whole text"
+  },
+  "files.action.hide_text": {
+    "message": "Hide text",
+    "description": "Button in the explorer that hides a document’s text again"
+  },
+  "files.text.part": {
+    "message": "Part {n} of {total}",
+    "description": "Which part of a long document’s text is shown"
+  },
+  "files.text.page": {
+    "message": "p. {n}",
+    "description": "Where a page starts in a document’s text"
+  },
+  "files.text.prev": {
+    "message": "Previous",
+    "description": "Button: the previous part of a document’s text"
+  },
+  "files.text.next": {
+    "message": "Next",
+    "description": "Button: the next part of a document’s text"
+  },
+  "files.text.loading": {
+    "message": "Loading the text…",
+    "description": "While a document’s text loads"
+  },
+  "files.error.too_large_hint": {
+    "message": "Try a smaller copy, or save part of it as a PDF.",
+    "description": "Added after Kage’s “file is too large” message"
+  },
+  "files.error.storage_full": {
+    "message": "Mind Map’s document storage is full (64 MB). Delete some documents first.",
+    "description": "Adding a file was refused because document storage is full"
+  },
+  "files.error.bad_result": {
+    "message": "Kage sent back something Mind Map couldn’t use, so nothing was saved.",
+    "description": "The file text Kage returned failed Mind Map’s checks"
+  },
+  "files.error.unavailable": {
+    "message": "This copy of Kage can’t read files for Mind Map.",
+    "description": "Adding a file isn’t possible on this Kage"
+  },
+  "files.error.not_file": {
+    "message": "That item wasn’t added from a file.",
+    "description": "Update from file… on an item that isn’t a picked document"
+  },
+  "settings.documents.title": {
+    "message": "Documents",
+    "description": "Settings section"
+  },
+  "settings.documents.add": {
+    "message": "Add a file…",
+    "description": "Settings action that opens Kage’s file dialog"
+  },
+  "settings.documents.max_chars": {
+    "message": "Keep up to … characters of each file",
+    "description": "Settings select; the options are numbers"
+  },
+  "settings.documents.max_chars_hint": {
+    "message": "Longer files are cut. Applies to files you add from now on.",
+    "description": "Description of the character limit"
+  },
+  "settings.documents.max_chars_error": {
+    "message": "Choose one of the listed limits.",
+    "description": "Validation error for the character limit"
+  },
+  "settings.documents.usage": {
+    "message": "Document storage: {used} of 64 MB",
+    "description": "How much document storage is used; {used} is e.g. 12.4"
+  },
+  "settings.documents.usage_warn": {
+    "message": "Document storage is almost full. Delete some documents to add more.",
+    "description": "Shown past 90% of document storage"
+  },
+  "settings.disclosure.files": {
+    "message": "When you add a file, Kage reads it on this computer and gives Mind Map its text. Mind Map keeps up to {n} characters of it with your notes. Kage never tells Mind Map where the file is.",
+    "description": "Privacy disclosure about adding files; {n} is the character limit"
+  },
+  "op.ingest": {
+    "message": "Added “{title}”",
+    "description": "Describes a change (used after Undo:)"
+  },
+  "op.reread": {
+    "message": "Updated “{title}” from its file",
+    "description": "Describes a change (used after Undo:)"
+  },
+  "export.documents": {
+    "message": "Documents",
+    "description": "Export Markdown section listing documents added from files"
+  },
+  "export.pages": {
+    "message": "{n, plural, one {# page} other {# pages}}",
+    "description": "Page count in Export Markdown"
+  },
+  "tool.get_query": {
+    "message": "Optional, for documents: words to find in the whole document. Up to {n} matching passages of at most {max} characters come back.",
+    "description": "Agent tool parameter description"
   }
 }

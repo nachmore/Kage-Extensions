@@ -3,11 +3,17 @@
 // directly for the statistics, exports, import, delete and repair.
 
 import { getMind } from './mind.js';
-import { DEFAULTS, LIMITS, TRIGGER_RE, WEEK_STARTS, snippetChars, triggerOf } from './defaults.js';
+import { fileErrorText, fileLines } from './lib/filetext.js';
+import { DEFAULTS, DOC_MAX_CHARS, LIMITS, TRIGGER_RE, WEEK_STARTS, docMaxChars, snippetChars, triggerOf } from './defaults.js';
 
 const ESC = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ESC[c]);
 const KIND_ORDER = ['note', 'link', 'doc', 'action', 'meeting'];
+const MB = 1024 * 1024;
+// On hosts without 'config.manifest_defaults', Save replaces the stored
+// config with the page's value controls: where the Documents controls
+// aren't shown, a hidden copy keeps the saved character limit.
+const NEVER_SHOWN = Object.freeze({ id: 'doc_max_chars', oneOf: [] });
 
 function today(ms) {
   const d = new Date(ms);
@@ -29,6 +35,18 @@ function explorerControls(t, features) {
     return [{ type: 'info', html: `<p>${esc(t('settings.approve_views'))}</p>` }];
   }
   return [];
+}
+
+// "Document storage: 12.4 MB of 64 MB" (§11.8), with a warning past 90%.
+function usageHtml(t, bytes, locale) {
+  let used;
+  try {
+    used = new Intl.NumberFormat(locale, { maximumFractionDigits: 1 }).format(bytes / MB);
+  } catch {
+    used = (Math.round((bytes / MB) * 10) / 10).toString();
+  }
+  const warn = bytes >= LIMITS.bodyBudget * LIMITS.bodyWarnRatio ? `<p>⚠️ ${esc(t('settings.documents.usage_warn'))}</p>` : '';
+  return `<p>${esc(t('settings.documents.usage', { used }))}</p>${warn}`;
 }
 
 export default class MindMapSettingsProvider {
@@ -56,6 +74,37 @@ export default class MindMapSettingsProvider {
   hostFeatures() {
     const features = this.context.hostFeatures;
     return Array.isArray(features) ? features : [];
+  }
+
+  // The Documents section (Kage EXTENSION_FILE_TEXT §11.1): Add a file…, the
+  // character limit and the storage used, where Kage reads files for Mind
+  // Map. Elsewhere only the storage used, once there are documents (synced
+  // or imported from another computer).
+  documentsSection(stats, readOnly) {
+    const t = this.t;
+    const locale = this.locale();
+    const controls = [];
+    if (this.mind.canPickFiles) {
+      controls.push({ type: 'action', id: 'add_file', action: 'add_file', label: t('settings.documents.add'), description: t('files.row.add_sub'), variant: 'primary', disabled: !!readOnly });
+      controls.push(this.maxCharsControl());
+    }
+    if (controls.length || stats.files || stats.bodyBytes) controls.push({ type: 'info', html: usageHtml(t, stats.bodyBytes || 0, locale) });
+    return controls.length ? { label: t('settings.documents.title'), controls } : null;
+  }
+
+  // What adding a file shares with Mind Map (§11.1), where Kage reads files.
+  filesDisclosure() {
+    if (!this.mind.canPickFiles) return '';
+    return `<p>${esc(this.t('settings.disclosure.files', { n: docMaxChars(this.config).toLocaleString(this.locale()) }))}</p>`;
+  }
+
+  maxCharsControl() {
+    const locale = this.locale();
+    return {
+      type: 'select', id: 'doc_max_chars', label: this.t('settings.documents.max_chars'), default: DEFAULTS.doc_max_chars,
+      description: this.t('settings.documents.max_chars_hint'),
+      options: DOC_MAX_CHARS.map((value) => ({ value, label: Number(value).toLocaleString(locale) })),
+    };
   }
 
   async loadForPage() {
@@ -120,7 +169,7 @@ export default class MindMapSettingsProvider {
       {
         label: t('settings.section_privacy'),
         controls: [
-          { type: 'info', html: `<p>${esc(t('settings.disclosure'))}</p><p>${esc(t('settings.no_credentials'))}</p>` },
+          { type: 'info', html: `<p>${esc(t('settings.disclosure'))}</p>${this.filesDisclosure()}<p>${esc(t('settings.no_credentials'))}</p>` },
         ],
       },
       {
@@ -142,7 +191,8 @@ export default class MindMapSettingsProvider {
           { type: 'info', html: `<p>${esc(t('settings.macos_titles'))}</p>` },
           { type: 'checkbox', id: 'new_items_private', label: t('settings.new_items_private'), default: DEFAULTS.new_items_private, description: t('settings.new_items_private_hint') },
           { type: 'checkbox', id: 'auto_accept_inferred', label: t('settings.auto_accept_inferred'), default: DEFAULTS.auto_accept_inferred, description: t('settings.auto_accept_inferred_hint') },
-          { type: 'info', html: `<p>${esc(t('settings.documents_note'))}</p>` },
+          // Where Kage reads files, the Documents section says how instead.
+          ...(this.mind.canPickFiles ? [] : [{ type: 'info', html: `<p>${esc(t('settings.documents_note'))}</p>` }]),
         ],
       },
       {
@@ -165,8 +215,13 @@ export default class MindMapSettingsProvider {
       },
       { label: t('settings.section_data'), controls: data },
     ];
-    // The map explorer's section sits just before "Your data".
+    // The map explorer's section, then Documents, sit just before "Your data".
     if (explorer.length) sections.splice(sections.length - 1, 0, { label: t('settings.section_explorer'), controls: explorer });
+    const documents = this.documentsSection(stats, readOnly);
+    if (documents) sections.splice(sections.length - 1, 0, documents);
+    if (!this.mind.canPickFiles && !this.hostFeatures().includes('config.manifest_defaults')) {
+      sections[sections.length - 1].controls.push({ ...this.maxCharsControl(), showWhen: NEVER_SHOWN });
+    }
     return { description: t('settings.description', { trigger }), sections };
   }
 
@@ -185,6 +240,9 @@ export default class MindMapSettingsProvider {
     if (values.week_start !== undefined && !WEEK_STARTS.includes(values.week_start)) {
       return { valid: false, error: t('settings.week_error') };
     }
+    if (values.doc_max_chars !== undefined && !DOC_MAX_CHARS.includes(String(values.doc_max_chars).trim())) {
+      return { valid: false, error: t('settings.documents.max_chars_error') };
+    }
     return { valid: true };
   }
 
@@ -197,6 +255,7 @@ export default class MindMapSettingsProvider {
       const n = Number(clean.agent_snippet_chars);
       if (Number.isFinite(n) && n >= LIMITS.snippetMin && n <= LIMITS.snippetMax) clean.agent_snippet_chars = snippetChars({ agent_snippet_chars: n });
     }
+    if (Object.hasOwn(clean, 'doc_max_chars')) clean.doc_max_chars = String(docMaxChars({ doc_max_chars: clean.doc_max_chars }));
     return { values: clean };
   }
 
@@ -206,9 +265,11 @@ export default class MindMapSettingsProvider {
     try {
       if (action === 'export_json') {
         await mind.ready();
-        // The explorer's pins go in the export too (layout.pins).
+        // The explorer's pins go in the export too (layout.pins), and so does
+        // the full text of every document (bodies).
         await mind.loadLayout().catch(() => null);
-        const data = mind.exportJson({ note: t('settings.export_note') });
+        const bodies = await mind.exportBodies().catch(() => ({}));
+        const data = mind.exportJson({ note: t('settings.export_note'), bodies });
         return {
           status: t('settings.exported', { n: data.items.length }),
           host: { type: 'download', filename: `mindmap-${today(mind.now())}.json`, content: JSON.stringify(data, null, 2), mime: 'application/json' },
@@ -233,6 +294,7 @@ export default class MindMapSettingsProvider {
       if (action === 'import_json') {
         return { host: { type: 'pick_file', accept: '.json', action: 'import_json' } };
       }
+      if (action === 'add_file') return await this.addFile();
       if (action === 'open_explorer') {
         // permissions: views
         return this.hostFeatures().includes('views') ? { host: { type: 'open_view', view: 'explorer' } } : {};
@@ -255,6 +317,20 @@ export default class MindMapSettingsProvider {
       this.log?.warn?.(`mindmap: settings action failed (${error?.code || error?.name || 'error'})`);
       return { status: this.errText(error?.code) };
     }
+  }
+
+  // "Add a file…" (§11.2 C10): a settings action is a click Kage saw, so
+  // its file dialog opens at once. Cancelling it changes nothing.
+  // permissions: file_text
+  async addFile() {
+    const t = this.t;
+    const out = await this.mind.addFile();
+    if (!out?.ok) {
+      const why = fileErrorText(out, { t });
+      return why ? { status: why } : {};
+    }
+    const lines = fileLines(out, { t, locale: this.locale(), now: this.mind.now() });
+    return { status: lines.join(' '), host: { type: 'refresh' } };
   }
 
   errText(code) {

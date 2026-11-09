@@ -57,7 +57,7 @@ calls, proactive digests, any telemetry.
 | version | `0.1.0` |
 | author | `kage` |
 | tags | `productivity`, `notes`, `knowledge`, `mindmap`, `todo`, `bookmarks`, `organizer`, `ai` |
-| permissions | `storage`, `urls`, `network`, `windows` |
+| permissions | `storage`, `urls`, `network`, `windows`, `views`, `file_text` |
 | sensitiveData | none (personal notes are personal data, not secrets; see §15) |
 
 Why each capability is needed:
@@ -65,6 +65,10 @@ Why each capability is needed:
 - `urls`: open saved links.
 - `network`: `fetch_link_metadata`, which fetches link titles and descriptions. It can be turned off.
 - `windows`: `get_source_window` to save the document you came from, and `list_open_windows` / `focus_open_window` to jump back to it.
+- `views`: the explorer's own window (§9.5).
+- `file_text`: "Add a file…" (C9–C12). Kage opens its file dialog, reads the
+  file the user picks on this computer and gives Mind Map its text, never
+  its path ([EXTENSION_FILE_TEXT.md](https://github.com/nachmore/Kage/blob/main/docs/design/EXTENSION_FILE_TEXT.md) §11).
 
 No `launch` (we never open local files), no `clipboard`, no `agent` (agent
 interactions use the `prompt` result action and tools, neither of which needs
@@ -455,13 +459,39 @@ stats, Export JSON, and Delete everything (with confirmation).
 | C5 | Path / doc URL | Detected and stored as a reference. Enter on a doc: (1) focus an open window whose normalized title contains the item title (`list_open_windows` → `focus_open_window`), (2) else `open_url` for http(s), (3) else, when it has a path, `{type:'copy', value: path}` (the host copies it), (4) else `display` its item card. |
 | C6 | Agent capture | In chat the user attaches a file or pastes a link and says "add this to my mind map". The agent reads it itself and calls `capture` with a title, a summary of ≤120 words, terms, dates, and actions with verbatim quotes. **The agent must not echo full documents.** The cap is 8,000 characters of `text`, and the tool description says so. |
 | C7 | Private | `!` prefix, `#private`, or `new_items_private`. |
-| C8 | Provenance | Every capture stores `source.via` (`launcher`/`chat`/`agent`/`import`). When `record_source_window` is on, it also stores `source.app`, plus `source.window` (the window title) when non-empty. Window titles are never sent to the agent, except as the title of a doc created *from* that window. |
+| C8 | Provenance | Every capture stores `source.via` (`launcher`/`chat`/`agent`/`import`/`explorer`/`file`). When `record_source_window` is on, it also stores `source.app`, plus `source.window` (the window title) when non-empty. Window titles are never sent to the agent, except as the title of a doc created *from* that window. |
+| C9 | Launcher **Add a file…** | A row "📄 Add a file…" (`mm:file`) under `mm+` alone, and for `mm+ file` and `mm add file`, where `context.hostFeatures` has `files.pick_text`. Enter opens Kage's file dialog at once (a click the host saw), then shows the op card. Cancelling shows and saves nothing. |
+| C10 | Settings → Documents → **Add a file…** | The same, with the outcome as the action's status. |
+| C11 | Explorer toolbar **Add a file…** | The same; the new doc is selected and centred, with the outcome and Undo in a toast. |
+| C12 | **Update from file…** | On a doc's item card and in the explorer's panel. Picks again; the new text replaces that doc's text (case U below). The card or toast says how it went. |
 
 The trigger text and the `!` marker are stripped before saving. Captures over
 8,000 characters are truncated (`truncated: true`) and the card says
 "Saved the first 8,000 characters".
 
 There is no "Esc discards" risk: the launcher keeps the input text until Enter.
+
+**Documents from a file (C9–C12).** `mind.addFile()` asks
+`context.files.support()` once per session, then calls
+`context.files.pickText({ formats: <every format this Kage reads>, maxChars:
+doc_max_chars })`. The result is checked by `lib/files.js`
+`validateFileText` before anything is stored; a result that fails is an
+error, not a doc. Under the lock, `dedupeDecision` picks the first match:
+
+| Case | When | Result |
+|---|---|---|
+| S | an item has this `file_ref` and this `sha256` | nothing written: "Already in your mind map (added {date})" |
+| U | an item has this `file_ref` and another `sha256`, or the user chose Update from file… | re-read: new text, file, body and keyphrases (op `reread`) |
+| C | an item has this `sha256` (another computer, a copy) | this computer's ref joins its `fileRefs` (a silent op): "Already saved as “{title}”" |
+| N | otherwise | a new doc (op `ingest`) |
+
+The doc's title is the document's own title when usable, else the file name
+without its extension. `extract()` runs on the first 8,000 characters; the
+doc's keyphrases come from the whole text (top 64, headings count double).
+Actions found in a document are always suggestions, and `[x]` lines are left
+out. Kage's `possible_secret` warning makes the doc private. Kage's errors
+show as Kage wrote them (already in the user's language); "too large" adds a
+hint. Agent tools never open the dialog.
 
 ---
 
@@ -670,8 +700,13 @@ Item {
   keyphrases: string[],                         // rule, re-derivable
   terms?: string[],                             // agent/user salient terms (facts)
   summary?, summarySource?: 'meta'|'agent'|'user',
-  source: { via: 'launcher'|'chat'|'agent'|'import', app?, window? },
+  source: { via: 'launcher'|'chat'|'agent'|'import'|'explorer'|'file', app?, window? },
   private?: true, archived?: true, pinned?: true,
+  // a document the user picked (C9–C12); never its path or its text
+  file?: { name, ext, format, size, modifiedAt?, sha256, pages?: {count, read},
+           chars, truncated, warnings: string[], pageStarts? },  // pageStarts only without a body
+  fileRefs?: string[],                          // this computer's file_refs, newest last, ≤8; never synced
+  body?: { key, chars, bytes },                 // the full text, when it is longer than `text`
   enrich: { state: 'none'|'pending'|'done'|'failed', at? },
   rev: number, v: number                        // record revision, EXTRACTOR_VERSION
 }
@@ -705,7 +740,7 @@ Derived edges, never stored:
 ```
 JournalOp {
   opId, at, kind: 'capture'|'status'|'accept'|'dismiss'|'edit'|'delete'|'privacy'|
-                  'annotate'|'enrich'|'merge'|'forget'|'rename'|'import'|'undo',
+                  'annotate'|'enrich'|'merge'|'forget'|'rename'|'import'|'ingest'|'reread'|'undo',
   label: { code, params },         // English is derived for logs; the UI renders via t()
   silent?: true,                   // enrich ops: skipped by "mm undo"
   before: { items: Item[], entities: Entity[], links: Link[], rejections: Rejection[] },
@@ -714,6 +749,9 @@ JournalOp {
   undoneBy?: opId
 }
 ```
+
+A doc with `file` keeps up to 64 keyphrases (from its whole text); every
+other item keeps 5.
 
 **Time** is stored as attributes (`createdAt`, `occurredAt`, `dueAt`,
 `doneAt`), not as day nodes. A range filter matches `createdAt` **or**
@@ -745,11 +783,15 @@ at the end, so `check:security` can resolve them.
 | `mm-lock` | `{owner, nonce, expiresAt}`, no twin |
 | `mm-layout` | The explorer's pins (§9.5): `{schema:1, rev, txn, pins:{[ref]:{x, y, at}}}`, at most 5,000 (newest kept). Written under the lock, not journaled. |
 | `mm-view` | The explorer's state on this computer (§9.5): `{schema:1, camera:{x, y, zoom}, focus, history, lens, scroll, panelOpen, updatedAt}`. Only the explorer writes it, at most once every 2 s, last write wins. |
-| `nx-<key>` | twin copy of every data key above except the lock (see 7.3) |
+| `mm-body-<id>-<n>` | A document's full text when it is longer than the item's 8,000 characters: `{schema:1, id, rev:n, format, chars, text, pageStarts?}`. Written once, before the shard that references it. `n` is past the item's rev and every body key an undo snapshot of it still holds. Not part of `ready()`: read on demand, the last 8 per window. Deleted when nothing references it any more (an undone ingest; a delete or re-read the journal dropped). |
+| `nx-<key>` | twin copy of every data key above except the lock (see 7.3); hosts with `files.pick_text` have atomic writes, so bodies get none |
 
-Reserved for later: `mm-body-<id>` (long bodies). Delete everything removes
+Delete everything removes
 `mm-layout` and `mm-view` too; Export JSON carries the pins as `layout.pins`
-and Import JSON restores the ones whose item or name is here.
+and Import JSON restores the ones whose item or name is here. Delete
+everything removes document bodies first; Export raw includes them; Export
+JSON carries `bodies: { [itemId]: text }` and Import JSON writes back the
+bodies its docs reference that this computer lacks.
 
 ### 7.2 Limits
 
@@ -766,6 +808,10 @@ and Import JSON restores the ones whose item or name is here.
 | Tool result JSON | ~8 KB |
 | `mm?` records | 8 |
 | `mm organize` batch | 15 items × 600 characters |
+| Document text kept | `doc_max_chars`: 50,000, 200,000 (default) or 1,000,000 characters per file |
+| Document storage | 64 MB of bodies in all (UTF-8 bytes); new documents are refused past it, settings warns at 90% |
+| Document refs | 8 `file_ref`s per doc (this computer's), newest kept |
+| Document passages | rows: 1 of ≤160 characters; tools: 3 of ≤400 characters |
 | Design target | 10,000 items (~6 MB). It works beyond that, but load time grows linearly. |
 
 ### 7.3 Crash safety
@@ -1188,6 +1234,12 @@ Kage's [EXTENSION_VIEWS.md](https://github.com/nachmore/Kage/blob/main/docs/desi
   tokens; no animation with reduced motion.
 - **Privacy**: private items are drawn (it's local) but never reach compose
   text; the window title says "Private item" instead of their name.
+- **Documents** (where `files.pick_text` is offered): **📄 Add a file…** in
+  the toolbar (C11). A doc's node shows 📄, its name and page count; its
+  panel shows the file name and size, **Show text** (the whole document,
+  10,000 characters a part, with "p. 4" where Kage's `page_starts` say a page
+  starts) and **Update from file…** (C12). A doc whose full text isn't on
+  this computer says "The full text is on another of your computers".
 
 ---
 
@@ -1231,7 +1283,8 @@ A card token is the only content of its paragraph. The formatter replaces that
 | Card | Content |
 |---|---|
 | **op** | "✓ Saved · meeting · Bingo · 4 actions · 3 related" (or "Already saved …", "Marked done", …). Action chips with **Not an action** / **Accept**, the related items as cite chips, and **Undo**. After an undo: "↶ Undone". |
-| **item** | Title, kind · date · app, text (first 600 characters, then "Show more" `<details>`), entity chips (→ map), actions with Done/Accept/Dismiss, the parent, up to 5 related items, and **Open**, **Map** (P1), **Make private / Make shareable**, **Delete** (undoable). |
+| **op**, a document (`ingest`, `reread`) | "✓ Added Q3 plan.pdf: 12 pages, 48,211 characters." (or "Updated …"), then "Found 3 people, 2 projects and 4 suggested actions." and notes: "Kept the first 200,000 characters.", "No text found. It may be a scanned PDF. Saved the file name only.", "Read the first 2,000 pages.", and for a doc Kage flagged `possible_secret` "This file looks like it contains a password or key, so it's private: your agent never sees it." (plus "It stays on this computer." with Kage sync on) with **Let my agent see it**. The suggested actions with **Accept** / **Not an action**, **Undo**, **Map**. |
+| **item** | Title, kind · date · app, text (first 600 characters, then "Show more" `<details>`), entity chips (→ map), actions with Done/Accept/Dismiss, the parent, up to 5 related items, and **Open**, **Map** (P1), **Make private / Make shareable**, **Delete** (undoable). A doc from a file adds its name and size, **Update from file…** (where Kage reads files) and, for two minutes after it, how that went. |
 | **map** | §9. |
 | **help** | Static syntax reference. |
 
@@ -1278,9 +1331,9 @@ There are no inline `position` styles and no ids. A test enforces this
 
 | Tool | Params | Returns |
 |---|---|---|
-| `search` | `query` (string, required: the user's question or keywords, verbatim), `kinds` (array of: note, link, doc, action, meeting), `entity` (string: person/team/project/topic name), `from` / `to` (ISO dates; `to` exclusive), `when` (string such as "last week"; ignored when from/to are given), `limit` (number, default 8, max 20) | `{scope:{kinds, from, to, rangeLabel, entities, terms, relaxed}, results:[{cite, kind, title, date, captured, snippet, url?, entities[], status?, due?, owner?, why[]}], total, hiddenPrivate, note}` |
+| `search` | `query` (string, required: the user's question or keywords, verbatim), `kinds` (array of: note, link, doc, action, meeting), `entity` (string: person/team/project/topic name), `from` / `to` (ISO dates; `to` exclusive), `when` (string such as "last week"; ignored when from/to are given), `limit` (number, default 8, max 20) | `{scope:{kinds, from, to, rangeLabel, entities, terms, relaxed}, results:[{cite, kind, title, date, captured, snippet, url?, file?:{name, format, chars, pages?}, passages?:[{text, page?}], entities[], status?, due?, owner?, why[]}], total, hiddenPrivate, note}`. `passages`: up to 3 of ≤400 characters from a picked document's full text that match the query (bodies read for the first 5 docs); over 8 KB, passages go before results do. |
 | `actions` | `entity` (string), `assignee` (string: `me` (default), `anyone`, or a person's name), `status` (string: `open` (default), `done`, `suggested`, `all`), `due_before` (ISO date), `limit` (number, default 30, max 50) | `{groups:[{entity: name\|null, actions:[{cite, text, status, due, owner, suggested, source:{cite,title}\|null}]}], total, hiddenPrivate, note}` |
-| `get` | `id` (string: an `mm:` id with or without the prefix, or the full `[mm:…]` token) | `{cite, kind, title, text (≤4000), summary, url?, path?, created, occurred?, entities[], actions:[{cite,text,status,due}], related:[{cite,title}], parent?:{cite,title}, note}`. Private → `{error:'private'}`. |
+| `get` | `id` (string: an `mm:` id with or without the prefix, or the full `[mm:…]` token), `query` (string, optional: words to find in a document) | `{cite, kind, title, text (≤4000), summary, url?, path?, file?, created, occurred?, entities[], actions:[{cite,text,status,due}], related:[{cite,title}], parent?:{cite,title}, passages?, note}`. Private → `{error:'private'}`. A document's whole text is never returned. |
 | `entity` | `name` (string) | `{name, type, aliases, counts:{items, openActions}, recent:[≤8 records], related:[{name,type,weight}], note}`, or `{error:'not_found', suggestions:[names]}` |
 | `capture` (write) | `text` (string, required, ≤8000), `title`, `kind` (note\|link\|doc\|action\|meeting), `url`, `path`, `summary` (≤120 words), `terms` (array of strings), `actions` (array of objects `{text, quote, owner?, due?}`; `quote` must be copied verbatim from `text`), `private` (boolean) | `{cite, kind, title, entities[], actions:[cite], rejected:[{text, reason}], deduped: cite\|null}` |
 | `annotate` (write, P1) | `items` (array of `{id, summary?, terms?, entities?:[{name,type}], actions?:[{text, quote, owner?, due?}], kind?}`, ≤15) | `{applied:[cite], rejected:[{cite, reason}]}`. Additive only, one undoable op. |
@@ -1346,6 +1399,15 @@ Controls (ids equal the manifest `config` keys; `DEFAULTS` mirrors them;
 | Agent | Let your agent search and add to your mind map | `agent_tools` | checkbox | `true` |
 | Agent | Snippet length sent to the agent | `agent_snippet_chars` | number 80–600 | `280` |
 | Launcher | Trigger word | `trigger` | text (validated) | `mm` |
+| Documents | Keep up to … characters of each file | `doc_max_chars` | select `50000`/`200000`/`1000000` (a string: a select stores strings) | `200000` |
+
+**Documents** (only where `files.pick_text` is offered): the action **Add a
+file…** (C10), the `doc_max_chars` select, and "Document storage: {used} of
+64 MB" (a warning past 90%). Elsewhere the section shows only the storage
+used, once there are documents. Where it isn't shown, an older host (no
+`config.manifest_defaults`) gets a hidden copy of the select so Save keeps the
+stored value. The Capture section's note that documents are references only
+shows where Kage can't read files.
 
 **Info and action controls**:
 - An `info` block with the privacy disclosure (§15) and the statistics:
@@ -1369,6 +1431,7 @@ Controls (ids equal the manifest `config` keys; `DEFAULTS` mirrors them;
 Validation:
 - `trigger` matches `^[a-z][a-z0-9]{0,9}$`.
 - `agent_snippet_chars` is between 80 and 600.
+- `doc_max_chars` is one of its three values.
 
 `normalize()` trims `my_names` and `trigger` and lowercases `trigger`. There is
 no `enabled` control; the host owns `enabled`.
@@ -1435,6 +1498,12 @@ no `enabled` control; the host owns `enabled`.
 > Ollama). Private items are never sent. Uninstalling Mind Map deletes its data:
 > export first if you want to keep it.
 
+Where Kage reads files for Mind Map (`files.pick_text`), it adds:
+
+> When you add a file, Kage reads it on this computer and gives Mind Map its
+> text. Mind Map keeps up to {n} characters of it with your notes. Kage never
+> tells Mind Map where the file is.
+
 **What goes where:**
 
 | Data | Where it goes |
@@ -1442,6 +1511,7 @@ no `enabled` control; the host owns `enabled`.
 | The store | disk only (extension-data) |
 | Link URLs | to that site, through the host's `fetch_link_metadata` (toggle) |
 | Window titles and app names | disk only, never to the agent (except a doc's own title) |
+| A picked file's text | disk only (the item and its body); the agent gets a doc's name, format, pages, size, summary and up to 3 matching passages, never the whole text. A doc Kage flagged `possible_secret` is private until the user chooses **Let my agent see it** |
 | Snippets and records | to the agent only through tool results or a `mm?` / `mm organize` prompt the user triggers and can see |
 | Telemetry | nothing (§16) |
 
@@ -1509,6 +1579,7 @@ only the extension id.
 | macOS window titles | non-empty `title` | Window docs | Window doc row hidden; app recorded only |
 | Extension views | `context.hostFeatures.includes('views')` | The explorer (§9.5) and its rows and buttons | No explorer; with `storage.change_events` but no `views` (not approved yet), settings says to approve it in the Store |
 | Storage change events | `storage.change_events` and `context.storage.onChanged` | Every window syncs as soon as another one saves | The 1.5 s `syncIfStale` only |
+| Reading a file the user picks | `context.hostFeatures.includes('files.pick_text')` and `context.files` | Add a file… (C9–C11), Update from file… (C12), the Documents settings section | No file rows or buttons; docs stay references (C5, C6). Docs from another computer still show and search |
 
 No minimum host version is required. Every optional feature is detected.
 
@@ -1529,9 +1600,8 @@ No minimum host version is required. Every optional feature is detected.
   identical-render skipping.
 - ~~**Pan/zoom canvas**~~: built as the explorer (§9.5, WP-V8), on Kage's
   extension views.
-- **Document text ingestion** without the agent: needs a host
-  pick-file-and-extract-text command. Also opening local files in place (the
-  `launch` capability).
+- **Opening a picked document in place** (the `launch` capability), and
+  several files or a drop in one go (EXTENSION_FILE_TEXT §14).
 - **More capture sources**:
   - clipboard ("save what I just copied", `clipboard` capability);
   - a chat toolbar button "Save this answer";

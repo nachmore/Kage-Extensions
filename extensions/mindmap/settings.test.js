@@ -2,6 +2,9 @@
 import { readFileSync } from 'node:fs';
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import { FIXTURE_NOW, buildCorpus, makeContext, makeHarness } from '../../test-helpers/mindmap/corpus.mjs';
+import { FILE_FEATURES, fileText, hostError, installFiles } from '../../test-helpers/mindmap/file-host.mjs';
+import { createMemoryHost } from '../../test-helpers/mindmap/memory-host.mjs';
+import { LIMITS } from './defaults.js';
 import { DEFAULTS } from './defaults.js';
 import MindMapSettingsProvider from './settings.js';
 
@@ -160,5 +163,92 @@ describe('actions', () => {
     expect(p.mind.state.items.size).toBe(7);
     expect(await p.onFileSelected({ action: 'import_json', content: '{not json' })).toEqual({ status: 'That file isn’t a Mind Map export' });
     expect(await p.onFileSelected({ action: 'other', content: file })).toEqual({});
+  });
+});
+
+// --- Documents (Kage EXTENSION_FILE_TEXT §11.1, C10) -----------------------------------
+
+const LONG_DOC = ['# Q3 plan', 'Dana to send the MTCS numbers by Friday.', ...Array.from({ length: 200 }, (_, i) => `Paragraph ${i} covers the walrus roadmap and the budget.`)].join('\n');
+
+function fileSettings({ hostFeatures = FILE_FEATURES, files = true, config = {} } = {}) {
+  const host = createMemoryHost({ atomic: true });
+  const ctx = makeContext(host, { config, hostFeatures });
+  const fake = files ? installFiles(ctx) : null;
+  const p = new MindMapSettingsProvider();
+  p.initialize(ctx);
+  return { host, ctx, p, ...fake };
+}
+
+const section = (schema, label) => schema.sections.find((x) => x.label === label);
+
+describe('documents', () => {
+  it('shows the Documents section, the disclosure and the limit only where Kage reads files', async () => {
+    const { p } = fileSettings();
+    const schema = await p.getSettings();
+    const docs = section(schema, 'Documents');
+    expect(docs.controls.map((c) => c.id || c.type)).toEqual(['add_file', 'doc_max_chars', 'info']);
+    expect(byId(schema, 'add_file')).toMatchObject({ type: 'action', label: 'Add a file…', variant: 'primary' });
+    expect(byId(schema, 'doc_max_chars')).toMatchObject({ type: 'select', default: '200000' });
+    expect(byId(schema, 'doc_max_chars').options).toEqual([
+      { value: '50000', label: '50,000' }, { value: '200000', label: '200,000' }, { value: '1000000', label: '1,000,000' },
+    ]);
+    expect(docs.controls[2].html).toBe('<p>Document storage: 0 of 64 MB</p>');
+    const privacy = section(schema, 'Privacy').controls[0].html;
+    expect(privacy).toContain('Mind Map keeps up to 200,000 characters of it with your notes. Kage never tells Mind Map where the file is.');
+    // The old "never reads files" note is gone here.
+    expect(controls(schema).some((c) => c.type === 'info' && c.html.includes('attach it in chat'))).toBe(false);
+    // Documents sits before "Your data".
+    expect(schema.sections.map((x) => x.label).slice(-2)).toEqual(['Documents', 'Your data']);
+  });
+
+  it('elsewhere: no file rows; older hosts keep a hidden copy of the limit, current ones need none', async () => {
+    const old = await fileSettings({ hostFeatures: [], files: false }).p.getSettings();
+    expect(section(old, 'Documents')).toBeUndefined();
+    expect(byId(old, 'add_file')).toBeUndefined();
+    expect(byId(old, 'doc_max_chars')).toMatchObject({ showWhen: { id: 'doc_max_chars', oneOf: [] }, default: '200000' });
+    const current = await fileSettings({ hostFeatures: ['config.manifest_defaults'], files: false }).p.getSettings();
+    expect(byId(current, 'doc_max_chars')).toBeUndefined();
+    // Approved later (files.pick_text without context.files is still off).
+    const half = await fileSettings({ files: false }).p.getSettings();
+    expect(byId(half, 'add_file')).toBeUndefined();
+  });
+
+  it('Add a file… adds the doc and says what it held; cancelling says nothing; refusals say why', async () => {
+    const { p, queue, calls } = fileSettings({ config: { doc_max_chars: '50000' } });
+    queue(fileText(LONG_DOC, { pageCount: 2 }));
+    const out = await p.runAction('add_file');
+    expect(out.host).toEqual({ type: 'refresh' });
+    expect(out.status).toMatch(/^Added Q3 plan\.pdf: 2 pages, [\d,]+ characters\. Found /);
+    expect(calls[0].maxChars).toBe(50000);
+    const schema = await p.getSettings();
+    expect(section(schema, 'Documents').controls[2].html).toMatch(/Document storage: 0(\.\d)? of 64 MB/);
+    expect(controls(schema).find((c) => c.type === 'info' && c.html.includes('1 doc'))).toBeTruthy();
+    queue(null);
+    expect(await p.runAction('add_file')).toEqual({});
+    queue(hostError('errors.file_text.unsupported', 'Kage can’t read .key files here. It reads: .txt, .md, .pdf, .docx', 'invalid_input'));
+    expect(await p.runAction('add_file')).toEqual({ status: 'Kage can’t read .key files here. It reads: .txt, .md, .pdf, .docx' });
+    // The export carries the documents' full text.
+    const data = JSON.parse((await p.runAction('export_json')).host.content);
+    expect(Object.values(data.bodies || {})).toEqual([LONG_DOC]);
+  });
+
+  it('warns when document storage is nearly full', async () => {
+    const { p, queue } = fileSettings();
+    queue(fileText(LONG_DOC));
+    const out = await p.mind.addFile();
+    p.mind.item(out.itemId).body.bytes = Math.ceil(LIMITS.bodyBudget * 0.95);
+    const html = section(await p.getSettings(), 'Documents').controls[2].html;
+    expect(html).toContain('Document storage: 60.8 of 64 MB');
+    expect(html).toContain('Document storage is almost full.');
+  });
+
+  it('validates and normalizes the character limit (a select stores a string)', () => {
+    const { p } = fileSettings();
+    expect(p.validate({ doc_max_chars: '1000000' })).toEqual({ valid: true });
+    expect(p.validate({ doc_max_chars: 200000 })).toEqual({ valid: true });
+    expect(p.validate({ doc_max_chars: '123' })).toEqual({ valid: false, error: 'Choose one of the listed limits.' });
+    expect(p.normalize({ doc_max_chars: '1000000' }).values).toEqual({ doc_max_chars: '1000000' });
+    expect(p.normalize({ doc_max_chars: 50000 }).values).toEqual({ doc_max_chars: '50000' });
+    expect(p.normalize({ doc_max_chars: 'lots' }).values).toEqual({ doc_max_chars: '200000' });
   });
 });

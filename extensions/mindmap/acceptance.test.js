@@ -1370,8 +1370,10 @@ describe('every shipped locale', () => {
   const PENDING_TRANSLATION = new Set(['view.explorer.title', 'map.explorer', 'map.explorer_tip', 'card.explore', 'row.explore',
     'row.explore_named', 'row.explore_desc', 'settings.section_explorer', 'settings.open_explorer', 'settings.open_explorer_hint',
     'settings.reset_layout', 'settings.reset_layout_hint', 'settings.reset_layout_confirm', 'settings.layout_reset', 'settings.approve_views',
-    'prompt.organize_bg', 'op.organized_bg_label']);
-  const pending = (key) => PENDING_TRANSLATION.has(key) || key.startsWith('explorer.');
+    'prompt.organize_bg', 'op.organized_bg_label',
+    // Documents from files (WP-FT-MM3).
+    'settings.disclosure.files', 'op.ingest', 'op.reread', 'export.documents', 'export.pages', 'tool.get_query']);
+  const pending = (key) => PENDING_TRANSLATION.has(key) || key.startsWith('explorer.') || key.startsWith('files.') || key.startsWith('settings.documents.');
 
   it('ships English plus 31 translations with the same keys', () => {
     expect(langs).toHaveLength(32);

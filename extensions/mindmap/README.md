@@ -25,7 +25,8 @@ Dana and MTCS. The preview before you press Enter says so:
 | Type | To |
 |---|---|
 | `mm+ <anything>` | Save a thought, link, file path, todo, or a multi-line brain dump. |
-| `mm+` | Save the window you came from (a document open in Word, Docs, …). |
+| `mm+` | Save the window you came from (a document open in Word, Docs, …), or **Add a file…**. |
+| `mm+ file` · `mm add file` | Add a file: Kage asks you to pick one and gives Mind Map its text. |
 | `mm <question or keywords>` | Find things. Enter opens a link, jumps back to a document's window, or shows the note. |
 | `mm actions` | Your open actions, due first. Enter marks one done (and Enter again reopens it). |
 | `mm review` | Suggested actions waiting for you to accept. |
@@ -149,12 +150,13 @@ languages).
   Enter) to centre the map there, and press Space or its ＋ handle to show what
   else it connects to. **Back** and **Home** are in the toolbar.
 - **Act**: the panel marks actions done, accepts or dismisses suggestions,
-  makes items private, opens links, copies a file's path, and **Ask** puts a
-  question about the node into the launcher for you to send. Every change
-  can be undone.
+  makes items private, opens links, copies a file's path, shows a document's
+  whole text, and **Ask** puts a question about the node into the launcher
+  for you to send. Every change can be undone.
 - **Find and filter**: `/` or ⌘/Ctrl+F searches (Enter centres on the first
   match); the chips show only some kinds, only your actions, or done ones too.
-  **＋ Add** saves a new thought without leaving the window.
+  **＋ Add** saves a new thought without leaving the window, and **📄 Add a
+  file…** adds a document.
 - **Keyboard and screen readers**: every node is also in a list (the
   **List** button shows it), and the selection is announced.
 
@@ -211,11 +213,35 @@ too.
 
 ## Documents
 
-Mind Map stores documents as **references** — a path, a link or a window
-title — and never reads files. To save what a document says, attach it in chat
-and ask your agent to "add this to my mind map": it saves a short summary, the
-key terms and the actions (each action must quote the document word for word,
-and the agent's actions arrive as suggestions).
+**Add a file…** (on a Kage that can read files for extensions) saves what a
+document says. It's under `mm+` (and `mm+ file`, `mm add file`), in settings
+under **Documents**, and in the explorer's toolbar. Kage opens its own file
+dialog; you pick a text, Markdown, PDF or Word file, and Kage reads it on
+this computer and gives Mind Map its text. Kage never tells Mind Map where
+the file is, and asks you to approve Mind Map's "Files you choose" permission
+once.
+
+- The card says what it found: "Added Q3 plan.pdf: 12 pages, 48,211
+  characters. Found 3 people, 2 projects and 4 suggested actions." Names,
+  dates and actions come from the start of the document, key terms from all
+  of it. A document's actions are always suggestions, because someone else
+  may have written them.
+- Mind Map keeps up to 200,000 characters of each file (settings → Documents:
+  50,000, 200,000 or 1,000,000), and up to 64 MB of document text in all.
+  Settings shows how much is used.
+- Adding the same file again changes nothing. **Update from file…** on a
+  document's card, or in the explorer, reads it again and replaces its text.
+- Searches find words anywhere in a document, and the row shows the passage
+  that matched. In the explorer, **Show text** pages through the whole
+  document, with page numbers for PDFs.
+- If Kage thinks the text holds a password or key, the document is private
+  and your agent never sees it, until you choose **Let my agent see it**.
+
+On a Kage without this, Mind Map stores documents as **references** — a
+path, a link or a window title — and never reads files. Either way, you can
+attach a file in chat and ask your agent to "add this to my mind map": it
+saves a short summary, the key terms and the actions (each action must quote
+the document word for word, and the agent's actions arrive as suggestions).
 
 You can also ask your agent to organize notes you've already saved: type
 `mm organize`. It sends your agent a visible message with up to 15 notes it
@@ -245,6 +271,11 @@ export first if you want to keep it.
   shows only "private item".
 - Window titles and app names stay on this computer (a saved window's own
   title is the document's title).
+- When you add a file, Kage reads it on this computer and gives Mind Map its
+  text. Mind Map keeps up to the number of characters you chose with your
+  notes. Kage never tells Mind Map where the file is. Your agent gets a
+  document's name, size, summary and the passages that match a search, never
+  the whole text.
 - Everything sent to an agent is framed as your data, not instructions. The
   agent's writes only add (they never delete or overwrite what you wrote) and
   can be undone.
@@ -256,8 +287,9 @@ export first if you want to keep it.
 ## Your data
 
 Settings shows what's stored, and offers **Export JSON** (everything,
-private items included), **Export Markdown**, **Import JSON** and **Delete
-everything**. Exports include private items; keep them somewhere safe.
+private items and the full text of your documents included), **Export
+Markdown**, **Import JSON** and **Delete everything**. Exports include
+private items; keep them somewhere safe.
 
 **Import JSON** reads an Export JSON file, for example from another computer.
 Items already here are kept unless the file has a newer copy, people, teams
@@ -268,7 +300,8 @@ Export Markdown is a readable copy: a section for each person, team, project
 and topic, then "Unsorted". Each item is a bullet with its date and kind,
 links are links, actions are `- [ ]` / `- [x]` under the note or meeting they
 came from, and a note's own words (its summary, the rest of its text, dated
-notes you added later) follow it as a quote.
+notes you added later) follow it as a quote. A "Documents" section lists the
+files you added, with their file names, pages and summaries.
 
 Data is split into monthly files, written with a twin copy so a crash
 mid-save can't lose it, and every Kage window coordinates through a short
@@ -276,7 +309,8 @@ lock. If stored data can't be read, Mind Map stops saving rather than risk
 overwriting it, and settings offers **Export raw copies** and **Repair**.
 
 Limits: 8,000 characters per capture (longer text is cut and the card says
-so), 50 actions per brain dump, 200 undo steps. It's built for about 10,000
+so), 50 actions per brain dump, 200 undo steps, up to 1,000,000 characters
+per added file and 64 MB of document text. It's built for about 10,000
 items.
 
 ## Permissions
@@ -288,3 +322,4 @@ items.
 | `network` | Fetching a saved link's title and description (can be turned off). |
 | `windows` | Saving the window you came from, and jumping back to an open document. |
 | `views` | The explorer's own window. |
+| `file_text` | Reading a file you pick with **Add a file…**: only that file, each time, never its folder or any other file. |

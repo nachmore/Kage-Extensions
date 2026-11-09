@@ -1,7 +1,7 @@
 // Mind Map presentation: labels, card HTML and the message-formatter core.
 //
-// Composer: it imports only the graph leaf (ARCHITECTURE §1). Everything it
-// returns is an HTML *string* that the host sanitizes before it touches the
+// Composer: it imports only leaves, lib/graph.js and lib/filetext.js
+// (ARCHITECTURE §1). Everything it returns is an HTML *string* that the host sanitizes before it touches the
 // page, so it only ever uses the sanitizer's allowlist (SPEC §10.2): div,
 // span, button, a, details, summary, ul, li, small, strong, em, svg, line;
 // class, title, role, aria-label, type, href, x1/y1/x2/y2, dir, open and
@@ -13,6 +13,7 @@
 // rebuilt when the module state is lost.
 
 import { LANES, layout } from './lib/graph.js';
+import { fileLines, fileSize } from './lib/filetext.js';
 
 // --- Icons -----------------------------------------------------------------
 
@@ -584,6 +585,10 @@ function opHeadline(vm, t, ctx) {
     case 'import':
     case 'imported':
       return t('card.op_imported');
+    case 'ingest':
+      return t('files.card.op_added');
+    case 'reread':
+      return t('files.card.op_updated');
     case 'undo':
       return t('card.op_undone');
     default:
@@ -650,12 +655,14 @@ export function renderOpCard(vm, ctx = {}) {
   const nav = ctx.canReformat !== false && ctx.canNavigate !== false;
   const open = `<div${attr('class', blockClass(b))} role="group"${attr('aria-label', t('card.aria'))}>`;
   if (!vm) return `${open}<span class="mm-muted">${esc(t('card.op_missing'))}</span></div>`;
-  const head = opHeadline(vm, t, ctx);
+  // A document from a file: "✓ Added Q3 plan.pdf: 12 pages, …", then what it found.
+  const docLines = vm.doc && !vm.undone ? fileLines(vm.doc, { t, locale: ctx.locale, now: ctx.now, fmtDay }) : [];
+  const head = docLines.length ? `✓ ${docLines[0]}` : opHeadline(vm, t, ctx);
   const facts = [];
   // A one-line action is itself the action: its row carries the buttons and
   // the item line isn't repeated, nor counted as "1 action".
   const self = vm.item?.id ? (vm.actions || []).find((a) => a?.id === vm.item.id) : null;
-  if (!vm.undone) {
+  if (!vm.undone && !docLines.length) {
     if (vm.item?.kind && !vm.dedupedInto) facts.push(kindLabel(vm.item.kind, t));
     const names = (vm.entities || []).filter((e) => e && e.id !== 'me' && e.name).map((e) => e.name);
     if (names.length) facts.push(names.slice(0, 3).join(', ') + (names.length > 3 ? ` +${names.length - 3}` : ''));
@@ -674,6 +681,7 @@ export function renderOpCard(vm, ctx = {}) {
     const gone = vm.undone && !vm.dedupedInto;
     parts.push(`<div${attr('class', gone ? 'mm-op-item mm-gone' : 'mm-op-item')}>${iconHtml(itemIcon(vm.item))}<span class="mm-op-name"${attr('title', title)}>${esc(clip(title, 80))}</span>${priv}</div>`);
   }
+  for (const line of docLines.slice(1)) parts.push(`<small class="mm-note">${esc(line)}</small>`);
   if (vm.truncated && !vm.undone) parts.push(`<small class="mm-note">${esc(t('card.truncated', { n: safe(() => (8000).toLocaleString(ctx.locale || 'en'), '8,000') }))}</small>`);
   if (!vm.undone && vm.actions?.length) {
     // A long brain dump lists its first actions; the rest wait in review/actions.
@@ -689,6 +697,10 @@ export function renderOpCard(vm, ctx = {}) {
   }
   const buttons = [];
   if (!vm.undone && vm.canUndo && OP_ID.test(String(vm.opId || ''))) buttons.push(btn('mm-btn', dataAct(b.blk, 'undo', vm.opId), esc(t('card.undo'))));
+  // A document kept private because it may hold a password or key (§11.7).
+  if (!vm.undone && nav && vm.doc?.secret && vm.item?.private && ITEM_ID.test(String(vm.item.id || ''))) {
+    buttons.push(btn('mm-btn', dataAct(b.blk, 'share', vm.item.id), esc(t('files.action.reveal_to_agent'))));
+  }
   if (!vm.undone && nav && vm.item?.id && ITEM_ID.test(vm.item.id)) buttons.push(btn('mm-btn', `mm:b${b.blk}:map`, esc(t('card.map'))));
   if (buttons.length) parts.push(`<div class="mm-btns">${buttons.join('')}</div>`);
   return `${open}${parts.join('')}</div>`;
@@ -743,6 +755,9 @@ export function renderItemCard(vm, ctx = {}) {
   const parts = [];
   parts.push(`<div class="mm-head">${iconHtml(itemIcon(vm), 'mm-hi')}<strong class="mm-title"${attr('title', title)}>${esc(clip(title, 120))}</strong>${vm.private ? `<span class="mm-badge">${esc(t('card.private_badge'))}</span>` : ''}</div>`);
   parts.push(`<small class="mm-meta">${esc(itemMeta(vm, t, ctx))}</small>`);
+  // A document from a file: its name and size (never a path).
+  if (vm.file?.name) parts.push(`<small class="mm-meta mm-file">${esc(joinSep([clip(oneLine(vm.file.name), 120), fileSize(vm.file, { t, locale: ctx.locale })], t))}</small>`);
+  if (vm.notice) parts.push(`<small class="mm-note">${esc(vm.notice)}</small>`);
   if (vm.summary && oneLine(vm.summary) !== oneLine(vm.text)) parts.push(`<div class="mm-summary">${esc(vm.summary)}</div>`);
   const [head, rest] = splitText(vm.text);
   if (head.trim()) parts.push(`<div class="mm-text">${esc(head)}${rest ? '…' : ''}</div>`);
@@ -768,9 +783,13 @@ export function renderItemCard(vm, ctx = {}) {
   // The full-window explorer, on hosts that can open it (EXTENSION_VIEWS §24.2).
   if (nav && ctx.canExplore) buttons.push(btn('mm-btn', `mm:b${b.blk}:explore`, esc(t('card.explore'))));
   if (nav && vm.kind === 'action') buttons.push(actionButtons(vm, t, { full: true, blk: b.blk }));
+  // "Update from file…" (§11.2 C12): pick the file again, where Kage can.
+  if (nav && vm.file?.canUpdate) buttons.push(btn('mm-btn', dataAct(b.blk, 'update', vm.id), esc(t('files.action.update'))));
   if (nav) {
+    const secret = !!vm.file?.warnings?.includes('possible_secret');
     buttons.push(vm.private
-      ? btn('mm-btn', dataAct(b.blk, 'share', vm.id), esc(t('card.make_shareable')))
+      // i18n-keys: files.action.reveal_to_agent, card.make_shareable
+      ? btn('mm-btn', dataAct(b.blk, 'share', vm.id), esc(t(secret ? 'files.action.reveal_to_agent' : 'card.make_shareable')))
       : btn('mm-btn', dataAct(b.blk, 'private', vm.id), esc(t('card.make_private'))));
     buttons.push(btn('mm-btn mm-btn-danger', dataAct(b.blk, 'delete', vm.id), esc(t('card.delete'))));
   }
@@ -781,7 +800,8 @@ export function renderItemCard(vm, ctx = {}) {
 
 function canOpen(vm) {
   if (!ITEM_ID.test(String(vm?.id || ''))) return false;
-  return isHttp(vm.url) || vm.kind === 'doc' || vm.kind === 'link';
+  // A document from a file has no path to open (Kage never gives one).
+  return isHttp(vm.url) || ((vm.kind === 'doc' || vm.kind === 'link') && !vm.file);
 }
 
 // --- Map card (SPEC §9) ------------------------------------------------------------------
@@ -1082,7 +1102,8 @@ export function renderHelpCard(ctx = {}) {
 
 // --- UI actions (ARCHITECTURE §7.2) ------------------------------------------------------
 
-const DATA_VERBS = new Set(['done', 'reopen', 'accept', 'dismiss', 'undo', 'open', 'private', 'share', 'delete']);
+// `update` is a doc's "Update from file…" (Kage EXTENSION_FILE_TEXT §11.2 C12).
+const DATA_VERBS = new Set(['done', 'reopen', 'accept', 'dismiss', 'undo', 'open', 'private', 'share', 'delete', 'update']);
 const A_RE = /^mm:b([0-9a-z]{1,12}):a:([a-z]+):([a-z0-9]{15})$/;
 const B_RE = /^mm:b([0-9a-z]{1,12}):(f|back|home|more|mode|map|explore)(?::([a-z0-9]{1,15}))?$/;
 const C_RE = /^mm:c([0-9a-z]{1,12}):(x|map):([a-z0-9:]{2,24})$/;
