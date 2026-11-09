@@ -2608,5 +2608,941 @@
     "description": "Interpretation row: how many matches are listed out of how many, e.g. “8 of 23”",
     "_machine_translated": true,
     "_source_hash": "868a73ebc8627db2"
+  },
+  "manifest.agent_background_reason": {
+    "message": "Mind Map envía a tu agente el texto de las notas nuevas que no hayas marcado como privadas para que añada un breve resumen, las personas, equipos y proyectos que mencionan y acciones sugeridas.",
+    "description": "Shown in Kage’s Background AI consent dialog as a quote from the extension (at most 300 characters)",
+    "_machine_translated": true,
+    "_source_hash": "22b58c6f746d8a97"
+  },
+  "op.organized_bg_label": {
+    "message": "Organizar {n, plural, one {# nota} other {# notas}}",
+    "description": "Label of one background organizing request, shown in Kage’s Background AI log. At most 80 characters",
+    "_machine_translated": true,
+    "_source_hash": "509ba9e9a9de99ed"
+  },
+  "prompt.organize_bg": {
+    "message": "Organizas las notas guardadas de una persona. Para cada nota de DATA, devuelve lo que claramente corresponda:\n- \"summary\": una frase sencilla de 25 palabras como máximo. Solo si la nota tiene más de una frase.\n- \"entities\": personas, equipos, proyectos, organizaciones, temas o términos que la nota nombra. Usa un nombre de \"vocabulary\" cuando signifique lo mismo. No adivines.\n- \"terms\": hasta 5 términos clave breves.\n- \"actions\": cosas que, según la nota, alguien tiene que hacer. Copia las palabras exactas de la nota en \"quote\". Indica \"owner\" solo si la nota nombra a esa persona. Omítelo si es una tarea de quien escribe. Indica \"due\" (YYYY-MM-DD) solo si la nota da una fecha; calcula las fechas relativas a partir de \"date\" de la nota.\nIndica \"skip\": true para una nota sin nada que añadir. No inventes nada.",
+    "description": "Instructions for background organizing, sent to the user’s agent with the notes (not shown in a chat). Keep DATA, the quoted field names (summary, entities, vocabulary, terms, actions, quote, owner, due, date, skip), true and YYYY-MM-DD as they are. At most 4,000 characters",
+    "_machine_translated": true,
+    "_source_hash": "a6d5cfa396d64cb2"
+  },
+  "settings.section_background": {
+    "message": "Organización en segundo plano",
+    "description": "Settings section",
+    "_machine_translated": true,
+    "_source_hash": "823011a9a47b8158"
+  },
+  "settings.background_organize": {
+    "message": "Organizar notas nuevas en segundo plano",
+    "description": "Settings label",
+    "_machine_translated": true,
+    "_source_hash": "6ff34391f478dc72"
+  },
+  "settings.background_organize_hint": {
+    "message": "Desactivado de forma predeterminada. Antes de enviar nada, Kage te pide que confirmes qué agente recibe tus notas en este equipo.",
+    "description": "Settings hint for the background organizing switch",
+    "_machine_translated": true,
+    "_source_hash": "a88ff105a729bdb5"
+  },
+  "settings.organize.about": {
+    "message": "Mientras no usas Kage, Mind Map envía las notas nuevas a tu agente en pequeños lotes y añade los breves resúmenes, nombres y acciones sugeridas que este devuelve. Las notas que marcaste como privadas nunca se envían. Todo lo que añade se puede deshacer.",
+    "description": "What background organizing does",
+    "_machine_translated": true,
+    "_source_hash": "2103e2d37af4d668"
+  },
+  "settings.organize.status": {
+    "message": "{organized} organizadas · {waiting} en espera · última ejecución: {when}",
+    "description": "Background organizing status; {organized} and {waiting} are note counts, {when} a date and time or “never”",
+    "_machine_translated": true,
+    "_source_hash": "7a71f3e7229e6f43"
+  },
+  "settings.organize.status_needs_host": {
+    "message": "Kage necesita tu aprobación en este equipo antes de que Mind Map envíe nada a tu agente.",
+    "description": "Background organizing status: switched on, but Kage’s access is off",
+    "_machine_translated": true,
+    "_source_hash": "6ffbbeabf17a4b2f"
+  },
+  "settings.organize.status_stale": {
+    "message": "Tu agente ha cambiado. Vuelve a permitir Mind Map en este equipo.",
+    "description": "Background organizing status: the agent changed since the user agreed",
+    "_machine_translated": true,
+    "_source_hash": "92ddd1d913b0f39e"
+  },
+  "settings.organize.status_unavailable": {
+    "message": "Actualiza Kage o aprueba el permiso de IA en segundo plano de Mind Map en la Store.",
+    "description": "Background organizing status on a Kage that doesn’t offer it",
+    "_machine_translated": true,
+    "_source_hash": "7c46036dc61a53c2"
+  },
+  "settings.organize.status_paused": {
+    "message": "En pausa hasta {time}.",
+    "description": "Background organizing status; {time} is a date and time",
+    "_machine_translated": true,
+    "_source_hash": "d4529ceb0d1235e4"
+  },
+  "settings.organize.tools_warning": {
+    "message": "Tu agente intentó usar una herramienta mientras organizaba, así que Kage detuvo la solicitud. Si ocurre dos veces en un día, Kage pausa la organización en segundo plano hasta mañana.",
+    "description": "Warning after the agent tried to use a tool during background organizing",
+    "_machine_translated": true,
+    "_source_hash": "6ee2fd899816d5bf"
+  },
+  "settings.organize.allow": {
+    "message": "Permitir en este equipo…",
+    "description": "Button that opens Kage’s consent dialog for background organizing",
+    "_machine_translated": true,
+    "_source_hash": "3e222f72137230e2"
+  },
+  "settings.organize.allow_hint": {
+    "message": "Kage muestra qué agente recibe tus notas y te pide que lo confirmes.",
+    "description": "Hint for the allow button",
+    "_machine_translated": true,
+    "_source_hash": "331987919cd0aeac"
+  },
+  "settings.organize.now": {
+    "message": "Organizar ahora",
+    "description": "Button: send the next batch now",
+    "_machine_translated": true,
+    "_source_hash": "4a56bb9d614a12bc"
+  },
+  "settings.organize.now_hint": {
+    "message": "Envía el siguiente lote ahora en lugar de esperar a que estés ausente.",
+    "description": "Hint for Organize now",
+    "_machine_translated": true,
+    "_source_hash": "9ee5e96c0764222b"
+  },
+  "settings.organize.now_done": {
+    "message": "Tu agente revisó {n, plural, one {# nota} other {# notas}}.",
+    "description": "Organize now finished",
+    "_machine_translated": true,
+    "_source_hash": "d9cc512bc71b52a4"
+  },
+  "settings.organize.now_nothing": {
+    "message": "No hay nada pendiente de organizar.",
+    "description": "Organize now: no notes to send",
+    "_machine_translated": true,
+    "_source_hash": "bcf7ef7ed0aa479d"
+  },
+  "settings.organize.now_off": {
+    "message": "Primero activa «Organizar notas nuevas en segundo plano» y guarda.",
+    "description": "Organize now while the saved switch is off",
+    "_machine_translated": true,
+    "_source_hash": "99d9b760ce32d474"
+  },
+  "settings.organize.now_busy": {
+    "message": "Mind Map ya está organizando en otra ventana de Kage.",
+    "description": "Organize now while another window is organizing",
+    "_machine_translated": true,
+    "_source_hash": "5397d1b650fdbc5f"
+  },
+  "settings.organize.backlog": {
+    "message": "Organizar también las notas anteriores",
+    "description": "Button: include notes from before background organizing was turned on",
+    "_machine_translated": true,
+    "_source_hash": "2ed9a84f9d22670c"
+  },
+  "settings.organize.backlog_hint": {
+    "message": "{n, plural, one {# nota es} other {# notas son}} de antes de que activaras esto. Se organizan por lotes, dentro de tu límite diario.",
+    "description": "Hint for Organize older notes too",
+    "_machine_translated": true,
+    "_source_hash": "8ecc4c994f27540d"
+  },
+  "settings.organize.backlog_done": {
+    "message": "Las notas anteriores también se organizarán, por lotes.",
+    "description": "Organize older notes too: done",
+    "_machine_translated": true,
+    "_source_hash": "028332e369a3e1a7"
+  },
+  "view.explorer.title": {
+    "message": "Explorador",
+    "description": "Title of Mind Map's full-window map explorer (window title and Kage's host bar)",
+    "_machine_translated": true,
+    "_source_hash": "c50649381b98e411"
+  },
+  "map.explorer": {
+    "message": "Explorador",
+    "description": "Map card header button that opens the full-window map explorer",
+    "_machine_translated": true,
+    "_source_hash": "ee744e3d5a47b3e4"
+  },
+  "map.explorer_tip": {
+    "message": "Abre este mapa en su propia ventana, donde puedes desplazarlo, ampliarlo y organizarlo",
+    "description": "Tooltip of the map card's Explorer button",
+    "_machine_translated": true,
+    "_source_hash": "c0f4288021906d46"
+  },
+  "card.explore": {
+    "message": "Explorar",
+    "description": "Item card button that opens the map explorer on this item",
+    "_machine_translated": true,
+    "_source_hash": "146a5a1bd9841ed0"
+  },
+  "card.organized": {
+    "message": "✦ Organizado por tu agente",
+    "description": "Item card line: background organizing added to this note",
+    "_machine_translated": true,
+    "_source_hash": "273a49420ee78596"
+  },
+  "card.undo_organize": {
+    "message": "{n, plural, one {Deshacer organización} other {Deshacer organización (# notas)}}",
+    "description": "Item card button; {n} is how many notes were organized together and are undone together",
+    "_machine_translated": true,
+    "_source_hash": "fd5190ad7722a1e0"
+  },
+  "card.undo_organize_tip": {
+    "message": "Retira lo que tu agente añadió a {n, plural, one {esta nota} other {las # notas que organizó juntas}}",
+    "description": "Tooltip of Undo organizing",
+    "_machine_translated": true,
+    "_source_hash": "7e164b3e3edbf761"
+  },
+  "row.explore": {
+    "message": "Abrir en el explorador",
+    "description": "Launcher row that opens the map explorer on the overview",
+    "_machine_translated": true,
+    "_source_hash": "fae4f34a0f403321"
+  },
+  "row.explore_named": {
+    "message": "Abrir en el explorador: {name}",
+    "description": "Launcher row that opens the map explorer centred on {name}",
+    "_machine_translated": true,
+    "_source_hash": "383275686aa0c6c2"
+  },
+  "row.explore_desc": {
+    "message": "Desplaza, amplía y organiza el mapa en su propia ventana",
+    "description": "Description of the Open in explorer launcher row",
+    "_machine_translated": true,
+    "_source_hash": "3ccf671feada4fba"
+  },
+  "explorer.aria": {
+    "message": "Explorador del mapa mental",
+    "description": "Accessible name of the explorer window's content",
+    "_machine_translated": true,
+    "_source_hash": "a3f20271154da326"
+  },
+  "explorer.toolbar": {
+    "message": "Herramientas del explorador",
+    "description": "Accessible name of the explorer's toolbar",
+    "_machine_translated": true,
+    "_source_hash": "39369621e1bc5289"
+  },
+  "explorer.back_tip": {
+    "message": "Volver al centro anterior",
+    "description": "Tooltip of the explorer's Back button",
+    "_machine_translated": true,
+    "_source_hash": "7761099e8055aa48"
+  },
+  "explorer.fit": {
+    "message": "Ajustar",
+    "description": "Explorer button: zoom so the whole map fits the window",
+    "_machine_translated": true,
+    "_source_hash": "58349f0de44f3b0c"
+  },
+  "explorer.fit_tip": {
+    "message": "Mostrar todo el mapa (0)",
+    "description": "Tooltip of the Fit button; 0 is its key",
+    "_machine_translated": true,
+    "_source_hash": "d677d638b21347a3"
+  },
+  "explorer.zoom_in": {
+    "message": "Ampliar (+)",
+    "description": "Explorer zoom-in button label and tooltip; + is its key",
+    "_machine_translated": true,
+    "_source_hash": "5da225c0530b62c7"
+  },
+  "explorer.zoom_out": {
+    "message": "Reducir (−)",
+    "description": "Explorer zoom-out button label and tooltip; − is its key",
+    "_machine_translated": true,
+    "_source_hash": "165988e7fc932b68"
+  },
+  "explorer.scroll_zooms": {
+    "message": "El desplazamiento hace zoom",
+    "description": "Explorer toggle state: the mouse wheel or trackpad scroll zooms the map",
+    "_machine_translated": true,
+    "_source_hash": "164586558426c431"
+  },
+  "explorer.scroll_pans": {
+    "message": "El desplazamiento mueve",
+    "description": "Explorer toggle state: the mouse wheel or trackpad scroll moves the map",
+    "_machine_translated": true,
+    "_source_hash": "93bbe613e9252446"
+  },
+  "explorer.scroll_tip": {
+    "message": "Elige qué hace el desplazamiento. ⌘ o Ctrl con desplazamiento siempre hace zoom.",
+    "description": "Tooltip of the scroll toggle",
+    "_machine_translated": true,
+    "_source_hash": "f89371b66b58b102"
+  },
+  "explorer.details": {
+    "message": "Detalles",
+    "description": "Explorer toggle that shows or hides the details panel; also the panel's accessible name",
+    "_machine_translated": true,
+    "_source_hash": "7b3982adf2fad55e"
+  },
+  "explorer.search_placeholder": {
+    "message": "Buscar (/)",
+    "description": "Placeholder of the explorer's search box; / is its key",
+    "_machine_translated": true,
+    "_source_hash": "871a1dcb43864e31"
+  },
+  "explorer.search_label": {
+    "message": "Buscar en tu mapa mental",
+    "description": "Accessible name of the explorer's search box",
+    "_machine_translated": true,
+    "_source_hash": "7e5c9bb5ab5919fe"
+  },
+  "explorer.no_hits": {
+    "message": "No hay coincidencias",
+    "description": "Shown under the explorer's search box when nothing matches",
+    "_machine_translated": true,
+    "_source_hash": "763d1b6e95fb918f"
+  },
+  "explorer.hits": {
+    "message": "{n, plural, one {# coincidencia} other {# coincidencias}}",
+    "description": "Announced after an explorer search",
+    "_machine_translated": true,
+    "_source_hash": "6fe9cb29f8ef2590"
+  },
+  "explorer.lens_label": {
+    "message": "Mostrar",
+    "description": "Accessible name of the explorer's filter chips (kinds, My actions, Show done)",
+    "_machine_translated": true,
+    "_source_hash": "69457b74b05d93ae"
+  },
+  "explorer.lens_mine": {
+    "message": "Mis acciones",
+    "description": "Explorer filter chip: show only actions that are yours",
+    "_machine_translated": true,
+    "_source_hash": "a1844b0aebab573e"
+  },
+  "explorer.lens_done": {
+    "message": "Mostrar completadas",
+    "description": "Explorer filter chip: also show actions that are done",
+    "_machine_translated": true,
+    "_source_hash": "dab0cbf2516879e9"
+  },
+  "explorer.add_placeholder": {
+    "message": "Añade una idea, un enlace o una tarea",
+    "description": "Placeholder of the explorer's capture box",
+    "_machine_translated": true,
+    "_source_hash": "011e403b2a93a2bb"
+  },
+  "explorer.add_label": {
+    "message": "Añadir a tu mapa mental",
+    "description": "Accessible name of the explorer's capture box",
+    "_machine_translated": true,
+    "_source_hash": "332cc93b607ca834"
+  },
+  "explorer.add": {
+    "message": "Añadir",
+    "description": "Button that saves what's in the explorer's capture box",
+    "_machine_translated": true,
+    "_source_hash": "5ebc22092957a194"
+  },
+  "explorer.saved": {
+    "message": "Se guardó «{title}»",
+    "description": "Explorer toast after saving from its capture box",
+    "_machine_translated": true,
+    "_source_hash": "1ec6aaa1ce55a279"
+  },
+  "explorer.list_label": {
+    "message": "Nodos del mapa",
+    "description": "Accessible name of the explorer's list of nodes",
+    "_machine_translated": true,
+    "_source_hash": "8ee43c60635d39db"
+  },
+  "explorer.panel_empty": {
+    "message": "Selecciona algo en el mapa para verlo aquí.",
+    "description": "Details panel with nothing selected",
+    "_machine_translated": true,
+    "_source_hash": "2f7c0bfe7b203cfd"
+  },
+  "explorer.showing": {
+    "message": "Mostrando {name}",
+    "description": "Announced when the explorer centres on {name}",
+    "_machine_translated": true,
+    "_source_hash": "eed78797b95bc717"
+  },
+  "explorer.focus_here": {
+    "message": "Centrar aquí",
+    "description": "Details panel button: make this node the centre of the map",
+    "_machine_translated": true,
+    "_source_hash": "2fbaa55cdbf7e7dd"
+  },
+  "explorer.expand": {
+    "message": "Mostrar conexiones",
+    "description": "Details panel button: add this node's neighbours to the map",
+    "_machine_translated": true,
+    "_source_hash": "493d7feea716c928"
+  },
+  "explorer.collapse": {
+    "message": "Ocultar conexiones",
+    "description": "Details panel button: remove the neighbours this node added",
+    "_machine_translated": true,
+    "_source_hash": "9ca3f5c79baf49b1"
+  },
+  "explorer.pin": {
+    "message": "Fijar",
+    "description": "Details panel button: keep this node where it is",
+    "_machine_translated": true,
+    "_source_hash": "45fc23b6aa261414"
+  },
+  "explorer.unpin": {
+    "message": "No fijar",
+    "description": "Details panel button: let this node move again",
+    "_machine_translated": true,
+    "_source_hash": "ed7c0c537e5912c1"
+  },
+  "explorer.pinned": {
+    "message": "Fijado",
+    "description": "Badge and announcement for a node that stays where you put it",
+    "_machine_translated": true,
+    "_source_hash": "87e19fbcd262c35b"
+  },
+  "explorer.unpinned": {
+    "message": "Ya no está fijado",
+    "description": "Announced when a node is unpinned",
+    "_machine_translated": true,
+    "_source_hash": "567ce22ce887d134"
+  },
+  "explorer.state_pinned": {
+    "message": "fijado",
+    "description": "Node state in the explorer's list, after open/done/private",
+    "_machine_translated": true,
+    "_source_hash": "63550ce941cd6d4f"
+  },
+  "explorer.layout_undone": {
+    "message": "Movimiento deshecho",
+    "description": "Announced after undoing a move on the map (⌘/Ctrl+Z)",
+    "_machine_translated": true,
+    "_source_hash": "a67b08457613c098"
+  },
+  "explorer.layout_unreadable": {
+    "message": "No se pudieron leer las posiciones guardadas. Restablece el diseño del mapa en los ajustes de Mapa mental.",
+    "description": "Explorer toast when the stored pinned positions are unreadable",
+    "_machine_translated": true,
+    "_source_hash": "55d6a56160c7c427"
+  },
+  "explorer.full": {
+    "message": "El mapa está lleno. Contrae algún nodo o cambia el foco.",
+    "description": "Explorer toast when the map already holds the most nodes it can",
+    "_machine_translated": true,
+    "_source_hash": "ef8d7fea460e4649"
+  },
+  "explorer.nothing_more": {
+    "message": "No hay nada más conectado a esto.",
+    "description": "Explorer toast when showing connections adds nothing new",
+    "_machine_translated": true,
+    "_source_hash": "027d087a5e9b10ba"
+  },
+  "explorer.ask": {
+    "message": "Preguntar",
+    "description": "Details panel button: start a question to your agent about this node",
+    "_machine_translated": true,
+    "_source_hash": "d4be9da47cc23485"
+  },
+  "explorer.ask_about": {
+    "message": "¿qué dicen mis notas sobre «{title}»?",
+    "description": "Question put in the launcher by the explorer's Ask button; it follows the mm? trigger",
+    "_machine_translated": true,
+    "_source_hash": "61d0d0aca9c6f597"
+  },
+  "explorer.ask_private": {
+    "message": "Los elementos privados no se envían a tu agente.",
+    "description": "Why Ask is unavailable for a private item",
+    "_machine_translated": true,
+    "_source_hash": "375056c6933ba0f1"
+  },
+  "explorer.copy_path": {
+    "message": "Copiar ruta",
+    "description": "Details panel button for a file: copy its path",
+    "_machine_translated": true,
+    "_source_hash": "18955b09212e73ac"
+  },
+  "explorer.path_copied": {
+    "message": "Ruta copiada",
+    "description": "Explorer toast after copying a file's path",
+    "_machine_translated": true,
+    "_source_hash": "21cd110c2677eec0"
+  },
+  "explorer.copy_failed": {
+    "message": "No se pudo copiar la ruta",
+    "description": "Explorer toast when copying a path fails",
+    "_machine_translated": true,
+    "_source_hash": "23ee9bbddf1a1001"
+  },
+  "explorer.private_title": {
+    "message": "Elemento privado",
+    "description": "Window title when the explorer is centred on a private item",
+    "_machine_translated": true,
+    "_source_hash": "e773b80b1204a413"
+  },
+  "settings.section_explorer": {
+    "message": "Explorador del mapa",
+    "description": "Settings section for the full-window map explorer",
+    "_machine_translated": true,
+    "_source_hash": "af7b11af7f77b128"
+  },
+  "settings.open_explorer": {
+    "message": "Abrir el explorador del mapa",
+    "description": "Settings action that opens the map explorer",
+    "_machine_translated": true,
+    "_source_hash": "8c676c99dced9b73"
+  },
+  "settings.open_explorer_hint": {
+    "message": "Una ventana donde puedes desplazar, ampliar y organizar tu mapa.",
+    "description": "Description of the Open the map explorer action",
+    "_machine_translated": true,
+    "_source_hash": "6e475fda8bed75b0"
+  },
+  "settings.reset_layout": {
+    "message": "Restablecer el diseño del mapa",
+    "description": "Settings action that forgets every pinned position",
+    "_machine_translated": true,
+    "_source_hash": "b0725b415f28725c"
+  },
+  "settings.reset_layout_hint": {
+    "message": "Olvida las posiciones que fijaste en el explorador.",
+    "description": "Description of the Reset map layout action",
+    "_machine_translated": true,
+    "_source_hash": "5b9a6fa645b949eb"
+  },
+  "settings.reset_layout_confirm": {
+    "message": "¿Olvidar todas las posiciones que fijaste en el explorador del mapa?",
+    "description": "Confirmation before resetting the map layout",
+    "_machine_translated": true,
+    "_source_hash": "3ccb8d34c4da1d2b"
+  },
+  "settings.layout_reset": {
+    "message": "Diseño del mapa restablecido",
+    "description": "Status after resetting the map layout",
+    "_machine_translated": true,
+    "_source_hash": "50312a94b6a66433"
+  },
+  "settings.approve_views": {
+    "message": "Aprueba el nuevo permiso de Mind Map en la Store para usar el explorador del mapa.",
+    "description": "Shown on a Kage that supports the explorer before the user approves its permission",
+    "_machine_translated": true,
+    "_source_hash": "79d91931f20bc8d9"
+  },
+  "files.row.add": {
+    "message": "Añadir un archivo…",
+    "description": "Launcher row and button that open Kage’s file dialog to add a document",
+    "_machine_translated": true,
+    "_source_hash": "96157ca12f29c1fb"
+  },
+  "files.row.add_sub": {
+    "message": "Texto, Markdown, PDF o Word. Kage lo lee en este equipo.",
+    "description": "Subtitle of Add a file…",
+    "_machine_translated": true,
+    "_source_hash": "c1c91bf24846c5bd"
+  },
+  "files.row.added_line": {
+    "message": "Se añadió “{title}”",
+    "description": "First line of the response after adding a file; {title} is the document’s title",
+    "_machine_translated": true,
+    "_source_hash": "bfe01951b58dffcb"
+  },
+  "files.row.updated_line": {
+    "message": "Se actualizó “{title}” desde su archivo",
+    "description": "First line of the response after Update from file…",
+    "_machine_translated": true,
+    "_source_hash": "4cdc03dfccf7b8f0"
+  },
+  "files.row.pages": {
+    "message": "{n, plural, one {# página} other {# páginas}}",
+    "description": "Page count of a document in a search row or the explorer",
+    "_machine_translated": true,
+    "_source_hash": "ded72ec3586c2d0b"
+  },
+  "files.row.added_on": {
+    "message": "añadido el {day}",
+    "description": "When a document was added, e.g. “added Mon, Oct 26”",
+    "_machine_translated": true,
+    "_source_hash": "9bb8df77425355f1"
+  },
+  "files.row.passage_page": {
+    "message": "p. {page}: {text}",
+    "description": "A matching passage of a document and the page it is on",
+    "_machine_translated": true,
+    "_source_hash": "14d11a47a0d6886b"
+  },
+  "files.chars": {
+    "message": "{count, plural, one {{chars} carácter} other {{chars} caracteres}}",
+    "description": "A document’s size in characters; {chars} is the formatted number",
+    "_machine_translated": true,
+    "_source_hash": "200b4c7bda030819"
+  },
+  "files.pages_chars": {
+    "message": "{count, plural, one {# página} other {# páginas}}, {chars}",
+    "description": "A document’s pages and size; {chars} is e.g. “48,211 characters”",
+    "_machine_translated": true,
+    "_source_hash": "471d4919418d24c1"
+  },
+  "files.card.op_added": {
+    "message": "✓ Añadido",
+    "description": "Card header after adding a file (when no details are shown)",
+    "_machine_translated": true,
+    "_source_hash": "effd65b7ece8499d"
+  },
+  "files.card.op_updated": {
+    "message": "✓ Actualizado desde el archivo",
+    "description": "Card header after Update from file… (when no details are shown)",
+    "_machine_translated": true,
+    "_source_hash": "9136d4071fcedcf4"
+  },
+  "files.card.added": {
+    "message": "Se añadió {name}: {size}.",
+    "description": "After adding a file; {name} is the file name, {size} e.g. “12 pages, 48,211 characters”",
+    "_machine_translated": true,
+    "_source_hash": "2294d8e6e2156f06"
+  },
+  "files.card.updated": {
+    "message": "Se actualizó {name}: {size}.",
+    "description": "After Update from file…; {name} is the file name, {size} e.g. “12 pages, 48,211 characters”",
+    "_machine_translated": true,
+    "_source_hash": "433eff6bbf854c81"
+  },
+  "files.card.found": {
+    "message": "Se encontró: {list}.",
+    "description": "What Mind Map found in a document; {list} is e.g. “3 people, 2 projects and 4 suggested actions”",
+    "_machine_translated": true,
+    "_source_hash": "d8b4d1bda245ffa1"
+  },
+  "files.found.people": {
+    "message": "{n, plural, one {# persona} other {# personas}}",
+    "description": "Part of the Found list",
+    "_machine_translated": true,
+    "_source_hash": "d51b4aff9bf5fbdf"
+  },
+  "files.found.teams": {
+    "message": "{n, plural, one {# equipo} other {# equipos}}",
+    "description": "Part of the Found list",
+    "_machine_translated": true,
+    "_source_hash": "8e1cbe62a657488d"
+  },
+  "files.found.projects": {
+    "message": "{n, plural, one {# proyecto} other {# proyectos}}",
+    "description": "Part of the Found list",
+    "_machine_translated": true,
+    "_source_hash": "39f02bcf9f23161a"
+  },
+  "files.found.topics": {
+    "message": "{n, plural, one {# tema} other {# temas}}",
+    "description": "Part of the Found list",
+    "_machine_translated": true,
+    "_source_hash": "3d6cc0342ebc9b15"
+  },
+  "files.found.actions": {
+    "message": "{n, plural, one {# acción sugerida} other {# acciones sugeridas}}",
+    "description": "Part of the Found list",
+    "_machine_translated": true,
+    "_source_hash": "deafe84b9b9b8882"
+  },
+  "files.card.truncated": {
+    "message": "Se conservaron los primeros {n} caracteres.",
+    "description": "The document was longer than the limit in settings",
+    "_machine_translated": true,
+    "_source_hash": "9dc453e0a5d52a22"
+  },
+  "files.card.no_text": {
+    "message": "No se encontró texto. Puede que sea un PDF escaneado. Solo se guardó el nombre del archivo.",
+    "description": "The file had no text Kage could read",
+    "_machine_translated": true,
+    "_source_hash": "252f3d3196b86b0f"
+  },
+  "files.card.pages_skipped": {
+    "message": "Se leyeron las primeras {n} páginas.",
+    "description": "Kage read only part of a very long document",
+    "_machine_translated": true,
+    "_source_hash": "5e0a287fe6f5e89a"
+  },
+  "files.card.same": {
+    "message": "Ya está en tu mapa mental (añadido el {date})",
+    "description": "The same file was added before; nothing changed",
+    "_machine_translated": true,
+    "_source_hash": "6d8dc18a7441fc65"
+  },
+  "files.card.copy_of": {
+    "message": "Ya está guardado como «{title}»",
+    "description": "A file with the same content is already saved",
+    "_machine_translated": true,
+    "_source_hash": "1c4dc3e210ea8438"
+  },
+  "files.card.unchanged": {
+    "message": "«{title}» no ha cambiado desde que lo añadiste.",
+    "description": "Update from file… picked the same file again",
+    "_machine_translated": true,
+    "_source_hash": "dd66eb0513d5c0fe"
+  },
+  "files.card.secret": {
+    "message": "Parece que este archivo contiene una contraseña o una clave, así que es privado: tu agente nunca lo ve.",
+    "description": "Shown when Kage flagged the text as secret-looking",
+    "_machine_translated": true,
+    "_source_hash": "31e246b1d6c21596"
+  },
+  "files.card.text_kept_local": {
+    "message": "Se queda en este ordenador.",
+    "description": "Added to the secret note when sync is on",
+    "_machine_translated": true,
+    "_source_hash": "efeb45a61be1a56c"
+  },
+  "files.card.text_elsewhere": {
+    "message": "El texto completo está en otro de tus ordenadores.",
+    "description": "A document whose full text isn’t on this computer",
+    "_machine_translated": true,
+    "_source_hash": "978cdd39923748a5"
+  },
+  "files.action.reveal_to_agent": {
+    "message": "Permitir que mi agente lo vea",
+    "description": "Button: lets the agent see a document kept private because it may hold a password",
+    "_machine_translated": true,
+    "_source_hash": "24d9bb720e071f67"
+  },
+  "files.action.update": {
+    "message": "Actualizar desde archivo…",
+    "description": "Button: pick the file again and replace the document’s text",
+    "_machine_translated": true,
+    "_source_hash": "f11bad08e0c9b7c8"
+  },
+  "files.action.show_text": {
+    "message": "Mostrar texto",
+    "description": "Button in the explorer that shows a document’s whole text",
+    "_machine_translated": true,
+    "_source_hash": "bd0d2b0f17a22895"
+  },
+  "files.action.hide_text": {
+    "message": "Ocultar texto",
+    "description": "Button in the explorer that hides a document’s text again",
+    "_machine_translated": true,
+    "_source_hash": "8bebaba579cf4101"
+  },
+  "files.text.part": {
+    "message": "Parte {n} de {total}",
+    "description": "Which part of a long document’s text is shown",
+    "_machine_translated": true,
+    "_source_hash": "3e11688c004cae48"
+  },
+  "files.text.page": {
+    "message": "pág. {n}",
+    "description": "Where a page starts in a document’s text",
+    "_machine_translated": true,
+    "_source_hash": "2fbdf72dced9bf17"
+  },
+  "files.text.prev": {
+    "message": "Anterior",
+    "description": "Button: the previous part of a document’s text",
+    "_machine_translated": true,
+    "_source_hash": "83a153b0df2b8f9c"
+  },
+  "files.text.next": {
+    "message": "Siguiente",
+    "description": "Button: the next part of a document’s text",
+    "_machine_translated": true,
+    "_source_hash": "4e6ad1f2861f9598"
+  },
+  "files.text.loading": {
+    "message": "Cargando el texto…",
+    "description": "While a document’s text loads",
+    "_machine_translated": true,
+    "_source_hash": "08eec674e90b7621"
+  },
+  "files.error.too_large_hint": {
+    "message": "Prueba con una copia más pequeña o guarda una parte como PDF.",
+    "description": "Added after Kage’s “file is too large” message",
+    "_machine_translated": true,
+    "_source_hash": "8e39b95e9900eb86"
+  },
+  "files.error.storage_full": {
+    "message": "El almacenamiento de documentos del mapa mental está lleno (64 MB). Elimina algunos documentos primero.",
+    "description": "Adding a file was refused because document storage is full",
+    "_machine_translated": true,
+    "_source_hash": "37447422124fbd8e"
+  },
+  "files.error.bad_result": {
+    "message": "Kage devolvió algo que Mind Map no pudo usar, así que no se guardó nada.",
+    "description": "The file text Kage returned failed Mind Map’s checks",
+    "_machine_translated": true,
+    "_source_hash": "3395d8c6f826425e"
+  },
+  "files.error.unavailable": {
+    "message": "Esta copia de Kage no puede leer archivos para Mind Map.",
+    "description": "Adding a file isn’t possible on this Kage",
+    "_machine_translated": true,
+    "_source_hash": "b8bc7add00ec064e"
+  },
+  "files.error.not_file": {
+    "message": "Ese elemento no se añadió desde un archivo.",
+    "description": "Update from file… on an item that isn’t a picked document",
+    "_machine_translated": true,
+    "_source_hash": "452abbd49f6de298"
+  },
+  "settings.documents.title": {
+    "message": "Documentos",
+    "description": "Settings section",
+    "_machine_translated": true,
+    "_source_hash": "f0534e2658b92dd9"
+  },
+  "settings.documents.add": {
+    "message": "Añadir un archivo…",
+    "description": "Settings action that opens Kage’s file dialog",
+    "_machine_translated": true,
+    "_source_hash": "e12094134fed5d55"
+  },
+  "settings.documents.max_chars": {
+    "message": "Conservar hasta … caracteres de cada archivo",
+    "description": "Settings select; the options are numbers",
+    "_machine_translated": true,
+    "_source_hash": "70dcebaef5a09e4a"
+  },
+  "settings.documents.max_chars_hint": {
+    "message": "Los archivos más largos se recortan. Se aplica a los archivos que añadas a partir de ahora.",
+    "description": "Description of the character limit",
+    "_machine_translated": true,
+    "_source_hash": "2bea2283d146162b"
+  },
+  "settings.documents.max_chars_error": {
+    "message": "Elige uno de los límites de la lista.",
+    "description": "Validation error for the character limit",
+    "_machine_translated": true,
+    "_source_hash": "509810a712275129"
+  },
+  "settings.documents.usage": {
+    "message": "Almacenamiento de documentos: {used} de 64 MB",
+    "description": "How much document storage is used; {used} is e.g. 12.4",
+    "_machine_translated": true,
+    "_source_hash": "4ccdbe3d8f0553e1"
+  },
+  "settings.documents.usage_warn": {
+    "message": "El almacenamiento de documentos está casi lleno. Elimina algunos documentos para añadir más.",
+    "description": "Shown past 90% of document storage",
+    "_machine_translated": true,
+    "_source_hash": "0ad058f3926f4d59"
+  },
+  "settings.disclosure.files": {
+    "message": "Cuando añades un archivo, Kage lo lee en este ordenador y le pasa su texto a Mind Map. Mind Map conserva hasta {n} caracteres junto con tus notas. Kage nunca le indica a Mind Map dónde está el archivo.",
+    "description": "Privacy disclosure about adding files; {n} is the character limit",
+    "_machine_translated": true,
+    "_source_hash": "8746c89af7d8c74e"
+  },
+  "settings.disclosure.background": {
+    "message": "Si activas la organización en segundo plano, las notas nuevas que no hayas marcado como privadas se envían a tu agente en pequeños lotes mientras no usas Kage.",
+    "description": "Privacy disclosure about background organizing",
+    "_machine_translated": true,
+    "_source_hash": "40892fb15e4aa0c9"
+  },
+  "op.ingest": {
+    "message": "Se añadió «{title}»",
+    "description": "Describes a change (used after Undo:)",
+    "_machine_translated": true,
+    "_source_hash": "08e94a674ef6ca0e"
+  },
+  "op.reread": {
+    "message": "Se actualizó «{title}» desde su archivo",
+    "description": "Describes a change (used after Undo:)",
+    "_machine_translated": true,
+    "_source_hash": "498a83d0e2c07931"
+  },
+  "export.documents": {
+    "message": "Documentos",
+    "description": "Export Markdown section listing documents added from files",
+    "_machine_translated": true,
+    "_source_hash": "738020c38720ab52"
+  },
+  "export.pages": {
+    "message": "{n, plural, one {# página} other {# páginas}}",
+    "description": "Page count in Export Markdown",
+    "_machine_translated": true,
+    "_source_hash": "657abbf8fc1ec142"
+  },
+  "tool.get_query": {
+    "message": "Opcional, para documentos: palabras que buscar en todo el documento. Se devuelven hasta {n} pasajes coincidentes de como máximo {max} caracteres.",
+    "description": "Agent tool parameter description",
+    "_machine_translated": true,
+    "_source_hash": "80498175d8152d1d"
+  },
+  "manifest.sync_description": {
+    "message": "Tus notas, acciones, nombres, documentos y marcadores del mapa, para que tu mapa mental sea igual en todos tus ordenadores.",
+    "description": "Manifest sync.description: what Mind Map keeps in the Kage sync folder (at most 140 characters)",
+    "_machine_translated": true,
+    "_source_hash": "8343abed6e55e916"
+  },
+  "settings.section_sync": {
+    "message": "Sincronización entre tus ordenadores",
+    "description": "Settings section heading for Kage folder sync",
+    "_machine_translated": true,
+    "_source_hash": "a50c94a9ff4262e5"
+  },
+  "settings.sync.status_off": {
+    "message": "La sincronización de Kage está desactivada para Mind Map en este ordenador, así que tu mapa mental se queda aquí. Puedes activarla en Ajustes → Sincronización de Kage.",
+    "description": "Sync status line when Kage sync is off for Mind Map",
+    "_machine_translated": true,
+    "_source_hash": "cb4879a398b5a134"
+  },
+  "settings.sync.status_paused": {
+    "message": "La sincronización de Kage está en pausa. Tus cambios esperan en este ordenador hasta que se reanude.",
+    "description": "Sync status line when Kage has paused sync",
+    "_machine_translated": true,
+    "_source_hash": "a3d910bb903d4e8e"
+  },
+  "settings.sync.status_on": {
+    "message": "{n, plural, =0 {Activada mediante la sincronización de Kage. Todavía no se ha unido ningún otro ordenador.} one {Activada mediante la sincronización de Kage, con # ordenador más.} other {Activada mediante la sincronización de Kage, con # ordenadores más.}} Última sincronización: {when}.",
+    "description": "Sync status line when sync is on; n = other computers, when = date and time",
+    "_machine_translated": true,
+    "_source_hash": "bb252dce7895de30"
+  },
+  "settings.sync.status_first": {
+    "message": "Enviando tu mapa mental a tu carpeta de sincronización por primera vez…",
+    "description": "Sync status line during the first push from this computer",
+    "_machine_translated": true,
+    "_source_hash": "eae9673c94f2daf4"
+  },
+  "settings.sync.status_waiting": {
+    "message": "{n, plural, one {# cambio está pendiente} other {# cambios están pendientes}} de sincronizar.",
+    "description": "Sync status line: changes Kage hasn't taken yet",
+    "_machine_translated": true,
+    "_source_hash": "1c872f125542f94d"
+  },
+  "settings.sync.status_full": {
+    "message": "El espacio de Mind Map en tu carpeta de sincronización está lleno. Los cambios nuevos se quedan en este ordenador.",
+    "description": "Sync status warning when the extension's sync quota is used up",
+    "_machine_translated": true,
+    "_source_hash": "6e89736ddc633f3e"
+  },
+  "settings.sync.private_items": {
+    "message": "Sincronizar elementos privados",
+    "description": "Checkbox: whether private items go to the sync folder",
+    "_machine_translated": true,
+    "_source_hash": "5ee3d5406b9d4403"
+  },
+  "settings.sync.private_items_hint": {
+    "message": "Los elementos privados nunca se envían a tu agente, en ningún equipo. Desactiva esta opción para que los elementos que marques como privados a partir de ahora se queden solo en este equipo. Los elementos privados que ya estén en tus otros equipos se quedarán allí.",
+    "description": "Help text for Sync private items",
+    "_machine_translated": true,
+    "_source_hash": "b9f01c8186e46446"
+  },
+  "settings.disclosure.sync": {
+    "message": "Con la sincronización de Kage activada, tu mapa mental también se guarda, cifrado, en tu carpeta de sincronización, para que esté en todos tus equipos. Esto incluye los títulos de las ventanas y el texto de los documentos que hayas añadido, que siguen sin enviarse nunca a tu agente. Si Kage cree que un documento contiene una contraseña o una clave, ese documento se queda en su equipo.",
+    "description": "Privacy disclosure added where Kage offers folder sync",
+    "_machine_translated": true,
+    "_source_hash": "45539646a299c868"
+  },
+  "settings.delete_all_hint_sync": {
+    "message": "Elimina todos los elementos, todos los nombres y el historial de deshacer de este equipo y, mediante la sincronización de Kage, de tus otros equipos.",
+    "description": "Delete everything help text when Kage sync is on",
+    "_machine_translated": true,
+    "_source_hash": "f85c8d54623f32f6"
+  },
+  "settings.delete_all_confirm_sync": {
+    "message": "¿Eliminar todo tu mapa mental de este equipo y de tus otros equipos? Esto no se puede deshacer en Mind Map. Si quieres conservarlo, expórtalo antes.",
+    "description": "Delete everything confirmation when Kage sync is on",
+    "_machine_translated": true,
+    "_source_hash": "aaa396930b15b910"
+  },
+  "card.kept_here": {
+    "message": "Eliminado de tus otros equipos: solo se queda en este.",
+    "description": "Op card note: an item made private with Sync private items off",
+    "_machine_translated": true,
+    "_source_hash": "03ccb2cd18d96f2a"
   }
 }

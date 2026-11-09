@@ -1373,7 +1373,8 @@ export class Mind {
         if (this.state.meta.syncFull) await this._syncFullRun();
         if (this._syncWaiting().length) await this._syncPushPending();
         // Pulls wait for the first push: the newer copy must win, not the
-        // computer that joined later.
+        // computer that joined later. They also wait for this computer's
+        // own changes to reach Kage (_syncPullAll).
         if (this.state.meta.syncFull?.mode !== 'initial' && has('start', 'enabled', 'pull')) await this._syncPullAll();
         if (fs.accepted.size && (has('clear') || !fs.clear)) await this._syncClear();
       } catch (error) {
@@ -1546,12 +1547,25 @@ export class Mind {
     await this._syncMetaCommit(() => this._syncClearAccepted() > 0);
   }
 
+  // A pull while this computer has changes Kage hasn't taken yet (a push
+  // that failed or was rate limited, or more than one commit could carry)
+  // would overwrite them: Kage merges a pulled record from what it last
+  // saw here, without them, and the push after would send that back. So
+  // the pull waits until those are pushed: the retry after a failure, or
+  // a short wait while the rest go out.
+  _syncHoldPull() {
+    if (!this._syncWaiting().length) return false;
+    this._syncRetry(LIMITS.syncSettleMs);
+    return true;
+  }
+
   // Pulls and applies what other computers changed, page by page (SYNC
   // §12.9 item 2). A first look outside the lock costs one call when
   // nothing is new. → true when anything changed here
   // permissions: sync
   async _syncPullAll() {
     const fs = this._fsync;
+    if (this._syncHoldPull()) return false;
     fs.lastPull = mono();
     const peek = await this._syncCall(() => fs.api.pull({ max: 1 }));
     if (!Array.isArray(peek?.changes) || !peek.changes.length) return false;
@@ -1561,7 +1575,7 @@ export class Mind {
       const res = await this._syncPullPage();
       data ||= res.data;
       layout ||= res.layout;
-      if (!res.more) break;
+      if (res.held || !res.more) break;
       if (page === LIMITS.syncPullPages - 1) this._syncKick('pull');
     }
     if (data || layout) {
@@ -1584,6 +1598,7 @@ export class Mind {
     const fs = this._fsync;
     let page = null;
     let layout = false;
+    let held = false;
     const out = await Promise.resolve().then(() => this._mutate((state, env, pre) => {
       if (!pre) return { code: 'empty' };
       const change = model.applyRemote(state, this._syncRemote(state, pre), {
@@ -1592,6 +1607,10 @@ export class Mind {
       return change.op ? { changes: [change], change } : { code: change.code || 'noop' };
     }, {
       before: async () => {
+        // Checked again with the store as it is now: another window's
+        // commit may have left changes that haven't reached Kage.
+        held = this._syncHoldPull();
+        if (held) return null;
         page = await this._syncCall(() => fs.api.pull({ max: LIMITS.syncPullMax }));
         const changes = Array.isArray(page?.changes) ? page.changes : [];
         return changes.length ? syncmap.groupChanges(changes) : null;
@@ -1602,7 +1621,7 @@ export class Mind {
       },
     }));
     if (out.committed) this.log.debug?.(`mindmap: applied ${out.change?.counts?.applied || 0} change(s) from your other computers`);
-    return { more: !!page?.more && !!page?.changes?.length, data: !!out.committed, layout };
+    return { more: !!page?.more && !!page?.changes?.length, data: !!out.committed, layout, held };
   }
 
   // Pulled records with this computer's local fields back (lib/syncmap.js withLocal).
@@ -2035,7 +2054,15 @@ export class Mind {
   isHidden(item) {
     if (!item) return true;
     if (item.private) return true;
-    return (item.entityIds || []).some((id) => this.state.entities.get(id)?.private);
+    return (item.entityIds || []).some((id) => this._privateEntity(id));
+  }
+
+  // A private name, itself or through the entity it redirects to: sync's
+  // dedupe leaves items naming the merged-away copy.
+  _privateEntity(id) {
+    const entity = this.state.entities.get(id);
+    if (!entity) return false;
+    return !!entity.private || (!!entity.mergedInto && !!this.entity(id)?.private);
   }
 
   groupOf(item) {

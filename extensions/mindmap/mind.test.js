@@ -15,6 +15,7 @@ import { Mind, getMind } from './mind.js';
 import { LIMITS } from './defaults.js';
 import * as idlib from './lib/ids.js';
 import * as journal from './lib/journal.js';
+import * as model from './lib/model.js';
 import { createFormatterState, formatHtml } from './view.js';
 
 const MANIFEST = JSON.parse(readFileSync(new URL('./manifest.json', import.meta.url), 'utf8'));
@@ -318,6 +319,22 @@ describe('agent records and prompts', () => {
     mind.entity(team.entityId).private = true;
     expect(mind.isHidden(mind.item(out.itemId))).toBe(true);
     expect(mind.agentRecord(mind.item(out.itemId))).toBeNull();
+  });
+
+  it('an item naming a copy merged into a private entity is hidden too (sync’s dedupe leaves such items)', async () => {
+    const { mind } = setup();
+    const out = await mind.capture('Planning with the Walrus team', { via: 'launcher' });
+    const team = mind.resolveEntity('walrus', null);
+    const copy = { ...mind.entity(team.entityId) };
+    const keep = { ...copy, id: 'e000000000000a1', private: true };
+    mind.state.entities.set(keep.id, keep);
+    mind.state.entities.set(copy.id, { ...copy, mergedInto: keep.id });
+    const item = mind.item(out.itemId);
+    expect(item.entityIds).toContain(copy.id);
+    expect(mind.isHidden(item)).toBe(true);
+    expect(mind.agentRecord(item)).toBeNull();
+    const change = model.applyAnnotate(mind.state, [{ id: item.id, summary: 'Walrus plans.' }], mind._env(mind.now(), idlib.createIdPool()));
+    expect(change.rejected).toEqual([{ id: item.id, reason: 'private' }]);
   });
 
   it('askPrompt with no records says so', async () => {

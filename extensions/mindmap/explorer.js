@@ -374,8 +374,9 @@ export default class MindMapExplorer {
     const node = this.mind.exNode(this.focus);
     let text;
     if (!node || node.group === 'overview') text = this.t('map.overview');
-    // The window title shows in the Dock, taskbar and window switcher.
-    else if (node.private) text = this.t('explorer.private_title');
+    // The window title shows in the Dock, taskbar and window switcher. An
+    // item that names a private person or topic is kept out of it too.
+    else if (node.private || (node.group === 'item' && this.mind.isHidden(this.mind.item(node.ref)))) text = this.t('explorer.private_title');
     else text = clipLabel(node.label, PRIVATE_TITLE_MAX) || this.t('map.overview');
     try {
       this.context.view?.setTitle?.(text)?.catch?.(() => {});

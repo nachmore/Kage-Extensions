@@ -2608,5 +2608,941 @@
     "description": "Interpretation row: how many matches are listed out of how many, e.g. “8 of 23”",
     "_machine_translated": true,
     "_source_hash": "868a73ebc8627db2"
+  },
+  "manifest.agent_background_reason": {
+    "message": "A Mind Map elküldi az ügynökének azoknak az új jegyzeteknek a szövegét, amelyeket nem jelölt privátként, hogy az rövid összefoglalót, az említett személyeket, csapatokat és projekteket, valamint javasolt teendőket adhasson hozzájuk.",
+    "description": "Shown in Kage’s Background AI consent dialog as a quote from the extension (at most 300 characters)",
+    "_machine_translated": true,
+    "_source_hash": "22b58c6f746d8a97"
+  },
+  "op.organized_bg_label": {
+    "message": "{n, plural, one {# jegyzet} other {# jegyzet}} rendszerezése",
+    "description": "Label of one background organizing request, shown in Kage’s Background AI log. At most 80 characters",
+    "_machine_translated": true,
+    "_source_hash": "509ba9e9a9de99ed"
+  },
+  "prompt.organize_bg": {
+    "message": "Egy személy mentett jegyzeteit rendszerezed. A DATA minden jegyzetéhez add vissza azt, ami egyértelműen érvényes rá:\n- \"summary\": egyetlen egyszerű mondat, legfeljebb 25 szóból. Csak akkor, ha a jegyzet egy mondatnál hosszabb.\n- \"entities\": a jegyzetben megnevezett személyek, csapatok, projektek, szervezetek, témák vagy kifejezések. Ha egy \"vocabulary\" listában szereplő név ugyanazt jelenti, azt használd. Ne találgass.\n- \"terms\": legfeljebb 5 rövid kulcskifejezés.\n- \"actions\": olyan teendők, amelyeket a jegyzet szerint valakinek el kell végeznie. Másold a jegyzet pontos szavait a \"quote\" mezőbe. Az \"owner\" mezőt csak akkor add meg, ha a jegyzet megnevezi az adott személyt. Hagyd ki, ha az író saját feladatáról van szó. A \"due\" (YYYY-MM-DD) mezőt csak akkor add meg, ha a jegyzet dátumot ad meg; a relatív dátumokat a jegyzet \"date\" mezője alapján számítsd ki.\nÁllítsd be a \"skip\": true értéket, ha egy jegyzethez nincs mit hozzáadni. Semmit ne találj ki.",
+    "description": "Instructions for background organizing, sent to the user’s agent with the notes (not shown in a chat). Keep DATA, the quoted field names (summary, entities, vocabulary, terms, actions, quote, owner, due, date, skip), true and YYYY-MM-DD as they are. At most 4,000 characters",
+    "_machine_translated": true,
+    "_source_hash": "a6d5cfa396d64cb2"
+  },
+  "settings.section_background": {
+    "message": "Rendszerezés a háttérben",
+    "description": "Settings section",
+    "_machine_translated": true,
+    "_source_hash": "823011a9a47b8158"
+  },
+  "settings.background_organize": {
+    "message": "Új jegyzetek rendszerezése a háttérben",
+    "description": "Settings label",
+    "_machine_translated": true,
+    "_source_hash": "6ff34391f478dc72"
+  },
+  "settings.background_organize_hint": {
+    "message": "Alapértelmezés szerint ki van kapcsolva. Mielőtt bármit elküldene, a Kage ezen a számítógépen megkéri, hogy erősítse meg, melyik ügynök kapja meg a jegyzeteit.",
+    "description": "Settings hint for the background organizing switch",
+    "_machine_translated": true,
+    "_source_hash": "a88ff105a729bdb5"
+  },
+  "settings.organize.about": {
+    "message": "Amíg nem használja a Kage-et, a Mind Map kis kötegekben elküldi az új jegyzeteket az ügynökének, és hozzáadja a visszaküldött rövid összefoglalókat, neveket és javasolt teendőket. A privátként jelölt jegyzeteket soha nem küldi el. Minden hozzáadott elem visszavonható.",
+    "description": "What background organizing does",
+    "_machine_translated": true,
+    "_source_hash": "2103e2d37af4d668"
+  },
+  "settings.organize.status": {
+    "message": "{organized} rendszerezve · {waiting} várakozik · utolsó futás: {when}",
+    "description": "Background organizing status; {organized} and {waiting} are note counts, {when} a date and time or “never”",
+    "_machine_translated": true,
+    "_source_hash": "7a71f3e7229e6f43"
+  },
+  "settings.organize.status_needs_host": {
+    "message": "A Kage-nek az Ön jóváhagyására van szüksége ezen a számítógépen, mielőtt a Mind Map bármit elküldene az ügynökének.",
+    "description": "Background organizing status: switched on, but Kage’s access is off",
+    "_machine_translated": true,
+    "_source_hash": "6ffbbeabf17a4b2f"
+  },
+  "settings.organize.status_stale": {
+    "message": "Az ügynöke megváltozott. Engedélyezze újra a Mind Mapet ezen a számítógépen.",
+    "description": "Background organizing status: the agent changed since the user agreed",
+    "_machine_translated": true,
+    "_source_hash": "92ddd1d913b0f39e"
+  },
+  "settings.organize.status_unavailable": {
+    "message": "Frissítse a Kage-et, vagy hagyja jóvá a Mind Map háttérbeli AI-engedélyét az áruházban.",
+    "description": "Background organizing status on a Kage that doesn’t offer it",
+    "_machine_translated": true,
+    "_source_hash": "7c46036dc61a53c2"
+  },
+  "settings.organize.status_paused": {
+    "message": "Szüneteltetve eddig: {time}.",
+    "description": "Background organizing status; {time} is a date and time",
+    "_machine_translated": true,
+    "_source_hash": "d4529ceb0d1235e4"
+  },
+  "settings.organize.tools_warning": {
+    "message": "Az ügynöke rendszerezés közben megpróbált egy eszközt használni, ezért a Kage leállította a kérést. Ha ez egy nap alatt kétszer előfordul, a Kage holnapig szünetelteti a háttérben történő rendszerezést.",
+    "description": "Warning after the agent tried to use a tool during background organizing",
+    "_machine_translated": true,
+    "_source_hash": "6ee2fd899816d5bf"
+  },
+  "settings.organize.allow": {
+    "message": "Engedélyezés ezen a számítógépen…",
+    "description": "Button that opens Kage’s consent dialog for background organizing",
+    "_machine_translated": true,
+    "_source_hash": "3e222f72137230e2"
+  },
+  "settings.organize.allow_hint": {
+    "message": "A Kage megmutatja, melyik ügynök kapja meg a jegyzeteit, és megerősítést kér.",
+    "description": "Hint for the allow button",
+    "_machine_translated": true,
+    "_source_hash": "331987919cd0aeac"
+  },
+  "settings.organize.now": {
+    "message": "Rendszerezés most",
+    "description": "Button: send the next batch now",
+    "_machine_translated": true,
+    "_source_hash": "4a56bb9d614a12bc"
+  },
+  "settings.organize.now_hint": {
+    "message": "Most elküldi a következő köteget ahelyett, hogy megvárná, amíg távol van.",
+    "description": "Hint for Organize now",
+    "_machine_translated": true,
+    "_source_hash": "9ee5e96c0764222b"
+  },
+  "settings.organize.now_done": {
+    "message": "Az ügynöke {n, plural, one {# jegyzetet} other {# jegyzetet}} nézett át.",
+    "description": "Organize now finished",
+    "_machine_translated": true,
+    "_source_hash": "d9cc512bc71b52a4"
+  },
+  "settings.organize.now_nothing": {
+    "message": "Nincs rendszerezésre váró jegyzet.",
+    "description": "Organize now: no notes to send",
+    "_machine_translated": true,
+    "_source_hash": "bcf7ef7ed0aa479d"
+  },
+  "settings.organize.now_off": {
+    "message": "Előbb kapcsolja be az „Új jegyzetek rendszerezése a háttérben” beállítást, és mentse.",
+    "description": "Organize now while the saved switch is off",
+    "_machine_translated": true,
+    "_source_hash": "99d9b760ce32d474"
+  },
+  "settings.organize.now_busy": {
+    "message": "A Mind Map már rendszerez egy másik Kage-ablakban.",
+    "description": "Organize now while another window is organizing",
+    "_machine_translated": true,
+    "_source_hash": "5397d1b650fdbc5f"
+  },
+  "settings.organize.backlog": {
+    "message": "Régebbi jegyzetek rendszerezése is",
+    "description": "Button: include notes from before background organizing was turned on",
+    "_machine_translated": true,
+    "_source_hash": "2ed9a84f9d22670c"
+  },
+  "settings.organize.backlog_hint": {
+    "message": "{n, plural, one {# jegyzet} other {# jegyzet}} még a funkció bekapcsolása előttről származik. Ezek rendszerezése kötegenként történik, a napi keretén belül.",
+    "description": "Hint for Organize older notes too",
+    "_machine_translated": true,
+    "_source_hash": "8ecc4c994f27540d"
+  },
+  "settings.organize.backlog_done": {
+    "message": "A régebbi jegyzetek is rendszerezve lesznek, kötegenként.",
+    "description": "Organize older notes too: done",
+    "_machine_translated": true,
+    "_source_hash": "028332e369a3e1a7"
+  },
+  "view.explorer.title": {
+    "message": "Felfedező",
+    "description": "Title of Mind Map's full-window map explorer (window title and Kage's host bar)",
+    "_machine_translated": true,
+    "_source_hash": "c50649381b98e411"
+  },
+  "map.explorer": {
+    "message": "Felfedező",
+    "description": "Map card header button that opens the full-window map explorer",
+    "_machine_translated": true,
+    "_source_hash": "ee744e3d5a47b3e4"
+  },
+  "map.explorer_tip": {
+    "message": "A térkép megnyitása külön ablakban, ahol mozgathatja, nagyíthatja és elrendezheti",
+    "description": "Tooltip of the map card's Explorer button",
+    "_machine_translated": true,
+    "_source_hash": "c0f4288021906d46"
+  },
+  "card.explore": {
+    "message": "Felfedezés",
+    "description": "Item card button that opens the map explorer on this item",
+    "_machine_translated": true,
+    "_source_hash": "146a5a1bd9841ed0"
+  },
+  "card.organized": {
+    "message": "✦ Az ügynöke rendszerezte",
+    "description": "Item card line: background organizing added to this note",
+    "_machine_translated": true,
+    "_source_hash": "273a49420ee78596"
+  },
+  "card.undo_organize": {
+    "message": "{n, plural, one {Rendszerezés visszavonása} other {Rendszerezés visszavonása (# jegyzet)}}",
+    "description": "Item card button; {n} is how many notes were organized together and are undone together",
+    "_machine_translated": true,
+    "_source_hash": "fd5190ad7722a1e0"
+  },
+  "card.undo_organize_tip": {
+    "message": "Visszavonja, amit az ügynöke hozzáadott {n, plural, one {ehhez a jegyzethez} other {az együtt rendszerezett # jegyzethez}}",
+    "description": "Tooltip of Undo organizing",
+    "_machine_translated": true,
+    "_source_hash": "7e164b3e3edbf761"
+  },
+  "row.explore": {
+    "message": "Megnyitás a felfedezőben",
+    "description": "Launcher row that opens the map explorer on the overview",
+    "_machine_translated": true,
+    "_source_hash": "fae4f34a0f403321"
+  },
+  "row.explore_named": {
+    "message": "Megnyitás a felfedezőben: {name}",
+    "description": "Launcher row that opens the map explorer centred on {name}",
+    "_machine_translated": true,
+    "_source_hash": "383275686aa0c6c2"
+  },
+  "row.explore_desc": {
+    "message": "A térkép mozgatása, nagyítása és elrendezése külön ablakban",
+    "description": "Description of the Open in explorer launcher row",
+    "_machine_translated": true,
+    "_source_hash": "3ccf671feada4fba"
+  },
+  "explorer.aria": {
+    "message": "Gondolattérkép-felfedező",
+    "description": "Accessible name of the explorer window's content",
+    "_machine_translated": true,
+    "_source_hash": "a3f20271154da326"
+  },
+  "explorer.toolbar": {
+    "message": "Felfedezőeszközök",
+    "description": "Accessible name of the explorer's toolbar",
+    "_machine_translated": true,
+    "_source_hash": "39369621e1bc5289"
+  },
+  "explorer.back_tip": {
+    "message": "Vissza az előző középponthoz",
+    "description": "Tooltip of the explorer's Back button",
+    "_machine_translated": true,
+    "_source_hash": "7761099e8055aa48"
+  },
+  "explorer.fit": {
+    "message": "Igazítás",
+    "description": "Explorer button: zoom so the whole map fits the window",
+    "_machine_translated": true,
+    "_source_hash": "58349f0de44f3b0c"
+  },
+  "explorer.fit_tip": {
+    "message": "A teljes térkép megjelenítése (0)",
+    "description": "Tooltip of the Fit button; 0 is its key",
+    "_machine_translated": true,
+    "_source_hash": "d677d638b21347a3"
+  },
+  "explorer.zoom_in": {
+    "message": "Nagyítás (+)",
+    "description": "Explorer zoom-in button label and tooltip; + is its key",
+    "_machine_translated": true,
+    "_source_hash": "5da225c0530b62c7"
+  },
+  "explorer.zoom_out": {
+    "message": "Kicsinyítés (−)",
+    "description": "Explorer zoom-out button label and tooltip; − is its key",
+    "_machine_translated": true,
+    "_source_hash": "165988e7fc932b68"
+  },
+  "explorer.scroll_zooms": {
+    "message": "Görgetés: nagyítás",
+    "description": "Explorer toggle state: the mouse wheel or trackpad scroll zooms the map",
+    "_machine_translated": true,
+    "_source_hash": "164586558426c431"
+  },
+  "explorer.scroll_pans": {
+    "message": "Görgetés: mozgatás",
+    "description": "Explorer toggle state: the mouse wheel or trackpad scroll moves the map",
+    "_machine_translated": true,
+    "_source_hash": "93bbe613e9252446"
+  },
+  "explorer.scroll_tip": {
+    "message": "Válassza ki, mit csináljon a görgetés. A ⌘ vagy Ctrl billentyűvel együtt a görgetés mindig nagyít.",
+    "description": "Tooltip of the scroll toggle",
+    "_machine_translated": true,
+    "_source_hash": "f89371b66b58b102"
+  },
+  "explorer.details": {
+    "message": "Részletek",
+    "description": "Explorer toggle that shows or hides the details panel; also the panel's accessible name",
+    "_machine_translated": true,
+    "_source_hash": "7b3982adf2fad55e"
+  },
+  "explorer.search_placeholder": {
+    "message": "Keresés (/)",
+    "description": "Placeholder of the explorer's search box; / is its key",
+    "_machine_translated": true,
+    "_source_hash": "871a1dcb43864e31"
+  },
+  "explorer.search_label": {
+    "message": "Keresés a gondolattérképen",
+    "description": "Accessible name of the explorer's search box",
+    "_machine_translated": true,
+    "_source_hash": "7e5c9bb5ab5919fe"
+  },
+  "explorer.no_hits": {
+    "message": "Nincs találat",
+    "description": "Shown under the explorer's search box when nothing matches",
+    "_machine_translated": true,
+    "_source_hash": "763d1b6e95fb918f"
+  },
+  "explorer.hits": {
+    "message": "{n, plural, one {# találat} other {# találat}}",
+    "description": "Announced after an explorer search",
+    "_machine_translated": true,
+    "_source_hash": "6fe9cb29f8ef2590"
+  },
+  "explorer.lens_label": {
+    "message": "Megjelenítés",
+    "description": "Accessible name of the explorer's filter chips (kinds, My actions, Show done)",
+    "_machine_translated": true,
+    "_source_hash": "69457b74b05d93ae"
+  },
+  "explorer.lens_mine": {
+    "message": "Saját teendők",
+    "description": "Explorer filter chip: show only actions that are yours",
+    "_machine_translated": true,
+    "_source_hash": "a1844b0aebab573e"
+  },
+  "explorer.lens_done": {
+    "message": "Késznek jelöltek mutatása",
+    "description": "Explorer filter chip: also show actions that are done",
+    "_machine_translated": true,
+    "_source_hash": "dab0cbf2516879e9"
+  },
+  "explorer.add_placeholder": {
+    "message": "Gondolat, hivatkozás vagy teendő hozzáadása",
+    "description": "Placeholder of the explorer's capture box",
+    "_machine_translated": true,
+    "_source_hash": "011e403b2a93a2bb"
+  },
+  "explorer.add_label": {
+    "message": "Hozzáadás a gondolattérképhez",
+    "description": "Accessible name of the explorer's capture box",
+    "_machine_translated": true,
+    "_source_hash": "332cc93b607ca834"
+  },
+  "explorer.add": {
+    "message": "Hozzáadás",
+    "description": "Button that saves what's in the explorer's capture box",
+    "_machine_translated": true,
+    "_source_hash": "5ebc22092957a194"
+  },
+  "explorer.saved": {
+    "message": "„{title}” mentve",
+    "description": "Explorer toast after saving from its capture box",
+    "_machine_translated": true,
+    "_source_hash": "1ec6aaa1ce55a279"
+  },
+  "explorer.list_label": {
+    "message": "A térkép csomópontjai",
+    "description": "Accessible name of the explorer's list of nodes",
+    "_machine_translated": true,
+    "_source_hash": "8ee43c60635d39db"
+  },
+  "explorer.panel_empty": {
+    "message": "Válasszon ki valamit a térképen, hogy itt megjelenjen.",
+    "description": "Details panel with nothing selected",
+    "_machine_translated": true,
+    "_source_hash": "2f7c0bfe7b203cfd"
+  },
+  "explorer.showing": {
+    "message": "Megjelenítve: {name}",
+    "description": "Announced when the explorer centres on {name}",
+    "_machine_translated": true,
+    "_source_hash": "eed78797b95bc717"
+  },
+  "explorer.focus_here": {
+    "message": "Középre helyezés",
+    "description": "Details panel button: make this node the centre of the map",
+    "_machine_translated": true,
+    "_source_hash": "2fbaa55cdbf7e7dd"
+  },
+  "explorer.expand": {
+    "message": "Kapcsolatok megjelenítése",
+    "description": "Details panel button: add this node's neighbours to the map",
+    "_machine_translated": true,
+    "_source_hash": "493d7feea716c928"
+  },
+  "explorer.collapse": {
+    "message": "Kapcsolatok elrejtése",
+    "description": "Details panel button: remove the neighbours this node added",
+    "_machine_translated": true,
+    "_source_hash": "9ca3f5c79baf49b1"
+  },
+  "explorer.pin": {
+    "message": "Rögzítés",
+    "description": "Details panel button: keep this node where it is",
+    "_machine_translated": true,
+    "_source_hash": "45fc23b6aa261414"
+  },
+  "explorer.unpin": {
+    "message": "Rögzítés feloldása",
+    "description": "Details panel button: let this node move again",
+    "_machine_translated": true,
+    "_source_hash": "ed7c0c537e5912c1"
+  },
+  "explorer.pinned": {
+    "message": "Rögzítve",
+    "description": "Badge and announcement for a node that stays where you put it",
+    "_machine_translated": true,
+    "_source_hash": "87e19fbcd262c35b"
+  },
+  "explorer.unpinned": {
+    "message": "Rögzítés feloldva",
+    "description": "Announced when a node is unpinned",
+    "_machine_translated": true,
+    "_source_hash": "567ce22ce887d134"
+  },
+  "explorer.state_pinned": {
+    "message": "rögzítve",
+    "description": "Node state in the explorer's list, after open/done/private",
+    "_machine_translated": true,
+    "_source_hash": "63550ce941cd6d4f"
+  },
+  "explorer.layout_undone": {
+    "message": "Visszahelyezve",
+    "description": "Announced after undoing a move on the map (⌘/Ctrl+Z)",
+    "_machine_translated": true,
+    "_source_hash": "a67b08457613c098"
+  },
+  "explorer.layout_unreadable": {
+    "message": "A mentett pozíciók nem olvashatók. Állítsa vissza a térkép elrendezését a Mind Map beállításaiban.",
+    "description": "Explorer toast when the stored pinned positions are unreadable",
+    "_machine_translated": true,
+    "_source_hash": "55d6a56160c7c427"
+  },
+  "explorer.full": {
+    "message": "A térkép megtelt. Csukjon össze valamit, vagy válasszon új középpontot.",
+    "description": "Explorer toast when the map already holds the most nodes it can",
+    "_machine_translated": true,
+    "_source_hash": "ef8d7fea460e4649"
+  },
+  "explorer.nothing_more": {
+    "message": "Ehhez semmi más nem kapcsolódik.",
+    "description": "Explorer toast when showing connections adds nothing new",
+    "_machine_translated": true,
+    "_source_hash": "027d087a5e9b10ba"
+  },
+  "explorer.ask": {
+    "message": "Kérdezés",
+    "description": "Details panel button: start a question to your agent about this node",
+    "_machine_translated": true,
+    "_source_hash": "d4be9da47cc23485"
+  },
+  "explorer.ask_about": {
+    "message": "mit írnak a jegyzeteim a következőről: „{title}”?",
+    "description": "Question put in the launcher by the explorer's Ask button; it follows the mm? trigger",
+    "_machine_translated": true,
+    "_source_hash": "61d0d0aca9c6f597"
+  },
+  "explorer.ask_private": {
+    "message": "A privát elemek nem kerülnek elküldésre az ügynökének.",
+    "description": "Why Ask is unavailable for a private item",
+    "_machine_translated": true,
+    "_source_hash": "375056c6933ba0f1"
+  },
+  "explorer.copy_path": {
+    "message": "Elérési út másolása",
+    "description": "Details panel button for a file: copy its path",
+    "_machine_translated": true,
+    "_source_hash": "18955b09212e73ac"
+  },
+  "explorer.path_copied": {
+    "message": "Elérési út másolva",
+    "description": "Explorer toast after copying a file's path",
+    "_machine_translated": true,
+    "_source_hash": "21cd110c2677eec0"
+  },
+  "explorer.copy_failed": {
+    "message": "Nem sikerült másolni az elérési utat",
+    "description": "Explorer toast when copying a path fails",
+    "_machine_translated": true,
+    "_source_hash": "23ee9bbddf1a1001"
+  },
+  "explorer.private_title": {
+    "message": "Privát elem",
+    "description": "Window title when the explorer is centred on a private item",
+    "_machine_translated": true,
+    "_source_hash": "e773b80b1204a413"
+  },
+  "settings.section_explorer": {
+    "message": "Térképböngésző",
+    "description": "Settings section for the full-window map explorer",
+    "_machine_translated": true,
+    "_source_hash": "af7b11af7f77b128"
+  },
+  "settings.open_explorer": {
+    "message": "Térképböngésző megnyitása",
+    "description": "Settings action that opens the map explorer",
+    "_machine_translated": true,
+    "_source_hash": "8c676c99dced9b73"
+  },
+  "settings.open_explorer_hint": {
+    "message": "Egy ablak, amelyben mozgathatja, nagyíthatja és rendezheti a térképét.",
+    "description": "Description of the Open the map explorer action",
+    "_machine_translated": true,
+    "_source_hash": "6e475fda8bed75b0"
+  },
+  "settings.reset_layout": {
+    "message": "Térképelrendezés visszaállítása",
+    "description": "Settings action that forgets every pinned position",
+    "_machine_translated": true,
+    "_source_hash": "b0725b415f28725c"
+  },
+  "settings.reset_layout_hint": {
+    "message": "Törli a böngészőben rögzített pozíciókat.",
+    "description": "Description of the Reset map layout action",
+    "_machine_translated": true,
+    "_source_hash": "5b9a6fa645b949eb"
+  },
+  "settings.reset_layout_confirm": {
+    "message": "Törli a térképböngészőben rögzített összes pozíciót?",
+    "description": "Confirmation before resetting the map layout",
+    "_machine_translated": true,
+    "_source_hash": "3ccb8d34c4da1d2b"
+  },
+  "settings.layout_reset": {
+    "message": "Térképelrendezés visszaállítva",
+    "description": "Status after resetting the map layout",
+    "_machine_translated": true,
+    "_source_hash": "50312a94b6a66433"
+  },
+  "settings.approve_views": {
+    "message": "A térképböngésző használatához hagyja jóvá a Mind Map új engedélyét a Store-ban.",
+    "description": "Shown on a Kage that supports the explorer before the user approves its permission",
+    "_machine_translated": true,
+    "_source_hash": "79d91931f20bc8d9"
+  },
+  "files.row.add": {
+    "message": "Fájl hozzáadása…",
+    "description": "Launcher row and button that open Kage’s file dialog to add a document",
+    "_machine_translated": true,
+    "_source_hash": "96157ca12f29c1fb"
+  },
+  "files.row.add_sub": {
+    "message": "Szöveg, Markdown, PDF vagy Word. A Kage ezen a számítógépen olvassa be.",
+    "description": "Subtitle of Add a file…",
+    "_machine_translated": true,
+    "_source_hash": "c1c91bf24846c5bd"
+  },
+  "files.row.added_line": {
+    "message": "„{title}” hozzáadva",
+    "description": "First line of the response after adding a file; {title} is the document’s title",
+    "_machine_translated": true,
+    "_source_hash": "bfe01951b58dffcb"
+  },
+  "files.row.updated_line": {
+    "message": "„{title}” frissítve a fájlból",
+    "description": "First line of the response after Update from file…",
+    "_machine_translated": true,
+    "_source_hash": "4cdc03dfccf7b8f0"
+  },
+  "files.row.pages": {
+    "message": "{n, plural, one {# oldal} other {# oldal}}",
+    "description": "Page count of a document in a search row or the explorer",
+    "_machine_translated": true,
+    "_source_hash": "ded72ec3586c2d0b"
+  },
+  "files.row.added_on": {
+    "message": "hozzáadva: {day}",
+    "description": "When a document was added, e.g. “added Mon, Oct 26”",
+    "_machine_translated": true,
+    "_source_hash": "9bb8df77425355f1"
+  },
+  "files.row.passage_page": {
+    "message": "{page}. o.: {text}",
+    "description": "A matching passage of a document and the page it is on",
+    "_machine_translated": true,
+    "_source_hash": "14d11a47a0d6886b"
+  },
+  "files.chars": {
+    "message": "{count, plural, one {{chars} karakter} other {{chars} karakter}}",
+    "description": "A document’s size in characters; {chars} is the formatted number",
+    "_machine_translated": true,
+    "_source_hash": "200b4c7bda030819"
+  },
+  "files.pages_chars": {
+    "message": "{count, plural, one {# oldal} other {# oldal}}, {chars}",
+    "description": "A document’s pages and size; {chars} is e.g. “48,211 characters”",
+    "_machine_translated": true,
+    "_source_hash": "471d4919418d24c1"
+  },
+  "files.card.op_added": {
+    "message": "✓ Hozzáadva",
+    "description": "Card header after adding a file (when no details are shown)",
+    "_machine_translated": true,
+    "_source_hash": "effd65b7ece8499d"
+  },
+  "files.card.op_updated": {
+    "message": "✓ Frissítve a fájlból",
+    "description": "Card header after Update from file… (when no details are shown)",
+    "_machine_translated": true,
+    "_source_hash": "9136d4071fcedcf4"
+  },
+  "files.card.added": {
+    "message": "{name} hozzáadva: {size}.",
+    "description": "After adding a file; {name} is the file name, {size} e.g. “12 pages, 48,211 characters”",
+    "_machine_translated": true,
+    "_source_hash": "2294d8e6e2156f06"
+  },
+  "files.card.updated": {
+    "message": "{name} frissítve: {size}.",
+    "description": "After Update from file…; {name} is the file name, {size} e.g. “12 pages, 48,211 characters”",
+    "_machine_translated": true,
+    "_source_hash": "433eff6bbf854c81"
+  },
+  "files.card.found": {
+    "message": "Találatok: {list}.",
+    "description": "What Mind Map found in a document; {list} is e.g. “3 people, 2 projects and 4 suggested actions”",
+    "_machine_translated": true,
+    "_source_hash": "d8b4d1bda245ffa1"
+  },
+  "files.found.people": {
+    "message": "{n, plural, one {# személy} other {# személy}}",
+    "description": "Part of the Found list",
+    "_machine_translated": true,
+    "_source_hash": "d51b4aff9bf5fbdf"
+  },
+  "files.found.teams": {
+    "message": "{n, plural, one {# csapat} other {# csapat}}",
+    "description": "Part of the Found list",
+    "_machine_translated": true,
+    "_source_hash": "8e1cbe62a657488d"
+  },
+  "files.found.projects": {
+    "message": "{n, plural, one {# projekt} other {# projekt}}",
+    "description": "Part of the Found list",
+    "_machine_translated": true,
+    "_source_hash": "39f02bcf9f23161a"
+  },
+  "files.found.topics": {
+    "message": "{n, plural, one {# téma} other {# téma}}",
+    "description": "Part of the Found list",
+    "_machine_translated": true,
+    "_source_hash": "3d6cc0342ebc9b15"
+  },
+  "files.found.actions": {
+    "message": "{n, plural, one {# javasolt művelet} other {# javasolt művelet}}",
+    "description": "Part of the Found list",
+    "_machine_translated": true,
+    "_source_hash": "deafe84b9b9b8882"
+  },
+  "files.card.truncated": {
+    "message": "Az első {n} karakter megmaradt.",
+    "description": "The document was longer than the limit in settings",
+    "_machine_translated": true,
+    "_source_hash": "9dc453e0a5d52a22"
+  },
+  "files.card.no_text": {
+    "message": "Nem található szöveg. Lehet, hogy szkennelt PDF. Csak a fájlnév lett mentve.",
+    "description": "The file had no text Kage could read",
+    "_machine_translated": true,
+    "_source_hash": "252f3d3196b86b0f"
+  },
+  "files.card.pages_skipped": {
+    "message": "Az első {n} oldal beolvasva.",
+    "description": "Kage read only part of a very long document",
+    "_machine_translated": true,
+    "_source_hash": "5e0a287fe6f5e89a"
+  },
+  "files.card.same": {
+    "message": "Már szerepel a gondolattérképén (hozzáadva: {date})",
+    "description": "The same file was added before; nothing changed",
+    "_machine_translated": true,
+    "_source_hash": "6d8dc18a7441fc65"
+  },
+  "files.card.copy_of": {
+    "message": "Már mentve „{title}” néven",
+    "description": "A file with the same content is already saved",
+    "_machine_translated": true,
+    "_source_hash": "1c4dc3e210ea8438"
+  },
+  "files.card.unchanged": {
+    "message": "A(z) „{title}” nem változott a hozzáadás óta.",
+    "description": "Update from file… picked the same file again",
+    "_machine_translated": true,
+    "_source_hash": "dd66eb0513d5c0fe"
+  },
+  "files.card.secret": {
+    "message": "Úgy tűnik, ez a fájl jelszót vagy kulcsot tartalmaz, ezért privát: az ügynöke soha nem látja.",
+    "description": "Shown when Kage flagged the text as secret-looking",
+    "_machine_translated": true,
+    "_source_hash": "31e246b1d6c21596"
+  },
+  "files.card.text_kept_local": {
+    "message": "Ezen a számítógépen marad.",
+    "description": "Added to the secret note when sync is on",
+    "_machine_translated": true,
+    "_source_hash": "efeb45a61be1a56c"
+  },
+  "files.card.text_elsewhere": {
+    "message": "A teljes szöveg egy másik számítógépén található.",
+    "description": "A document whose full text isn’t on this computer",
+    "_machine_translated": true,
+    "_source_hash": "978cdd39923748a5"
+  },
+  "files.action.reveal_to_agent": {
+    "message": "Láthatja az ügynököm",
+    "description": "Button: lets the agent see a document kept private because it may hold a password",
+    "_machine_translated": true,
+    "_source_hash": "24d9bb720e071f67"
+  },
+  "files.action.update": {
+    "message": "Frissítés fájlból…",
+    "description": "Button: pick the file again and replace the document’s text",
+    "_machine_translated": true,
+    "_source_hash": "f11bad08e0c9b7c8"
+  },
+  "files.action.show_text": {
+    "message": "Szöveg megjelenítése",
+    "description": "Button in the explorer that shows a document’s whole text",
+    "_machine_translated": true,
+    "_source_hash": "bd0d2b0f17a22895"
+  },
+  "files.action.hide_text": {
+    "message": "Szöveg elrejtése",
+    "description": "Button in the explorer that hides a document’s text again",
+    "_machine_translated": true,
+    "_source_hash": "8bebaba579cf4101"
+  },
+  "files.text.part": {
+    "message": "{n}. rész / {total}",
+    "description": "Which part of a long document’s text is shown",
+    "_machine_translated": true,
+    "_source_hash": "3e11688c004cae48"
+  },
+  "files.text.page": {
+    "message": "{n}. o.",
+    "description": "Where a page starts in a document’s text",
+    "_machine_translated": true,
+    "_source_hash": "2fbdf72dced9bf17"
+  },
+  "files.text.prev": {
+    "message": "Előző",
+    "description": "Button: the previous part of a document’s text",
+    "_machine_translated": true,
+    "_source_hash": "83a153b0df2b8f9c"
+  },
+  "files.text.next": {
+    "message": "Következő",
+    "description": "Button: the next part of a document’s text",
+    "_machine_translated": true,
+    "_source_hash": "4e6ad1f2861f9598"
+  },
+  "files.text.loading": {
+    "message": "Szöveg betöltése…",
+    "description": "While a document’s text loads",
+    "_machine_translated": true,
+    "_source_hash": "08eec674e90b7621"
+  },
+  "files.error.too_large_hint": {
+    "message": "Próbáljon kisebb példányt, vagy mentse egy részét PDF-ként.",
+    "description": "Added after Kage’s “file is too large” message",
+    "_machine_translated": true,
+    "_source_hash": "8e39b95e9900eb86"
+  },
+  "files.error.storage_full": {
+    "message": "A gondolattérkép dokumentumtárhelye megtelt (64 MB). Előbb töröljön néhány dokumentumot.",
+    "description": "Adding a file was refused because document storage is full",
+    "_machine_translated": true,
+    "_source_hash": "37447422124fbd8e"
+  },
+  "files.error.bad_result": {
+    "message": "A Kage olyan választ küldött, amelyet a Mind Map nem tudott felhasználni, ezért semmi sem lett mentve.",
+    "description": "The file text Kage returned failed Mind Map’s checks",
+    "_machine_translated": true,
+    "_source_hash": "3395d8c6f826425e"
+  },
+  "files.error.unavailable": {
+    "message": "A Kage ezen példánya nem tud fájlokat olvasni a Mind Map számára.",
+    "description": "Adding a file isn’t possible on this Kage",
+    "_machine_translated": true,
+    "_source_hash": "b8bc7add00ec064e"
+  },
+  "files.error.not_file": {
+    "message": "Ez az elem nem fájlból lett hozzáadva.",
+    "description": "Update from file… on an item that isn’t a picked document",
+    "_machine_translated": true,
+    "_source_hash": "452abbd49f6de298"
+  },
+  "settings.documents.title": {
+    "message": "Dokumentumok",
+    "description": "Settings section",
+    "_machine_translated": true,
+    "_source_hash": "f0534e2658b92dd9"
+  },
+  "settings.documents.add": {
+    "message": "Fájl hozzáadása…",
+    "description": "Settings action that opens Kage’s file dialog",
+    "_machine_translated": true,
+    "_source_hash": "e12094134fed5d55"
+  },
+  "settings.documents.max_chars": {
+    "message": "Fájlonként legfeljebb … karakter megtartása",
+    "description": "Settings select; the options are numbers",
+    "_machine_translated": true,
+    "_source_hash": "70dcebaef5a09e4a"
+  },
+  "settings.documents.max_chars_hint": {
+    "message": "A hosszabb fájlok le lesznek vágva. A mostantól hozzáadott fájlokra vonatkozik.",
+    "description": "Description of the character limit",
+    "_machine_translated": true,
+    "_source_hash": "2bea2283d146162b"
+  },
+  "settings.documents.max_chars_error": {
+    "message": "Válasszon a felsorolt korlátok közül.",
+    "description": "Validation error for the character limit",
+    "_machine_translated": true,
+    "_source_hash": "509810a712275129"
+  },
+  "settings.documents.usage": {
+    "message": "Dokumentumtárhely: {used} / 64 MB",
+    "description": "How much document storage is used; {used} is e.g. 12.4",
+    "_machine_translated": true,
+    "_source_hash": "4ccdbe3d8f0553e1"
+  },
+  "settings.documents.usage_warn": {
+    "message": "A dokumentumtárhely majdnem megtelt. Töröljön néhány dokumentumot, hogy újakat adhasson hozzá.",
+    "description": "Shown past 90% of document storage",
+    "_machine_translated": true,
+    "_source_hash": "0ad058f3926f4d59"
+  },
+  "settings.disclosure.files": {
+    "message": "Ha fájlt ad hozzá, a Kage ezen a számítógépen olvassa be, és átadja a szövegét a Mind Mapnek. A Mind Map legfeljebb {n} karaktert tárol belőle a jegyzetei mellett. A Kage soha nem árulja el a Mind Mapnek, hol található a fájl.",
+    "description": "Privacy disclosure about adding files; {n} is the character limit",
+    "_machine_translated": true,
+    "_source_hash": "8746c89af7d8c74e"
+  },
+  "settings.disclosure.background": {
+    "message": "Ha bekapcsolja a háttérben történő rendszerezést, a nem privátként megjelölt új jegyzeteit kis csomagokban elküldjük az ügynökének, amíg nem használja a Kage-et.",
+    "description": "Privacy disclosure about background organizing",
+    "_machine_translated": true,
+    "_source_hash": "40892fb15e4aa0c9"
+  },
+  "op.ingest": {
+    "message": "„{title}” hozzáadva",
+    "description": "Describes a change (used after Undo:)",
+    "_machine_translated": true,
+    "_source_hash": "08e94a674ef6ca0e"
+  },
+  "op.reread": {
+    "message": "„{title}” frissítve a fájljából",
+    "description": "Describes a change (used after Undo:)",
+    "_machine_translated": true,
+    "_source_hash": "498a83d0e2c07931"
+  },
+  "export.documents": {
+    "message": "Dokumentumok",
+    "description": "Export Markdown section listing documents added from files",
+    "_machine_translated": true,
+    "_source_hash": "738020c38720ab52"
+  },
+  "export.pages": {
+    "message": "{n, plural, one {# oldal} other {# oldal}}",
+    "description": "Page count in Export Markdown",
+    "_machine_translated": true,
+    "_source_hash": "657abbf8fc1ec142"
+  },
+  "tool.get_query": {
+    "message": "Opcionális, dokumentumokhoz: a teljes dokumentumban keresendő szavak. Legfeljebb {n} egyező, egyenként legfeljebb {max} karakteres részletet kap vissza.",
+    "description": "Agent tool parameter description",
+    "_machine_translated": true,
+    "_source_hash": "80498175d8152d1d"
+  },
+  "manifest.sync_description": {
+    "message": "Jegyzetei, teendői, nevei, dokumentumai és térképtűi, hogy a gondolattérképe minden számítógépen ugyanaz legyen.",
+    "description": "Manifest sync.description: what Mind Map keeps in the Kage sync folder (at most 140 characters)",
+    "_machine_translated": true,
+    "_source_hash": "8343abed6e55e916"
+  },
+  "settings.section_sync": {
+    "message": "Szinkronizálás a számítógépei között",
+    "description": "Settings section heading for Kage folder sync",
+    "_machine_translated": true,
+    "_source_hash": "a50c94a9ff4262e5"
+  },
+  "settings.sync.status_off": {
+    "message": "A Kage szinkronizálás ki van kapcsolva a Mind Map számára ezen a számítógépen, így a gondolattérképe itt marad. Bekapcsolhatja a Kage Beállítások → Szinkronizálás menüpontjában.",
+    "description": "Sync status line when Kage sync is off for Mind Map",
+    "_machine_translated": true,
+    "_source_hash": "cb4879a398b5a134"
+  },
+  "settings.sync.status_paused": {
+    "message": "A Kage szinkronizálás szünetel. A módosításai ezen a számítógépen várakoznak, amíg a szinkronizálás folytatódik.",
+    "description": "Sync status line when Kage has paused sync",
+    "_machine_translated": true,
+    "_source_hash": "a3d910bb903d4e8e"
+  },
+  "settings.sync.status_on": {
+    "message": "{n, plural, =0 {Bekapcsolva a Kage szinkronizálással. Még egyetlen másik számítógép sem csatlakozott.} one {Bekapcsolva a Kage szinkronizálással, # másik számítógéppel.} other {Bekapcsolva a Kage szinkronizálással, # másik számítógéppel.}} Utolsó szinkronizálás: {when}.",
+    "description": "Sync status line when sync is on; n = other computers, when = date and time",
+    "_machine_translated": true,
+    "_source_hash": "bb252dce7895de30"
+  },
+  "settings.sync.status_first": {
+    "message": "A gondolattérkép első elküldése a szinkronizálási mappába…",
+    "description": "Sync status line during the first push from this computer",
+    "_machine_translated": true,
+    "_source_hash": "eae9673c94f2daf4"
+  },
+  "settings.sync.status_waiting": {
+    "message": "{n, plural, one {# módosítás vár} other {# módosítás vár}} szinkronizálásra.",
+    "description": "Sync status line: changes Kage hasn't taken yet",
+    "_machine_translated": true,
+    "_source_hash": "1c872f125542f94d"
+  },
+  "settings.sync.status_full": {
+    "message": "A Mind Map számára fenntartott hely a szinkronizálási mappában megtelt. Az új módosítások ezen a számítógépen maradnak.",
+    "description": "Sync status warning when the extension's sync quota is used up",
+    "_machine_translated": true,
+    "_source_hash": "6e89736ddc633f3e"
+  },
+  "settings.sync.private_items": {
+    "message": "Privát elemek szinkronizálása",
+    "description": "Checkbox: whether private items go to the sync folder",
+    "_machine_translated": true,
+    "_source_hash": "5ee3d5406b9d4403"
+  },
+  "settings.sync.private_items_hint": {
+    "message": "A privát elemek egyik számítógépen sem kerülnek el az ügynökhöz. Kapcsolja ki, ha az ezentúl privátként megjelölt elemeket csak ezen a számítógépen szeretné tartani. A többi számítógépén már meglévő privát elemek ott maradnak.",
+    "description": "Help text for Sync private items",
+    "_machine_translated": true,
+    "_source_hash": "b9f01c8186e46446"
+  },
+  "settings.disclosure.sync": {
+    "message": "Ha a Kage szinkronizálás be van kapcsolva, a gondolattérkép titkosítva a szinkronizálási mappában is tárolódik, így minden számítógépén elérhető. Ez magában foglalja az ablakcímeket és a hozzáadott dokumentumok szövegét is, amelyek továbbra sem kerülnek el az ügynökhöz. Ha a Kage szerint egy dokumentum jelszót vagy kulcsot tartalmaz, az a saját számítógépén marad.",
+    "description": "Privacy disclosure added where Kage offers folder sync",
+    "_machine_translated": true,
+    "_source_hash": "45539646a299c868"
+  },
+  "settings.delete_all_hint_sync": {
+    "message": "Minden elemet, minden nevet és a visszavonási előzményeket eltávolítja erről a számítógépről, a Kage szinkronizáláson keresztül pedig a többi számítógépéről is.",
+    "description": "Delete everything help text when Kage sync is on",
+    "_machine_translated": true,
+    "_source_hash": "f85c8d54623f32f6"
+  },
+  "settings.delete_all_confirm_sync": {
+    "message": "Törli a teljes gondolattérképét erről és a többi számítógépéről? Ez a Mind Mapben nem vonható vissza. Ha meg szeretné tartani, előbb exportálja.",
+    "description": "Delete everything confirmation when Kage sync is on",
+    "_machine_translated": true,
+    "_source_hash": "aaa396930b15b910"
+  },
+  "card.kept_here": {
+    "message": "Eltávolítva a többi számítógépéről: csak ezen marad meg.",
+    "description": "Op card note: an item made private with Sync private items off",
+    "_machine_translated": true,
+    "_source_hash": "03ccb2cd18d96f2a"
   }
 }

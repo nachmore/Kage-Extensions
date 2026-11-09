@@ -2608,5 +2608,941 @@
     "description": "Interpretation row: how many matches are listed out of how many, e.g. “8 of 23”",
     "_machine_translated": true,
     "_source_hash": "868a73ebc8627db2"
+  },
+  "manifest.agent_background_reason": {
+    "message": "Το Mind Map στέλνει στον agent σας το κείμενο των νέων σημειώσεων που δεν έχετε επισημάνει ως ιδιωτικές, ώστε να προσθέσει μια σύντομη περίληψη, τα άτομα, τις ομάδες και τα έργα που αναφέρουν, καθώς και προτεινόμενες ενέργειες.",
+    "description": "Shown in Kage’s Background AI consent dialog as a quote from the extension (at most 300 characters)",
+    "_machine_translated": true,
+    "_source_hash": "22b58c6f746d8a97"
+  },
+  "op.organized_bg_label": {
+    "message": "Οργάνωση {n, plural, one {# σημείωσης} other {# σημειώσεων}}",
+    "description": "Label of one background organizing request, shown in Kage’s Background AI log. At most 80 characters",
+    "_machine_translated": true,
+    "_source_hash": "509ba9e9a9de99ed"
+  },
+  "prompt.organize_bg": {
+    "message": "Οργανώνετε τις αποθηκευμένες σημειώσεις ενός ατόμου. Για κάθε σημείωση στο DATA, επιστρέψτε ό,τι ισχύει σαφώς:\n- \"summary\": μία απλή πρόταση έως 25 λέξεων. Μόνο όταν η σημείωση είναι μεγαλύτερη από μία πρόταση.\n- \"entities\": άτομα, ομάδες, έργα, οργανισμοί, θέματα ή όροι που κατονομάζει η σημείωση. Χρησιμοποιήστε ένα όνομα από το \"vocabulary\" όταν σημαίνει το ίδιο πράγμα. Μην μαντεύετε.\n- \"terms\": έως 5 σύντομοι βασικοί όροι.\n- \"actions\": πράγματα που η σημείωση λέει ότι κάποιος πρέπει να κάνει. Αντιγράψτε τις ακριβείς λέξεις της σημείωσης στο \"quote\". Ορίστε το \"owner\" μόνο όταν η σημείωση κατονομάζει το άτομο. Παραλείψτε το όταν πρόκειται για εργασία του ίδιου του συντάκτη. Ορίστε το \"due\" (YYYY-MM-DD) μόνο όταν η σημείωση δίνει ημερομηνία· υπολογίστε τις σχετικές ημερομηνίες με βάση το \"date\" της σημείωσης.\nΟρίστε \"skip\": true για σημείωση χωρίς τίποτα να προστεθεί. Μην επινοείτε τίποτα.",
+    "description": "Instructions for background organizing, sent to the user’s agent with the notes (not shown in a chat). Keep DATA, the quoted field names (summary, entities, vocabulary, terms, actions, quote, owner, due, date, skip), true and YYYY-MM-DD as they are. At most 4,000 characters",
+    "_machine_translated": true,
+    "_source_hash": "a6d5cfa396d64cb2"
+  },
+  "settings.section_background": {
+    "message": "Οργάνωση στο παρασκήνιο",
+    "description": "Settings section",
+    "_machine_translated": true,
+    "_source_hash": "823011a9a47b8158"
+  },
+  "settings.background_organize": {
+    "message": "Οργάνωση νέων σημειώσεων στο παρασκήνιο",
+    "description": "Settings label",
+    "_machine_translated": true,
+    "_source_hash": "6ff34391f478dc72"
+  },
+  "settings.background_organize_hint": {
+    "message": "Απενεργοποιημένο από προεπιλογή. Πριν σταλεί οτιδήποτε, το Kage σας ζητά να επιβεβαιώσετε ποιος agent λαμβάνει τις σημειώσεις σας σε αυτόν τον υπολογιστή.",
+    "description": "Settings hint for the background organizing switch",
+    "_machine_translated": true,
+    "_source_hash": "a88ff105a729bdb5"
+  },
+  "settings.organize.about": {
+    "message": "Όσο δεν χρησιμοποιείτε το Kage, το Mind Map στέλνει τις νέες σημειώσεις στον agent σας σε μικρές παρτίδες και προσθέτει τις σύντομες περιλήψεις, τα ονόματα και τις προτεινόμενες ενέργειες που επιστρέφει. Οι σημειώσεις που έχετε επισημάνει ως ιδιωτικές δεν αποστέλλονται ποτέ. Ό,τι προστίθεται μπορεί να αναιρεθεί.",
+    "description": "What background organizing does",
+    "_machine_translated": true,
+    "_source_hash": "2103e2d37af4d668"
+  },
+  "settings.organize.status": {
+    "message": "{organized} οργανωμένες · {waiting} σε αναμονή · τελευταία εκτέλεση {when}",
+    "description": "Background organizing status; {organized} and {waiting} are note counts, {when} a date and time or “never”",
+    "_machine_translated": true,
+    "_source_hash": "7a71f3e7229e6f43"
+  },
+  "settings.organize.status_needs_host": {
+    "message": "Το Kage χρειάζεται την έγκρισή σας σε αυτόν τον υπολογιστή πριν το Mind Map στείλει οτιδήποτε στον agent σας.",
+    "description": "Background organizing status: switched on, but Kage’s access is off",
+    "_machine_translated": true,
+    "_source_hash": "6ffbbeabf17a4b2f"
+  },
+  "settings.organize.status_stale": {
+    "message": "Ο agent σας άλλαξε. Επιτρέψτε ξανά το Mind Map σε αυτόν τον υπολογιστή.",
+    "description": "Background organizing status: the agent changed since the user agreed",
+    "_machine_translated": true,
+    "_source_hash": "92ddd1d913b0f39e"
+  },
+  "settings.organize.status_unavailable": {
+    "message": "Ενημερώστε το Kage ή εγκρίνετε την άδεια Background AI του Mind Map στο Store.",
+    "description": "Background organizing status on a Kage that doesn’t offer it",
+    "_machine_translated": true,
+    "_source_hash": "7c46036dc61a53c2"
+  },
+  "settings.organize.status_paused": {
+    "message": "Σε παύση έως {time}.",
+    "description": "Background organizing status; {time} is a date and time",
+    "_machine_translated": true,
+    "_source_hash": "d4529ceb0d1235e4"
+  },
+  "settings.organize.tools_warning": {
+    "message": "Ο agent σας προσπάθησε να χρησιμοποιήσει ένα εργαλείο κατά την οργάνωση, οπότε το Kage διέκοψε το αίτημα. Αν συμβεί δύο φορές μέσα σε μία ημέρα, το Kage θέτει σε παύση την οργάνωση στο παρασκήνιο έως αύριο.",
+    "description": "Warning after the agent tried to use a tool during background organizing",
+    "_machine_translated": true,
+    "_source_hash": "6ee2fd899816d5bf"
+  },
+  "settings.organize.allow": {
+    "message": "Να επιτρέπεται σε αυτόν τον υπολογιστή…",
+    "description": "Button that opens Kage’s consent dialog for background organizing",
+    "_machine_translated": true,
+    "_source_hash": "3e222f72137230e2"
+  },
+  "settings.organize.allow_hint": {
+    "message": "Το Kage δείχνει ποιος agent λαμβάνει τις σημειώσεις σας και σας ζητά επιβεβαίωση.",
+    "description": "Hint for the allow button",
+    "_machine_translated": true,
+    "_source_hash": "331987919cd0aeac"
+  },
+  "settings.organize.now": {
+    "message": "Οργάνωση τώρα",
+    "description": "Button: send the next batch now",
+    "_machine_translated": true,
+    "_source_hash": "4a56bb9d614a12bc"
+  },
+  "settings.organize.now_hint": {
+    "message": "Στέλνει την επόμενη παρτίδα τώρα αντί να περιμένει μέχρι να απομακρυνθείτε.",
+    "description": "Hint for Organize now",
+    "_machine_translated": true,
+    "_source_hash": "9ee5e96c0764222b"
+  },
+  "settings.organize.now_done": {
+    "message": "Ο agent σας εξέτασε {n, plural, one {# σημείωση} other {# σημειώσεις}}.",
+    "description": "Organize now finished",
+    "_machine_translated": true,
+    "_source_hash": "d9cc512bc71b52a4"
+  },
+  "settings.organize.now_nothing": {
+    "message": "Δεν υπάρχει τίποτα σε αναμονή για οργάνωση.",
+    "description": "Organize now: no notes to send",
+    "_machine_translated": true,
+    "_source_hash": "bcf7ef7ed0aa479d"
+  },
+  "settings.organize.now_off": {
+    "message": "Ενεργοποιήστε πρώτα την επιλογή «Οργάνωση νέων σημειώσεων στο παρασκήνιο» και αποθηκεύστε.",
+    "description": "Organize now while the saved switch is off",
+    "_machine_translated": true,
+    "_source_hash": "99d9b760ce32d474"
+  },
+  "settings.organize.now_busy": {
+    "message": "Το Mind Map οργανώνει ήδη σε άλλο παράθυρο του Kage.",
+    "description": "Organize now while another window is organizing",
+    "_machine_translated": true,
+    "_source_hash": "5397d1b650fdbc5f"
+  },
+  "settings.organize.backlog": {
+    "message": "Οργάνωση και παλαιότερων σημειώσεων",
+    "description": "Button: include notes from before background organizing was turned on",
+    "_machine_translated": true,
+    "_source_hash": "2ed9a84f9d22670c"
+  },
+  "settings.organize.backlog_hint": {
+    "message": "{n, plural, one {# σημείωση είναι} other {# σημειώσεις είναι}} από πριν ενεργοποιήσετε αυτήν τη λειτουργία. Οργανώνονται ανά παρτίδα, εντός του ημερήσιου ορίου σας.",
+    "description": "Hint for Organize older notes too",
+    "_machine_translated": true,
+    "_source_hash": "8ecc4c994f27540d"
+  },
+  "settings.organize.backlog_done": {
+    "message": "Θα οργανωθούν και οι παλαιότερες σημειώσεις, ανά παρτίδα.",
+    "description": "Organize older notes too: done",
+    "_machine_translated": true,
+    "_source_hash": "028332e369a3e1a7"
+  },
+  "view.explorer.title": {
+    "message": "Εξερεύνηση",
+    "description": "Title of Mind Map's full-window map explorer (window title and Kage's host bar)",
+    "_machine_translated": true,
+    "_source_hash": "c50649381b98e411"
+  },
+  "map.explorer": {
+    "message": "Εξερεύνηση",
+    "description": "Map card header button that opens the full-window map explorer",
+    "_machine_translated": true,
+    "_source_hash": "ee744e3d5a47b3e4"
+  },
+  "map.explorer_tip": {
+    "message": "Ανοίξτε αυτόν τον χάρτη σε δικό του παράθυρο, όπου μπορείτε να τον μετακινείτε, να κάνετε ζουμ και να τον διευθετείτε",
+    "description": "Tooltip of the map card's Explorer button",
+    "_machine_translated": true,
+    "_source_hash": "c0f4288021906d46"
+  },
+  "card.explore": {
+    "message": "Εξερεύνηση",
+    "description": "Item card button that opens the map explorer on this item",
+    "_machine_translated": true,
+    "_source_hash": "146a5a1bd9841ed0"
+  },
+  "card.organized": {
+    "message": "✦ Οργανώθηκε από τον πράκτορά σας",
+    "description": "Item card line: background organizing added to this note",
+    "_machine_translated": true,
+    "_source_hash": "273a49420ee78596"
+  },
+  "card.undo_organize": {
+    "message": "{n, plural, one {Αναίρεση οργάνωσης} other {Αναίρεση οργάνωσης (# σημειώσεις)}}",
+    "description": "Item card button; {n} is how many notes were organized together and are undone together",
+    "_machine_translated": true,
+    "_source_hash": "fd5190ad7722a1e0"
+  },
+  "card.undo_organize_tip": {
+    "message": "Αφαιρεί ό,τι πρόσθεσε ο πράκτοράς σας {n, plural, one {σε αυτή τη σημείωση} other {στις # σημειώσεις που οργάνωσε μαζί}}",
+    "description": "Tooltip of Undo organizing",
+    "_machine_translated": true,
+    "_source_hash": "7e164b3e3edbf761"
+  },
+  "row.explore": {
+    "message": "Άνοιγμα στην εξερεύνηση",
+    "description": "Launcher row that opens the map explorer on the overview",
+    "_machine_translated": true,
+    "_source_hash": "fae4f34a0f403321"
+  },
+  "row.explore_named": {
+    "message": "Άνοιγμα στην εξερεύνηση: {name}",
+    "description": "Launcher row that opens the map explorer centred on {name}",
+    "_machine_translated": true,
+    "_source_hash": "383275686aa0c6c2"
+  },
+  "row.explore_desc": {
+    "message": "Μετακινήστε, κάντε ζουμ και διευθετήστε τον χάρτη σε δικό του παράθυρο",
+    "description": "Description of the Open in explorer launcher row",
+    "_machine_translated": true,
+    "_source_hash": "3ccf671feada4fba"
+  },
+  "explorer.aria": {
+    "message": "Εξερεύνηση νοητικού χάρτη",
+    "description": "Accessible name of the explorer window's content",
+    "_machine_translated": true,
+    "_source_hash": "a3f20271154da326"
+  },
+  "explorer.toolbar": {
+    "message": "Εργαλεία εξερεύνησης",
+    "description": "Accessible name of the explorer's toolbar",
+    "_machine_translated": true,
+    "_source_hash": "39369621e1bc5289"
+  },
+  "explorer.back_tip": {
+    "message": "Επιστροφή στο προηγούμενο κέντρο",
+    "description": "Tooltip of the explorer's Back button",
+    "_machine_translated": true,
+    "_source_hash": "7761099e8055aa48"
+  },
+  "explorer.fit": {
+    "message": "Προσαρμογή",
+    "description": "Explorer button: zoom so the whole map fits the window",
+    "_machine_translated": true,
+    "_source_hash": "58349f0de44f3b0c"
+  },
+  "explorer.fit_tip": {
+    "message": "Εμφάνιση ολόκληρου του χάρτη (0)",
+    "description": "Tooltip of the Fit button; 0 is its key",
+    "_machine_translated": true,
+    "_source_hash": "d677d638b21347a3"
+  },
+  "explorer.zoom_in": {
+    "message": "Μεγέθυνση (+)",
+    "description": "Explorer zoom-in button label and tooltip; + is its key",
+    "_machine_translated": true,
+    "_source_hash": "5da225c0530b62c7"
+  },
+  "explorer.zoom_out": {
+    "message": "Σμίκρυνση (−)",
+    "description": "Explorer zoom-out button label and tooltip; − is its key",
+    "_machine_translated": true,
+    "_source_hash": "165988e7fc932b68"
+  },
+  "explorer.scroll_zooms": {
+    "message": "Η κύλιση κάνει ζουμ",
+    "description": "Explorer toggle state: the mouse wheel or trackpad scroll zooms the map",
+    "_machine_translated": true,
+    "_source_hash": "164586558426c431"
+  },
+  "explorer.scroll_pans": {
+    "message": "Η κύλιση μετακινεί",
+    "description": "Explorer toggle state: the mouse wheel or trackpad scroll moves the map",
+    "_machine_translated": true,
+    "_source_hash": "93bbe613e9252446"
+  },
+  "explorer.scroll_tip": {
+    "message": "Επιλέξτε τι κάνει η κύλιση. Το ⌘ ή Ctrl με κύλιση κάνει πάντα ζουμ.",
+    "description": "Tooltip of the scroll toggle",
+    "_machine_translated": true,
+    "_source_hash": "f89371b66b58b102"
+  },
+  "explorer.details": {
+    "message": "Λεπτομέρειες",
+    "description": "Explorer toggle that shows or hides the details panel; also the panel's accessible name",
+    "_machine_translated": true,
+    "_source_hash": "7b3982adf2fad55e"
+  },
+  "explorer.search_placeholder": {
+    "message": "Αναζήτηση (/)",
+    "description": "Placeholder of the explorer's search box; / is its key",
+    "_machine_translated": true,
+    "_source_hash": "871a1dcb43864e31"
+  },
+  "explorer.search_label": {
+    "message": "Αναζήτηση στον νοητικό χάρτη σας",
+    "description": "Accessible name of the explorer's search box",
+    "_machine_translated": true,
+    "_source_hash": "7e5c9bb5ab5919fe"
+  },
+  "explorer.no_hits": {
+    "message": "Δεν βρέθηκαν αποτελέσματα",
+    "description": "Shown under the explorer's search box when nothing matches",
+    "_machine_translated": true,
+    "_source_hash": "763d1b6e95fb918f"
+  },
+  "explorer.hits": {
+    "message": "{n, plural, one {# αποτέλεσμα} other {# αποτελέσματα}}",
+    "description": "Announced after an explorer search",
+    "_machine_translated": true,
+    "_source_hash": "6fe9cb29f8ef2590"
+  },
+  "explorer.lens_label": {
+    "message": "Εμφάνιση",
+    "description": "Accessible name of the explorer's filter chips (kinds, My actions, Show done)",
+    "_machine_translated": true,
+    "_source_hash": "69457b74b05d93ae"
+  },
+  "explorer.lens_mine": {
+    "message": "Οι ενέργειές μου",
+    "description": "Explorer filter chip: show only actions that are yours",
+    "_machine_translated": true,
+    "_source_hash": "a1844b0aebab573e"
+  },
+  "explorer.lens_done": {
+    "message": "Εμφάνιση ολοκληρωμένων",
+    "description": "Explorer filter chip: also show actions that are done",
+    "_machine_translated": true,
+    "_source_hash": "dab0cbf2516879e9"
+  },
+  "explorer.add_placeholder": {
+    "message": "Προσθέστε μια σκέψη, έναν σύνδεσμο ή μια εργασία",
+    "description": "Placeholder of the explorer's capture box",
+    "_machine_translated": true,
+    "_source_hash": "011e403b2a93a2bb"
+  },
+  "explorer.add_label": {
+    "message": "Προσθήκη στον νοητικό χάρτη σας",
+    "description": "Accessible name of the explorer's capture box",
+    "_machine_translated": true,
+    "_source_hash": "332cc93b607ca834"
+  },
+  "explorer.add": {
+    "message": "Προσθήκη",
+    "description": "Button that saves what's in the explorer's capture box",
+    "_machine_translated": true,
+    "_source_hash": "5ebc22092957a194"
+  },
+  "explorer.saved": {
+    "message": "Αποθηκεύτηκε το «{title}»",
+    "description": "Explorer toast after saving from its capture box",
+    "_machine_translated": true,
+    "_source_hash": "1ec6aaa1ce55a279"
+  },
+  "explorer.list_label": {
+    "message": "Κόμβοι στον χάρτη",
+    "description": "Accessible name of the explorer's list of nodes",
+    "_machine_translated": true,
+    "_source_hash": "8ee43c60635d39db"
+  },
+  "explorer.panel_empty": {
+    "message": "Επιλέξτε κάτι στον χάρτη για να το δείτε εδώ.",
+    "description": "Details panel with nothing selected",
+    "_machine_translated": true,
+    "_source_hash": "2f7c0bfe7b203cfd"
+  },
+  "explorer.showing": {
+    "message": "Εμφάνιση: {name}",
+    "description": "Announced when the explorer centres on {name}",
+    "_machine_translated": true,
+    "_source_hash": "eed78797b95bc717"
+  },
+  "explorer.focus_here": {
+    "message": "Κεντράρισμα εδώ",
+    "description": "Details panel button: make this node the centre of the map",
+    "_machine_translated": true,
+    "_source_hash": "2fbaa55cdbf7e7dd"
+  },
+  "explorer.expand": {
+    "message": "Εμφάνιση συνδέσεων",
+    "description": "Details panel button: add this node's neighbours to the map",
+    "_machine_translated": true,
+    "_source_hash": "493d7feea716c928"
+  },
+  "explorer.collapse": {
+    "message": "Απόκρυψη συνδέσεων",
+    "description": "Details panel button: remove the neighbours this node added",
+    "_machine_translated": true,
+    "_source_hash": "9ca3f5c79baf49b1"
+  },
+  "explorer.pin": {
+    "message": "Καρφίτσωμα",
+    "description": "Details panel button: keep this node where it is",
+    "_machine_translated": true,
+    "_source_hash": "45fc23b6aa261414"
+  },
+  "explorer.unpin": {
+    "message": "Ξεκαρφίτσωμα",
+    "description": "Details panel button: let this node move again",
+    "_machine_translated": true,
+    "_source_hash": "ed7c0c537e5912c1"
+  },
+  "explorer.pinned": {
+    "message": "Καρφιτσωμένο",
+    "description": "Badge and announcement for a node that stays where you put it",
+    "_machine_translated": true,
+    "_source_hash": "87e19fbcd262c35b"
+  },
+  "explorer.unpinned": {
+    "message": "Ξεκαρφιτσώθηκε",
+    "description": "Announced when a node is unpinned",
+    "_machine_translated": true,
+    "_source_hash": "567ce22ce887d134"
+  },
+  "explorer.state_pinned": {
+    "message": "καρφιτσωμένο",
+    "description": "Node state in the explorer's list, after open/done/private",
+    "_machine_translated": true,
+    "_source_hash": "63550ce941cd6d4f"
+  },
+  "explorer.layout_undone": {
+    "message": "Μετακινήθηκε πίσω",
+    "description": "Announced after undoing a move on the map (⌘/Ctrl+Z)",
+    "_machine_translated": true,
+    "_source_hash": "a67b08457613c098"
+  },
+  "explorer.layout_unreadable": {
+    "message": "Δεν ήταν δυνατή η ανάγνωση των αποθηκευμένων θέσεων. Επαναφέρετε τη διάταξη του χάρτη στις ρυθμίσεις του Νοητικού χάρτη.",
+    "description": "Explorer toast when the stored pinned positions are unreadable",
+    "_machine_translated": true,
+    "_source_hash": "55d6a56160c7c427"
+  },
+  "explorer.full": {
+    "message": "Ο χάρτης είναι γεμάτος. Συμπτύξτε κάτι ή εστιάστε αλλού.",
+    "description": "Explorer toast when the map already holds the most nodes it can",
+    "_machine_translated": true,
+    "_source_hash": "ef8d7fea460e4649"
+  },
+  "explorer.nothing_more": {
+    "message": "Τίποτε άλλο δεν συνδέεται με αυτό.",
+    "description": "Explorer toast when showing connections adds nothing new",
+    "_machine_translated": true,
+    "_source_hash": "027d087a5e9b10ba"
+  },
+  "explorer.ask": {
+    "message": "Ερώτηση",
+    "description": "Details panel button: start a question to your agent about this node",
+    "_machine_translated": true,
+    "_source_hash": "d4be9da47cc23485"
+  },
+  "explorer.ask_about": {
+    "message": "τι λένε οι σημειώσεις μου για το «{title}»;",
+    "description": "Question put in the launcher by the explorer's Ask button; it follows the mm? trigger",
+    "_machine_translated": true,
+    "_source_hash": "61d0d0aca9c6f597"
+  },
+  "explorer.ask_private": {
+    "message": "Τα ιδιωτικά στοιχεία δεν αποστέλλονται στον agent σας.",
+    "description": "Why Ask is unavailable for a private item",
+    "_machine_translated": true,
+    "_source_hash": "375056c6933ba0f1"
+  },
+  "explorer.copy_path": {
+    "message": "Αντιγραφή διαδρομής",
+    "description": "Details panel button for a file: copy its path",
+    "_machine_translated": true,
+    "_source_hash": "18955b09212e73ac"
+  },
+  "explorer.path_copied": {
+    "message": "Η διαδρομή αντιγράφηκε",
+    "description": "Explorer toast after copying a file's path",
+    "_machine_translated": true,
+    "_source_hash": "21cd110c2677eec0"
+  },
+  "explorer.copy_failed": {
+    "message": "Δεν ήταν δυνατή η αντιγραφή της διαδρομής",
+    "description": "Explorer toast when copying a path fails",
+    "_machine_translated": true,
+    "_source_hash": "23ee9bbddf1a1001"
+  },
+  "explorer.private_title": {
+    "message": "Ιδιωτικό στοιχείο",
+    "description": "Window title when the explorer is centred on a private item",
+    "_machine_translated": true,
+    "_source_hash": "e773b80b1204a413"
+  },
+  "settings.section_explorer": {
+    "message": "Εξερεύνηση χάρτη",
+    "description": "Settings section for the full-window map explorer",
+    "_machine_translated": true,
+    "_source_hash": "af7b11af7f77b128"
+  },
+  "settings.open_explorer": {
+    "message": "Άνοιγμα εξερεύνησης χάρτη",
+    "description": "Settings action that opens the map explorer",
+    "_machine_translated": true,
+    "_source_hash": "8c676c99dced9b73"
+  },
+  "settings.open_explorer_hint": {
+    "message": "Ένα παράθυρο όπου μπορείτε να μετακινείτε, να κάνετε ζουμ και να οργανώνετε τον χάρτη σας.",
+    "description": "Description of the Open the map explorer action",
+    "_machine_translated": true,
+    "_source_hash": "6e475fda8bed75b0"
+  },
+  "settings.reset_layout": {
+    "message": "Επαναφορά διάταξης χάρτη",
+    "description": "Settings action that forgets every pinned position",
+    "_machine_translated": true,
+    "_source_hash": "b0725b415f28725c"
+  },
+  "settings.reset_layout_hint": {
+    "message": "Διαγράφει τις θέσεις που καρφιτσώσατε στην εξερεύνηση.",
+    "description": "Description of the Reset map layout action",
+    "_machine_translated": true,
+    "_source_hash": "5b9a6fa645b949eb"
+  },
+  "settings.reset_layout_confirm": {
+    "message": "Να διαγραφούν όλες οι θέσεις που καρφιτσώσατε στην εξερεύνηση χάρτη;",
+    "description": "Confirmation before resetting the map layout",
+    "_machine_translated": true,
+    "_source_hash": "3ccb8d34c4da1d2b"
+  },
+  "settings.layout_reset": {
+    "message": "Έγινε επαναφορά της διάταξης χάρτη",
+    "description": "Status after resetting the map layout",
+    "_machine_translated": true,
+    "_source_hash": "50312a94b6a66433"
+  },
+  "settings.approve_views": {
+    "message": "Εγκρίνετε τη νέα άδεια του Mind Map στο Store για να χρησιμοποιήσετε την εξερεύνηση χάρτη.",
+    "description": "Shown on a Kage that supports the explorer before the user approves its permission",
+    "_machine_translated": true,
+    "_source_hash": "79d91931f20bc8d9"
+  },
+  "files.row.add": {
+    "message": "Προσθήκη αρχείου…",
+    "description": "Launcher row and button that open Kage’s file dialog to add a document",
+    "_machine_translated": true,
+    "_source_hash": "96157ca12f29c1fb"
+  },
+  "files.row.add_sub": {
+    "message": "Κείμενο, Markdown, PDF ή Word. Το Kage το διαβάζει σε αυτόν τον υπολογιστή.",
+    "description": "Subtitle of Add a file…",
+    "_machine_translated": true,
+    "_source_hash": "c1c91bf24846c5bd"
+  },
+  "files.row.added_line": {
+    "message": "Προστέθηκε το «{title}»",
+    "description": "First line of the response after adding a file; {title} is the document’s title",
+    "_machine_translated": true,
+    "_source_hash": "bfe01951b58dffcb"
+  },
+  "files.row.updated_line": {
+    "message": "Το «{title}» ενημερώθηκε από το αρχείο του",
+    "description": "First line of the response after Update from file…",
+    "_machine_translated": true,
+    "_source_hash": "4cdc03dfccf7b8f0"
+  },
+  "files.row.pages": {
+    "message": "{n, plural, one {# σελίδα} other {# σελίδες}}",
+    "description": "Page count of a document in a search row or the explorer",
+    "_machine_translated": true,
+    "_source_hash": "ded72ec3586c2d0b"
+  },
+  "files.row.added_on": {
+    "message": "προστέθηκε {day}",
+    "description": "When a document was added, e.g. “added Mon, Oct 26”",
+    "_machine_translated": true,
+    "_source_hash": "9bb8df77425355f1"
+  },
+  "files.row.passage_page": {
+    "message": "σ. {page}: {text}",
+    "description": "A matching passage of a document and the page it is on",
+    "_machine_translated": true,
+    "_source_hash": "14d11a47a0d6886b"
+  },
+  "files.chars": {
+    "message": "{count, plural, one {{chars} χαρακτήρας} other {{chars} χαρακτήρες}}",
+    "description": "A document’s size in characters; {chars} is the formatted number",
+    "_machine_translated": true,
+    "_source_hash": "200b4c7bda030819"
+  },
+  "files.pages_chars": {
+    "message": "{count, plural, one {# σελίδα} other {# σελίδες}}, {chars}",
+    "description": "A document’s pages and size; {chars} is e.g. “48,211 characters”",
+    "_machine_translated": true,
+    "_source_hash": "471d4919418d24c1"
+  },
+  "files.card.op_added": {
+    "message": "✓ Προστέθηκε",
+    "description": "Card header after adding a file (when no details are shown)",
+    "_machine_translated": true,
+    "_source_hash": "effd65b7ece8499d"
+  },
+  "files.card.op_updated": {
+    "message": "✓ Ενημερώθηκε από το αρχείο",
+    "description": "Card header after Update from file… (when no details are shown)",
+    "_machine_translated": true,
+    "_source_hash": "9136d4071fcedcf4"
+  },
+  "files.card.added": {
+    "message": "Προστέθηκε το {name}: {size}.",
+    "description": "After adding a file; {name} is the file name, {size} e.g. “12 pages, 48,211 characters”",
+    "_machine_translated": true,
+    "_source_hash": "2294d8e6e2156f06"
+  },
+  "files.card.updated": {
+    "message": "Ενημερώθηκε το {name}: {size}.",
+    "description": "After Update from file…; {name} is the file name, {size} e.g. “12 pages, 48,211 characters”",
+    "_machine_translated": true,
+    "_source_hash": "433eff6bbf854c81"
+  },
+  "files.card.found": {
+    "message": "Βρέθηκαν: {list}.",
+    "description": "What Mind Map found in a document; {list} is e.g. “3 people, 2 projects and 4 suggested actions”",
+    "_machine_translated": true,
+    "_source_hash": "d8b4d1bda245ffa1"
+  },
+  "files.found.people": {
+    "message": "{n, plural, one {# άτομο} other {# άτομα}}",
+    "description": "Part of the Found list",
+    "_machine_translated": true,
+    "_source_hash": "d51b4aff9bf5fbdf"
+  },
+  "files.found.teams": {
+    "message": "{n, plural, one {# ομάδα} other {# ομάδες}}",
+    "description": "Part of the Found list",
+    "_machine_translated": true,
+    "_source_hash": "8e1cbe62a657488d"
+  },
+  "files.found.projects": {
+    "message": "{n, plural, one {# έργο} other {# έργα}}",
+    "description": "Part of the Found list",
+    "_machine_translated": true,
+    "_source_hash": "39f02bcf9f23161a"
+  },
+  "files.found.topics": {
+    "message": "{n, plural, one {# θέμα} other {# θέματα}}",
+    "description": "Part of the Found list",
+    "_machine_translated": true,
+    "_source_hash": "3d6cc0342ebc9b15"
+  },
+  "files.found.actions": {
+    "message": "{n, plural, one {# προτεινόμενη ενέργεια} other {# προτεινόμενες ενέργειες}}",
+    "description": "Part of the Found list",
+    "_machine_translated": true,
+    "_source_hash": "deafe84b9b9b8882"
+  },
+  "files.card.truncated": {
+    "message": "Διατηρήθηκαν οι πρώτοι {n} χαρακτήρες.",
+    "description": "The document was longer than the limit in settings",
+    "_machine_translated": true,
+    "_source_hash": "9dc453e0a5d52a22"
+  },
+  "files.card.no_text": {
+    "message": "Δεν βρέθηκε κείμενο. Ίσως είναι σαρωμένο PDF. Αποθηκεύτηκε μόνο το όνομα του αρχείου.",
+    "description": "The file had no text Kage could read",
+    "_machine_translated": true,
+    "_source_hash": "252f3d3196b86b0f"
+  },
+  "files.card.pages_skipped": {
+    "message": "Διαβάστηκαν οι πρώτες {n} σελίδες.",
+    "description": "Kage read only part of a very long document",
+    "_machine_translated": true,
+    "_source_hash": "5e0a287fe6f5e89a"
+  },
+  "files.card.same": {
+    "message": "Υπάρχει ήδη στον νοητικό χάρτη σας (προστέθηκε {date})",
+    "description": "The same file was added before; nothing changed",
+    "_machine_translated": true,
+    "_source_hash": "6d8dc18a7441fc65"
+  },
+  "files.card.copy_of": {
+    "message": "Έχει ήδη αποθηκευτεί ως «{title}»",
+    "description": "A file with the same content is already saved",
+    "_machine_translated": true,
+    "_source_hash": "1c4dc3e210ea8438"
+  },
+  "files.card.unchanged": {
+    "message": "Το «{title}» δεν έχει αλλάξει από τότε που το προσθέσατε.",
+    "description": "Update from file… picked the same file again",
+    "_machine_translated": true,
+    "_source_hash": "dd66eb0513d5c0fe"
+  },
+  "files.card.secret": {
+    "message": "Αυτό το αρχείο φαίνεται να περιέχει κωδικό πρόσβασης ή κλειδί, γι’ αυτό είναι ιδιωτικό: ο πράκτοράς σας δεν το βλέπει ποτέ.",
+    "description": "Shown when Kage flagged the text as secret-looking",
+    "_machine_translated": true,
+    "_source_hash": "31e246b1d6c21596"
+  },
+  "files.card.text_kept_local": {
+    "message": "Παραμένει σε αυτόν τον υπολογιστή.",
+    "description": "Added to the secret note when sync is on",
+    "_machine_translated": true,
+    "_source_hash": "efeb45a61be1a56c"
+  },
+  "files.card.text_elsewhere": {
+    "message": "Το πλήρες κείμενο βρίσκεται σε άλλον από τους υπολογιστές σας.",
+    "description": "A document whose full text isn’t on this computer",
+    "_machine_translated": true,
+    "_source_hash": "978cdd39923748a5"
+  },
+  "files.action.reveal_to_agent": {
+    "message": "Να το βλέπει ο πράκτοράς μου",
+    "description": "Button: lets the agent see a document kept private because it may hold a password",
+    "_machine_translated": true,
+    "_source_hash": "24d9bb720e071f67"
+  },
+  "files.action.update": {
+    "message": "Ενημέρωση από αρχείο…",
+    "description": "Button: pick the file again and replace the document’s text",
+    "_machine_translated": true,
+    "_source_hash": "f11bad08e0c9b7c8"
+  },
+  "files.action.show_text": {
+    "message": "Εμφάνιση κειμένου",
+    "description": "Button in the explorer that shows a document’s whole text",
+    "_machine_translated": true,
+    "_source_hash": "bd0d2b0f17a22895"
+  },
+  "files.action.hide_text": {
+    "message": "Απόκρυψη κειμένου",
+    "description": "Button in the explorer that hides a document’s text again",
+    "_machine_translated": true,
+    "_source_hash": "8bebaba579cf4101"
+  },
+  "files.text.part": {
+    "message": "Μέρος {n} από {total}",
+    "description": "Which part of a long document’s text is shown",
+    "_machine_translated": true,
+    "_source_hash": "3e11688c004cae48"
+  },
+  "files.text.page": {
+    "message": "σ. {n}",
+    "description": "Where a page starts in a document’s text",
+    "_machine_translated": true,
+    "_source_hash": "2fbdf72dced9bf17"
+  },
+  "files.text.prev": {
+    "message": "Προηγούμενο",
+    "description": "Button: the previous part of a document’s text",
+    "_machine_translated": true,
+    "_source_hash": "83a153b0df2b8f9c"
+  },
+  "files.text.next": {
+    "message": "Επόμενο",
+    "description": "Button: the next part of a document’s text",
+    "_machine_translated": true,
+    "_source_hash": "4e6ad1f2861f9598"
+  },
+  "files.text.loading": {
+    "message": "Φόρτωση του κειμένου…",
+    "description": "While a document’s text loads",
+    "_machine_translated": true,
+    "_source_hash": "08eec674e90b7621"
+  },
+  "files.error.too_large_hint": {
+    "message": "Δοκιμάστε ένα μικρότερο αντίγραφο ή αποθηκεύστε ένα μέρος του ως PDF.",
+    "description": "Added after Kage’s “file is too large” message",
+    "_machine_translated": true,
+    "_source_hash": "8e39b95e9900eb86"
+  },
+  "files.error.storage_full": {
+    "message": "Ο χώρος αποθήκευσης εγγράφων του νοητικού χάρτη είναι πλήρης (64 MB). Διαγράψτε πρώτα μερικά έγγραφα.",
+    "description": "Adding a file was refused because document storage is full",
+    "_machine_translated": true,
+    "_source_hash": "37447422124fbd8e"
+  },
+  "files.error.bad_result": {
+    "message": "Το Kage επέστρεψε κάτι που το Mind Map δεν μπορούσε να χρησιμοποιήσει, οπότε δεν αποθηκεύτηκε τίποτα.",
+    "description": "The file text Kage returned failed Mind Map’s checks",
+    "_machine_translated": true,
+    "_source_hash": "3395d8c6f826425e"
+  },
+  "files.error.unavailable": {
+    "message": "Αυτό το αντίγραφο του Kage δεν μπορεί να διαβάσει αρχεία για το Mind Map.",
+    "description": "Adding a file isn’t possible on this Kage",
+    "_machine_translated": true,
+    "_source_hash": "b8bc7add00ec064e"
+  },
+  "files.error.not_file": {
+    "message": "Αυτό το στοιχείο δεν προστέθηκε από αρχείο.",
+    "description": "Update from file… on an item that isn’t a picked document",
+    "_machine_translated": true,
+    "_source_hash": "452abbd49f6de298"
+  },
+  "settings.documents.title": {
+    "message": "Έγγραφα",
+    "description": "Settings section",
+    "_machine_translated": true,
+    "_source_hash": "f0534e2658b92dd9"
+  },
+  "settings.documents.add": {
+    "message": "Προσθήκη αρχείου…",
+    "description": "Settings action that opens Kage’s file dialog",
+    "_machine_translated": true,
+    "_source_hash": "e12094134fed5d55"
+  },
+  "settings.documents.max_chars": {
+    "message": "Διατήρηση έως … χαρακτήρων από κάθε αρχείο",
+    "description": "Settings select; the options are numbers",
+    "_machine_translated": true,
+    "_source_hash": "70dcebaef5a09e4a"
+  },
+  "settings.documents.max_chars_hint": {
+    "message": "Τα μεγαλύτερα αρχεία περικόπτονται. Ισχύει για τα αρχεία που θα προσθέσετε από εδώ και πέρα.",
+    "description": "Description of the character limit",
+    "_machine_translated": true,
+    "_source_hash": "2bea2283d146162b"
+  },
+  "settings.documents.max_chars_error": {
+    "message": "Επιλέξτε ένα από τα όρια της λίστας.",
+    "description": "Validation error for the character limit",
+    "_machine_translated": true,
+    "_source_hash": "509810a712275129"
+  },
+  "settings.documents.usage": {
+    "message": "Χώρος εγγράφων: {used} από 64 MB",
+    "description": "How much document storage is used; {used} is e.g. 12.4",
+    "_machine_translated": true,
+    "_source_hash": "4ccdbe3d8f0553e1"
+  },
+  "settings.documents.usage_warn": {
+    "message": "Ο χώρος εγγράφων έχει σχεδόν γεμίσει. Διαγράψτε μερικά έγγραφα για να προσθέσετε κι άλλα.",
+    "description": "Shown past 90% of document storage",
+    "_machine_translated": true,
+    "_source_hash": "0ad058f3926f4d59"
+  },
+  "settings.disclosure.files": {
+    "message": "Όταν προσθέτετε ένα αρχείο, το Kage το διαβάζει σε αυτόν τον υπολογιστή και δίνει το κείμενό του στο Mind Map. Το Mind Map διατηρεί έως {n} χαρακτήρες του μαζί με τις σημειώσεις σας. Το Kage δεν λέει ποτέ στο Mind Map πού βρίσκεται το αρχείο.",
+    "description": "Privacy disclosure about adding files; {n} is the character limit",
+    "_machine_translated": true,
+    "_source_hash": "8746c89af7d8c74e"
+  },
+  "settings.disclosure.background": {
+    "message": "Αν ενεργοποιήσετε την οργάνωση στο παρασκήνιο, οι νέες σημειώσεις που δεν έχετε επισημάνει ως ιδιωτικές αποστέλλονται στον agent σας σε μικρές παρτίδες όσο δεν χρησιμοποιείτε το Kage.",
+    "description": "Privacy disclosure about background organizing",
+    "_machine_translated": true,
+    "_source_hash": "40892fb15e4aa0c9"
+  },
+  "op.ingest": {
+    "message": "Προσθήκη «{title}»",
+    "description": "Describes a change (used after Undo:)",
+    "_machine_translated": true,
+    "_source_hash": "08e94a674ef6ca0e"
+  },
+  "op.reread": {
+    "message": "Ενημέρωση «{title}» από το αρχείο του",
+    "description": "Describes a change (used after Undo:)",
+    "_machine_translated": true,
+    "_source_hash": "498a83d0e2c07931"
+  },
+  "export.documents": {
+    "message": "Έγγραφα",
+    "description": "Export Markdown section listing documents added from files",
+    "_machine_translated": true,
+    "_source_hash": "738020c38720ab52"
+  },
+  "export.pages": {
+    "message": "{n, plural, one {# σελίδα} other {# σελίδες}}",
+    "description": "Page count in Export Markdown",
+    "_machine_translated": true,
+    "_source_hash": "657abbf8fc1ec142"
+  },
+  "tool.get_query": {
+    "message": "Προαιρετικό, για έγγραφα: λέξεις προς αναζήτηση σε ολόκληρο το έγγραφο. Επιστρέφονται έως {n} αποσπάσματα που ταιριάζουν, το καθένα έως {max} χαρακτήρες.",
+    "description": "Agent tool parameter description",
+    "_machine_translated": true,
+    "_source_hash": "80498175d8152d1d"
+  },
+  "manifest.sync_description": {
+    "message": "Οι σημειώσεις, οι ενέργειες, τα ονόματα, τα έγγραφα και οι καρφίτσες σας, ώστε ο νοητικός χάρτης σας να είναι ίδιος σε κάθε υπολογιστή.",
+    "description": "Manifest sync.description: what Mind Map keeps in the Kage sync folder (at most 140 characters)",
+    "_machine_translated": true,
+    "_source_hash": "8343abed6e55e916"
+  },
+  "settings.section_sync": {
+    "message": "Συγχρονισμός μεταξύ των υπολογιστών σας",
+    "description": "Settings section heading for Kage folder sync",
+    "_machine_translated": true,
+    "_source_hash": "a50c94a9ff4262e5"
+  },
+  "settings.sync.status_off": {
+    "message": "Ο συγχρονισμός του Kage είναι απενεργοποιημένος για το Mind Map σε αυτόν τον υπολογιστή, οπότε ο νοητικός χάρτης σας μένει εδώ. Μπορείτε να τον ενεργοποιήσετε στις Ρυθμίσεις του Kage → Συγχρονισμός.",
+    "description": "Sync status line when Kage sync is off for Mind Map",
+    "_machine_translated": true,
+    "_source_hash": "cb4879a398b5a134"
+  },
+  "settings.sync.status_paused": {
+    "message": "Ο συγχρονισμός του Kage έχει τεθεί σε παύση. Οι αλλαγές σας περιμένουν σε αυτόν τον υπολογιστή μέχρι να συνεχιστεί.",
+    "description": "Sync status line when Kage has paused sync",
+    "_machine_translated": true,
+    "_source_hash": "a3d910bb903d4e8e"
+  },
+  "settings.sync.status_on": {
+    "message": "{n, plural, =0 {Ενεργός μέσω του συγχρονισμού του Kage. Δεν έχει συνδεθεί ακόμα άλλος υπολογιστής.} one {Ενεργός μέσω του συγχρονισμού του Kage, με # ακόμα υπολογιστή.} other {Ενεργός μέσω του συγχρονισμού του Kage, με # ακόμα υπολογιστές.}} Τελευταίος συγχρονισμός: {when}.",
+    "description": "Sync status line when sync is on; n = other computers, when = date and time",
+    "_machine_translated": true,
+    "_source_hash": "bb252dce7895de30"
+  },
+  "settings.sync.status_first": {
+    "message": "Αποστολή του νοητικού χάρτη σας στον φάκελο συγχρονισμού για πρώτη φορά…",
+    "description": "Sync status line during the first push from this computer",
+    "_machine_translated": true,
+    "_source_hash": "eae9673c94f2daf4"
+  },
+  "settings.sync.status_waiting": {
+    "message": "{n, plural, one {# αλλαγή περιμένει} other {# αλλαγές περιμένουν}} να συγχρονιστ{n, plural, one {εί} other {ούν}}.",
+    "description": "Sync status line: changes Kage hasn't taken yet",
+    "_machine_translated": true,
+    "_source_hash": "1c872f125542f94d"
+  },
+  "settings.sync.status_full": {
+    "message": "Ο χώρος του Mind Map στον φάκελο συγχρονισμού σας έχει γεμίσει. Οι νέες αλλαγές μένουν σε αυτόν τον υπολογιστή.",
+    "description": "Sync status warning when the extension's sync quota is used up",
+    "_machine_translated": true,
+    "_source_hash": "6e89736ddc633f3e"
+  },
+  "settings.sync.private_items": {
+    "message": "Συγχρονισμός ιδιωτικών στοιχείων",
+    "description": "Checkbox: whether private items go to the sync folder",
+    "_machine_translated": true,
+    "_source_hash": "5ee3d5406b9d4403"
+  },
+  "settings.sync.private_items_hint": {
+    "message": "Τα ιδιωτικά στοιχεία δεν αποστέλλονται ποτέ στον agent σας, σε κανέναν υπολογιστή. Απενεργοποιήστε αυτή την επιλογή για να διατηρούνται τα στοιχεία που κάνετε ιδιωτικά από εδώ και πέρα μόνο σε αυτόν τον υπολογιστή. Τα ιδιωτικά στοιχεία που έχουν ήδη οι άλλοι υπολογιστές σας παραμένουν εκεί.",
+    "description": "Help text for Sync private items",
+    "_machine_translated": true,
+    "_source_hash": "b9f01c8186e46446"
+  },
+  "settings.disclosure.sync": {
+    "message": "Με ενεργό τον συγχρονισμό του Kage, ο νοητικός σας χάρτης διατηρείται επίσης, κρυπτογραφημένος, στον φάκελο συγχρονισμού σας, ώστε να βρίσκεται σε όλους τους υπολογιστές σας. Αυτό περιλαμβάνει τους τίτλους παραθύρων και το κείμενο των εγγράφων που προσθέσατε, τα οποία εξακολουθούν να μην αποστέλλονται ποτέ στον agent σας. Ένα έγγραφο που το Kage εκτιμά ότι περιέχει κωδικό πρόσβασης ή κλειδί παραμένει στον υπολογιστή του.",
+    "description": "Privacy disclosure added where Kage offers folder sync",
+    "_machine_translated": true,
+    "_source_hash": "45539646a299c868"
+  },
+  "settings.delete_all_hint_sync": {
+    "message": "Αφαιρεί κάθε στοιχείο, κάθε όνομα και το ιστορικό αναίρεσης από αυτόν τον υπολογιστή και, μέσω του συγχρονισμού του Kage, από τους άλλους υπολογιστές σας.",
+    "description": "Delete everything help text when Kage sync is on",
+    "_machine_translated": true,
+    "_source_hash": "f85c8d54623f32f6"
+  },
+  "settings.delete_all_confirm_sync": {
+    "message": "Να διαγραφεί ολόκληρος ο νοητικός σας χάρτης από αυτόν τον υπολογιστή και από τους άλλους υπολογιστές σας; Αυτή η ενέργεια δεν μπορεί να αναιρεθεί στον Νοητικό χάρτη. Κάντε πρώτα εξαγωγή αν θέλετε να τον κρατήσετε.",
+    "description": "Delete everything confirmation when Kage sync is on",
+    "_machine_translated": true,
+    "_source_hash": "aaa396930b15b910"
+  },
+  "card.kept_here": {
+    "message": "Αφαιρέθηκε από τους άλλους υπολογιστές σας: παραμένει μόνο σε αυτόν.",
+    "description": "Op card note: an item made private with Sync private items off",
+    "_machine_translated": true,
+    "_source_hash": "03ccb2cd18d96f2a"
   }
 }

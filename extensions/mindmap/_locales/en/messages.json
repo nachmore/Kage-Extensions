@@ -2346,7 +2346,7 @@
     "description": "Checkbox: whether private items go to the sync folder"
   },
   "settings.sync.private_items_hint": {
-    "message": "Private items are never sent to your agent, on any computer. Turn this off to keep them only on the computer where they are.",
+    "message": "Private items are never sent to your agent, on any computer. Turn this off to keep items you make private from now on only on this computer. Private items your other computers already have stay there.",
     "description": "Help text for Sync private items"
   },
   "settings.disclosure.sync": {

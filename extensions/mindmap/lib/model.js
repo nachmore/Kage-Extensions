@@ -861,9 +861,17 @@ const rejectedKey = (state, key) => state.rejections.some((r) => r.type === 'ent
 const rejectedMention = (state, itemId, entityId) =>
   state.rejections.some((r) => r.type === 'mention' && r.s === itemId && r.t === entityId);
 
+// A private name, itself or through the entity it redirects to (sync's
+// dedupe leaves items naming the merged-away copy).
+function privateEntity(state, id) {
+  const entity = state.entities.get(id);
+  if (!entity) return false;
+  return !!entity.private || (!!entity.mergedInto && !!follow(state, entity)?.private);
+}
+
 function mentionsPrivate(state, item) {
   if (item.private) return true;
-  return item.entityIds.some((id) => state.entities.get(id)?.private);
+  return item.entityIds.some((id) => privateEntity(state, id));
 }
 
 // True when `key` is a private entity's key or one of its aliases (merged
@@ -1814,7 +1822,7 @@ export function applyAnnotate(state, entries, env) {
       const full = made >= cap;
       const eid = resolve(full ? null : slot);
       if (!eid) return { reason: full && key && !rejectedKey(state, key) ? 'entity_cap' : null };
-      if (background && state.entities.get(eid)?.private) return { reason: 'private_entity' };
+      if (background && privateEntity(state, eid)) return { reason: 'private_entity' };
       if (eid === slot) made++;
       return { id: eid };
     };

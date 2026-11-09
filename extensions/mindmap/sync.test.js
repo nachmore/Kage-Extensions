@@ -320,6 +320,24 @@ describe('crash safety', () => {
     expect(a.meta().syncPending).toBeUndefined();
   });
 
+  it('a pull waits while this computer’s own changes haven’t gone out, so they aren’t overwritten', async () => {
+    const { folder, a, b } = await pair();
+    const { itemId } = await a.mind.capture('todo: call the Zebra team about invoices');
+    await exchange(folder, a, b);
+    // A's push fails (Kage busy); B changes another field of the same item.
+    a.sync.failNext('push', { times: 50 });
+    await a.mind.setArchived(itemId, true);
+    await b.mind.setStatus(itemId, 'done');
+    await exchange(folder, a, b);
+    expect(a.mind.item(itemId)).toMatchObject({ archived: true });
+    expect(a.meta().syncPending?.items?.[itemId]).toMatch(/^p:o/);
+    // Once A's push goes out, both computers have both changes.
+    a.sync.clearFailures();
+    a.mind._syncKick('pending', 'pull');
+    await exchange(folder, a, b);
+    for (const c of [a, b]) expect(c.mind.item(itemId)).toMatchObject({ archived: true, status: 'done' });
+  });
+
   it('clears what Kage accepted from mm-meta', async () => {
     const { folder, a, b } = await pair();
     await a.mind.capture('Notes on the Atlas project');

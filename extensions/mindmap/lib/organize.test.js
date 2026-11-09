@@ -354,6 +354,19 @@ describe('notePayload', () => {
     expect(stripUrl('https://u:p?x@example.com/a')).toBe('https://example.com/a');
   });
 
+  it('sends a name merged into another (sync’s dedupe) as the one it redirects to, and hides a private one', () => {
+    const copy = entity(eid(9), 'Bingo', 'team', { mergedInto: BINGO.id });
+    const item = note({ entityIds: [copy.id, DANA.id] });
+    expect(notePayload(item, ctx(stateOf([item], [copy, BINGO, DANA]))).entities).toEqual(['Bingo', 'Dana']);
+    // The copy redirects to a private name: the note is hidden, not sent.
+    const walrus = entity(eid(10), 'Walrus', 'project', { mergedInto: SECRET.id });
+    const secret = note({ entityIds: [walrus.id, DANA.id] });
+    const state = stateOf([secret], [walrus, SECRET, DANA]);
+    expect(hidden(secret, state)).toBe(true);
+    expect(reason(secret, state)).toBe('private');
+    expect(notePayload(secret, ctx(state)).entities).toEqual(['Dana']);
+  });
+
   it('removes angle brackets and caps title, text and URL', () => {
     const item = note({
       kind: 'link', title: `<b>${'T'.repeat(200)}</b>`, text: `<script>${'word '.repeat(300)}</script>`,
@@ -392,6 +405,17 @@ describe('vocabulary', () => {
       { name: 'Bingo', type: 'team' }, { name: 'Dana', type: 'person' }, { name: 'MTCS', type: 'project' },
     ]);
     expect(vocabulary(state, { lib, max: 1 })).toEqual([{ name: 'Bingo', type: 'team' }]);
+  });
+
+  it('counts a note naming a merged copy under the name it redirects to', () => {
+    const copy = entity(eid(9), 'Bingo', 'team', { mergedInto: BINGO.id });
+    const items = [note({ entityIds: [copy.id] }), note({ entityIds: [copy.id, BINGO.id] }), note({ entityIds: [DANA.id] })];
+    const state = stateOf(items, [copy, BINGO, DANA]);
+    expect(vocabulary(state, { lib })).toEqual([{ name: 'Bingo', type: 'team' }, { name: 'Dana', type: 'person' }]);
+    // A copy that redirects to a private name hides its notes, so neither name counts.
+    const walrus = entity(eid(10), 'Walrus', 'project', { mergedInto: SECRET.id });
+    const hiddenOnly = stateOf([note({ entityIds: [walrus.id, MTCS.id] })], [walrus, SECRET, MTCS]);
+    expect(vocabulary(hiddenOnly, { lib })).toEqual([]);
   });
 
   it('keeps the top 50, ties by name', () => {

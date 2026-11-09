@@ -1618,6 +1618,78 @@ nothing is asked or sent and Mind Map behaves as before.
   under a full parallel `npm test` on a busy machine, before S7 too (2 of 3
   runs at the base commit); alone it takes about 3–4 s.
 
+## MM-review: review of the V8, FT-MM, AC-MM and S7 work
+
+An adversarial pass over the day's Mind Map changes (data loss, private
+items reaching the agent or the sync folder, older hosts, size, i18n/RTL).
+Version 0.6.0.
+
+**Fixed:**
+- **A pull overwrote changes that hadn't reached Kage.** A push that failed
+  or was rate limited left its marks in `syncPending`, and the next pull
+  still ran. Kage merges a pulled record from what it last saw here, so a
+  local edit (archive on A) was replaced by the other computer's copy
+  (B marked it done), and the push that followed sent B's values back.
+  `_syncHoldPull` now holds the pull while marks are waiting, in the loop
+  and again under the lock (another window's commit). The loop pushes them
+  first; the pull follows the retry, or 2 s later while the rest go out.
+  Test: `sync.test.js` "a pull waits while this computer's own changes
+  haven't gone out".
+- **Privacy checks didn't follow `mergedInto`.** Sync's dedupe leaves items
+  naming the merged-away copy, but `isHidden`, organize's `hidden`, the
+  model's annotate check and the background name check read only that
+  copy. An item naming a copy merged into a private name could reach the
+  agent. They now follow the redirect. Organize's payload sends a merged
+  name as the one it redirects to (it was dropped), and its vocabulary
+  counts notes under that name. Tests in `mind.test.js` and
+  `lib/organize.test.js`.
+- **The explorer's window title named items that mention a private name**
+  (it checked only the item's own flag). It uses `isHidden` now. Test in
+  `explorer.test.js`.
+- **"Sync private items" said too much.** Turning it off keeps items made
+  private from then on here; private items the other computers already
+  have stay there. The hint, README and SPEC §7.8 say so.
+- **Translations.** Kage's `translate.py` filled the 156 keys V8, FT-MM,
+  AC-MM and S7 left in English, in all 31 catalogs. The acceptance test's
+  pending-translation list is gone: every catalog must have every EN key.
+
+**Checked, no change:**
+- Older hosts: the published Kage ignores unknown manifest fields and drops
+  unknown capabilities. Every new path is gated on its host feature
+  (`views`, `files.pick_text`, `agent.background`, `sync.records`,
+  `storage.change_events`) and the API's functions; `showWhen` dates from
+  April. The host-loader test covers the old import rewrite.
+- `possible_secret` documents, their bodies and their actions never reach
+  a push or the first push; organize never picks them.
+- Body keys: `bodyNumber` steps past the current key, so a re-read after a
+  pull doesn't reuse the other computer's number.
+- Size (Node, memory host, 10k items): with an instant `context.sync`, a
+  capture costs about 101 ms median and 134 ms p95, against 94 ms without
+  sync. A computer joining a 10k store spends about 7 s of its own time on
+  51 pull pages, much of it the window's 100-invokes-per-second budget.
+  Organize's scans take 15–25 ms.
+- RTL: the explorer mirrors its layout; `explorer.css` centring is
+  direction-neutral. Pins are world positions, so a pin made on an RTL
+  computer sits on the other side of the focus on an LTR one.
+
+**Open (not fixed):**
+- With **Sync private items** off, an item that names a private entity
+  (only Import JSON can make one today) still syncs; the entity doesn't.
+- A pin whose push fails waits for the next full push.
+- Entities found in a `possible_secret` document sync (names only).
+- A later Mind Map that adds item fields must bump `sync.schema`: an older
+  one drops unknown fields on its next edit of the item, and Kage would
+  read that as clearing them.
+- A push Kage keeps refusing with a retryable code (an error, `quota`)
+  now also holds pulls. Settings shows the changes waiting.
+- Two computers re-reading the same document before they sync can pick the
+  same body number; the newer push wins for the item and for the body
+  separately.
+
+**Checks:** `npx vitest run extensions/mindmap` 37 files / 1,194 tests;
+`npm test` 80 files / 2,565 tests; `npm run check:all` passes, `check:i18n`
+included.
+
 ## Status
 
 **Works (P0/P1/P2, all phases of SPEC §2):**

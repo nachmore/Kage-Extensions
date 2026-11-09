@@ -635,13 +635,16 @@ and remembers what was accepted. `_mutate` takes two hooks for the pull:
 then ack). One sync run per window (`_syncKick(want)` → `_syncLoop`):
 status, the first push (`_syncBeginFull`, `_syncFullStep`, a cursor in
 `meta.syncFull`), pending marks, pulls (`_syncPullAll`, a one-call look
-first), and the meta write that clears accepted marks (2 s later, or at
+first; held by `_syncHoldPull`, in the loop and again under the lock,
+while marks Kage hasn't taken are waiting), and the meta write that clears accepted marks (2 s later, or at
 `whenIdle()`). Wants come from load ('start'), `onChanges` ('pull',
 'enabled', 'status'), a config change of **Sync private items** ('repush'),
 `syncIfStale` (a pull at most once a minute) and the retry timer. The
 indexes follow `mergedInto`: `byEntity` lists an item under the entity its
 names redirect to (`byRaw` finds it again when the redirect changes), and
-ranking's `getItem` sees canonical owners and names. `setPins` and
+ranking's `getItem` sees canonical owners and names; so do `isHidden`
+(a name merged into a private one is private) and organize's `hidden`,
+payload names and vocabulary. `setPins` and
 `resetLayout` push pins while they hold the lock; `deleteAll` marks every
 record that could have synced for a delete in the new store's mm-meta.
 
@@ -830,7 +833,7 @@ count of organized notes includes skipped ones (AC-MM3).
 ```js
 export const ORGANIZE_V, PURPOSE, DEDUPE_KEY, ORG_STATES, MACHINE_TAG_RE, ORGANIZE_LIMITS, SCHEMA;
 export function textHash(item);                     // FNV-1a 32 (base36) of the collapsed title and text
-export function hidden(item, state);                // = mind.isHidden
+export function hidden(item, state);                // = mind.isHidden (follows mergedInto)
 export function ineligibleReason(item, ctx);        // → null | 'private'|'short'|'organized'|'out_of_scope'|'settling'|…
 export function eligible(item, ctx);
 export function selectBatch(state, ctx & { max? }); // → Item[] (≤15): own newest first, then others by hash(tag + id)

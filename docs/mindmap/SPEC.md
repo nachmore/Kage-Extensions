@@ -55,7 +55,7 @@ digests, any telemetry. Background AI calls came later, off by default
 | name | `__MSG_manifest.name__` → "Mind Map" |
 | description | `__MSG_manifest.description__` → "Throw in thoughts, links, docs and todos. Mind Map organizes them, answers with sources, and maps how they connect." |
 | icon | 🧠 |
-| version | `0.5.0` |
+| version | `0.6.0` |
 | author | `kage` |
 | tags | `productivity`, `notes`, `knowledge`, `mindmap`, `todo`, `bookmarks`, `organizer`, `ai` |
 | permissions | `storage`, `urls`, `network`, `windows`, `views`, `file_text`, `agent_background`, `sync` |
@@ -1018,6 +1018,12 @@ nothing.
 **Pulling** (item 2). On `onChanges` (and at most once a minute from
 `syncIfStale`, one call when nothing is new): inside the lock, `pull`, apply,
 persist, write remote pins into `mm-layout`, then `ack`, then repaint.
+A pull waits while `syncPending` holds marks Kage hasn't taken (a push
+that failed or was rate limited, or more than one commit could carry):
+Kage merges a pulled record from what it last saw here, so applying it
+would overwrite those changes, and the push after would send that back.
+The waiting marks are pushed first; the pull follows the retry, or 2 s
+later while the rest go out.
 Applying is a silent op of kind `sync` that `mm undo` skips: a changed
 record gets `rev = local.rev + 1` and keeps this computer's local fields; an
 item new here gets `enrich: { state: 'done' }` (its link title was fetched
@@ -1031,8 +1037,9 @@ What a pull applied is never pushed back.
 **Names** (item 3). After applying, entities with the same `(type, key)`
 and no `mergedInto` merge: the larger id gets `mergedInto` the smaller one,
 `updatedAt` unchanged, so every computer pushes the same value. Items that
-name the merged copy resolve through the redirect (the indexes and ranking
-follow it).
+name the merged copy resolve through the redirect (the indexes, ranking,
+the privacy checks and background organizing's names follow it), so an
+item naming a copy merged into a private name is private too.
 
 **The first push.** When Kage says `needsInitialPush` (the first time on a
 computer, after sync was turned on or reset), Mind Map pushes every record
@@ -1048,7 +1055,8 @@ without `initial`.
 the agent, on every computer. With **Sync private items** off, Mind Map
 keeps them where they are; making a synced item private removes it from the
 other computers (its card says so, and Undo brings it back), and their
-copies of a private item here are left alone.
+copies of a private item here are left alone. Turning the setting off
+doesn't take private items off the computers that already have them.
 
 **Delete everything** with sync on deletes the mind map on the other
 computers too: the new, empty store's mm-meta marks every record that could
@@ -1707,7 +1715,7 @@ Where Kage offers folder sync (`sync.records`), it adds:
 | Telemetry | nothing (§16) |
 
 **Private**:
-- Covers private items, items mentioning a private entity (P2: `mm private @x`), and anything captured while `new_items_private` is on.
+- Covers private items, items mentioning a private entity (P2: `mm private @x`; also an entity merged into a private one), and anything captured while `new_items_private` is on.
 - These are excluded from every agent path: tools, prompts, and records nested in other records (related, parent, actions).
 - Agent-facing chips for private items show no title.
 

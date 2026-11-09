@@ -2608,5 +2608,941 @@
     "description": "Interpretation row: how many matches are listed out of how many, e.g. “8 of 23”",
     "_machine_translated": true,
     "_source_hash": "868a73ebc8627db2"
+  },
+  "manifest.agent_background_reason": {
+    "message": "আপনি যেসব নতুন নোট ব্যক্তিগত হিসেবে চিহ্নিত করেননি, Mind Map সেগুলোর টেক্সট আপনার এজেন্টের কাছে পাঠায়। এতে এজেন্ট একটি সংক্ষিপ্ত সারাংশ, নোটে উল্লেখ করা ব্যক্তি, টিম ও প্রজেক্ট এবং প্রস্তাবিত কাজ যোগ করতে পারে।",
+    "description": "Shown in Kage’s Background AI consent dialog as a quote from the extension (at most 300 characters)",
+    "_machine_translated": true,
+    "_source_hash": "22b58c6f746d8a97"
+  },
+  "op.organized_bg_label": {
+    "message": "{n, plural, one {#টি নোট} other {#টি নোট}} গোছানো",
+    "description": "Label of one background organizing request, shown in Kage’s Background AI log. At most 80 characters",
+    "_machine_translated": true,
+    "_source_hash": "509ba9e9a9de99ed"
+  },
+  "prompt.organize_bg": {
+    "message": "আপনি একজন ব্যক্তির সংরক্ষিত নোট গুছিয়ে দেন। DATA-র প্রতিটি নোটের জন্য যা স্পষ্টভাবে প্রযোজ্য তা ফেরত দিন:\n- \"summary\": সর্বোচ্চ ২৫ শব্দের একটি সহজ বাক্য। শুধু তখনই, যখন নোটটি একটি বাক্যের চেয়ে দীর্ঘ।\n- \"entities\": নোটে নাম উল্লেখ করা ব্যক্তি, টিম, প্রজেক্ট, প্রতিষ্ঠান, বিষয় বা পরিভাষা। একই জিনিস বোঝালে \"vocabulary\" থেকে নাম ব্যবহার করুন। অনুমান করবেন না।\n- \"terms\": সর্বোচ্চ ৫টি সংক্ষিপ্ত মূল পরিভাষা।\n- \"actions\": নোট অনুযায়ী কাউকে যা করতে হবে। নোটের হুবহু শব্দগুলো \"quote\"-এ কপি করুন। \"owner\" শুধু তখনই সেট করুন, যখন নোটে সেই ব্যক্তির নাম আছে। কাজটি লেখকের নিজের হলে এটি বাদ দিন। \"due\" (YYYY-MM-DD) শুধু তখনই সেট করুন, যখন নোটে কোনো তারিখ দেওয়া আছে; আপেক্ষিক তারিখ নোটের \"date\" থেকে হিসাব করুন।\nযোগ করার মতো কিছু না থাকলে নোটের জন্য \"skip\": true সেট করুন। কিছুই বানিয়ে বলবেন না।",
+    "description": "Instructions for background organizing, sent to the user’s agent with the notes (not shown in a chat). Keep DATA, the quoted field names (summary, entities, vocabulary, terms, actions, quote, owner, due, date, skip), true and YYYY-MM-DD as they are. At most 4,000 characters",
+    "_machine_translated": true,
+    "_source_hash": "a6d5cfa396d64cb2"
+  },
+  "settings.section_background": {
+    "message": "ব্যাকগ্রাউন্ডে গোছানো",
+    "description": "Settings section",
+    "_machine_translated": true,
+    "_source_hash": "823011a9a47b8158"
+  },
+  "settings.background_organize": {
+    "message": "নতুন নোট ব্যাকগ্রাউন্ডে গোছান",
+    "description": "Settings label",
+    "_machine_translated": true,
+    "_source_hash": "6ff34391f478dc72"
+  },
+  "settings.background_organize_hint": {
+    "message": "ডিফল্টভাবে বন্ধ থাকে। কিছু পাঠানোর আগে Kage এই কম্পিউটারে কোন এজেন্ট আপনার নোট পাবে তা আপনাকে নিশ্চিত করতে বলে।",
+    "description": "Settings hint for the background organizing switch",
+    "_machine_translated": true,
+    "_source_hash": "a88ff105a729bdb5"
+  },
+  "settings.organize.about": {
+    "message": "আপনি যখন Kage ব্যবহার করছেন না, তখন Mind Map নতুন নোটগুলো ছোট ছোট ব্যাচে আপনার এজেন্টের কাছে পাঠায় এবং এজেন্টের ফেরত পাঠানো সংক্ষিপ্ত সারাংশ, নাম ও প্রস্তাবিত কাজ যোগ করে। ব্যক্তিগত হিসেবে চিহ্নিত নোট কখনো পাঠানো হয় না। যোগ করা সবকিছু পূর্বাবস্থায় ফেরানো যায়।",
+    "description": "What background organizing does",
+    "_machine_translated": true,
+    "_source_hash": "2103e2d37af4d668"
+  },
+  "settings.organize.status": {
+    "message": "{organized}টি গোছানো · {waiting}টি অপেক্ষমাণ · শেষবার চলেছে {when}",
+    "description": "Background organizing status; {organized} and {waiting} are note counts, {when} a date and time or “never”",
+    "_machine_translated": true,
+    "_source_hash": "7a71f3e7229e6f43"
+  },
+  "settings.organize.status_needs_host": {
+    "message": "Mind Map আপনার এজেন্টের কাছে কিছু পাঠানোর আগে Kage-এর এই কম্পিউটারে আপনার অনুমতি প্রয়োজন।",
+    "description": "Background organizing status: switched on, but Kage’s access is off",
+    "_machine_translated": true,
+    "_source_hash": "6ffbbeabf17a4b2f"
+  },
+  "settings.organize.status_stale": {
+    "message": "আপনার এজেন্ট পরিবর্তন হয়েছে। এই কম্পিউটারে Mind Map-কে আবার অনুমতি দিন।",
+    "description": "Background organizing status: the agent changed since the user agreed",
+    "_machine_translated": true,
+    "_source_hash": "92ddd1d913b0f39e"
+  },
+  "settings.organize.status_unavailable": {
+    "message": "Kage আপডেট করুন, অথবা Store-এ Mind Map-এর Background AI অনুমতি অনুমোদন করুন।",
+    "description": "Background organizing status on a Kage that doesn’t offer it",
+    "_machine_translated": true,
+    "_source_hash": "7c46036dc61a53c2"
+  },
+  "settings.organize.status_paused": {
+    "message": "{time} পর্যন্ত বিরতিতে আছে।",
+    "description": "Background organizing status; {time} is a date and time",
+    "_machine_translated": true,
+    "_source_hash": "d4529ceb0d1235e4"
+  },
+  "settings.organize.tools_warning": {
+    "message": "গোছানোর সময় আপনার এজেন্ট একটি টুল ব্যবহার করার চেষ্টা করেছে, তাই Kage অনুরোধটি থামিয়ে দিয়েছে। একদিনে দুবার এমন হলে Kage আগামীকাল পর্যন্ত ব্যাকগ্রাউন্ডে গোছানো বিরতিতে রাখে।",
+    "description": "Warning after the agent tried to use a tool during background organizing",
+    "_machine_translated": true,
+    "_source_hash": "6ee2fd899816d5bf"
+  },
+  "settings.organize.allow": {
+    "message": "এই কম্পিউটারে অনুমতি দিন…",
+    "description": "Button that opens Kage’s consent dialog for background organizing",
+    "_machine_translated": true,
+    "_source_hash": "3e222f72137230e2"
+  },
+  "settings.organize.allow_hint": {
+    "message": "Kage দেখায় কোন এজেন্ট আপনার নোট পাবে এবং আপনাকে নিশ্চিত করতে বলে।",
+    "description": "Hint for the allow button",
+    "_machine_translated": true,
+    "_source_hash": "331987919cd0aeac"
+  },
+  "settings.organize.now": {
+    "message": "এখনই গোছান",
+    "description": "Button: send the next batch now",
+    "_machine_translated": true,
+    "_source_hash": "4a56bb9d614a12bc"
+  },
+  "settings.organize.now_hint": {
+    "message": "আপনি দূরে যাওয়া পর্যন্ত অপেক্ষা না করে পরের ব্যাচটি এখনই পাঠায়।",
+    "description": "Hint for Organize now",
+    "_machine_translated": true,
+    "_source_hash": "9ee5e96c0764222b"
+  },
+  "settings.organize.now_done": {
+    "message": "আপনার এজেন্ট {n, plural, one {#টি নোট} other {#টি নোট}} দেখেছে।",
+    "description": "Organize now finished",
+    "_machine_translated": true,
+    "_source_hash": "d9cc512bc71b52a4"
+  },
+  "settings.organize.now_nothing": {
+    "message": "গোছানোর জন্য কিছুই অপেক্ষমাণ নেই।",
+    "description": "Organize now: no notes to send",
+    "_machine_translated": true,
+    "_source_hash": "bcf7ef7ed0aa479d"
+  },
+  "settings.organize.now_off": {
+    "message": "আগে “নতুন নোট ব্যাকগ্রাউন্ডে গোছান” চালু করে সংরক্ষণ করুন।",
+    "description": "Organize now while the saved switch is off",
+    "_machine_translated": true,
+    "_source_hash": "99d9b760ce32d474"
+  },
+  "settings.organize.now_busy": {
+    "message": "Mind Map ইতিমধ্যে অন্য একটি Kage উইন্ডোতে গোছাচ্ছে।",
+    "description": "Organize now while another window is organizing",
+    "_machine_translated": true,
+    "_source_hash": "5397d1b650fdbc5f"
+  },
+  "settings.organize.backlog": {
+    "message": "পুরোনো নোটগুলোও গোছান",
+    "description": "Button: include notes from before background organizing was turned on",
+    "_machine_translated": true,
+    "_source_hash": "2ed9a84f9d22670c"
+  },
+  "settings.organize.backlog_hint": {
+    "message": "{n, plural, one {#টি নোট} other {#টি নোট}} এটি চালু করার আগের। সেগুলো আপনার দৈনিক সীমার মধ্যে এক ব্যাচ করে গোছানো হয়।",
+    "description": "Hint for Organize older notes too",
+    "_machine_translated": true,
+    "_source_hash": "8ecc4c994f27540d"
+  },
+  "settings.organize.backlog_done": {
+    "message": "পুরোনো নোটগুলোও এক ব্যাচ করে গোছানো হবে।",
+    "description": "Organize older notes too: done",
+    "_machine_translated": true,
+    "_source_hash": "028332e369a3e1a7"
+  },
+  "view.explorer.title": {
+    "message": "এক্সপ্লোরার",
+    "description": "Title of Mind Map's full-window map explorer (window title and Kage's host bar)",
+    "_machine_translated": true,
+    "_source_hash": "c50649381b98e411"
+  },
+  "map.explorer": {
+    "message": "এক্সপ্লোরার",
+    "description": "Map card header button that opens the full-window map explorer",
+    "_machine_translated": true,
+    "_source_hash": "ee744e3d5a47b3e4"
+  },
+  "map.explorer_tip": {
+    "message": "এই ম্যাপটি আলাদা উইন্ডোতে খুলুন, যেখানে আপনি এটি সরাতে, জুম করতে ও সাজাতে পারবেন",
+    "description": "Tooltip of the map card's Explorer button",
+    "_machine_translated": true,
+    "_source_hash": "c0f4288021906d46"
+  },
+  "card.explore": {
+    "message": "এক্সপ্লোর করুন",
+    "description": "Item card button that opens the map explorer on this item",
+    "_machine_translated": true,
+    "_source_hash": "146a5a1bd9841ed0"
+  },
+  "card.organized": {
+    "message": "✦ আপনার এজেন্ট সাজিয়েছে",
+    "description": "Item card line: background organizing added to this note",
+    "_machine_translated": true,
+    "_source_hash": "273a49420ee78596"
+  },
+  "card.undo_organize": {
+    "message": "{n, plural, one {সাজানো পূর্বাবস্থায় ফেরান} other {সাজানো পূর্বাবস্থায় ফেরান (#টি নোট)}}",
+    "description": "Item card button; {n} is how many notes were organized together and are undone together",
+    "_machine_translated": true,
+    "_source_hash": "fd5190ad7722a1e0"
+  },
+  "card.undo_organize_tip": {
+    "message": "{n, plural, one {এই নোটে} other {একসাথে সাজানো #টি নোটে}} আপনার এজেন্ট যা যোগ করেছে তা সরিয়ে নেয়",
+    "description": "Tooltip of Undo organizing",
+    "_machine_translated": true,
+    "_source_hash": "7e164b3e3edbf761"
+  },
+  "row.explore": {
+    "message": "এক্সপ্লোরারে খুলুন",
+    "description": "Launcher row that opens the map explorer on the overview",
+    "_machine_translated": true,
+    "_source_hash": "fae4f34a0f403321"
+  },
+  "row.explore_named": {
+    "message": "এক্সপ্লোরারে খুলুন: {name}",
+    "description": "Launcher row that opens the map explorer centred on {name}",
+    "_machine_translated": true,
+    "_source_hash": "383275686aa0c6c2"
+  },
+  "row.explore_desc": {
+    "message": "ম্যাপটি আলাদা উইন্ডোতে সরান, জুম করুন ও সাজান",
+    "description": "Description of the Open in explorer launcher row",
+    "_machine_translated": true,
+    "_source_hash": "3ccf671feada4fba"
+  },
+  "explorer.aria": {
+    "message": "মাইন্ড ম্যাপ এক্সপ্লোরার",
+    "description": "Accessible name of the explorer window's content",
+    "_machine_translated": true,
+    "_source_hash": "a3f20271154da326"
+  },
+  "explorer.toolbar": {
+    "message": "এক্সপ্লোরার টুল",
+    "description": "Accessible name of the explorer's toolbar",
+    "_machine_translated": true,
+    "_source_hash": "39369621e1bc5289"
+  },
+  "explorer.back_tip": {
+    "message": "আগের কেন্দ্রে ফিরে যান",
+    "description": "Tooltip of the explorer's Back button",
+    "_machine_translated": true,
+    "_source_hash": "7761099e8055aa48"
+  },
+  "explorer.fit": {
+    "message": "মানানসই",
+    "description": "Explorer button: zoom so the whole map fits the window",
+    "_machine_translated": true,
+    "_source_hash": "58349f0de44f3b0c"
+  },
+  "explorer.fit_tip": {
+    "message": "পুরো ম্যাপ দেখান (0)",
+    "description": "Tooltip of the Fit button; 0 is its key",
+    "_machine_translated": true,
+    "_source_hash": "d677d638b21347a3"
+  },
+  "explorer.zoom_in": {
+    "message": "জুম ইন (+)",
+    "description": "Explorer zoom-in button label and tooltip; + is its key",
+    "_machine_translated": true,
+    "_source_hash": "5da225c0530b62c7"
+  },
+  "explorer.zoom_out": {
+    "message": "জুম আউট (−)",
+    "description": "Explorer zoom-out button label and tooltip; − is its key",
+    "_machine_translated": true,
+    "_source_hash": "165988e7fc932b68"
+  },
+  "explorer.scroll_zooms": {
+    "message": "স্ক্রল করলে জুম হয়",
+    "description": "Explorer toggle state: the mouse wheel or trackpad scroll zooms the map",
+    "_machine_translated": true,
+    "_source_hash": "164586558426c431"
+  },
+  "explorer.scroll_pans": {
+    "message": "স্ক্রল করলে সরে",
+    "description": "Explorer toggle state: the mouse wheel or trackpad scroll moves the map",
+    "_machine_translated": true,
+    "_source_hash": "93bbe613e9252446"
+  },
+  "explorer.scroll_tip": {
+    "message": "স্ক্রল করলে কী হবে তা বেছে নিন। ⌘ বা Ctrl চেপে স্ক্রল করলে সবসময় জুম হয়।",
+    "description": "Tooltip of the scroll toggle",
+    "_machine_translated": true,
+    "_source_hash": "f89371b66b58b102"
+  },
+  "explorer.details": {
+    "message": "বিস্তারিত",
+    "description": "Explorer toggle that shows or hides the details panel; also the panel's accessible name",
+    "_machine_translated": true,
+    "_source_hash": "7b3982adf2fad55e"
+  },
+  "explorer.search_placeholder": {
+    "message": "খুঁজুন (/)",
+    "description": "Placeholder of the explorer's search box; / is its key",
+    "_machine_translated": true,
+    "_source_hash": "871a1dcb43864e31"
+  },
+  "explorer.search_label": {
+    "message": "আপনার মাইন্ড ম্যাপে খুঁজুন",
+    "description": "Accessible name of the explorer's search box",
+    "_machine_translated": true,
+    "_source_hash": "7e5c9bb5ab5919fe"
+  },
+  "explorer.no_hits": {
+    "message": "কিছুই মেলেনি",
+    "description": "Shown under the explorer's search box when nothing matches",
+    "_machine_translated": true,
+    "_source_hash": "763d1b6e95fb918f"
+  },
+  "explorer.hits": {
+    "message": "{n, plural, one {#টি মিল} other {#টি মিল}}",
+    "description": "Announced after an explorer search",
+    "_machine_translated": true,
+    "_source_hash": "6fe9cb29f8ef2590"
+  },
+  "explorer.lens_label": {
+    "message": "দেখান",
+    "description": "Accessible name of the explorer's filter chips (kinds, My actions, Show done)",
+    "_machine_translated": true,
+    "_source_hash": "69457b74b05d93ae"
+  },
+  "explorer.lens_mine": {
+    "message": "আমার কাজগুলো",
+    "description": "Explorer filter chip: show only actions that are yours",
+    "_machine_translated": true,
+    "_source_hash": "a1844b0aebab573e"
+  },
+  "explorer.lens_done": {
+    "message": "সম্পন্ন কাজও দেখান",
+    "description": "Explorer filter chip: also show actions that are done",
+    "_machine_translated": true,
+    "_source_hash": "dab0cbf2516879e9"
+  },
+  "explorer.add_placeholder": {
+    "message": "একটি ভাবনা, লিংক বা করণীয় যোগ করুন",
+    "description": "Placeholder of the explorer's capture box",
+    "_machine_translated": true,
+    "_source_hash": "011e403b2a93a2bb"
+  },
+  "explorer.add_label": {
+    "message": "আপনার মাইন্ড ম্যাপে যোগ করুন",
+    "description": "Accessible name of the explorer's capture box",
+    "_machine_translated": true,
+    "_source_hash": "332cc93b607ca834"
+  },
+  "explorer.add": {
+    "message": "যোগ করুন",
+    "description": "Button that saves what's in the explorer's capture box",
+    "_machine_translated": true,
+    "_source_hash": "5ebc22092957a194"
+  },
+  "explorer.saved": {
+    "message": "“{title}” সংরক্ষিত হয়েছে",
+    "description": "Explorer toast after saving from its capture box",
+    "_machine_translated": true,
+    "_source_hash": "1ec6aaa1ce55a279"
+  },
+  "explorer.list_label": {
+    "message": "ম্যাপের নোডগুলো",
+    "description": "Accessible name of the explorer's list of nodes",
+    "_machine_translated": true,
+    "_source_hash": "8ee43c60635d39db"
+  },
+  "explorer.panel_empty": {
+    "message": "এখানে দেখতে ম্যাপে কিছু নির্বাচন করুন।",
+    "description": "Details panel with nothing selected",
+    "_machine_translated": true,
+    "_source_hash": "2f7c0bfe7b203cfd"
+  },
+  "explorer.showing": {
+    "message": "{name} দেখানো হচ্ছে",
+    "description": "Announced when the explorer centres on {name}",
+    "_machine_translated": true,
+    "_source_hash": "eed78797b95bc717"
+  },
+  "explorer.focus_here": {
+    "message": "এখানে কেন্দ্রে আনুন",
+    "description": "Details panel button: make this node the centre of the map",
+    "_machine_translated": true,
+    "_source_hash": "2fbaa55cdbf7e7dd"
+  },
+  "explorer.expand": {
+    "message": "সংযোগগুলো দেখান",
+    "description": "Details panel button: add this node's neighbours to the map",
+    "_machine_translated": true,
+    "_source_hash": "493d7feea716c928"
+  },
+  "explorer.collapse": {
+    "message": "সংযোগগুলো লুকান",
+    "description": "Details panel button: remove the neighbours this node added",
+    "_machine_translated": true,
+    "_source_hash": "9ca3f5c79baf49b1"
+  },
+  "explorer.pin": {
+    "message": "পিন করুন",
+    "description": "Details panel button: keep this node where it is",
+    "_machine_translated": true,
+    "_source_hash": "45fc23b6aa261414"
+  },
+  "explorer.unpin": {
+    "message": "আনপিন করুন",
+    "description": "Details panel button: let this node move again",
+    "_machine_translated": true,
+    "_source_hash": "ed7c0c537e5912c1"
+  },
+  "explorer.pinned": {
+    "message": "পিন করা হয়েছে",
+    "description": "Badge and announcement for a node that stays where you put it",
+    "_machine_translated": true,
+    "_source_hash": "87e19fbcd262c35b"
+  },
+  "explorer.unpinned": {
+    "message": "আনপিন করা হয়েছে",
+    "description": "Announced when a node is unpinned",
+    "_machine_translated": true,
+    "_source_hash": "567ce22ce887d134"
+  },
+  "explorer.state_pinned": {
+    "message": "পিন করা",
+    "description": "Node state in the explorer's list, after open/done/private",
+    "_machine_translated": true,
+    "_source_hash": "63550ce941cd6d4f"
+  },
+  "explorer.layout_undone": {
+    "message": "আগের জায়গায় ফেরানো হয়েছে",
+    "description": "Announced after undoing a move on the map (⌘/Ctrl+Z)",
+    "_machine_translated": true,
+    "_source_hash": "a67b08457613c098"
+  },
+  "explorer.layout_unreadable": {
+    "message": "সংরক্ষিত অবস্থানগুলো পড়া যায়নি। Mind Map-এর সেটিংসে ম্যাপের লেআউট রিসেট করুন।",
+    "description": "Explorer toast when the stored pinned positions are unreadable",
+    "_machine_translated": true,
+    "_source_hash": "55d6a56160c7c427"
+  },
+  "explorer.full": {
+    "message": "ম্যাপ পূর্ণ হয়ে গেছে। কিছু সংকুচিত করুন বা অন্য কিছুতে ফোকাস করুন।",
+    "description": "Explorer toast when the map already holds the most nodes it can",
+    "_machine_translated": true,
+    "_source_hash": "ef8d7fea460e4649"
+  },
+  "explorer.nothing_more": {
+    "message": "এর সাথে আর কিছু সংযুক্ত নেই।",
+    "description": "Explorer toast when showing connections adds nothing new",
+    "_machine_translated": true,
+    "_source_hash": "027d087a5e9b10ba"
+  },
+  "explorer.ask": {
+    "message": "জিজ্ঞাসা করুন",
+    "description": "Details panel button: start a question to your agent about this node",
+    "_machine_translated": true,
+    "_source_hash": "d4be9da47cc23485"
+  },
+  "explorer.ask_about": {
+    "message": "“{title}” সম্পর্কে আমার নোটে কী বলা আছে?",
+    "description": "Question put in the launcher by the explorer's Ask button; it follows the mm? trigger",
+    "_machine_translated": true,
+    "_source_hash": "61d0d0aca9c6f597"
+  },
+  "explorer.ask_private": {
+    "message": "ব্যক্তিগত আইটেম আপনার এজেন্টের কাছে পাঠানো হয় না।",
+    "description": "Why Ask is unavailable for a private item",
+    "_machine_translated": true,
+    "_source_hash": "375056c6933ba0f1"
+  },
+  "explorer.copy_path": {
+    "message": "পাথ কপি করুন",
+    "description": "Details panel button for a file: copy its path",
+    "_machine_translated": true,
+    "_source_hash": "18955b09212e73ac"
+  },
+  "explorer.path_copied": {
+    "message": "পাথ কপি করা হয়েছে",
+    "description": "Explorer toast after copying a file's path",
+    "_machine_translated": true,
+    "_source_hash": "21cd110c2677eec0"
+  },
+  "explorer.copy_failed": {
+    "message": "পাথ কপি করা যায়নি",
+    "description": "Explorer toast when copying a path fails",
+    "_machine_translated": true,
+    "_source_hash": "23ee9bbddf1a1001"
+  },
+  "explorer.private_title": {
+    "message": "ব্যক্তিগত আইটেম",
+    "description": "Window title when the explorer is centred on a private item",
+    "_machine_translated": true,
+    "_source_hash": "e773b80b1204a413"
+  },
+  "settings.section_explorer": {
+    "message": "ম্যাপ এক্সপ্লোরার",
+    "description": "Settings section for the full-window map explorer",
+    "_machine_translated": true,
+    "_source_hash": "af7b11af7f77b128"
+  },
+  "settings.open_explorer": {
+    "message": "ম্যাপ এক্সপ্লোরার খুলুন",
+    "description": "Settings action that opens the map explorer",
+    "_machine_translated": true,
+    "_source_hash": "8c676c99dced9b73"
+  },
+  "settings.open_explorer_hint": {
+    "message": "একটি উইন্ডো যেখানে আপনি আপনার ম্যাপ সরাতে, জুম করতে ও সাজাতে পারবেন।",
+    "description": "Description of the Open the map explorer action",
+    "_machine_translated": true,
+    "_source_hash": "6e475fda8bed75b0"
+  },
+  "settings.reset_layout": {
+    "message": "ম্যাপ লেআউট রিসেট করুন",
+    "description": "Settings action that forgets every pinned position",
+    "_machine_translated": true,
+    "_source_hash": "b0725b415f28725c"
+  },
+  "settings.reset_layout_hint": {
+    "message": "এক্সপ্লোরারে আপনার পিন করা অবস্থানগুলো মুছে ফেলে।",
+    "description": "Description of the Reset map layout action",
+    "_machine_translated": true,
+    "_source_hash": "5b9a6fa645b949eb"
+  },
+  "settings.reset_layout_confirm": {
+    "message": "ম্যাপ এক্সপ্লোরারে আপনার পিন করা সব অবস্থান মুছে ফেলবেন?",
+    "description": "Confirmation before resetting the map layout",
+    "_machine_translated": true,
+    "_source_hash": "3ccb8d34c4da1d2b"
+  },
+  "settings.layout_reset": {
+    "message": "ম্যাপ লেআউট রিসেট হয়েছে",
+    "description": "Status after resetting the map layout",
+    "_machine_translated": true,
+    "_source_hash": "50312a94b6a66433"
+  },
+  "settings.approve_views": {
+    "message": "ম্যাপ এক্সপ্লোরার ব্যবহার করতে Store-এ Mind Map-এর নতুন অনুমতি অনুমোদন করুন।",
+    "description": "Shown on a Kage that supports the explorer before the user approves its permission",
+    "_machine_translated": true,
+    "_source_hash": "79d91931f20bc8d9"
+  },
+  "files.row.add": {
+    "message": "একটি ফাইল যোগ করুন…",
+    "description": "Launcher row and button that open Kage’s file dialog to add a document",
+    "_machine_translated": true,
+    "_source_hash": "96157ca12f29c1fb"
+  },
+  "files.row.add_sub": {
+    "message": "টেক্সট, Markdown, PDF বা Word। Kage এটি এই কম্পিউটারেই পড়ে।",
+    "description": "Subtitle of Add a file…",
+    "_machine_translated": true,
+    "_source_hash": "c1c91bf24846c5bd"
+  },
+  "files.row.added_line": {
+    "message": "“{title}” যোগ করা হয়েছে",
+    "description": "First line of the response after adding a file; {title} is the document’s title",
+    "_machine_translated": true,
+    "_source_hash": "bfe01951b58dffcb"
+  },
+  "files.row.updated_line": {
+    "message": "“{title}” এর ফাইল থেকে আপডেট করা হয়েছে",
+    "description": "First line of the response after Update from file…",
+    "_machine_translated": true,
+    "_source_hash": "4cdc03dfccf7b8f0"
+  },
+  "files.row.pages": {
+    "message": "{n, plural, one {# পৃষ্ঠা} other {# পৃষ্ঠা}}",
+    "description": "Page count of a document in a search row or the explorer",
+    "_machine_translated": true,
+    "_source_hash": "ded72ec3586c2d0b"
+  },
+  "files.row.added_on": {
+    "message": "{day} যোগ করা হয়েছে",
+    "description": "When a document was added, e.g. “added Mon, Oct 26”",
+    "_machine_translated": true,
+    "_source_hash": "9bb8df77425355f1"
+  },
+  "files.row.passage_page": {
+    "message": "পৃ. {page}: {text}",
+    "description": "A matching passage of a document and the page it is on",
+    "_machine_translated": true,
+    "_source_hash": "14d11a47a0d6886b"
+  },
+  "files.chars": {
+    "message": "{count, plural, one {{chars} অক্ষর} other {{chars} অক্ষর}}",
+    "description": "A document’s size in characters; {chars} is the formatted number",
+    "_machine_translated": true,
+    "_source_hash": "200b4c7bda030819"
+  },
+  "files.pages_chars": {
+    "message": "{count, plural, one {# পৃষ্ঠা} other {# পৃষ্ঠা}}, {chars}",
+    "description": "A document’s pages and size; {chars} is e.g. “48,211 characters”",
+    "_machine_translated": true,
+    "_source_hash": "471d4919418d24c1"
+  },
+  "files.card.op_added": {
+    "message": "✓ যোগ করা হয়েছে",
+    "description": "Card header after adding a file (when no details are shown)",
+    "_machine_translated": true,
+    "_source_hash": "effd65b7ece8499d"
+  },
+  "files.card.op_updated": {
+    "message": "✓ ফাইল থেকে আপডেট করা হয়েছে",
+    "description": "Card header after Update from file… (when no details are shown)",
+    "_machine_translated": true,
+    "_source_hash": "9136d4071fcedcf4"
+  },
+  "files.card.added": {
+    "message": "{name} যোগ করা হয়েছে: {size}।",
+    "description": "After adding a file; {name} is the file name, {size} e.g. “12 pages, 48,211 characters”",
+    "_machine_translated": true,
+    "_source_hash": "2294d8e6e2156f06"
+  },
+  "files.card.updated": {
+    "message": "{name} আপডেট করা হয়েছে: {size}।",
+    "description": "After Update from file…; {name} is the file name, {size} e.g. “12 pages, 48,211 characters”",
+    "_machine_translated": true,
+    "_source_hash": "433eff6bbf854c81"
+  },
+  "files.card.found": {
+    "message": "পাওয়া গেছে: {list}।",
+    "description": "What Mind Map found in a document; {list} is e.g. “3 people, 2 projects and 4 suggested actions”",
+    "_machine_translated": true,
+    "_source_hash": "d8b4d1bda245ffa1"
+  },
+  "files.found.people": {
+    "message": "{n, plural, one {# জন ব্যক্তি} other {# জন ব্যক্তি}}",
+    "description": "Part of the Found list",
+    "_machine_translated": true,
+    "_source_hash": "d51b4aff9bf5fbdf"
+  },
+  "files.found.teams": {
+    "message": "{n, plural, one {#টি টিম} other {#টি টিম}}",
+    "description": "Part of the Found list",
+    "_machine_translated": true,
+    "_source_hash": "8e1cbe62a657488d"
+  },
+  "files.found.projects": {
+    "message": "{n, plural, one {#টি প্রজেক্ট} other {#টি প্রজেক্ট}}",
+    "description": "Part of the Found list",
+    "_machine_translated": true,
+    "_source_hash": "39f02bcf9f23161a"
+  },
+  "files.found.topics": {
+    "message": "{n, plural, one {#টি বিষয়} other {#টি বিষয়}}",
+    "description": "Part of the Found list",
+    "_machine_translated": true,
+    "_source_hash": "3d6cc0342ebc9b15"
+  },
+  "files.found.actions": {
+    "message": "{n, plural, one {#টি প্রস্তাবিত কাজ} other {#টি প্রস্তাবিত কাজ}}",
+    "description": "Part of the Found list",
+    "_machine_translated": true,
+    "_source_hash": "deafe84b9b9b8882"
+  },
+  "files.card.truncated": {
+    "message": "প্রথম {n}টি অক্ষর রাখা হয়েছে।",
+    "description": "The document was longer than the limit in settings",
+    "_machine_translated": true,
+    "_source_hash": "9dc453e0a5d52a22"
+  },
+  "files.card.no_text": {
+    "message": "কোনো টেক্সট পাওয়া যায়নি। এটি সম্ভবত একটি স্ক্যান করা PDF। শুধু ফাইলের নাম সেভ করা হয়েছে।",
+    "description": "The file had no text Kage could read",
+    "_machine_translated": true,
+    "_source_hash": "252f3d3196b86b0f"
+  },
+  "files.card.pages_skipped": {
+    "message": "প্রথম {n}টি পৃষ্ঠা পড়া হয়েছে।",
+    "description": "Kage read only part of a very long document",
+    "_machine_translated": true,
+    "_source_hash": "5e0a287fe6f5e89a"
+  },
+  "files.card.same": {
+    "message": "ইতিমধ্যে আপনার মাইন্ড ম্যাপে আছে ({date} তারিখে যোগ করা হয়েছে)",
+    "description": "The same file was added before; nothing changed",
+    "_machine_translated": true,
+    "_source_hash": "6d8dc18a7441fc65"
+  },
+  "files.card.copy_of": {
+    "message": "ইতিমধ্যে “{title}” নামে সেভ করা আছে",
+    "description": "A file with the same content is already saved",
+    "_machine_translated": true,
+    "_source_hash": "1c4dc3e210ea8438"
+  },
+  "files.card.unchanged": {
+    "message": "যোগ করার পর থেকে “{title}” পরিবর্তিত হয়নি।",
+    "description": "Update from file… picked the same file again",
+    "_machine_translated": true,
+    "_source_hash": "dd66eb0513d5c0fe"
+  },
+  "files.card.secret": {
+    "message": "এই ফাইলে সম্ভবত কোনো পাসওয়ার্ড বা কী আছে, তাই এটি ব্যক্তিগত রাখা হয়েছে: আপনার এজেন্ট এটি কখনো দেখতে পায় না।",
+    "description": "Shown when Kage flagged the text as secret-looking",
+    "_machine_translated": true,
+    "_source_hash": "31e246b1d6c21596"
+  },
+  "files.card.text_kept_local": {
+    "message": "এটি এই কম্পিউটারেই থাকে।",
+    "description": "Added to the secret note when sync is on",
+    "_machine_translated": true,
+    "_source_hash": "efeb45a61be1a56c"
+  },
+  "files.card.text_elsewhere": {
+    "message": "সম্পূর্ণ টেক্সটটি আপনার অন্য একটি কম্পিউটারে আছে।",
+    "description": "A document whose full text isn’t on this computer",
+    "_machine_translated": true,
+    "_source_hash": "978cdd39923748a5"
+  },
+  "files.action.reveal_to_agent": {
+    "message": "আমার এজেন্টকে এটি দেখতে দিন",
+    "description": "Button: lets the agent see a document kept private because it may hold a password",
+    "_machine_translated": true,
+    "_source_hash": "24d9bb720e071f67"
+  },
+  "files.action.update": {
+    "message": "ফাইল থেকে আপডেট করুন…",
+    "description": "Button: pick the file again and replace the document’s text",
+    "_machine_translated": true,
+    "_source_hash": "f11bad08e0c9b7c8"
+  },
+  "files.action.show_text": {
+    "message": "টেক্সট দেখান",
+    "description": "Button in the explorer that shows a document’s whole text",
+    "_machine_translated": true,
+    "_source_hash": "bd0d2b0f17a22895"
+  },
+  "files.action.hide_text": {
+    "message": "টেক্সট লুকান",
+    "description": "Button in the explorer that hides a document’s text again",
+    "_machine_translated": true,
+    "_source_hash": "8bebaba579cf4101"
+  },
+  "files.text.part": {
+    "message": "{total}টির মধ্যে {n} নং অংশ",
+    "description": "Which part of a long document’s text is shown",
+    "_machine_translated": true,
+    "_source_hash": "3e11688c004cae48"
+  },
+  "files.text.page": {
+    "message": "পৃ. {n}",
+    "description": "Where a page starts in a document’s text",
+    "_machine_translated": true,
+    "_source_hash": "2fbdf72dced9bf17"
+  },
+  "files.text.prev": {
+    "message": "আগের",
+    "description": "Button: the previous part of a document’s text",
+    "_machine_translated": true,
+    "_source_hash": "83a153b0df2b8f9c"
+  },
+  "files.text.next": {
+    "message": "পরের",
+    "description": "Button: the next part of a document’s text",
+    "_machine_translated": true,
+    "_source_hash": "4e6ad1f2861f9598"
+  },
+  "files.text.loading": {
+    "message": "টেক্সট লোড হচ্ছে…",
+    "description": "While a document’s text loads",
+    "_machine_translated": true,
+    "_source_hash": "08eec674e90b7621"
+  },
+  "files.error.too_large_hint": {
+    "message": "একটি ছোট কপি ব্যবহার করে দেখুন, অথবা এর একটি অংশ PDF হিসেবে সেভ করুন।",
+    "description": "Added after Kage’s “file is too large” message",
+    "_machine_translated": true,
+    "_source_hash": "8e39b95e9900eb86"
+  },
+  "files.error.storage_full": {
+    "message": "মাইন্ড ম্যাপের ডকুমেন্ট স্টোরেজ পূর্ণ (64 MB)। আগে কিছু ডকুমেন্ট মুছে ফেলুন।",
+    "description": "Adding a file was refused because document storage is full",
+    "_machine_translated": true,
+    "_source_hash": "37447422124fbd8e"
+  },
+  "files.error.bad_result": {
+    "message": "Kage এমন কিছু ফেরত পাঠিয়েছে যা Mind Map ব্যবহার করতে পারেনি, তাই কিছুই সংরক্ষণ করা হয়নি।",
+    "description": "The file text Kage returned failed Mind Map’s checks",
+    "_machine_translated": true,
+    "_source_hash": "3395d8c6f826425e"
+  },
+  "files.error.unavailable": {
+    "message": "Kage-এর এই কপি Mind Map-এর জন্য ফাইল পড়তে পারে না।",
+    "description": "Adding a file isn’t possible on this Kage",
+    "_machine_translated": true,
+    "_source_hash": "b8bc7add00ec064e"
+  },
+  "files.error.not_file": {
+    "message": "ওই আইটেমটি কোনো ফাইল থেকে যোগ করা হয়নি।",
+    "description": "Update from file… on an item that isn’t a picked document",
+    "_machine_translated": true,
+    "_source_hash": "452abbd49f6de298"
+  },
+  "settings.documents.title": {
+    "message": "ডকুমেন্ট",
+    "description": "Settings section",
+    "_machine_translated": true,
+    "_source_hash": "f0534e2658b92dd9"
+  },
+  "settings.documents.add": {
+    "message": "একটি ফাইল যোগ করুন…",
+    "description": "Settings action that opens Kage’s file dialog",
+    "_machine_translated": true,
+    "_source_hash": "e12094134fed5d55"
+  },
+  "settings.documents.max_chars": {
+    "message": "প্রতিটি ফাইলের সর্বোচ্চ … অক্ষর রাখুন",
+    "description": "Settings select; the options are numbers",
+    "_machine_translated": true,
+    "_source_hash": "70dcebaef5a09e4a"
+  },
+  "settings.documents.max_chars_hint": {
+    "message": "এর চেয়ে বড় ফাইল কেটে ছোট করা হয়। এখন থেকে যোগ করা ফাইলে প্রযোজ্য।",
+    "description": "Description of the character limit",
+    "_machine_translated": true,
+    "_source_hash": "2bea2283d146162b"
+  },
+  "settings.documents.max_chars_error": {
+    "message": "তালিকাভুক্ত সীমাগুলোর একটি বেছে নিন।",
+    "description": "Validation error for the character limit",
+    "_machine_translated": true,
+    "_source_hash": "509810a712275129"
+  },
+  "settings.documents.usage": {
+    "message": "ডকুমেন্ট স্টোরেজ: 64 MB-এর মধ্যে {used}",
+    "description": "How much document storage is used; {used} is e.g. 12.4",
+    "_machine_translated": true,
+    "_source_hash": "4ccdbe3d8f0553e1"
+  },
+  "settings.documents.usage_warn": {
+    "message": "ডকুমেন্ট স্টোরেজ প্রায় পূর্ণ। আরও যোগ করতে কিছু ডকুমেন্ট মুছে ফেলুন।",
+    "description": "Shown past 90% of document storage",
+    "_machine_translated": true,
+    "_source_hash": "0ad058f3926f4d59"
+  },
+  "settings.disclosure.files": {
+    "message": "আপনি কোনো ফাইল যোগ করলে Kage এই কম্পিউটারেই সেটি পড়ে এবং এর টেক্সট Mind Map-কে দেয়। Mind Map আপনার নোটের সাথে এর সর্বোচ্চ {n}টি অক্ষর রাখে। ফাইলটি কোথায় আছে, Kage কখনো Mind Map-কে জানায় না।",
+    "description": "Privacy disclosure about adding files; {n} is the character limit",
+    "_machine_translated": true,
+    "_source_hash": "8746c89af7d8c74e"
+  },
+  "settings.disclosure.background": {
+    "message": "ব্যাকগ্রাউন্ডে গোছানো চালু করলে, আপনি Kage ব্যবহার না করার সময় যেসব নতুন নোট ব্যক্তিগত হিসেবে চিহ্নিত করেননি সেগুলো ছোট ছোট ব্যাচে আপনার এজেন্টের কাছে পাঠানো হয়।",
+    "description": "Privacy disclosure about background organizing",
+    "_machine_translated": true,
+    "_source_hash": "40892fb15e4aa0c9"
+  },
+  "op.ingest": {
+    "message": "“{title}” যোগ করা হয়েছে",
+    "description": "Describes a change (used after Undo:)",
+    "_machine_translated": true,
+    "_source_hash": "08e94a674ef6ca0e"
+  },
+  "op.reread": {
+    "message": "“{title}” এর ফাইল থেকে আপডেট করা হয়েছে",
+    "description": "Describes a change (used after Undo:)",
+    "_machine_translated": true,
+    "_source_hash": "498a83d0e2c07931"
+  },
+  "export.documents": {
+    "message": "ডকুমেন্ট",
+    "description": "Export Markdown section listing documents added from files",
+    "_machine_translated": true,
+    "_source_hash": "738020c38720ab52"
+  },
+  "export.pages": {
+    "message": "{n, plural, one {#টি পৃষ্ঠা} other {#টি পৃষ্ঠা}}",
+    "description": "Page count in Export Markdown",
+    "_machine_translated": true,
+    "_source_hash": "657abbf8fc1ec142"
+  },
+  "tool.get_query": {
+    "message": "ঐচ্ছিক, ডকুমেন্টের জন্য: পুরো ডকুমেন্টে যে শব্দগুলো খুঁজতে হবে। সর্বোচ্চ {max} অক্ষরের সর্বাধিক {n}টি মিলে যাওয়া অংশ ফেরত আসে।",
+    "description": "Agent tool parameter description",
+    "_machine_translated": true,
+    "_source_hash": "80498175d8152d1d"
+  },
+  "manifest.sync_description": {
+    "message": "আপনার নোট, কাজ, নাম, ডকুমেন্ট ও ম্যাপ পিন, যাতে প্রতিটি কম্পিউটারে আপনার মাইন্ড ম্যাপ একই থাকে।",
+    "description": "Manifest sync.description: what Mind Map keeps in the Kage sync folder (at most 140 characters)",
+    "_machine_translated": true,
+    "_source_hash": "8343abed6e55e916"
+  },
+  "settings.section_sync": {
+    "message": "আপনার কম্পিউটারগুলোর মধ্যে সিঙ্ক",
+    "description": "Settings section heading for Kage folder sync",
+    "_machine_translated": true,
+    "_source_hash": "a50c94a9ff4262e5"
+  },
+  "settings.sync.status_off": {
+    "message": "এই কম্পিউটারে Mind Map-এর জন্য Kage সিঙ্ক বন্ধ আছে, তাই আপনার মাইন্ড ম্যাপ এখানেই থাকে। Kage-এর সেটিংস → সিঙ্ক থেকে এটি চালু করতে পারেন।",
+    "description": "Sync status line when Kage sync is off for Mind Map",
+    "_machine_translated": true,
+    "_source_hash": "cb4879a398b5a134"
+  },
+  "settings.sync.status_paused": {
+    "message": "Kage সিঙ্ক বিরতিতে আছে। এটি আবার চালু না হওয়া পর্যন্ত আপনার পরিবর্তনগুলো এই কম্পিউটারে অপেক্ষা করবে।",
+    "description": "Sync status line when Kage has paused sync",
+    "_machine_translated": true,
+    "_source_hash": "a3d910bb903d4e8e"
+  },
+  "settings.sync.status_on": {
+    "message": "{n, plural, =0 {Kage সিঙ্কের মাধ্যমে চালু। এখনো অন্য কোনো কম্পিউটার যুক্ত হয়নি।} one {Kage সিঙ্কের মাধ্যমে চালু, আরও #টি কম্পিউটারের সাথে।} other {Kage সিঙ্কের মাধ্যমে চালু, আরও #টি কম্পিউটারের সাথে।}} সর্বশেষ সিঙ্ক: {when}।",
+    "description": "Sync status line when sync is on; n = other computers, when = date and time",
+    "_machine_translated": true,
+    "_source_hash": "bb252dce7895de30"
+  },
+  "settings.sync.status_first": {
+    "message": "প্রথমবারের মতো আপনার মাইন্ড ম্যাপ সিঙ্ক ফোল্ডারে পাঠানো হচ্ছে…",
+    "description": "Sync status line during the first push from this computer",
+    "_machine_translated": true,
+    "_source_hash": "eae9673c94f2daf4"
+  },
+  "settings.sync.status_waiting": {
+    "message": "{n, plural, one {#টি পরিবর্তন} other {#টি পরিবর্তন}} সিঙ্কের অপেক্ষায় আছে।",
+    "description": "Sync status line: changes Kage hasn't taken yet",
+    "_machine_translated": true,
+    "_source_hash": "1c872f125542f94d"
+  },
+  "settings.sync.status_full": {
+    "message": "আপনার সিঙ্ক ফোল্ডারে Mind Map-এর জায়গা পূর্ণ হয়ে গেছে। নতুন পরিবর্তনগুলো এই কম্পিউটারেই থাকবে।",
+    "description": "Sync status warning when the extension's sync quota is used up",
+    "_machine_translated": true,
+    "_source_hash": "6e89736ddc633f3e"
+  },
+  "settings.sync.private_items": {
+    "message": "ব্যক্তিগত আইটেম সিঙ্ক করুন",
+    "description": "Checkbox: whether private items go to the sync folder",
+    "_machine_translated": true,
+    "_source_hash": "5ee3d5406b9d4403"
+  },
+  "settings.sync.private_items_hint": {
+    "message": "ব্যক্তিগত আইটেম কখনো আপনার এজেন্টের কাছে পাঠানো হয় না, কোনো কম্পিউটারেই না। এটি বন্ধ করলে এখন থেকে আপনি যেসব আইটেম ব্যক্তিগত করবেন, সেগুলো শুধু এই কম্পিউটারেই থাকবে। আপনার অন্য কম্পিউটারগুলোতে আগে থেকে থাকা ব্যক্তিগত আইটেম সেখানেই থেকে যাবে।",
+    "description": "Help text for Sync private items",
+    "_machine_translated": true,
+    "_source_hash": "b9f01c8186e46446"
+  },
+  "settings.disclosure.sync": {
+    "message": "Kage সিঙ্ক চালু থাকলে আপনার মাইন্ড ম্যাপ এনক্রিপ্ট করা অবস্থায় আপনার সিঙ্ক ফোল্ডারেও রাখা হয়, ফলে এটি আপনার সব কম্পিউটারে থাকে। এর মধ্যে উইন্ডোর শিরোনাম এবং আপনার যোগ করা ডকুমেন্টের লেখাও আছে, যা তবুও কখনো আপনার এজেন্টের কাছে পাঠানো হয় না। কোনো ডকুমেন্টে পাসওয়ার্ড বা কী আছে বলে Kage মনে করলে, সেটি নিজের কম্পিউটারেই থাকে।",
+    "description": "Privacy disclosure added where Kage offers folder sync",
+    "_machine_translated": true,
+    "_source_hash": "45539646a299c868"
+  },
+  "settings.delete_all_hint_sync": {
+    "message": "এই কম্পিউটার থেকে এবং Kage সিঙ্কের মাধ্যমে আপনার অন্য কম্পিউটারগুলো থেকে সব আইটেম, সব নাম ও আনডু ইতিহাস মুছে ফেলে।",
+    "description": "Delete everything help text when Kage sync is on",
+    "_machine_translated": true,
+    "_source_hash": "f85c8d54623f32f6"
+  },
+  "settings.delete_all_confirm_sync": {
+    "message": "এই কম্পিউটার ও আপনার অন্য কম্পিউটারগুলো থেকে পুরো মাইন্ড ম্যাপ মুছে ফেলবেন? Mind Map-এ এটি পূর্বাবস্থায় ফেরানো যাবে না। রেখে দিতে চাইলে আগে এক্সপোর্ট করুন।",
+    "description": "Delete everything confirmation when Kage sync is on",
+    "_machine_translated": true,
+    "_source_hash": "aaa396930b15b910"
+  },
+  "card.kept_here": {
+    "message": "আপনার অন্য কম্পিউটারগুলো থেকে সরানো হয়েছে: এটি শুধু এই কম্পিউটারেই থাকবে।",
+    "description": "Op card note: an item made private with Sync private items off",
+    "_machine_translated": true,
+    "_source_hash": "03ccb2cd18d96f2a"
   }
 }

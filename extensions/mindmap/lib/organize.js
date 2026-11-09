@@ -75,11 +75,30 @@ export function textHash(item) {
   return fnv1a(`${collapse(item?.title)}\n${collapse(item?.text)}`).toString(36);
 }
 
+// The entity `entity` redirects to through mergedInto (sync's dedupe leaves
+// items naming the merged-away copy), or itself.
+function canonical(state, entity) {
+  let current = entity;
+  for (let hops = 0; current?.mergedInto && hops < 16; hops++) {
+    const next = state?.entities?.get(current.mergedInto);
+    if (!next) break;
+    current = next;
+  }
+  return current || null;
+}
+
+// A private name, itself or through the entity it redirects to.
+function privateEntity(state, id) {
+  const entity = state?.entities?.get(id);
+  if (!entity) return false;
+  return !!entity.private || (!!entity.mergedInto && !!canonical(state, entity)?.private);
+}
+
 /** True for items the agent must never see: private, or naming a private entity (mind.isHidden). */
 export function hidden(item, state) {
   if (!item) return true;
   if (item.private) return true;
-  return (item.entityIds || []).some((id) => state?.entities?.get(id)?.private);
+  return (item.entityIds || []).some((id) => privateEntity(state, id));
 }
 
 // Mind's _agentOrganized without the children check, for callers that don't
@@ -268,9 +287,10 @@ export function notePayload(item, ctx, mine = myKeys(ctx)) {
   const names = [];
   const seen = new Set();
   for (const id of item.entityIds || []) {
-    if (id === 'me') continue;
-    const entity = state?.entities?.get(id);
-    if (!entity || entity.private || entity.mergedInto) continue;
+    if (id === 'me' || privateEntity(state, id)) continue;
+    // A name merged into another is sent as the one it redirects to.
+    const entity = canonical(state, state?.entities?.get(id));
+    if (!entity || entity.id === 'me' || entity.private || entity.mergedInto) continue;
     const name = lib.text.truncate(lib.text.collapseWs(stripAngles(entity.name)), L.nameChars);
     const key = lib.text.normalizeKey(name);
     if (!name || !key || mine.has(key) || seen.has(key)) continue;
@@ -302,7 +322,9 @@ export function vocabulary(state, ctx) {
   const visible = new Map();
   for (const item of state.items.values()) {
     if (item.archived || hidden(item, state)) continue;
-    for (const id of item.entityIds || []) visible.set(id, (visible.get(id) || 0) + 1);
+    const ids = new Set();
+    for (const id of item.entityIds || []) ids.add(canonical(state, state.entities.get(id))?.id || id);
+    for (const id of ids) visible.set(id, (visible.get(id) || 0) + 1);
   }
   const max = Number.isSafeInteger(ctx.max) && ctx.max >= 0 ? ctx.max : ORGANIZE_LIMITS.vocabulary;
   return [...state.entities.values()]

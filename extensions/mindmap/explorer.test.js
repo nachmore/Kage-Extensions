@@ -243,6 +243,18 @@ describe('privacy', () => {
     expect(view.compose).toHaveBeenCalledWith('mm? what do my notes say about “MTCS design review”?');
     for (const call of view.compose.mock.calls) expect(call[0]).not.toMatch(/salary/i);
   });
+
+  it('an item that names a private entity is not named in the window title either', async () => {
+    const dana = idOf('dana', 'person');
+    const { explorer, view, mind } = await openExplorer({ params: { focus: dana } });
+    const item = mind.item(F.F1);
+    const [eid] = item.entityIds.filter((id) => id !== 'me');
+    mind.state.entities.set(eid, { ...mind.state.entities.get(eid), private: true });
+    expect(item.private).toBeFalsy();
+    expect(mind.isHidden(item)).toBe(true);
+    explorer._setFocus(F.F1);
+    expect(view.setTitle).toHaveBeenLastCalledWith('Private item');
+  });
 });
 
 describe('re-centring', () => {

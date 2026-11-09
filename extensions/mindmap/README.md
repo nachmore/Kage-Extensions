@@ -299,9 +299,10 @@ approve Mind Map's "Sync between your computers" permission.
 - `mm undo` undoes your own changes on this computer. If another computer
   changed the same thing since, it says the change can't be undone.
 - Private items sync too, and are never sent to your agent on any
-  computer. Turn off **Sync private items** in settings to keep them on
-  the computer where they are; making a synced item private then removes it
-  from your other computers (its card says so, and Undo brings it back).
+  computer. Turn off **Sync private items** in settings to keep items you
+  make private from then on only on that computer: making a synced item
+  private then removes it from your other computers (its card says so, and
+  Undo brings it back). Private items they already have stay there.
 - A document Kage thinks holds a password or key stays on its computer. A
   document whose text is on another computer shows "The full text is on
   another of your computers", and search uses its title, summary and key
