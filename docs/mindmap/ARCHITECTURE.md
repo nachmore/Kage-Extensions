@@ -135,6 +135,7 @@ extensions/mindmap/
   lib/spatial.js               WP-V8  leaf      uniform grid: culling and hit tests
   lib/layout.js                WP-V8  leaf      relax(): force pass for runSandboxed (self-contained)
   lib/scene.js                 WP-V8  leaf      what the explorer draws: nodes, edges, seeds, expand
+  lib/files.js                 FT-MM1 leaf (lib-injected) documents from Kage's file_text: checks, dedupe, title, keyphrases, passages
   lib/*.test.js                owner of the module under test
   view.test.js, styles.test.js WP-C
   host-loader.test.js, mind.test.js, search.test.js, tools.test.js,
@@ -181,6 +182,7 @@ Logical dependencies between leaves (through `lib` injection, not imports):
 - `entities` uses `text`.
 - `extract` uses `text`, `dates`, `url`, `entities`.
 - `query` uses `text`, `dates`, `entities`.
+- `files` uses `text`.
 
 ---
 
@@ -616,6 +618,22 @@ canvas intents and panel commands into scene changes and Mind calls, saves
 mm-view (at most once every 2 s) and pins (mm-layout), and applies other
 windows' changes from `context.storage.onChanged`.
 
+### 5.24 `lib/files.js` (WP-FT-MM1, uses `lib.text`)
+
+Kage's EXTENSION_FILE_TEXT §11.3–11.7. Pure; FT-MM3 wires it into `mind.js`.
+
+```js
+export const FILE_REF_RE, SHA256_RE, FILE_WARNINGS, FILE_LIMITS, GENERIC_TITLE_RE;
+export function validateFileText(raw, { maxChars, maxBytes, formats });
+//   → { ok: true, file } | { ok: false, code }. `file` is camelCase: name, ext, format, size, modifiedAt?, title?,
+//     text, chars, truncated, totalChars?, pages?, pageStarts? (JS string offsets), warnings, sha256, fileRef.
+export function dedupeDecision(items, file, { targetId });   // → { case: 'same'|'update'|'copy'|'new', itemId? }
+export function addRef(refs, ref, max = 8);                  // newest last, oldest dropped
+export function docTitle(file, lib);                         // → { title, titleSource: 'meta'|'auto' }
+export function bodyKeyphrases(text, lib, { max = 64 });     // forms that tokenize back to their term
+export function findPassages(text, terms, lib, { max = 3, chars = 400, pageStarts }); // → [{ text, start, end, page? }], best first
+```
+
 ---
 
 ## 6. Data shapes (cross-module contracts)
@@ -806,6 +824,7 @@ Every test is vitest. `npm test` runs all of them, and
 | `view.js` (jsdom) | <br>• **Sanitizer-allowlist assertion**: a helper encodes SPEC §10.2's tag and attribute allowlist and walks every rendered card and chip; any other tag or attribute fails. <br>• Chips are inline (no block element inside `<p>` after `formatHtml`). <br>• Numbering and reuse; deleted and private chips. <br>• `formatHtml` idempotency (`formatHtml(formatHtml(x))` → `null`); `null` for HTML without markers; tokens inside `code`/`pre`/`a` untouched. <br>• Card replacement only for paragraphs that hold just the token. <br>• Staleness by uiRev/dataRev. <br>• State rebuilt from classes after `createFormatterState()`. <br>• `parseAction` for every grammar entry and rejection of junk; `applyUiAction` focus/back/home/more/mode/expand/dock. <br>• Map card a11y: role and aria-labels present, DOM order centre → up → left → right → down; `canNavigate:false` footer. <br>• Labels: `fmtRange` and `dueText` for the fixture dates; `interpLabel` strings for AT-1 and AT-2 (with a stub `t` that echoes keys and params). <br>• Escaping: user text `<img src=x onerror=…>` renders as text. |
 | `styles.css` | `styles.test.js` parses the CSS with a regex. Fails if a selector doesn't start with `.mm-` (`@media` allowed), on `position: fixed`/`sticky`, on `z-index` > 10, on `url(`, and if a `prefers-reduced-motion` guard is missing around transitions. |
 | Explorer (WP-V8) | `lib/camera.test.js`: round trips, zoom at a point, clamps, fit. `lib/spatial.test.js`: query, topmost hit, moves. `lib/layout.test.js`: overlaps resolved, fixed nodes still, deterministic, survives `Function.toString()` and runs in a plain worker. `lib/scene.test.js`: lanes, determinism, RTL mirroring, pins, lens, caps, expand/collapse, rebuild with positions kept. `explorer-canvas.test.js` (jsdom, recording 2D context): LOD, culling, RTL text, theme colours, drag/pan/wheel/pinch, handle. `explorer.test.js`: open with focus, a drag pins to mm-layout and shows after reopening, a non-self mm-meta change redraws once, a private node never reaches compose, `onOpen` re-centres, mm-view round trip, keyboard, panel actions with Undo. `explorer-entry.test.js`: rows, card buttons and settings with and without views; `mind.links`, pins, mm-view, export/import, Delete everything. `explorer-styles.test.js`: the CSS gate for `explorer.css`. |
+| `lib/files.js` (FT-MM1) | `validateFileText`: bad types, oversized fields, scalar counting, bad hex, bad ref, paths in names, page starts converted to string offsets. `dedupeDecision`: S, U, C, N, first match wins, oldest of equals, Update from file…. `addRef` cap. `docTitle`: usable titles, app defaults, paths. `bodyKeyphrases`: frequency, headings double, forms that re-tokenize, deterministic, 200,000 chars in <60 ms (soft). `findPassages`: length, best first, no overlap, folded spellings, the block test against a full scan, pages, surrogate pairs. |
 | `host-loader.test.js` | Copied from stocks and adapted. <br>• Windows: floating/chat = search + tools + formatter; settings = settings. <br>• Checks BFS discovery, no re-exports, composers import only leaves, leaves import nothing, every import is single-line, no `import … from './` text in comments. <br>• Loads every provider through the host's two-pass rewrite in Node and asserts the default export class names. |
 | `mind.test.js` | Load and sync (`syncIfStale` reloads only changed keys). Crash safety (AT-10). Read-only refuses writes and makes zero data writes. Two windows (AT-9). Undo (AT-8). Link enrichment (mock `fetch_link_metadata`; title only while `auto`; a reformat is requested). The window doc with an empty macOS title is not offered. `agentRecord` omits window and app, applies snippet caps and private exclusion. `askPrompt` with 0 and 8 records strips `<>`. `exportJson` and `deleteAll` (every key and twin deleted). |
 | `search.test.js` | `getKeywords` for the default and a custom trigger. The `mm+` preview row and execute → display with an op token. `mm+` empty → window row (and the hint). The home rows. Loading placeholder → `matchAsync` real rows; a second `matchAsync` with no change returns `[]`. Row ids contain no user text (fuzz with random input). Enter behaviours per kind (`open_url` invoked; doc focus → copy → card). Action toggle returns `replace_input`. `onResultAction` routing. |

@@ -1070,6 +1070,57 @@ the permission.
   `relax` and a 2,000-node frame stay inside their budgets. Matrix item 10
   (50 fps on a real WebView) waits for a Kage build with V1–V6.
 
+## WP-FT-MM1: the files leaf (`lib/files.js`)
+
+Kage's EXTENSION_FILE_TEXT §11.3–11.7, as a pure leaf that uses `lib.text`.
+Nothing imports it yet: FT-MM2 (model) and FT-MM3 (wiring) build on it. Kage's
+host side is built in parallel, so the tests use hand-built `pick_file_text`
+results in the §3.6 shape.
+
+- **`validateFileText`** returns `{ ok, file }` with camelCase fields, or
+  `{ ok: false, code }`. Unknown fields are dropped, so nothing the host adds
+  later is stored by accident. Beyond the design's list (types, lengths,
+  `chars` ≤ `maxChars`, hex, ref) it also refuses a name that is a path or
+  holds a control character, a lone surrogate, `total_chars` < `chars`, and
+  page starts outside the text, unordered, without `pages` or more than
+  `pages.read`. The format must be one that was asked for; a format or
+  warning this code doesn't know yet is accepted. `size` is capped at 32 MiB
+  unless the caller passes `support.max_input_bytes`.
+- **Page starts.** The wire type calls them a "char offset", and `chars`
+  counts scalar values, so they are read as scalar offsets and converted to
+  JS string offsets. Equal for text without emoji or rare scripts.
+- **Dedupe** names the cases `same`, `update`, `copy` and `new` (S, U, C, N).
+  Equal matches go to the oldest item. **Differs from the design:** with
+  **Update from file…** the doc the user chose decides, before S: it is
+  re-read unless its stored file has the same `sha256`, `chars` and
+  `truncated` (then `same`, or `copy` when it lacks the ref). So raising
+  "Keep up to … characters" and updating gets the longer text, and picking
+  another doc's file updates the doc the user chose. A target that is gone
+  falls back to S, U, C, N.
+- **Keyphrases.** Each comes back as the first spelling seen (`norm`), or the
+  stem, whichever tokenizes back to the term. The index re-tokenizes
+  `keyphrases`, and stems aren't always stable ("composed" → "compos" →
+  "compo"); RAKE keyphrases store `norm` too. Numbers, one-letter terms and
+  terms over 40 characters are left out, and so are the "## Slide N" and
+  "Notes:" lines Kage writes for structure. `#tag` lines aren't headings.
+  `model.js` still caps `keyphrases` at 5 (`LIMITS.keyphrases`): FT-MM2 has
+  to raise it for docs.
+- **Titles.** Besides "Microsoft Word - ", the PowerPoint and Excel prefixes
+  are stripped. App defaults ("Untitled", "Document1", "Slide 1", …), other
+  file names and paths don't count as usable titles.
+- **Passages** come best first: most distinct terms, then most hits, then
+  earliest. A passage is cut at spaces and trimmed to meet an earlier one
+  rather than dropped. Blocks of 4,096 characters are scanned only when the
+  folded block holds a term minus its last letter (the stemmer only changes
+  word endings); a test checks this against a full scan.
+- **Budgets** (Node, soft): keyphrases for 200,000 characters ~20 ms;
+  passages in 1,000,000 characters ~8 ms for a rare term, ~85 ms when every
+  block has a hit.
+- **Checks:** `npx vitest run extensions/mindmap` 33 files / 966 tests;
+  `npm test` 76 files / 2320 tests. `check:all` stops at `check:i18n`,
+  which already failed before this package on WP-V8's 59 EN-only keys
+  (translations pending); every other gate passes.
+
 ## Status
 
 **Works (P0/P1/P2, all phases of SPEC §2):**
