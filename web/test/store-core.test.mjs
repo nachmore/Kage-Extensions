@@ -369,6 +369,19 @@ describe('markup', () => {
         expect(html).not.toContain('data-details=');
     });
 
+    it('describes the views, file_text, agent_background and sync capabilities', () => {
+        const item = ext('x', { permissions: ['views', 'file_text', 'agent_background', 'sync'] });
+        const extra = extraFromManifest({ contributes: { views: [{ id: 'explorer' }] } });
+        expect(extra.contributes).toEqual(['views']);
+        const html = detailHtml(item, extra);
+        expect(html).toContain('Windows</b><span>Full windows it draws itself, such as a map.');
+        for (const cap of ['views', 'file_text', 'agent_background', 'sync']) {
+            expect(html, cap).toContain(`<b>${escapeHtml(CAPS[cap].label)}</b>`);
+            expect(html, cap).toContain(escapeHtml(CAPS[cap].description));
+        }
+        expect(html).not.toContain('doesn’t know about yet');
+    });
+
     it('says a theme asks for nothing and an online extension talks to a service', () => {
         expect(detailHtml(ITEMS[5])).toContain('A theme is colors only; it runs no code.');
         expect(detailHtml(ext('math'))).toContain('None. It doesn’t ask for any capabilities.');

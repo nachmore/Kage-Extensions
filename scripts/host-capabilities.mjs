@@ -126,6 +126,37 @@ export const COMMAND_CAPABILITIES = Object.freeze({
     pocket_tts_test: 'tts',
     pocket_tts_voices: 'tts',
 
+    // --- file_text (Kage docs/design/EXTENSION_FILE_TEXT.md §3.5) ------
+    // The host force-injects `extensionId` (and `displayName` for
+    // pick_file_text). Code that calls `context.files` instead of
+    // invoke() adds a `// permissions: file_text` hint.
+    pick_file_text: 'file_text',
+    cancel_file_text: 'file_text',
+    file_text_support: 'file_text',
+
+    // --- agent_background (EXTENSION_AGENT_CALLS.md §3.5) -------------
+    // Code that calls `context.agent` instead of invoke() adds a
+    // `// permissions: agent_background` hint.
+    agent_call_reserve: 'agent_background',
+    agent_call_ready: 'agent_background',
+    agent_call_send: 'agent_background',
+    agent_call_cancel: 'agent_background',
+    agent_call_status: 'agent_background',
+
+    // --- sync (SYNC.md §12.3) -----------------------------------------
+    // Code that calls `context.sync` instead of invoke() adds a
+    // `// permissions: sync` hint.
+    ext_sync_status: 'sync',
+    ext_sync_push: 'sync',
+    ext_sync_pull: 'sync',
+    ext_sync_ack: 'sync',
+
+    // --- views (EXTENSION_VIEWS.md §5) --------------------------------
+    // No command maps to `views`: the capability gates host behaviour
+    // (the `open_view` action and effect). The ext_view_* commands below
+    // are first-party only. Code that returns an `open_view` action adds
+    // a `// permissions: views` hint.
+
     // --- explicitly forbidden ----------------------------------------
     // Commands that exist in the host but are never callable from an
     // extension. Listed here so the analysis script can distinguish
@@ -268,6 +299,79 @@ export const COMMAND_CAPABILITIES = Object.freeze({
     get_shortcut_history: null,
     link_metadata_clear_cache: null,
     link_metadata_cache_stats: null,
+    get_frecency_key: null,
+    internal_sites_probe: null,
+    internal_sites_test: null,
+    internal_sites_draft_rules: null,
+    internal_sites_draft_script: null,
+    present_overlay_window: null,
+    set_tool_kind_trusted: null,
+    set_mcp_server_trusted: null,
+    approve_permissions_if_allowed: null,
+    begin_hotkey_recording: null,
+    end_hotkey_recording: null,
+    check_system_shortcut_conflicts: null,
+    allow_system_shortcut_override: null,
+    get_privacy_permissions: null,
+    repair_privacy_permission: null,
+    preview_config_export: null,
+    get_pending_context_menu: null,
+    context_menu_ready: null,
+    hide_context_menu: null,
+    launcher_result_actions: null,
+    launcher_result_action: null,
+    spell_suggestions: null,
+    learn_spelling: null,
+    // Host-only commands of the four designs in Kage's docs/design/
+    // (SYNC.md §23.3: every command they add that isn't listed above
+    // maps to null). Extension views (EXTENSION_VIEWS.md §16.1):
+    ext_view_open: null,
+    ext_view_boot: null,
+    ext_view_compose: null,
+    ext_view_copy_text: null,
+    ext_view_focus_state: null,
+    ext_view_list: null,
+    ext_view_reset_geometry: null,
+    // Background agent calls, settings panel (EXTENSION_AGENT_CALLS.md §3.6):
+    get_extension_agent_access: null,
+    set_extension_agent_access: null,
+    stop_extension_agent_calls: null,
+    get_extension_agent_request_detail: null,
+    // Folder sync (SYNC.md §19.5):
+    get_config_snapshot: null,
+    sync_get_status: null,
+    sync_suggest_folders: null,
+    sync_inspect_folder: null,
+    sync_generate_passphrase: null,
+    sync_create: null,
+    sync_join: null,
+    sync_confirm_join: null,
+    sync_unlock: null,
+    sync_set_paused: null,
+    sync_now: null,
+    sync_set_category: null,
+    sync_set_extension_data: null,
+    sync_get_scopes: null,
+    sync_set_scope: null,
+    sync_list_conflicts: null,
+    sync_conflict_detail: null,
+    sync_resolve_conflict: null,
+    sync_dismiss_all: null,
+    sync_list_reviews: null,
+    sync_approve_runnable: null,
+    sync_keep_off: null,
+    sync_dismiss_suggestion: null,
+    sync_answer_mass_change: null,
+    sync_list_devices: null,
+    sync_rename_device: null,
+    sync_prepare_destructive: null,
+    sync_remove_device: null,
+    sync_change_passphrase: null,
+    sync_leave: null,
+    sync_start_over: null,
+    sync_undo_join: null,
+    sync_purge_extension: null,
+    sync_find_folder: null,
 });
 
 /**
@@ -292,6 +396,11 @@ export const CAPABILITIES = Object.freeze({
     activity: { icon: '📊', label: 'Activity' },
     automation: { icon: '⚡', label: 'Automation' },
     tts: { icon: '🔈', label: 'Text-to-speech' },
+    // The four designs in Kage's docs/design/ (SYNC.md §23.3).
+    views: { icon: '🖼️', label: 'Its own windows' },
+    file_text: { icon: '📄', label: 'Files you choose' },
+    agent_background: { icon: '🌙', label: 'Background AI' },
+    sync: { icon: '🔄', label: 'Sync between your computers' },
 });
 
 /** Stable ordered list of capability names. */

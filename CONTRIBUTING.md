@@ -24,7 +24,7 @@ npm run build              # produce dist/ (catalog.json + per-id zips)
 
 | Script                     | What it checks                                                                                                                                                          |
 |----------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `npm run validate`         | Manifest schema: required fields, semver, capability names, contributes paths exist, ID/folder match, length limits, no unknown top-level fields, ID-collision sweep.   |
+| `npm run validate`         | Manifest schema: required fields, semver, capability names, contributes paths exist, ID/folder match, length limits, no unknown top-level fields, ID-collision sweep, `contributes.views` and `agentBackground` (each needs its capability). |
 | `npm run check:permissions`| Static analysis of `invoke('cmd', ...)` call sites cross-referenced with the host's `COMMAND_CAPABILITIES`. Errors on used-but-undeclared, warns on declared-but-unused. |
 | `npm run check:security`   | Forbids dynamic code and remote scripts, flags HTML interpolation, and fails on undeclared sensitive storage keys or config fields (see [Sensitive data](#sensitive-data)). |
 | `npm run check:i18n`       | Every `__MSG_*__` token in manifest + every `t('key')` call in code must resolve in `_locales/en/messages.json`. Non-EN catalogs flagged for empty / TODO strings.       |

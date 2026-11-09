@@ -46,6 +46,7 @@ const CODE_PROVIDER_KEYS = [
     'toolbarButtons',
     'settingsProvider',
     'widgets',
+    'views',
 ];
 
 const errors = [];

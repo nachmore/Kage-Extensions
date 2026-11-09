@@ -274,3 +274,249 @@ describe('settings-only backup declarations', () => {
         expect(issues[1]).toContain(`manifest.json:${backupLine}:`);
     });
 });
+
+// A fixture with bundle files next to its manifest (view modules, CSS, the
+// EN catalog).
+async function validateWithFiles(metadata, files = {}) {
+    const id = `fixture-${++seq}`;
+    const dir = path.join(root, id);
+    mkdirSync(dir);
+    for (const [rel, content] of Object.entries(files)) {
+        const file = path.join(dir, rel);
+        mkdirSync(path.dirname(file), { recursive: true });
+        writeFileSync(file, content);
+    }
+    const manifest = {
+        id, name: 'Fixture', version: '1.0.0', type: 'extension',
+        description: 'Test manifest.', author: 'Contributor', icon: '🔧',
+        permissions: [], ...metadata,
+    };
+    const file = path.join(dir, 'manifest.json');
+    writeFileSync(file, JSON.stringify(manifest, null, 2));
+    return validateManifest(file, 'extension', id);
+}
+
+const VIEW_FILES = {
+    'explorer.js': 'export default {};\n',
+    'explorer.css': '.x { color: red; }\n',
+    '_locales/en/messages.json': JSON.stringify({
+        'view.explorer.title': { message: 'Explorer' },
+        'view.long.title': { message: 'x'.repeat(61) },
+        'agent.reason': { message: 'Sorts your notes.' },
+        'agent.long_reason': { message: 'x'.repeat(301) },
+    }),
+};
+const explorer = (extra = {}) => ({
+    id: 'explorer', title: '__MSG_view.explorer.title__', icon: '🗺️',
+    module: './explorer.js', css: ['./explorer.css'],
+    defaultSize: { width: 1200, height: 800 }, minSize: { width: 640, height: 420 },
+    ...extra,
+});
+const withViews = (views, permissions = ['storage', 'views']) =>
+    validateWithFiles({ permissions, contributes: { views } }, VIEW_FILES);
+
+describe('contributes.views', () => {
+    it('accepts the documented example and the minimal entry', async () => {
+        expect(await withViews([explorer()])).toEqual([]);
+        expect(await withViews([{ id: 'board', title: 'Board', module: './explorer.js' }])).toEqual([]);
+        expect(await withViews(['a', 'b', 'c', 'd'].map((id) => explorer({ id })))).toEqual([]);
+    });
+
+    it('needs the views capability, and the capability needs a view', async () => {
+        expect(await withViews([explorer()], ['storage'])).toEqual([
+            expect.stringContaining("'contributes.views' needs 'views' in 'permissions'"),
+        ]);
+        expect(await withViews([], ['views'])).toEqual([
+            expect.stringContaining("'views' in 'permissions' needs at least one 'contributes.views' entry"),
+        ]);
+        expect(await validateWithFiles({ permissions: ['views'] })).toEqual([
+            expect.stringContaining("needs at least one 'contributes.views' entry"),
+        ]);
+    });
+
+    it('rejects a non-array, a non-object entry and more than 4 entries', async () => {
+        expect(await withViews({ id: 'explorer' })).toEqual([
+            expect.stringContaining("'contributes.views' must be an array"),
+            expect.stringContaining("needs at least one 'contributes.views' entry"),
+        ]);
+        expect(await withViews(['explorer'])).toEqual([expect.stringContaining('entry 0 must be an object')]);
+        expect(await withViews(['a', 'b', 'c', 'd', 'e'].map((id) => explorer({ id })))).toEqual([
+            expect.stringContaining('has 5 entries; Kage uses the first 4'),
+        ]);
+    });
+
+    it.each(['', 'Explorer', '1map', 'map_view', 'a'.repeat(33), null, 7])('rejects view id %j', async (id) => {
+        expect(await withViews([explorer({ id })])).toEqual([expect.stringContaining("'id' must match")]);
+    });
+
+    it('rejects duplicate ids and unknown fields', async () => {
+        expect(await withViews([explorer(), explorer()])).toEqual([
+            expect.stringContaining("duplicate view id 'explorer'"),
+        ]);
+        expect(await withViews([explorer({ position: { x: 0, y: 0 }, alwaysOnTop: true })])).toEqual([
+            expect.stringContaining("unknown field 'position'"),
+            expect.stringContaining("unknown field 'alwaysOnTop'"),
+        ]);
+    });
+
+    it('checks the title, resolving __MSG_ tokens through the EN catalog', async () => {
+        expect(await withViews([explorer({ title: undefined })])).toEqual([
+            expect.stringContaining("'title' is required"),
+        ]);
+        expect(await withViews([explorer({ title: '  ' })])).toEqual([
+            expect.stringContaining("'title' is required"),
+        ]);
+        expect(await withViews([explorer({ title: 'x'.repeat(61) })])).toEqual([
+            expect.stringContaining("'title' must be 1–60 characters"),
+        ]);
+        expect(await withViews([explorer({ title: '__MSG_view.long.title__' })])).toEqual([
+            expect.stringContaining("'title' must be 1–60 characters"),
+        ]);
+        expect(await withViews([explorer({ title: 'x'.repeat(60) })])).toEqual([]);
+        // A missing key is check:i18n's to report.
+        expect(await withViews([explorer({ title: '__MSG_view.missing__' })])).toEqual([]);
+    });
+
+    it.each(['', '🗺️🗺️', 'map', 7])('rejects icon %j', async (icon) => {
+        expect(await withViews([explorer({ icon })])).toEqual([expect.stringContaining("'icon' must be one emoji")]);
+    });
+
+    it('accepts a joined emoji as one icon', async () => {
+        expect(await withViews([explorer({ icon: '👩‍💻' })])).toEqual([]);
+    });
+
+    it.each([undefined, 'explorer.js', './explorer.mjs', '/explorer.js', 7])('rejects module %j', async (module) => {
+        expect(await withViews([explorer({ module })])).toEqual([
+            expect.stringContaining("'module' is required: a './…/*.js' path"),
+        ]);
+    });
+
+    it('rejects a module or CSS file that is not in the bundle', async () => {
+        expect(await withViews([explorer({ module: './missing.js', css: ['./missing.css'] })])).toEqual([
+            expect.stringContaining('referenced file not found: ./missing.js'),
+            expect.stringContaining('referenced file not found: ./missing.css'),
+        ]);
+    });
+
+    it('checks the CSS list: paths, count and sizes', async () => {
+        expect(await withViews([explorer({ css: './explorer.css' })])).toEqual([
+            expect.stringContaining("'css' must be an array"),
+        ]);
+        expect(await withViews([explorer({ css: ['explorer.css', './explorer.js'] })])).toEqual([
+            expect.stringContaining("'css' entry 0 must be a './…/*.css' path"),
+            expect.stringContaining("'css' entry 1 must be a './…/*.css' path"),
+        ]);
+        expect(await withViews([explorer({ css: Array(9).fill('./explorer.css') })])).toEqual([
+            expect.stringContaining("'css' has 9 files; at most 8"),
+        ]);
+        const big = 'a'.repeat(256 * 1024 + 1);
+        const files = { ...VIEW_FILES, 'a.css': big, 'b.css': big, 'c.css': big, 'd.css': big };
+        const issues = await validateWithFiles({
+            permissions: ['views'],
+            contributes: { views: [explorer({ css: ['./a.css', './b.css', './c.css', './d.css'] })] },
+        }, files);
+        expect(issues.filter((i) => i.includes('per file'))).toHaveLength(4);
+        expect(issues.filter((i) => i.includes('in total'))).toHaveLength(1);
+    });
+
+    it('checks defaultSize and minSize against the host clamps', async () => {
+        expect(await withViews([explorer({ defaultSize: { width: 400, height: 2200 }, minSize: undefined })])).toEqual([
+            expect.stringContaining("'defaultSize.width' must be 480–3840"),
+            expect.stringContaining("'defaultSize.height' must be 360–2160"),
+        ]);
+        expect(await withViews([explorer({ defaultSize: [1200, 800] })])).toEqual([
+            expect.stringContaining("'defaultSize' must be { \"width\""),
+        ]);
+        expect(await withViews([explorer({ minSize: { width: 300, height: 900 } })])).toEqual([
+            expect.stringContaining("'minSize.width' must be 320–1200"),
+            expect.stringContaining("'minSize.height' must be 240–800"),
+        ]);
+        // Without a defaultSize, minSize is capped by the host default (1100 × 760).
+        expect(await withViews([explorer({ defaultSize: undefined, minSize: { width: 1101, height: 760 } })])).toEqual([
+            expect.stringContaining("'minSize.width' must be 320–1100"),
+        ]);
+        // The cap is the clamped default size.
+        expect((await withViews([explorer({ defaultSize: { width: 5000, height: 800 }, minSize: { width: 3841, height: 420 } })]))
+            .some((i) => i.includes("'minSize.width' must be 320–3840"))).toBe(true);
+    });
+
+    it('reports the offending view field on its own line', async () => {
+        const [issue] = await withViews([explorer({ minSize: { width: 100, height: 420 } })]);
+        expect(issue).toMatch(/manifest\.json:\d+: /);
+        expect(Number(issue.match(/manifest\.json:(\d+):/)[1])).toBeGreaterThan(1);
+    });
+});
+
+describe('agentBackground', () => {
+    const agent = (block, permissions = ['storage', 'agent_background']) =>
+        validateWithFiles({ permissions, agentBackground: block }, VIEW_FILES);
+    const ok = { reason: '__MSG_agent.reason__', purposes: ['organize'] };
+
+    it('accepts the documented example and a plain-text reason', async () => {
+        expect(await agent({ ...ok, maxPromptChars: 16000, dailyCalls: 40 })).toEqual([]);
+        expect(await agent({ reason: 'Sorts your notes.', purposes: ['organize', 'summarize_2'] })).toEqual([]);
+    });
+
+    it('needs the agent_background capability, and the capability needs the block', async () => {
+        expect(await agent(ok, ['storage'])).toEqual([
+            expect.stringContaining("'agentBackground' needs 'agent_background' in 'permissions'"),
+        ]);
+        expect(await validateWithFiles({ permissions: ['agent_background'] })).toEqual([
+            expect.stringContaining("needs an 'agentBackground' block"),
+        ]);
+    });
+
+    it.each([null, [], 'organize'])('rejects a non-object block %j', async (block) => {
+        expect(await agent(block)).toEqual([expect.stringContaining("'agentBackground' must be an object")]);
+    });
+
+    it('rejects unknown fields', async () => {
+        expect(await agent({ ...ok, model: 'fast' })).toEqual([expect.stringContaining("unknown field 'model'")]);
+    });
+
+    it.each([undefined, '', '   ', 7])('requires a reason: %j', async (reason) => {
+        expect(await agent({ ...ok, reason })).toEqual([expect.stringContaining("'agentBackground.reason' is required")]);
+    });
+
+    it('limits the reason to 300 characters after token resolution', async () => {
+        expect(await agent({ ...ok, reason: 'x'.repeat(300) })).toEqual([]);
+        expect(await agent({ ...ok, reason: 'x'.repeat(301) })).toEqual([
+            expect.stringContaining("'agentBackground.reason' must be 1–300 characters"),
+        ]);
+        expect(await agent({ ...ok, reason: '__MSG_agent.long_reason__' })).toEqual([
+            expect.stringContaining("'agentBackground.reason' must be 1–300 characters"),
+        ]);
+    });
+
+    it.each([undefined, [], 'organize', Array.from({ length: 9 }, (_, i) => `p${i}`)])(
+        'rejects purposes %j', async (purposes) => {
+            expect(await agent({ ...ok, purposes })).toEqual([
+                expect.stringContaining("'agentBackground.purposes' must be an array of 1–8 purpose ids"),
+            ]);
+        });
+
+    it.each(['Organize', '1st', 'sort-notes', '', 'a'.repeat(25), 7])('rejects purpose id %j', async (id) => {
+        expect(await agent({ ...ok, purposes: [id] })).toEqual([
+            expect.stringContaining("'agentBackground.purposes' entry 0 must match"),
+        ]);
+    });
+
+    it('rejects duplicate purposes', async () => {
+        expect(await agent({ ...ok, purposes: ['organize', 'organize'] })).toEqual([
+            expect.stringContaining("duplicate purpose 'organize'"),
+        ]);
+    });
+
+    it.each([0, -1, 1.5, '40', null, Number.MAX_SAFE_INTEGER + 1])('rejects maxPromptChars and dailyCalls %j', async (n) => {
+        expect(await agent({ ...ok, maxPromptChars: n, dailyCalls: n })).toEqual([
+            expect.stringContaining("'agentBackground.maxPromptChars' must be a positive integer"),
+            expect.stringContaining("'agentBackground.dailyCalls' must be a positive integer"),
+        ]);
+    });
+});
+
+describe('the new capabilities', () => {
+    it('knows file_text and sync, which need no manifest block here', async () => {
+        expect(await validateWithFiles({ permissions: ['storage', 'file_text', 'sync'] })).toEqual([]);
+    });
+});

@@ -22,6 +22,10 @@
 //   - `contributes.*` paths exist on disk and start with './'.
 //   - `contributes.mascotActivities` (if present): array of strings, all
 //     from the host's closed activity vocabulary, no duplicates.
+//   - `contributes.views` (if present): Kage's EXTENSION_VIEWS §4 rules,
+//     and `views` in `permissions` (both ways).
+//   - `agentBackground` (if present): Kage's EXTENSION_AGENT_CALLS §3.2
+//     rules, and `agent_background` in `permissions` (both ways).
 //   - No unknown top-level fields (catches typos like `permission`).
 //   - Required fields for the catalog: `author`.
 //   - Config types, primitive enums (host limits), and string-only plain
@@ -59,6 +63,31 @@ const MAX_CONFIG_ENUM_BYTES = 128;
 const NAME_MAX_LEN = 50;
 const DESCRIPTION_MAX_LEN = 200;
 
+// `__MSG_key__`, resolved against the extension's EN catalog for length
+// checks. check:i18n reports a key that's missing.
+const MSG_TOKEN_RE = /^__MSG_([\w.\-]+)__$/;
+
+// Extension views: Kage docs/design/EXTENSION_VIEWS.md §4. The host drops
+// a bad entry with a warning, so a mistake here means a window that never
+// opens.
+const VIEW_MAX = 4;
+const VIEW_ID_PATTERN = /^[a-z][a-z0-9-]{0,31}$/;
+const VIEW_TITLE_MAX = 60;
+const VIEW_ICON_MAX_CHARS = 8;
+const VIEW_CSS_MAX = 8;
+const VIEW_CSS_FILE_MAX_BYTES = 256 * 1024;
+const VIEW_CSS_TOTAL_MAX_BYTES = 1024 * 1024;
+const VIEW_FIELDS = new Set(['id', 'title', 'icon', 'module', 'css', 'defaultSize', 'minSize']);
+const VIEW_DEFAULT_SIZE = { width: [480, 3840], height: [360, 2160] };
+const VIEW_DEFAULT_SIZE_FALLBACK = { width: 1100, height: 760 };
+const VIEW_MIN_SIZE_FLOOR = { width: 320, height: 240 };
+
+// Background agent calls: Kage docs/design/EXTENSION_AGENT_CALLS.md §3.2.
+const AGENT_BACKGROUND_FIELDS = new Set(['reason', 'purposes', 'maxPromptChars', 'dailyCalls']);
+const AGENT_REASON_MAX = 300;
+const AGENT_PURPOSES_MAX = 8;
+const AGENT_PURPOSE_PATTERN = /^[a-z][a-z0-9_]{0,23}$/;
+
 // Manifest fields we know about. Anything outside this set is a typo
 // (e.g. `permission` instead of `permissions`) — fail closed.
 const KNOWN_TOP_LEVEL_FIELDS = new Set([
@@ -74,6 +103,7 @@ const KNOWN_TOP_LEVEL_FIELDS = new Set([
     'contributes',
     'config',
     'sensitiveData',
+    'agentBackground',
     'sandboxVendor',
     'homepage',
     'repository',
@@ -348,7 +378,34 @@ export async function validateManifest(manifestPath, expectedKind, dirName) {
                     if (typeof v === 'string') await checkRel(loc, manifestPath, v, note, ['contributes', 'themes', key]);
                 }
             }
+            if (m.contributes.views !== undefined) {
+                await checkViews(loc, manifestPath, m.contributes.views, note);
+            }
         }
+    }
+
+    // --- views and agentBackground need their capability ----------------
+    // Each declaration only works with its capability, and each capability
+    // only does something with its declaration.
+    if (m.type === 'extension') {
+        const perms = Array.isArray(m.permissions) ? m.permissions : [];
+        const views = m.contributes && typeof m.contributes === 'object' ? m.contributes.views : undefined;
+        const hasViews = Array.isArray(views) && views.length > 0;
+        if (hasViews && !perms.includes('views')) {
+            note(loc, `'contributes.views' needs 'views' in 'permissions'; without it Kage never opens these windows`, ['contributes', 'views']);
+        }
+        if (perms.includes('views') && !hasViews) {
+            note(loc, `'views' in 'permissions' needs at least one 'contributes.views' entry`, ['permissions', perms.indexOf('views')]);
+        }
+        if (m.agentBackground !== undefined && !perms.includes('agent_background')) {
+            note(loc, `'agentBackground' needs 'agent_background' in 'permissions'`, ['agentBackground']);
+        }
+        if (perms.includes('agent_background') && m.agentBackground === undefined) {
+            note(loc, `'agent_background' in 'permissions' needs an 'agentBackground' block (reason and purposes)`, ['permissions', perms.indexOf('agent_background')]);
+        }
+    }
+    if (m.agentBackground !== undefined) {
+        await checkAgentBackground(loc, manifestPath, m.agentBackground, note);
     }
 
     // --- Folder ↔ id parity --------------------------------------------
@@ -358,17 +415,191 @@ export async function validateManifest(manifestPath, expectedKind, dirName) {
     return issues;
 }
 
+// Returns the file's stats, or null when the path is bad or missing.
 async function checkRel(loc, manifestPath, relPath, note, parts) {
-    if (typeof relPath !== 'string') return;
+    if (typeof relPath !== 'string') return null;
     if (!relPath.startsWith('./') && !relPath.startsWith('/')) {
         note(loc, `path '${relPath}' should start with './'`, parts);
-        return;
+        return null;
     }
     const abs = path.resolve(path.dirname(manifestPath), relPath);
     try {
-        await stat(abs);
+        return await stat(abs);
     } catch {
         note(loc, `referenced file not found: ${relPath}`, parts);
+        return null;
+    }
+}
+
+// The EN catalog next to a manifest, or null.
+async function readEnCatalog(manifestPath) {
+    try {
+        return JSON.parse(await readFile(path.join(path.dirname(manifestPath), '_locales', 'en', 'messages.json'), 'utf8'));
+    } catch {
+        return null;
+    }
+}
+
+// A manifest string as English text: a `__MSG_key__` token resolves through
+// the EN catalog. null when it can't be resolved here.
+function resolveText(value, catalog) {
+    const m = MSG_TOKEN_RE.exec(value);
+    if (!m) return value;
+    const message = catalog?.[m[1]]?.message;
+    return typeof message === 'string' ? message : null;
+}
+
+const charCount = (s) => Array.from(s).length;
+
+async function checkViews(loc, manifestPath, views, note) {
+    const at = ['contributes', 'views'];
+    if (!Array.isArray(views)) {
+        note(loc, `'contributes.views' must be an array`, at);
+        return;
+    }
+    if (views.length > VIEW_MAX) {
+        note(loc, `'contributes.views' has ${views.length} entries; Kage uses the first ${VIEW_MAX} and ignores the rest`, at);
+    }
+    let catalog;
+    const seen = new Set();
+    for (const [i, v] of views.entries()) {
+        const vat = [...at, i];
+        const where = `'contributes.views' entry ${i}`;
+        if (!v || typeof v !== 'object' || Array.isArray(v)) {
+            note(loc, `${where} must be an object`, vat);
+            continue;
+        }
+        for (const k of Object.keys(v)) {
+            if (!VIEW_FIELDS.has(k)) {
+                note(loc, `${where}: unknown field '${k}' (known fields: ${[...VIEW_FIELDS].join(', ')})`, [...vat, k]);
+            }
+        }
+        if (typeof v.id !== 'string' || !VIEW_ID_PATTERN.test(v.id)) {
+            note(loc, `${where}: 'id' must match ${VIEW_ID_PATTERN}`, [...vat, 'id']);
+        } else if (seen.has(v.id)) {
+            note(loc, `duplicate view id '${v.id}'`, [...vat, 'id']);
+        }
+        if (typeof v.id === 'string') seen.add(v.id);
+
+        if (typeof v.title !== 'string' || v.title.trim() === '') {
+            note(loc, `${where}: 'title' is required (a string or a __MSG_key__ token)`, [...vat, 'title']);
+        } else {
+            if (catalog === undefined) catalog = await readEnCatalog(manifestPath);
+            const text = resolveText(v.title, catalog);
+            if (text !== null && (text.trim() === '' || charCount(text.trim()) > VIEW_TITLE_MAX)) {
+                note(loc, `${where}: 'title' must be 1–${VIEW_TITLE_MAX} characters`, [...vat, 'title']);
+            }
+        }
+
+        if (v.icon !== undefined &&
+            (typeof v.icon !== 'string' || graphemeCount(v.icon) !== 1 || charCount(v.icon) > VIEW_ICON_MAX_CHARS)) {
+            note(loc, `${where}: 'icon' must be one emoji (at most ${VIEW_ICON_MAX_CHARS} characters)`, [...vat, 'icon']);
+        }
+
+        if (typeof v.module !== 'string' || !v.module.startsWith('./') || !v.module.endsWith('.js')) {
+            note(loc, `${where}: 'module' is required: a './…/*.js' path in the bundle`, [...vat, 'module']);
+        } else {
+            await checkRel(loc, manifestPath, v.module, note, [...vat, 'module']);
+        }
+
+        if (v.css !== undefined) {
+            if (!Array.isArray(v.css)) {
+                note(loc, `${where}: 'css' must be an array of paths`, [...vat, 'css']);
+            } else {
+                if (v.css.length > VIEW_CSS_MAX) {
+                    note(loc, `${where}: 'css' has ${v.css.length} files; at most ${VIEW_CSS_MAX}`, [...vat, 'css']);
+                }
+                let total = 0;
+                for (const [j, c] of v.css.entries()) {
+                    const cat = [...vat, 'css', j];
+                    if (typeof c !== 'string' || !c.startsWith('./') || !c.endsWith('.css')) {
+                        note(loc, `${where}: 'css' entry ${j} must be a './…/*.css' path in the bundle`, cat);
+                        continue;
+                    }
+                    const st = await checkRel(loc, manifestPath, c, note, cat);
+                    if (!st) continue;
+                    total += st.size;
+                    if (st.size > VIEW_CSS_FILE_MAX_BYTES) {
+                        note(loc, `${where}: ${c} is ${st.size} bytes; at most ${VIEW_CSS_FILE_MAX_BYTES} per file`, cat);
+                    }
+                }
+                if (total > VIEW_CSS_TOTAL_MAX_BYTES) {
+                    note(loc, `${where}: its CSS is ${total} bytes; at most ${VIEW_CSS_TOTAL_MAX_BYTES} in total`, [...vat, 'css']);
+                }
+            }
+        }
+
+        const size = (value, name) => {
+            if (value === undefined) return null;
+            if (!value || typeof value !== 'object' || Array.isArray(value) ||
+                !Number.isFinite(value.width) || !Number.isFinite(value.height)) {
+                note(loc, `${where}: '${name}' must be { "width": <number>, "height": <number> }`, [...vat, name]);
+                return null;
+            }
+            return value;
+        };
+        const def = size(v.defaultSize, 'defaultSize');
+        if (def) {
+            for (const dim of ['width', 'height']) {
+                const [lo, hi] = VIEW_DEFAULT_SIZE[dim];
+                if (def[dim] < lo || def[dim] > hi) {
+                    note(loc, `${where}: 'defaultSize.${dim}' must be ${lo}–${hi} (Kage clamps it)`, [...vat, 'defaultSize', dim]);
+                }
+            }
+        }
+        const min = size(v.minSize, 'minSize');
+        if (min) {
+            for (const dim of ['width', 'height']) {
+                const lo = VIEW_MIN_SIZE_FLOOR[dim];
+                // The default size Kage uses: the declared one, clamped.
+                const [dlo, dhi] = VIEW_DEFAULT_SIZE[dim];
+                const hi = def ? Math.min(Math.max(def[dim], dlo), dhi) : VIEW_DEFAULT_SIZE_FALLBACK[dim];
+                if (min[dim] < lo || min[dim] > hi) {
+                    note(loc, `${where}: 'minSize.${dim}' must be ${lo}–${hi}, at most the default size (Kage clamps it)`, [...vat, 'minSize', dim]);
+                }
+            }
+        }
+    }
+}
+
+async function checkAgentBackground(loc, manifestPath, block, note) {
+    const at = ['agentBackground'];
+    if (!block || typeof block !== 'object' || Array.isArray(block)) {
+        note(loc, `'agentBackground' must be an object`, at);
+        return;
+    }
+    for (const k of Object.keys(block)) {
+        if (!AGENT_BACKGROUND_FIELDS.has(k)) {
+            note(loc, `'agentBackground': unknown field '${k}' (known fields: ${[...AGENT_BACKGROUND_FIELDS].join(', ')})`, [...at, k]);
+        }
+    }
+    if (typeof block.reason !== 'string' || block.reason.trim() === '') {
+        note(loc, `'agentBackground.reason' is required (a string or a __MSG_key__ token)`, [...at, 'reason']);
+    } else {
+        const text = resolveText(block.reason, await readEnCatalog(manifestPath));
+        if (text !== null && (text.trim() === '' || charCount(text.trim()) > AGENT_REASON_MAX)) {
+            note(loc, `'agentBackground.reason' must be 1–${AGENT_REASON_MAX} characters`, [...at, 'reason']);
+        }
+    }
+    const purposes = block.purposes;
+    if (!Array.isArray(purposes) || purposes.length === 0 || purposes.length > AGENT_PURPOSES_MAX) {
+        note(loc, `'agentBackground.purposes' must be an array of 1–${AGENT_PURPOSES_MAX} purpose ids`, [...at, 'purposes']);
+    } else {
+        const seen = new Set();
+        for (const [i, id] of purposes.entries()) {
+            if (typeof id !== 'string' || !AGENT_PURPOSE_PATTERN.test(id)) {
+                note(loc, `'agentBackground.purposes' entry ${i} must match ${AGENT_PURPOSE_PATTERN}`, [...at, 'purposes', i]);
+            } else if (seen.has(id)) {
+                note(loc, `duplicate purpose '${id}' in 'agentBackground.purposes'`, [...at, 'purposes', i]);
+            }
+            seen.add(id);
+        }
+    }
+    for (const k of ['maxPromptChars', 'dailyCalls']) {
+        const n = block[k];
+        if (n !== undefined && !(Number.isSafeInteger(n) && n > 0)) {
+            note(loc, `'agentBackground.${k}' must be a positive integer`, [...at, k]);
+        }
     }
 }
 

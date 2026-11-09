@@ -94,6 +94,30 @@ export const CAPS = Object.freeze({
         description: 'Emit signals that can trigger automations.',
     },
     tts: { icon: '🔈', label: 'Text-to-speech', description: 'Use text-to-speech voices.' },
+    views: {
+        icon: '🖼️',
+        label: 'Its own windows',
+        description:
+            'Show windows the extension draws itself, such as a map or a board. What you type in those windows goes to the extension. Kage labels them with the extension’s name.',
+    },
+    file_text: {
+        icon: '📄',
+        label: 'Files you choose',
+        description:
+            'Ask you to pick a file, then read its text (plain text, Markdown, PDF, Word, …). It gets only the file you pick, each time, never its folder or any other file.',
+    },
+    agent_background: {
+        icon: '🌙',
+        label: 'Background AI',
+        description:
+            'Ask your AI agent for help in the background, without a chat. Nothing is sent until you turn it on for this extension and confirm which agent gets the text.',
+    },
+    sync: {
+        icon: '🔄',
+        label: 'Sync between your computers',
+        description:
+            'Copies this extension’s data, encrypted, to your sync folder so your other computers get it. Only when Kage sync is on.',
+    },
 });
 
 // What each `contributes` key adds to Kage, in display order. Keys missing
@@ -107,6 +131,7 @@ export const CONTRIBUTES = Object.freeze({
     triggerProvider: { label: 'Automation triggers', text: 'Signals that can start your automations.' },
     mascotActivities: { label: 'Cat reactions', text: 'Lets the cat react to what’s going on.' },
     settingsProvider: { label: 'Settings page', text: 'Its own page in Kage’s settings.' },
+    views: { label: 'Windows', text: 'Full windows it draws itself, such as a map.' },
     themes: { label: 'Colors', text: 'A dark and a light palette for every window.' },
 });
 

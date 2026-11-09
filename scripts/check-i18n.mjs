@@ -36,10 +36,10 @@ const args = new Set(process.argv.slice(2));
 const flagAll = args.has('--all');
 
 // `t('key')`, `t("key")`, `i18n.t('key')`, `this.t('key')`,
-// `context.i18n.t('key')`, etc. The leading-boundary class
-// `(?:^|[^\w$])` allows `.` (so `this.t` matches) but rejects word
-// chars (so `prevent.t` doesn't).
-const T_CALL_RE = /(?:^|[^\w$])(?:[\w.$]*\.)?t\s*\(\s*['"]([\w.\-]+)['"]/g;
+// `context.i18n.t('key')`, `context.i18n?.t?.('key')`, etc. The
+// leading-boundary class `(?:^|[^\w$])` allows `.` (so `this.t` matches)
+// but rejects word chars (so `prevent.t` doesn't).
+const T_CALL_RE = /(?:^|[^\w$])(?:[\w.$?]*\.)?t\s*(?:\?\.)?\s*\(\s*['"]([\w.\-]+)['"]/g;
 
 // Author-supplied hint for dynamic key lookups, e.g.
 // `// i18n-keys: wmo.*` for `t(\`wmo.${code}\`)`. Each comma-separated
@@ -116,8 +116,13 @@ async function checkExtension(itemKey) {
     // extension uses i18n at all. An extension with no tokens and no
     // t() calls in code can legitimately omit _locales/.
     const manifestTokens = new Set();
-    for (const field of ['name', 'description']) {
-        const v = manifest[field];
+    const localizable = [
+        manifest.name,
+        manifest.description,
+        manifest.agentBackground?.reason,
+        ...(Array.isArray(manifest.contributes?.views) ? manifest.contributes.views.map((v) => v?.title) : []),
+    ];
+    for (const v of localizable) {
         if (typeof v === 'string') {
             const m = v.match(MSG_TOKEN_RE);
             if (m) manifestTokens.add(m[1]);
