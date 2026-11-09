@@ -255,6 +255,34 @@ change back. Run it again for the next batch.
 On macOS, window titles need the Screen Recording permission. Without it, only
 the app's name is remembered and "Save the window you came from" isn't offered.
 
+## Background organizing (off by default)
+
+On a Kage that can ask your agent in the background, Mind Map can do what
+`mm organize` does without you asking: turn on **Organize new notes in the
+background** in settings, then **Allow on this computer…**. Kage shows which
+agent will get your notes and asks you to confirm. Nothing is sent before
+that, and you confirm again if you switch agents.
+
+- While you aren't using Kage, Mind Map sends up to 15 new notes at a time
+  (saved at least two minutes ago, from the last week) and the names you
+  already use. Your agent sends back short summaries, names, key terms and
+  suggested actions that quote the note.
+- Private notes, notes that name a private person or topic, and documents
+  Kage thought hold a password or key are never sent. Nor are window titles,
+  apps, folders or the names that mean you.
+- What it adds only adds, and its actions are suggestions for `mm review`.
+  A note you change, delete or make private while its batch is out isn't
+  touched.
+- The note's card says "✦ Organized by your agent", with **Undo organizing**
+  for the batch it came in. `mm undo` leaves background changes alone and
+  undoes your own.
+- Settings shows how many notes are organized and waiting, **Organize now**
+  and **Organize older notes too**. Kage lists every request, what was sent
+  and how many requests are left today in Mind Map's Background AI panel,
+  and can stop or pause them.
+- On several computers, each organizes its own new notes first, and the
+  others' after a day.
+
 ## Privacy
 
 Your mind map is stored only on this computer, in Kage's extension data
@@ -281,6 +309,9 @@ export first if you want to keep it.
   can be undone.
 - Kage asks you before each Mind Map tool is used for the first time. Turn the
   tools off in settings ("Let your agent search and add to your mind map").
+- Background organizing is off until you turn it on and confirm the agent in
+  Kage. Then new notes you haven't marked private are sent to your agent in
+  small batches while you aren't using Kage.
 - Mind Map stores no passwords, keys or other credentials, and sends no
   telemetry.
 
@@ -323,3 +354,4 @@ items.
 | `windows` | Saving the window you came from, and jumping back to an open document. |
 | `views` | The explorer's own window. |
 | `file_text` | Reading a file you pick with **Add a file…**: only that file, each time, never its folder or any other file. |
+| `agent_background` | Background organizing, off until you turn it on and confirm which agent gets your notes. |

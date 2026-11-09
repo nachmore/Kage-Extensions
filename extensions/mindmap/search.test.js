@@ -3,6 +3,7 @@
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import { F2_WINDOW, FIXTURE_NOW, buildCorpus, captureVia, makeHarness, rowById } from '../../test-helpers/mindmap/corpus.mjs';
 import { FILE_FEATURES, fileText, hostError, installFiles } from '../../test-helpers/mindmap/file-host.mjs';
+import { AGENT_FEATURES, createAgentHost } from '../../test-helpers/mindmap/agent-host.mjs';
 import { makeContext } from '../../test-helpers/mindmap/corpus.mjs';
 import MindMapSearchProvider, { splitTrigger } from './search.js';
 
@@ -491,5 +492,32 @@ describe('documents from a file', () => {
     const n = calls.length;
     await g.search.onResultAction(`mm:b${blk}:a:update:${other.itemId}`);
     expect(calls).toHaveLength(n);
+  });
+});
+
+describe('background organizing on a card (EXTENSION_AGENT_CALLS §11.6)', () => {
+  it('Undo organizing on an item card takes the batch back; mm undo still targets the capture', async () => {
+    const g = await makeHarness({ atomic: true, hostFeatures: AGENT_FEATURES, config: { background_organize: true } });
+    const agent = createAgentHost();
+    agent.install(g.context);
+    g.at(FIXTURE_NOW - 3_600_000);
+    await g.mind.ready();
+    await g.mind.whenOrganized();
+    const id = (await g.mind.capture('Lunch with Dana about the hiring plan and the offsite budget for spring.')).itemId;
+    g.at(FIXTURE_NOW);
+    agent.reply((request) => ({ json: { items: request.input.notes.map((n) => ({ ref: n.ref, summary: 'Hiring plan lunch with Dana.' })) } }));
+    expect(await g.mind.organizeTick()).toMatchObject({ ok: true, organized: 1 });
+    const fmt = { streaming: false };
+    let html = await g.formatter.format(`<p>[mm-card:item:${id}]</p>`, fmt);
+    const blk = / mm-b([0-9a-z]+) mm-r/.exec(html)[1];
+    const opId = g.mind.itemVM(id).organized.opId;
+    expect(html).toContain('✦ Organized by your agent');
+    expect(html).toContain(`mm:b${blk}:a:undo:${opId}`);
+    expect(g.mind.undoTarget().op.created.items).toContain(id);
+    expect(await g.search.onResultAction(`mm:b${blk}:a:undo:${opId}`)).toEqual({});
+    expect(g.mind.item(id).summary).toBeUndefined();
+    expect(g.mind.item(id).org.state).toBe('done');
+    html = (await g.formatter.format(html, fmt)) ?? html;
+    expect(html).not.toContain('Organized by your agent');
   });
 });

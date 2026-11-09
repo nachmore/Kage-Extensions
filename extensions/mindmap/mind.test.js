@@ -7,6 +7,8 @@ import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from 'vitest
 import { createMemoryHost } from '../../test-helpers/mindmap/memory-host.mjs';
 import { F2_WINDOW, F6_DUMP, FIXTURE_NOW, local, makeContext } from '../../test-helpers/mindmap/corpus.mjs';
 import { FILE_FEATURES, fakeRef, fileText, hostError, installFiles } from '../../test-helpers/mindmap/file-host.mjs';
+import { AGENT_FEATURES, MACHINE_TAG, OTHER_MACHINE_TAG, createAgentHost } from '../../test-helpers/mindmap/agent-host.mjs';
+import { SCHEMA } from './lib/organize.js';
 import { Mind, getMind } from './mind.js';
 import { LIMITS } from './defaults.js';
 import * as idlib from './lib/ids.js';
@@ -1146,5 +1148,436 @@ describe('documents from a file (EXTENSION_FILE_TEXT §11)', () => {
     expect(passage.text).toContain('Zanzibar');
     expect(passage.text.length).toBeLessThanOrEqual(160);
     expect(passage.page).toBe(4);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Background organizing (Kage EXTENSION_AGENT_CALLS §11), with a fake
+// context.agent (test-helpers/mindmap/agent-host.mjs).
+
+const HOUR = 3_600_000;
+const DAY = 24 * HOUR;
+const NOTE_A = 'Lunch with Dana about the MTCS hiring plan; someone should send the offsite budget around.';
+const NOTE_B = 'Vendor call notes about the pricing changes for the walrus launch in spring.';
+
+function orgSetup({ config = {}, agent, hostFeatures = AGENT_FEATURES, timers = {} } = {}) {
+  const host = createMemoryHost({ atomic: true });
+  const ctx = makeContext(host, { config: { background_organize: true, ...config }, hostFeatures });
+  const fake = agent || createAgentHost();
+  fake.install(ctx);
+  // The loop's own timers stay out of the way unless a test sets them.
+  const mind = new Mind(ctx, { organizeDebounceMs: HOUR, organizeEveryMs: HOUR, ...timers });
+  return { host, ctx, agent: fake, mind };
+}
+
+function orgWindow(host, agent, config = {}) {
+  const ctx = makeContext(host, { invoke: host.connect().invoke, config: { background_organize: true, ...config }, hostFeatures: AGENT_FEATURES });
+  agent.install(ctx);
+  return new Mind(ctx, { organizeDebounceMs: HOUR, organizeEveryMs: HOUR });
+}
+
+// Loads (the first pass caches the machine tag and sets orgSince), saves
+// `texts` and lets them settle.
+async function seeded(mind, texts) {
+  await mind.ready();
+  await mind.whenOrganized();
+  const ids = [];
+  for (const text of texts) ids.push((await mind.capture(text)).itemId);
+  vi.setSystemTime(FIXTURE_NOW + 5 * 60_000);
+  return ids;
+}
+
+const refOf = (request, word) => request.input.notes.find((n) => `${n.title} ${n.text || ''}`.includes(word)).ref;
+// A reply with one entry per note in the request.
+const replyAll = (fn) => (request) => ({ json: { items: request.input.notes.map((n) => ({ ref: n.ref, ...fn(n) })) } });
+const bgAction = (mind, id) => mind.childrenOf(id).find((c) => c.kind === 'action' && c.source?.via === 'background');
+
+describe('background organizing (EXTENSION_AGENT_CALLS §11)', () => {
+  it('is off by default: nothing is asked, sent or stamped', async () => {
+    const { mind, agent } = orgSetup({ config: { background_organize: undefined } });
+    const [id] = await seeded(mind, [NOTE_A]);
+    expect(mind.settings.background_organize).toBe(false);
+    expect(await mind.organizeTick()).toEqual({ ok: false, code: 'off' });
+    expect(await mind.organizeNow()).toEqual({ ok: false, code: 'off' });
+    expect(agent.calls).toEqual([]);
+    expect(agent.statusCalls).toBe(0);
+    expect(mind.item(id).source.dev).toBeUndefined();
+    expect(mind.state.meta.orgSince).toBeUndefined();
+  });
+
+  it('needs agent.background and context.agent: an older host changes nothing', async () => {
+    const { mind, agent } = orgSetup({ hostFeatures: [] });
+    const [id] = await seeded(mind, [NOTE_A]);
+    expect(mind.canOrganize).toBe(false);
+    expect(await mind.organizeTick()).toEqual({ ok: false, code: 'off' });
+    expect(await mind.organizeNow()).toEqual({ ok: false, code: 'unavailable' });
+    expect(await mind.organizeInfo()).toEqual({ available: false });
+    expect(agent.calls).toEqual([]);
+    expect(agent.statusCalls).toBe(0);
+    expect(mind.item(id).source.dev).toBeUndefined();
+    expect(mind.itemVM(id).organized).toBeUndefined();
+    // The feature without context.agent is off too.
+    const ctx = makeContext(createMemoryHost(), { config: { background_organize: true }, hostFeatures: AGENT_FEATURES });
+    expect(new Mind(ctx).canOrganize).toBe(false);
+  });
+
+  it('sends a settled batch at Kage’s turn and applies the reply as one silent op', async () => {
+    const { mind, agent } = orgSetup();
+    const [a, b] = await seeded(mind, [NOTE_A, NOTE_B]);
+    expect(mind.item(a).source.dev).toBe(MACHINE_TAG);
+    expect(mind.state.meta.orgSince).toBe(FIXTURE_NOW - 7 * DAY);
+    agent.reply((request) => ({ json: { items: [
+      {
+        ref: refOf(request, 'Lunch'), summary: 'Hiring plan lunch with Dana.', entities: [{ name: 'Offsite', type: 'topic' }],
+        actions: [{ text: 'Send the offsite budget', quote: 'send the offsite budget around' }],
+      },
+      { ref: refOf(request, 'Vendor'), skip: true },
+    ] } }));
+    const out = await mind.organizeTick();
+    expect(out).toMatchObject({ ok: true, organized: 1, skipped: 1, stale: 0 });
+    expect(agent.calls.at(-1)).toMatchObject({ purpose: 'organize', when: 'idle', dedupeKey: 'organize', signal: true, outcome: 'ok' });
+    // What was sent: refs, never ids, the window, the app or the tag.
+    const { request, prompt } = agent.requests.at(-1);
+    expect(request).toMatchObject({ label: 'Organize 2 notes', maxResponseChars: 12000, timeoutMs: 90000, schema: JSON.parse(JSON.stringify(SCHEMA)) });
+    expect(request.input.notes.map((n) => n.ref)).toEqual(['n1', 'n2']);
+    expect(request.input.today).toBe('2026-11-06');
+    expect([...prompt].length).toBeLessThanOrEqual(16000);
+    const sent = JSON.stringify(request);
+    for (const leak of [a, b, MACHINE_TAG, 'launcher']) expect(sent).not.toContain(leak);
+    // Applied: the summary and name, a suggested action, and the marks.
+    expect(mind.item(a)).toMatchObject({ summary: 'Hiring plan lunch with Dana.', summarySource: 'agent', org: { state: 'done', v: 1 } });
+    expect(mind.item(b).org.state).toBe('skipped');
+    expect(mind.item(b).summary).toBeUndefined();
+    expect(bgAction(mind, a)).toMatchObject({ status: 'open', suggested: true, owner: 'me', quote: 'send the offsite budget around' });
+    expect(mind.itemVM(a).entities.map((e) => e.name)).toContain('Offsite');
+    // `mm undo` still targets the user's last capture; the card offers Undo organizing.
+    expect(mind.undoTarget().op.created.items).toContain(b);
+    const organized = mind.itemVM(a).organized;
+    expect(organized).toMatchObject({ canUndo: true, count: 1 });
+    expect(mind.state.ops.find((op) => op.opId === organized.opId)).toMatchObject({ kind: 'annotate', via: 'background', silent: true });
+    expect(mind.itemVM(b).organized).toBeUndefined();
+    // Neither `mm organize` nor the next pass sends them again.
+    expect(mind.organizeItems().map((i) => i.id)).not.toContain(a);
+    expect(await mind.organizeTick()).toEqual({ ok: false, code: 'nothing' });
+    expect(agent.requests).toHaveLength(1);
+  });
+
+  it('one batch at a time across windows: another window’s duplicate does nothing', async () => {
+    const { host, mind: a, agent } = orgSetup();
+    const b = orgWindow(host, agent);
+    await b.ready();
+    await b.whenOrganized();
+    const [id] = await seeded(a, [NOTE_A]);
+    const turn = agent.holdTurn();
+    const first = a.organizeTick();
+    await turn.reached;
+    expect(await b.organizeTick()).toMatchObject({ ok: false, code: 'duplicate' });
+    turn.release();
+    expect(await first).toMatchObject({ ok: true, organized: 0, skipped: 1 });
+    await b.syncIfStale(0);
+    expect(b.item(id).org.state).toBe('skipped');
+    expect(await b.organizeTick()).toEqual({ ok: false, code: 'nothing' });
+    expect(agent.requests).toHaveLength(1);
+  });
+
+  it('gives the turn back when nothing is eligible by then', async () => {
+    const { mind, agent } = orgSetup();
+    const [id] = await seeded(mind, [NOTE_A]);
+    const turn = agent.holdTurn();
+    const pass = mind.organizeTick();
+    await turn.reached;
+    await mind.setPrivate(id, true);
+    turn.release();
+    expect(await pass).toEqual({ ok: false, code: 'nothing' });
+    expect(agent.calls.at(-1).outcome).toBe('empty');
+    expect(agent.requests).toEqual([]);
+    expect(mind.item(id).org).toBeUndefined();
+  });
+
+  it('leaves a note that changed while the batch was out for a later batch', async () => {
+    const { mind, agent } = orgSetup();
+    const [a, b] = await seeded(mind, [NOTE_A, NOTE_B]);
+    const held = agent.holdReply();
+    agent.reply(replyAll(() => ({ summary: 'A short summary of the note.' })));
+    const pass = mind.organizeTick();
+    await held.reached;
+    await mind.setArchived(a, true);
+    held.release();
+    expect(await pass).toMatchObject({ ok: true, organized: 1, stale: 1 });
+    expect(mind.item(a).org).toBeUndefined();
+    expect(mind.item(a).summary).toBeUndefined();
+    expect(mind.item(b)).toMatchObject({ summary: 'A short summary of the note.', org: { state: 'done' } });
+  });
+
+  it.each([
+    ['made private', (mind, id) => mind.setPrivate(id, true)],
+    ['deleted', (mind, id) => mind.remove(id)],
+  ])('cancels the call when a note in the batch is %s, and applies nothing', async (_, change) => {
+    const { mind, agent } = orgSetup();
+    const [a, b] = await seeded(mind, [NOTE_A, NOTE_B]);
+    const held = agent.holdReply();
+    agent.reply(replyAll(() => ({ summary: 'A short summary of the note.' })));
+    const pass = mind.organizeTick();
+    await held.reached;
+    await change(mind, a);
+    expect(await pass).toMatchObject({ ok: false, code: 'cancelled_by_extension' });
+    held.release();
+    expect(agent.calls.at(-1).outcome).toBe('cancelled_by_extension');
+    expect(mind.item(b).org).toBeUndefined();
+    expect(mind.item(b).summary).toBeUndefined();
+  });
+
+  it('turning the switch off cancels a call in flight and stops the loop', async () => {
+    const { mind, agent } = orgSetup();
+    const [a] = await seeded(mind, [NOTE_A]);
+    const held = agent.holdReply();
+    const pass = mind.organizeTick();
+    await held.reached;
+    mind.setConfig({ week_start: 'mon', background_organize: false });
+    expect(await pass).toMatchObject({ ok: false, code: 'cancelled_by_extension' });
+    held.release();
+    expect(mind.item(a).org).toBeUndefined();
+    expect(await mind.organizeTick()).toEqual({ ok: false, code: 'off' });
+    // A capture now carries no machine tag.
+    expect(mind.item((await mind.capture(NOTE_B)).itemId).source.dev).toBeUndefined();
+  });
+
+  it.each([
+    ['not_json', { text: 'Sorry, I can’t help with that.' }],
+    ['invalid_response', { json: { items: 'none' } }],
+    ['timeout', 'timeout'],
+    ['response_too_large', 'response_too_large'],
+    ['agent_error', 'agent_error'],
+    ['prompt_too_large', 'prompt_too_large'],
+  ])('%s marks the batch failed; it goes again after an hour', async (code, reply) => {
+    const { mind, agent } = orgSetup();
+    const [a, b] = await seeded(mind, [NOTE_A, NOTE_B]);
+    agent.reply(reply);
+    expect(await mind.organizeTick()).toMatchObject({ ok: false, code });
+    const now = FIXTURE_NOW + 5 * 60_000;
+    for (const id of [a, b]) expect(mind.item(id).org).toMatchObject({ state: 'failed', tries: 1, next: now + HOUR });
+    expect(mind.item(a).summary).toBeUndefined();
+    expect(await mind.organizeTick()).toEqual({ ok: false, code: 'nothing' });
+    vi.setSystemTime(now + HOUR + 1000);
+    agent.reply(replyAll(() => ({ summary: 'A short summary of the note.' })));
+    expect(await mind.organizeTick()).toMatchObject({ ok: true, organized: 2 });
+    expect(mind.item(a).org.state).toBe('done');
+  });
+
+  it('tool_attempted marks the batch failed and the settings page warns for a day', async () => {
+    const { host, mind, agent } = orgSetup();
+    const [a] = await seeded(mind, [NOTE_A]);
+    agent.reply('tool_attempted');
+    expect(await mind.organizeTick()).toMatchObject({ ok: false, code: 'tool_attempted' });
+    expect(mind.item(a).org).toMatchObject({ state: 'failed', tries: 1 });
+    expect(JSON.parse(host.files.get('mm-org'))).toMatchObject({ toolAt: FIXTURE_NOW + 5 * 60_000 });
+    expect(await mind.organizeInfo()).toMatchObject({ available: true, access: 'on', toolWarning: true });
+    vi.setSystemTime(FIXTURE_NOW + 25 * HOUR);
+    expect((await mind.organizeInfo()).toolWarning).toBe(false);
+    await mind.deleteAll();
+    expect(host.files.has('mm-org')).toBe(false);
+  });
+
+  it.each(['budget_exhausted', 'rate_limited', 'paused'])('%s waits until the time Kage gives, marking nothing', async (code) => {
+    const { mind, agent } = orgSetup();
+    const [a] = await seeded(mind, [NOTE_A]);
+    const now = FIXTURE_NOW + 5 * 60_000;
+    agent.nextStartAt = new Date(now + 2 * HOUR).toISOString();
+    agent.refuse = [code];
+    expect(await mind.organizeTick()).toMatchObject({ ok: false, code });
+    expect(mind.item(a).org).toBeUndefined();
+    const calls = agent.calls.length;
+    expect(await mind.organizeTick()).toEqual({ ok: false, code: 'waiting' });
+    expect(agent.calls).toHaveLength(calls);
+    vi.setSystemTime(now + 2 * HOUR + 1000);
+    agent.nextStartAt = null;
+    expect(await mind.organizeTick()).toMatchObject({ ok: true, skipped: 1 });
+  });
+
+  it.each(['consent_stale', 'access_off', 'consent_required', 'not_available', 'cancelled_access_off'])('%s stops the loop until Kage’s access is on again', async (code) => {
+    const { mind, agent } = orgSetup();
+    const [a] = await seeded(mind, [NOTE_A]);
+    agent.refuse = [code];
+    expect(await mind.organizeTick()).toMatchObject({ ok: false, code });
+    // While access is off, a pass asks Kage first and reserves nothing.
+    agent.access = 'consent_stale';
+    const calls = agent.calls.length;
+    expect(await mind.organizeTick()).toEqual({ ok: false, code: 'consent_stale' });
+    expect(agent.calls).toHaveLength(calls);
+    expect(mind.item(a).org).toBeUndefined();
+    // Kage broadcasts a config update when access changes.
+    agent.access = 'on';
+    mind.setConfig(mind.context.config);
+    await mind.whenOrganized();
+    expect(mind.item(a).org.state).toBe('skipped');
+  });
+
+  it.each(['agent_unavailable', 'agent_disconnected', 'cancelled_user_activity', 'cancelled_by_user', 'turn_expired', 'queue_full'])(
+    '%s marks nothing; the next pass tries again', async (code) => {
+      const { mind, agent } = orgSetup();
+      const [a] = await seeded(mind, [NOTE_A]);
+      agent.reply(code);
+      expect(await mind.organizeTick()).toMatchObject({ ok: false, code });
+      expect(mind.item(a).org).toBeUndefined();
+      expect(await mind.organizeTick()).toMatchObject({ ok: true, skipped: 1 });
+    },
+  );
+
+  it('Undo organizing takes the batch back and keeps the marks', async () => {
+    const { mind, agent } = orgSetup();
+    const [a, b] = await seeded(mind, [NOTE_A, NOTE_B]);
+    agent.reply(replyAll(() => ({ summary: 'A short summary of the note.', actions: [] })));
+    await mind.organizeTick();
+    const { opId, count } = mind.itemVM(a).organized;
+    expect(count).toBe(2);
+    expect(mind.itemVM(b).organized.opId).toBe(opId);
+    expect(await mind.undo(opId)).toMatchObject({ ok: true, undone: opId });
+    for (const id of [a, b]) {
+      expect(mind.item(id).summary).toBeUndefined();
+      expect(mind.item(id).org.state).toBe('done');
+      expect(mind.itemVM(id).organized).toBeUndefined();
+    }
+    expect(await mind.organizeTick()).toEqual({ ok: false, code: 'nothing' });
+  });
+
+  it('Undo organizing goes once a note of the batch changed', async () => {
+    const { mind, agent } = orgSetup();
+    const [a] = await seeded(mind, [NOTE_A]);
+    agent.reply(replyAll(() => ({ summary: 'A short summary of the note.' })));
+    await mind.organizeTick();
+    const op = mind.itemVM(a).organized.opId;
+    await mind.setArchived(a, true);
+    expect(mind.itemVM(a).organized).toMatchObject({ opId: op, canUndo: false });
+    expect(await mind.undo(op)).toMatchObject({ ok: false, code: 'superseded' });
+    expect(mind.item(a).summary).toBe('A short summary of the note.');
+  });
+
+  it('mm undo skips background ops, and undoing the capture takes the note’s suggested actions with it', async () => {
+    const { mind, agent } = orgSetup();
+    const [a] = await seeded(mind, [NOTE_A]);
+    agent.reply(replyAll(() => ({ actions: [{ text: 'Send the offsite budget', quote: 'send the offsite budget around' }] })));
+    await mind.organizeTick();
+    const action = bgAction(mind, a);
+    expect(action).toBeTruthy();
+    expect(await mind.undo()).toMatchObject({ ok: true });
+    expect(mind.item(a)).toBeNull();
+    expect(mind.item(action.id)).toBeNull();
+  });
+
+  it('Organize now uses when: now and its own key; a waiting reservation of this window gives way', async () => {
+    const { host, mind, agent } = orgSetup();
+    const b = orgWindow(host, agent);
+    await b.ready();
+    await b.whenOrganized();
+    const [a] = await seeded(mind, [NOTE_A]);
+    // Another window waits for the user to step away; so does this one.
+    const theirs = agent.holdTurn();
+    const waiting = b.organizeTick();
+    await theirs.reached;
+    expect(await mind.organizeTick()).toMatchObject({ ok: false, code: 'duplicate' });
+    agent.reply(replyAll(() => ({ summary: 'A short summary of the note.' })));
+    expect(await mind.organizeNow()).toMatchObject({ ok: true, organized: 1 });
+    expect(agent.calls.at(-1)).toMatchObject({ when: 'now', dedupeKey: 'organize-now', outcome: 'ok' });
+    expect(mind.item(a).org.state).toBe('done');
+    // The other window's turn finds nothing left and gives it back.
+    theirs.release();
+    expect(await waiting).toEqual({ ok: false, code: 'nothing' });
+    expect(agent.calls.filter((c) => c.window === 1).map((c) => c.outcome)).toEqual(['empty']);
+
+    // This window's own waiting reservation is cancelled for the click.
+    vi.setSystemTime(FIXTURE_NOW + 10 * 60_000);
+    await mind.capture(NOTE_B);
+    vi.setSystemTime(FIXTURE_NOW + 15 * 60_000);
+    const mine = agent.holdTurn();
+    const idle = mind.organizeTick();
+    await mine.reached;
+    const now = mind.organizeNow();
+    expect(await idle).toMatchObject({ ok: false, code: 'cancelled_by_extension' });
+    expect(await now).toMatchObject({ ok: true, skipped: 1 });
+  });
+
+  it('starts a week back; Organize older notes too takes in the rest', async () => {
+    const { mind, agent } = orgSetup({ config: { background_organize: false } });
+    await mind.ready();
+    vi.setSystemTime(FIXTURE_NOW - 30 * DAY);
+    const old = (await mind.capture(NOTE_A)).itemId;
+    vi.setSystemTime(FIXTURE_NOW - 2 * DAY);
+    const recent = (await mind.capture(NOTE_B)).itemId;
+    vi.setSystemTime(FIXTURE_NOW);
+    mind.setConfig({ week_start: 'mon', background_organize: true });
+    await mind.whenOrganized();
+    expect(mind.state.meta.orgSince).toBe(FIXTURE_NOW - 7 * DAY);
+    expect(agent.requests).toHaveLength(1);
+    expect(agent.requests[0].request.input.notes).toHaveLength(1);
+    expect(mind.item(recent).org.state).toBe('skipped');
+    expect(mind.item(old).org).toBeUndefined();
+    expect((await mind.organizeInfo()).counts).toMatchObject({ older: 1 });
+    expect(await mind.organizeBacklog()).toMatchObject({ ok: true });
+    await mind.whenOrganized();
+    expect(mind.state.meta.orgSince).toBe(0);
+    expect(mind.item(old).org.state).toBe('skipped');
+    expect(mind.undoTarget().op.created.items).toContain(recent);
+  });
+
+  it('leaves another computer’s new notes to it for a day', async () => {
+    const { host, mind, agent } = orgSetup();
+    await mind.ready();
+    await mind.whenOrganized();
+    const elsewhere = orgWindow(host, createAgentHost({ machineTag: OTHER_MACHINE_TAG }));
+    await elsewhere.ready();
+    await elsewhere.whenOrganized();
+    const id = (await elsewhere.capture(NOTE_A)).itemId;
+    expect(elsewhere.item(id).source.dev).toBe(OTHER_MACHINE_TAG);
+    vi.setSystemTime(FIXTURE_NOW + HOUR);
+    expect(await mind.organizeTick()).toEqual({ ok: false, code: 'nothing' });
+    vi.setSystemTime(FIXTURE_NOW + DAY + HOUR);
+    expect(await mind.organizeTick()).toMatchObject({ ok: true, skipped: 1 });
+    expect(agent.requests).toHaveLength(1);
+  });
+
+  it('a capture brings a pass after the debounce, and a settling note one when it settles', async () => {
+    const { mind, agent } = orgSetup({ timers: { organizeDebounceMs: 5 } });
+    await mind.ready();
+    await mind.whenOrganized();
+    vi.setSystemTime(FIXTURE_NOW - HOUR);
+    const a = (await mind.capture(NOTE_A)).itemId;
+    vi.setSystemTime(FIXTURE_NOW);
+    await vi.waitFor(() => expect(agent.requests).toHaveLength(1));
+    await mind.whenOrganized();
+    expect(mind.item(a).org.state).toBe('skipped');
+    // A note saved just now waits two minutes: the pass comes back then.
+    await mind.capture(NOTE_B);
+    vi.setSystemTime(FIXTURE_NOW + 30_000);
+    expect(await mind.organizeTick()).toEqual({ ok: false, code: 'nothing' });
+    expect(mind._org.soon).not.toBeNull();
+  });
+
+  it('older background batches lose Undo organizing first, so the user’s undo history stays', () => {
+    const { mind } = orgSetup();
+    const big = (n) => ({ id: `i${String(n).padStart(14, '0')}`, text: 'x'.repeat(30_000) });
+    const op = (n, extra = {}) => ({ opId: `o${String(n).padStart(14, '0')}`, kind: 'annotate', at: n, label: { code: 'annotate', params: {} },
+      before: { items: [big(n)], entities: [], links: [], rejections: [], candidates: [] }, created: { items: [], entities: [] }, after: {}, ...extra });
+    const state = { ops: [op(1), op(2, { via: 'background', silent: true }), op(3, { via: 'background', silent: true }), op(4, { via: 'background', silent: true })] };
+    const newest = op(5, { via: 'background', silent: true });
+    mind._trimBackgroundUndo(state, newest);
+    expect(state.ops.map((o) => !!o.lossy)).toEqual([false, true, true, false]);
+    expect(state.ops[1].before.items).toEqual([]);
+    expect(state.ops[0].before.items).toHaveLength(1);
+  });
+
+  it('organizeInfo reports Kage’s access, the counts and the last run, and consent starts the loop', async () => {
+    const agent = createAgentHost({ access: 'needs_consent' });
+    const { mind } = orgSetup({ agent });
+    const [a] = await seeded(mind, [NOTE_A]);
+    expect(await mind.organizeTick()).toEqual({ ok: false, code: 'needs_consent' });
+    expect(await mind.organizeInfo()).toMatchObject({ available: true, access: 'needs_consent', counts: { organized: 0, waiting: 1, older: 0 }, lastRun: null });
+    expect(agent.calls).toEqual([]);
+    agent.access = 'on';
+    expect(await mind.organizeInfo()).toMatchObject({ access: 'on', counts: { waiting: 1 } });
+    await mind.whenOrganized();
+    expect(mind.item(a).org.state).toBe('skipped');
+    expect(await mind.organizeInfo()).toMatchObject({ counts: { waiting: 0 }, lastRun: FIXTURE_NOW + 5 * 60_000 });
+    agent.pausedUntil = new Date(FIXTURE_NOW + HOUR).toISOString();
+    expect((await mind.organizeInfo()).pausedUntil).toBe(FIXTURE_NOW + HOUR);
   });
 });

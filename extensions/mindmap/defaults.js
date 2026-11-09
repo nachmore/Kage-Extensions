@@ -16,6 +16,7 @@ export const DEFAULTS = Object.freeze({
   agent_snippet_chars: 280,
   trigger: 'mm',
   doc_max_chars: '200000',
+  background_organize: false,
 });
 
 // Operational bounds (SPEC §7.2, §11, §12), not settings.
@@ -48,6 +49,16 @@ export const LIMITS = Object.freeze({
   toolPassages: 3,
   toolPassageChars: 400,
   toolBodyLoads: 5,
+  // Background organizing (Kage EXTENSION_AGENT_CALLS §11.2): a batch 60 s
+  // after the last capture and every 10 minutes while loaded; a rate or
+  // pause refusal without a time waits 15 minutes; the background's undo
+  // snapshots keep at most 64 KB of the 256 KB journal (older batches lose
+  // Undo organizing first, so they never push out the user's own undo).
+  organizeDebounceMs: 60_000,
+  organizeEveryMs: 10 * 60_000,
+  organizeWaitMs: 15 * 60_000,
+  organizeUndoBytes: 64 * 1024,
+  organizeToolWarnMs: 24 * 60 * 60_000,
 });
 
 export const WEEK_STARTS = Object.freeze(['auto', 'mon', 'sun', 'sat']);

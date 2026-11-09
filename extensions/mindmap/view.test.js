@@ -1172,3 +1172,43 @@ describe('document cards', () => {
     expect(frag(renderItemCard({ ...vm, kind: 'note', file: undefined }, ctx)).querySelector('.mm-file')).toBeNull();
   });
 });
+
+// --- background organizing (Kage EXTENSION_AGENT_CALLS §11.6) -------------------------
+
+describe('background organizing on the item card', () => {
+  const ft = makeI18n().t;
+  const ctx = { t: ft, locale: 'en', now: NOW, canReformat: true, block: { blk: 'k8', rev: '1', dataRev: '5' } };
+  const NOTE = id('i', 80);
+  const vm = (organized) => ({
+    id: NOTE, kind: 'note', title: 'Hiring plan lunch', text: 'Lunch with Dana about the hiring plan.', summary: 'Hiring plan lunch with Dana.',
+    day: NOW, createdAt: NOW, entities: [], actions: [], related: [], organized,
+  });
+
+  it('says the agent organized the note, with Undo organizing for its batch while it can', () => {
+    const html = renderItemCard(vm({ opId: OP, canUndo: true, count: 12 }), ctx);
+    assertAllowed(html);
+    const root = frag(html);
+    expect(root.querySelector('.mm-org .mm-meta').textContent).toBe('✦ Organized by your agent');
+    const undo = root.querySelector(`[data-ext-action="mm:bk8:a:undo:${OP}"]`);
+    expect(undo.textContent).toBe('Undo organizing (12 notes)');
+    expect(undo.getAttribute('title')).toBe('Takes back what your agent added to the 12 notes it organized together');
+    expect(parseAction(`mm:bk8:a:undo:${OP}`)).toEqual({ scope: 'data', blk: 'k8', verb: 'undo', id: OP });
+    const one = frag(renderItemCard(vm({ opId: OP, canUndo: true, count: 1 }), ctx));
+    expect(one.querySelector(`[data-ext-action="mm:bk8:a:undo:${OP}"]`).textContent).toBe('Undo organizing');
+    expect(one.querySelector('.mm-org button').getAttribute('title')).toBe('Takes back what your agent added to this note');
+  });
+
+  it('keeps the line without Undo once it can’t be undone, or where the card can’t act', () => {
+    for (const [organized, extra] of [
+      [{ opId: OP, canUndo: false, count: 3 }, {}],
+      [{ canUndo: false, count: 1 }, {}],
+      [{ opId: 'o-not-an-op', canUndo: true, count: 1 }, {}],
+      [{ opId: OP, canUndo: true, count: 1 }, { canNavigate: false }],
+    ]) {
+      const root = frag(renderItemCard(vm(organized), { ...ctx, ...extra }));
+      expect(root.querySelector('.mm-org').textContent).toBe('✦ Organized by your agent');
+      expect(root.querySelector('[data-ext-action*=":undo:"]')).toBeNull();
+    }
+    expect(frag(renderItemCard(vm(undefined), ctx)).querySelector('.mm-org')).toBeNull();
+  });
+});

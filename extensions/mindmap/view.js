@@ -758,6 +758,15 @@ export function renderItemCard(vm, ctx = {}) {
   // A document from a file: its name and size (never a path).
   if (vm.file?.name) parts.push(`<small class="mm-meta mm-file">${esc(joinSep([clip(oneLine(vm.file.name), 120), fileSize(vm.file, { t, locale: ctx.locale })], t))}</small>`);
   if (vm.notice) parts.push(`<small class="mm-note">${esc(vm.notice)}</small>`);
+  // Background organizing (Kage EXTENSION_AGENT_CALLS §11.6): what the agent
+  // added, and Undo organizing for the batch it came in, while it can.
+  if (vm.organized) {
+    const n = Math.max(1, Number(vm.organized.count) || 1);
+    const undo = nav && vm.organized.canUndo && OP_ID.test(String(vm.organized.opId || ''))
+      ? btn('mm-btn', dataAct(b.blk, 'undo', vm.organized.opId), esc(t('card.undo_organize', { n })), { title: t('card.undo_organize_tip', { n }) })
+      : '';
+    parts.push(`<div class="mm-org"><small class="mm-meta">${esc(t('card.organized'))}</small>${undo}</div>`);
+  }
   if (vm.summary && oneLine(vm.summary) !== oneLine(vm.text)) parts.push(`<div class="mm-summary">${esc(vm.summary)}</div>`);
   const [head, rest] = splitText(vm.text);
   if (head.trim()) parts.push(`<div class="mm-text">${esc(head)}${rest ? '…' : ''}</div>`);

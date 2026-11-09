@@ -1372,8 +1372,13 @@ describe('every shipped locale', () => {
     'settings.reset_layout', 'settings.reset_layout_hint', 'settings.reset_layout_confirm', 'settings.layout_reset', 'settings.approve_views',
     'prompt.organize_bg', 'op.organized_bg_label',
     // Documents from files (WP-FT-MM3).
-    'settings.disclosure.files', 'op.ingest', 'op.reread', 'export.documents', 'export.pages', 'tool.get_query']);
-  const pending = (key) => PENDING_TRANSLATION.has(key) || key.startsWith('explorer.') || key.startsWith('files.') || key.startsWith('settings.documents.');
+    'settings.disclosure.files', 'op.ingest', 'op.reread', 'export.documents', 'export.pages', 'tool.get_query',
+    // Background organizing (WP-AC-MM3).
+    'manifest.agent_background_reason', 'settings.section_background', 'settings.background_organize',
+    'settings.background_organize_hint', 'settings.disclosure.background', 'card.organized', 'card.undo_organize',
+    'card.undo_organize_tip']);
+  const pending = (key) => PENDING_TRANSLATION.has(key) || key.startsWith('explorer.') || key.startsWith('files.') || key.startsWith('settings.documents.')
+    || key.startsWith('settings.organize.');
 
   it('ships English plus 31 translations with the same keys', () => {
     expect(langs).toHaveLength(32);

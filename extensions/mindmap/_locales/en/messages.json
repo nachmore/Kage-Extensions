@@ -13,6 +13,10 @@
     "message": "Throw in thoughts, links, docs and todos. Mind Map organizes them, answers with sources, and maps how they connect.",
     "description": "Store listing description"
   },
+  "manifest.agent_background_reason": {
+    "message": "Mind Map sends the text of new notes you haven’t marked private to your agent, so it can add a short summary, the people, teams and projects they mention, and suggested actions.",
+    "description": "Shown in Kage’s Background AI consent dialog as a quote from the extension (at most 300 characters)"
+  },
   "keyword.find.label": {
     "message": "Mind Map",
     "description": "Launcher keyword hint for the find trigger (mm)"
@@ -1493,6 +1497,90 @@
     "message": "Characters per item, from {min} to {max}.",
     "description": "Settings hint"
   },
+  "settings.section_background": {
+    "message": "Background organizing",
+    "description": "Settings section"
+  },
+  "settings.background_organize": {
+    "message": "Organize new notes in the background",
+    "description": "Settings label"
+  },
+  "settings.background_organize_hint": {
+    "message": "Off by default. Before anything is sent, Kage asks you to confirm which agent gets your notes on this computer.",
+    "description": "Settings hint for the background organizing switch"
+  },
+  "settings.organize.about": {
+    "message": "While you aren’t using Kage, Mind Map sends new notes to your agent in small batches and adds the short summaries, names and suggested actions it sends back. Notes you marked private are never sent. Everything it adds can be undone.",
+    "description": "What background organizing does"
+  },
+  "settings.organize.status": {
+    "message": "{organized} organized · {waiting} waiting · last run {when}",
+    "description": "Background organizing status; {organized} and {waiting} are note counts, {when} a date and time or “never”"
+  },
+  "settings.organize.status_needs_host": {
+    "message": "Kage needs your OK on this computer before Mind Map sends anything to your agent.",
+    "description": "Background organizing status: switched on, but Kage’s access is off"
+  },
+  "settings.organize.status_stale": {
+    "message": "Your agent changed. Allow Mind Map again on this computer.",
+    "description": "Background organizing status: the agent changed since the user agreed"
+  },
+  "settings.organize.status_unavailable": {
+    "message": "Update Kage, or approve Mind Map’s Background AI permission in the Store.",
+    "description": "Background organizing status on a Kage that doesn’t offer it"
+  },
+  "settings.organize.status_paused": {
+    "message": "Paused until {time}.",
+    "description": "Background organizing status; {time} is a date and time"
+  },
+  "settings.organize.tools_warning": {
+    "message": "Your agent tried to use a tool while organizing, so Kage stopped the request. If it happens twice in a day, Kage pauses background organizing until tomorrow.",
+    "description": "Warning after the agent tried to use a tool during background organizing"
+  },
+  "settings.organize.allow": {
+    "message": "Allow on this computer…",
+    "description": "Button that opens Kage’s consent dialog for background organizing"
+  },
+  "settings.organize.allow_hint": {
+    "message": "Kage shows which agent gets your notes and asks you to confirm.",
+    "description": "Hint for the allow button"
+  },
+  "settings.organize.now": {
+    "message": "Organize now",
+    "description": "Button: send the next batch now"
+  },
+  "settings.organize.now_hint": {
+    "message": "Sends the next batch now instead of waiting until you’re away.",
+    "description": "Hint for Organize now"
+  },
+  "settings.organize.now_done": {
+    "message": "Your agent looked at {n, plural, one {# note} other {# notes}}.",
+    "description": "Organize now finished"
+  },
+  "settings.organize.now_nothing": {
+    "message": "Nothing is waiting to be organized.",
+    "description": "Organize now: no notes to send"
+  },
+  "settings.organize.now_off": {
+    "message": "Turn on “Organize new notes in the background” and save first.",
+    "description": "Organize now while the saved switch is off"
+  },
+  "settings.organize.now_busy": {
+    "message": "Mind Map is already organizing in another Kage window.",
+    "description": "Organize now while another window is organizing"
+  },
+  "settings.organize.backlog": {
+    "message": "Organize older notes too",
+    "description": "Button: include notes from before background organizing was turned on"
+  },
+  "settings.organize.backlog_hint": {
+    "message": "{n, plural, one {# note is} other {# notes are}} from before you turned this on. They’re organized a batch at a time, within your daily allowance.",
+    "description": "Hint for Organize older notes too"
+  },
+  "settings.organize.backlog_done": {
+    "message": "Older notes will be organized too, a batch at a time.",
+    "description": "Organize older notes too: done"
+  },
   "settings.section_launcher": {
     "message": "Launcher",
     "description": "Settings section"
@@ -1764,6 +1852,18 @@
   "card.explore": {
     "message": "Explore",
     "description": "Item card button that opens the map explorer on this item"
+  },
+  "card.organized": {
+    "message": "✦ Organized by your agent",
+    "description": "Item card line: background organizing added to this note"
+  },
+  "card.undo_organize": {
+    "message": "{n, plural, one {Undo organizing} other {Undo organizing (# notes)}}",
+    "description": "Item card button; {n} is how many notes were organized together and are undone together"
+  },
+  "card.undo_organize_tip": {
+    "message": "Takes back what your agent added to {n, plural, one {this note} other {the # notes it organized together}}",
+    "description": "Tooltip of Undo organizing"
   },
   "row.explore": {
     "message": "Open in explorer",
@@ -2184,6 +2284,10 @@
   "settings.disclosure.files": {
     "message": "When you add a file, Kage reads it on this computer and gives Mind Map its text. Mind Map keeps up to {n} characters of it with your notes. Kage never tells Mind Map where the file is.",
     "description": "Privacy disclosure about adding files; {n} is the character limit"
+  },
+  "settings.disclosure.background": {
+    "message": "If you turn on background organizing, new notes you haven’t marked private are sent to your agent in small batches while you aren’t using Kage.",
+    "description": "Privacy disclosure about background organizing"
   },
   "op.ingest": {
     "message": "Added “{title}”",

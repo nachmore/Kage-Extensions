@@ -30,6 +30,7 @@ import * as bm25 from './lib/bm25.js';
 import * as rank from './lib/rank.js';
 import * as graph from './lib/graph.js';
 import * as files from './lib/files.js';
+import * as organize from './lib/organize.js';
 import { DEFAULTS, LIMITS, docMaxChars, snippetChars, triggerOf } from './defaults.js';
 
 const LIB = Object.freeze({ text, dates, url, entities, ids: idlib });
@@ -88,6 +89,44 @@ const FILES_FEATURE = 'files.pick_text';
 const FILE_FORMAT_RE = /^[a-z][a-z0-9_]{0,15}$/;
 // How long a card shows the outcome of "Update from file…".
 const NOTICE_MS = 120_000;
+// Kage's background agent calls (EXTENSION_AGENT_CALLS §3.3, §11): offered
+// only to an extension that holds `agent_background`.
+const AGENT_FEATURE = 'agent.background';
+const AGENT_KEY = 'errors.agent_call.';
+const ACCESS = Object.freeze(['off', 'needs_consent', 'consent_stale', 'on']);
+// "Organize now" has its own key: an idle reservation another window holds
+// (waiting for the user to step away) mustn't turn the click down. The
+// batch is chosen when Kage gives the turn, so the two never send a note twice.
+const NOW_DEDUPE_KEY = 'organize-now';
+// Background results applied with these options (§11.5).
+const BACKGROUND_ENV = Object.freeze({ via: 'background', silent: true, autoAccept: false, maxNewEntitiesPerItem: 3 });
+// What a refusal or failure means for the batch and the loop (§11.5).
+// Failed: each note is marked failed and backs off. invalid_input refusals
+// count too, so a batch Kage keeps refusing isn't offered again and again.
+const ORG_FAILED = new Set(['not_json', 'invalid_response', 'timeout', 'response_too_large', 'agent_error', 'tool_attempted',
+  'prompt_too_large', 'field_too_long', 'field_invalid', 'schema_unsupported', 'contains_credential']);
+// Wait until status().next_start_at or paused_until.
+const ORG_WAIT = new Set(['budget_exhausted', 'rate_limited', 'paused']);
+// Stop until the user (or Kage) turns access on again.
+const ORG_STOP = new Set(['consent_required', 'consent_stale', 'access_off', 'not_available', 'extension_disabled',
+  'cancelled_access_off', 'agent_changed', 'purpose_not_declared']);
+// This computer's notes about background organizing (the last tool attempt).
+// Last write wins, no lock: it is informational.
+const ORG_NOTES_KEY = 'mm-org';
+const EMPTY_GROUPS = () => ({ items: [], entities: [], links: [], rejections: [], candidates: [] });
+const utf8 = new TextEncoder();
+
+/** The `errors.agent_call.*` code of a Kage refusal, or '' (an older host, an unexpected error). */
+function agentCode(error) {
+  const key = typeof error?.key === 'string' ? error.key : '';
+  if (key.startsWith(AGENT_KEY)) return key.slice(AGENT_KEY.length);
+  return error?.name === 'AbortError' ? 'cancelled_by_extension' : '';
+}
+
+function rfcTime(value) {
+  const ms = typeof value === 'string' ? Date.parse(value) : NaN;
+  return Number.isFinite(ms) ? ms : null;
+}
 
 const mono = () => globalThis.performance?.now?.() ?? Date.now();
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -162,10 +201,11 @@ export function getMind(context) {
 export class Mind {
   /**
    * `options` exist for tests: `now` (clock), `extractorVersion` (simulates
-   * an organizer upgrade, so stored items look older than it), and
-   * `idleDelayMs` (how long after loading the idle work starts).
+   * an organizer upgrade, so stored items look older than it),
+   * `idleDelayMs` (how long after loading the idle work starts), and
+   * `organizeDebounceMs` / `organizeEveryMs` (background organizing's timers).
    */
-  constructor(context = {}, { now, extractorVersion, idleDelayMs } = {}) {
+  constructor(context = {}, { now, extractorVersion, idleDelayMs, organizeDebounceMs, organizeEveryMs } = {}) {
     this.context = context;
     this.invoke = context.invoke;
     this.log = context.log || NOOP_LOG;
@@ -207,6 +247,21 @@ export class Mind {
     this._bodies = new Map();
     this._fileSupport = null;
     this._notices = new Map();
+    // Background organizing (Kage EXTENSION_AGENT_CALLS §11.2): Kage's last
+    // status, this window's pass (one call pending at most) and its flight,
+    // the loop's timers, and this computer's machine tag.
+    const ms = (v, fallback) => (Number.isFinite(v) && v >= 0 ? v : fallback);
+    this.organizeDebounceMs = ms(organizeDebounceMs, LIMITS.organizeDebounceMs);
+    this.organizeEveryMs = ms(organizeEveryMs, LIMITS.organizeEveryMs);
+    this._org = { status: null, statusRun: null, pass: null, flight: null, waitUntil: 0, stopped: null, preempt: false, every: null, debounce: null, soon: null };
+    this._machineTag = null;
+  }
+
+  /** True where Kage offers Mind Map background agent calls (agent.background and context.agent). */
+  get canOrganize() {
+    const features = Array.isArray(this.context?.hostFeatures) ? this.context.hostFeatures : [];
+    const agent = this.context?.agent;
+    return features.includes(AGENT_FEATURE) && typeof agent?.complete === 'function' && typeof agent?.status === 'function';
   }
 
   /** True where this window can ask Kage for a file the user picks (files.pick_text). */
@@ -316,6 +371,9 @@ export class Mind {
     this.weekStart = dates.resolveWeekStart(next.week_start, this._regionLocale());
     this._applyMe();
     if (namesChanged) this._dict = null;
+    // Background organizing follows the switch, and Kage's access is checked
+    // again on every config update (§11.2). The constructor runs this first.
+    if (this._org && this._loaded) this._orgSync();
   }
 
   // The me entity's aliases come from settings and its shown name from the
@@ -445,6 +503,7 @@ export class Mind {
       this._readOnly = null;
       this.store.readOnly = false;
     }
+    this._orgCheckFlight();
   }
 
   // Month-shard keys when mm-meta can't be read: the ones a torn copy still
@@ -483,8 +542,10 @@ export class Mind {
     return [...out].filter((key) => model.keyPart(key));
   }
 
-  // Schedules the idle work (P2) once per load, when there is any.
+  // Schedules the idle work (P2) once per load, when there is any, and
+  // starts background organizing where it is on.
   _afterLoad() {
+    this._orgSync();
     if (this._readOnly || this._idleTimer) return;
     const now = this.now();
     const items = [...this.state.items.values()];
@@ -724,6 +785,9 @@ export class Mind {
       lib: LIB,
       autoAccept: !!this.settings.auto_accept_inferred,
       enrichLinks: !!this.settings.fetch_link_titles,
+      // New items carry this computer's machine tag while background
+      // organizing is on, so two computers split the work (§11.3).
+      ...(this._orgTagging() ? { dev: this._machineTag } : {}),
       ...extra,
     };
   }
@@ -986,6 +1050,7 @@ export class Mind {
       this._alias.clear();
     }
     this._bump([...items, ...entityIds, ...around]);
+    this._orgCheckFlight();
   }
 
   _bump(ids) {
@@ -1708,6 +1773,7 @@ export class Mind {
     this.log.info?.(`mindmap: saved ${1 + (change.childIds?.length || 0)} item(s)${change.dedupedInto ? ' into an existing item' : ''}`);
     const pending = [itemId, ...(change.childIds || [])].filter((id) => this.state.items.get(id)?.enrich?.state === 'pending');
     if (pending.length && this.settings.fetch_link_titles) this._track(this._enrichAll(pending));
+    this._orgDebounce();
     return {
       opId: change.op.opId,
       itemId,
@@ -1856,6 +1922,7 @@ export class Mind {
     const result = this._fileResult(shown, itemId, out.committed ? out.opId : undefined);
     if (out.committed && kind !== 'copy') result.opId = out.opId;
     this.log.info?.(`mindmap: added a file (${shown}, ${result.file.chars} characters)`);
+    if (out.committed) this._orgDebounce();
     return result;
   }
 
@@ -2416,10 +2483,13 @@ export class Mind {
     });
   }
 
-  // True once the agent has organized an item (annotate, SPEC §5 S11). It
-  // sets enrich.state 'done' on every item it touches, but a link's page
-  // metadata does too, so for http links only an agent trace counts.
+  // True once the agent has organized an item (annotate, SPEC §5 S11, or
+  // background organizing). Annotate sets enrich.state 'done' on every item
+  // it touches, but a link's page metadata does too, so for http links only
+  // an agent trace counts.
   _agentOrganized(item) {
+    // Background organizing did it (§11.5), so `mm organize` doesn't send it again.
+    if (item.org?.state === 'done') return true;
     if (item.enrich?.state !== 'done') return false;
     if (!isHttp(item.url)) return true;
     if (item.summarySource === 'agent' || item.terms?.length) return true;
@@ -2484,6 +2554,493 @@ export class Mind {
       items: lines.join('\n'),
       vocabulary: vocabulary.length ? vocabulary.join(', ') : t('prompt.organize_no_vocabulary'),
     });
+  }
+
+  // --- background organizing (Kage EXTENSION_AGENT_CALLS §11) ------------------------
+
+  // The loop runs in every window where Mind Map has loaded, while the
+  // switch is on and Kage offers the API. Only one batch is ever in flight
+  // per extension: every reservation carries a dedupe key, and Kage allows
+  // one live reservation per key across all windows.
+  _orgWanted() {
+    return this.canOrganize && this.settings.background_organize === true && this.settings.enabled !== false
+      && this._loaded && !this._readOnly;
+  }
+
+  _orgTagging() {
+    return !!this._machineTag && this.settings.background_organize === true && this.canOrganize;
+  }
+
+  // Starts or stops the loop to match the settings. Kage's access is asked
+  // again each time (start, config updates), so consent given in Kage's
+  // dialog starts it without a restart.
+  _orgSync() {
+    if (!this._orgWanted()) {
+      this._orgStop();
+      return;
+    }
+    if (!this._org.every) {
+      this._org.every = setInterval(() => this._orgTrigger('idle'), this.organizeEveryMs);
+      this._org.every?.unref?.();
+    }
+    this._org.stopped = null;
+    this._orgTrigger('idle', { refresh: true });
+  }
+
+  _orgStop() {
+    const org = this._org;
+    clearInterval(org.every);
+    clearTimeout(org.debounce);
+    clearTimeout(org.soon);
+    org.every = null;
+    org.debounce = null;
+    org.soon = null;
+    org.flight?.abort.abort();
+  }
+
+  // A batch 60 s after the last capture.
+  _orgDebounce() {
+    if (!this._orgWanted()) return;
+    clearTimeout(this._org.debounce);
+    this._org.debounce = setTimeout(() => {
+      this._org.debounce = null;
+      this._orgTrigger('idle');
+    }, this.organizeDebounceMs);
+    this._org.debounce?.unref?.();
+  }
+
+  // One pass at a time per window: a trigger while one runs (or while its
+  // call waits for Kage's turn) joins it.
+  _orgTrigger(when = 'idle', opts = {}) {
+    if (this._org.pass) return this._org.pass;
+    const pass = this._orgRun(when, opts)
+      .catch((error) => {
+        this.log.warn?.(`mindmap: background organizing failed (${error?.code || error?.name || 'error'})`);
+        return { ok: false, code: error?.code || 'error' };
+      })
+      .finally(() => {
+        if (this._org.pass === pass) this._org.pass = null;
+      });
+    this._org.pass = pass;
+    return pass;
+  }
+
+  /** One background organizing pass, as the loop's timers run it. → the pass's outcome (see _orgRun) */
+  organizeTick() {
+    return this._orgTrigger('idle');
+  }
+
+  /** Resolves when this window's background organizing pass (if any) is done. Tests use it. */
+  async whenOrganized() {
+    while (this._org.pass) await this._org.pass;
+  }
+
+  // Kage's AgentCallStatus (§3.5), once at a time; caches the machine tag.
+  // → { available, access, connected, pausedUntil, nextStartAt } | null
+  agentStatus() {
+    if (!this.canOrganize) return Promise.resolve(null);
+    if (!this._org.statusRun) {
+      // permissions: agent_background
+      const run = Promise.resolve().then(() => this.context.agent.status()).then((raw) => this._takeStatus(raw), (error) => {
+        this.log.info?.(`mindmap: Kage didn't report background AI status (${agentCode(error) || error?.kind || 'error'})`);
+        return null;
+      });
+      this._org.statusRun = run;
+      run.finally(() => {
+        if (this._org.statusRun === run) this._org.statusRun = null;
+      });
+    }
+    return this._org.statusRun;
+  }
+
+  _takeStatus(raw) {
+    if (!raw || typeof raw !== 'object') return null;
+    if (typeof raw.machine_tag === 'string' && organize.MACHINE_TAG_RE.test(raw.machine_tag)) this._machineTag = raw.machine_tag;
+    const status = {
+      available: raw.available === true,
+      access: ACCESS.includes(raw.access) ? raw.access : 'off',
+      connected: raw.connected !== false,
+      pausedUntil: rfcTime(raw.paused_until),
+      nextStartAt: rfcTime(raw.next_start_at),
+    };
+    this._org.status = status;
+    if (status.available && status.access === 'on') this._org.stopped = null;
+    return status;
+  }
+
+  // The leaf's context: this computer's tag, orgSince, and `mm organize`'s
+  // own idea of what the agent already did.
+  _orgCtx(now) {
+    const i18n = this.context.i18n;
+    // A missing catalog entry comes back as its key: never send that.
+    const t = (key, vars) => {
+      try {
+        const out = i18n?.t?.(key, vars);
+        return typeof out === 'string' && out !== key ? out : '';
+      } catch {
+        return '';
+      }
+    };
+    return {
+      now, state: this.state, orgSince: this.state.meta.orgSince, machineTag: this._machineTag,
+      organized: (item) => this._agentOrganized(item), lib: LIB, myNames: this.myNames, t,
+      maxPromptChars: organize.ORGANIZE_LIMITS.promptChars,
+    };
+  }
+
+  // Whether a batch would have anything in it now, and if not, when the
+  // earliest settling note is ready (so a capture's batch isn't missed by
+  // the two minutes a note waits).
+  _orgOutlook(now) {
+    const ctx = this._orgCtx(now);
+    let soonest = null;
+    for (const item of this.state.items.values()) {
+      const reason = organize.ineligibleReason(item, ctx);
+      if (reason === null) return { any: true, soonest: null };
+      if (reason === 'settling') {
+        const at = Math.max(item.createdAt, Number.isFinite(item.updatedAt) ? item.updatedAt : item.createdAt) + organize.ORGANIZE_LIMITS.settleMs;
+        if (soonest === null || at < soonest) soonest = at;
+      }
+    }
+    return { any: false, soonest };
+  }
+
+  _orgSoon(at, now) {
+    clearTimeout(this._org.soon);
+    this._org.soon = null;
+    if (at === null || !this._orgWanted()) return;
+    const delay = Math.max(1000, at - now + 1000);
+    if (delay >= this.organizeEveryMs) return;
+    this._org.soon = setTimeout(() => {
+      this._org.soon = null;
+      this._orgTrigger('idle');
+    }, delay);
+    this._org.soon?.unref?.();
+  }
+
+  // One pass: check Kage's access, set orgSince the first time, and ask
+  // for one batch. → { ok: true, organized, skipped, stale } | { ok: false, code, message? }
+  async _orgRun(when, { refresh = false } = {}) {
+    if (!this._orgWanted()) return { ok: false, code: 'off' };
+    let now = this.now();
+    if (when !== 'now' && now < this._org.waitUntil) return { ok: false, code: 'waiting' };
+    if (refresh || !this._org.status || this._org.stopped) {
+      const status = await this.agentStatus();
+      if (!status || !status.available) {
+        this._org.stopped = 'not_available';
+        return { ok: false, code: 'not_available' };
+      }
+      if (status.access !== 'on') {
+        this._org.stopped = status.access;
+        return { ok: false, code: status.access };
+      }
+      now = this.now();
+      if (status.pausedUntil && status.pausedUntil > now) {
+        this._org.waitUntil = status.pausedUntil;
+        if (when !== 'now') return { ok: false, code: 'paused' };
+      }
+    }
+    if (this._org.stopped) return { ok: false, code: this._org.stopped };
+    if (!this._orgWanted()) return { ok: false, code: 'off' };
+    await this._orgEnsureSince();
+    // Other windows' captures and marks (one read of mm-meta when nothing moved).
+    await this.syncIfStale(0).catch(() => false);
+    now = this.now();
+    const outlook = this._orgOutlook(now);
+    if (!outlook.any) {
+      this._orgSoon(outlook.soonest, now);
+      return { ok: false, code: 'nothing' };
+    }
+    return this._orgCall(when);
+  }
+
+  // orgSince is "a week back" the first time background organizing runs (§11.3).
+  async _orgEnsureSince() {
+    if (Number.isFinite(this.state.meta.orgSince)) return;
+    try {
+      await this._mutate((state, env) => {
+        if (Number.isFinite(state.meta.orgSince)) return { code: 'same' };
+        const change = model.applyOrgSince(state, organize.initialOrgSince(env.now), env);
+        return change.op ? { changes: [change] } : { code: change.code };
+      });
+    } catch (error) {
+      this.log.warn?.(`mindmap: background organizing couldn't save where it starts (${error?.code || error?.name || 'error'})`);
+    }
+  }
+
+  // Asks Kage for one call. The batch is built when Kage gives the turn.
+  async _orgCall(when) {
+    if (when !== 'now' && this._org.preempt) return { ok: false, code: 'cancelled_by_extension' };
+    const flight = { abort: new AbortController(), refs: null, ids: null, built: false, when };
+    this._org.flight = flight;
+    let result;
+    try {
+      // permissions: agent_background
+      result = await this.context.agent.complete(() => this._buildOrganizeRequest(flight), {
+        purpose: organize.PURPOSE, when, dedupeKey: when === 'now' ? NOW_DEDUPE_KEY : organize.DEDUPE_KEY,
+        signal: flight.abort.signal,
+      });
+    } catch (error) {
+      if (this._org.flight === flight) this._org.flight = null;
+      return this._organizeFailed(error, flight);
+    }
+    if (this._org.flight === flight) this._org.flight = null;
+    if (result == null || !flight.refs) return { ok: false, code: 'nothing' };
+    return this._applyOrganized(result, flight);
+  }
+
+  // Kage's turn (§11.2): the batch reflects every window's latest writes.
+  async _buildOrganizeRequest(flight) {
+    flight.built = true;
+    try {
+      await this.syncIfStale(0);
+    } catch {
+      return null;
+    }
+    if (flight.abort.signal.aborted || !this._orgWanted()) return null;
+    const now = this.now();
+    const ctx = this._orgCtx(now);
+    const batch = organize.selectBatch(this.state, ctx);
+    if (!batch.length) return null;
+    const built = organize.buildRequest(batch, organize.vocabulary(this.state, ctx), { ...ctx, today: dates.toIsoDay(now) });
+    if (!built) return null;
+    flight.refs = built.refs;
+    flight.ids = new Set(built.ids);
+    this.log.info?.(`mindmap: background organizing: sending ${built.ids.length} note(s)`);
+    return built.request;
+  }
+
+  // While a batch is out, a note in it that is deleted or becomes private
+  // (itself, or through a private name) cancels the call (§11.2).
+  _orgCheckFlight() {
+    const flight = this._org?.flight;
+    if (!flight?.ids || flight.abort.signal.aborted) return;
+    for (const id of flight.ids) {
+      const item = this.state.items.get(id);
+      if (item && !this.isHidden(item)) continue;
+      this.log.info?.('mindmap: background organizing cancelled: a note in the batch was deleted or made private');
+      flight.abort.abort();
+      return;
+    }
+  }
+
+  // The reply (§11.5): under the lock, notes deleted, hidden or changed
+  // since the batch was built are left for later; the rest are marked, then
+  // annotated as one silent op.
+  async _applyOrganized(result, flight) {
+    const json = result?.json;
+    const checked = organize.validateReply(json);
+    if (!checked.ok) return this._organizeFailed({ key: `${AGENT_KEY}${checked.code}` }, flight);
+    const { entries, skipped } = organize.toAnnotateEntries(json, flight.refs);
+    let out;
+    try {
+      out = await this._mutate((state, env) => {
+        const fresh = new Map();
+        for (const info of flight.refs.values()) {
+          const item = state.items.get(info.id);
+          if (item && !this.isHidden(item) && item.rev === info.rev) fresh.set(info.id, info.hash);
+        }
+        const done = entries.filter((entry) => fresh.has(entry.id));
+        const marks = done.map((entry) => ({ id: entry.id, org: organize.markDone(fresh.get(entry.id), env.now) }));
+        for (const id of skipped) if (fresh.has(id)) marks.push({ id, org: organize.markDone(fresh.get(id), env.now, { skipped: true }) });
+        const counts = { organized: done.length, skipped: marks.length - done.length, stale: flight.refs.size - fresh.size };
+        if (!marks.length) return { code: 'stale', counts };
+        const changes = [];
+        const marked = model.applyOrgMarks(state, marks, env);
+        if (marked.op) changes.push(marked);
+        let annotated = null;
+        if (done.length) {
+          annotated = model.applyAnnotate(state, done, { ...env, ...BACKGROUND_ENV });
+          if (annotated.op) {
+            this._backfill(state, annotated, env);
+            if (annotated.op.label?.params) annotated.op.label.params.count = Math.max(1, annotated.applied?.length || 0);
+            changes.push(annotated);
+          }
+        }
+        this._trimBackgroundUndo(state, annotated?.op);
+        return { changes, counts };
+      });
+    } catch (error) {
+      this.log.warn?.(`mindmap: background organizing couldn't save its results (${error?.code || error?.name || 'error'})`);
+      return { ok: false, code: error?.code || 'io' };
+    }
+    const counts = out.counts || { organized: 0, skipped: 0, stale: flight.refs.size };
+    this.log.info?.(`mindmap: background organizing: ${counts.organized} organized, ${counts.skipped} skipped, ${counts.stale} changed since`);
+    if (out.committed) this.requestReformat();
+    // Changed notes go in a later batch.
+    if (counts.stale) this._orgSoon(this.now() + organize.ORGANIZE_LIMITS.settleMs, this.now());
+    return { ok: true, ...counts };
+  }
+
+  // Background batches keep their undo snapshots within
+  // LIMITS.organizeUndoBytes, newest first. Older ones keep their revs (so
+  // the user's earlier changes can still be undone) but lose their
+  // snapshots, and with them Undo organizing: the user's own undo history
+  // is never pushed out of the journal by background work.
+  _trimBackgroundUndo(state, newest) {
+    let total = newest ? utf8.encode(JSON.stringify(newest)).length : 0;
+    for (let i = state.ops.length - 1; i >= 0; i--) {
+      const op = state.ops[i];
+      if (op.via !== 'background' || op.lossy || op === newest || op.opId === newest?.opId) continue;
+      const size = utf8.encode(JSON.stringify(op)).length;
+      if (total + size <= LIMITS.organizeUndoBytes) {
+        total += size;
+        continue;
+      }
+      state.ops[i] = { ...op, before: EMPTY_GROUPS(), lossy: true };
+    }
+  }
+
+  // A refusal or failure (§11.5). → { ok: false, code, message? }
+  async _organizeFailed(error, flight) {
+    const code = agentCode(error);
+    const message = typeof error?.message === 'string' && error.key ? error.message : '';
+    const out = { ok: false, code: code || 'error', ...(message ? { message } : {}) };
+    if (ORG_FAILED.has(code)) {
+      this.log.info?.(`mindmap: background organizing failed (${code})`);
+      // Only a batch that was built went out (or was refused as too big).
+      if (flight?.refs) await this._markFailed(flight);
+      if (code === 'tool_attempted') await this._noteToolAttempt();
+      return out;
+    }
+    if (ORG_WAIT.has(code)) {
+      const status = await this.agentStatus();
+      const now = this.now();
+      const until = [status?.pausedUntil, status?.nextStartAt].find((at) => Number.isFinite(at) && at > now);
+      this._org.waitUntil = until ?? now + LIMITS.organizeWaitMs;
+      this.log.info?.(`mindmap: background organizing waits (${code})`);
+      return out;
+    }
+    if (ORG_STOP.has(code)) {
+      this._org.stopped = code;
+      this.log.info?.(`mindmap: background organizing stopped (${code})`);
+      return out;
+    }
+    // duplicate (another window holds the turn), queue_full, the agent
+    // isn't connected, a cancellation, a turn that expired: the next
+    // trigger tries again. Nothing is marked.
+    if (code !== 'duplicate') this.log.info?.(`mindmap: background organizing didn't run (${code || error?.kind || 'error'})`);
+    return out;
+  }
+
+  async _markFailed(flight) {
+    try {
+      await this._mutate((state, env) => {
+        const marks = [];
+        for (const info of flight.refs.values()) {
+          const item = state.items.get(info.id);
+          if (!item || this.isHidden(item) || item.rev !== info.rev) continue;
+          marks.push({ id: info.id, org: organize.markFailed(item.org, info.hash, env.now) });
+        }
+        if (!marks.length) return { code: 'stale' };
+        const change = model.applyOrgMarks(state, marks, env);
+        return change.op ? { changes: [change] } : { code: change.code };
+      });
+    } catch (error) {
+      this.log.warn?.(`mindmap: background organizing couldn't mark a failed batch (${error?.code || error?.name || 'error'})`);
+    }
+  }
+
+  // The settings page warns about a tool attempt for a day, from any window.
+  async _noteToolAttempt() {
+    const now = this.now();
+    try {
+      await this.store.write(ORG_NOTES_KEY, { schema: 1, toolAt: now, rev: now }, { force: true });
+    } catch (error) {
+      this.log.warn?.(`mindmap: couldn't note a tool attempt (${error?.code || error?.name || 'error'})`);
+    }
+  }
+
+  async _orgNotes() {
+    try {
+      const raw = await this.store.readJson(ORG_NOTES_KEY);
+      return { toolAt: Number.isFinite(raw?.toolAt) ? raw.toolAt : null };
+    } catch {
+      return { toolAt: null };
+    }
+  }
+
+  /**
+   * "Organize now" (settings): one batch with `when: 'now'`, from the
+   * user's click. A reservation of this window's that is still waiting for
+   * the user to step away gives way; one already running is awaited.
+   * → the pass's outcome ({ ok: true, organized, skipped, stale } |
+   * { ok: false, code, message? }); codes include 'unavailable',
+   * 'readonly', 'off' (the saved switch is off), 'nothing'.
+   */
+  async organizeNow() {
+    if (!this.canOrganize) return { ok: false, code: 'unavailable' };
+    try {
+      await this.ready();
+    } catch (error) {
+      return { ok: false, code: error?.code || 'io' };
+    }
+    if (this._readOnly) return { ok: false, code: 'readonly' };
+    if (this.settings.background_organize !== true || this.settings.enabled === false) return { ok: false, code: 'off' };
+    const flight = this._org.flight;
+    if (flight && (flight.built || flight.when === 'now')) return this._org.pass;
+    // An idle pass gives way: one waiting for its turn is cancelled, one
+    // about to reserve doesn't.
+    this._org.preempt = true;
+    try {
+      flight?.abort.abort();
+      while (this._org.pass) await this._org.pass;
+    } finally {
+      this._org.preempt = false;
+    }
+    this._org.waitUntil = 0;
+    this._org.stopped = null;
+    return this._orgTrigger('now', { refresh: true });
+  }
+
+  /** "Organize older notes too" (settings): orgSince goes back to the start; the allowance paces the backlog. */
+  async organizeBacklog() {
+    const out = await this._simple((state, env) => model.applyOrgSince(state, 0, env));
+    if (out.ok) this._orgTrigger('idle');
+    return out;
+  }
+
+  /**
+   * What the settings page shows (§11.1): whether Kage offers background AI
+   * here, its access and pause, and the notes organized, waiting and older
+   * than orgSince, the last run, and a tool attempt in the last day.
+   */
+  async organizeInfo() {
+    if (!this.canOrganize) return { available: false };
+    if (!this._loaded) await this.ready().catch(() => {});
+    const status = await this.agentStatus();
+    if (!status?.available) return { available: false };
+    const now = this.now();
+    const counts = organize.organizeCounts(this.state, this._orgCtx(now));
+    let lastRun = null;
+    for (const item of this.state.items.values()) {
+      const at = item.org?.at;
+      if (Number.isFinite(at) && (lastRun === null || at > lastRun)) lastRun = at;
+    }
+    const { toolAt } = await this._orgNotes();
+    // Consent given in Kage's dialog: start now rather than at the next tick.
+    if (status.access === 'on' && this._orgWanted() && !this._org.pass) this._orgTrigger('idle');
+    return {
+      available: true, access: status.access, connected: status.connected,
+      pausedUntil: status.pausedUntil && status.pausedUntil > now ? status.pausedUntil : null,
+      counts, lastRun,
+      toolWarning: Number.isFinite(toolAt) && now - toolAt < LIMITS.organizeToolWarnMs,
+    };
+  }
+
+  // The item card's "✦ Organized by your agent" and Undo organizing: the
+  // newest background op that touched the note, unless it was undone.
+  _organizedVM(item) {
+    if (item.org?.state !== 'done') return undefined;
+    for (let i = this.state.ops.length - 1; i >= 0; i--) {
+      const op = this.state.ops[i];
+      if (op.via !== 'background' || !Object.hasOwn(op.after || {}, item.id)) continue;
+      if (op.undoneBy) return undefined;
+      const canUndo = journal.canUndo(this.state, op).ok;
+      return { opId: op.opId, canUndo, count: Math.max(1, Number(op.label?.params?.count) || 1) };
+    }
+    // The op left the journal: the note was organized, and stays so.
+    return { canUndo: false, count: 1 };
   }
 
   // --- opening ---------------------------------------------------------------------------
@@ -2827,6 +3384,8 @@ export class Mind {
 
   async _deleteAll() {
     await this.ready().catch(() => {});
+    // A batch in flight is about notes that are going.
+    this._org.flight?.abort.abort();
     const keys = this._allKeys();
     const bodies = [...model.bodyKeys(this.state)].map((key) => model.parseBodyKey(key)).filter(Boolean);
     await this.store.withLock(async () => {
@@ -2835,9 +3394,11 @@ export class Mind {
       for (const { id, n } of bodies) await this.store.remove(`mm-body-${id}-${n}`, { force: true });
       for (const key of keys) await this.store.remove(key, { force: true });
       await this.store.remove('mm-meta', { force: true });
-      // The explorer's pins and this computer's view state go too.
+      // The explorer's pins, this computer's view state and background
+      // organizing's notes go too.
       await this.store.remove('mm-layout', { force: true });
       await this.store.remove('mm-view', { force: true });
+      await this.store.remove(ORG_NOTES_KEY, { force: true });
     });
     try {
       await this.store.remove('mm-lock', { force: true });
@@ -2859,7 +3420,7 @@ export class Mind {
     this._bodies.clear();
     this._notices.clear();
     this.log.info?.('mindmap: deleted all data');
-    return { ok: true, keys: keys.length + bodies.length + 3 };
+    return { ok: true, keys: keys.length + bodies.length + 4 };
   }
 
   /** Repair (read-only mode): writes the readable state over every key, after confirmation. */
@@ -3269,6 +3830,8 @@ export class Mind {
       // A picked document: its file, whether "Update from file…" can run here, and that outcome.
       file: item.file ? { ...this._fileInfo(item), canUpdate: this.canPickFiles } : undefined,
       notice: this._notice(item.id),
+      // Background organizing did this note: the card says so and offers Undo organizing.
+      organized: this._organizedVM(item),
       entities: (item.entityIds || []).filter((e) => e !== 'me').map((e) => this.entity(e)).filter(Boolean)
         // kage-sensitive-data: not-sensitive — reviewed: an entity view model, not a settings control
         .map((e) => ({ id: e.id, name: e.name, type: e.type, private: !!e.private })),

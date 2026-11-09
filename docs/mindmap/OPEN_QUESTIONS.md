@@ -32,8 +32,8 @@ answers. Each new host API is optional: Mind Map checks
 `context.hostFeatures` and works as described below on a Kage that doesn't
 have it. The Mind Map side of each one is its own work package (V8 for Q7,
 FT-MM3 for Q4, AC-MM3 for Q6, S7 for Q2). Until a package lands, that
-question's "Assumed" text describes what Mind Map does. V8 (Q7) and FT-MM3
-(Q4) have landed.
+question's "Assumed" text describes what Mind Map does. V8 (Q7), FT-MM3
+(Q4) and AC-MM3 (Q6) have landed.
 
 ---
 
@@ -148,29 +148,30 @@ Built in FT-MM1 to FT-MM3:
 ## Q6. Should AI organize things automatically in the background?
 
 **Decided:** yes, as an option that is off by default. Mind Map asks the
-agent in the background through the new `agent_background` capability
+agent in the background through Kage's `agent_background` capability
 ([EXTENSION_AGENT_CALLS.md](https://github.com/nachmore/Kage/blob/main/docs/design/EXTENSION_AGENT_CALLS.md), Mind Map in §11).
-Nothing is sent until the user turns it on and confirms which agent gets
-the text, and private items are never sent. Without that host feature, or
-with it off, organising works as below.
+Built in AC-MM1 to AC-MM3:
 
-- **Assumed:** no. Organizing happens locally and deterministically when you
-  save: kinds, people, teams, projects, tags, acronyms, actions, due dates,
-  related items. The agent only helps when you ask:
-  - `mm?`, the tools;
-  - P2 `mm organize`, which sends a visible prompt that you can see and undo.
-- **Why:**
-  - Kage has no host API for silent agent calls.
-  - Silent calls would cost tokens and send notes to a cloud agent without a
-    visible moment of consent.
-  - Users of comparable tools report "note rot" from AI-invented tags.
-- **If you want background enrichment:**
-  - Add a host `agent_complete` command (ephemeral prompt, size cap, rate
-    limit, per-extension opt-in).
-  - Mind Map would batch un-enriched, non-private items when idle and apply
-    the results through the existing `annotate` path.
-
-  Host **M**, extension **S**.
+- **Organize new notes in the background** in settings, off by default.
+  Nothing is sent until the user turns it on and confirms, in Kage's own
+  dialog, which agent gets the text on this computer (**Allow on this
+  computer…**). Kage runs the calls while the user isn't using Kage, refuses
+  every tool, and caps size, rate and a daily allowance.
+- Batches of up to 15 settled notes from the last week (**Organize older
+  notes too** takes in the rest). Private notes, notes naming a private
+  name and documents Kage flagged as holding a secret are never sent; nor
+  are ids, windows, apps, folders or "Names that mean you".
+- The reply adds summaries, names, key terms and suggested actions that
+  quote the note, through the same additive path as `annotate`. Actions are
+  always suggestions. A note changed, deleted or made private while its
+  batch was out isn't touched.
+- The item card says "✦ Organized by your agent" with **Undo organizing**;
+  `mm undo` skips background changes. Each computer organizes its own new
+  notes first, and others' after a day.
+- On a Kage without the feature, the switch stays, its status says to
+  update Kage or approve the permission, and organizing works as before:
+  locally when you save, and through the agent only when you ask (`mm?`,
+  the tools, `mm organize`).
 
 ## Q7. Where should the visual map live?
 

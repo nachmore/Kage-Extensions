@@ -121,6 +121,13 @@ describe('eligible', () => {
     expect(reason(fine, stateOf([fine], [DANA, SECRET]))).toBeNull();
   });
 
+  it('leaves out a picked document Kage flagged as holding a secret, even once the agent may see it', () => {
+    const file = { name: 'Q3 plan.pdf', warnings: ['possible_secret'] };
+    expect(reason(note({ kind: 'doc', file }))).toBe('secret');
+    expect(reason(note({ kind: 'doc', file: { ...file, warnings: ['pages_skipped'] } }))).toBeNull();
+    expect(reason(note({ kind: 'doc', file, private: true }))).toBe('private');
+  });
+
   it('leaves out archived notes, children and kinds it doesn’t organize', () => {
     expect(reason(note({ archived: true }))).toBe('archived');
     expect(reason(note({ parentId: iid(999) }))).toBe('child');
@@ -277,18 +284,20 @@ describe('selectBatch', () => {
 });
 
 describe('organizeCounts', () => {
-  it('counts organized, waiting and older notes', () => {
+  it('counts organized (skipped ones too), waiting and older notes', () => {
     const done = note();
     done.org = markDone(textHash(done), NOW - DAY);
+    const skipped = note();
+    skipped.org = markDone(textHash(skipped), NOW - DAY, { skipped: true });
     const items = [
-      done,
+      done, skipped,
       note(), note({ createdAt: NOW - MIN }), note({ source: { via: 'launcher', dev: OTHER } }),
       note({ createdAt: NOW - 30 * DAY }), note({ createdAt: NOW - 40 * DAY }),
       note({ private: true }), note({ createdAt: NOW - 50 * DAY, private: true }),
     ];
     const state = stateOf(items);
-    expect(organizeCounts(state, ctxFor(state, { orgSince: NOW - 7 * DAY }))).toEqual({ organized: 1, waiting: 3, older: 2 });
-    expect(organizeCounts(state, ctxFor(state))).toEqual({ organized: 1, waiting: 5, older: 0 });
+    expect(organizeCounts(state, ctxFor(state, { orgSince: NOW - 7 * DAY }))).toEqual({ organized: 2, waiting: 3, older: 2 });
+    expect(organizeCounts(state, ctxFor(state))).toEqual({ organized: 2, waiting: 5, older: 0 });
   });
 });
 
@@ -325,6 +334,12 @@ describe('notePayload', () => {
     expect(JSON.stringify(p)).not.toMatch(/someone|shared/i);
     const fileUrl = note({ kind: 'doc', title: 'Notes', text: 'see file:///home/someone/notes/today.md for more', url: 'file:///home/someone/notes/today.md' });
     expect(notePayload(fileUrl, ctx(stateOf([fileUrl])))).toMatchObject({ text: 'see today.md for more', file: 'today.md' });
+  });
+
+  it('sends a picked document’s file name, which is all Mind Map knows of it', () => {
+    const doc = note({ kind: 'doc', title: 'Q3 plan', text: 'Q3 plan for the Bingo launch, with the MTCS numbers.', file: { name: 'Q3 plan.pdf', warnings: [] } });
+    expect(notePayload(doc, ctx(stateOf([doc])))).toMatchObject({ kind: 'doc', title: 'Q3 plan', file: 'Q3 plan.pdf' });
+    expect(notePayload({ ...doc, kind: 'note' }, ctx(stateOf([doc])))).not.toHaveProperty('file');
   });
 
   it('strips userinfo, query and fragment from URLs, in the text too', () => {

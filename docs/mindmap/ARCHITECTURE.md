@@ -146,6 +146,7 @@ extensions/mindmap/
 test-helpers/mindmap/memory-host.mjs   WP-B   in-memory invoke (data commands + pluggable handlers)
 test-helpers/mindmap/view-host.mjs     WP-V8  fake view host: change events, context.view, canvas stub, frames
 test-helpers/mindmap/file-host.mjs     FT-MM3 fake context.files (support, pickText) and §3.6-shaped results
+test-helpers/mindmap/agent-host.mjs    AC-MM3 fake context.agent (complete, status) shared by windows: gates, dedupe, turns, framing, schema
 test-helpers/mindmap/corpus.mjs        WP-D   SPEC §3.1 fixture corpus builder
 docs/mindmap/i18n/view.en.json         WP-C   i18n fragment, same format as messages.json; WP-D merges it, then deletes it
 ```
@@ -421,7 +422,7 @@ ingest or re-read, a delete whose op left the journal (200 ops / 256 KB),
 and an op `appendOp` made lossy.
 
 Background organizing (WP-AC-MM2, Kage's EXTENSION_AGENT_CALLS §11.5). The
-caller passes `lib/organize.js` results; AC-MM3 wires it into `mind.js`.
+caller passes `lib/organize.js` results; `mind.js` (AC-MM3) calls these.
 
 ```js
 export const ORG_STATES;                          // ['done', 'skipped', 'failed']
@@ -452,6 +453,10 @@ export function applyUndo(state, op, env);         // Change (kind 'undo'); rest
 export function appendOp(ops, op, { maxOps = 200, maxBytes = 262144 } = {}); // new trimmed array (oldest first out)
 export function lastUndoable(ops);                 // newest op with !silent && !undoneBy && kind !== 'undo'
 ```
+
+Children that later silent ops gave an item the op created (background
+organizing's suggestions on a new note) go with it on undo; one the user
+changed since makes the undo `superseded` (AC-MM3).
 
 ### 5.11 `lib/bm25.js` (WP-B)
 
@@ -569,6 +574,14 @@ class Mind {
   agentFile(item);                              // {name, format, chars, pages?} for agent records
   setNotice(id, line);                          // a card's "Update from file…" outcome, shown for two minutes
   exportBodies();                               // { [itemId]: text } for Export JSON
+  // background organizing (AC-MM3, EXTENSION_AGENT_CALLS §11)
+  get canOrganize();                            // agent.background and context.agent
+  agentStatus();                                // context.agent.status(), one at a time → { available, access, connected, pausedUntil, nextStartAt } | null; caches the machine tag
+  organizeTick();                               // one pass, as the timers run it → { ok: true, organized, skipped, stale } | { ok: false, code, message? }
+  organizeNow();                                // from a click: when 'now', key 'organize-now'; a waiting idle reservation of this window gives way
+  organizeBacklog();                            // meta.orgSince = 0
+  organizeInfo();                               // settings: { available, access, connected, pausedUntil, counts: {organized, waiting, older}, lastRun, toolWarning }
+  whenOrganized();                              // resolves when this window's pass is done (tests)
   // map explorer (WP-V8, EXTENSION_VIEWS §24)
   exNode(ref);                                  // ExNode (§6.6b) | null (archived, dismissed, gone)
   links(ref, { limit = 60 });                   // { node, links: [{ ref, role, style, w, node }] } | null; round robin over kinds
@@ -579,6 +592,31 @@ class Mind {
   onRemoteChange(fn);                           // fn({data, layout}) on another window's change (storage.change_events)
 }
 ```
+
+Background organizing (AC-MM3): the loop runs in each window where Mind Map
+has loaded, while `background_organize` is on, `enabled` isn't false, the
+store isn't read-only and Kage offers `agent.background`. `_orgSync` (on
+load and every `setConfig`) starts a 10-minute interval and a pass that asks
+`status()` again; `capture` and `ingestFile` start a 60 s debounce; a pass
+that finds only settling notes comes back when the first one settles. One
+pass per window at a time (`_org.pass`; triggers join it). A pass: status
+when needed (access, pause), `orgSince` the first time, `syncIfStale(0)`,
+a cheap eligibility scan, then `context.agent.complete(build, { purpose:
+'organize', when, dedupeKey: 'organize' | 'organize-now', signal })`. `build`
+runs at Kage's turn: sync, `selectBatch`, `vocabulary`, `buildRequest`; it
+returns null when nothing is left. `_reindex` and `_loadAll` abort the call
+when a note in the batch is deleted or hidden; turning the switch off
+aborts it too. A reply is applied in one `_mutate`: notes deleted, hidden
+or with another rev are left out, then `applyOrgMarks`, then `applyAnnotate`
+with `{ via: 'background', silent: true, autoAccept: false,
+maxNewEntitiesPerItem: 3 }` and back-fill, then `_trimBackgroundUndo`
+(older background ops past 64 KB of snapshots become lossy). Failures
+(`not_json`, `invalid_response`, `timeout`, `response_too_large`,
+`agent_error`, `tool_attempted`, and `invalid_input` refusals) mark the
+batch failed; `budget_exhausted`, `rate_limited` and `paused` wait for
+Kage's time; gate refusals stop the loop until a status says access is on;
+the rest mark nothing. `tool_attempted` writes `mm-org`. The machine tag is
+stamped on new items (`env.dev`) while the switch is on.
 
 Document bodies (FT-MM3): `_mutateLocked` takes `model.bodyKeys(state)`
 after the sync and before `apply`, `_persist` writes every `change.bodies`
@@ -730,10 +768,12 @@ export function fileErrorText(out, { t });                   // an addFile refus
 
 ### 5.25 `lib/organize.js` (WP-AC-MM1, uses `lib.text`, `lib.dates`, `lib.url`)
 
-Kage's EXTENSION_AGENT_CALLS §11.3–11.5. Pure; AC-MM3 wires it into `mind.js`.
+Kage's EXTENSION_AGENT_CALLS §11.3–11.5. Pure; `mind.js` uses it (AC-MM3).
 `ctx` below is `{ now, state, orgSince?, machineTag?, organized?(item) }`;
 `organized` is `mind._agentOrganized` (a default without the children check
-is used when it's missing).
+is used when it's missing). A doc Kage flagged `possible_secret` is never
+eligible (`'secret'`), a picked doc sends its file name, and the settings
+count of organized notes includes skipped ones (AC-MM3).
 
 ```js
 export const ORGANIZE_V, PURPOSE, DEDUPE_KEY, ORG_STATES, MACHINE_TAG_RE, ORGANIZE_LIMITS, SCHEMA;
@@ -864,7 +904,8 @@ OpVM   { opId, code, undone, canUndo, at, item?: {id, kind, title, private}, ded
          doc?: FileResult }                                   // ingest and reread ops (§5.15)
 ItemVM { id, kind, title, text, day, createdAt, app?, url?, path?, status?, suggested?, dueAt?, owner?: {id, name},
          private, summary?, entities: [{id, name, type, private}], actions: [...], parent?: CiteVM, related: CiteVM[],
-         file?: {name, ext, format, size, pages, chars, truncated, warnings, canUpdate}, notice? }
+         file?: {name, ext, format, size, pages, chars, truncated, warnings, canUpdate}, notice?,
+         organized?: {opId?, canUndo, count} }                 // background organizing did it (AC-MM3)
 ```
 
 When the port returns `null` for a known id that is private, it returns
@@ -953,6 +994,7 @@ Every test is vitest. `npm test` runs all of them, and
 | Explorer (WP-V8) | `lib/camera.test.js`: round trips, zoom at a point, clamps, fit. `lib/spatial.test.js`: query, topmost hit, moves. `lib/layout.test.js`: overlaps resolved, fixed nodes still, deterministic, survives `Function.toString()` and runs in a plain worker. `lib/scene.test.js`: lanes, determinism, RTL mirroring, pins, lens, caps, expand/collapse, rebuild with positions kept. `explorer-canvas.test.js` (jsdom, recording 2D context): LOD, culling, RTL text, theme colours, drag/pan/wheel/pinch, handle. `explorer.test.js`: open with focus, a drag pins to mm-layout and shows after reopening, a non-self mm-meta change redraws once, a private node never reaches compose, `onOpen` re-centres, mm-view round trip, keyboard, panel actions with Undo. `explorer-entry.test.js`: rows, card buttons and settings with and without views; `mind.links`, pins, mm-view, export/import, Delete everything. `explorer-styles.test.js`: the CSS gate for `explorer.css`. |
 | `lib/files.js` (FT-MM1) | `validateFileText`: bad types, oversized fields, scalar counting, bad hex, bad ref, paths in names, page starts converted to string offsets. `dedupeDecision`: S, U, C, N, first match wins, oldest of equals, Update from file…. `addRef` cap. `docTitle`: usable titles, app defaults, paths. `bodyKeyphrases`: frequency, headings double, forms that re-tokenize, deterministic, 200,000 chars in <60 ms (soft). `findPassages`: length, best first, no overlap, folded spellings, the block test against a full scan, pages, surrogate pairs. |
 | `lib/organize.js` (AC-MM1) | `lib/organize.test.js`. Eligibility: private, private entity, archived, child, kinds, short, pending link, settle time, `orgSince` (and its 7-day default), hash change, done and skipped marks, failed with backoff and the 3-try cap, malformed `org`, notes `mm organize` already did, machine tag and the 24-hour rule. Batch cap and order, insertion-order independence, two tags start apart, 20,000 items (soft). Payload omits window, app, folders, `my_names` and ids; URLs lose userinfo, query and fragment, in the text too; paths keep the file name; caps and no `<>`. Vocabulary excludes private, merged, hidden-only and own names. `SCHEMA` uses only the host's subset within its caps; fixture replies pass, bad ones fail at the first bad path. `buildRequest`: refs, label, budget trimming checked against the host's framing. `toAnnotateEntries`: ref mapping, skip, cleaning; end to end through `model.applyAnnotate`. Marks. |
+| Background organizing (AC-MM3) | `mind.test.js` with `test-helpers/mindmap/agent-host.mjs`: off by default (no status call, no tag, no `orgSince`); no host feature; a batch end to end (request shape, nothing identifying sent, marks, suggestions, silent op, `mm organize` and the next pass skip it); `duplicate` across two windows; the builder gives the turn back; a stale rev; a private flip or delete in flight cancels; the switch off cancels; each failure, wait, stop and retry code; Undo organizing (and `superseded`); `mm undo` of the capture takes the background's children; Organize now (its own key; a waiting reservation gives way); `orgSince` and Organize older notes too; another computer's notes wait a day; the debounce and the settling retry; the 64 KB undo budget; `organizeInfo`. `settings.test.js`: the section after Agent, the switch off by default, the status per access state, Allow (`agent_access`), Organize now and older notes, pause and tool warnings, escaping. `view.test.js`: the ✦ line and Undo organizing. `search.test.js`: Undo organizing from a card. `lib/journal.test.js`: children a later silent op made go with their parent. |
 | Documents (FT-MM3) | `lib/filetext.test.js`: sizes, every headline and note, error texts. `mind.test.js`: off without `files.pick_text`; body first, then the shard, journal and meta, and written once; a short file has no body; cancel, host refusals and bad results save nothing (and no file name in the log); S, C and U, with Undo of a re-read and of an ingest; Update from file… (unchanged, update, not a doc); `possible_secret` and Let my agent see it; the budget refused before the dialog; read-only before the dialog; a crash after the body write; a retry after a conflict is still "new"; the body cache (lazy, 8 per window) and another window after `syncIfStale`; a deleted doc's body kept until the delete leaves the journal; Export raw / JSON, Delete everything and Import with bodies. `search.test.js`: rows only with the feature, Enter, cancel, refusal and "already" lines, doc rows and passages, Update from file… on a card. `settings.test.js`, `tools.test.js`, `view.test.js` and `explorer.test.js`: the Documents section, passages within 8 KB and private docs hidden, the doc cards, Add a file… and Show text in the explorer. |
 | `host-loader.test.js` | Copied from stocks and adapted. <br>• Windows: floating/chat = search + tools + formatter; settings = settings. <br>• Checks BFS discovery, no re-exports, composers import only leaves, leaves import nothing, every import is single-line, no `import … from './` text in comments. <br>• Loads every provider through the host's two-pass rewrite in Node and asserts the default export class names. |
 | `mind.test.js` | Load and sync (`syncIfStale` reloads only changed keys). Crash safety (AT-10). Read-only refuses writes and makes zero data writes. Two windows (AT-9). Undo (AT-8). Link enrichment (mock `fetch_link_metadata`; title only while `auto`; a reformat is requested). The window doc with an empty macOS title is not offered. `agentRecord` omits window and app, applies snippet caps and private exclusion. `askPrompt` with 0 and 8 records strips `<>`. `exportJson` and `deleteAll` (every key and twin deleted). |

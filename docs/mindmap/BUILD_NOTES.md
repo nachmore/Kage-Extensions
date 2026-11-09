@@ -1404,6 +1404,109 @@ Mind Map behaves as before.
   `npm test` 78 files / 2443 tests. `check:i18n` still fails only on keys
   waiting for translation (now 116); every other gate passes.
 
+## WP-AC-MM3: background organizing, wired in (`mind.js`, `settings.js`, `view.js`, `manifest.json`, `defaults.js`)
+
+Kage's EXTENSION_AGENT_CALLS §11.1, §11.2, §11.5 and §11.6. Kage's host side
+(AC0–AC7) is built in parallel, so this is coded against the design and
+tested with a fake `context.agent` in `test-helpers/mindmap/agent-host.mjs`
+(gates, one live reservation per dedupe key across windows, held turns and
+replies, the §5.6 caps, a copy of the §5.2 framing and the §5.3 schema
+subset). Without `agent.background` and `context.agent` nothing is asked or
+sent, and Mind Map behaves as before.
+
+- **Manifest.** `agent_background`, the `agentBackground` block (reason,
+  `organize`, `maxPromptChars: 16000`, `dailyCalls: 40`),
+  `background_organize` (boolean, `false`), version 0.4.0. SYNC's S7 adds
+  `"sync": "machine"` to the switch later.
+- **Loop.** As §11.2: in every window where Mind Map has loaded, while the
+  switch is on (and `enabled`, not read-only). Triggers: load, 60 s after a
+  capture or added file, every 10 minutes, every config update, and
+  Organize now. One pass per window at a time. A pass asks `status()` when it
+  has none or was stopped, sets `orgSince` the first time, syncs, scans for
+  an eligible note, then calls `complete()`; the builder syncs again and
+  builds the batch at Kage's turn. **Additions:** a pass that finds only
+  settling notes comes back when the first settles (the 60 s debounce
+  alone fires before the 2-minute settle time); the organizer doesn't
+  load data in a window by itself, so it runs once Mind Map is used there.
+- **Organize now** uses its own dedupe key, `organize-now` (**differs from
+  the design**, which has one key): an idle reservation another window holds
+  while the user is in Settings would otherwise refuse the click as
+  `duplicate`. The batch is picked at the turn and the host runs one call
+  per extension at a time, so the two never send a note twice; a note
+  organized by both is applied once (the rev check). A waiting idle
+  reservation of the same window is cancelled for the click.
+- **Apply** as §11.5, in one `_mutate`: rev, delete and hidden checks, then
+  `applyOrgMarks`, then `applyAnnotate` with the background env and
+  back-fill. Failures mark the batch failed. **Addition:** `invalid_input`
+  refusals (`prompt_too_large`, `field_too_long`, `field_invalid`,
+  `schema_unsupported`, `contains_credential`) count as failures, so a batch
+  Kage keeps refusing backs off instead of going again on every trigger.
+  `purpose_not_declared` and `agent_changed` stop the loop like the other
+  gate refusals.
+- **Cancel in flight.** `_reindex` and `_loadAll` check the batch's notes
+  after every commit or sync; a deleted or hidden note (itself, or through
+  a private name) aborts the signal. Turning the switch off (or the
+  extension) aborts too; so does Delete everything.
+- **Machine tag.** Cached from `status()`, stamped on new items through
+  `env.dev`. **Differs from the design:** only while the switch is on, so a
+  user who never turns it on has no tag in their notes or exports. Notes
+  saved while it was off count as untagged (organized after 24 hours by any
+  computer), as §11.3 already handles.
+- **Undo.** Undo organizing on the item card undoes the batch's op, so it
+  takes back every note of that batch; the button says how many ("Undo
+  organizing (12 notes)") and its tooltip says why. The journal undo gap
+  AC-MM2 found is fixed in `lib/journal.js` (**outside the package's
+  files**): undoing an op that created an item also deletes children that
+  later silent ops gave it, and a child the user changed since makes the
+  undo `superseded`. Before, `mm undo` of a capture left the background's
+  suggestions with no parent.
+- **Journal size.** **Addition:** `_trimBackgroundUndo` keeps background
+  ops' snapshots within 64 KB of the 256 KB journal, newest first; older
+  ones become lossy (their revs stay, so the user's earlier changes can
+  still be undone, but Undo organizing goes). Background work still adds
+  two ops per batch (marks, annotate) to the 200-op count.
+- **Leaf changes** (`lib/organize.js`, AC-MM1's): a doc whose file warnings
+  include `possible_secret` is never eligible, even after "Let my agent
+  see it" (EXTENSION_FILE_TEXT §11.7); a picked doc sends `file.name`; the
+  settings count of organized notes includes skipped ones. Four reviewed
+  `kage-sensitive-data: not-sensitive` annotations there: `check:security`
+  now scans the leaf through `settings.js → mind.js`, and its `{ name, type }`
+  records read as settings controls. A doc's payload is the leaf's (title
+  and the first 600 characters), not "title, headings and the first 600
+  characters": headings aren't stored apart from the text.
+- **Settings.** The Background organizing section after Agent: the switch,
+  what it does, and where Kage offers it the status line ("{organized}
+  organized · {waiting} waiting · last run {when}", paused, needs your OK,
+  agent changed), Allow on this computer… (`{ host: { type: 'agent_access'
+  } }`), Organize now, Organize older notes too and the tool warning. The
+  rows after the switch use `showWhen` on it. Organize now needs the saved
+  switch on ("save first"). The tool warning lasts a day and is shared
+  between windows through a small `mm-org` key (no lock; Delete everything
+  removes it). The disclosure sentence is in the Privacy section with the
+  other disclosures, where Kage offers the feature. The design's
+  `settings.organize.*` keys are there, plus the button, hint and outcome
+  strings.
+- **Card.** `itemVM.organized` (`{ opId?, canUndo, count }`) from the
+  newest background op that touched the note and wasn't undone; "✦
+  Organized by your agent" and the button in a `.mm-org` row (no styles.css
+  change: there is no agent-origin styling to reuse).
+- **Other files.** `test-helpers/mindmap/agent-host.mjs` (new);
+  `acceptance.test.js`'s pending-translation list; the relative-import count
+  in `scripts/check-sensitive-review.test.mjs` (116 → 117); one card test in
+  `search.test.js`; the leaf, journal and model tests.
+- **Strings.** 26 new EN keys (`manifest.agent_background_reason`,
+  `settings.section_background`, `settings.background_organize*`,
+  `settings.organize.*`, `settings.disclosure.background`, `card.organized`,
+  `card.undo_organize*`), waiting for translation.
+- **Not tested live:** Kage's AC host packages haven't merged, so §12's
+  manual steps 1–5 with Mind Map wait for a build with them. Things the fake
+  can't check: that the runtime awaits an async `build` (the design's
+  builder syncs first, so it must), the `agent_access` effect and the click
+  lease for `when: 'now'`.
+- **Checks:** `npx vitest run extensions/mindmap` 35 files / 1,143 tests;
+  `npm test` 78 files / 2,497 tests. `check:i18n` still fails only on keys
+  waiting for translation (now 142); every other gate passes.
+
 ## Status
 
 **Works (P0/P1/P2, all phases of SPEC §2):**
@@ -1422,6 +1525,8 @@ Mind Map behaves as before.
   node list), on Kage builds with extension views.
 - FT-MM1–3: documents from a file (Add a file…, Update from file…, bodies,
   passages, the Documents settings), on Kage builds with `files.pick_text`.
+- AC-MM1–3: background organizing, off by default, on Kage builds with
+  `agent.background`.
 
 **Known gaps:**
 - Bodies left by an abandoned capture or a failed delete can't be swept

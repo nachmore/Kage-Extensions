@@ -119,6 +119,9 @@ function check(item, ctx) {
   if (item.archived) return { reason: 'archived' };
   if (!(KINDS.has(item.kind) || (item.kind === 'action' && item.status === 'open'))) return { reason: 'kind' };
   if (hidden(item, ctx.state)) return { reason: 'private' };
+  // A picked document Kage thought holds a password or key never goes, even
+  // after "Let my agent see it" (Kage EXTENSION_FILE_TEXT §11.7).
+  if (Array.isArray(item.file?.warnings) && item.file.warnings.includes('possible_secret')) return { reason: 'secret' };
   if (contentChars(item) < L.minChars) return { reason: 'short' };
   const org = orgOf(item);
   let retry = false;
@@ -147,8 +150,8 @@ function check(item, ctx) {
 
 /**
  * Why `item` can't go in a batch now, or null when it can (§11.3). Codes:
- * bad, child, archived, kind, private, short, organized, skipped, failed,
- * out_of_scope, settling, pending_link, other_machine, backoff.
+ * bad, child, archived, kind, private, secret, short, organized, skipped,
+ * failed, out_of_scope, settling, pending_link, other_machine, backoff.
  * ctx: { now, state, orgSince?, machineTag?, organized?(item) }.
  */
 export function ineligibleReason(item, ctx) {
@@ -182,15 +185,16 @@ export function selectBatch(state, ctx) {
 }
 
 /**
- * Settings counts: notes organized, waiting (eligible now, or only waiting
- * for time to pass), and older ones that "Organize older notes too" would add.
+ * Settings counts: notes organized (including the ones the agent looked at
+ * and had nothing to add to), waiting (eligible now, or only waiting for
+ * time to pass), and older ones that "Organize older notes too" would add.
  */
 export function organizeCounts(state, ctx) {
   const c = { ...ctx, state };
   const out = { organized: 0, waiting: 0, older: 0 };
   for (const item of state.items.values()) {
     const { reason } = check(item, c);
-    if (reason === 'organized') out.organized++;
+    if (reason === 'organized' || reason === 'skipped') out.organized++;
     else if (reason === null || WAITS.has(reason)) out.waiting++;
     else if (reason === 'out_of_scope') out.older++;
   }
@@ -277,8 +281,10 @@ export function notePayload(item, ctx, mine = myKeys(ctx)) {
   if (names.length) out.entities = names;
   if (isHttp(item.url)) {
     out.url = lib.text.truncate(stripAngles(stripUrl(item.url)), L.urlChars);
-  } else if (item.kind === 'doc' && (item.path || item.url)) {
-    const file = lib.text.truncate(lib.text.collapseWs(stripAngles(lib.url.baseName(item.path || item.url))), L.fileChars);
+  } else if (item.kind === 'doc' && (item.path || item.url || typeof item.file?.name === 'string')) {
+    // A picked document has only its file name (Kage never gives a path).
+    const raw = item.path || item.url || item.file.name;
+    const file = lib.text.truncate(lib.text.collapseWs(stripAngles(lib.url.baseName(raw))), L.fileChars);
     if (file) out.file = file;
   }
   return out;
@@ -301,10 +307,12 @@ export function vocabulary(state, ctx) {
   const max = Number.isSafeInteger(ctx.max) && ctx.max >= 0 ? ctx.max : ORGANIZE_LIMITS.vocabulary;
   return [...state.entities.values()]
     .filter((e) => e.id !== 'me' && !e.mergedInto && !e.private && visible.get(e.id))
+    // kage-sensitive-data: not-sensitive — reviewed: a vocabulary entry for the agent, not a settings control
     .map((e) => ({ id: e.id, n: visible.get(e.id), name: lib.text.truncate(lib.text.collapseWs(stripAngles(e.name)), ORGANIZE_LIMITS.nameChars), type: e.type }))
     .filter((e) => e.name && !mine.has(lib.text.normalizeKey(e.name)))
     .sort((a, b) => b.n - a.n || (a.name < b.name ? -1 : a.name > b.name ? 1 : 0) || (a.id < b.id ? -1 : 1))
     .slice(0, max)
+    // kage-sensitive-data: not-sensitive — reviewed: a vocabulary entry for the agent, not a settings control
     .map((e) => ({ name: e.name, type: ENTITY_TYPES.includes(e.type) ? e.type : 'topic' }));
 }
 
@@ -331,6 +339,7 @@ export const SCHEMA = deepFreeze({
             type: 'array', maxItems: 8,
             items: {
               type: 'object', additionalProperties: false, required: ['name', 'type'],
+              // kage-sensitive-data: not-sensitive — reviewed: the reply schema, not a settings control
               properties: { name: str(60), type: { type: 'string', enum: [...ENTITY_TYPES] } },
             },
           },
@@ -487,6 +496,7 @@ function cleanEntry(raw) {
     if (!isRecord(e) || !ENTITY_TYPES.includes(e.type)) continue;
     const name = agentString(e.name, 60);
     if (!name || ME_WORD_RE.test(name) || entities.some((x) => x.name.toLowerCase() === name.toLowerCase())) continue;
+    // kage-sensitive-data: not-sensitive — reviewed: a name from the agent's reply, not a settings control
     entities.push({ name, type: e.type });
     if (entities.length >= 8) break;
   }

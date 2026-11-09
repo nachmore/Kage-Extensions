@@ -123,6 +123,19 @@ function onlySilentlyTouched(ops, index, id, rev) {
   return later[later.length - 1].after[id] === rev;
 }
 
+// Items a later op made under an item `op` created (background organizing's
+// suggested actions on a new note): undoing `op` deletes their parent, so
+// they go with it.
+function orphansOf(state, op) {
+  const created = new Set(group(op, 'created', 'items'));
+  if (!created.size || !state.items) return [];
+  const out = [];
+  for (const item of state.items.values()) {
+    if (item.parentId && created.has(item.parentId) && !created.has(item.id)) out.push(item);
+  }
+  return out;
+}
+
 export function canUndo(state, op) {
   if (!op || typeof op.opId !== 'string' || op.kind === 'undo') return { ok: false, code: 'missing' };
   if (op.lossy) return { ok: false, code: 'too_large' };
@@ -134,6 +147,11 @@ export function canUndo(state, op) {
     const now = currentRev(state, id);
     if (now === rev) continue;
     if (!onlySilentlyTouched(ops, index, id, now)) return { ok: false, code: 'superseded' };
+  }
+  // A child only silent ops made and touched goes with its parent; one the
+  // user changed since (accepted, done) makes the undo superseded.
+  for (const child of orphansOf(state, op)) {
+    if (!onlySilentlyTouched(ops, index, child.id, child.rev ?? null)) return { ok: false, code: 'superseded' };
   }
   return { ok: true };
 }
@@ -155,8 +173,9 @@ function referencedEntities(state, candidates) {
 }
 
 // Undoes `op` in place: restores its before-snapshots, deletes what it
-// created (entities only when nothing else still mentions them), marks it
-// undone, and returns a Change whose op (kind 'undo') the caller journals.
+// created (entities only when nothing else still mentions them) and the
+// children later silent ops gave those items, marks it undone, and returns
+// a Change whose op (kind 'undo') the caller journals.
 // env = { now, newId(prefix) }. Refusals return { op: null, code }.
 export function applyUndo(state, op, env) {
   const verdict = canUndo(state, op);
@@ -168,6 +187,11 @@ export function applyUndo(state, op, env) {
   const touched = new Set();
   const changed = new Set();
 
+  for (const child of orphansOf(state, op)) {
+    touched.add(`items:${shardOf(child)}`);
+    state.items.delete(child.id);
+    changed.add(child.id);
+  }
   for (const id of group(op, 'created', 'items')) {
     const item = state.items.get(id);
     if (!item) continue;

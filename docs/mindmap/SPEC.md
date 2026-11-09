@@ -41,8 +41,9 @@ more robust, and the extension detects them and falls back without them.
    ask.
 
 Non-goals for v1: sync between machines, reading file contents without the
-agent, embeddings or semantic search, a free pan/zoom canvas, background AI
-calls, proactive digests, any telemetry.
+agent, embeddings or semantic search, a free pan/zoom canvas, proactive
+digests, any telemetry. Background AI calls came later, off by default
+(§5 S12).
 
 ---
 
@@ -54,10 +55,10 @@ calls, proactive digests, any telemetry.
 | name | `__MSG_manifest.name__` → "Mind Map" |
 | description | `__MSG_manifest.description__` → "Throw in thoughts, links, docs and todos. Mind Map organizes them, answers with sources, and maps how they connect." |
 | icon | 🧠 |
-| version | `0.1.0` |
+| version | `0.4.0` |
 | author | `kage` |
 | tags | `productivity`, `notes`, `knowledge`, `mindmap`, `todo`, `bookmarks`, `organizer`, `ai` |
-| permissions | `storage`, `urls`, `network`, `windows`, `views`, `file_text` |
+| permissions | `storage`, `urls`, `network`, `windows`, `views`, `file_text`, `agent_background` |
 | sensitiveData | none (personal notes are personal data, not secrets; see §15) |
 
 Why each capability is needed:
@@ -69,6 +70,11 @@ Why each capability is needed:
 - `file_text`: "Add a file…" (C9–C12). Kage opens its file dialog, reads the
   file the user picks on this computer and gives Mind Map its text, never
   its path ([EXTENSION_FILE_TEXT.md](https://github.com/nachmore/Kage/blob/main/docs/design/EXTENSION_FILE_TEXT.md) §11).
+- `agent_background`: background organizing (§5 S12), off by default. The
+  manifest's `agentBackground` block gives the reason Kage quotes in its
+  consent dialog, the one purpose `organize`, `maxPromptChars: 16000` and
+  `dailyCalls: 40`
+  ([EXTENSION_AGENT_CALLS.md](https://github.com/nachmore/Kage/blob/main/docs/design/EXTENSION_AGENT_CALLS.md) §11).
 
 No `launch` (we never open local files), no `clipboard`, no `agent` (agent
 interactions use the `prompt` result action and tools, neither of which needs
@@ -657,6 +663,34 @@ agent can add:
 
 Changes are additive only, with origin `agent`. `enrich.state = 'done'`.
 
+**S12 Background organizing** (off by default; Kage's `agent_background`,
+[EXTENSION_AGENT_CALLS.md](https://github.com/nachmore/Kage/blob/main/docs/design/EXTENSION_AGENT_CALLS.md) §11). With
+**Organize new notes in the background** on and Kage's access on for this
+computer, each window where Mind Map has loaded asks Kage for a call 60 s
+after the last capture, every 10 minutes, when it loads and on **Organize
+now**. Kage gives the turn while the user isn't using Kage; only then does
+Mind Map sync and pick the batch (`lib/organize.js`):
+- up to 15 settled (2 minutes), visible, top-level notes of at least 40
+  characters, created since `meta.orgSince` (a week before the first run;
+  **Organize older notes too** sets 0), not organized yet or edited since,
+  failed ones after their backoff, never private or naming a private
+  entity, never a document Kage flagged `possible_secret`;
+- this computer's notes first; other computers' and untagged ones after
+  24 hours, in `hash(machine tag + id)` order;
+- refs `n1`…`n15`, kind, date, title, ≤600 characters of text, visible
+  names, a URL without userinfo, query or fragment, a file name. Never ids,
+  windows, apps, folders or "Names that mean you".
+
+The reply (summary, names, terms, actions quoting the note) goes through
+`applyAnnotate` with `via: 'background'`: one silent op (`mm undo` skips it),
+actions always suggestions, at most 3 new names per note, never a private
+name, no kind changes. Notes deleted, hidden or changed while the batch was
+out are left for a later batch. Each note gets an `org` mark (done, skipped
+or failed with a backoff of 1, 2, 3 hours; after 3 tries it waits for an
+edit). A note made private or deleted while the batch is out, or the switch
+turned off, cancels the call. The item card says "✦ Organized by your agent"
+with **Undo organizing**, which takes back that batch's op.
+
 **Precedence and re-derivation.**
 - `user > agent > rule`. Re-derivation (P2, when `item.v < EXTRACTOR_VERSION`, in idle batches of 200) only rewrites `rule`-origin fields.
 - User edits and rejections are facts. Merges, renames, deletes and forgets happen only on explicit commands, and each is undoable.
@@ -708,9 +742,15 @@ Item {
   fileRefs?: string[],                          // this computer's file_refs, newest last, ≤8; never synced
   body?: { key, chars, bytes },                 // the full text, when it is longer than `text`
   enrich: { state: 'none'|'pending'|'done'|'failed', at? },
+  // background organizing (S12): what it last did with this text
+  org?: { state: 'done'|'skipped'|'failed', v, at, hash, tries?, next? },  // hash: FNV-1a of title + text
   rev: number, v: number                        // record revision, EXTRACTOR_VERSION
 }
 ```
+
+`source` also carries `dev?` (16 hex characters), this computer's machine
+tag from Kage, stamped while background organizing is on, and `via` can be
+`background` (an action background organizing suggested).
 
 ### 6.3 Entity, candidate, link, rejection
 
@@ -743,6 +783,7 @@ JournalOp {
                   'annotate'|'enrich'|'merge'|'forget'|'rename'|'import'|'ingest'|'reread'|'undo',
   label: { code, params },         // English is derived for logs; the UI renders via t()
   silent?: true,                   // enrich ops: skipped by "mm undo"
+  via?: 'background',              // background organizing's annotate op (§5 S12)
   before: { items: Item[], entities: Entity[], links: Link[], rejections: Rejection[] },
   created: { items: id[], entities: id[] },
   after: { [recordId]: rev },      // the revs this op left behind; undo needs them to still match
@@ -775,7 +816,7 @@ at the end, so `check:security` can resolve them.
 
 | Key | Content |
 |---|---|
-| `mm-meta` | `{schema:1, rev, txn, keys:{[key]: rev}, counts:{items, entities}, extractorVersion, createdAt, updatedAt}` |
+| `mm-meta` | `{schema:1, rev, txn, keys:{[key]: rev}, counts:{items, entities}, extractorVersion, createdAt, updatedAt, orgSince?}` (`orgSince`: background organizing considers notes created since then, §5 S12) |
 | `mm-items-${YYYY}-${MM}` | `{schema, rev, txn, items: Item[]}`. Sharded by the **UTC** month of `createdAt`. Items never move shards. |
 | `mm-entities` | `{schema, rev, txn, entities: Entity[], candidates: Candidate[]}` |
 | `mm-links` | `{schema, rev, txn, links: Link[], rejections: Rejection[]}` |
@@ -783,11 +824,12 @@ at the end, so `check:security` can resolve them.
 | `mm-lock` | `{owner, nonce, expiresAt}`, no twin |
 | `mm-layout` | The explorer's pins (§9.5): `{schema:1, rev, txn, pins:{[ref]:{x, y, at}}}`, at most 5,000 (newest kept). Written under the lock, not journaled. |
 | `mm-view` | The explorer's state on this computer (§9.5): `{schema:1, camera:{x, y, zoom}, focus, history, lens, scroll, panelOpen, updatedAt}`. Only the explorer writes it, at most once every 2 s, last write wins. |
+| `mm-org` | Background organizing's note on this computer (§5 S12): `{schema:1, toolAt, rev}`, the last time the agent tried to use a tool. Last write wins, no lock. |
 | `mm-body-<id>-<n>` | A document's full text when it is longer than the item's 8,000 characters: `{schema:1, id, rev:n, format, chars, text, pageStarts?}`. Written once, before the shard that references it. `n` is past the item's rev and every body key an undo snapshot of it still holds. Not part of `ready()`: read on demand, the last 8 per window. Deleted when nothing references it any more (an undone ingest; a delete or re-read the journal dropped). |
 | `nx-<key>` | twin copy of every data key above except the lock (see 7.3); hosts with `files.pick_text` have atomic writes, so bodies get none |
 
 Delete everything removes
-`mm-layout` and `mm-view` too; Export JSON carries the pins as `layout.pins`
+`mm-layout`, `mm-view` and `mm-org` too; Export JSON carries the pins as `layout.pins`
 and Import JSON restores the ones whose item or name is here. Delete
 everything removes document bodies first; Export raw includes them; Export
 JSON carries `bodies: { [itemId]: text }` and Import JSON writes back the
@@ -893,6 +935,12 @@ Other rules:
     differs from `op.after`;
   - is itself an op (`kind:'undo'`), so the journal records it.
 - `mm undo` targets the newest non-silent, not-undone op.
+- Undoing an op that created an item also deletes children later silent ops
+  gave it (background organizing's suggestions), unless the user changed
+  one since (then `superseded`).
+- Background organizing's ops keep their snapshots within 64 KB of the
+  journal, newest first; older ones lose them (and **Undo organizing**), so
+  background work never pushes the user's own undo history out.
 - There is no redo in v1.
 
 ### 7.7 Migrations, export, import, delete, uninstall
@@ -1381,6 +1429,12 @@ that:
 - quotes every action verbatim;
 - invents nothing.
 
+**Background organizing** (§5 S12) sends no chat prompt. Its request to
+Kage is `instructions` from `prompt.organize_bg`, `input` `{ today,
+vocabulary: [{name, type}], notes: [...] }`, the reply `SCHEMA` of
+`lib/organize.js`, `label` "Organize {n} notes", `maxResponseChars: 12000`
+and `timeoutMs: 90000`. Kage frames it as data and refuses every tool.
+
 ---
 
 ## 13. Settings (settings.js)
@@ -1400,6 +1454,23 @@ Controls (ids equal the manifest `config` keys; `DEFAULTS` mirrors them;
 | Agent | Snippet length sent to the agent | `agent_snippet_chars` | number 80–600 | `280` |
 | Launcher | Trigger word | `trigger` | text (validated) | `mm` |
 | Documents | Keep up to … characters of each file | `doc_max_chars` | select `50000`/`200000`/`1000000` (a string: a select stores strings) | `200000` |
+| Background organizing | Organize new notes in the background | `background_organize` | checkbox | `false` |
+
+**Background organizing** (after Agent; §5 S12): the switch, what it does
+(private notes are never sent), then, where Kage offers `agent.background`:
+- a status line: "{organized} organized · {waiting} waiting · last run
+  {when}" (skipped notes count as organized), "Paused until {time}." while
+  Kage pauses it, or why it can't run (Kage's access is off, or the agent
+  changed);
+- **Allow on this computer…** (host effect `agent_access`, Kage's consent
+  dialog) while Kage's access isn't on;
+- **Organize now** (`when: 'now'`, its own dedupe key) and, when there are
+  notes from before `orgSince`, **Organize older notes too**;
+- a warning for a day after the agent tried to use a tool.
+
+These rows show only while the switch is ticked on the page (`showWhen`).
+Elsewhere the status says "Update Kage, or approve Mind Map's Background AI
+permission in the Store", and nothing else changes.
 
 **Documents** (only where `files.pick_text` is offered): the action **Add a
 file…** (C10), the `doc_max_chars` select, and "Document storage: {used} of
@@ -1504,6 +1575,11 @@ Where Kage reads files for Mind Map (`files.pick_text`), it adds:
 > text. Mind Map keeps up to {n} characters of it with your notes. Kage never
 > tells Mind Map where the file is.
 
+Where Kage offers background agent calls (`agent.background`), it adds:
+
+> If you turn on background organizing, new notes you haven't marked private
+> are sent to your agent in small batches while you aren't using Kage.
+
 **What goes where:**
 
 | Data | Where it goes |
@@ -1513,6 +1589,7 @@ Where Kage reads files for Mind Map (`files.pick_text`), it adds:
 | Window titles and app names | disk only, never to the agent (except a doc's own title) |
 | A picked file's text | disk only (the item and its body); the agent gets a doc's name, format, pages, size, summary and up to 3 matching passages, never the whole text. A doc Kage flagged `possible_secret` is private until the user chooses **Let my agent see it** |
 | Snippets and records | to the agent only through tool results or a `mm?` / `mm organize` prompt the user triggers and can see |
+| Background batches | to the agent through Kage's background calls, only with **Organize new notes in the background** on and Kage's access confirmed for that agent on this computer (§5 S12); never private notes, private names, windows, apps, folders or ids. Kage lists every request in the extension's Background AI panel |
 | Telemetry | nothing (§16) |
 
 **Private**:
@@ -1580,6 +1657,7 @@ only the extension id.
 | Extension views | `context.hostFeatures.includes('views')` | The explorer (§9.5) and its rows and buttons | No explorer; with `storage.change_events` but no `views` (not approved yet), settings says to approve it in the Store |
 | Storage change events | `storage.change_events` and `context.storage.onChanged` | Every window syncs as soon as another one saves | The 1.5 s `syncIfStale` only |
 | Reading a file the user picks | `context.hostFeatures.includes('files.pick_text')` and `context.files` | Add a file… (C9–C11), Update from file… (C12), the Documents settings section | No file rows or buttons; docs stay references (C5, C6). Docs from another computer still show and search |
+| Background agent calls | `context.hostFeatures.includes('agent.background')` and `context.agent` | Background organizing (§5 S12) when the user turns it on and Kage's access is on | The switch stays; its status says to update Kage or approve the permission; nothing is sent |
 
 No minimum host version is required. Every optional feature is detected.
 
@@ -1587,9 +1665,6 @@ No minimum host version is required. Every optional feature is detected.
 
 ## 19. Later (not in v1)
 
-- **Background enrichment** with no visible chat: needs a host `agent_complete`
-  command wrapping the ephemeral prompt path, with a size cap, rate limit and
-  per-extension opt-in.
 - **Topic clusters** for untagged notes: seeded Louvain plus splitting of
   disconnected parts. Shown as cluster bubbles in the overview, with ids kept
   stable by member overlap.

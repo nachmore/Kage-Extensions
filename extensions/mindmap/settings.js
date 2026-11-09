@@ -37,6 +37,9 @@ function explorerControls(t, features) {
   return [];
 }
 
+// Controls that only make sense while the switch is ticked on the page.
+const WHEN_ON = Object.freeze({ id: 'background_organize', equals: true });
+
 // "Document storage: 12.4 MB of 64 MB" (§11.8), with a warning past 90%.
 function usageHtml(t, bytes, locale) {
   let used;
@@ -90,6 +93,83 @@ export default class MindMapSettingsProvider {
     }
     if (controls.length || stats.files || stats.bodyBytes) controls.push({ type: 'info', html: usageHtml(t, stats.bodyBytes || 0, locale) });
     return controls.length ? { label: t('settings.documents.title'), controls } : null;
+  }
+
+  // Background organizing (Kage EXTENSION_AGENT_CALLS §11.1): the switch
+  // (off by default), what it does, and where Kage offers it, the status
+  // and Allow on this computer… / Organize now / Organize older notes too.
+  async backgroundSection(readOnly) {
+    const t = this.t;
+    const controls = [
+      { type: 'checkbox', id: 'background_organize', label: t('settings.background_organize'), default: DEFAULTS.background_organize, description: t('settings.background_organize_hint') },
+      { type: 'info', html: `<p>${esc(t('settings.organize.about'))}</p>` },
+    ];
+    const section = { label: t('settings.section_background'), controls };
+    let info;
+    try {
+      info = await this.mind.organizeInfo();
+    } catch (error) {
+      this.log?.warn?.(`mindmap: settings could not read background organizing (${error?.code || error?.name || 'error'})`);
+      info = { available: false };
+    }
+    if (!info?.available) {
+      controls.push({ type: 'info', html: `<p>${esc(t('settings.organize.status_unavailable'))}</p>` });
+      return section;
+    }
+    const locale = this.locale();
+    const num = (n) => Number(n || 0).toLocaleString(locale);
+    const lines = [];
+    if (info.access === 'consent_stale') lines.push(t('settings.organize.status_stale'));
+    else if (info.access !== 'on') lines.push(t('settings.organize.status_needs_host'));
+    else {
+      const when = Number.isFinite(info.lastRun) ? this.when(info.lastRun) : t('settings.never');
+      lines.push(t('settings.organize.status', { organized: num(info.counts.organized), waiting: num(info.counts.waiting), when }));
+      if (info.pausedUntil) lines.push(t('settings.organize.status_paused', { time: this.when(info.pausedUntil) }));
+    }
+    if (info.toolWarning) lines.push(`⚠️ ${t('settings.organize.tools_warning')}`);
+    controls.push({ type: 'info', html: lines.map((line) => `<p>${esc(line)}</p>`).join(''), showWhen: WHEN_ON });
+    if (info.access !== 'on') {
+      // Kage's own dialog names the agent and asks; the page can't do it itself.
+      controls.push({ type: 'action', id: 'organize_allow', action: 'organize_allow', label: t('settings.organize.allow'), description: t('settings.organize.allow_hint'), variant: 'primary', showWhen: WHEN_ON });
+      return section;
+    }
+    controls.push({ type: 'action', id: 'organize_now', action: 'organize_now', label: t('settings.organize.now'), description: t('settings.organize.now_hint'), disabled: !!readOnly, showWhen: WHEN_ON });
+    if (info.counts.older > 0) {
+      controls.push({ type: 'action', id: 'organize_backlog', action: 'organize_backlog', label: t('settings.organize.backlog'), description: t('settings.organize.backlog_hint', { n: info.counts.older }), disabled: !!readOnly, showWhen: WHEN_ON });
+    }
+    return section;
+  }
+
+  // A local date and time for the status lines.
+  when(ms) {
+    try {
+      return new Intl.DateTimeFormat(this.locale(), { calendar: 'gregory', dateStyle: 'medium', timeStyle: 'short' }).format(ms);
+    } catch {
+      return new Date(ms).toISOString();
+    }
+  }
+
+  // What background organizing shares (§11.1), where Kage offers it.
+  backgroundDisclosure() {
+    if (!this.mind.canOrganize) return '';
+    return `<p>${esc(this.t('settings.disclosure.background'))}</p>`;
+  }
+
+  // "Organize now" (§11.2): one batch now. The click is one Kage saw, so it
+  // doesn't wait for the user to step away.
+  // permissions: agent_background
+  async organizeNow() {
+    const t = this.t;
+    const out = await this.mind.organizeNow();
+    if (out?.ok) return { status: t('settings.organize.now_done', { n: (out.organized || 0) + (out.skipped || 0) }), host: { type: 'refresh' } };
+    const code = out?.code;
+    // i18n-keys: settings.organize.now_nothing, settings.organize.now_off, settings.organize.now_busy
+    const own = { nothing: 'settings.organize.now_nothing', off: 'settings.organize.now_off', duplicate: 'settings.organize.now_busy' };
+    if (own[code]) return { status: t(own[code]), host: { type: 'refresh' } };
+    if (code === 'unavailable') return { status: t('settings.organize.status_unavailable') };
+    if (code === 'readonly') return { status: this.errText(code) };
+    // Kage's refusals come in the user's language.
+    return { status: out?.message || this.errText(code), host: { type: 'refresh' } };
   }
 
   // What adding a file shares with Mind Map (§11.1), where Kage reads files.
@@ -165,11 +245,12 @@ export default class MindMapSettingsProvider {
     data.push({ type: 'action', id: 'import_json', action: 'import_json', label: t('settings.import_json'), description: t('settings.import_json_hint'), disabled: !!readOnly });
     data.push({ type: 'action', id: 'delete_all', action: 'delete_all', label: t('settings.delete_all'), description: t('settings.delete_all_hint'), variant: 'danger', confirm: t('settings.delete_all_confirm') });
     const explorer = explorerControls(t, this.hostFeatures());
+    const background = await this.backgroundSection(readOnly);
     const sections = [
       {
         label: t('settings.section_privacy'),
         controls: [
-          { type: 'info', html: `<p>${esc(t('settings.disclosure'))}</p>${this.filesDisclosure()}<p>${esc(t('settings.no_credentials'))}</p>` },
+          { type: 'info', html: `<p>${esc(t('settings.disclosure'))}</p>${this.filesDisclosure()}${this.backgroundDisclosure()}<p>${esc(t('settings.no_credentials'))}</p>` },
         ],
       },
       {
@@ -206,6 +287,7 @@ export default class MindMapSettingsProvider {
           },
         ],
       },
+      background,
       {
         label: t('settings.section_launcher'),
         controls: [
@@ -295,6 +377,14 @@ export default class MindMapSettingsProvider {
         return { host: { type: 'pick_file', accept: '.json', action: 'import_json' } };
       }
       if (action === 'add_file') return await this.addFile();
+      // Kage shows its consent dialog for this extension (§4.3).
+      if (action === 'organize_allow') return this.mind.canOrganize ? { host: { type: 'agent_access' } } : {};
+      if (action === 'organize_now') return await this.organizeNow();
+      if (action === 'organize_backlog') {
+        const out = await mind.organizeBacklog();
+        if (!out.ok && out.code !== 'same') return { status: this.errText(out.code) };
+        return { status: t('settings.organize.backlog_done'), host: { type: 'refresh' } };
+      }
       if (action === 'open_explorer') {
         // permissions: views
         return this.hostFeatures().includes('views') ? { host: { type: 'open_view', view: 'explorer' } } : {};

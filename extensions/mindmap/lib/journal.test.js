@@ -211,6 +211,55 @@ describe('applyUndo', () => {
   });
 });
 
+describe('children a later silent op gave a created item', () => {
+  // A capture that made a note, then background organizing (silent) that
+  // gave it a suggested action.
+  function organized() {
+    const state = stateWith();
+    const capture = newOp({ opId: id('o'), kind: 'capture', at: NOW });
+    const note = item();
+    noteCreated(capture, 'items', note.id);
+    state.items.set(note.id, note);
+    sealOp(capture, state);
+    state.ops = appendOp(state.ops, capture);
+    const bg = newOp({ opId: id('o'), kind: 'annotate', at: NOW, silent: true });
+    snapshotBefore(bg, 'items', note);
+    state.items.set(note.id, { ...note, summary: 'From the agent', rev: 2 });
+    const action = item({ kind: 'action', parentId: note.id, status: 'open', suggested: true });
+    noteCreated(bg, 'items', action.id);
+    state.items.set(action.id, action);
+    sealOp(bg, state);
+    state.ops = appendOp(state.ops, bg);
+    return { state, capture, note, action };
+  }
+
+  it('go with their parent when its capture is undone', () => {
+    const { state, capture, note, action } = organized();
+    expect(canUndo(state, capture)).toEqual({ ok: true });
+    const change = applyUndo(state, capture, env());
+    expect(state.items.has(note.id)).toBe(false);
+    expect(state.items.has(action.id)).toBe(false);
+    expect(change.op.after).toEqual({ [note.id]: null, [action.id]: null });
+    expect([...change.touched]).toEqual(['items:2026-10']);
+  });
+
+  it('make the undo superseded once the user changed one', () => {
+    const { state, capture, action } = organized();
+    edit(state, action, { suggested: false });
+    expect(canUndo(state, capture)).toEqual({ ok: false, code: 'superseded' });
+  });
+
+  it('don’t touch other items’ children', () => {
+    const { state, capture } = organized();
+    const other = item();
+    const child = item({ kind: 'action', parentId: other.id });
+    state.items.set(other.id, other);
+    state.items.set(child.id, child);
+    applyUndo(state, capture, env());
+    expect(state.items.has(child.id)).toBe(true);
+  });
+});
+
 describe('appendOp and lastUndoable', () => {
   const op = (overrides = {}) => ({ ...newOp({ opId: id('o'), kind: 'edit', at: NOW }), ...overrides });
 

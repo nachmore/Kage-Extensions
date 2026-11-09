@@ -4,6 +4,7 @@ import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import { FIXTURE_NOW, buildCorpus, makeContext, makeHarness } from '../../test-helpers/mindmap/corpus.mjs';
 import { FILE_FEATURES, fileText, hostError, installFiles } from '../../test-helpers/mindmap/file-host.mjs';
 import { createMemoryHost } from '../../test-helpers/mindmap/memory-host.mjs';
+import { AGENT_FEATURES, createAgentHost } from '../../test-helpers/mindmap/agent-host.mjs';
 import { LIMITS } from './defaults.js';
 import { DEFAULTS } from './defaults.js';
 import MindMapSettingsProvider from './settings.js';
@@ -250,5 +251,122 @@ describe('documents', () => {
     expect(p.normalize({ doc_max_chars: '1000000' }).values).toEqual({ doc_max_chars: '1000000' });
     expect(p.normalize({ doc_max_chars: 50000 }).values).toEqual({ doc_max_chars: '50000' });
     expect(p.normalize({ doc_max_chars: 'lots' }).values).toEqual({ doc_max_chars: '200000' });
+  });
+});
+
+// --- Background organizing (Kage EXTENSION_AGENT_CALLS §11.1) ---------------------------
+
+const BG_NOTE = 'Lunch with Dana about the MTCS hiring plan; someone should send the offsite budget around.';
+
+function bgSettings({ hostFeatures = AGENT_FEATURES, access = 'on', agent = true, config = {} } = {}) {
+  const host = createMemoryHost({ atomic: true });
+  const ctx = makeContext(host, { config: { background_organize: true, ...config }, hostFeatures });
+  const fake = agent ? createAgentHost({ access }) : null;
+  fake?.install(ctx);
+  const p = new MindMapSettingsProvider();
+  p.initialize(ctx);
+  return { host, ctx, p, agent: fake };
+}
+
+const bgSection = (schema) => section(schema, 'Background organizing');
+const bgHtml = (schema) => bgSection(schema).controls.filter((c) => c.type === 'info').map((c) => c.html).join('');
+const ON = { id: 'background_organize', equals: true };
+
+describe('background organizing', () => {
+  it('is off by default: the switch, after Agent, with what it does', async () => {
+    expect(DEFAULTS.background_organize).toBe(false);
+    expect(manifest.config.background_organize).toEqual({ type: 'boolean', default: false });
+    const { p } = bgSettings({ config: { background_organize: undefined } });
+    const schema = await p.getSettings();
+    const labels = schema.sections.map((x) => x.label);
+    expect(labels[labels.indexOf('Agent') + 1]).toBe('Background organizing');
+    expect(byId(schema, 'background_organize')).toMatchObject({ type: 'checkbox', default: false, label: 'Organize new notes in the background' });
+    expect(bgHtml(schema)).toContain('Notes you marked private are never sent.');
+  });
+
+  it('on a Kage without it: the switch stays and the status says why; nothing else shows', async () => {
+    for (const setup of [{ hostFeatures: [], agent: false }, { hostFeatures: AGENT_FEATURES, agent: false }, { hostFeatures: [] }]) {
+      const { p, agent } = bgSettings(setup);
+      const schema = await p.getSettings();
+      expect(bgSection(schema).controls.map((c) => c.id || c.type)).toEqual(['background_organize', 'info', 'info']);
+      expect(bgHtml(schema)).toContain('Update Kage, or approve Mind Map’s Background AI permission in the Store.');
+      expect(section(schema, 'Privacy').controls[0].html).not.toContain('background organizing');
+      expect(await p.runAction('organize_allow')).toEqual({});
+      expect(agent?.calls || []).toEqual([]);
+    }
+  });
+
+  it('asks Kage for access: Allow on this computer… opens Kage’s dialog', async () => {
+    const { p, agent } = bgSettings({ access: 'off' });
+    const schema = await p.getSettings();
+    expect(bgHtml(schema)).toContain('Kage needs your OK on this computer before Mind Map sends anything to your agent.');
+    expect(bgSection(schema).controls.find((c) => c.type === 'info' && c.html.includes('needs your OK')).showWhen).toEqual(ON);
+    expect(byId(schema, 'organize_allow')).toMatchObject({ type: 'action', label: 'Allow on this computer…', variant: 'primary', showWhen: ON });
+    expect(byId(schema, 'organize_now')).toBeUndefined();
+    expect(await p.runAction('organize_allow')).toEqual({ host: { type: 'agent_access' } });
+    expect(section(schema, 'Privacy').controls[0].html).toContain('new notes you haven’t marked private are sent to your agent in small batches');
+    expect(agent.calls).toEqual([]);
+    agent.access = 'consent_stale';
+    const stale = await p.getSettings();
+    expect(bgHtml(stale)).toContain('Your agent changed. Allow Mind Map again on this computer.');
+    expect(byId(stale, 'organize_allow')).toBeTruthy();
+  });
+
+  it('with access on: the status, Organize now, and Organize older notes too when there are older notes', async () => {
+    const { p, agent } = bgSettings();
+    const schema = await p.getSettings();
+    expect(bgHtml(schema)).toContain('0 organized · 0 waiting · last run never');
+    expect(byId(schema, 'organize_allow')).toBeUndefined();
+    expect(byId(schema, 'organize_now')).toMatchObject({ type: 'action', label: 'Organize now', showWhen: ON });
+    expect(byId(schema, 'organize_backlog')).toBeUndefined();
+    expect(await p.runAction('organize_now')).toEqual({ status: 'Nothing is waiting to be organized.', host: { type: 'refresh' } });
+    // A note from a month ago is out of scope until the user asks for it.
+    await p.mind.whenOrganized();
+    vi.setSystemTime(FIXTURE_NOW - 30 * 86_400_000);
+    await p.mind.capture(BG_NOTE);
+    vi.setSystemTime(FIXTURE_NOW);
+    const older = await p.getSettings();
+    expect(byId(older, 'organize_backlog')).toMatchObject({ label: 'Organize older notes too', description: expect.stringMatching(/^1 note is from before you turned this on\./) });
+    expect(await p.runAction('organize_backlog')).toEqual({ status: 'Older notes will be organized too, a batch at a time.', host: { type: 'refresh' } });
+    await p.mind.whenOrganized();
+    expect(agent.requests).toHaveLength(1);
+    expect(bgHtml(await p.getSettings())).toContain("<p>1 organized · 0 waiting · last run Nov 6, 2026");
+  });
+
+  it('Organize now sends a batch with when: now and says how it went', async () => {
+    const { p, agent } = bgSettings();
+    await p.getSettings();
+    await p.mind.whenOrganized();
+    vi.setSystemTime(FIXTURE_NOW - 3_600_000);
+    await p.mind.capture(BG_NOTE);
+    vi.setSystemTime(FIXTURE_NOW);
+    expect(await p.runAction('organize_now')).toEqual({ status: 'Your agent looked at 1 note.', host: { type: 'refresh' } });
+    expect(agent.calls.at(-1)).toMatchObject({ when: 'now', outcome: 'ok' });
+    // A refusal is Kage's own words; the saved switch off says to save first.
+    vi.setSystemTime(FIXTURE_NOW - 3_600_000);
+    await p.mind.capture(`${BG_NOTE} Again.`);
+    vi.setSystemTime(FIXTURE_NOW);
+    agent.refuse = ['paused'];
+    expect((await p.runAction('organize_now')).status).toBe('Background AI refused the request (paused).');
+    p.onConfigUpdate({ background_organize: false });
+    expect(await p.runAction('organize_now')).toEqual({ status: 'Turn on “Organize new notes in the background” and save first.', host: { type: 'refresh' } });
+  });
+
+  it('says when it is paused, and warns after a tool attempt', async () => {
+    const { p, agent } = bgSettings();
+    agent.pausedUntil = new Date(FIXTURE_NOW + 3_600_000).toISOString();
+    await p.mind.ready();
+    await p.mind._noteToolAttempt();
+    const html = bgHtml(await p.getSettings());
+    expect(html).toMatch(/Paused until .+\./);
+    expect(html).toContain('⚠️ Your agent tried to use a tool while organizing, so Kage stopped the request.');
+  });
+
+  it('escapes what it shows', async () => {
+    const { p } = bgSettings();
+    p.t = (key) => (key === 'settings.organize.about' ? '<img src=x onerror=alert(1)>' : key);
+    const html = section(await p.getSettings(), 'settings.section_background').controls.filter((c) => c.type === 'info').map((c) => c.html).join('');
+    expect(html).not.toContain('<img');
+    expect(html).toContain('&lt;img');
   });
 });
