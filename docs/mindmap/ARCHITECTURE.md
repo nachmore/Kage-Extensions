@@ -380,7 +380,8 @@ export function applyMerge(state, fromId, intoId, env);       // P2
 export function applyForget(state, entityId, env);            // P2 (adds a Rejection)
 export function applyRename(state, entityId, name, key, env); // P2
 export function applyImport(state, data, env);                // P2
-//   env = { now, newId(prefix), journal: {newOp, snapshotBefore, noteCreated, sealOp}, opKind?, label?, via?, source? }
+//   env = { now, newId(prefix), journal: {newOp, snapshotBefore, noteCreated, sealOp}, opKind?, label?, via?, source?, dev? }
+//   dev: this computer's machine tag (16 hex); every new item gets source.dev from it.
 ```
 
 `Change = { op, touched: Set<part>, itemId?, childIds?, newEntityIds?, dedupedInto?, result? }`.
@@ -416,6 +417,26 @@ Bodies are written and deleted by the caller: under the lock, take
 passes delete `releasedBodies(held, state)`. That one rule covers undo of an
 ingest or re-read, a delete whose op left the journal (200 ops / 256 KB),
 and an op `appendOp` made lossy.
+
+Background organizing (WP-AC-MM2, Kage's EXTENSION_AGENT_CALLS §11.5). The
+caller passes `lib/organize.js` results; AC-MM3 wires it into `mind.js`.
+
+```js
+export const ORG_STATES;                          // ['done', 'skipped', 'failed']
+export function normalizeOrg(raw);                // Item.org in canonical form | null (dropped whole when malformed)
+export function applyOrgMarks(state, marks, env); // marks = [{ id, org }] → Change & { marked, skipped }
+//   One silent 'enrich' op (label 'org_mark') without snapshots; it records the revs it left. Refusal: 'noop'.
+export function applyOrgSince(state, since, env); // meta.orgSince → Change & { orgSince }; a silent op with no records
+//   Refusals: 'bad_org' (not a time), 'same'.
+//   applyAnnotate env, besides autoAccept:
+//     maxNewEntitiesPerItem  new entities per entry, names and owners together ('entity_cap')
+//     via: 'background'      silent op with op.via 'background'; suggestions only, source.via 'background';
+//                            no kind changes; private names never linked or made ('private_entity');
+//                            a link's pending or failed title fetch stays.
+```
+
+In one `_mutate`, write the marks before the batch's `applyAnnotate`, so
+undoing the annotate op brings the note back with its mark.
 
 ### 5.10 `lib/journal.js` (WP-B)
 
@@ -727,7 +748,7 @@ Preview { kind, entityNames: string[], actionCount, suggestedCount, nextDue?, li
 
 ```
 State {
-  meta: { schema, rev, txn, keys: {[storageKey]: rev}, counts, extractorVersion, createdAt, updatedAt },
+  meta: { schema, rev, txn, keys: {[storageKey]: rev}, counts, extractorVersion, createdAt, updatedAt, orgSince? },
   items: Map<id, Item>, entities: Map<id, Entity>, candidates: Map<key, Candidate>,
   links: Link[], rejections: Rejection[], ops: JournalOp[],
   shardRevs: Map<'YYYY-MM', rev>, partRevs: { entities, links, journal }

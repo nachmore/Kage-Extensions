@@ -13,8 +13,8 @@
 //     `touched` plus 'journal' and 'meta'. A refusal or a no-op returns
 //     { op: null, touched: ∅, code } with code 'not_found' | 'not_action' |
 //     'bad_status' | 'noop' | 'same' | 'me' | 'conflict' | 'bad_format' |
-//     'future_schema' | 'bad_file' | 'not_file' | 'storage_full'; nothing
-//     changed and nothing needs saving.
+//     'future_schema' | 'bad_file' | 'not_file' | 'storage_full' | 'bad_org';
+//     nothing changed and nothing needs saving.
 //   - Documents (applyIngest, applyReread) also return `bodies`: [{ key,
 //     value }] to write before the shard. Bodies are never deleted here: the
 //     caller takes bodyKeys(state) before a change and deletes
@@ -52,7 +52,7 @@ const TITLE_SOURCES = ['auto', 'meta', 'user', 'agent'];
 const SUMMARY_SOURCES = ['meta', 'agent', 'user'];
 const ORIGINS = ['user', 'agent', 'rule'];
 const ORIGIN_RANK = { rule: 0, agent: 1, user: 2 };
-const VIAS = ['launcher', 'chat', 'agent', 'import', 'explorer', 'file'];
+const VIAS = ['launcher', 'chat', 'agent', 'import', 'explorer', 'file', 'background'];
 const ENRICH_STATES = ['none', 'pending', 'done', 'failed'];
 const LINK_TYPES = ['related', 'about', 'duplicate_of'];
 const REJECTION_TYPES = ['mention', 'link', 'entity'];
@@ -67,6 +67,12 @@ const FILE_WARNING_RE = /^[a-z][a-z0-9_]{0,47}$/;
 // Never in a stored file name: controls and line breaks, or a path.
 const FILE_NAME_BAD_RE = /[\u0000-\u001f\u007f-\u009f\u2028\u2029]|\/|^[A-Za-z]:\\|^\\\\/;
 const BODY_KEY_RE = /^mm-body-(i[0-9a-z]{14})-([1-9][0-9]{0,14})$/;
+// Background organizing (Kage's EXTENSION_AGENT_CALLS §11.5), the same
+// shapes lib/organize.js uses: the mark's states, its text hash (FNV-1a 32,
+// base36; a little room for a later hash), and agent_call_status().machine_tag.
+export const ORG_STATES = Object.freeze(['done', 'skipped', 'failed']);
+const ORG_HASH_RE = /^[0-9a-z]{1,16}$/;
+const MACHINE_TAG_RE = /^[0-9a-f]{16}$/;
 
 // ---------------------------------------------------------------------------
 // Small pure helpers
@@ -292,11 +298,33 @@ export function migrate(payload, part) {
   return payload.schema === undefined ? { ...payload, schema: 1 } : payload;
 }
 
+// `dev` is the machine tag of the computer that saved the item (opaque, 16
+// hex characters), so two computers split background organizing (§11.3).
 function validSource(raw) {
   const source = { via: VIAS.includes(raw?.via) ? raw.via : 'launcher' };
   if (typeof raw?.app === 'string' && raw.app.trim()) source.app = clean(raw.app, LIMITS.app);
   if (typeof raw?.window === 'string' && raw.window.trim()) source.window = clean(raw.window, LIMITS.window);
+  if (typeof raw?.dev === 'string' && MACHINE_TAG_RE.test(raw.dev)) source.dev = raw.dev;
   return source;
+}
+
+/**
+ * Item.org in canonical form, or null when it isn't one (§11.5): what
+ * background organizing did with the note, `{ state, v, at, hash }`, plus
+ * `tries` and `next` on a failed one. A mark without a known state, a hash,
+ * a version or a time is dropped whole, so the note is simply organized
+ * again; anything else in it is dropped.
+ */
+export function normalizeOrg(raw) {
+  if (!isRecord(raw) || !ORG_STATES.includes(raw.state)) return null;
+  if (typeof raw.hash !== 'string' || !ORG_HASH_RE.test(raw.hash)) return null;
+  if (!Number.isSafeInteger(raw.v) || raw.v < 1 || time(raw.at) === undefined) return null;
+  const org = { state: raw.state, v: raw.v, at: raw.at, hash: raw.hash };
+  if (raw.state === 'failed') {
+    if (isCount(raw.tries) && raw.tries > 0) org.tries = raw.tries;
+    if (time(raw.next) !== undefined) org.next = raw.next;
+  }
+  return org;
 }
 
 // ---------------------------------------------------------------------------
@@ -435,6 +463,8 @@ export function normalizeItem(raw) {
     delete item.summarySource;
   }
   item.source = validSource(raw.source);
+  const org = normalizeOrg(raw.org);
+  if (org) item.org = org; else delete item.org;
   const enrich = { state: ENRICH_STATES.includes(raw.enrich?.state) ? raw.enrich.state : 'none' };
   if (time(raw.enrich?.at) !== undefined) enrich.at = raw.enrich.at;
   item.enrich = enrich;
@@ -515,6 +545,9 @@ function normalizeMeta(raw, now) {
     meta.counts = { items: finite(raw.counts.items) ?? 0, entities: finite(raw.counts.entities) ?? 0 };
     if (isCount(raw.counts.bodyBytes) && raw.counts.bodyBytes > 0) meta.counts.bodyBytes = raw.counts.bodyBytes;
   }
+  // Background organizing considers notes created from then on (§11.3);
+  // missing until the user first turns it on, 0 for "older notes too".
+  if (time(raw.orgSince) !== undefined) meta.orgSince = raw.orgSince;
   return meta;
 }
 
@@ -667,10 +700,10 @@ export function payloadFor(state, part) {
   }
   if (part === 'journal') return { schema: SCHEMA, ops: state.ops };
   if (part === 'meta') {
-    const { keys, extractorVersion, createdAt, updatedAt, gen } = state.meta;
+    const { keys, extractorVersion, createdAt, updatedAt, gen, orgSince } = state.meta;
     return {
       schema: SCHEMA, ...(gen ? { gen } : {}), keys: { ...keys }, counts: countsOf(state),
-      extractorVersion, createdAt, updatedAt,
+      ...(time(orgSince) !== undefined ? { orgSince } : {}), extractorVersion, createdAt, updatedAt,
     };
   }
   throw new TypeError('mindmap model: unknown part');
@@ -783,6 +816,17 @@ const rejectedMention = (state, itemId, entityId) =>
 function mentionsPrivate(state, item) {
   if (item.private) return true;
   return item.entityIds.some((id) => state.entities.get(id)?.private);
+}
+
+// True when `key` is a private entity's key or one of its aliases (merged
+// away or not): background organizing never links that entity or makes a
+// public one with its name.
+function privateKey(state, key) {
+  if (typeof key !== 'string' || !key) return false;
+  for (const entity of state.entities.values()) {
+    if (entity.private && (entity.key === key || entity.aliases.some((alias) => foldKey(alias) === key))) return true;
+  }
+  return false;
 }
 
 // ---------------------------------------------------------------------------
@@ -1014,8 +1058,10 @@ function addAlias(tx, entity, alias) {
   putEntity(tx, { ...clone(entity), aliases: [...entity.aliases, name] });
 }
 
+// env.dev: this computer's machine tag, stamped on everything it saves
+// whether or not the source window is recorded.
 function sourceOf(env) {
-  return validSource({ via: env.via, app: env.source?.app, window: env.source?.window });
+  return validSource({ via: env.via, app: env.source?.app, window: env.source?.window, dev: env.dev });
 }
 
 const httpUrl = (url) => typeof url === 'string' && /^https?:\/\//i.test(url);
@@ -1405,7 +1451,7 @@ export function applyReread(state, itemId, ingest, env) {
   }
   const inherit = inheritor(state, resolved, specs);
   const known = new Set(childrenOf(state, itemId).map((c) => quoteForm(c.quote || c.text)));
-  const source = validSource({ via: 'file', app: env.source?.app, window: env.source?.window });
+  const source = sourceOf({ ...env, via: 'file' });
   const made = [];
   specs.forEach(({ action: a }, i) => {
     const form = quoteForm(a.quote || a.text);
@@ -1671,16 +1717,32 @@ function capWords(text, max) {
   return words.length <= max ? words.join(' ') : `${words.slice(0, max).join(' ')}…`;
 }
 
-// P1 agent enrichment (the `annotate` tool). entries =
+// P1 agent enrichment (the `annotate` tool), and background organizing's
+// results (Kage's EXTENSION_AGENT_CALLS §11.5). entries =
 // [{id, summary?, terms?, entities?:[{name,type}], actions?:[{text, quote, owner?, due?}], kind?}].
 // Additive only: it never overwrites user-origin fields, never touches
 // private items, and rejects actions whose quote isn't in the item's text.
 // Agent actions are suggestions unless env.autoAccept (and always on a
-// picked document). One undoable op.
+// picked document). One undoable op. Other env options:
+//   maxNewEntitiesPerItem  at most this many new entities (names and owners
+//                          together) per entry. Past it a new name is left
+//                          out, and an action whose owner would be new is
+//                          rejected ('entity_cap'): it's never given to "me".
+//   via: 'background'      a background result: a silent op (`mm undo` skips
+//                          it) with op.via 'background'. Its actions are
+//                          suggestions whatever autoAccept says, with
+//                          source.via 'background'. No kind changes. A name
+//                          or owner whose key is a private entity's is never
+//                          linked or created ('private_entity'). A link whose
+//                          title fetch is pending or failed keeps it.
+// rejected = [{ id, reason, text? (an action's), name? (a name's) }].
 export function applyAnnotate(state, entries, env) {
   const list = (Array.isArray(entries) ? entries : []).slice(0, LIMITS.annotate);
   const text = textLib(env);
-  const tx = begin(state, env, 'annotate', { code: 'annotate', params: { count: list.length } });
+  const background = env?.via === 'background';
+  const cap = isCount(env?.maxNewEntitiesPerItem) ? env.maxNewEntitiesPerItem : Infinity;
+  const tx = begin(state, background ? { ...env, silent: true } : env, 'annotate', { code: 'annotate', params: { count: list.length } });
+  if (background) tx.op.via = 'background';
   const applied = [];
   const rejected = [];
   const childIds = [];
@@ -1693,6 +1755,21 @@ export function applyAnnotate(state, entries, env) {
     const item = id ? state.items.get(id) : null;
     if (!item) { rejected.push({ id: id || null, reason: 'not_found' }); continue; }
     if (mentionsPrivate(state, item)) { rejected.push({ id, reason: 'private' }); continue; }
+    // A name (or owner) → { id } of its entity, or { reason } it was left
+    // out (null: nothing to link, as for a forgotten name). An entity this
+    // entry creates takes its own slot and counts against the cap, and so
+    // does one an earlier attempt of this op created, so a retry decides
+    // the same way.
+    let made = 0;
+    const pick = (key, resolve, slot) => {
+      if (background && privateKey(state, key)) return { reason: 'private_entity' };
+      const full = made >= cap;
+      const eid = resolve(full ? null : slot);
+      if (!eid) return { reason: full && key && !rejectedKey(state, key) ? 'entity_cap' : null };
+      if (background && state.entities.get(eid)?.private) return { reason: 'private_entity' };
+      if (eid === slot) made++;
+      return { id: eid };
+    };
     const draft = clone(item);
     if (typeof entry.summary === 'string' && entry.summary.trim()
         && (!draft.summary || draft.summarySource === 'agent')) {
@@ -1704,15 +1781,20 @@ export function applyAnnotate(state, entries, env) {
     }
     entities.forEach((e, i) => {
       const key = text.normalizeKey(e?.name);
+      const type = ENTITY_TYPES.includes(e?.type) ? e.type : 'topic';
       // kage-sensitive-data: not-sensitive — reviewed: a stored record, not a settings control
-      const eid = resolveEntity(tx, { key, name: e?.name, type: ENTITY_TYPES.includes(e?.type) ? e.type : 'topic', origin: 'agent' }, entitySlots[i]);
-      if (eid && !rejectedMention(state, id, eid)) addMention(draft, eid, 'agent');
+      const got = pick(key, (slot) => resolveEntity(tx, { key, name: e?.name, type, origin: 'agent' }, slot), entitySlots[i]);
+      if (got.reason === 'entity_cap') rejected.push({ id, reason: got.reason, name: clean(e?.name, LIMITS.entityName) });
+      else if (got.reason) rejected.push({ id, reason: got.reason });
+      if (got.id && !rejectedMention(state, id, got.id)) addMention(draft, got.id, 'agent');
     });
-    if (KINDS.includes(entry.kind) && entry.kind !== draft.kind && draft.kindSource !== 'user') {
+    if (!background && KINDS.includes(entry.kind) && entry.kind !== draft.kind && draft.kindSource !== 'user') {
       draft.kind = entry.kind;
       if (entry.kind === 'action' && !draft.status) { draft.status = 'open'; draft.owner ||= 'me'; draft.suggested = !env.autoAccept; }
     }
-    draft.enrich = { state: 'done', at: env.now };
+    // The background never ends a link's title fetch that is still to come.
+    const fetching = background && (draft.enrich?.state === 'pending' || draft.enrich?.state === 'failed');
+    if (!fetching) draft.enrich = { state: 'done', at: env.now };
     const parent = putItem(tx, draft) || item;
     const known = new Set(childrenOf(state, id).map((c) => quoteForm(c.quote || c.text)));
     actions.forEach((a, i) => {
@@ -1725,16 +1807,23 @@ export function applyAnnotate(state, entries, env) {
       if (known.has(form) && !state.items.has(actionSlots[i].item)) return;
       let owner = 'me';
       if (typeof a.owner === 'string' && a.owner.trim() && !/^(?:me|i|myself)$/i.test(a.owner.trim())) {
-        owner = resolveOwner(tx, { key: text.normalizeKey(a.owner), name: a.owner }, actionSlots[i].owner, 'agent') || 'me';
+        const key = text.normalizeKey(a.owner);
+        const got = pick(key, (slot) => resolveOwner(tx, { key, name: a.owner }, slot, 'agent'), actionSlots[i].owner);
+        if (got.reason) {
+          rejected.push({ id, reason: got.reason, text: clean(a.text || quote, LIMITS.title) });
+          return;
+        }
+        owner = got.id || 'me';
       }
       const child = {
         id: actionSlots[i].item, kind: 'action', title: clean(a.text || quote, LIMITS.title), titleSource: 'agent',
         text: trunc(quote, LIMITS.text), createdAt: env.now, updatedAt: env.now, parentId: id,
-        entityIds: [], mentionOrigin: {}, keyphrases: [], source: { via: 'agent' },
+        entityIds: [], mentionOrigin: {}, keyphrases: [], source: { via: background ? 'background' : 'agent' },
         enrich: { state: 'none' }, rev: 1, v: item.v,
       };
-      // A picked document's actions stay suggestions, auto-accept or not.
-      const suggested = !env.autoAccept || !!item.file;
+      // A picked document's actions stay suggestions, auto-accept or not,
+      // and so do the background's.
+      const suggested = background || !env.autoAccept || !!item.file;
       actionFields(child, { status: 'open', suggested, confidence: 0.6, quote, origin: 'agent', dueAt: isoDayStart(a.due) }, owner, env.now);
       for (const eid of parent.entityIds) addMention(child, eid, parent.mentionOrigin[eid]);
       if (owner !== 'me') addMention(child, owner, 'agent');
@@ -1743,6 +1832,61 @@ export function applyAnnotate(state, entries, env) {
     applied.push(id);
   }
   return { ...finish(tx), applied, rejected, childIds };
+}
+
+const noGroups = () => ({ items: [], entities: [], links: [], rejections: [], candidates: [] });
+
+// A silent op of background organizing's own: label fixed, never `mm undo`'s.
+const orgEnv = (env) => ({ ...env, opKind: undefined, label: undefined, silent: true });
+
+/**
+ * Background organizing's marks (§11.5): marks = [{ id, org }], each org
+ * from lib/organize.js markDone or markFailed (checked with normalizeOrg).
+ * A silent op that keeps no before-snapshots (nobody undoes a mark, and the
+ * journal's 256 KB stays for the user's undo history) but records the revs
+ * it left, so an earlier op on the same note can still be undone. Write it
+ * before the batch's applyAnnotate, in the same _mutate: undoing that op
+ * then brings the note back with its mark, so it isn't sent again.
+ * → Change & { marked: id[], skipped: [{ id, reason: 'not_found'|'bad_org' }] }.
+ * Refusal: 'noop' (nothing to mark).
+ */
+export function applyOrgMarks(state, marks, env) {
+  const wanted = new Map();
+  const skipped = [];
+  for (const mark of Array.isArray(marks) ? marks : []) {
+    const id = isRecord(mark) && isItemId(mark.id) ? mark.id : null;
+    if (!id || !state.items.has(id)) { skipped.push({ id, reason: 'not_found' }); continue; }
+    const org = normalizeOrg(mark.org);
+    if (!org) { skipped.push({ id, reason: 'bad_org' }); continue; }
+    wanted.set(id, org);
+  }
+  const tx = begin(state, orgEnv(env), 'enrich', { code: 'org_mark', params: { count: wanted.size } });
+  for (const [id, org] of wanted) putItem(tx, { ...clone(state.items.get(id)), org });
+  const marked = [...wanted.keys()];
+  const change = finish(tx, { marked, skipped });
+  if (!change.op) return change;
+  change.op.before = noGroups();
+  change.op.after = {};
+  for (const id of marked) change.op.after[id] = state.items.get(id).rev;
+  change.op.lossy = true;
+  return change;
+}
+
+/**
+ * Sets meta.orgSince (§11.3): background organizing considers notes created
+ * from then on. The caller passes lib/organize.js initialOrgSince(now) the
+ * first time the user turns it on, and 0 for "Organize older notes too".
+ * Meta is written with every commit, so this is a silent op with no records.
+ * → Change & { orgSince }. Refusals: 'bad_org' (not a time), 'same'.
+ */
+export function applyOrgSince(state, since, env) {
+  if (time(since) === undefined) return refusal('bad_org');
+  if (state.meta.orgSince === since) return refusal('same');
+  const tx = begin(state, orgEnv(env), 'enrich', { code: 'org_since', params: {} });
+  state.meta.orgSince = since;
+  const change = finish(tx, {}, { always: true });
+  change.op.lossy = true;
+  return { ...change, orgSince: since };
 }
 
 // P2 `mm merge`: `fromId` becomes an alias of `intoId` and redirects to it.

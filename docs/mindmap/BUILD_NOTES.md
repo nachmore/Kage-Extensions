@@ -1241,6 +1241,73 @@ it yet: FT-MM3 wires it into `mind.js` with `lib/files.js`. The tests build
   61 keys waiting for translation (none added here); every other gate
   passes.
 
+## WP-AC-MM2: background organizing in the model (`lib/model.js`)
+
+Kage's EXTENSION_AGENT_CALLS §11.5 in the model. Nothing calls it yet: AC-MM3
+wires it into `mind.js` with `lib/organize.js`.
+
+- **`applyAnnotate` options.** `via: 'background'` makes the op silent (even
+  if the caller passes `silent: false`) and sets `op.via: 'background'`.
+  Its actions are suggestions with `source.via: 'background'`. **Additions:**
+  the model forces suggestions itself, not only through the caller's
+  `autoAccept: false`; it ignores `kind` corrections (the leaf never sends
+  them); and it leaves a link's `pending` or `failed` title fetch alone,
+  since marking it `done` would stop the fetch for good.
+- **`maxNewEntitiesPerItem`** works with any `via`. Names and owners count
+  together, names first; existing and forgotten names don't count. Past the
+  cap a new name is left out, and an action whose owner would be new is
+  rejected (`entity_cap`), never given to "me". A retry counts the
+  entities its earlier attempt made, so it decides the same way.
+- **Private names** (background only): a name or owner is dropped
+  (`private_entity`) when its key is a private entity's key or alias, or
+  when it resolves, through merges, to a private entity. So a public twin
+  with the same key isn't linked either. The `annotate` tool is unchanged.
+  `rejected` gains `name` for a capped name; a private one is reported
+  without it.
+- **Stored fields.** `org` keeps `state`, `v`, `at` and `hash` (base36, 1–16
+  characters), plus `tries` and `next` on a failed mark. A mark missing one
+  of the four is dropped whole; other fields are dropped. `source.dev` is
+  16 lowercase hex characters, or it's dropped. `meta.orgSince` is a time
+  (0 allowed) and is written only once set. `via` gains `background`. An
+  older Mind Map reads that as `launcher` and drops `dev` and `org`, so it
+  only causes one more organize.
+- **`env.dev`**: captures, ingests and re-read children stamp `source.dev`
+  from it, whether or not the source window is recorded. A dedup merge
+  keeps the first computer's tag.
+- **Additions: two silent ops**, because the model is the only writer of
+  items and nothing commits without an op. `applyOrgMarks(state, [{ id,
+  org }], env)` is one `enrich` op (label `org_mark`) with no
+  before-snapshots: it records the revs it left, so earlier ops on those
+  notes can still be undone, and it costs the journal little.
+  `applyOrgSince(state, since, env)` sets `meta.orgSince` in an op with no
+  records. Their labels fall back to `op.generic`, so no new strings.
+- **For AC-MM3:**
+  - Env: `{ via: 'background', silent: true, autoAccept: false,
+    maxNewEntitiesPerItem: 3 }`; put the cached machine tag in `_env()` as
+    `dev`.
+  - In one `_mutate`: the step-2 checks (deleted, hidden, rev), then
+    `applyOrgMarks`, then `applyAnnotate`, returning both changes in that
+    order. Undo of the annotate op then keeps the mark, so the note isn't
+    sent again (tested).
+  - `_agentOrganized` should also return true for `org.state === 'done'`.
+  - **Undo gap (checked):** `journal.js` treats silent ops as transparent to
+    undo. `mm undo` of the capture that made a note passes over the
+    background op and deletes the note, but leaves the background's
+    suggested actions with no parent. Fixing it needs a `journal.js` change,
+    outside this package: either a later silent op that created children of
+    an item the undo deletes makes the undo `superseded`, or `applyUndo`
+    deletes those children too. Also, `mm undo` of an earlier user edit takes
+    back the background's fields and mark; the note is organized again later.
+  - **Journal size:** an annotate op keeps before-snapshots of up to 15
+    notes (up to 8,000 characters of text each). A few batches can push the
+    user's undo history out of the 256 KB journal.
+  - SPEC §6 (`Item.org`, `source.dev`, `via: 'background'`, `meta.orgSince`)
+    is AC-MM3's to update.
+- **Checks:** `npx vitest run extensions/mindmap` 34 files / 1048 tests;
+  `npm test` 77 files / 2402 tests. `check:i18n` still fails only on the
+  61 keys waiting for translation (none added here); every other gate
+  passes.
+
 ## Status
 
 **Works (P0/P1/P2, all phases of SPEC §2):**

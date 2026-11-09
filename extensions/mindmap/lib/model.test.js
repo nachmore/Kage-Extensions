@@ -10,6 +10,7 @@ import {
   applyAddRef, applyIngest, applyReread, bodyBytes, bodyKey, bodyKeys, normalizeBody, normalizeItem, parseBodyKey,
   releasedBodies,
 } from './model.js';
+import { applyOrgMarks, applyOrgSince, normalizeOrg, ORG_STATES } from './model.js';
 
 const at = (y, m, d, h = 0, min = 0) => new Date(y, m - 1, d, h, min).getTime();
 const NOW = at(2026, 11, 6, 10);
@@ -1306,5 +1307,327 @@ describe('picked documents elsewhere in the model', () => {
     const doc = commit(state, applyIngest(state, ingestOf(picked(DOC_TEXT)), envAt(pool, NOW)));
     const change = commit(state, applyAnnotate(state, [{ id: doc.itemId, actions: [{ text: 'Set the goals', quote: 'Bingo team goals for the quarter' }] }], envAt(pool, NOW, { autoAccept: true })));
     expect(state.items.get(change.childIds[0])).toMatchObject({ suggested: true, origin: 'agent' });
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Background organizing (Kage's EXTENSION_AGENT_CALLS §11.5)
+
+const TAG = '0123456789abcdef';
+const OTHER_TAG = 'fedcba9876543210';
+// The call runs two hours after the captures, with mind.js's options.
+const LATER = at(2026, 11, 6, 12);
+const BG = { via: 'background', silent: true, autoAccept: false, maxNewEntitiesPerItem: 3 };
+const bgEnv = (pool, extra = {}) => envAt(pool, LATER, { ...BG, ...extra });
+const DONE = { state: 'done', v: 1, at: LATER, hash: '1a2b3c' };
+const NOTE_TEXT = 'Lunch with Dana about the MTCS hiring plan. Book the review next week. '
+  + 'Priya to send the deck. Robin to call the vendor.';
+
+// A note naming Dana (linked), and Priya and Robin (not linked); another
+// note; and a private note that names Falcon and Robin, both private names.
+function bgSeeded() {
+  const state = emptyState(NOW);
+  const pool = testPool();
+  const note = capture(state, pool, ext({
+    text: NOTE_TEXT, mentions: [{ key: 'dana', name: 'Dana', type: 'person', origin: 'rule', seg: 0 }],
+  }), NOW);
+  const other = capture(state, pool, ext({ text: 'Falcon budget questions for the next planning round, ask finance' }), NOW);
+  const hidden = capture(state, pool, ext({
+    text: 'Falcon pricing worries, check with Robin', private: true,
+    mentions: [
+      { key: 'falcon', name: 'Falcon', type: 'project', origin: 'rule', seg: 0 },
+      { key: 'robin', name: 'Robin', type: 'person', origin: 'rule', seg: 0 },
+    ],
+  }), NOW);
+  const falcon = entityByKey(state, 'falcon');
+  state.entities.set(falcon.id, { ...falcon, private: true, aliases: ['Project Falcon'] });
+  const robin = entityByKey(state, 'robin');
+  state.entities.set(robin.id, { ...robin, private: true });
+  return { state, pool, note, other, hidden, falcon: falcon.id };
+}
+
+describe('applyAnnotate for background organizing (EXTENSION_AGENT_CALLS §11.5)', () => {
+  it('is a silent op marked as the background\'s, which mm undo skips and undo by id takes back', () => {
+    const { state, pool, note, hidden } = bgSeeded();
+    const change = commit(state, applyAnnotate(state, [{
+      id: note.itemId, summary: 'Hiring plan lunch with Dana.', terms: ['hiring plan'],
+      entities: [{ name: 'MTCS', type: 'project' }],
+      actions: [{ text: 'Book the review', quote: 'Book the review next week', due: '2026-11-13' }],
+    }], bgEnv(pool, { silent: false })));
+    expect(change.op).toMatchObject({ kind: 'annotate', silent: true, via: 'background', label: { code: 'annotate' } });
+    expect(change.applied).toEqual([note.itemId]);
+    expect(change.rejected).toEqual([]);
+    expect(state.items.get(note.itemId)).toMatchObject({ summary: 'Hiring plan lunch with Dana.', summarySource: 'agent', terms: ['hiring plan'] });
+    const child = state.items.get(change.childIds[0]);
+    expect(child).toMatchObject({
+      kind: 'action', parentId: note.itemId, status: 'open', suggested: true, origin: 'agent', owner: 'me',
+      dueAt: at(2026, 11, 13), source: { via: 'background' },
+    });
+    const loaded = reload(state);
+    expect(loaded.items.get(child.id).source).toEqual({ via: 'background' });
+    expect(loaded.ops.at(-1)).toMatchObject({ via: 'background', silent: true });
+    // `mm undo` goes past it to the user's last change; "Undo organizing" names it.
+    expect(journal.lastUndoable(state.ops).opId).toBe(hidden.op.opId);
+    expect(journal.canUndo(state, change.op)).toEqual({ ok: true });
+    commit(state, journal.applyUndo(state, change.op, envAt(pool, LATER)));
+    expect(state.items.has(child.id)).toBe(false);
+    expect(state.items.get(note.itemId).summary).toBeUndefined();
+    expect(entityByKey(state, 'mtcs')).toBeNull();
+  });
+
+  it('keeps actions as suggestions and the kind as it is, even with auto-accept on', () => {
+    const entry = (id) => ({ id, kind: 'meeting', actions: [{ text: 'Book the review', quote: 'Book the review next week' }] });
+    const bg = bgSeeded();
+    const change = applyAnnotate(bg.state, [entry(bg.note.itemId)], bgEnv(bg.pool, { autoAccept: true }));
+    expect(bg.state.items.get(bg.note.itemId).kind).toBe('note');
+    expect(bg.state.items.get(change.childIds[0]).suggested).toBe(true);
+    // The visible annotate tool, for contrast.
+    const tool = bgSeeded();
+    const visible = applyAnnotate(tool.state, [entry(tool.note.itemId)], envAt(tool.pool, LATER, { autoAccept: true }));
+    expect(visible.op.silent).toBeUndefined();
+    expect(visible.op.via).toBeUndefined();
+    expect(tool.state.items.get(tool.note.itemId).kind).toBe('meeting');
+    expect(tool.state.items.get(visible.childIds[0])).toMatchObject({ suggested: false, source: { via: 'agent' } });
+  });
+
+  it('creates at most maxNewEntitiesPerItem new entities per note, names and owners together', () => {
+    const { state, pool, note, other } = bgSeeded();
+    state.rejections.push({ s: '*', t: 'walrus', type: 'entity', at: NOW });
+    const change = commit(state, applyAnnotate(state, [
+      {
+        id: note.itemId,
+        entities: [
+          { name: 'Dana', type: 'person' }, { name: 'MTCS', type: 'project' }, { name: 'Hiring plan', type: 'topic' },
+          { name: 'Vendor', type: 'org' }, { name: 'Deck', type: 'term' }, { name: 'Walrus', type: 'term' },
+        ],
+        actions: [
+          { text: 'Dana books the review', quote: 'Book the review next week', owner: 'Dana' },
+          { text: 'Priya sends the deck', quote: 'Priya to send the deck', owner: 'Priya' },
+        ],
+      },
+      { id: other.itemId, entities: [{ name: 'Finance', type: 'team' }, { name: 'Planning round', type: 'topic' }, { name: 'Budget', type: 'term' }] },
+    ], bgEnv(pool)));
+    // Dana was already known; a forgotten name is no news either.
+    expect(change.rejected).toEqual([
+      { id: note.itemId, reason: 'entity_cap', name: 'Deck' },
+      { id: note.itemId, reason: 'entity_cap', text: 'Priya sends the deck' },
+    ]);
+    expect(names(state, state.items.get(note.itemId))).toEqual(['Dana', 'Hiring plan', 'MTCS', 'Vendor']);
+    expect(names(state, state.items.get(other.itemId))).toEqual(['Budget', 'Finance', 'Planning round']);
+    expect(change.newEntityIds).toHaveLength(6);
+    for (const key of ['deck', 'priya', 'walrus']) expect(entityByKey(state, key)).toBeNull();
+    // Never handed to "me" instead.
+    expect(change.childIds.map((id) => state.items.get(id).owner)).toEqual([entityByKey(state, 'dana').id]);
+    // The cap works for the annotate tool too.
+    const tool = bgSeeded();
+    const capped = applyAnnotate(tool.state, [{ id: tool.note.itemId, entities: [{ name: 'Dana', type: 'person' }, { name: 'Zed', type: 'person' }] }],
+      envAt(tool.pool, LATER, { maxNewEntitiesPerItem: 0 }));
+    expect(capped.rejected).toEqual([{ id: tool.note.itemId, reason: 'entity_cap', name: 'Zed' }]);
+    expect(capped.newEntityIds).toEqual([]);
+  });
+
+  it('never links a private name or makes a public one like it, and leaves hidden notes alone', () => {
+    const { state, pool, note, other, hidden, falcon } = bgSeeded();
+    const entity = (id, fields) => state.entities.set(id, {
+      id, aliases: [], origin: 'user', createdAt: NOW, updatedAt: NOW, rev: 1, ...fields,
+    });
+    // A public name merged into a private one is private too, and a public
+    // entity with a private one's key (another type) is never the stand-in.
+    entity('e0000000000hawk', { type: 'project', name: 'Hawk', key: 'hawk', mergedInto: falcon });
+    entity('e00000000falcon', { type: 'term', name: 'Falcon', key: 'falcon' });
+    const count = state.entities.size;
+    const change = commit(state, applyAnnotate(state, [
+      {
+        id: other.itemId,
+        entities: [
+          { name: 'Falcon', type: 'project' }, { name: 'project falcon', type: 'topic' }, { name: 'Hawk', type: 'project' },
+          { name: 'Falcon', type: 'term' }, { name: 'Finance', type: 'team' },
+        ],
+      },
+      { id: note.itemId, actions: [{ text: 'Robin calls the vendor', quote: 'Robin to call the vendor', owner: 'Robin' }] },
+      { id: hidden.itemId, summary: 'Pricing worries' },
+    ], bgEnv(pool)));
+    expect(change.rejected).toEqual([
+      ...Array.from({ length: 4 }, () => ({ id: other.itemId, reason: 'private_entity' })),
+      { id: note.itemId, reason: 'private_entity', text: 'Robin calls the vendor' },
+      { id: hidden.itemId, reason: 'private' },
+    ]);
+    expect(names(state, state.items.get(other.itemId))).toEqual(['Finance']);
+    expect(change.childIds).toEqual([]);
+    expect(state.entities.size).toBe(count + 1);
+    expect(state.items.get(hidden.itemId).summary).toBeUndefined();
+    // A note that came to name a private entity during the call is hidden now.
+    const dana = entityByKey(state, 'dana');
+    state.entities.set(dana.id, { ...dana, private: true });
+    const late = applyAnnotate(state, [{ id: note.itemId, terms: ['hiring'] }], bgEnv(pool));
+    expect(late).toMatchObject({ op: null, code: 'noop', rejected: [{ id: note.itemId, reason: 'private' }] });
+  });
+
+  it('leaves a link\'s title fetch that is still to come', () => {
+    const state = emptyState(NOW);
+    const pool = testPool();
+    const link = capture(state, pool, F1(), NOW);
+    expect(state.items.get(link.itemId).enrich.state).toBe('pending');
+    commit(state, applyAnnotate(state, [{ id: link.itemId, terms: ['design review'] }], bgEnv(pool)));
+    expect(state.items.get(link.itemId)).toMatchObject({ terms: ['design review'], enrich: { state: 'pending' } });
+    commit(state, applyEnrichLink(state, link.itemId, null, envAt(pool, LATER)));
+    commit(state, applyAnnotate(state, [{ id: link.itemId, terms: ['MTCS'] }], bgEnv(pool)));
+    expect(state.items.get(link.itemId).enrich.state).toBe('failed');
+    // A note has no fetch to wait for.
+    const note = capture(state, pool, ext({ text: 'Design review follow-ups for the MTCS team' }), NOW);
+    commit(state, applyAnnotate(state, [{ id: note.itemId, terms: ['follow-ups'] }], bgEnv(pool)));
+    expect(state.items.get(note.itemId).enrich).toEqual({ state: 'done', at: LATER });
+  });
+
+  it('re-applying a background result after reload changes nothing and caps the same way', () => {
+    const { state, note, other } = bgSeeded();
+    const entries = [
+      {
+        id: note.itemId, summary: 'Lunch about hiring.',
+        entities: [{ name: 'MTCS', type: 'project' }, { name: 'Hiring plan', type: 'topic' }, { name: 'Vendor', type: 'org' }, { name: 'Deck', type: 'term' }],
+        actions: [{ text: 'Book the review', quote: 'Book the review next week' }, { text: 'Priya sends the deck', quote: 'Priya to send the deck', owner: 'Priya' }],
+      },
+      { id: other.itemId, entities: [{ name: 'Finance', type: 'team' }] },
+    ];
+    const base = reload(state);
+    const attempt = testPool();
+    const change = commit(base, applyAnnotate(base, entries, bgEnv(attempt)));
+    const replayed = reload(base);
+    attempt.reset();
+    const again = commit(replayed, applyAnnotate(replayed, entries, bgEnv(attempt)));
+    expect(facts(replayed)).toEqual(facts(base));
+    expect(replayed.ops).toEqual(base.ops);
+    expect(again.rejected).toEqual(change.rejected);
+    expect(again.childIds).toEqual(change.childIds);
+    expect(again.newEntityIds).toEqual(change.newEntityIds);
+  });
+});
+
+describe('organize marks, machine tags and orgSince', () => {
+  it('org and source.dev survive fromPersisted and payloadFor', () => {
+    const state = emptyState(NOW);
+    const pool = testPool();
+    const note = capture(state, pool, ext({ text: 'Quarterly planning notes for the Bingo launch review' }), NOW, { dev: TAG });
+    const failed = capture(state, pool, ext({ text: 'Vendor call notes about the pricing changes' }), NOW, { dev: OTHER_TAG });
+    const retry = { state: 'failed', v: 1, at: LATER, hash: 'zz9', tries: 2, next: LATER + 7_200_000 };
+    commit(state, applyOrgMarks(state, [{ id: note.itemId, org: DONE }, { id: failed.itemId, org: retry }], envAt(pool, LATER)));
+    const shard = payloadFor(state, `items:${shardOf(state.items.get(note.itemId))}`);
+    expect(shard.items.find((i) => i.id === note.itemId)).toMatchObject({ org: DONE, source: { via: 'launcher', dev: TAG } });
+    const { state: loaded, problems } = fromPersisted(JSON.parse(JSON.stringify(persist(state))), { now: NOW });
+    expect(problems).toEqual([]);
+    expect(facts(loaded)).toEqual(facts(state));
+    expect(loaded.items.get(failed.itemId)).toMatchObject({ org: retry, source: { dev: OTHER_TAG } });
+  });
+
+  it('drops a malformed org mark or machine tag and keeps the rest of the item', () => {
+    expect(ORG_STATES).toEqual(['done', 'skipped', 'failed']);
+    const bad = [
+      { ...DONE, state: 'organized' }, { ...DONE, hash: undefined }, { ...DONE, hash: 'ABC' }, { ...DONE, hash: 'a'.repeat(17) },
+      { ...DONE, hash: 7 }, { ...DONE, v: 0 }, { ...DONE, v: 1.5 }, { ...DONE, at: -5 }, { ...DONE, at: undefined },
+      'done', [DONE], null,
+    ];
+    for (const org of bad) expect(normalizeOrg(org)).toBeNull();
+    // Only a failed mark keeps tries and next; nothing else rides along.
+    expect(normalizeOrg({ ...DONE, tries: 2, next: LATER, note: 'x' })).toEqual(DONE);
+    expect(normalizeOrg({ state: 'failed', v: 1, at: 1, hash: 'a', tries: 0, next: 'soon' })).toEqual({ state: 'failed', v: 1, at: 1, hash: 'a' });
+    expect(normalizeOrg({ state: 'skipped', v: 2, at: 0, hash: 'a' })).toEqual({ state: 'skipped', v: 2, at: 0, hash: 'a' });
+    const raw = (n, fields) => ({ id: `i0000000000000${n}`, kind: 'note', createdAt: Date.UTC(2026, 10, 2), title: 'a', text: 'a', ...fields });
+    const { state, problems } = fromPersisted({
+      shards: {
+        '2026-11': {
+          schema: 1, rev: 1, items: [
+            raw(1, { org: { ...DONE, state: 'organized' }, source: { via: 'launcher', dev: 'ABCDEF0123456789' } }),
+            raw(2, { org: { ...DONE, extra: true }, source: { via: 'background', dev: '0123' } }),
+            raw(3, { org: DONE, source: { via: 'teleport', dev: TAG } }),
+          ],
+        },
+      },
+    }, { now: NOW });
+    expect(problems).toEqual([]);
+    expect(state.items.get('i00000000000001').org).toBeUndefined();
+    expect(state.items.get('i00000000000001').source).toEqual({ via: 'launcher' });
+    expect(state.items.get('i00000000000002')).toMatchObject({ org: DONE, source: { via: 'background' } });
+    expect(state.items.get('i00000000000002').source.dev).toBeUndefined();
+    expect(state.items.get('i00000000000003')).toMatchObject({ org: DONE, source: { via: 'launcher', dev: TAG } });
+    expect(normalizeItem(raw(4, { org: 'done', source: { dev: 42 } }))).not.toHaveProperty('org');
+  });
+
+  it('stamps this computer\'s machine tag on what it saves', () => {
+    const state = emptyState(NOW);
+    const pool = testPool();
+    const dump = capture(state, pool, F6(), NOW, { dev: TAG, source: { app: 'Notes', window: 'Bingo sync' } });
+    expect(state.items.get(dump.itemId).source).toEqual({ via: 'launcher', app: 'Notes', window: 'Bingo sync', dev: TAG });
+    expect(dump.childIds.every((id) => state.items.get(id).source.dev === TAG)).toBe(true);
+    const untagged = capture(state, pool, ext({ text: 'saved before the tag was known' }), NOW);
+    expect(state.items.get(untagged.itemId).source).toEqual({ via: 'launcher' });
+    const badTag = capture(state, pool, ext({ text: 'a tag that is not one' }), NOW, { dev: 'not-a-tag' });
+    expect(state.items.get(badTag.itemId).source.dev).toBeUndefined();
+    const doc = commit(state, applyIngest(state, ingestOf(picked(DOC_TEXT)), envAt(pool, NOW, { dev: TAG })));
+    expect(state.items.get(doc.itemId).source).toEqual({ via: 'file', dev: TAG });
+    // A saved link keeps the computer that first saved it.
+    const link = capture(state, pool, F1(), NOW, { dev: OTHER_TAG });
+    capture(state, pool, ext({ ...F1(), text: `${F1_URL} again` }), LATER, { dev: TAG });
+    expect(state.items.get(link.itemId).source.dev).toBe(OTHER_TAG);
+  });
+
+  it('marks notes in one silent op without snapshots, so undo of earlier ops still works', () => {
+    const state = emptyState(NOW);
+    const pool = testPool();
+    const a = capture(state, pool, ext({ text: 'Quarterly planning notes for the Bingo launch review' }), NOW);
+    const b = capture(state, pool, ext({ text: 'Vendor call notes about the pricing changes' }), NOW);
+    const edit = commit(state, applyEdit(state, a.itemId, { title: 'Planning' }, envAt(pool, NOW)));
+    const change = commit(state, applyOrgMarks(state, [
+      { id: a.itemId, org: DONE }, { id: b.itemId, org: { ...DONE, state: 'skipped' } },
+      { id: 'i0000000000zzzz', org: DONE }, { id: b.itemId, org: { state: 'done' } }, null,
+    ], envAt(pool, LATER, { label: { code: 'annotate', params: {} }, opKind: 'annotate', silent: false })));
+    expect(change.op).toMatchObject({ kind: 'enrich', silent: true, lossy: true, label: { code: 'org_mark', params: { count: 2 } } });
+    expect(change.op.before.items).toEqual([]);
+    expect(change.op.after).toEqual({ [a.itemId]: 3, [b.itemId]: 2 });
+    expect(change.marked).toEqual([a.itemId, b.itemId]);
+    expect(change.skipped).toEqual([
+      { id: 'i0000000000zzzz', reason: 'not_found' }, { id: b.itemId, reason: 'bad_org' }, { id: null, reason: 'not_found' },
+    ]);
+    expect([...change.touched]).toEqual([`items:${shardOf(state.items.get(a.itemId))}`]);
+    expect(state.items.get(a.itemId)).toMatchObject({ org: DONE, title: 'Planning', rev: 3 });
+    expect(state.items.get(b.itemId).org.state).toBe('skipped');
+    // The user's edit is still `mm undo`'s, and can still be undone.
+    expect(journal.lastUndoable(state.ops).opId).toBe(edit.op.opId);
+    expect(journal.canUndo(state, edit.op)).toEqual({ ok: true });
+    expect(journal.canUndo(state, change.op)).toEqual({ ok: false, code: 'too_large' });
+    // The same marks again change nothing.
+    expect(applyOrgMarks(state, [{ id: a.itemId, org: DONE }], envAt(pool, LATER))).toMatchObject({ op: null, code: 'noop' });
+  });
+
+  it('a mark written before the annotate op survives Undo organizing', () => {
+    const { state, pool, note } = bgSeeded();
+    const marks = commit(state, applyOrgMarks(state, [{ id: note.itemId, org: DONE }], bgEnv(pool)));
+    const annotated = commit(state, applyAnnotate(state, [{ id: note.itemId, summary: 'Lunch about hiring.' }], bgEnv(pool)));
+    expect(state.ops.slice(-2).map((op) => op.opId)).toEqual([marks.op.opId, annotated.op.opId]);
+    expect(journal.canUndo(state, annotated.op)).toEqual({ ok: true });
+    commit(state, journal.applyUndo(state, annotated.op, envAt(pool, LATER)));
+    expect(state.items.get(note.itemId).summary).toBeUndefined();
+    expect(state.items.get(note.itemId).org).toEqual(DONE);
+  });
+
+  it('keeps meta.orgSince, set by a silent op with no records', () => {
+    const state = emptyState(NOW);
+    const pool = testPool();
+    expect(payloadFor(state, 'meta')).not.toHaveProperty('orgSince');
+    const since = NOW - 7 * 86_400_000;
+    const change = commit(state, applyOrgSince(state, since, envAt(pool, NOW)));
+    expect(change).toMatchObject({ orgSince: since, op: { kind: 'enrich', silent: true, lossy: true, label: { code: 'org_since' } } });
+    expect(change.touched.size).toBe(0);
+    expect(payloadFor(state, 'meta').orgSince).toBe(since);
+    expect(reload(state).meta.orgSince).toBe(since);
+    expect(applyOrgSince(state, since, envAt(pool, NOW))).toMatchObject({ op: null, code: 'same' });
+    for (const bad of [-1, 'soon', null, Infinity, undefined]) {
+      expect(applyOrgSince(state, bad, envAt(pool, NOW))).toMatchObject({ op: null, code: 'bad_org' });
+    }
+    // "Organize older notes too".
+    commit(state, applyOrgSince(state, 0, envAt(pool, NOW)));
+    expect(reload(state).meta.orgSince).toBe(0);
+    expect(journal.lastUndoable(state.ops)).toBeNull();
+    const { state: loaded } = fromPersisted({ meta: { schema: 1, rev: 1, orgSince: 'yesterday' } }, { now: NOW });
+    expect(loaded.meta.orgSince).toBeUndefined();
   });
 });
