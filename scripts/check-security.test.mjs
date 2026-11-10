@@ -407,5 +407,7 @@ describe('security check integration', () => {
             ]);
             expect(issues.some((issue) => issue.message.includes(`'${removed}'`)), `${id}:${removed}`).toBe(true);
         }
-    });
+        // Parses every extension's source: seconds on a CI runner, and it
+        // grows with the catalog.
+    }, 60_000);
 });
